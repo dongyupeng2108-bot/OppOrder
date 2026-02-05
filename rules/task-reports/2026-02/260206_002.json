@@ -1,0 +1,23 @@
+{
+  "task_id": "260206_002",
+  "timestamp": "2026-02-05T18:43:02.355Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260206_001",
+      "status": "DONE",
+      "summary": "Bootstrap docs + gates for OppRadar",
+      "report_file": "notify_260206_001.txt",
+      "report_sha256_short": "4170b234"
+    }
+  }
+}

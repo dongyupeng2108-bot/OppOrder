@@ -11,3 +11,9 @@ sentinel: DONE
 # Healthcheck
 - Port: 53122
 - Notify excerpt: "/ -> 200", "/pairs -> 200"
+
+## Gate Light (CI)
+- **Definition**: A lightweight required check that runs on every PR/Push.
+- **Mechanism**: Reads ules/LATEST.json to identify the most recent task evidence, then executes scripts/postflight_validate_envelope.mjs.
+- **Naming**: The GitHub Actions workflow must be named gate-light.
+- **Constraint**: Must PASS to merge.
