@@ -1,0 +1,44 @@
+{
+  "files": [
+    {
+      "name": "260206_001.json",
+      "size": 301,
+      "sha256_short": "a1882bab"
+    },
+    {
+      "name": "manual_verification.json",
+      "size": 107,
+      "sha256_short": "73761b9e"
+    },
+    {
+      "name": "notify_260206_001.txt",
+      "size": 948,
+      "sha256_short": "4170b234"
+    },
+    {
+      "name": "reports/healthcheck_pairs.txt",
+      "size": 13,
+      "sha256_short": "e359a3ac"
+    },
+    {
+      "name": "reports/healthcheck_root.txt",
+      "size": 8,
+      "sha256_short": "e35b1a26"
+    },
+    {
+      "name": "result_260206_001.json",
+      "size": 180,
+      "sha256_short": "5029a15b"
+    },
+    {
+      "name": "run_260206_001.log",
+      "size": 334,
+      "sha256_short": "1508d5a4"
+    },
+    {
+      "name": "scripts/postflight_validate_envelope.mjs",
+      "size": 38314,
+      "sha256_short": "4e9103fb"
+    }
+  ]
+}

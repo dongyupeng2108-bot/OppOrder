@@ -1,12 +1,23 @@
 {
   "task_id": "260206_001",
-  "timestamp": "2026-02-05T18:32:38.005Z",
-  "valid": false,
-  "errors": [
-    {
-      "code": "INTERNAL_ERROR",
-      "message": "Postflight script crash: ENOENT: no such file or directory, scandir 'E:\\OppRadar\\rules\\task-reports\\2026-02'"
+  "timestamp": "2026-02-05T18:34:36.823Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
     }
-  ],
-  "checks": {}
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260206_001",
+      "status": "DONE",
+      "summary": "Bootstrap docs + gates for OppRadar",
+      "report_file": "notify_260206_001.txt",
+      "report_sha256_short": "4170b234"
+    }
+  }
 }

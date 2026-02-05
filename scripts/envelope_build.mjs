@@ -38,15 +38,14 @@ async function main() {
         process.exit(1);
     }
 
-    console.log([EnvelopeBuild] Building for  in ...);
+    console.log('[EnvelopeBuild] Building for ' + taskId + ' in ' + resultDir + '...');
     ensureDir(resultDir);
 
     // 1. Prepare Content
-    const notifyFilename = 
-otify_.txt;
-    const resultFilename = esult_.json;
-    const logFilename = un_.log;
-    const indexFilename = deliverables_index_.json;
+    const notifyFilename = 'notify_' + taskId + '.txt';
+    const resultFilename = 'result_' + taskId + '.json';
+    const logFilename = 'run_' + taskId + '.log';
+    const indexFilename = 'deliverables_index_' + taskId + '.json';
 
     // 2. Create Dummy Business Evidence (for M0 to pass v3.9 postflight)
     const manualVerificationPath = path.join(resultDir, 'manual_verification.json');
@@ -61,12 +60,12 @@ otify_.txt;
     // 3. Create/Check Run Log
     const logPath = path.join(resultDir, logFilename);
     if (!fs.existsSync(logPath)) {
-        const logContent = [] START Task \n +
-                           [] INFO Executing bootstrap sequence...\n +
-                           [] INFO Git init... OK\n +
-                           [] INFO Directories created... OK\n +
-                           [] INFO Scripts deployed... OK\n +
-                           [] DONE Task completed successfully.\n;
+        const logContent = '[' + new Date().toISOString() + '] START Task ' + taskId + '\n' +
+                           '[' + new Date().toISOString() + '] INFO Executing bootstrap sequence...\n' +
+                           '[' + new Date().toISOString() + '] INFO Git init... OK\n' +
+                           '[' + new Date().toISOString() + '] INFO Directories created... OK\n' +
+                           '[' + new Date().toISOString() + '] INFO Scripts deployed... OK\n' +
+                           '[' + new Date().toISOString() + '] DONE Task completed successfully.\n';
         fs.writeFileSync(logPath, logContent);
     }
 
@@ -93,10 +92,10 @@ otify_.txt;
     const files = fs.readdirSync(resultDir).filter(f => f !== indexFilename && f !== notifyFilename);
     if (!files.includes(resultFilename)) files.push(resultFilename);
     
-    const notifyHeader = RESULT_JSON\n{\n  " status\: \\,\n \summary\: \\\n}\n;
- const notifyLog = LOG_HEAD\n\nLOG_TAIL\n\n;
- const notifyIndex = INDEX\n(See deliverables_index_.json for full details)\nFiles:\n\n;
- const notifyHc = HEALTHCHECK\n;
+    const notifyHeader = 'RESULT_JSON\n{\n  " status\: " + status + \,\n  \summary\: " + summary +  \\n}\n';
+ const notifyLog = 'LOG_HEAD\n' + logHead + '\nLOG_TAIL\n' + logTail + '\n';
+ const notifyIndex = 'INDEX\n(See deliverables_index_' + taskId + '.json for full details)\nFiles:\n' + files.join('\n') + '\n';
+ const notifyHc = 'HEALTHCHECK\n' + hcContent;
  
  const notifyContent = notifyHeader + notifyLog + notifyIndex + notifyHc;
  const notifyHash = calculateSha256Short(notifyContent);
@@ -183,7 +182,7 @@ otify_.txt;
  console.log('Could not write LATEST.json: ' + e.message);
  }
 
- console.log([EnvelopeBuild] Success. Notify Hash: );
+ console.log('[EnvelopeBuild] Success. Notify Hash: ' + notifyHash);
 }
 
 main();
