@@ -22,8 +22,7 @@ try {
     
     // Construct postflight command
     // Note: Assuming scripts/postflight_validate_envelope.mjs exists relative to CWD
-    const cmd = 
-ode scripts/postflight_validate_envelope.mjs --task_id  --result_dir  --report_dir ;
+    const cmd = 'node scripts/postflight_validate_envelope.mjs --task_id ' + task_id + ' --result_dir ' + result_dir + ' --report_dir ' + result_dir;
     
     console.log('[Gate Light] Executing: ' + cmd);
     execSync(cmd, { stdio: 'inherit' });
