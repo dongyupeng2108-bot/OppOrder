@@ -22,15 +22,16 @@ INDEX
 (See deliverables_index_260206_002.json for full details)
 Files:
 260206_001.json
+260206_002.json
 deliverables_index_260206_001.json
 manual_verification.json
 notify_260206_001.txt
 reports
 result_260206_001.json
+result_260206_002.json
 run_260206_001.log
 run_260206_002.log
 scripts
-result_260206_002.json
 HEALTHCHECK
 / -> ERROR
 /pairs -> ERROR

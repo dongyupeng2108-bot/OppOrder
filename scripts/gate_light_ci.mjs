@@ -18,14 +18,14 @@ try {
         process.exit(1);
     }
 
-    console.log([Gate Light] Verifying latest task: );
+    console.log('[Gate Light] Verifying latest task: ' + task_id);
     
     // Construct postflight command
     // Note: Assuming scripts/postflight_validate_envelope.mjs exists relative to CWD
     const cmd = 
 ode scripts/postflight_validate_envelope.mjs --task_id  --result_dir  --report_dir ;
     
-    console.log([Gate Light] Executing: );
+    console.log('[Gate Light] Executing: ' + cmd);
     execSync(cmd, { stdio: 'inherit' });
     
     console.log('[Gate Light] PASS');
