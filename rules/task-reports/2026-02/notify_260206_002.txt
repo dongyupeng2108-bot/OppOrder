@@ -33,5 +33,5 @@ run_260206_001.log
 run_260206_002.log
 scripts
 HEALTHCHECK
-/ -> ERROR
-/pairs -> ERROR
+/ -> 200
+/pairs -> 200

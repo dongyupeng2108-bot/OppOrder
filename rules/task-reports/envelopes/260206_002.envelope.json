@@ -3,8 +3,8 @@
   "milestone": "260206",
   "status": "DONE",
   "healthcheck": {
-    "root": 0,
-    "pairs": 0
+    "root": 200,
+    "pairs": 200
   },
   "index_files": [
     "260206_001.json",
