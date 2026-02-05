@@ -1,0 +1,12 @@
+{
+  "task_id": "260206_001",
+  "milestone": "260206",
+  "status": "FAILED",
+  "healthcheck": {
+    "root": 0,
+    "pairs": 0
+  },
+  "index_files": [],
+  "forbidden_phrases_hit": [],
+  "report_file": null
+}
