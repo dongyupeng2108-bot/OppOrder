@@ -1,0 +1,23 @@
+[
+  {
+    "snapshot_id": "sn_11111111",
+    "strategy_id": "st_12345678",
+    "timestamp": "2025-01-01T10:00:00Z",
+    "data": {
+      "price": 105.5,
+      "volume": 5000,
+      "ma50": 102.0,
+      "ma200": 98.0
+    }
+  },
+  {
+    "snapshot_id": "sn_22222222",
+    "strategy_id": "st_87654321",
+    "timestamp": "2025-01-01T11:00:00Z",
+    "data": {
+      "price": 106.0,
+      "volume": 7500,
+      "high_20": 105.8
+    }
+  }
+]

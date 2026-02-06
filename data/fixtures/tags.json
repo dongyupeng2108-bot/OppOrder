@@ -1,0 +1,12 @@
+[
+  {
+    "tag_id": "tg_aaaa1111",
+    "label": "High Volatility",
+    "color": "#FF0000"
+  },
+  {
+    "tag_id": "tg_bbbb2222",
+    "label": "Bullish",
+    "color": "#00FF00"
+  }
+]

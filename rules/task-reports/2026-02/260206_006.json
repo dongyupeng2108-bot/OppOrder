@@ -1,0 +1,23 @@
+{
+  "task_id": "260206_006",
+  "timestamp": "2026-02-06T09:22:36.666Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260206_005",
+      "status": "DONE",
+      "summary": "PR2 docs-only: rename to Opportunity Radar; naming aliases; revert scripts changes; no behavior change",
+      "report_file": "notify_260206_005.txt",
+      "report_sha256_short": "8867c4c6"
+    }
+  }
+}
