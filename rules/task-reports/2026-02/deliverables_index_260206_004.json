@@ -1,0 +1,99 @@
+{
+  "files": [
+    {
+      "name": "260206_001.json",
+      "size": 528,
+      "sha256_short": "6fc25e8d"
+    },
+    {
+      "name": "260206_002.json",
+      "size": 528,
+      "sha256_short": "f4d50d1f"
+    },
+    {
+      "name": "260206_004.json",
+      "size": 660,
+      "sha256_short": "1ab5670f"
+    },
+    {
+      "name": "260206_004_healthcheck_53122.txt",
+      "size": 828,
+      "sha256_short": "f2fbdee3"
+    },
+    {
+      "name": "deliverables_index_260206_001.json",
+      "size": 922,
+      "sha256_short": "1bb23196"
+    },
+    {
+      "name": "deliverables_index_260206_002.json",
+      "size": 1473,
+      "sha256_short": "624a1b7e"
+    },
+    {
+      "name": "manual_verification.json",
+      "size": 111,
+      "sha256_short": "707afe01"
+    },
+    {
+      "name": "notify_260206_001.txt",
+      "size": 978,
+      "sha256_short": "43a9a218"
+    },
+    {
+      "name": "notify_260206_002.txt",
+      "size": 1116,
+      "sha256_short": "1821e6c3"
+    },
+    {
+      "name": "notify_260206_004.txt",
+      "size": 1289,
+      "sha256_short": "568f0e2a"
+    },
+    {
+      "name": "reports/healthcheck_pairs.txt",
+      "size": 13,
+      "sha256_short": "e359a3ac"
+    },
+    {
+      "name": "reports/healthcheck_root.txt",
+      "size": 8,
+      "sha256_short": "e35b1a26"
+    },
+    {
+      "name": "result_260206_001.json",
+      "size": 186,
+      "sha256_short": "f09b010f"
+    },
+    {
+      "name": "result_260206_002.json",
+      "size": 170,
+      "sha256_short": "a78fff67"
+    },
+    {
+      "name": "result_260206_004.json",
+      "size": 226,
+      "sha256_short": "02e32e90"
+    },
+    {
+      "name": "run_260206_001.log",
+      "size": 340,
+      "sha256_short": "07e5cc69"
+    },
+    {
+      "name": "run_260206_002.log",
+      "size": 340,
+      "sha256_short": "00e5e035"
+    },
+    {
+      "name": "run_260206_004.log",
+      "size": 334,
+      "sha256_short": "a1a76281"
+    },
+    {
+      "name": "scripts/postflight_validate_envelope.mjs",
+      "size": 39220,
+      "sha256_short": "efc14d79"
+    }
+  ]
+}

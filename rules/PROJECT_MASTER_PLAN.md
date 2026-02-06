@@ -1,4 +1,4 @@
-# Project Master Plan
+# Opportunity Radar (机会雷达) Master Plan
 
 ## M0: Bootstrap (Current)
 - DoD: Docs, Gates, Envelope mechanism running.

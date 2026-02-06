@@ -1,5 +1,12 @@
 # Project Rules
 
+## Naming & Aliases
+- **Project**: 机会雷达 (Opportunity Radar / 机会雷达)
+- **Module**: 策略雷达 (Strategy Radar / 策略雷达) - Core capability module.
+- **Local dir**: `E:\OppRadar` (Historical alias / Reserved path).
+- **Remote repo**: `OppOrder` (Opportunity Order / 机会订单) - Repository name.
+- **Note**: Inconsistency between Repo Name and Project Name is ALLOWED but must be documented. Future external references use Opportunity Radar.
+
 ## Terminology
 - **Strategy**: Trading logic definition.
 - **Snapshot**: Point-in-time data capture.
