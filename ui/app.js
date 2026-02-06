@@ -12,6 +12,7 @@ function renderNav() {
             <a href="/ui" onclick="route(event)">Home</a>
             <a href="/ui/strategies" onclick="route(event)">Strategies</a>
             <a href="/ui/opportunities" onclick="route(event)">Opportunities</a>
+            <a href="/ui/diff" onclick="route(event)">Diff</a>
         </nav>
     `;
 }
@@ -23,8 +24,78 @@ async function renderHome() {
         <ul>
             <li><a href="/ui/strategies" onclick="route(event)">Browse Strategies</a></li>
             <li><a href="/ui/opportunities" onclick="route(event)">Browse Opportunities</a></li>
+            <li><a href="/ui/diff" onclick="route(event)">Compare Scans</a></li>
         </ul>
     `;
+}
+
+async function renderDiff() {
+    const scans = await fetchJSON('/scans');
+    // Sort by timestamp desc
+    scans.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    
+    const options = scans.map(s => `<option value="${s.scan_id}">${s.scan_id} (${s.timestamp})</option>`).join('');
+
+    return `
+        ${renderNav()}
+        <h1>Diff Scans</h1>
+        <div class="controls">
+            <label>From: <select id="from_scan">${options}</select></label>
+            <label>To: <select id="to_scan">${options}</select></label>
+            <button onclick="runDiff()">Compare</button>
+        </div>
+        <div id="diff-results"></div>
+    `;
+}
+
+window.runDiff = async function() {
+    const from = document.getElementById('from_scan').value;
+    const to = document.getElementById('to_scan').value;
+    const resultDiv = document.getElementById('diff-results');
+
+    if (!from || !to) {
+        resultDiv.innerHTML = '<p class="error">Please select both scans.</p>';
+        return;
+    }
+
+    resultDiv.innerHTML = 'Loading...';
+
+    try {
+        const data = await fetchJSON(`/diff?from_scan=${from}&to_scan=${to}`);
+        
+        const addedHtml = data.added_opp_ids.length 
+            ? `<ul>${data.added_opp_ids.map(id => `<li><a href="/ui/opportunities/${id}" onclick="route(event)">${id}</a></li>`).join('')}</ul>`
+            : '<p>None</p>';
+            
+        const removedHtml = data.removed_opp_ids.length 
+            ? `<ul>${data.removed_opp_ids.map(id => `<li>${id}</li>`).join('')}</ul>`
+            : '<p>None</p>';
+            
+        const changedHtml = data.changed.length 
+            ? `<ul>${data.changed.map(c => `
+                <li>
+                    <a href="/ui/opportunities/${c.opp_id}" onclick="route(event)">${c.opp_id}</a>
+                    <br>Changes: ${JSON.stringify(c.fields)}
+                </li>`).join('')}</ul>`
+            : '<p>None</p>';
+
+        resultDiv.innerHTML = `
+            <div class="diff-section">
+                <h3>Added (${data.added_opp_ids.length})</h3>
+                ${addedHtml}
+            </div>
+            <div class="diff-section">
+                <h3>Removed (${data.removed_opp_ids.length})</h3>
+                ${removedHtml}
+            </div>
+            <div class="diff-section">
+                <h3>Changed (${data.changed.length})</h3>
+                ${changedHtml}
+            </div>
+        `;
+    } catch (e) {
+        resultDiv.innerHTML = `<p class="error">Error: ${e.message}</p>`;
+    }
 }
 
 async function renderStrategies() {
@@ -161,6 +232,8 @@ async function router() {
         } else if (path.startsWith('/ui/opportunities/')) {
             const id = path.split('/')[3];
             app.innerHTML = await renderOpportunityDetail(id);
+        } else if (path === '/ui/diff') {
+            app.innerHTML = await renderDiff();
         } else {
             app.innerHTML = 'Not Found';
         }

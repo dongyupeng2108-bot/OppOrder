@@ -1,0 +1,7 @@
+{
+  "task_id": "260206_008",
+  "status": "DONE",
+  "summary": "M2: diff minimal loop (scan-to-scan) + /ui/diff; keep healthcheck 200",
+  "report_file": "notify_260206_008.txt",
+  "report_sha256_short": "0f550e2a"
+}
