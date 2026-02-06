@@ -1,0 +1,23 @@
+{
+  "task_id": "260206_007",
+  "timestamp": "2026-02-06T09:46:37.113Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260206_007",
+      "status": "DONE",
+      "summary": "M1: minimal UI list/detail for strategies & opportunities (vanilla) backed by mock API; keep / and /pairs 200",
+      "report_file": "notify_260206_007.txt",
+      "report_sha256_short": "d59b7893"
+    }
+  }
+}
