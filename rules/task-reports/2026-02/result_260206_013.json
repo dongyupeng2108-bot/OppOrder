@@ -3,5 +3,5 @@
   "status": "DONE",
   "summary": "Workflow: forbid interactive Y/N prompts; add ps_safe_rm.ps1; smoke validated",
   "report_file": "notify_260206_013.txt",
-  "report_sha256_short": "be50f223"
+  "report_sha256_short": "f0174494"
 }
