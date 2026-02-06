@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import url from 'url';
 import { fileURLToPath } from 'url';
+import crypto from 'crypto';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,10 +19,25 @@ const MIME_TYPES = {
     '.json': 'application/json'
 };
 
+// In-memory state
+let inMemoryScans = [];
+let inMemoryOpps = [];
+
+// Initialize state
+try {
+    if (fs.existsSync(path.join(FIXTURES_DIR, 'scans.json'))) {
+        inMemoryScans = JSON.parse(fs.readFileSync(path.join(FIXTURES_DIR, 'scans.json'), 'utf8'));
+    }
+    if (fs.existsSync(path.join(FIXTURES_DIR, 'opportunities.json'))) {
+        inMemoryOpps = JSON.parse(fs.readFileSync(path.join(FIXTURES_DIR, 'opportunities.json'), 'utf8'));
+    }
+} catch (e) {
+    console.error("Failed to initialize fixtures:", e);
+}
+
 const server = http.createServer((req, res) => {
     console.log(`${req.method} ${req.url}`);
 
-    // Parse URL using standard url module
     const parsedUrl = url.parse(req.url, true);
     const pathname = parsedUrl.pathname;
 
@@ -39,14 +55,12 @@ const server = http.createServer((req, res) => {
         
         let filePath = path.join(UI_DIR, relativePath);
         
-        // Safety check to prevent escaping UI_DIR
         if (!filePath.startsWith(UI_DIR)) {
              res.writeHead(403);
              res.end('Forbidden');
              return;
         }
 
-        // If file exists, serve it
         if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
             const ext = path.extname(filePath);
             const contentType = MIME_TYPES[ext] || 'text/plain';
@@ -55,7 +69,6 @@ const server = http.createServer((req, res) => {
             return;
         }
 
-        // SPA Fallback: If no extension, serve index.html
         if (!path.extname(pathname)) {
              const indexPath = path.join(UI_DIR, 'index.html');
              if (fs.existsSync(indexPath)) {
@@ -71,6 +84,82 @@ const server = http.createServer((req, res) => {
     }
 
     // 3. API Routes (Custom Logic)
+
+    // POST /scans/run
+    if (pathname === '/scans/run' && req.method === 'POST') {
+        try {
+            const { mutate } = parsedUrl.query;
+            const shouldMutate = mutate === '1';
+
+            const timestamp = Date.now();
+            const scanId = 'sc_' + crypto.createHash('sha256').update(timestamp.toString()).digest('hex').substring(0, 8);
+
+            // Determine previous scan
+            const lastScan = inMemoryScans.length > 0 ? inMemoryScans[inMemoryScans.length - 1] : null;
+            const fromScanId = lastScan ? lastScan.scan_id : null;
+
+            // Pick opp_ids
+            let newOppIds = [];
+            const allOppIds = inMemoryOpps.map(o => o.opp_id);
+
+            if (lastScan) {
+                newOppIds = [...(lastScan.opp_ids || [])];
+            } else {
+                 newOppIds = allOppIds.slice(0, 5); 
+            }
+
+            // Mutation logic
+            if (shouldMutate && allOppIds.length > 0) {
+                 // Simple mutation: remove one or add one
+                 if (Math.random() > 0.5 && newOppIds.length > 0) {
+                     // Remove
+                     newOppIds.pop();
+                 } else {
+                     // Add
+                     const candidates = allOppIds.filter(id => !newOppIds.includes(id));
+                     if (candidates.length > 0) {
+                         newOppIds.push(candidates[0]);
+                     } else if (newOppIds.length > 0) {
+                         // Fallback to remove if we can't add unique
+                         newOppIds.pop();
+                     }
+                 }
+            }
+
+            const newScan = {
+                scan_id: scanId,
+                timestamp: new Date().toISOString(),
+                duration_ms: Math.floor(Math.random() * 1000) + 100,
+                opp_ids: newOppIds
+            };
+
+            inMemoryScans.push(newScan);
+
+            const result = {
+                scan: newScan,
+                from_scan_id: fromScanId,
+                to_scan_id: scanId
+            };
+
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(result));
+            return;
+
+        } catch (err) {
+            console.error(err);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal Server Error' }));
+            return;
+        }
+    }
+
+    // GET /scans (Custom to use in-memory)
+    if (pathname === '/scans' && req.method === 'GET') {
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify(inMemoryScans));
+        return;
+    }
+
     if (pathname === '/replay') {
         try {
             const { scan } = parsedUrl.query;
@@ -80,19 +169,7 @@ const server = http.createServer((req, res) => {
                 return;
             }
 
-            const scansPath = path.join(FIXTURES_DIR, 'scans.json');
-            const oppsPath = path.join(FIXTURES_DIR, 'opportunities.json');
-
-            if (!fs.existsSync(scansPath) || !fs.existsSync(oppsPath)) {
-                res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ error: 'Fixtures not found' }));
-                return;
-            }
-
-            const scans = JSON.parse(fs.readFileSync(scansPath, 'utf8'));
-            const opportunities = JSON.parse(fs.readFileSync(oppsPath, 'utf8'));
-
-            const scanRecord = scans.find(s => s.scan_id === scan);
+            const scanRecord = inMemoryScans.find(s => s.scan_id === scan);
             if (!scanRecord) {
                 res.writeHead(404, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ error: 'Scan not found' }));
@@ -104,7 +181,7 @@ const server = http.createServer((req, res) => {
             const missingOppIds = [];
 
             for (const oppId of oppIds) {
-                const opp = opportunities.find(o => o.opp_id === oppId);
+                const opp = inMemoryOpps.find(o => o.opp_id === oppId);
                 if (opp) {
                     foundOpps.push(opp);
                 } else {
@@ -139,20 +216,8 @@ const server = http.createServer((req, res) => {
                 return;
             }
 
-            const scansPath = path.join(FIXTURES_DIR, 'scans.json');
-            const oppsPath = path.join(FIXTURES_DIR, 'opportunities.json');
-
-            if (!fs.existsSync(scansPath) || !fs.existsSync(oppsPath)) {
-                res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ error: 'Fixtures not found' }));
-                return;
-            }
-
-            const scans = JSON.parse(fs.readFileSync(scansPath, 'utf8'));
-            const opportunities = JSON.parse(fs.readFileSync(oppsPath, 'utf8'));
-
-            const fromScan = scans.find(s => s.scan_id === from_scan);
-            const toScan = scans.find(s => s.scan_id === to_scan);
+            const fromScan = inMemoryScans.find(s => s.scan_id === from_scan);
+            const toScan = inMemoryScans.find(s => s.scan_id === to_scan);
 
             if (!fromScan || !toScan) {
                 res.writeHead(404, { 'Content-Type': 'application/json' });
@@ -165,32 +230,7 @@ const server = http.createServer((req, res) => {
 
             const addedOppIds = [...toOppIds].filter(id => !fromOppIds.has(id));
             const removedOppIds = [...fromOppIds].filter(id => !toOppIds.has(id));
-            
-            // Intersection for checking changes
-            const commonOppIds = [...fromOppIds].filter(id => toOppIds.has(id));
             const changed = [];
-
-            // In a real system, we might compare different versions of the same opp.
-            // Here, with static fixtures, if opp_id is same, the object is same, so no changes.
-            // But we implement the logic anyway.
-            for (const oppId of commonOppIds) {
-                const opp = opportunities.find(o => o.opp_id === oppId);
-                if (!opp) continue; // Should not happen if data integrity holds
-
-                // Mock comparison logic: 
-                // In this static mock, 'from' and 'to' are the same object.
-                // To support 'Changed' testing if needed, one could hack the fixture 
-                // or just accept that changed is empty for now.
-                // We'll proceed with strict comparison.
-                
-                // If we really wanted to simulate change, we'd need versioned opps.
-                // For now, we just compare the same object to itself (no change).
-                
-                // However, to strictly follow the "changed" object structure requirement:
-                // changed object[]: { opp_id, fields, from, to }
-                
-                // Let's assume no changes for static data.
-            }
 
             const result = {
                 from_scan_id: from_scan,
@@ -222,19 +262,7 @@ const server = http.createServer((req, res) => {
                 return;
             }
 
-            const scansPath = path.join(FIXTURES_DIR, 'scans.json');
-            const oppsPath = path.join(FIXTURES_DIR, 'opportunities.json');
-
-            if (!fs.existsSync(scansPath) || !fs.existsSync(oppsPath)) {
-                res.writeHead(500, { 'Content-Type': 'text/plain' });
-                res.end('Fixtures not found');
-                return;
-            }
-
-            const scans = JSON.parse(fs.readFileSync(scansPath, 'utf8'));
-            const opportunities = JSON.parse(fs.readFileSync(oppsPath, 'utf8'));
-
-            const scanRecord = scans.find(s => s.scan_id === scan);
+            const scanRecord = inMemoryScans.find(s => s.scan_id === scan);
             if (!scanRecord) {
                 res.writeHead(404, { 'Content-Type': 'text/plain' });
                 res.end('Scan not found');
@@ -245,14 +273,12 @@ const server = http.createServer((req, res) => {
             const foundOpps = [];
             
             for (const oppId of oppIds) {
-                const opp = opportunities.find(o => o.opp_id === oppId);
+                const opp = inMemoryOpps.find(o => o.opp_id === oppId);
                 if (opp) {
                     foundOpps.push(opp);
                 }
             }
 
-            // CSV Generation
-            // Header: opp_id,strategy_id,snapshot_id,score,tradeable_state,tradeable_reason,created_at
             const header = 'opp_id,strategy_id,snapshot_id,score,tradeable_state,tradeable_reason,created_at';
             const rows = foundOpps.map(o => {
                 return [
@@ -291,19 +317,8 @@ const server = http.createServer((req, res) => {
                 return;
             }
 
-            const scansPath = path.join(FIXTURES_DIR, 'scans.json');
-            // opportunities needed if we want to check existence, but diff logic relies on opp_ids
-            
-            if (!fs.existsSync(scansPath)) {
-                res.writeHead(500, { 'Content-Type': 'text/plain' });
-                res.end('Fixtures not found');
-                return;
-            }
-
-            const scans = JSON.parse(fs.readFileSync(scansPath, 'utf8'));
-            
-            const fromScan = scans.find(s => s.scan_id === from_scan);
-            const toScan = scans.find(s => s.scan_id === to_scan);
+            const fromScan = inMemoryScans.find(s => s.scan_id === from_scan);
+            const toScan = inMemoryScans.find(s => s.scan_id === to_scan);
 
             if (!fromScan || !toScan) {
                 res.writeHead(404, { 'Content-Type': 'text/plain' });
@@ -319,19 +334,14 @@ const server = http.createServer((req, res) => {
             
             const rows = [];
             
-            // Added
             addedOppIds.forEach(id => {
                 rows.push(`added,${id},,,`);
             });
             
-            // Removed
             removedOppIds.forEach(id => {
                 rows.push(`removed,${id},,,`);
             });
             
-            // Changed - currently mock empty
-            // If we had changed items, we would push them here.
-
             const header = 'type,opp_id,field,from,to';
             const csv = [header, ...rows].join('\n');
 
@@ -354,8 +364,8 @@ const server = http.createServer((req, res) => {
         '/strategies': 'strategies.json',
         '/snapshots': 'snapshots.json',
         '/opportunities': 'opportunities.json',
-        '/tags': 'tags.json',
-        '/scans': 'scans.json'
+        '/tags': 'tags.json'
+        // '/scans': 'scans.json' // Handled by in-memory route
     };
 
     if (fixtureMap[pathname]) {
