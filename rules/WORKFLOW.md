@@ -4,6 +4,9 @@ RUN:
   - CMD: node scripts/postflight_validate_envelope.mjs
 sentinel: DONE
 
+# Opportunity Radar (机会雷达) Workflow
+*Note: OppRadar is the historical alias/reserved path (E:\OppRadar).*
+
 # Evidence Envelope
 - notify: RESULT_JSON + LOG_HEAD + LOG_TAIL + INDEX
 - index: size > 0, sha256_short (8 chars)
