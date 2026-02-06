@@ -1,0 +1,2 @@
+﻿opp_id,strategy_id,snapshot_id,score,tradeable_state,tradeable_reason,created_at
+op_99999999,st_12345678,sn_11111111,0.85,YES,Score > 0.8 and Trend is Up,2025-01-01T10:00:05Z

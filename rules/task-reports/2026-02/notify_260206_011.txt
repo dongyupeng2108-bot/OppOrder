@@ -1,0 +1,79 @@
+RESULT_JSON
+{
+  " status: " + status + ,
+  summary: " + summary +  \n}
+LOG_HEAD
+[2026-02-06T13:08:33.791Z] START Task 260206_011
+[2026-02-06T13:08:33.793Z] INFO Executing bootstrap sequence...
+[2026-02-06T13:08:33.793Z] INFO Git init... OK
+[2026-02-06T13:08:33.793Z] INFO Directories created... OK
+[2026-02-06T13:08:33.793Z] INFO Scripts deployed... OK
+[2026-02-06T13:08:33.793Z] DONE Task completed successfully.
+
+LOG_TAIL
+[2026-02-06T13:08:33.791Z] START Task 260206_011
+[2026-02-06T13:08:33.793Z] INFO Executing bootstrap sequence...
+[2026-02-06T13:08:33.793Z] INFO Git init... OK
+[2026-02-06T13:08:33.793Z] INFO Directories created... OK
+[2026-02-06T13:08:33.793Z] INFO Scripts deployed... OK
+[2026-02-06T13:08:33.793Z] DONE Task completed successfully.
+
+INDEX
+(See deliverables_index_260206_011.json for full details)
+Files:
+260206_005.json
+260206_005_healthcheck_53122.txt
+260206_006.json
+260206_006_api_smoke_opportunities.txt
+260206_006_api_smoke_strategies.txt
+260206_006_healthcheck_53122.txt
+260206_007.json
+260206_007_healthcheck_53122.txt
+260206_007_ui_status.txt
+260206_008.json
+260206_008_diff_smoke.json
+260206_008_healthcheck_53122.txt
+260206_008_ui_diff_status.txt
+260206_009.json
+260206_009_healthcheck_53122.txt
+260206_009_replay_smoke.json
+260206_009_ui_replay_status.txt
+260206_010.json
+260206_010_healthcheck_53122.txt
+260206_011_export_diff.csv
+260206_011_export_replay.csv
+260206_011_healthcheck_53122.txt
+260206_011_ui_diff_status.txt
+260206_011_ui_replay_status.txt
+deliverables_index_260206_005.json
+deliverables_index_260206_006.json
+deliverables_index_260206_007.json
+deliverables_index_260206_008.json
+deliverables_index_260206_009.json
+deliverables_index_260206_010.json
+manual_verification.json
+notify_260206_005.txt
+notify_260206_006.txt
+notify_260206_007.txt
+notify_260206_008.txt
+notify_260206_009.txt
+notify_260206_010.txt
+reports
+result_260206_005.json
+result_260206_006.json
+result_260206_007.json
+result_260206_008.json
+result_260206_009.json
+result_260206_010.json
+run_260206_005.log
+run_260206_006.log
+run_260206_007.log
+run_260206_008.log
+run_260206_009.log
+run_260206_010.log
+run_260206_011.log
+scripts
+result_260206_011.json
+HEALTHCHECK
+/ -> 200
+/pairs -> 200
