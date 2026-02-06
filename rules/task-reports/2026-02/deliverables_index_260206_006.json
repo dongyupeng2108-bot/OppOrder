@@ -1,0 +1,84 @@
+{
+  "files": [
+    {
+      "name": "260206_005.json",
+      "size": 573,
+      "sha256_short": "4ef3f3b5"
+    },
+    {
+      "name": "260206_005_healthcheck_53122.txt",
+      "size": 828,
+      "sha256_short": "27d5a8e1"
+    },
+    {
+      "name": "260206_006_api_smoke_opportunities.txt",
+      "size": 468,
+      "sha256_short": "b1afd410"
+    },
+    {
+      "name": "260206_006_api_smoke_strategies.txt",
+      "size": 313,
+      "sha256_short": "1a788c07"
+    },
+    {
+      "name": "260206_006_healthcheck_53122.txt",
+      "size": 828,
+      "sha256_short": "d3eabe21"
+    },
+    {
+      "name": "deliverables_index_260206_005.json",
+      "size": 896,
+      "sha256_short": "4b7eaca4"
+    },
+    {
+      "name": "manual_verification.json",
+      "size": 107,
+      "sha256_short": "c14fede5"
+    },
+    {
+      "name": "notify_260206_005.txt",
+      "size": 981,
+      "sha256_short": "8867c4c6"
+    },
+    {
+      "name": "notify_260206_006.txt",
+      "size": 1204,
+      "sha256_short": "651b6fdd"
+    },
+    {
+      "name": "reports/healthcheck_pairs.txt",
+      "size": 13,
+      "sha256_short": "e359a3ac"
+    },
+    {
+      "name": "reports/healthcheck_root.txt",
+      "size": 8,
+      "sha256_short": "e35b1a26"
+    },
+    {
+      "name": "result_260206_005.json",
+      "size": 247,
+      "sha256_short": "82ad4e9f"
+    },
+    {
+      "name": "result_260206_006.json",
+      "size": 222,
+      "sha256_short": "25838054"
+    },
+    {
+      "name": "run_260206_005.log",
+      "size": 334,
+      "sha256_short": "0ebbfe46"
+    },
+    {
+      "name": "run_260206_006.log",
+      "size": 334,
+      "sha256_short": "8edbed44"
+    },
+    {
+      "name": "scripts/postflight_validate_envelope.mjs",
+      "size": 39090,
+      "sha256_short": "1d078d7e"
+    }
+  ]
+}
