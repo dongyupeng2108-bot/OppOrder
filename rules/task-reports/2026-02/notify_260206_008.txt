@@ -1,0 +1,55 @@
+RESULT_JSON
+{
+  " status: " + status + ,
+  summary: " + summary +  \n}
+LOG_HEAD
+[2026-02-06T10:26:06.804Z] START Task 260206_008
+[2026-02-06T10:26:06.806Z] INFO Executing bootstrap sequence...
+[2026-02-06T10:26:06.806Z] INFO Git init... OK
+[2026-02-06T10:26:06.806Z] INFO Directories created... OK
+[2026-02-06T10:26:06.806Z] INFO Scripts deployed... OK
+[2026-02-06T10:26:06.806Z] DONE Task completed successfully.
+
+LOG_TAIL
+[2026-02-06T10:26:06.804Z] START Task 260206_008
+[2026-02-06T10:26:06.806Z] INFO Executing bootstrap sequence...
+[2026-02-06T10:26:06.806Z] INFO Git init... OK
+[2026-02-06T10:26:06.806Z] INFO Directories created... OK
+[2026-02-06T10:26:06.806Z] INFO Scripts deployed... OK
+[2026-02-06T10:26:06.806Z] DONE Task completed successfully.
+
+INDEX
+(See deliverables_index_260206_008.json for full details)
+Files:
+260206_005.json
+260206_005_healthcheck_53122.txt
+260206_006.json
+260206_006_api_smoke_opportunities.txt
+260206_006_api_smoke_strategies.txt
+260206_006_healthcheck_53122.txt
+260206_007.json
+260206_007_healthcheck_53122.txt
+260206_007_ui_status.txt
+260206_008_diff_smoke.json
+260206_008_healthcheck_53122.txt
+260206_008_ui_diff_status.txt
+deliverables_index_260206_005.json
+deliverables_index_260206_006.json
+deliverables_index_260206_007.json
+manual_verification.json
+notify_260206_005.txt
+notify_260206_006.txt
+notify_260206_007.txt
+reports
+result_260206_005.json
+result_260206_006.json
+result_260206_007.json
+run_260206_005.log
+run_260206_006.log
+run_260206_007.log
+run_260206_008.log
+scripts
+result_260206_008.json
+HEALTHCHECK
+/ -> 200
+/pairs -> 200
