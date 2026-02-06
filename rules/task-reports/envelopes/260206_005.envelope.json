@@ -1,0 +1,21 @@
+{
+  "task_id": "260206_005",
+  "milestone": "260206",
+  "status": "DONE",
+  "healthcheck": {
+    "root": 200,
+    "pairs": 200
+  },
+  "index_files": [
+    "260206_005_healthcheck_53122.txt",
+    "manual_verification.json",
+    "notify_260206_005.txt",
+    "reports/healthcheck_pairs.txt",
+    "reports/healthcheck_root.txt",
+    "result_260206_005.json",
+    "run_260206_005.log",
+    "scripts/postflight_validate_envelope.mjs"
+  ],
+  "forbidden_phrases_hit": [],
+  "report_file": "notify_260206_005.txt"
+}

@@ -1,6 +1,0 @@
-[2026-02-05T18:43:02.232Z] START Task 260206_002
-[2026-02-05T18:43:02.234Z] INFO Executing bootstrap sequence...
-[2026-02-05T18:43:02.234Z] INFO Git init... OK
-[2026-02-05T18:43:02.234Z] INFO Directories created... OK
-[2026-02-05T18:43:02.234Z] INFO Scripts deployed... OK
-[2026-02-05T18:43:02.234Z] DONE Task completed successfully.
