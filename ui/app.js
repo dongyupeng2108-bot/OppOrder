@@ -13,7 +13,82 @@ function renderNav() {
             <a href="/ui/strategies" onclick="route(event)">Strategies</a>
             <a href="/ui/opportunities" onclick="route(event)">Opportunities</a>
             <a href="/ui/diff" onclick="route(event)">Diff</a>
+            <a href="/ui/replay" onclick="route(event)">Replay</a>
         </nav>
+    `;
+}
+
+async function renderReplayList() {
+    const scans = await fetchJSON('/scans');
+    // Sort by timestamp desc
+    scans.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    
+    const options = scans.map(s => `<option value="${s.scan_id}">${s.scan_id} (${s.timestamp})</option>`).join('');
+
+    return `
+        ${renderNav()}
+        <h1>Replay Scan</h1>
+        <div class="controls">
+            <label>Select Scan: <select id="replay_scan">${options}</select></label>
+            <button onclick="goToReplay()">Replay</button>
+        </div>
+    `;
+}
+
+window.goToReplay = function() {
+    const scanId = document.getElementById('replay_scan').value;
+    if (scanId) {
+        history.pushState(null, '', `/ui/replay/${scanId}`);
+        router();
+    }
+}
+
+async function renderReplayDetail(scanId) {
+    let data;
+    try {
+        data = await fetchJSON(`/replay?scan=${scanId}`);
+    } catch (e) {
+        return `${renderNav()}<h1>Error loading replay</h1><p>${e.message}</p>`;
+    }
+    
+    const { scan, opportunities, missing_opp_ids } = data;
+    
+    const rows = opportunities.map(o => `
+        <tr>
+            <td><a href="/ui/opportunities/${o.opp_id}" onclick="route(event)">${o.opp_id}</a></td>
+            <td>${o.strategy_id}</td>
+            <td>${o.score}</td>
+            <td>${o.tradeable_state}</td>
+            <td>${o.tradeable_reason}</td>
+            <td>${o.created_at}</td>
+        </tr>
+    `).join('');
+    
+    const missingHtml = missing_opp_ids.length > 0 
+        ? `<div class="warning">Warning: Missing Opp IDs: ${missing_opp_ids.join(', ')}</div>` 
+        : '';
+
+    return `
+        ${renderNav()}
+        <h1>Replay: ${scan.scan_id}</h1>
+        <div class="meta">
+            <p><strong>Timestamp:</strong> ${scan.timestamp}</p>
+            <p><strong>Duration:</strong> ${scan.duration_ms}ms</p>
+            <p><strong>Opp Count:</strong> ${(scan.opp_ids || []).length}</p>
+            <a href="/replay?scan=${scanId}" target="_blank" class="button">Export JSON</a>
+        </div>
+        ${missingHtml}
+        <table>
+            <tr>
+                <th>Opp ID</th>
+                <th>Strategy</th>
+                <th>Score</th>
+                <th>State</th>
+                <th>Reason</th>
+                <th>Created At</th>
+            </tr>
+            ${rows}
+        </table>
     `;
 }
 
@@ -25,6 +100,7 @@ async function renderHome() {
             <li><a href="/ui/strategies" onclick="route(event)">Browse Strategies</a></li>
             <li><a href="/ui/opportunities" onclick="route(event)">Browse Opportunities</a></li>
             <li><a href="/ui/diff" onclick="route(event)">Compare Scans</a></li>
+            <li><a href="/ui/replay" onclick="route(event)">Replay Scans</a></li>
         </ul>
     `;
 }
@@ -234,6 +310,11 @@ async function router() {
             app.innerHTML = await renderOpportunityDetail(id);
         } else if (path === '/ui/diff') {
             app.innerHTML = await renderDiff();
+        } else if (path === '/ui/replay') {
+            app.innerHTML = await renderReplayList();
+        } else if (path.startsWith('/ui/replay/')) {
+            const id = path.split('/')[3];
+            app.innerHTML = await renderReplayDetail(id);
         } else {
             app.innerHTML = 'Not Found';
         }
