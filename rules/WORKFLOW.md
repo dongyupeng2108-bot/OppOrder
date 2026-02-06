@@ -114,3 +114,24 @@ Patch 任务必须包含并在回报中给出结果：
 
 ### 3) 模板自检项（必须加入自检清单）
 - 自检清单中必须包含：`任务正文长度 ≤ 6000 字符`
+
+## 禁止交互式命令（Y/N）（硬规则）
+
+### 1) 原则
+- **严禁交互**：Trae 执行的任何命令必须是无交互的（non-interactive）。禁止任何会弹出 `Y/N`、`Confirm`、`Are you sure?` 等提示框的操作。
+- **Fail-Fast**：一旦命令出现交互式等待（卡住），视为任务失败。必须立即中止（Ctrl+C），修改为无交互命令后重试。
+
+### 2) 常见场景与规范
+- **删除目录/文件**：
+  - **禁止**：`Remove-Item <path>`（默认会弹确认）。
+  - **禁止**：`rm <path>`（PowerShell 下 rm 是 Remove-Item 的别名，默认也会弹）。
+  - **必须使用**：`scripts/ps_safe_rm.ps1`（安全删除脚本）。
+    - 命令：`powershell -NoProfile -ExecutionPolicy Bypass -File scripts/ps_safe_rm.ps1 -Path "<path>"`
+    - 该脚本内部已封装 `-Recurse -Force -Confirm:$false` 并在失败时回退到 `cmd /c rmdir`。
+- **覆盖文件**：
+  - 使用 `Set-Content -Force` 或 `New-Item -Force`。
+  - 使用 `> ` 重定向时通常无需确认，但需注意 PowerShell 编码默认值。
+
+### 3) 推荐做法
+- 任何涉及文件系统变动（特别是删除）的操作，优先调用 `scripts/ps_safe_rm.ps1`。
+- 必须在命令中显式加入 `-Force`、`-Confirm:$false` 等参数。

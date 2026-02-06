@@ -1,0 +1,23 @@
+{
+  "task_id": "260206_013",
+  "timestamp": "2026-02-06T16:34:57.664Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260206_013",
+      "status": "DONE",
+      "summary": "Workflow: forbid interactive Y/N prompts; add ps_safe_rm.ps1; smoke validated",
+      "report_file": "notify_260206_013.txt",
+      "report_sha256_short": "f0174494"
+    }
+  }
+}
