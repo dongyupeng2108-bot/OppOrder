@@ -1,0 +1,7 @@
+﻿Diff JSON Headers:
+Content-Type: application/json; charset=utf-8
+Content-Disposition: attachment; filename="diff_sc_55555555_sc_66666666.json"
+
+Replay JSON Headers:
+Content-Type: application/json; charset=utf-8
+Content-Disposition: attachment; filename="replay_sc_55555555.json"
