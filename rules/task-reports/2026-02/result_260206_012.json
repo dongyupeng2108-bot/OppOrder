@@ -1,0 +1,7 @@
+{
+  "task_id": "260206_012",
+  "status": "DONE",
+  "summary": "M3: add export CSV Content-Type + Content-Disposition filename for diff/replay; keep healthcheck 200",
+  "report_file": "notify_260206_012.txt",
+  "report_sha256_short": "9545eea4"
+}
