@@ -31,8 +31,23 @@ async function renderReplayList() {
         <div class="controls">
             <label>Select Scan: <select id="replay_scan">${options}</select></label>
             <button onclick="goToReplay()">Replay</button>
+            <button onclick="runScan()" style="margin-left: 10px;">Run Scan</button>
         </div>
     `;
+}
+
+window.runScan = async function() {
+    try {
+        const res = await fetch('/scans/run?mutate=1', { method: 'POST' });
+        if (!res.ok) throw new Error('Run scan failed');
+        const data = await res.json();
+        if (data.to_scan_id) {
+            history.pushState(null, '', '/ui/replay/' + data.to_scan_id);
+            router();
+        }
+    } catch (e) {
+        alert('Error running scan: ' + e.message);
+    }
 }
 
 window.goToReplay = function() {
