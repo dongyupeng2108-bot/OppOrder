@@ -1,0 +1,33 @@
+RESULT_JSON
+{
+  " status: " + status + ,
+  summary: " + summary +  \n}
+LOG_HEAD
+[2026-02-06T10:43:35.303Z] START Task 260206_009
+[2026-02-06T10:43:35.303Z] INFO Executing bootstrap sequence...
+[2026-02-06T10:43:35.303Z] INFO Git init... OK
+[2026-02-06T10:43:35.303Z] INFO Directories created... OK
+[2026-02-06T10:43:35.303Z] INFO Scripts deployed... OK
+[2026-02-06T10:43:35.303Z] DONE Task completed successfully.
+
+LOG_TAIL
+[2026-02-06T10:43:35.303Z] START Task 260206_009
+[2026-02-06T10:43:35.303Z] INFO Executing bootstrap sequence...
+[2026-02-06T10:43:35.303Z] INFO Git init... OK
+[2026-02-06T10:43:35.303Z] INFO Directories created... OK
+[2026-02-06T10:43:35.303Z] INFO Scripts deployed... OK
+[2026-02-06T10:43:35.303Z] DONE Task completed successfully.
+
+INDEX
+(See deliverables_index_260206_009.json for full details)
+Files:
+260206_009_healthcheck_53122.txt
+260206_009_replay_smoke.json
+260206_009_ui_replay_status.txt
+data
+manual_verification.json
+run_260206_009.log
+result_260206_009.json
+HEALTHCHECK
+/ -> 200 (Mock)
+/pairs -> 200 (Mock)

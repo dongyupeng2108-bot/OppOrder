@@ -71,6 +71,65 @@ const server = http.createServer((req, res) => {
     }
 
     // 3. API Routes (Custom Logic)
+    if (pathname === '/replay') {
+        try {
+            const { scan } = parsedUrl.query;
+            if (!scan) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Missing scan parameter' }));
+                return;
+            }
+
+            const scansPath = path.join(FIXTURES_DIR, 'scans.json');
+            const oppsPath = path.join(FIXTURES_DIR, 'opportunities.json');
+
+            if (!fs.existsSync(scansPath) || !fs.existsSync(oppsPath)) {
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Fixtures not found' }));
+                return;
+            }
+
+            const scans = JSON.parse(fs.readFileSync(scansPath, 'utf8'));
+            const opportunities = JSON.parse(fs.readFileSync(oppsPath, 'utf8'));
+
+            const scanRecord = scans.find(s => s.scan_id === scan);
+            if (!scanRecord) {
+                res.writeHead(404, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Scan not found' }));
+                return;
+            }
+
+            const oppIds = scanRecord.opp_ids || [];
+            const foundOpps = [];
+            const missingOppIds = [];
+
+            for (const oppId of oppIds) {
+                const opp = opportunities.find(o => o.opp_id === oppId);
+                if (opp) {
+                    foundOpps.push(opp);
+                } else {
+                    missingOppIds.push(oppId);
+                }
+            }
+
+            const result = {
+                scan: scanRecord,
+                opportunities: foundOpps,
+                missing_opp_ids: missingOppIds
+            };
+
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(result));
+            return;
+
+        } catch (err) {
+            console.error(err);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal Server Error' }));
+            return;
+        }
+    }
+
     if (pathname === '/diff') {
         try {
             const { from_scan, to_scan } = parsedUrl.query;
