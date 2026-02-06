@@ -252,6 +252,133 @@ const server = http.createServer((req, res) => {
         }
     }
 
+    // 3.1 Export Routes (JSON)
+    if (pathname === '/export/replay.json') {
+        try {
+            const { scan } = parsedUrl.query;
+            if (!scan) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Missing scan parameter' }));
+                return;
+            }
+
+            const scansPath = path.join(FIXTURES_DIR, 'scans.json');
+            const oppsPath = path.join(FIXTURES_DIR, 'opportunities.json');
+
+            if (!fs.existsSync(scansPath) || !fs.existsSync(oppsPath)) {
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Fixtures not found' }));
+                return;
+            }
+
+            const scans = JSON.parse(fs.readFileSync(scansPath, 'utf8'));
+            const opportunities = JSON.parse(fs.readFileSync(oppsPath, 'utf8'));
+
+            const scanRecord = scans.find(s => s.scan_id === scan);
+            if (!scanRecord) {
+                res.writeHead(404, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Scan not found' }));
+                return;
+            }
+
+            const oppIds = scanRecord.opp_ids || [];
+            const foundOpps = [];
+            const missingOppIds = [];
+
+            for (const oppId of oppIds) {
+                const opp = opportunities.find(o => o.opp_id === oppId);
+                if (opp) {
+                    foundOpps.push(opp);
+                } else {
+                    missingOppIds.push(oppId);
+                }
+            }
+
+            const result = {
+                scan: scanRecord,
+                opportunities: foundOpps,
+                missing_opp_ids: missingOppIds
+            };
+
+            res.setHeader('Content-Disposition', `attachment; filename="replay_${scan}.json"`);
+            res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+            res.end(JSON.stringify(result));
+            return;
+
+        } catch (err) {
+            console.error(err);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal Server Error' }));
+            return;
+        }
+    }
+
+    if (pathname === '/export/diff.json') {
+        try {
+            const { from_scan, to_scan } = parsedUrl.query;
+            if (!from_scan || !to_scan) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Missing from_scan or to_scan parameters' }));
+                return;
+            }
+
+            const scansPath = path.join(FIXTURES_DIR, 'scans.json');
+            const oppsPath = path.join(FIXTURES_DIR, 'opportunities.json');
+
+            if (!fs.existsSync(scansPath) || !fs.existsSync(oppsPath)) {
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Fixtures not found' }));
+                return;
+            }
+
+            const scans = JSON.parse(fs.readFileSync(scansPath, 'utf8'));
+            const opportunities = JSON.parse(fs.readFileSync(oppsPath, 'utf8'));
+
+            const fromScan = scans.find(s => s.scan_id === from_scan);
+            const toScan = scans.find(s => s.scan_id === to_scan);
+
+            if (!fromScan || !toScan) {
+                res.writeHead(404, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Scan not found' }));
+                return;
+            }
+
+            const fromOppIds = new Set(fromScan.opp_ids || []);
+            const toOppIds = new Set(toScan.opp_ids || []);
+
+            const addedOppIds = [...toOppIds].filter(id => !fromOppIds.has(id));
+            const removedOppIds = [...fromOppIds].filter(id => !toOppIds.has(id));
+            
+            // Intersection for checking changes
+            const commonOppIds = [...fromOppIds].filter(id => toOppIds.has(id));
+            const changed = [];
+
+            for (const oppId of commonOppIds) {
+                const opp = opportunities.find(o => o.opp_id === oppId);
+                if (!opp) continue;
+            }
+
+            const result = {
+                from_scan_id: from_scan,
+                to_scan_id: to_scan,
+                added_opp_ids: addedOppIds,
+                removed_opp_ids: removedOppIds,
+                changed: changed
+            };
+
+            res.setHeader('Content-Disposition', `attachment; filename="diff_${from_scan}_${to_scan}.json"`);
+            res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+            res.end(JSON.stringify(result));
+            return;
+
+        } catch (err) {
+            console.error(err);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal Server Error' }));
+            return;
+        }
+    }
+
     // 3.1 Export Routes
     if (pathname === '/export/replay.csv') {
         try {
