@@ -17,6 +17,83 @@ sentinel: DONE
 
 ## Gate Light (CI)
 - **Definition**: A lightweight required check that runs on every PR/Push.
-- **Mechanism**: Reads ules/LATEST.json to identify the most recent task evidence, then executes scripts/postflight_validate_envelope.mjs.
+- **Mechanism**: Reads rules/LATEST.json to identify the most recent task evidence, then executes scripts/postflight_validate_envelope.mjs.
 - **Naming**: The GitHub Actions workflow must be named gate-light.
 - **Constraint**: Must PASS to merge.
+
+## PR 合并（Merge/合并）职责与步骤（硬规则）
+
+### 1) 职责
+- PR（Pull Request/拉取请求）的最终 Merge（合并）由老板手工执行（网页或 gh CLI），Trae 不执行合并动作。
+- 分支保护（Branch Protection/分支保护）+ 必需检查（Required Checks/必需检查）用于拦截不合格合并，但不会自动合并。
+
+### 2) 合并前置条件（必须全部满足）
+- Gate Light（Gate Light/门禁）检查为 Successful（成功）；
+- 本次任务的证据包（Evidence Envelope/证据包）已生成，且 Postflight（Postflight/后验）为 PASS；
+- 健康检查（Healthcheck/健康检查）已完成，且在任务回报中摘录：`/ -> 200` 与 `/pairs -> 200`（本项目端口约定：53122）；
+- PR 的变更文件不允许超出任务范围（scope/范围）；一旦发现超范围，必须拆分或回滚后重跑证据闭环。
+
+### 3) 合并操作（老板执行）
+**方式 A：网页**
+1. 打开 PR 页面 → 确认 Checks 全绿（包含 gate-light）。
+2. 查看 Files changed（变更文件）是否符合 scope。
+3. 点击 Merge pull request（合并拉取请求）。
+4. 合并后删除分支（Delete branch/删除分支）。
+
+**方式 B：gh CLI**
+- `gh pr checks <PR_NUMBER>`
+- `gh pr merge <PR_NUMBER> --merge --delete-branch`
+
+### 4) 合并后的规则
+- 合并完成后，下一条开发任务才允许开始（避免并行导致口径漂移）。
+- 如需继续开发：本地必须 `git checkout main && git pull --rebase` 后再开新分支。
+
+## 稳定性优先与范围控制（硬规则）
+
+### 0) 原则
+- **稳定优先**：一旦发现“任务范围漂移（scope drift）/夹带改动”，必须先停下当前功能推进，优先修补 WORKFLOW/PROJECT_RULES/PLAN 的约束与验收口径，再继续开发。
+- **单一变更面**：一个 PR 只解决一个类别的问题（见下文分类）。混合类别即视为范围漂移。
+
+### 1) 变更分类（每个任务/PR 必须明确属于且仅属于一个类别）
+A. **业务功能类（Business）**：数据模型字段、fixtures、API、UI、页面交互等 
+B. **基础设施类（Infra）**：脚手架、目录结构、启动方式、依赖、CI 运行环境 
+C. **门禁/证据链路类（Gate/Evidence）**：Gate Light、Postflight、envelope、LATEST 指针、证据格式与校验规则
+
+> **硬规则：业务功能类任务禁止改 Gate/Evidence 代码。** 
+> 如确需改 Gate/Evidence：必须新开“修补任务（Patch）”先做，独立 PR，独立验收，通过后才能继续业务功能。
+
+### 2) Gate/Evidence 保护清单（默认禁止在非 Patch 任务中修改）
+以下文件/目录视为 Gate/Evidence 关键路径（非 Patch 任务不得修改）：
+- `.github/workflows/gate-light.yml`（或 gate-light 工作流相关）
+- `scripts/postflight_validate_envelope.mjs`
+- `scripts/envelope_build.mjs`
+- `rules/LATEST.json` 的语义与结构（内容更新属于证据生成流程的正常产物；但“结构/字段含义”属于 Gate/Evidence 改动）
+- `rules/task-reports/envelopes/*` 证据结构定义与校验逻辑
+
+### 3) 范围漂移的处理流程（必须执行）
+当发现以下任一情况即判定为范围漂移：
+- 业务任务 PR 内出现 Gate/Evidence 关键路径文件改动
+- 为“让后验通过/让门禁通过”而顺手改了 postflight/envelope 逻辑
+- 任务过程中删除/清理历史证据文件以“解决冲突”（除非 Patch 任务专门处理“归档策略”）
+
+处理步骤（按顺序）：
+1. **停止推进合并**：不合并该 PR。
+2. **拆分**：将 Gate/Evidence 改动拆到独立 Patch 分支与 PR；业务 PR 回退这些改动保持纯净。
+3. **Patch 先行验收**：Patch PR 必须严格验收通过（见下文），再继续业务 PR。
+4. **更新规则**：如本次漂移暴露了规则缺口，必须先补 WORKFLOW/PROJECT_RULES/PLAN，再进入后续开发。
+
+### 4) Patch 任务（门禁/证据链路修补）的严格验收口径
+Patch 任务必须包含并在回报中给出结果：
+- 站点健康检查：`/ -> 200` 与 `/pairs -> 200`（本项目端口约定：53122）
+- 证据包生成：`envelope_build` 产物 + `rules/LATEST.json` 更新
+- 后验校验：`postflight_validate_envelope` 必须 PASS
+- CI 门禁：PR checks 中 `gate-light` 必须 Successful
+- 回报必须写明：修补前的失败现象、最小复现命令、修补后的对照结果
+
+> 未明确写出“验收通过”，不得进入后续业务开发。
+
+### 5) 每个任务/PR 的“范围自检”必做项
+提交 PR 前必须在回报中提供：
+- `git diff --name-only origin/main...HEAD` 的文件清单
+- 明确声明：本 PR 属于 A/B/C 哪一类
+- 若为业务功能类（A），清单中不得出现 Gate/Evidence 保护清单里的文件
