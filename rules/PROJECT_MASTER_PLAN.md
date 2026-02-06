@@ -8,3 +8,5 @@
 
 ## M2: Live Trading
 - DoD: Execution connection, Real-time monitoring.
+
+<!-- smoke -->
