@@ -1,4 +1,4 @@
-﻿import fs from 'fs';
+import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 
@@ -70,17 +70,8 @@ async function main() {
     }
 
     // 4. Prepare Notify Content (Base)
-        // Get Healthcheck content
+    // Get Healthcheck content
     let hcContent = '';
-    try {
-        const localHcFiles = fs.readdirSync(resultDir).filter(f => f.includes('healthcheck') && f.endsWith('.txt'));
-        for (const f of localHcFiles) {
-             const c = fs.readFileSync(path.join(resultDir, f), 'utf8');
-             const lines = c.split('\n').filter(l => l.includes('200'));
-             if (lines.length > 0) hcContent += lines.join('\n') + '\n';
-        }
-    } catch(e) {}
-
     const absResultDir = path.resolve(resultDir);
     const projectRoot = path.resolve(absResultDir, '../../..');
     const hcRootPath = path.join(projectRoot, 'reports/healthcheck_root.txt');
@@ -99,100 +90,99 @@ async function main() {
 
     // Build Notify Content
     const files = fs.readdirSync(resultDir).filter(f => f !== indexFilename && f !== notifyFilename);
-    if (!files.includes(resultFilename)) files.push(resultFilename); files.sort();
-    files.sort();
-
-    const notifyHeader = 'RESULT_JSON\n' + JSON.stringify({status, summary}, null, 2) + '\n';
-    const notifyLog = 'LOG_HEAD\n' + logHead + '\nLOG_TAIL\n' + logTail + '\n';
-    const notifyIndex = 'INDEX\n(See deliverables_index_' + taskId + '.json for full details)\nFiles:\n' + files.join('\n') + '\n';
-    const notifyHc = 'HEALTHCHECK\n' + hcContent;
-
-    const notifyContent = notifyHeader + notifyLog + notifyIndex + notifyHc;
-    const notifyHash = calculateSha256Short(notifyContent);
-
-    // Write Notify
-    const notifyPath = path.join(resultDir, notifyFilename);
-    fs.writeFileSync(notifyPath, notifyContent);
-
-    // Write Result
-    const resultData = {
-        task_id: taskId,
-        status: status,
-        summary: summary,
-        report_file: notifyFilename,
-        report_sha256_short: notifyHash
-    };
-    const resultPath = path.join(resultDir, resultFilename);
-    fs.writeFileSync(resultPath, JSON.stringify(resultData, null, 2));
-
-    // Build Index
-    const indexFiles = [];
-    const addFileToIndex = (fname, fpath) => {
-        if (fs.existsSync(fpath)) {
-            const buf = fs.readFileSync(fpath);
-            indexFiles.push({
-                name: fname,
-                size: buf.length,
-                sha256_short: crypto.createHash('sha256').update(buf).digest('hex').substring(0, 8)
-            });
-        }
-    };
-
-    // Copy and Index Healthcheck Files
-    const targetHcDir = path.join(resultDir, 'reports');
-    ensureDir(targetHcDir);
-    if (fs.existsSync(hcRootPath)) {
-        const dest = path.join(targetHcDir, 'healthcheck_root.txt');
-        fs.copyFileSync(hcRootPath, dest);
-    }
-    if (fs.existsSync(hcPairsPath)) {
-        const dest = path.join(targetHcDir, 'healthcheck_pairs.txt');
-        fs.copyFileSync(hcPairsPath, dest);
-    }
+    if (!files.includes(resultFilename)) files.push(resultFilename);
     
-    // Copy and Index Script
-    const scriptSrc = path.join(projectRoot, 'scripts/postflight_validate_envelope.mjs');
-    const targetScriptDir = path.join(resultDir, 'scripts');
-    ensureDir(targetScriptDir);
-    if (fs.existsSync(scriptSrc)) {
-        const dest = path.join(targetScriptDir, 'postflight_validate_envelope.mjs');
-        fs.copyFileSync(scriptSrc, dest);
-    }
+    const notifyHeader = 'RESULT_JSON\n{\n  " status\: " + status + \,\n  \summary\: " + summary +  \\n}\n';
+ const notifyLog = 'LOG_HEAD\n' + logHead + '\nLOG_TAIL\n' + logTail + '\n';
+ const notifyIndex = 'INDEX\n(See deliverables_index_' + taskId + '.json for full details)\nFiles:\n' + files.join('\n') + '\n';
+ const notifyHc = 'HEALTHCHECK\n' + hcContent;
+ 
+ const notifyContent = notifyHeader + notifyLog + notifyIndex + notifyHc;
+ const notifyHash = calculateSha256Short(notifyContent);
 
-    const scanDir = (dir, base) => {
-        const items = fs.readdirSync(dir);
-        for (const item of items) {
-            const fullPath = path.join(dir, item);
-            const relPath = base ? path.join(base, item) : item;
-            if (fs.statSync(fullPath).isDirectory()) {
-                scanDir(fullPath, relPath);
-            } else {
-                if (relPath !== indexFilename) { 
-                    addFileToIndex(relPath.replace(/\\/g, '/'), fullPath);
-                }
-            }
-        }
-    };
-    scanDir(resultDir, '');
+ // Write Notify
+ const notifyPath = path.join(resultDir, notifyFilename);
+ fs.writeFileSync(notifyPath, notifyContent);
 
-    const indexData = { files: indexFiles };
-    const indexPath = path.join(resultDir, indexFilename);
-    fs.writeFileSync(indexPath, JSON.stringify(indexData, null, 2));
+ // Write Result
+ const resultData = {
+ task_id: taskId,
+ status: status,
+ summary: summary,
+ report_file: notifyFilename,
+ report_sha256_short: notifyHash
+ };
+ const resultPath = path.join(resultDir, resultFilename);
+ fs.writeFileSync(resultPath, JSON.stringify(resultData, null, 2));
 
-    // Update LATEST.json
-    try {
-        const latestPath = path.join(projectRoot, 'rules/LATEST.json');
-        const latestJson = {
-            task_id: taskId,
-            result_dir: resultDir,
-            timestamp: new Date().toISOString()
-        };
-        fs.writeFileSync(latestPath, JSON.stringify(latestJson, null, 2));
-    } catch(e) {
-        console.log('Could not write LATEST.json: ' + e.message);
-    }
+ // Build Index
+ const indexFiles = [];
+ const addFileToIndex = (fname, fpath) => {
+ if (fs.existsSync(fpath)) {
+ const buf = fs.readFileSync(fpath);
+ indexFiles.push({
+ name: fname,
+ size: buf.length,
+ sha256_short: crypto.createHash('sha256').update(buf).digest('hex').substring(0, 8)
+ });
+ }
+ };
 
-    console.log('[EnvelopeBuild] Success. Notify Hash: ' + notifyHash);
+ // Copy and Index Healthcheck Files
+ const targetHcDir = path.join(resultDir, 'reports');
+ ensureDir(targetHcDir);
+ if (fs.existsSync(hcRootPath)) {
+ const dest = path.join(targetHcDir, 'healthcheck_root.txt');
+ fs.copyFileSync(hcRootPath, dest);
+ }
+ if (fs.existsSync(hcPairsPath)) {
+ const dest = path.join(targetHcDir, 'healthcheck_pairs.txt');
+ fs.copyFileSync(hcPairsPath, dest);
+ }
+ 
+ // Copy and Index Script
+ const scriptSrc = path.join(projectRoot, 'scripts/postflight_validate_envelope.mjs');
+ const targetScriptDir = path.join(resultDir, 'scripts');
+ ensureDir(targetScriptDir);
+ if (fs.existsSync(scriptSrc)) {
+ const dest = path.join(targetScriptDir, 'postflight_validate_envelope.mjs');
+ fs.copyFileSync(scriptSrc, dest);
+ }
+
+ const scanDir = (dir, base) => {
+ const items = fs.readdirSync(dir);
+ for (const item of items) {
+ const fullPath = path.join(dir, item);
+ const relPath = base ? path.join(base, item) : item;
+ if (fs.statSync(fullPath).isDirectory()) {
+ scanDir(fullPath, relPath);
+ } else {
+ if (relPath !== indexFilename) { 
+ addFileToIndex(relPath.replace(/\\/g, '/'), fullPath);
+ }
+ }
+ }
+ };
+ scanDir(resultDir, '');
+
+ const indexData = { files: indexFiles };
+ const indexPath = path.join(resultDir, indexFilename);
+ fs.writeFileSync(indexPath, JSON.stringify(indexData, null, 2));
+
+ // Update LATEST.json
+ try {
+ const latestPath = path.join(projectRoot, 'rules/LATEST.json');
+ const latestJson = {
+ task_id: taskId,
+ result_dir: resultDir,
+ timestamp: new Date().toISOString()
+ };
+ fs.writeFileSync(latestPath, JSON.stringify(latestJson, null, 2));
+ } catch(e) {
+ console.log('Could not write LATEST.json: ' + e.message);
+ }
+
+ console.log('[EnvelopeBuild] Success. Notify Hash: ' + notifyHash);
 }
 
 main();
