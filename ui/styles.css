@@ -1,0 +1,11 @@
+body { font-family: sans-serif; padding: 20px; }
+nav { margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+nav a { margin-right: 15px; text-decoration: none; color: #007bff; }
+nav a:hover { text-decoration: underline; }
+table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+th { background-color: #f2f2f2; }
+.detail-section { margin-top: 20px; border: 1px solid #eee; padding: 15px; border-radius: 4px; }
+h1 { font-size: 1.5rem; color: #333; }
+form { margin-bottom: 20px; background: #f9f9f9; padding: 10px; }
+label { margin-right: 15px; }
