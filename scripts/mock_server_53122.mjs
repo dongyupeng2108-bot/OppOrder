@@ -212,6 +212,145 @@ const server = http.createServer((req, res) => {
         }
     }
 
+    // 3.1 Export Routes
+    if (pathname === '/export/replay.csv') {
+        try {
+            const { scan } = parsedUrl.query;
+            if (!scan) {
+                res.writeHead(400, { 'Content-Type': 'text/plain' });
+                res.end('Missing scan parameter');
+                return;
+            }
+
+            const scansPath = path.join(FIXTURES_DIR, 'scans.json');
+            const oppsPath = path.join(FIXTURES_DIR, 'opportunities.json');
+
+            if (!fs.existsSync(scansPath) || !fs.existsSync(oppsPath)) {
+                res.writeHead(500, { 'Content-Type': 'text/plain' });
+                res.end('Fixtures not found');
+                return;
+            }
+
+            const scans = JSON.parse(fs.readFileSync(scansPath, 'utf8'));
+            const opportunities = JSON.parse(fs.readFileSync(oppsPath, 'utf8'));
+
+            const scanRecord = scans.find(s => s.scan_id === scan);
+            if (!scanRecord) {
+                res.writeHead(404, { 'Content-Type': 'text/plain' });
+                res.end('Scan not found');
+                return;
+            }
+
+            const oppIds = scanRecord.opp_ids || [];
+            const foundOpps = [];
+            
+            for (const oppId of oppIds) {
+                const opp = opportunities.find(o => o.opp_id === oppId);
+                if (opp) {
+                    foundOpps.push(opp);
+                }
+            }
+
+            // CSV Generation
+            // Header: opp_id,strategy_id,snapshot_id,score,tradeable_state,tradeable_reason,created_at
+            const header = 'opp_id,strategy_id,snapshot_id,score,tradeable_state,tradeable_reason,created_at';
+            const rows = foundOpps.map(o => {
+                return [
+                    o.opp_id,
+                    o.strategy_id,
+                    o.snapshot_id,
+                    o.score,
+                    o.tradeable_state,
+                    (o.tradeable_reason && o.tradeable_reason.includes(',')) ? `"${o.tradeable_reason}"` : (o.tradeable_reason || ''),
+                    o.created_at
+                ].join(',');
+            });
+
+            const csv = [header, ...rows].join('\n');
+
+            res.writeHead(200, {
+                'Content-Type': 'text/csv; charset=utf-8',
+                'Content-Disposition': `attachment; filename="replay_${scan}.csv"`
+            });
+            res.end(csv);
+            return;
+
+        } catch (err) {
+            console.error(err);
+            res.writeHead(500, { 'Content-Type': 'text/plain' });
+            res.end('Internal Server Error');
+            return;
+        }
+    }
+
+    if (pathname === '/export/diff.csv') {
+        try {
+            const { from_scan, to_scan } = parsedUrl.query;
+            if (!from_scan || !to_scan) {
+                res.writeHead(400, { 'Content-Type': 'text/plain' });
+                res.end('Missing from_scan or to_scan parameters');
+                return;
+            }
+
+            const scansPath = path.join(FIXTURES_DIR, 'scans.json');
+            // opportunities needed if we want to check existence, but diff logic relies on opp_ids
+            
+            if (!fs.existsSync(scansPath)) {
+                res.writeHead(500, { 'Content-Type': 'text/plain' });
+                res.end('Fixtures not found');
+                return;
+            }
+
+            const scans = JSON.parse(fs.readFileSync(scansPath, 'utf8'));
+            
+            const fromScan = scans.find(s => s.scan_id === from_scan);
+            const toScan = scans.find(s => s.scan_id === to_scan);
+
+            if (!fromScan || !toScan) {
+                res.writeHead(404, { 'Content-Type': 'text/plain' });
+                res.end('Scan not found');
+                return;
+            }
+
+            const fromOppIds = new Set(fromScan.opp_ids || []);
+            const toOppIds = new Set(toScan.opp_ids || []);
+
+            const addedOppIds = [...toOppIds].filter(id => !fromOppIds.has(id));
+            const removedOppIds = [...fromOppIds].filter(id => !toOppIds.has(id));
+            
+            const rows = [];
+            
+            // Added
+            addedOppIds.forEach(id => {
+                rows.push(`added,${id},,,`);
+            });
+            
+            // Removed
+            removedOppIds.forEach(id => {
+                rows.push(`removed,${id},,,`);
+            });
+            
+            // Changed - currently mock empty
+            // If we had changed items, we would push them here.
+
+            const header = 'type,opp_id,field,from,to';
+            const csv = [header, ...rows].join('\n');
+
+            res.writeHead(200, {
+                'Content-Type': 'text/csv; charset=utf-8',
+                'Content-Disposition': `attachment; filename="diff_${from_scan}_${to_scan}.csv"`
+            });
+            res.end(csv);
+            return;
+
+        } catch (err) {
+            console.error(err);
+            res.writeHead(500, { 'Content-Type': 'text/plain' });
+            res.end('Internal Server Error');
+            return;
+        }
+    }
+
     // 4. API Routes (Fixtures)
     const fixtureMap = {
         '/strategies': 'strategies.json',

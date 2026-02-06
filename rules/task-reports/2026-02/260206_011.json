@@ -1,0 +1,23 @@
+{
+  "task_id": "260206_011",
+  "timestamp": "2026-02-06T13:08:34.006Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260206_011",
+      "status": "DONE",
+      "summary": "M3: export JSON+CSV for diff & replay; keep healthcheck 200",
+      "report_file": "notify_260206_011.txt",
+      "report_sha256_short": "3956393e"
+    }
+  }
+}
