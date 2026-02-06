@@ -268,10 +268,9 @@ const server = http.createServer((req, res) => {
 
             const csv = [header, ...rows].join('\n');
 
-            res.writeHead(200, {
-                'Content-Type': 'text/csv; charset=utf-8',
-                'Content-Disposition': `attachment; filename="replay_${scan}.csv"`
-            });
+            res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+            res.setHeader('Content-Disposition', `attachment; filename="replay_${scan}.csv"`);
+            res.writeHead(200);
             res.end(csv);
             return;
 
@@ -336,10 +335,9 @@ const server = http.createServer((req, res) => {
             const header = 'type,opp_id,field,from,to';
             const csv = [header, ...rows].join('\n');
 
-            res.writeHead(200, {
-                'Content-Type': 'text/csv; charset=utf-8',
-                'Content-Disposition': `attachment; filename="diff_${from_scan}_${to_scan}.csv"`
-            });
+            res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+            res.setHeader('Content-Disposition', `attachment; filename="diff_${from_scan}_${to_scan}.csv"`);
+            res.writeHead(200);
             res.end(csv);
             return;
 
