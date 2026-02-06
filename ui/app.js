@@ -75,7 +75,7 @@ async function renderReplayDetail(scanId) {
             <p><strong>Timestamp:</strong> ${scan.timestamp}</p>
             <p><strong>Duration:</strong> ${scan.duration_ms}ms</p>
             <p><strong>Opp Count:</strong> ${(scan.opp_ids || []).length}</p>
-            <a href="/replay?scan=${scanId}" target="_blank" class="button">Export JSON</a>
+            <a href="/export/replay.json?scan=${scanId}" target="_blank" class="button">Export JSON</a>
             <a href="/export/replay.csv?scan=${scanId}" target="_blank" class="button">Export CSV</a>
         </div>
         ${missingHtml}
@@ -158,7 +158,7 @@ window.runDiff = async function() {
 
         resultDiv.innerHTML = `
             <div class="actions" style="margin-bottom: 1em;">
-                <a href="/diff?from_scan=${from}&to_scan=${to}" target="_blank" class="button">Export JSON</a>
+                <a href="/export/diff.json?from_scan=${from}&to_scan=${to}" target="_blank" class="button">Export JSON</a>
                 <a href="/export/diff.csv?from_scan=${from}&to_scan=${to}" target="_blank" class="button">Export CSV</a>
             </div>
             <div class="diff-section">
