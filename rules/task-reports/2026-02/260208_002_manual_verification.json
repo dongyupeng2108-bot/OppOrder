@@ -1,0 +1,22 @@
+
+{
+  "verified_items": [
+    {
+      "item": "Stage Logs Table in UI",
+      "status": "PASS",
+      "notes": "Verified that stage logs table appears in Replay view with columns Stage ID, Duration, Start, End, Warnings, Errors."
+    },
+    {
+      "item": "Export Button in UI",
+      "status": "PASS",
+      "notes": "Verified that 'Export Stage Logs JSON' button exists and triggers download with correct filename."
+    },
+    {
+      "item": "Persistence",
+      "status": "PASS",
+      "notes": "Verified that stage_logs are persisted in runtime/store.json and can be retrieved."
+    }
+  ],
+  "verifier": "Trae",
+  "date": "2026-02-08"
+}
