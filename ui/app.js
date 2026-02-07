@@ -151,9 +151,10 @@ async function renderReplayDetail(scanId) {
         <tr>
             <td><a href="/ui/opportunities/${o.opp_id}" onclick="route(event)">${o.opp_id}</a></td>
             <td>${o.strategy_id}</td>
-            <td>${o.score}</td>
+            <td>${o.score_baseline || o.score}</td>
             <td>${o.tradeable_state}</td>
             <td>${o.tradeable_reason}</td>
+            <td><span title="${o.llm_summary || ''}">${(o.llm_summary || '').substring(0, 30)}...</span></td>
             <td>${o.created_at}</td>
         </tr>
     `).join('');
@@ -215,6 +216,7 @@ async function renderReplayDetail(scanId) {
                 <th>Score</th>
                 <th>State</th>
                 <th>Reason</th>
+                <th>LLM Summary</th>
                 <th>Created At</th>
             </tr>
             ${rows}
@@ -417,9 +419,18 @@ async function renderOpportunityDetail(id) {
         <p><strong>Strategy ID:</strong> <a href="/ui/strategies/${item.strategy_id}" onclick="route(event)">${item.strategy_id}</a></p>
         <p><strong>Snapshot ID:</strong> ${item.snapshot_id}</p>
         <p><strong>Score:</strong> ${item.score}</p>
+        <p><strong>Baseline Score:</strong> ${item.score_baseline || 'N/A'}</p>
+        <p><strong>Components:</strong> ${item.score_components ? JSON.stringify(item.score_components) : 'N/A'}</p>
         <p><strong>Created At:</strong> ${item.created_at}</p>
         <p><strong>Tradeable:</strong> ${item.tradeable_state}</p>
         <p><strong>Reason:</strong> ${item.tradeable_reason}</p>
+        
+        <div class="llm-section" style="background: #f0f8ff; padding: 15px; margin-top: 20px; border-left: 5px solid #007bff;">
+            <h3 style="margin-top: 0;">LLM Analysis</h3>
+            <p><strong>Summary:</strong> ${item.llm_summary || 'N/A'}</p>
+            <p><strong>Confidence:</strong> ${item.llm_confidence !== undefined ? item.llm_confidence : 'N/A'}</p>
+            <p><strong>Tags:</strong> ${(item.llm_tags || []).join(', ')}</p>
+        </div>
     `;
 }
 

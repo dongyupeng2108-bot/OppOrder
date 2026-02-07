@@ -1,0 +1,7 @@
+{
+  "task_id": "260207_004",
+  "status": "DONE",
+  "summary": "M5: baseline opp scoring + LLM provider(mock) explain layer + evidence",
+  "report_file": "notify_260207_004.txt",
+  "report_sha256_short": "d33d7e8f"
+}
