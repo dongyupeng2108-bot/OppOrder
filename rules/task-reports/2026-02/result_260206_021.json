@@ -1,0 +1,7 @@
+{
+  "task_id": "260206_021",
+  "status": "DONE",
+  "summary": "Workflow: block duplicate task_id/PR; add pre_pr_check; docs updated",
+  "report_file": "notify_260206_021.txt",
+  "report_sha256_short": "817aea59"
+}

@@ -34,6 +34,18 @@ cd /mnt/e/OppRadar
   - If it happens, the Agent must NOT try to interact (which fails). The Agent should have prevented it by ensuring clean state.
   - **Explicit Kill**: Before major git operations that change directory structure, explicitly kill potential locking processes (e.g., `Stop-Process -Name node -ErrorAction SilentlyContinue`).
 
+## PR Creation Standards (Agent/Dev)
+### Anti-Duplicate & Noise Control (Hard Rule)
+1. **Unique Task ID**: If `rules/task-reports/**/result_<task_id>.json` already exists in **main** (or local main), **FORBID** re-execution of `envelope_build` and **FORBID** creating a new PR. You MUST use a new task_id.
+2. **Pre-PR Check**: Before creating a PR, you **MUST** run the `pre_pr_check` script:
+   ```powershell
+   node scripts/pre_pr_check.mjs --task_id <task_id>
+   ```
+   - If it exits with code 2 (Duplicate), **STOP** immediately. Do not push. Do not create PR.
+   - If it exits with code 0 (PASS), proceed.
+3. **Fail-Fast Logic**:
+   - If `git diff --name-only origin/main...HEAD` shows only `rules/task-reports/**` changes AND the task_id exists in `origin/main`, the PR is considered "Duplicate Noise". Abort.
+
 ## 合并职责说明 (Merge Responsibility)
 **PR 合并需要老板手工执行**。Trae 严禁自动合并 PR。
 
