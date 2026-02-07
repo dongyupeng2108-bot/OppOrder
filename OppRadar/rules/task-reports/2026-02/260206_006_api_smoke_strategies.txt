@@ -1,0 +1,17 @@
+﻿
+
+strategy_id : st_12345678
+name        : Golden Cross Strategy
+version     : 1.0.0
+status      : ACTIVE
+parameters  : @{fast_ma=50; slow_ma=200}
+
+strategy_id : st_87654321
+name        : Breakout Strategy
+version     : 0.5.0
+status      : DRAFT
+parameters  : @{lookback=20; threshold=1.5}
+
+
+
+

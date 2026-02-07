@@ -213,6 +213,7 @@ async function renderReplayDetail(scanId) {
                 <button onclick="planReeval()" style="padding: 5px 10px;">Plan Reeval</button>
                 <button onclick="runReeval()" style="padding: 5px 10px;">Run Reeval (Mock)</button>
                 <a href="/export/monitor_state.json" target="_blank" class="button">Export Monitor State</a>
+                <a href="/export/llm_dataset.jsonl?scan=${scanId}" target="_blank" class="button">Export LLM Dataset (JSONL)</a>
             </div>
             <div id="monitor_status" style="margin-bottom: 10px; color: blue; font-weight: bold;">Ready</div>
             

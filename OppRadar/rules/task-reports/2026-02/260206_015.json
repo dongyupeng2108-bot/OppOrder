@@ -1,0 +1,23 @@
+{
+  "task_id": "260206_015",
+  "timestamp": "2026-02-06T19:56:33.091Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260206_015",
+      "status": "DONE",
+      "summary": "M4: run-scan minimal loop (POST /scans/run + UI button) + evidence; keep / and /pairs 200",
+      "report_file": "notify_260206_015.txt",
+      "report_sha256_short": "9f5fea33"
+    }
+  }
+}

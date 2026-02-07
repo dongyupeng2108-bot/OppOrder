@@ -1,0 +1,23 @@
+{
+  "task_id": "260206_016",
+  "timestamp": "2026-02-07T09:11:43.351Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260206_016",
+      "status": "DONE",
+      "summary": "Docs-only: add milestone->PR roadmap + acceptance/evidence requirements; clarify manual merge steps",
+      "report_file": "notify_260206_016.txt",
+      "report_sha256_short": "37d92ef9"
+    }
+  }
+}

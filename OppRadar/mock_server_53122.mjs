@@ -29,10 +29,56 @@ const MIME_TYPES = {
 // In-memory state
 let inMemoryScans = [];
 let inMemoryOpps = [];
-let runtimeData = { scans: [], opportunities: [], monitor_state: {} };
+let runtimeData = { scans: [], opportunities: [], monitor_state: [], llm_dataset_rows: [] };
 let fixtureStrategies = [];
 let fixtureSnapshots = [];
 let monitorState = {}; // option_id -> { baseline_prob, last_prob, last_seen_ts, last_reeval_ts, trigger_state, last_trigger_reason }
+
+// Helper to create dataset row
+function createLLMDatasetRow(opp, ctx = {}) {
+    const timestamp = new Date().toISOString();
+    const row = {
+        ids: {
+            scan_id: ctx.scan_id || 'unknown',
+            opp_id: opp.opp_id,
+            market_id: 'default'
+        },
+        provider: {
+            provider_name: opp.llm_provider || 'unknown',
+            model: opp.llm_model || 'unknown',
+            fallback_used: opp.llm_tags?.includes('fallback') || false,
+            latency_ms: opp.llm_latency_ms || 0
+        },
+        input: {
+            prompt_version: 'v1',
+            prompt_compact: (opp.llm_input_prompt || '').substring(0, 100) + '...',
+            extracted_context: ''
+        },
+        output: {
+            llm_raw_text: (opp.llm_summary || '').substring(0, 200),
+            llm_schema_json: null,
+            confidence: opp.llm_confidence || 0
+        },
+        snapshot: {
+            market_prob: opp.score_baseline || 0,
+            best_bid_ask: null,
+            timestamp: timestamp
+        },
+        scoring: {
+            score_baseline: opp.score_baseline || 0,
+            score_components: opp.score_components || {}
+        },
+        trigger: {
+            trigger_reason: ctx.trigger_reason || 'initial'
+        }
+    };
+    
+    // Hash
+    const content = JSON.stringify(row);
+    row.hash = crypto.createHash('sha256').update(content).digest('hex').substring(0, 8);
+    
+    return row;
+}
 
 // Initialize state
 try {
@@ -58,12 +104,13 @@ try {
             if (data.scans) runtimeData.scans = data.scans;
             if (data.opportunities) runtimeData.opportunities = data.opportunities;
             if (data.monitor_state) runtimeData.monitor_state = data.monitor_state;
+            if (data.llm_dataset_rows) runtimeData.llm_dataset_rows = data.llm_dataset_rows;
             
             // Merge
             inMemoryScans = [...inMemoryScans, ...runtimeData.scans];
             inMemoryOpps = [...inMemoryOpps, ...runtimeData.opportunities];
             monitorState = { ...runtimeData.monitor_state };
-            console.log(`Loaded ${runtimeData.scans.length} scans, ${runtimeData.opportunities.length} opps, and ${Object.keys(monitorState).length} monitor states from runtime store.`);
+            console.log(`Loaded ${runtimeData.scans.length} scans, ${runtimeData.opportunities.length} opps, ${runtimeData.llm_dataset_rows?.length || 0} dataset rows, and ${Object.keys(monitorState).length} monitor states from runtime store.`);
         } catch (err) {
             console.error("Failed to load runtime store:", err);
         }
@@ -206,6 +253,34 @@ const server = http.createServer(async (req, res) => {
             'Content-Disposition': `attachment; filename="llm_analyze_${scanId}.json"`
         });
         res.end(JSON.stringify(result, null, 2));
+        return;
+    }
+
+    // GET /export/llm_dataset.jsonl
+    if (pathname === '/export/llm_dataset.jsonl') {
+        const { scan } = parsedUrl.query;
+        let rows = [];
+        let filename = '';
+
+        if (scan) {
+            rows = runtimeData.llm_dataset_rows.filter(r => r.ids.scan_id === scan);
+            filename = `llm_dataset_${scan}.jsonl`;
+        } else {
+            const limit = 200; // Default N
+            const max = 1000;
+            // Get last N rows (up to max)
+            // If we just want last 200 by default:
+            const n = 200; 
+            const count = Math.min(runtimeData.llm_dataset_rows.length, n);
+            rows = runtimeData.llm_dataset_rows.slice(-count);
+            filename = 'llm_dataset_latest.jsonl';
+        }
+
+        const content = rows.map(r => JSON.stringify(r)).join('\n');
+        
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+        res.writeHead(200, { 'Content-Type': 'application/jsonl; charset=utf-8' });
+        res.end(content);
         return;
     }
 
@@ -372,6 +447,11 @@ const server = http.createServer(async (req, res) => {
                     opp.llm_tags = llmResult.llm_tags;
                     opp.llm_latency_ms = llmResult.llm_latency_ms;
                     opp.llm_error = llmResult.llm_error;
+                    opp.llm_input_prompt = llmResult.llm_input_prompt; // Capture prompt
+
+                    // Capture Dataset Row
+                    const datasetRow = createLLMDatasetRow(opp, { scan_id: scanId, trigger_reason: 'initial' });
+                    runtimeData.llm_dataset_rows.push(datasetRow);
 
                     analyzedCount++;
                     if (llmResult.llm_summary === "OLLAMA_UNAVAILABLE_FALLBACK" || llmResult.llm_tags.includes('fallback_from_openrouter')) {
@@ -432,7 +512,8 @@ const server = http.createServer(async (req, res) => {
                     const storeData = {
                         scans: inMemoryScans.map(s => s.scan_id),
                         opps: inMemoryOpps.map(o => o.opp_id),
-                        monitor_state: monitorState
+                        monitor_state: monitorState,
+                        llm_dataset_rows: runtimeData.llm_dataset_rows
                     };
                     const tempStorePath = storePath + '.tmp';
                     fs.writeFileSync(tempStorePath, JSON.stringify(storeData, null, 2));

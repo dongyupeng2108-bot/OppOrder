@@ -1,0 +1,13 @@
+﻿{
+    "from_scan_id":  "sc_55555555",
+    "to_scan_id":  "sc_66666666",
+    "added_opp_ids":  [
+                          "op_88888888"
+                      ],
+    "removed_opp_ids":  [
+                            "op_99999999"
+                        ],
+    "changed":  [
+
+                ]
+}

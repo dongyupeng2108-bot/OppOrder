@@ -1,0 +1,137 @@
+{
+  "timestamp": "2026-02-07T19:22:11.534Z",
+  "status": "PASS",
+  "checks": {
+    "rowCount": true,
+    "validJSON": true,
+    "requiredFields": true,
+    "hasReevalTrigger": false
+  },
+  "scanId": "sc_c7444225",
+  "rowCount": 5,
+  "sample": [
+    {
+      "ids": {
+        "scan_id": "sc_c7444225",
+        "opp_id": "op_8e23f52c",
+        "market_id": "default"
+      },
+      "provider": {
+        "provider_name": "mock",
+        "model": "mock-v1",
+        "fallback_used": false,
+        "latency_ms": 0
+      },
+      "input": {
+        "prompt_version": "v1",
+        "prompt_compact": "[Mock Prompt] Analyze opportunity op_8e23f52c for strategy st_12345678 with score 82.09. Summarize i...",
+        "extracted_context": ""
+      },
+      "output": {
+        "llm_raw_text": "[Mock] Opportunity op_8e23f52c shows moderate potential based on st_12345678. Baseline score: 82.09.",
+        "llm_schema_json": null,
+        "confidence": 0.67
+      },
+      "snapshot": {
+        "market_prob": 82.09,
+        "best_bid_ask": null,
+        "timestamp": "2026-02-07T19:22:11.518Z"
+      },
+      "scoring": {
+        "score_baseline": 82.09,
+        "score_components": {
+          "spread_edge": 7.72,
+          "liquidity": 1.25,
+          "volatility": 16.72,
+          "risk_reward": 11.75
+        }
+      },
+      "trigger": {
+        "trigger_reason": "initial"
+      },
+      "hash": "051aea6f"
+    },
+    {
+      "ids": {
+        "scan_id": "sc_c7444225",
+        "opp_id": "op_3dc67ee1",
+        "market_id": "default"
+      },
+      "provider": {
+        "provider_name": "mock",
+        "model": "mock-v1",
+        "fallback_used": false,
+        "latency_ms": 0
+      },
+      "input": {
+        "prompt_version": "v1",
+        "prompt_compact": "[Mock Prompt] Analyze opportunity op_3dc67ee1 for strategy st_12345678 with score 26.66. Summarize i...",
+        "extracted_context": ""
+      },
+      "output": {
+        "llm_raw_text": "[Mock] Opportunity op_3dc67ee1 shows strong potential based on st_12345678. Baseline score: 26.66.",
+        "llm_schema_json": null,
+        "confidence": 0.83
+      },
+      "snapshot": {
+        "market_prob": 26.66,
+        "best_bid_ask": null,
+        "timestamp": "2026-02-07T19:22:11.518Z"
+      },
+      "scoring": {
+        "score_baseline": 26.66,
+        "score_components": {
+          "spread_edge": 6.6,
+          "liquidity": 9.13,
+          "volatility": 10.57,
+          "risk_reward": 28.37
+        }
+      },
+      "trigger": {
+        "trigger_reason": "initial"
+      },
+      "hash": "68dc3973"
+    },
+    {
+      "ids": {
+        "scan_id": "sc_c7444225",
+        "opp_id": "op_0c2f2aec",
+        "market_id": "default"
+      },
+      "provider": {
+        "provider_name": "mock",
+        "model": "mock-v1",
+        "fallback_used": false,
+        "latency_ms": 0
+      },
+      "input": {
+        "prompt_version": "v1",
+        "prompt_compact": "[Mock Prompt] Analyze opportunity op_0c2f2aec for strategy st_87654321 with score 16.02. Summarize i...",
+        "extracted_context": ""
+      },
+      "output": {
+        "llm_raw_text": "[Mock] Opportunity op_0c2f2aec shows strong potential based on st_87654321. Baseline score: 16.02.",
+        "llm_schema_json": null,
+        "confidence": 0.82
+      },
+      "snapshot": {
+        "market_prob": 16.02,
+        "best_bid_ask": null,
+        "timestamp": "2026-02-07T19:22:11.518Z"
+      },
+      "scoring": {
+        "score_baseline": 16.02,
+        "score_components": {
+          "spread_edge": 8.03,
+          "liquidity": 6.14,
+          "volatility": 14.61,
+          "risk_reward": 16.44
+        }
+      },
+      "trigger": {
+        "trigger_reason": "initial"
+      },
+      "hash": "5e28c0c0"
+    }
+  ]
+}

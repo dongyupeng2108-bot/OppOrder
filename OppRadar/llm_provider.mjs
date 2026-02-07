@@ -22,6 +22,8 @@ export class MockProvider extends LLMProvider {
         const confidence = 0.5 + (hexVal / 65535) * 0.49;
         const potential = confidence > 0.8 ? 'strong' : (confidence > 0.6 ? 'moderate' : 'weak');
         
+        const prompt = `[Mock Prompt] Analyze opportunity ${opp.opp_id} for strategy ${opp.strategy_id} with score ${opp.score_baseline}. Summarize in 1 sentence.`;
+
         return {
             llm_provider: 'mock',
             llm_model: 'mock-v1',
@@ -29,7 +31,8 @@ export class MockProvider extends LLMProvider {
             llm_confidence: parseFloat(confidence.toFixed(2)),
             llm_tags: ['mock', 'baseline', parseInt(hash[0], 16) > 8 ? 'high_vol' : 'low_vol'],
             llm_latency_ms: Date.now() - start,
-            llm_error: null
+            llm_error: null,
+            llm_input_prompt: prompt
         };
     }
 }
@@ -46,6 +49,8 @@ export class DeepSeekProvider extends LLMProvider {
 
     async summarizeOpp(opp, ctx = {}) {
         const start = Date.now();
+        const prompt = `Analyze opportunity ${opp.opp_id} for strategy ${opp.strategy_id} with score ${opp.score_baseline}. Summarize in 1 sentence.`;
+        
         if (!this.apiKey) {
             return {
                 llm_provider: 'deepseek',
@@ -54,7 +59,8 @@ export class DeepSeekProvider extends LLMProvider {
                 llm_confidence: 0,
                 llm_tags: ['error', 'no_key'],
                 llm_latency_ms: Date.now() - start,
-                llm_error: "Missing DEEPSEEK_API_KEY"
+                llm_error: "Missing DEEPSEEK_API_KEY",
+                llm_input_prompt: prompt
             };
         }
         
@@ -66,7 +72,8 @@ export class DeepSeekProvider extends LLMProvider {
             llm_confidence: 0.8,
             llm_tags: ['deepseek', 'shell'],
             llm_latency_ms: Date.now() - start,
-            llm_error: null
+            llm_error: null,
+            llm_input_prompt: prompt
         };
     }
 }
@@ -92,7 +99,8 @@ export class OllamaProvider extends LLMProvider {
                 llm_confidence: 0.7, 
                 llm_tags: ['ollama', 'local'],
                 llm_latency_ms: Date.now() - start,
-                llm_error: null
+                llm_error: null,
+                llm_input_prompt: prompt
             };
         } catch (err) {
             // console.warn(`Ollama failed: ${err.message}`); // Reduce noise
@@ -103,7 +111,8 @@ export class OllamaProvider extends LLMProvider {
                 llm_confidence: 0,
                 llm_tags: ['error', 'fallback'],
                 llm_latency_ms: Date.now() - start,
-                llm_error: err.message
+                llm_error: err.message,
+                llm_input_prompt: prompt
             };
         }
     }
@@ -193,7 +202,8 @@ export class OpenRouterProvider extends LLMProvider {
                 llm_confidence: 0.9, 
                 llm_tags: ['openrouter', 'cloud'],
                 llm_latency_ms: Date.now() - start,
-                llm_error: null
+                llm_error: null,
+                llm_input_prompt: prompt
             };
         } catch (err) {
             console.warn(`[OpenRouter] Failed: ${err.message}. Falling back to Mock.`);

@@ -1,0 +1,124 @@
+{
+  "files": [
+    {
+      "name": "260206_005.json",
+      "size": 595,
+      "sha256_short": "c433e402"
+    },
+    {
+      "name": "260206_005_healthcheck_53122.txt",
+      "size": 828,
+      "sha256_short": "27d5a8e1"
+    },
+    {
+      "name": "260206_006.json",
+      "size": 595,
+      "sha256_short": "38f28a69"
+    },
+    {
+      "name": "260206_006_api_smoke_opportunities.txt",
+      "size": 468,
+      "sha256_short": "b1afd410"
+    },
+    {
+      "name": "260206_006_api_smoke_strategies.txt",
+      "size": 313,
+      "sha256_short": "1a788c07"
+    },
+    {
+      "name": "260206_006_healthcheck_53122.txt",
+      "size": 828,
+      "sha256_short": "d3eabe21"
+    },
+    {
+      "name": "260206_007.json",
+      "size": 727,
+      "sha256_short": "a03e6c87"
+    },
+    {
+      "name": "260206_007_healthcheck_53122.txt",
+      "size": 828,
+      "sha256_short": "b3449ca0"
+    },
+    {
+      "name": "260206_007_ui_status.txt",
+      "size": 10,
+      "sha256_short": "c0c4e366"
+    },
+    {
+      "name": "deliverables_index_260206_005.json",
+      "size": 939,
+      "sha256_short": "c65465db"
+    },
+    {
+      "name": "deliverables_index_260206_006.json",
+      "size": 1859,
+      "sha256_short": "64ed9c94"
+    },
+    {
+      "name": "manual_verification.json",
+      "size": 111,
+      "sha256_short": "08c8799a"
+    },
+    {
+      "name": "notify_260206_005.txt",
+      "size": 1013,
+      "sha256_short": "2da28dbc"
+    },
+    {
+      "name": "notify_260206_006.txt",
+      "size": 1244,
+      "sha256_short": "be7920cc"
+    },
+    {
+      "name": "notify_260206_007.txt",
+      "size": 1393,
+      "sha256_short": "d59b7893"
+    },
+    {
+      "name": "reports/healthcheck_pairs.txt",
+      "size": 13,
+      "sha256_short": "e359a3ac"
+    },
+    {
+      "name": "reports/healthcheck_root.txt",
+      "size": 8,
+      "sha256_short": "e35b1a26"
+    },
+    {
+      "name": "result_260206_005.json",
+      "size": 253,
+      "sha256_short": "595c7f46"
+    },
+    {
+      "name": "result_260206_006.json",
+      "size": 228,
+      "sha256_short": "a2a79d6a"
+    },
+    {
+      "name": "result_260206_007.json",
+      "size": 254,
+      "sha256_short": "b91c843d"
+    },
+    {
+      "name": "run_260206_005.log",
+      "size": 340,
+      "sha256_short": "975d690a"
+    },
+    {
+      "name": "run_260206_006.log",
+      "size": 340,
+      "sha256_short": "f659ef9f"
+    },
+    {
+      "name": "run_260206_007.log",
+      "size": 334,
+      "sha256_short": "61b85ca1"
+    },
+    {
+      "name": "scripts/postflight_validate_envelope.mjs",
+      "size": 39758,
+      "sha256_short": "db0acb52"
+    }
+  ]
+}

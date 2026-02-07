@@ -1,0 +1,7 @@
+{
+  "task_id": "260206_007",
+  "status": "DONE",
+  "summary": "M1: minimal UI list/detail for strategies & opportunities (vanilla) backed by mock API; keep / and /pairs 200",
+  "report_file": "notify_260206_007.txt",
+  "report_sha256_short": "d59b7893"
+}

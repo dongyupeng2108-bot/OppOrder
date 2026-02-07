@@ -1,1 +1,1 @@
-/pairs -> ERROR
+/pairs -> 200
