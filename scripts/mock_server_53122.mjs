@@ -29,9 +29,10 @@ const MIME_TYPES = {
 // In-memory state
 let inMemoryScans = [];
 let inMemoryOpps = [];
-let runtimeData = { scans: [], opportunities: [] };
+let runtimeData = { scans: [], opportunities: [], monitor_state: {} };
 let fixtureStrategies = [];
 let fixtureSnapshots = [];
+let monitorState = {}; // option_id -> { baseline_prob, last_prob, last_seen_ts, last_reeval_ts, trigger_state, last_trigger_reason }
 
 // Initialize state
 try {
@@ -56,11 +57,13 @@ try {
             const data = JSON.parse(raw);
             if (data.scans) runtimeData.scans = data.scans;
             if (data.opportunities) runtimeData.opportunities = data.opportunities;
+            if (data.monitor_state) runtimeData.monitor_state = data.monitor_state;
             
             // Merge
             inMemoryScans = [...inMemoryScans, ...runtimeData.scans];
             inMemoryOpps = [...inMemoryOpps, ...runtimeData.opportunities];
-            console.log(`Loaded ${runtimeData.scans.length} scans and ${runtimeData.opportunities.length} opps from runtime store.`);
+            monitorState = { ...runtimeData.monitor_state };
+            console.log(`Loaded ${runtimeData.scans.length} scans, ${runtimeData.opportunities.length} opps, and ${Object.keys(monitorState).length} monitor states from runtime store.`);
         } catch (err) {
             console.error("Failed to load runtime store:", err);
         }
@@ -171,6 +174,21 @@ const server = http.createServer(async (req, res) => {
                 mode: mode
             };
             
+            const stageLogs = [];
+            const logStage = (id, start, input = {}, output = {}, warnings = [], errors = []) => {
+                const end = Date.now();
+                stageLogs.push({
+                    stage_id: id,
+                    start_ts: new Date(start).toISOString(),
+                    end_ts: new Date(end).toISOString(),
+                    dur_ms: end - start,
+                    input_summary: input,
+                    output_summary: output,
+                    warnings: warnings,
+                    errors: errors
+                });
+            };
+
             const stepStart = (name) => {
                 return Date.now();
             };
@@ -187,138 +205,158 @@ const server = http.createServer(async (req, res) => {
                 next() { this.state = (this.a * this.state + this.c) % this.m; return this.state / this.m; }
             }
             const rng = new SeededRandom(seed);
-            
+
+            // Stage: Load Context
+            const tLoad = Date.now();
             // Determine previous scan (simulated context loading)
             const lastScan = inMemoryScans.length > 0 ? inMemoryScans[inMemoryScans.length - 1] : null;
             const fromScanId = lastScan ? lastScan.scan_id : null;
+            logStage('load_context', tLoad, {}, { from_scan_id: fromScanId }, [], []);
 
-            // 3. Generate Opportunities
-            const tGen = stepStart('generate_opps');
+            // 3. Pipeline Execution
+            const tGen = Date.now();
+            
+            // 3.1 Stage: gen_opps (Candidates)
+            const tGenStart = Date.now();
             const timestamp = Date.now();
-            // Use seeded random for ID generation to ensure reproducibility if seed is provided
             const scanId = 'sc_' + crypto.createHash('sha256').update(seed.toString() + timestamp.toString()).digest('hex').substring(0, 8);
-
             const newOpps = [];
-            let yesCount = 0;
-            let noCount = 0;
-            let unknownCount = 0;
-
+            
             if (fixtureStrategies.length > 0 && fixtureSnapshots.length > 0) {
                 for (let i = 0; i < n_opps_actual; i++) {
-                    // Use RNG to select strategy/snapshot deterministically
                     const stratIndex = Math.floor(rng.next() * fixtureStrategies.length);
                     const snapIndex = Math.floor(rng.next() * fixtureSnapshots.length);
-                    
                     const strat = fixtureStrategies[stratIndex];
                     const snap = fixtureSnapshots[snapIndex];
-                    
-                    // Deterministic ID based on seed and index
                     const oppId = 'op_' + crypto.createHash('sha256').update(seed.toString() + i.toString() + 'v1').digest('hex').substring(0, 8);
                     
                     const isTradeable = rng.next() > 0.5;
                     const tradeableState = isTradeable ? 'TRADEABLE' : 'NOT_TRADEABLE';
-                    
-                    if (tradeableState === 'TRADEABLE') yesCount++;
-                    else if (tradeableState === 'NOT_TRADEABLE') noCount++;
-                    else unknownCount++;
-
-                    // Baseline Scoring
-                    const scoreVal = rng.next() * 100;
-                    const scoreBaseline = parseFloat(scoreVal.toFixed(2));
-                    const scoreComponents = {
-                        spread_edge: parseFloat((rng.next() * 30).toFixed(2)),
-                        liquidity: parseFloat((rng.next() * 20).toFixed(2)),
-                        volatility: parseFloat((rng.next() * 20).toFixed(2)),
-                        risk_reward: parseFloat((rng.next() * 30).toFixed(2))
-                    };
 
                     const oppObj = {
                         opp_id: oppId,
                         strategy_id: strat.strategy_id,
                         snapshot_id: snap.snapshot_id,
-                        score: scoreBaseline,
-                        score_baseline: scoreBaseline,
-                        score_components: scoreComponents,
                         tradeable_state: tradeableState,
                         tradeable_reason: `Generated by RunScan (Seed: ${seed}, Mode: ${mode})`,
                         created_at: new Date().toISOString()
                     };
-
-                    // LLM Explanation
-                    try {
-                        const llmResult = await llmProvider.summarizeOpp(oppObj);
-                        oppObj.llm_summary = llmResult.summary;
-                        oppObj.llm_confidence = llmResult.confidence;
-                        oppObj.llm_tags = llmResult.tags;
-                    } catch (llmErr) {
-                        console.error(`LLM Provider Error for ${oppId}:`, llmErr);
-                        oppObj.llm_summary = "Error generating summary";
-                        oppObj.llm_tags = ['error'];
-                    }
-
                     newOpps.push(oppObj);
                 }
             }
-            stepEnd('generate_opps', tGen);
+            logStage('gen_opps', tGenStart, { n_opps: n_opps_actual, seed }, { generated: newOpps.length }, [], []);
+
+            // 3.2 Stage: score_baseline
+            const tScoreStart = Date.now();
+            newOpps.forEach(opp => {
+                const scoreVal = rng.next() * 100;
+                const scoreBaseline = parseFloat(scoreVal.toFixed(2));
+                const scoreComponents = {
+                    spread_edge: parseFloat((rng.next() * 30).toFixed(2)),
+                    liquidity: parseFloat((rng.next() * 20).toFixed(2)),
+                    volatility: parseFloat((rng.next() * 20).toFixed(2)),
+                    risk_reward: parseFloat((rng.next() * 30).toFixed(2))
+                };
+                opp.score = scoreBaseline;
+                opp.score_baseline = scoreBaseline;
+                opp.score_components = scoreComponents;
+            });
+            logStage('score_baseline', tScoreStart, {}, { scored: newOpps.length }, [], []);
+
+            // 3.3 Stage: llm_mock
+            const tLlmStart = Date.now();
+            let errorsCount = 0;
+            const genWarnings = [];
+            
+            // Process sequentially for async LLM
+            for (const opp of newOpps) {
+                try {
+                    const llmResult = await llmProvider.summarizeOpp(opp);
+                    opp.llm_summary = llmResult.summary;
+                    opp.llm_confidence = llmResult.confidence;
+                    opp.llm_tags = llmResult.tags;
+                } catch (llmErr) {
+                    console.error(`LLM Provider Error for ${opp.opp_id}:`, llmErr);
+                    opp.llm_summary = "Error generating summary";
+                    opp.llm_tags = ['error'];
+                    errorsCount++;
+                    genWarnings.push(llmErr.message);
+                }
+            }
+            logStage('llm_mock', tLlmStart, { provider: process.env.LLM_PROVIDER || 'mock' }, { processed: newOpps.length, errors: errorsCount }, genWarnings, []);
 
             // 4. Construct Scan Object
-            const newOppIds = newOpps.map(o => o.opp_id);
+            const tConstruct = Date.now();
             
-            const summary = {
-                opp_count: newOpps.length,
-                tradeable_yes_count: yesCount,
-                tradeable_no_count: noCount,
-                tradeable_unknown_count: unknownCount
-            };
-
-            const newScan = {
+            // Add current logs to scan
+            // Note: persist_store is not yet logged, so it won't be in the initial disk write
+            // But we will update the in-memory object after persist
+            const scan = {
                 scan_id: scanId,
-                timestamp: new Date().toISOString(),
-                duration_ms: 0, // placeholder
-                opp_ids: newOppIds,
+                timestamp: new Date(timestamp).toISOString(),
+                duration_ms: Date.now() - t0, // approximate so far
+                n_opps_requested: n_opps_raw,
+                n_opps_actual: n_opps_actual,
                 seed: seed,
-                n_opps: n_opps_actual,
                 mode: mode,
-                metrics: metrics,
-                summary: summary
+                opp_ids: newOpps.map(o => o.opp_id),
+                stage_logs: [...stageLogs] // Copy current logs
             };
-
-            // 5. Update Memory & Persist
-            inMemoryScans.push(newScan);
-            inMemoryOpps.push(...newOpps);
-
+            
+            inMemoryScans.push(scan);
+            // Also push opps to inMemoryOpps
+            newOpps.forEach(o => inMemoryOpps.push(o));
+            
+            // 5. Persist
+            const tPersist = Date.now();
+            const stepPersist = stepStart('persist_store');
+            let persistWarnings = [];
+            
             if (persist) {
-                const tPersist = stepStart('persist_store');
-                
-                runtimeData.scans.push(newScan);
-                runtimeData.opportunities.push(...newOpps);
-                
                 try {
                     if (!fs.existsSync(RUNTIME_DIR)) fs.mkdirSync(RUNTIME_DIR, { recursive: true });
-                    const tempFile = path.join(RUNTIME_DIR, 'store.json.tmp');
-                    fs.writeFileSync(tempFile, JSON.stringify(runtimeData, null, 2));
-                    if (fs.existsSync(RUNTIME_STORE)) fs.unlinkSync(RUNTIME_STORE);
-                    fs.renameSync(tempFile, RUNTIME_STORE);
-                } catch (persistErr) {
-                    console.error("Failed to persist runtime store:", persistErr);
-                    throw persistErr;
-                }
-                stepEnd('persist_store', tPersist);
-            } else {
-                metrics.stage_ms['persist_store'] = 0;
-            }
 
-            // Update total duration
-            newScan.duration_ms = Date.now() - t0;
-            metrics.total_ms = newScan.duration_ms;
+                    // Write scan
+                    fs.writeFileSync(path.join(RUNTIME_DIR, `scan_${scanId}.json`), JSON.stringify(scan, null, 2));
+                    // Write opps
+                    newOpps.forEach(o => {
+                        fs.writeFileSync(path.join(RUNTIME_DIR, `${o.opp_id}.json`), JSON.stringify(o, null, 2));
+                    });
+                    
+                    // Update store.json
+                    const storePath = path.join(RUNTIME_DIR, 'store.json');
+                    const storeData = {
+                        scans: inMemoryScans.map(s => s.scan_id),
+                        opps: inMemoryOpps.map(o => o.opp_id),
+                        monitor_state: monitorState
+                    };
+                    const tempStorePath = storePath + '.tmp';
+                    fs.writeFileSync(tempStorePath, JSON.stringify(storeData, null, 2));
+                    fs.renameSync(tempStorePath, storePath); // Atomic write
+                } catch (err) {
+                    console.error("Persist error:", err);
+                    persistWarnings.push(err.message);
+                }
+            }
             
+            stepEnd('persist_store', stepPersist);
+            logStage('persist_store', tPersist, { persist_enabled: persist }, { files_written: persist ? (1 + newOpps.length + 1) : 0 }, persistWarnings, []);
+            
+            // Update in-memory scan with the final log
+            scan.stage_logs = [...stageLogs];
+            scan.duration_ms = Date.now() - t0; // Update total duration
+            metrics.total_ms = scan.duration_ms;
+            
+            // 6. Return Result
             const result = {
-                scan: newScan,
+                scan: scan,
                 opportunities: newOpps,
                 from_scan_id: fromScanId,
-                to_scan_id: scanId
+                to_scan_id: scanId,
+                metrics: metrics,
+                stage_logs: scan.stage_logs
             };
-
+            
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify(result));
             return;
@@ -329,6 +367,277 @@ const server = http.createServer(async (req, res) => {
             res.end(JSON.stringify({ error: 'Internal Server Error', details: err.message }));
             return;
         }
+    }
+
+    // POST /monitor/tick
+    if (pathname === '/monitor/tick' && req.method === 'POST') {
+        const bodyPromise = new Promise((resolve, reject) => {
+            let body = '';
+            req.on('data', chunk => body += chunk.toString());
+            req.on('end', () => resolve(body));
+            req.on('error', reject);
+        });
+
+        try {
+            const rawBody = await bodyPromise;
+            const params = JSON.parse(rawBody || '{}');
+            const { universe = 'all', now_ts, simulate_price_move = false } = params;
+            
+            const ts = now_ts ? new Date(now_ts).getTime() : Date.now();
+            const stageLogs = [];
+            const logStage = (id, start, input, output) => {
+                stageLogs.push({ stage_id: id, start_ts: new Date(start).toISOString(), end_ts: new Date().toISOString(), dur_ms: Date.now() - start, input_summary: input, output_summary: output });
+            };
+
+            const tStart = Date.now();
+            
+            // 1. Select Opps
+            let targetOpps = [];
+            if (universe === 'all') {
+                targetOpps = inMemoryOpps;
+            } else if (universe.startsWith('scan:')) {
+                const scanId = universe.split(':')[1];
+                const scan = inMemoryScans.find(s => s.scan_id === scanId);
+                if (scan) {
+                    const ids = new Set(scan.opp_ids || []);
+                    targetOpps = inMemoryOpps.filter(o => ids.has(o.opp_id));
+                }
+            } else if (universe.startsWith('top:')) {
+                const n = parseInt(universe.split(':')[1]) || 5;
+                targetOpps = inMemoryOpps.slice(0, n);
+            }
+            
+            // 2. Update Logic
+            let updatedCount = 0;
+            let changedCount = 0;
+            const topMoves = []; // { opp_id, delta, new_prob }
+            
+            targetOpps.forEach(opp => {
+                const oid = opp.opp_id;
+                // Init state if missing
+                if (!monitorState[oid]) {
+                    monitorState[oid] = {
+                        baseline_prob: opp.score_baseline || opp.score || 50,
+                        last_prob: opp.score_baseline || opp.score || 50,
+                        last_seen_ts: ts,
+                        last_reeval_ts: 0,
+                        trigger_state: 'ARMED',
+                        last_trigger_reason: null
+                    };
+                }
+                
+                const state = monitorState[oid];
+                const prevProb = state.last_prob;
+                
+                if (simulate_price_move) {
+                    // Random walk: -5 to +5
+                    const delta = (Math.random() - 0.5) * 10;
+                    let newProb = prevProb + delta;
+                    if (newProb < 0) newProb = 0;
+                    if (newProb > 100) newProb = 100;
+                    
+                    state.last_prob = parseFloat(newProb.toFixed(2));
+                    if (Math.abs(state.last_prob - prevProb) > 0.01) {
+                        changedCount++;
+                        topMoves.push({ opp_id: oid, delta: parseFloat(delta.toFixed(2)), new_prob: state.last_prob });
+                    }
+                }
+                
+                state.last_seen_ts = ts;
+                updatedCount++;
+            });
+            
+            // Sort top moves by abs delta descending
+            topMoves.sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
+            
+            logStage('monitor_tick', tStart, { universe, simulate_price_move }, { updated: updatedCount, changed: changedCount });
+            
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ updated_count: updatedCount, changed_count: changedCount, top_moves: topMoves.slice(0, 10), stage_logs: stageLogs }));
+            return;
+        } catch (err) {
+            console.error(err);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: err.message }));
+            return;
+        }
+    }
+
+    // POST /reeval/plan
+    if (pathname === '/reeval/plan' && req.method === 'POST') {
+        const bodyPromise = new Promise((resolve, reject) => {
+            let body = '';
+            req.on('data', chunk => body += chunk.toString());
+            req.on('end', () => resolve(body));
+            req.on('error', reject);
+        });
+
+        try {
+            const rawBody = await bodyPromise;
+            const params = JSON.parse(rawBody || '{}');
+            const { 
+                abs_threshold = 10, 
+                rel_threshold = 0.2, 
+                speed_threshold = 5, 
+                staleness_min = 60, // minutes
+                hysteresis_reset = 2,
+                max_jobs = 10
+            } = params;
+
+            const tStart = Date.now();
+            const stageLogs = [];
+            const jobs = [];
+            const skipped = [];
+            const now = Date.now();
+            
+            Object.keys(monitorState).forEach(oid => {
+                const state = monitorState[oid];
+                const p = state.last_prob;
+                const baseline = state.baseline_prob;
+                const diff = Math.abs(p - baseline);
+                
+                // Hysteresis Logic
+                if (state.trigger_state === 'COOLDOWN') {
+                    if (diff <= hysteresis_reset) {
+                        state.trigger_state = 'ARMED'; // Reset
+                    } else {
+                        skipped.push({ opp_id: oid, reason: 'COOLDOWN' });
+                        return;
+                    }
+                }
+                
+                if (state.trigger_state === 'TRIGGERED') {
+                    skipped.push({ opp_id: oid, reason: 'ALREADY_TRIGGERED' });
+                    return; // Already pending
+                }
+                
+                if (state.trigger_state === 'ARMED') {
+                    let reason = null;
+                    
+                    // Check triggers
+                    // 1. Abs
+                    if (diff >= abs_threshold) reason = `ABS_DIFF >= ${abs_threshold}`;
+                    
+                    // 2. Rel
+                    else if (baseline > 0 && (diff / baseline) >= rel_threshold) reason = `REL_DIFF >= ${rel_threshold}`;
+                    
+                    // 3. Staleness
+                    else if ((now - state.last_reeval_ts) > (staleness_min * 60 * 1000) && state.last_reeval_ts > 0) reason = `STALENESS >= ${staleness_min}m`;
+                    
+                    if (reason) {
+                        state.trigger_state = 'TRIGGERED';
+                        state.last_trigger_reason = reason;
+                        jobs.push({
+                            option_id: oid,
+                            reason: reason,
+                            from_prob: baseline,
+                            to_prob: p
+                        });
+                    }
+                }
+            });
+            
+            // Limit jobs
+            const finalJobs = jobs.slice(0, max_jobs);
+            
+            stageLogs.push({ stage_id: 'reeval_plan', start_ts: new Date(tStart).toISOString(), end_ts: new Date().toISOString(), dur_ms: Date.now() - tStart, input_summary: params, output_summary: { jobs_count: finalJobs.length } });
+            
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ jobs: finalJobs, skipped: skipped.slice(0, 10), stage_logs: stageLogs }));
+            return;
+        } catch (err) {
+            console.error(err);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: err.message }));
+            return;
+        }
+    }
+
+    // POST /reeval/run
+    if (pathname === '/reeval/run' && req.method === 'POST') {
+        const bodyPromise = new Promise((resolve, reject) => {
+            let body = '';
+            req.on('data', chunk => body += chunk.toString());
+            req.on('end', () => resolve(body));
+            req.on('error', reject);
+        });
+
+        try {
+            const rawBody = await bodyPromise;
+            const params = JSON.parse(rawBody || '{}');
+            const { jobs = [], provider = 'mock', dry_run = false } = params;
+
+            const tStart = Date.now();
+            const results = [];
+            const stageLogs = [];
+            
+            jobs.forEach(job => {
+                const oid = job.option_id;
+                const state = monitorState[oid];
+                
+                if (state && !dry_run) {
+                    // Update Baseline
+                    state.baseline_prob = state.last_prob;
+                    state.last_reeval_ts = Date.now();
+                    state.trigger_state = 'COOLDOWN'; // Enter cooldown
+                    
+                    // In a real system, we'd call LLM here.
+                    // For mock, we generate a fake result.
+                    results.push({
+                        option_id: oid,
+                        status: 'COMPLETED',
+                        new_baseline: state.baseline_prob,
+                        llm_summary: `Re-evaluated due to ${job.reason}. New probability ${state.baseline_prob}.`
+                    });
+                } else {
+                     results.push({ option_id: oid, status: 'SKIPPED_OR_DRY_RUN' });
+                }
+            });
+            
+            stageLogs.push({ stage_id: 'reeval_run', start_ts: new Date(tStart).toISOString(), end_ts: new Date().toISOString(), dur_ms: Date.now() - tStart, input_summary: { jobs_count: jobs.length, provider }, output_summary: { processed: results.length } });
+            
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ reevaluated_count: results.length, results: results, stage_logs: stageLogs }));
+            return;
+        } catch (err) {
+            console.error(err);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: err.message }));
+            return;
+        }
+    }
+
+    // GET /export/monitor_state.json
+    if (pathname === '/export/monitor_state.json') {
+        const content = JSON.stringify(monitorState, null, 2);
+        res.setHeader('Content-Disposition', `attachment; filename="monitor_state_${Date.now()}.json"`);
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(content);
+        return;
+    }
+
+    if (pathname === '/export/stage_logs.json') {
+        // Export Stage Logs
+        const { scan } = parsedUrl.query;
+        if (!scan) {
+            res.writeHead(400, { 'Content-Type': 'text/plain' });
+            res.end('Missing scan parameter');
+            return;
+        }
+        
+        // Find scan
+        const scanRecord = inMemoryScans.find(s => s.scan_id === scan);
+        if (!scanRecord) {
+            res.writeHead(404, { 'Content-Type': 'text/plain' });
+            res.end('Scan not found');
+            return;
+        }
+        
+        const content = JSON.stringify(scanRecord.stage_logs || [], null, 2);
+        res.setHeader('Content-Disposition', `attachment; filename="stage_logs_${scan}.json"`);
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(content);
+        return;
     }
 
     // GET /scans (Custom to use in-memory)

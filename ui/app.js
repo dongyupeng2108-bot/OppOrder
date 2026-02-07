@@ -165,27 +165,31 @@ async function renderReplayDetail(scanId) {
 
     // New Metrics Section
     const summary = scan.summary || {};
-    const steps = scan.steps || [];
-
-    const stepsHtml = steps.length > 0 ? `
-        <h3>Pipeline Steps</h3>
+    const stageLogs = scan.stage_logs || [];
+    
+    const stageLogsHtml = stageLogs.length > 0 ? `
+        <h3>Stage Logs</h3>
         <table style="width: 100%; margin-bottom: 20px; border-collapse: collapse;">
             <tr style="background: #f0f0f0;">
-                <th style="border: 1px solid #ddd; padding: 8px;">Step</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Stage ID</th>
                 <th style="border: 1px solid #ddd; padding: 8px;">Duration (ms)</th>
-                <th style="border: 1px solid #ddd; padding: 8px;">Status</th>
-                <th style="border: 1px solid #ddd; padding: 8px;">Note</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Start</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">End</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Warnings</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Errors</th>
             </tr>
-            ${steps.map(s => `
+            ${stageLogs.map(s => `
                 <tr>
-                    <td style="border: 1px solid #ddd; padding: 8px;">${s.name}</td>
-                    <td style="border: 1px solid #ddd; padding: 8px;">${s.duration_ms}</td>
-                    <td style="border: 1px solid #ddd; padding: 8px; color: ${s.ok ? 'green' : 'red'};">${s.ok ? 'OK' : 'FAIL'}</td>
-                    <td style="border: 1px solid #ddd; padding: 8px;">${s.note || ''}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">${s.stage_id}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">${s.dur_ms}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">${s.start_ts}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">${s.end_ts}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px; color: orange;">${(s.warnings || []).length}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px; color: red;">${(s.errors || []).length}</td>
                 </tr>
             `).join('')}
         </table>
-    ` : '';
+    ` : '<p>No stage logs available.</p>';
 
     const summaryHtml = scan.summary ? `
         <div class="summary-box" style="background: #eef; padding: 10px; margin-bottom: 20px; border-radius: 4px;">
@@ -194,6 +198,34 @@ async function renderReplayDetail(scanId) {
             <p><strong>Distribution:</strong> <span style="color:green">${summary.tradeable_yes_count} YES</span>, <span style="color:red">${summary.tradeable_no_count} NO</span>, <span style="color:gray">${summary.tradeable_unknown_count} UNKNOWN</span></p>
         </div>
     ` : '';
+
+    const monitorHtml = `
+        <div class="monitor-panel" style="border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; background: #fdfdfd;">
+            <h3>Monitor / Trigger / Re-eval</h3>
+            <div class="controls" style="margin-bottom: 10px;">
+                <button onclick="runMonitorTick('${scanId}')" style="padding: 5px 10px;">Run Monitor Tick (Simulate)</button>
+                <button onclick="planReeval()" style="padding: 5px 10px;">Plan Reeval</button>
+                <button onclick="runReeval()" style="padding: 5px 10px;">Run Reeval (Mock)</button>
+                <a href="/export/monitor_state.json" target="_blank" class="button">Export Monitor State</a>
+            </div>
+            <div id="monitor_status" style="margin-bottom: 10px; color: blue; font-weight: bold;">Ready</div>
+            
+            <div style="display: flex; gap: 20px;">
+                <div style="flex: 1; border: 1px solid #eee; padding: 5px;">
+                    <h4>Top Moves</h4>
+                    <ul id="list_top_moves" style="padding-left: 20px; font-size: 0.9em;"><li>No data</li></ul>
+                </div>
+                <div style="flex: 1; border: 1px solid #eee; padding: 5px;">
+                    <h4>Reeval Jobs (Plan)</h4>
+                    <ul id="list_reeval_jobs" style="padding-left: 20px; font-size: 0.9em;"><li>No data</li></ul>
+                </div>
+                <div style="flex: 1; border: 1px solid #eee; padding: 5px;">
+                    <h4>Reeval Results</h4>
+                    <ul id="list_reeval_results" style="padding-left: 20px; font-size: 0.9em;"><li>No data</li></ul>
+                </div>
+            </div>
+        </div>
+    `;
 
     return `
         ${renderNav()}
@@ -205,9 +237,11 @@ async function renderReplayDetail(scanId) {
             <p><strong>Seed:</strong> ${scan.seed || 'Random'}</p>
             <a href="/export/replay.json?scan=${scanId}" target="_blank" class="button">Export JSON</a>
             <a href="/export/replay.csv?scan=${scanId}" target="_blank" class="button">Export CSV</a>
+            <a href="/export/stage_logs.json?scan=${scanId}" target="_blank" class="button">Export Stage Logs JSON</a>
         </div>
         ${summaryHtml}
-        ${stepsHtml}
+        ${monitorHtml}
+        ${stageLogsHtml}
         ${missingHtml}
         <table>
             <tr>
@@ -477,3 +511,80 @@ window.route = function(e) {
 
 window.onpopstate = router;
 router();
+
+// Monitor Functions
+window.runMonitorTick = async function(scanId) {
+    const status = document.getElementById('monitor_status');
+    status.textContent = 'Running Monitor Tick...';
+    try {
+        const res = await fetch('/monitor/tick', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ universe: 'scan:' + scanId, simulate_price_move: true })
+        });
+        const data = await res.json();
+        status.textContent = `Tick Done. Updated: ${data.updated_count}, Changed: ${data.changed_count}`;
+        
+        const list = document.getElementById('list_top_moves');
+        if (data.top_moves && data.top_moves.length > 0) {
+            list.innerHTML = data.top_moves.map(m => `<li>${m.opp_id}: ${m.delta > 0 ? '+' : ''}${m.delta} -> ${m.new_prob}</li>`).join('');
+        } else {
+            list.innerHTML = '<li>No moves > 0.01</li>';
+        }
+    } catch (e) {
+        status.textContent = 'Error: ' + e.message;
+    }
+}
+
+window.planReeval = async function() {
+    const status = document.getElementById('monitor_status');
+    status.textContent = 'Planning Reeval...';
+    try {
+        const res = await fetch('/reeval/plan', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ abs_threshold: 5, rel_threshold: 0.1, max_jobs: 5 }) // Low thresholds for demo
+        });
+        const data = await res.json();
+        status.textContent = `Plan Done. Jobs: ${data.jobs.length}`;
+        
+        const list = document.getElementById('list_reeval_jobs');
+        if (data.jobs && data.jobs.length > 0) {
+            window._pendingJobs = data.jobs; // Store for runReeval
+            list.innerHTML = data.jobs.map(j => `<li>${j.option_id}: ${j.reason} (${j.from_prob} -> ${j.to_prob})</li>`).join('');
+        } else {
+            window._pendingJobs = [];
+            list.innerHTML = '<li>No jobs triggered</li>';
+        }
+    } catch (e) {
+        status.textContent = 'Error: ' + e.message;
+    }
+}
+
+window.runReeval = async function() {
+    const status = document.getElementById('monitor_status');
+    if (!window._pendingJobs || window._pendingJobs.length === 0) {
+        status.textContent = 'No pending jobs. Run Plan first.';
+        return;
+    }
+    
+    status.textContent = 'Running Reeval...';
+    try {
+        const res = await fetch('/reeval/run', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ jobs: window._pendingJobs, provider: 'mock' })
+        });
+        const data = await res.json();
+        status.textContent = `Reeval Done. Processed: ${data.reevaluated_count}`;
+        
+        const list = document.getElementById('list_reeval_results');
+        if (data.results && data.results.length > 0) {
+            list.innerHTML = data.results.map(r => `<li>${r.option_id}: ${r.new_baseline}</li>`).join('');
+        } else {
+            list.innerHTML = '<li>No results</li>';
+        }
+    } catch (e) {
+        status.textContent = 'Error: ' + e.message;
+    }
+}
