@@ -170,15 +170,22 @@ async function main() {
  fs.writeFileSync(indexPath, JSON.stringify(indexData, null, 2));
 
  // Update LATEST.json
- try {
- const latestPath = path.join(projectRoot, 'rules/LATEST.json');
- const latestJson = {
- task_id: taskId,
- result_dir: resultDir,
- timestamp: new Date().toISOString()
- };
- fs.writeFileSync(latestPath, JSON.stringify(latestJson, null, 2));
- } catch(e) {
+    try {
+        const latestPath = path.join(projectRoot, 'rules/LATEST.json');
+        
+        // Sanitize result_dir for LATEST.json to be relative to repo root (CI compatibility)
+        let sanitizedResultDir = resultDir.replace(/\\/g, '/');
+        if (sanitizedResultDir.startsWith('OppRadar/')) {
+            sanitizedResultDir = sanitizedResultDir.substring(9);
+        }
+
+        const latestJson = {
+            task_id: taskId,
+            result_dir: sanitizedResultDir,
+            timestamp: new Date().toISOString()
+        };
+        fs.writeFileSync(latestPath, JSON.stringify(latestJson, null, 2));
+    } catch(e) {
  console.log('Could not write LATEST.json: ' + e.message);
  }
 

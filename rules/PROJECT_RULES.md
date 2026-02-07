@@ -124,3 +124,4 @@
 ## Operational Standards
 - **Command & Environment**: See `rules/WORKFLOW.md` for strict command templates (PowerShell/bash) and `cd /d` prohibition.
 - **Interactive Prompts**: Strictly forbidden.
+- **CI Path Consistency**: When generating evidence in the `OppRadar` subdirectory (workaround), MUST ensure `LATEST.json` and `result_*.json` paths are relative to Repo Root (e.g., `rules/...` NOT `OppRadar/rules/...`). Manually sanitize if necessary.
