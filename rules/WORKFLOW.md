@@ -34,6 +34,39 @@ cd /mnt/e/OppRadar
   - If it happens, the Agent must NOT try to interact (which fails). The Agent should have prevented it by ensuring clean state.
   - **Explicit Kill**: Before major git operations that change directory structure, explicitly kill potential locking processes (e.g., `Stop-Process -Name node -ErrorAction SilentlyContinue`).
 
+### Two-Phase Rhythm (两段式节奏)
+To reduce repository overhead and conflicts, we adopt a two-phase workflow for each task:
+
+1.  **Development Phase (Dev)**:
+    *   **Focus**: Coding, local testing, unit tests, smoke tests.
+    *   **Constraints**:
+        *   **NO** evidence generation (`envelope_build.mjs`).
+        *   **NO** `LATEST.json` updates.
+        *   **NO** `rules/task-reports/**` writes.
+    *   **Command**: Use `scripts/dev_batch_mode.ps1 -Mode Dev`.
+
+2.  **Integration Phase (Integrate)**:
+    *   **Focus**: Final validation, evidence generation, PR creation.
+    *   **Constraints**:
+        *   Run **ONCE** at the end of the task.
+        *   Generates evidence, updates `LATEST.json`, runs postflight & pre-pr checks.
+    *   **Command**: Use `scripts/dev_batch_mode.ps1 -Mode Integrate`.
+
+### Conflict Minimization
+*   **LATEST.json**: Only update during the Integration Phase (1 modification per PR).
+*   **Task Reports**: Only write to `rules/task-reports/**` during the Integration Phase.
+*   **Repo Operation Budget**: Limit git operations to ≤ 8 steps per task.
+*   **Fail-Fast**:
+    *   If a conflict, lock file, or abnormal state occurs -> **STOP IMMEDIATELY**.
+    *   Do not attempt complex interactive recovery.
+    *   Preferred recovery: Discard branch -> New branch -> Re-apply changes.
+
+### Avoid Trae High-Risk Confirmation
+*   **No Chained Commands**: Do NOT use `;` or `&&` to chain multiple high-risk commands (e.g., `git add . ; git commit ... ; git push ...`) in a single line. This triggers Trae's "High Risk" confirmation dialog.
+*   **Solution**:
+    *   Execute commands step-by-step in separate tool calls.
+    *   OR encapsulate them in a script (like `dev_batch_mode.ps1`) and run the script.
+
 ## PR Creation Standards (Agent/Dev)
 ### Anti-Duplicate & Noise Control (Hard Rule)
 1. **Unique Task ID**: If `rules/task-reports/**/result_<task_id>.json` already exists in **main** (or local main), **FORBID** re-execution of `envelope_build` and **FORBID** creating a new PR. You MUST use a new task_id.

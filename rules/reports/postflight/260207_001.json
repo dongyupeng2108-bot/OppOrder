@@ -1,0 +1,23 @@
+{
+  "task_id": "260207_001",
+  "timestamp": "2026-02-07T15:57:51.212Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260207_001",
+      "status": "DONE",
+      "summary": "Implemented seed/n_opps/mode in POST /scans/run and UI metrics",
+      "report_file": "notify_260207_001.txt",
+      "report_sha256_short": "a96abfdd"
+    }
+  }
+}
