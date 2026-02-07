@@ -56,6 +56,18 @@
   - **DoD**: 连续运行 24h 无崩溃 (Mock 环境模拟)。
   - **证据要求**: `rules/task-reports/2026-02/M6_PR2_stability_report.txt`。
 
+## PR Granularity & Milestone Splitting (补充)
+- **Granularity**: A set of features = 2~4 Development Phase commits + 1 Integration Phase PR.
+- **Priority**:
+    1.  **Scanning (扫描)**: M4 (Cache, Concurrent, Observability).
+    2.  **Scoring (评分)**: M5 (Baseline Score, DeepSeek Call, Cost Control).
+- **Repo Cost KPI**:
+    - Weekly Stats (Manual/Scripted):
+        - PR Count
+        - Conflict Count
+        - Rebase/Reset Count
+        - Evidence Generation Count (Goal: 1 per PR)
+
 ## Engineering Standards
 ### Stability First
 - **Protocol**: If environment commands (e.g., `cd /d` failure) cause task failures, **STOP feature dev**.
