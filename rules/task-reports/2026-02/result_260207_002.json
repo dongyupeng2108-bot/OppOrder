@@ -1,0 +1,7 @@
+{
+  "task_id": "260207_002",
+  "status": "DONE",
+  "summary": "Implemented seed/n_opps/mode in POST /scans/run and UI metrics",
+  "report_file": "notify_260207_002.txt",
+  "report_sha256_short": "b6d2628a"
+}

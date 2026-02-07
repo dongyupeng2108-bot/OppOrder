@@ -28,24 +28,87 @@ async function renderReplayList() {
     return `
         ${renderNav()}
         <h1>Replay Scan</h1>
+        
+        <div class="run-panel" style="border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; background: #f9f9f9;">
+            <h3>Run New Scan</h3>
+            <div style="margin-bottom: 10px;">
+                <label>Seed: <input type="number" id="run_seed" value="111"></label>
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label>N Opps (1-50): <input type="number" id="run_n_opps" value="5" min="1" max="50"></label>
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label>Mode: 
+                    <select id="run_mode">
+                        <option value="fast">Fast</option>
+                        <option value="normal">Normal</option>
+                    </select>
+                </label>
+            </div>
+            <button onclick="runScan()" style="padding: 5px 15px; background: #007bff; color: white; border: none; cursor: pointer;">Run Scan</button>
+            <div id="run_status" style="margin-top: 10px; color: blue;"></div>
+            
+            <div id="last_metrics" style="display: none; margin-top: 15px; border-top: 1px dashed #aaa; padding-top: 10px;">
+                <h4>Last Run Metrics</h4>
+                <p><strong>Scan ID:</strong> <span id="m_scan_id"></span></p>
+                <p><strong>Duration:</strong> <span id="m_duration"></span> ms</p>
+                <p><strong>Opps Count:</strong> <span id="m_opps_count"></span></p>
+                <p><strong>Stages:</strong> <span id="m_stages"></span></p>
+            </div>
+        </div>
+
         <div class="controls">
+            <h3>Replay Existing</h3>
             <label>Select Scan: <select id="replay_scan">${options}</select></label>
             <button onclick="goToReplay()">Replay</button>
-            <button onclick="runScan()" style="margin-left: 10px;">Run Scan</button>
         </div>
     `;
 }
 
 window.runScan = async function() {
+    const statusEl = document.getElementById('run_status');
+    const metricsPanel = document.getElementById('last_metrics');
+    
     try {
-        const res = await fetch('/scans/run?mutate=1', { method: 'POST' });
-        if (!res.ok) throw new Error('Run scan failed');
-        const data = await res.json();
-        if (data.to_scan_id) {
-            history.pushState(null, '', '/ui/replay/' + data.to_scan_id);
-            router();
+        statusEl.textContent = 'Running...';
+        metricsPanel.style.display = 'none';
+        
+        const seed = document.getElementById('run_seed').value;
+        const n_opps = document.getElementById('run_n_opps').value;
+        const mode = document.getElementById('run_mode').value;
+
+        const res = await fetch('/scans/run', { 
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ seed, n_opps, mode })
+        });
+        
+        if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.error || 'Run scan failed');
         }
+        
+        const data = await res.json();
+        const scan = data.scan;
+        
+        // Update Metrics UI
+        document.getElementById('m_scan_id').textContent = scan.scan_id;
+        document.getElementById('m_duration').textContent = scan.duration_ms;
+        document.getElementById('m_opps_count').textContent = scan.summary ? scan.summary.opp_count : (scan.opp_ids || []).length;
+        
+        let stagesStr = '';
+        if (scan.metrics && scan.metrics.stage_ms) {
+            stagesStr = Object.entries(scan.metrics.stage_ms)
+                .map(([k, v]) => `${k}: ${v}ms`)
+                .join(', ');
+        }
+        document.getElementById('m_stages').textContent = stagesStr;
+        metricsPanel.style.display = 'block';
+        
+        statusEl.textContent = 'Done. Scan ID: ' + scan.scan_id;
+        
     } catch (e) {
+        statusEl.textContent = 'Error: ' + e.message;
         alert('Error running scan: ' + e.message);
     }
 }
