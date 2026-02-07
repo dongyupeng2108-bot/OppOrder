@@ -1,5 +1,18 @@
 # Opportunity Radar (机会雷达) Master Plan
 
+## Positioning & Slogan
+**Slogan**: 信息透明化 + 把概率可验证化 + 把决策流程标准化
+
+**Value Proposition (我们为“预测市场用户”提供)**:
+- 信息聚合→证据结构化→概率输出→可复盘回放
+- 每次推荐必须可追溯：输入/特征/模型版本/输出/日志/回放/导出证据
+- 目标是把“判断过程”产品化，而不是保证收益
+
+**Boundaries & Principles (边界与原则)**:
+- 仅使用公开信息与市场数据；不承诺收益；输出只是观点/概率
+- 保留审计日志与证据包；支持回测/校准/纠错
+- 风控与合规优先：避免诱导性表达与“赌场化”宣传
+
 ## M0: Bootstrap (DONE)
 - **Status**: DONE.
 - **Deliverables**: Infrastructure, Gate Light, Evidence Envelope, Healthcheck.
@@ -17,6 +30,10 @@
 - **Deliverables**: Enhanced JSON export, CSV export for analysis.
 
 ## Roadmap (路线图)
+**Phase Guidelines (阶段路线提示)**:
+- 前期用商用模型跑通闭环与数据标准化；后期可切换本地/自训模型
+- 关键资产：可验证数据集（事件→特征→概率→结果）与评测体系
+
 把剩余工作拆成 里程碑 → PR（最小可验收单元），后续开发按此推进。
 
 ### Milestone M4: 扫描工程化 (Scanning Engineering)
