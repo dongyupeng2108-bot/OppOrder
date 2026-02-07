@@ -471,24 +471,34 @@
       "sha256_short": "160f1489"
     },
     {
+      "name": "260208_004.json",
+      "size": 533,
+      "sha256_short": "2fd5c6b9"
+    },
+    {
       "name": "260208_004_export_headers.txt",
-      "size": 226,
-      "sha256_short": "5f532653"
+      "size": 231,
+      "sha256_short": "a9802a3b"
     },
     {
       "name": "260208_004_export_llm_analyze.json",
-      "size": 4409,
-      "sha256_short": "c67980a8"
+      "size": 4572,
+      "sha256_short": "cb595fdd"
+    },
+    {
+      "name": "260208_004_healthcheck_53122.txt",
+      "size": 764,
+      "sha256_short": "f9d8a63b"
     },
     {
       "name": "260208_004_smoke_result.txt",
-      "size": 124,
-      "sha256_short": "7ee45066"
+      "size": 131,
+      "sha256_short": "b5ac9616"
     },
     {
       "name": "260208_004_ui_replay_status.txt",
-      "size": 12,
-      "sha256_short": "736cfa91"
+      "size": 13,
+      "sha256_short": "782757a4"
     },
     {
       "name": "deliverables_index_260206_005.json",
@@ -737,8 +747,8 @@
     },
     {
       "name": "notify_260208_004.txt",
-      "size": 6066,
-      "sha256_short": "7c845f95"
+      "size": 6122,
+      "sha256_short": "7212fa39"
     },
     {
       "name": "reports/healthcheck_pairs.txt",
@@ -872,8 +882,8 @@
     },
     {
       "name": "result_260208_004.json",
-      "size": 185,
-      "sha256_short": "fee649a4"
+      "size": 192,
+      "sha256_short": "31ae2735"
     },
     {
       "name": "run_260206_005.log",
@@ -997,8 +1007,8 @@
     },
     {
       "name": "run_260208_004.log",
-      "size": 334,
-      "sha256_short": "5420ae3c"
+      "size": 340,
+      "sha256_short": "19d4e22d"
     },
     {
       "name": "scripts/postflight_validate_envelope.mjs",
