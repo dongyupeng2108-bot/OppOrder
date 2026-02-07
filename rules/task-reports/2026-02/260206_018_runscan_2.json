@@ -1,0 +1,43 @@
+﻿{
+    "scan":  {
+                 "scan_id":  "sc_f925ca3c",
+                 "timestamp":  "2026-02-07T10:47:48.804Z",
+                 "duration_ms":  2,
+                 "opp_ids":  [
+                                 "op_055f7894",
+                                 "op_0ffe1abd",
+                                 "op_fe91a760",
+                                 "op_b7e30766",
+                                 "op_793a84a3"
+                             ],
+                 "seed":  111,
+                 "steps":  [
+                               {
+                                   "name":  "load_context",
+                                   "duration_ms":  0,
+                                   "ok":  true,
+                                   "note":  ""
+                               },
+                               {
+                                   "name":  "generate_opps",
+                                   "duration_ms":  0,
+                                   "ok":  true,
+                                   "note":  "Generated 5 opps"
+                               },
+                               {
+                                   "name":  "persist_store",
+                                   "duration_ms":  2,
+                                   "ok":  true,
+                                   "note":  ""
+                               }
+                           ],
+                 "summary":  {
+                                 "opp_count":  5,
+                                 "tradeable_yes_count":  3,
+                                 "tradeable_no_count":  2,
+                                 "tradeable_unknown_count":  0
+                             }
+             },
+    "from_scan_id":  "sc_5733ffa7",
+    "to_scan_id":  "sc_f925ca3c"
+}
