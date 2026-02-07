@@ -1,0 +1,20 @@
+=== Smoke Test: Dedup & Cache ===
+
+1. Running Baseline Scan A...
+Scan A: sc_97adf750
+Scan A Duration: 2 ms
+
+2. Running Dedup Scan B (Window 60s)...
+SUCCESS: Scan B skipped as expected.
+Dedup Skipped Count: 1
+
+3. Run Cache Scan C (Cold)...
+Scan C: sc_efd0c46e
+Scan C Cache Misses: 2
+Scan C Cache Hits: 0
+SUCCESS: Scan C cold run (misses > 0, hits = 0).
+
+Scan D: sc_2972a7c6
+Scan D Cache Misses: 0
+Scan D Cache Hits: 2
+SUCCESS: Scan D warm run (hits > 0, misses = 0).

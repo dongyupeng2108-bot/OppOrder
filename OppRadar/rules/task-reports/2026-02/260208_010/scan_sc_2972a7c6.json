@@ -1,0 +1,87 @@
+{
+  "scan_id": "sc_2972a7c6",
+  "timestamp": "2026-02-07T20:06:25.310Z",
+  "duration_ms": 0,
+  "n_opps_requested": 2,
+  "n_opps_actual": 2,
+  "seed": 555,
+  "mode": "fast",
+  "topic_key": "cache_test_1770494785305",
+  "opp_ids": [
+    "op_5c38b68f",
+    "op_954ff57f"
+  ],
+  "stage_logs": [
+    {
+      "stage_id": "load_context",
+      "start_ts": "2026-02-07T20:06:25.310Z",
+      "end_ts": "2026-02-07T20:06:25.310Z",
+      "dur_ms": 0,
+      "input_summary": {},
+      "output_summary": {
+        "from_scan_id": "sc_efd0c46e"
+      },
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "stage_id": "gen_opps",
+      "start_ts": "2026-02-07T20:06:25.310Z",
+      "end_ts": "2026-02-07T20:06:25.310Z",
+      "dur_ms": 0,
+      "input_summary": {
+        "n_opps": 2,
+        "seed": 555
+      },
+      "output_summary": {
+        "generated": 2
+      },
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "stage_id": "score_baseline",
+      "start_ts": "2026-02-07T20:06:25.310Z",
+      "end_ts": "2026-02-07T20:06:25.310Z",
+      "dur_ms": 0,
+      "input_summary": {},
+      "output_summary": {
+        "scored": 2
+      },
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "stage_id": "llm_analyze",
+      "start_ts": "2026-02-07T20:06:25.310Z",
+      "end_ts": "2026-02-07T20:06:25.310Z",
+      "dur_ms": 0,
+      "input_summary": {
+        "provider": "mock"
+      },
+      "output_summary": {
+        "processed": 2,
+        "analyzed_count": 2,
+        "fallback_count": 0,
+        "errors": 0,
+        "provider": "mock",
+        "model": "unknown"
+      },
+      "warnings": [],
+      "errors": []
+    }
+  ],
+  "metrics": {
+    "stage_ms": {},
+    "persist_enabled": true,
+    "truncated": false,
+    "n_opps_requested": 2,
+    "n_opps_actual": 2,
+    "seed": 555,
+    "mode": "fast",
+    "topic_key": "cache_test_1770494785305",
+    "dedup_skipped_count": 0,
+    "cache_hit_count": 2,
+    "cache_miss_count": 0
+  }
+}
