@@ -56,6 +56,11 @@
   - **DoD**: 连续运行 24h 无崩溃 (Mock 环境模拟)。
   - **证据要求**: `rules/task-reports/2026-02/M6_PR2_stability_report.txt`。
 
+## Engineering Standards
+### Stability First
+- **Protocol**: If environment commands (e.g., `cd /d` failure) cause task failures, **STOP feature dev**.
+- **Action**: Fix the workflow/docs (Docs-only task) to ensure cross-environment compatibility before resuming business logic.
+
 ## Execution & Acceptance Conventions
 - **Command Templates**: All tasks MUST use the standard command templates defined in `rules/WORKFLOW.md` (ENV=PowerShell|bash). `cd /d` is strictly prohibited.
 - **Evidence**: All PRs must include standard evidence artifacts (Healthcheck, Envelope, Postflight).
