@@ -45,6 +45,9 @@ async function renderReplayList() {
                     </select>
                 </label>
             </div>
+            <div style="margin-bottom: 10px;">
+                <label><input type="checkbox" id="run_persist" checked> Persist to Disk</label>
+            </div>
             <button onclick="runScan()" style="padding: 5px 15px; background: #007bff; color: white; border: none; cursor: pointer;">Run Scan</button>
             <div id="run_status" style="margin-top: 10px; color: blue;"></div>
             
@@ -52,7 +55,9 @@ async function renderReplayList() {
                 <h4>Last Run Metrics</h4>
                 <p><strong>Scan ID:</strong> <span id="m_scan_id"></span></p>
                 <p><strong>Duration:</strong> <span id="m_duration"></span> ms</p>
-                <p><strong>Opps Count:</strong> <span id="m_opps_count"></span></p>
+                <p><strong>Opps Count:</strong> <span id="m_opps_count"></span> <span id="m_opps_extra" style="font-size: 0.9em; color: gray;"></span></p>
+                <p><strong>Persist:</strong> <span id="m_persist"></span></p>
+                <p><strong>Truncated:</strong> <span id="m_truncated"></span></p>
                 <p><strong>Stages:</strong> <span id="m_stages"></span></p>
             </div>
         </div>
@@ -76,11 +81,12 @@ window.runScan = async function() {
         const seed = document.getElementById('run_seed').value;
         const n_opps = document.getElementById('run_n_opps').value;
         const mode = document.getElementById('run_mode').value;
+        const persist = document.getElementById('run_persist').checked;
 
         const res = await fetch('/scans/run', { 
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ seed, n_opps, mode })
+            body: JSON.stringify({ seed, n_opps, mode, persist })
         });
         
         if (!res.ok) {
@@ -90,15 +96,25 @@ window.runScan = async function() {
         
         const data = await res.json();
         const scan = data.scan;
+        const m = scan.metrics || {};
         
         // Update Metrics UI
         document.getElementById('m_scan_id').textContent = scan.scan_id;
         document.getElementById('m_duration').textContent = scan.duration_ms;
         document.getElementById('m_opps_count').textContent = scan.summary ? scan.summary.opp_count : (scan.opp_ids || []).length;
         
+        if (m.n_opps_requested && m.n_opps_actual) {
+             document.getElementById('m_opps_extra').textContent = `(Req: ${m.n_opps_requested}, Act: ${m.n_opps_actual})`;
+        } else {
+             document.getElementById('m_opps_extra').textContent = '';
+        }
+
+        document.getElementById('m_persist').textContent = m.persist_enabled !== undefined ? m.persist_enabled : 'N/A';
+        document.getElementById('m_truncated').textContent = m.truncated !== undefined ? m.truncated : 'N/A';
+        
         let stagesStr = '';
-        if (scan.metrics && scan.metrics.stage_ms) {
-            stagesStr = Object.entries(scan.metrics.stage_ms)
+        if (m.stage_ms) {
+            stagesStr = Object.entries(m.stage_ms)
                 .map(([k, v]) => `${k}: ${v}ms`)
                 .join(', ');
         }

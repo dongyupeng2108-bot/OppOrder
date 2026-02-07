@@ -135,24 +135,35 @@ const server = http.createServer(async (req, res) => {
             }
             
             const params = { ...parsedUrl.query, ...bodyParams };
-            let { seed, n_opps, mode } = params;
+            let { seed, n_opps, mode, persist, max_n_opps } = params;
 
             // Defaults
             seed = (seed === undefined || seed === null || seed === '') ? 111 : parseInt(seed, 10);
-            n_opps = (n_opps === undefined || n_opps === null || n_opps === '') ? 5 : parseInt(n_opps, 10);
+            let n_opps_raw = (n_opps === undefined || n_opps === null || n_opps === '') ? 5 : parseInt(n_opps, 10);
             mode = (mode === undefined || mode === null || mode === '') ? 'fast' : mode;
+            persist = (persist === undefined || persist === null || persist === '') ? true : (String(persist) === 'true');
+            max_n_opps = (max_n_opps === undefined || max_n_opps === null || max_n_opps === '') ? 50 : parseInt(max_n_opps, 10);
 
-            // Validation
-            if (isNaN(n_opps) || n_opps < 1 || n_opps > 50) {
+            // Validation & Cap
+            if (isNaN(n_opps_raw) || n_opps_raw < 1) {
                 res.writeHead(400, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ error: 'Invalid n_opps. Must be between 1 and 50.' }));
+                res.end(JSON.stringify({ error: 'Invalid n_opps. Must be >= 1.' }));
                 return;
             }
+            
+            const n_opps_actual = Math.min(n_opps_raw, max_n_opps);
+            const truncated = n_opps_raw > max_n_opps;
 
             // 1. Setup Metrics & Context
             const t0 = Date.now();
             const metrics = {
-                stage_ms: {}
+                stage_ms: {},
+                persist_enabled: persist,
+                truncated: truncated,
+                n_opps_requested: n_opps_raw,
+                n_opps_actual: n_opps_actual,
+                seed: seed,
+                mode: mode
             };
             
             const stepStart = (name) => {
@@ -180,11 +191,6 @@ const server = http.createServer(async (req, res) => {
             const tGen = stepStart('generate_opps');
             const timestamp = Date.now();
             // Use seeded random for ID generation to ensure reproducibility if seed is provided
-            // We combine seed + index + timestamp(if not replay) to make IDs. 
-            // BUT Task says: "Same seed + n_opps + mode -> opportunity list content consistent".
-            // If we use timestamp in hash, it changes every time.
-            // So we should NOT use timestamp for opp_id if we want reproducibility, OR we rely on seed only.
-            // Let's use seed + index for opp_id to ensure reproducibility.
             const scanId = 'sc_' + crypto.createHash('sha256').update(seed.toString() + timestamp.toString()).digest('hex').substring(0, 8);
 
             const newOpps = [];
@@ -193,7 +199,7 @@ const server = http.createServer(async (req, res) => {
             let unknownCount = 0;
 
             if (fixtureStrategies.length > 0 && fixtureSnapshots.length > 0) {
-                for (let i = 0; i < n_opps; i++) {
+                for (let i = 0; i < n_opps_actual; i++) {
                     // Use RNG to select strategy/snapshot deterministically
                     const stratIndex = Math.floor(rng.next() * fixtureStrategies.length);
                     const snapIndex = Math.floor(rng.next() * fixtureSnapshots.length);
@@ -240,35 +246,40 @@ const server = http.createServer(async (req, res) => {
                 duration_ms: 0, // placeholder
                 opp_ids: newOppIds,
                 seed: seed,
-                n_opps: n_opps,
+                n_opps: n_opps_actual,
                 mode: mode,
                 metrics: metrics,
                 summary: summary
             };
 
             // 5. Update Memory & Persist
-            const tPersist = stepStart('persist_store');
-            
             inMemoryScans.push(newScan);
             inMemoryOpps.push(...newOpps);
-            
-            runtimeData.scans.push(newScan);
-            runtimeData.opportunities.push(...newOpps);
-            
-            try {
-                if (!fs.existsSync(RUNTIME_DIR)) fs.mkdirSync(RUNTIME_DIR, { recursive: true });
-                const tempFile = path.join(RUNTIME_DIR, 'store.json.tmp');
-                fs.writeFileSync(tempFile, JSON.stringify(runtimeData, null, 2));
-                if (fs.existsSync(RUNTIME_STORE)) fs.unlinkSync(RUNTIME_STORE);
-                fs.renameSync(tempFile, RUNTIME_STORE);
-            } catch (persistErr) {
-                console.error("Failed to persist runtime store:", persistErr);
-                throw persistErr;
+
+            if (persist) {
+                const tPersist = stepStart('persist_store');
+                
+                runtimeData.scans.push(newScan);
+                runtimeData.opportunities.push(...newOpps);
+                
+                try {
+                    if (!fs.existsSync(RUNTIME_DIR)) fs.mkdirSync(RUNTIME_DIR, { recursive: true });
+                    const tempFile = path.join(RUNTIME_DIR, 'store.json.tmp');
+                    fs.writeFileSync(tempFile, JSON.stringify(runtimeData, null, 2));
+                    if (fs.existsSync(RUNTIME_STORE)) fs.unlinkSync(RUNTIME_STORE);
+                    fs.renameSync(tempFile, RUNTIME_STORE);
+                } catch (persistErr) {
+                    console.error("Failed to persist runtime store:", persistErr);
+                    throw persistErr;
+                }
+                stepEnd('persist_store', tPersist);
+            } else {
+                metrics.stage_ms['persist_store'] = 0;
             }
-            stepEnd('persist_store', tPersist);
 
             // Update total duration
             newScan.duration_ms = Date.now() - t0;
+            metrics.total_ms = newScan.duration_ms;
             
             const result = {
                 scan: newScan,
