@@ -1,0 +1,23 @@
+{
+  "task_id": "260208_008",
+  "timestamp": "2026-02-07T19:24:05.148Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260208_008",
+      "status": "DONE",
+      "summary": "M4: LLM dataset capture + JSONL export + UI button (train-ready evidence)",
+      "report_file": "notify_260208_008.txt",
+      "report_sha256_short": "b73bc24c"
+    }
+  }
+}

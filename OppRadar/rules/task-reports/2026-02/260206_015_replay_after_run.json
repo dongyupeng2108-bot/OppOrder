@@ -1,0 +1,16 @@
+﻿{
+    "scan":  {
+                 "scan_id":  "sc_9f87d3e2",
+                 "timestamp":  "2026-02-06T19:36:04.058Z",
+                 "duration_ms":  950,
+                 "opp_ids":  [
+
+                             ]
+             },
+    "opportunities":  [
+
+                      ],
+    "missing_opp_ids":  [
+
+                        ]
+}

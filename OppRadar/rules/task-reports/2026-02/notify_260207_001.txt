@@ -1,0 +1,152 @@
+RESULT_JSON
+{
+  "status": "DONE",
+  "summary": "Docs: ban cd /d; add PS/bash command templates; cleanup occurrences"
+}
+LOG_HEAD
+[2026-02-07T10:33:51.963Z] START Task 260207_001
+[2026-02-07T10:33:51.965Z] INFO Executing bootstrap sequence...
+[2026-02-07T10:33:51.965Z] INFO Git init... OK
+[2026-02-07T10:33:51.965Z] INFO Directories created... OK
+[2026-02-07T10:33:51.965Z] INFO Scripts deployed... OK
+[2026-02-07T10:33:51.965Z] DONE Task completed successfully.
+
+LOG_TAIL
+[2026-02-07T10:33:51.963Z] START Task 260207_001
+[2026-02-07T10:33:51.965Z] INFO Executing bootstrap sequence...
+[2026-02-07T10:33:51.965Z] INFO Git init... OK
+[2026-02-07T10:33:51.965Z] INFO Directories created... OK
+[2026-02-07T10:33:51.965Z] INFO Scripts deployed... OK
+[2026-02-07T10:33:51.965Z] DONE Task completed successfully.
+
+INDEX
+(See deliverables_index_260207_001.json for full details)
+Files:
+260206_005.json
+260206_005_healthcheck_53122.txt
+260206_006.json
+260206_006_api_smoke_opportunities.txt
+260206_006_api_smoke_strategies.txt
+260206_006_healthcheck_53122.txt
+260206_007.json
+260206_007_healthcheck_53122.txt
+260206_007_ui_status.txt
+260206_008.json
+260206_008_diff_smoke.json
+260206_008_healthcheck_53122.txt
+260206_008_ui_diff_status.txt
+260206_009.json
+260206_009_healthcheck_53122.txt
+260206_009_replay_smoke.json
+260206_009_ui_replay_status.txt
+260206_010.json
+260206_010_healthcheck_53122.txt
+260206_011.json
+260206_011_export_diff.csv
+260206_011_export_replay.csv
+260206_011_healthcheck_53122.txt
+260206_011_ui_diff_status.txt
+260206_011_ui_replay_status.txt
+260206_012.json
+260206_012_export_diff_headers.txt
+260206_012_export_replay_headers.txt
+260206_012_healthcheck_53122.txt
+260206_013.json
+260206_013_healthcheck_53122.txt
+260206_013_rm_smoke.txt
+260206_014.json
+260206_014_export_diff.json
+260206_014_export_headers.txt
+260206_014_export_replay.json
+260206_014_healthcheck_53122.txt
+260206_014_ui_diff_status.txt
+260206_014_ui_replay_status.txt
+260206_015.json
+260206_015_diff_after_run.json
+260206_015_healthcheck_53122.txt
+260206_015_replay_after_run.json
+260206_015_runscan.json
+260206_015_scans_after.json
+260206_015_ui_replay_status.txt
+260206_015_ui_root_status.txt
+260206_016.json
+260206_016_diff_after_run.json
+260206_016_healthcheck_53122.txt
+260206_016_replay_after_run.json
+260206_016_restart_replay_status.txt
+260206_016_runscan.json
+260206_016_runtime_store_snapshot.json
+260206_017.json
+260206_017_healthcheck_53122.txt
+260206_018.json
+260206_018_healthcheck_root.txt
+260206_018_repro_check.txt
+260206_018_restart_replay_status.txt
+260206_018_runscan_1.json
+260206_018_runscan_2.json
+260207_001.json
+260207_001_healthcheck_53122.txt
+deliverables_index_260206_005.json
+deliverables_index_260206_006.json
+deliverables_index_260206_007.json
+deliverables_index_260206_008.json
+deliverables_index_260206_009.json
+deliverables_index_260206_010.json
+deliverables_index_260206_011.json
+deliverables_index_260206_012.json
+deliverables_index_260206_013.json
+deliverables_index_260206_014.json
+deliverables_index_260206_015.json
+deliverables_index_260206_016.json
+deliverables_index_260206_017.json
+deliverables_index_260206_018.json
+manual_verification.json
+notify_260206_005.txt
+notify_260206_006.txt
+notify_260206_007.txt
+notify_260206_008.txt
+notify_260206_009.txt
+notify_260206_010.txt
+notify_260206_011.txt
+notify_260206_012.txt
+notify_260206_013.txt
+notify_260206_014.txt
+notify_260206_015.txt
+notify_260206_016.txt
+notify_260206_017.txt
+notify_260206_018.txt
+reports
+result_260206_005.json
+result_260206_006.json
+result_260206_007.json
+result_260206_008.json
+result_260206_009.json
+result_260206_010.json
+result_260206_011.json
+result_260206_012.json
+result_260206_013.json
+result_260206_014.json
+result_260206_015.json
+result_260206_016.json
+result_260206_017.json
+result_260206_018.json
+result_260207_001.json
+run_260206_005.log
+run_260206_006.log
+run_260206_007.log
+run_260206_008.log
+run_260206_009.log
+run_260206_010.log
+run_260206_011.log
+run_260206_012.log
+run_260206_013.log
+run_260206_014.log
+run_260206_015.log
+run_260206_016.log
+run_260206_017.log
+run_260206_018.log
+run_260207_001.log
+scripts
+HEALTHCHECK
+/ -> 200
+/pairs -> 200

@@ -1,0 +1,7 @@
+{
+  "task_id": "260206_015",
+  "status": "DONE",
+  "summary": "M4: run-scan minimal loop (POST /scans/run + UI button) + evidence; keep / and /pairs 200",
+  "report_file": "notify_260206_015.txt",
+  "report_sha256_short": "9f5fea33"
+}

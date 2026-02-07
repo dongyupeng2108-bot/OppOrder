@@ -1,0 +1,7 @@
+{
+  "task_id": "260206_009",
+  "status": "DONE",
+  "summary": "M2: replay minimal loop (scan -> opportunity set) + /ui/replay; keep healthcheck 200",
+  "report_file": "notify_260206_009.txt",
+  "report_sha256_short": "7e405ea1"
+}

@@ -1,0 +1,23 @@
+{
+  "task_id": "260206_010",
+  "timestamp": "2026-02-06T12:12:17.811Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260206_010",
+      "status": "DONE",
+      "summary": "Docs-only: freeze M2 diff/replay API+UI specs; mark M2 done; outline M3 DoD",
+      "report_file": "notify_260206_010.txt",
+      "report_sha256_short": "4710e0d7"
+    }
+  }
+}

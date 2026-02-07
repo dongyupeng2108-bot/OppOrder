@@ -1,0 +1,7 @@
+{
+  "task_id": "260208_001",
+  "status": "DONE",
+  "summary": "Docs: batch dev/integrate mode + repo overhead reduction rules; add dev_batch_mode.ps1",
+  "report_file": "notify_260208_001.txt",
+  "report_sha256_short": "b5c99f53"
+}

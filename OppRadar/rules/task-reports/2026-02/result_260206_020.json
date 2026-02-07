@@ -1,0 +1,7 @@
+{
+  "task_id": "260206_020",
+  "status": "DONE",
+  "summary": "Docs: ban cd /d in shell; add cross-shell cd templates; stability-first note",
+  "report_file": "notify_260206_020.txt",
+  "report_sha256_short": "0d582d9c"
+}

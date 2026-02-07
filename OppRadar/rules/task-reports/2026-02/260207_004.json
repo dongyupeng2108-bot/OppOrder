@@ -1,0 +1,23 @@
+{
+  "task_id": "260207_004",
+  "timestamp": "2026-02-07T16:28:07.346Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260207_004",
+      "status": "DONE",
+      "summary": "M5: baseline opp scoring + LLM provider(mock) explain layer + evidence",
+      "report_file": "notify_260207_004.txt",
+      "report_sha256_short": "d33d7e8f"
+    }
+  }
+}

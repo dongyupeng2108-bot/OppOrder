@@ -1,0 +1,39 @@
+{
+  "files": [
+    {
+      "name": "260206_009_healthcheck_53122.txt",
+      "size": 828,
+      "sha256_short": "6f9971be"
+    },
+    {
+      "name": "260206_009_replay_smoke.json",
+      "size": 903,
+      "sha256_short": "28c17049"
+    },
+    {
+      "name": "260206_009_ui_replay_status.txt",
+      "size": 10,
+      "sha256_short": "c0c4e366"
+    },
+    {
+      "name": "manual_verification.json",
+      "size": 107,
+      "sha256_short": "7e35ad79"
+    },
+    {
+      "name": "notify_260206_009.txt",
+      "size": 1045,
+      "sha256_short": "7e405ea1"
+    },
+    {
+      "name": "result_260206_009.json",
+      "size": 229,
+      "sha256_short": "a36622b0"
+    },
+    {
+      "name": "run_260206_009.log",
+      "size": 334,
+      "sha256_short": "3ddde045"
+    }
+  ]
+}

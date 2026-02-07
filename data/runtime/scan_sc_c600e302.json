@@ -1,0 +1,75 @@
+{
+  "scan_id": "sc_c600e302",
+  "timestamp": "2026-02-07T18:02:40.502Z",
+  "duration_ms": 1,
+  "n_opps_requested": 10,
+  "n_opps_actual": 10,
+  "seed": 123,
+  "mode": "fast",
+  "opp_ids": [
+    "op_4048e37b",
+    "op_a28a22b3",
+    "op_2bca8822",
+    "op_1043a36e",
+    "op_388eea83",
+    "op_1f3347d7",
+    "op_dbe7fe17",
+    "op_bb1ea984",
+    "op_4ed71009",
+    "op_ad0d2b55"
+  ],
+  "stage_logs": [
+    {
+      "stage_id": "load_context",
+      "start_ts": "2026-02-07T18:02:40.502Z",
+      "end_ts": "2026-02-07T18:02:40.502Z",
+      "dur_ms": 0,
+      "input_summary": {},
+      "output_summary": {},
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "stage_id": "gen_opps",
+      "start_ts": "2026-02-07T18:02:40.502Z",
+      "end_ts": "2026-02-07T18:02:40.503Z",
+      "dur_ms": 1,
+      "input_summary": {
+        "n_opps": 10,
+        "seed": 123
+      },
+      "output_summary": {
+        "generated": 10
+      },
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "stage_id": "score_baseline",
+      "start_ts": "2026-02-07T18:02:40.503Z",
+      "end_ts": "2026-02-07T18:02:40.503Z",
+      "dur_ms": 0,
+      "input_summary": {},
+      "output_summary": {
+        "scored": 10
+      },
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "stage_id": "llm_mock",
+      "start_ts": "2026-02-07T18:02:40.503Z",
+      "end_ts": "2026-02-07T18:02:40.503Z",
+      "dur_ms": 0,
+      "input_summary": {
+        "provider": "mock"
+      },
+      "output_summary": {
+        "processed": 10,
+        "errors": 0
+      },
+      "warnings": [],
+      "errors": []
+    }
+  ]
+}

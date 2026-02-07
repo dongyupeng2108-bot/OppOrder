@@ -1,0 +1,7 @@
+{
+  "task_id": "260206_011",
+  "status": "DONE",
+  "summary": "M3: export JSON+CSV for diff & replay; keep healthcheck 200",
+  "report_file": "notify_260206_011.txt",
+  "report_sha256_short": "3956393e"
+}
