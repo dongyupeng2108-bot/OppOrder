@@ -79,6 +79,24 @@ To reduce repository overhead and conflicts, we adopt a two-phase workflow for e
 3. **Fail-Fast Logic**:
    - If `git diff --name-only origin/main...HEAD` shows only `rules/task-reports/**` changes AND the task_id exists in `origin/main`, the PR is considered "Duplicate Noise". Abort.
 
+### Task ID Lifecycle
+- **Definition**: A `task_id` is considered **"Published"** once it appears in a TraeTask message.
+- **Rule**: **"Published = Reserved, Never Reuse"**.
+  - Once a `task_id` is published, it is permanently consumed.
+  - Even for "Docs-only" or "Fix" tasks, if the original task was merged or even just attempted and abandoned with artifacts left behind, you MUST use a **NEW** `task_id` for the next attempt.
+- **Conflict Handling**:
+  - If you encounter a `task_id` conflict (e.g., folder exists in `rules/task-reports/`), **IMMEDIATELY STOP**.
+  - **Action**: Switch to a new `task_id`.
+  - **History**: Do NOT overwrite old evidence. Keep it as history.
+
+### PR Hygiene
+- **Prohibited**:
+  - **Duplicate PRs**: Do not open a second PR for the same `task_id` if one was already merged.
+  - **Duplicate Task ID PRs**: Do not open a PR with a `task_id` that already exists in `main`.
+- **Mandatory Pre-PR Check**:
+  - You **MUST** run `node scripts/pre_pr_check.mjs --task_id <task_id>` before creating a PR.
+  - If it fails (Exit Code 2), you are violating the "No Reuse" rule. **STOP** and get a new ID.
+
 ## 合并职责说明 (Merge Responsibility)
 **PR 合并需要老板手工执行**。Trae 严禁自动合并 PR。
 

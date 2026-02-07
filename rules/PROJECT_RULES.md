@@ -132,3 +132,8 @@
   - **Rule**: A single `task_id` can ONLY correspond to ONE merged evidence pack in `main`.
   - **Constraint**: Once a `task_id` is merged to `main`, it is immutable. Any fixes or rework MUST use a NEW `task_id`.
   - **Exception**: If following a specific workflow exception (e.g., "Patch Task"), follow that protocol, but generally prefer new IDs to avoid noise.
+  - **Published = Reserved**: Even if not merged, if a `task_id` has been "announced" in a TraeTask, treat it as used. Avoid reusing it to prevent confusion in logs/history.
+
+- **Tech Cost vs Data Schema**:
+  - **Tech Cost (Pricing Model)**: When we refer to "Tech Cost" or "Pricing Assumptions", we refer strictly to the **estimation methodology** (e.g., calculation formulas, resource line items, frequency, unit costs). This logic CAN be reused from other projects.
+  - **Data Schema**: The database structure and entity definitions (Strategy/Snapshot/Opportunity) MUST be designed **specifically for OppRadar**. DO NOT blindly copy schemas from other projects just because the cost model is similar. Structure follows Project Goals.
