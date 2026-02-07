@@ -322,8 +322,8 @@
     },
     {
       "name": "260206_019_notify_smoke.txt",
-      "size": 33,
-      "sha256_short": "dbef2a12"
+      "size": 34,
+      "sha256_short": "fb568e9a"
     },
     {
       "name": "260206_020.json",
@@ -407,28 +407,58 @@
     },
     {
       "name": "260208_002_export_headers.txt",
-      "size": 118,
-      "sha256_short": "d52d543a"
+      "size": 120,
+      "sha256_short": "ee24e802"
     },
     {
       "name": "260208_002_export_stage_logs.json",
-      "size": 899,
-      "sha256_short": "97bd722b"
+      "size": 942,
+      "sha256_short": "a34e6257"
     },
     {
       "name": "260208_002_healthcheck_53122.txt",
-      "size": 31,
-      "sha256_short": "8d8a7ef2"
+      "size": 33,
+      "sha256_short": "b86f24a0"
     },
     {
       "name": "260208_002_runscan.json",
-      "size": 6359,
-      "sha256_short": "056b3dc7"
+      "size": 6596,
+      "sha256_short": "3c131f5a"
     },
     {
       "name": "260208_002_ui_replay_status.txt",
-      "size": 22,
-      "sha256_short": "532ade9b"
+      "size": 23,
+      "sha256_short": "700f4bd8"
+    },
+    {
+      "name": "260208_010/healthcheck_pairs.txt",
+      "size": 13,
+      "sha256_short": "e359a3ac"
+    },
+    {
+      "name": "260208_010/healthcheck_root.txt",
+      "size": 8,
+      "sha256_short": "e35b1a26"
+    },
+    {
+      "name": "260208_010/notify_smoke_test.txt",
+      "size": 102,
+      "sha256_short": "fbe8c5d4"
+    },
+    {
+      "name": "260208_010/scan_sc_2972a7c6.json",
+      "size": 1957,
+      "sha256_short": "27fad89e"
+    },
+    {
+      "name": "260208_010/scan_sc_efd0c46e.json",
+      "size": 1957,
+      "sha256_short": "58ecfd1a"
+    },
+    {
+      "name": "260208_010/smoke_test.log",
+      "size": 466,
+      "sha256_short": "036169bc"
     },
     {
       "name": "deliverables_index_260206_005.json",
@@ -539,6 +569,11 @@
       "name": "deliverables_index_260208_001.json",
       "size": 19390,
       "sha256_short": "9e1613c3"
+    },
+    {
+      "name": "deliverables_index_260208_002.json",
+      "size": 20401,
+      "sha256_short": "8c2efed2"
     },
     {
       "name": "manual_verification.json",
@@ -661,14 +696,19 @@
       "sha256_short": "79419a08"
     },
     {
+      "name": "notify_260208_010.txt",
+      "size": 5588,
+      "sha256_short": "f8bb24d5"
+    },
+    {
       "name": "reports/healthcheck_pairs.txt",
-      "size": 40,
-      "sha256_short": "2af2ed66"
+      "size": 13,
+      "sha256_short": "e359a3ac"
     },
     {
       "name": "reports/healthcheck_root.txt",
-      "size": 30,
-      "sha256_short": "1c91a4d5"
+      "size": 8,
+      "sha256_short": "e35b1a26"
     },
     {
       "name": "result_260206_005.json",
@@ -782,8 +822,13 @@
     },
     {
       "name": "result_260208_002.json",
+      "size": 170,
+      "sha256_short": "55b00238"
+    },
+    {
+      "name": "result_260208_010.json",
       "size": 164,
-      "sha256_short": "65298a4f"
+      "sha256_short": "5ed727c1"
     },
     {
       "name": "run_260206_005.log",
@@ -897,8 +942,13 @@
     },
     {
       "name": "run_260208_002.log",
+      "size": 340,
+      "sha256_short": "5e78d454"
+    },
+    {
+      "name": "run_260208_010.log",
       "size": 334,
-      "sha256_short": "47b93f72"
+      "sha256_short": "8764f9b2"
     }
   ]
 }

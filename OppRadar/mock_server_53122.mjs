@@ -29,7 +29,7 @@ const MIME_TYPES = {
 // In-memory state
 let inMemoryScans = [];
 let inMemoryOpps = [];
-let runtimeData = { scans: [], opportunities: [], monitor_state: [], llm_dataset_rows: [] };
+let runtimeData = { scans: [], opportunities: [], monitor_state: [], llm_dataset_rows: [], llm_cache: {} };
 let fixtureStrategies = [];
 let fixtureSnapshots = [];
 let monitorState = {}; // option_id -> { baseline_prob, last_prob, last_seen_ts, last_reeval_ts, trigger_state, last_trigger_reason }
@@ -105,12 +105,13 @@ try {
             if (data.opportunities) runtimeData.opportunities = data.opportunities;
             if (data.monitor_state) runtimeData.monitor_state = data.monitor_state;
             if (data.llm_dataset_rows) runtimeData.llm_dataset_rows = data.llm_dataset_rows;
+            if (data.llm_cache) runtimeData.llm_cache = data.llm_cache;
             
             // Merge
             inMemoryScans = [...inMemoryScans, ...runtimeData.scans];
             inMemoryOpps = [...inMemoryOpps, ...runtimeData.opportunities];
             monitorState = { ...runtimeData.monitor_state };
-            console.log(`Loaded ${runtimeData.scans.length} scans, ${runtimeData.opportunities.length} opps, ${runtimeData.llm_dataset_rows?.length || 0} dataset rows, and ${Object.keys(monitorState).length} monitor states from runtime store.`);
+            console.log(`Loaded ${runtimeData.scans.length} scans, ${runtimeData.opportunities.length} opps, ${runtimeData.llm_dataset_rows?.length || 0} dataset rows, ${Object.keys(runtimeData.llm_cache || {}).length} cache entries, and ${Object.keys(monitorState).length} monitor states from runtime store.`);
         } catch (err) {
             console.error("Failed to load runtime store:", err);
         }
@@ -305,7 +306,7 @@ const server = http.createServer(async (req, res) => {
             }
             
             const params = { ...parsedUrl.query, ...bodyParams };
-            let { seed, n_opps, mode, persist, max_n_opps, llm_provider } = params;
+            let { seed, n_opps, mode, persist, max_n_opps, llm_provider, topic_key, dedup_window_sec, dedup_mode, cache_ttl_sec } = params;
 
             // Defaults
             seed = (seed === undefined || seed === null || seed === '') ? 111 : parseInt(seed, 10);
@@ -314,6 +315,11 @@ const server = http.createServer(async (req, res) => {
             persist = (persist === undefined || persist === null || persist === '') ? true : (String(persist) === 'true');
             max_n_opps = (max_n_opps === undefined || max_n_opps === null || max_n_opps === '') ? 50 : parseInt(max_n_opps, 10);
             
+            topic_key = topic_key || 'default_topic';
+            dedup_window_sec = (dedup_window_sec === undefined || dedup_window_sec === null || dedup_window_sec === '') ? 0 : parseInt(dedup_window_sec, 10);
+            dedup_mode = (dedup_mode === undefined || dedup_mode === null || dedup_mode === '') ? 'run' : dedup_mode;
+            cache_ttl_sec = (cache_ttl_sec === undefined || cache_ttl_sec === null || cache_ttl_sec === '') ? 900 : parseInt(cache_ttl_sec, 10);
+
             // Resolve LLM Provider for this run
             const runLLMProviderName = llm_provider || process.env.LLM_PROVIDER || 'mock';
             const runLLMProvider = getProvider(runLLMProviderName);
@@ -337,7 +343,11 @@ const server = http.createServer(async (req, res) => {
                 n_opps_requested: n_opps_raw,
                 n_opps_actual: n_opps_actual,
                 seed: seed,
-                mode: mode
+                mode: mode,
+                topic_key: topic_key,
+                dedup_skipped_count: 0,
+                cache_hit_count: 0,
+                cache_miss_count: 0
             };
             
             const stageLogs = [];
@@ -371,6 +381,44 @@ const server = http.createServer(async (req, res) => {
                 next() { this.state = (this.a * this.state + this.c) % this.m; return this.state / this.m; }
             }
             const rng = new SeededRandom(seed);
+
+            // 1.1 Dedup Check
+            if (dedup_window_sec > 0) {
+                const cutoff = Date.now() - (dedup_window_sec * 1000);
+                const recentScan = inMemoryScans.slice().reverse().find(s => 
+                    s.topic_key === topic_key && 
+                    new Date(s.timestamp).getTime() > cutoff
+                );
+
+                if (recentScan) {
+                    if (dedup_mode === 'skip') {
+                        metrics.dedup_skipped_count = 1;
+                        const scan = {
+                            scan_id: 'skipped_' + crypto.createHash('sha256').update(seed.toString() + Date.now().toString()).digest('hex').substring(0, 8),
+                            timestamp: new Date().toISOString(),
+                            duration_ms: Date.now() - t0,
+                            n_opps_requested: n_opps_raw,
+                            n_opps_actual: 0,
+                            status: 'skipped',
+                            topic_key: topic_key,
+                            metrics: metrics,
+                            stage_logs: [{
+                                stage_id: 'dedup_check',
+                                start_ts: new Date().toISOString(),
+                                end_ts: new Date().toISOString(),
+                                dur_ms: 0,
+                                input_summary: { topic_key, dedup_window_sec },
+                                output_summary: { skipped: true, reason: 'dedup_hit', original_scan_id: recentScan.scan_id },
+                                warnings: [`Skipped due to dedup (window: ${dedup_window_sec}s)`],
+                                errors: []
+                            }]
+                        };
+                        res.writeHead(200, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify(scan));
+                        return;
+                    }
+                }
+            }
 
             // Stage: Load Context
             const tLoad = Date.now();
@@ -439,7 +487,29 @@ const server = http.createServer(async (req, res) => {
             // Process sequentially for async LLM
             for (const opp of newOpps) {
                 try {
-                    const llmResult = await runLLMProvider.summarizeOpp(opp);
+                    // Cache Key Construction
+                    const inputContent = JSON.stringify({
+                        strategy: opp.strategy_id,
+                        snapshot: opp.snapshot_id,
+                        score: opp.score_baseline,
+                        components: opp.score_components
+                    });
+                    const promptHash = crypto.createHash('sha256').update(inputContent).digest('hex');
+                    
+                    const timeBucket = Math.floor(Date.now() / 1000 / cache_ttl_sec);
+                    const cacheKey = `${runLLMProviderName}_${runLLMProvider.model || 'default'}_${promptHash}_${topic_key}_${timeBucket}`;
+                    
+                    let llmResult = null;
+                    if (runtimeData.llm_cache[cacheKey]) {
+                        llmResult = runtimeData.llm_cache[cacheKey];
+                        metrics.cache_hit_count++;
+                    } else {
+                        llmResult = await runLLMProvider.summarizeOpp(opp);
+                        metrics.cache_miss_count++;
+                        // Cache it
+                        runtimeData.llm_cache[cacheKey] = llmResult;
+                    }
+
                     opp.llm_provider = llmResult.llm_provider;
                     opp.llm_model = llmResult.llm_model;
                     opp.llm_summary = llmResult.llm_summary;
@@ -483,8 +553,10 @@ const server = http.createServer(async (req, res) => {
                 n_opps_actual: n_opps_actual,
                 seed: seed,
                 mode: mode,
+                topic_key: topic_key,
                 opp_ids: newOpps.map(o => o.opp_id),
-                stage_logs: [...stageLogs] // Copy current logs
+                stage_logs: [...stageLogs], // Copy current logs
+                metrics: metrics
             };
             
             inMemoryScans.push(scan);
@@ -513,7 +585,8 @@ const server = http.createServer(async (req, res) => {
                         scans: inMemoryScans.map(s => s.scan_id),
                         opps: inMemoryOpps.map(o => o.opp_id),
                         monitor_state: monitorState,
-                        llm_dataset_rows: runtimeData.llm_dataset_rows
+                        llm_dataset_rows: runtimeData.llm_dataset_rows,
+                        llm_cache: runtimeData.llm_cache
                     };
                     const tempStorePath = storePath + '.tmp';
                     fs.writeFileSync(tempStorePath, JSON.stringify(storeData, null, 2));

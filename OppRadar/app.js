@@ -48,6 +48,15 @@ async function renderReplayList() {
             <div style="margin-bottom: 10px;">
                 <label><input type="checkbox" id="run_persist" checked> Persist to Disk</label>
             </div>
+            <div style="margin-bottom: 10px;">
+                <label>Topic Key: <input type="text" id="run_topic_key" value="default_topic"></label>
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label>Dedup Window (s): <input type="number" id="run_dedup_window" value="0"></label>
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label>Cache TTL (s): <input type="number" id="run_cache_ttl" value="900"></label>
+            </div>
             <button onclick="runScan()" style="padding: 5px 15px; background: #007bff; color: white; border: none; cursor: pointer;">Run Scan</button>
             <div id="run_status" style="margin-top: 10px; color: blue;"></div>
             
@@ -58,6 +67,8 @@ async function renderReplayList() {
                 <p><strong>Opps Count:</strong> <span id="m_opps_count"></span> <span id="m_opps_extra" style="font-size: 0.9em; color: gray;"></span></p>
                 <p><strong>Persist:</strong> <span id="m_persist"></span></p>
                 <p><strong>Truncated:</strong> <span id="m_truncated"></span></p>
+                <p><strong>Dedup Skipped:</strong> <span id="m_dedup_skipped"></span></p>
+                <p><strong>Cache:</strong> Hit <span id="m_cache_hit"></span> / Miss <span id="m_cache_miss"></span></p>
                 <p><strong>Stages:</strong> <span id="m_stages"></span></p>
             </div>
         </div>
@@ -82,11 +93,14 @@ window.runScan = async function() {
         const n_opps = document.getElementById('run_n_opps').value;
         const mode = document.getElementById('run_mode').value;
         const persist = document.getElementById('run_persist').checked;
+        const topic_key = document.getElementById('run_topic_key').value;
+        const dedup_window_sec = document.getElementById('run_dedup_window').value;
+        const cache_ttl_sec = document.getElementById('run_cache_ttl').value;
 
         const res = await fetch('/scans/run', { 
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ seed, n_opps, mode, persist })
+            body: JSON.stringify({ seed, n_opps, mode, persist, topic_key, dedup_window_sec, cache_ttl_sec })
         });
         
         if (!res.ok) {
@@ -95,7 +109,7 @@ window.runScan = async function() {
         }
         
         const data = await res.json();
-        const scan = data.scan;
+        const scan = data.scan || data; // Handle if skipped scan is returned directly
         const m = scan.metrics || {};
         
         // Update Metrics UI
@@ -111,6 +125,9 @@ window.runScan = async function() {
 
         document.getElementById('m_persist').textContent = m.persist_enabled !== undefined ? m.persist_enabled : 'N/A';
         document.getElementById('m_truncated').textContent = m.truncated !== undefined ? m.truncated : 'N/A';
+        document.getElementById('m_dedup_skipped').textContent = m.dedup_skipped_count || 0;
+        document.getElementById('m_cache_hit').textContent = m.cache_hit_count || 0;
+        document.getElementById('m_cache_miss').textContent = m.cache_miss_count || 0;
         
         let stagesStr = '';
         if (m.stage_ms) {
@@ -242,6 +259,9 @@ async function renderReplayDetail(scanId) {
             <p><strong>Duration:</strong> ${scan.duration_ms}ms</p>
             <p><strong>Opp Count:</strong> ${(scan.opp_ids || []).length}</p>
             <p><strong>Seed:</strong> ${scan.seed || 'Random'}</p>
+            <p><strong>Dedup Skipped:</strong> ${scan.metrics?.dedup_skipped_count || 0}</p>
+            <p><strong>Cache:</strong> Hit ${scan.metrics?.cache_hit_count || 0} / Miss ${scan.metrics?.cache_miss_count || 0}</p>
+            <p><strong>Topic Key:</strong> ${scan.metrics?.topic_key || '-'}</p>
             <a href="/export/replay.json?scan=${scanId}" target="_blank" class="button">Export JSON</a>
             <a href="/export/replay.csv?scan=${scanId}" target="_blank" class="button">Export CSV</a>
             <a href="/export/stage_logs.json?scan=${scanId}" target="_blank" class="button">Export Stage Logs JSON</a>

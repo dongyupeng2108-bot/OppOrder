@@ -186,7 +186,8 @@
     "run_260207_003.log",
     "run_260207_004.log",
     "run_260208_001.log",
-    "run_260208_002.log"
+    "run_260208_002.log",
+    "scripts/postflight_validate_envelope.mjs"
   ],
   "forbidden_phrases_hit": [],
   "report_file": "notify_260208_002.txt"

@@ -408,12 +408,12 @@
     {
       "name": "260208_002_export_headers.txt",
       "size": 118,
-      "sha256_short": "d52d543a"
+      "sha256_short": "ac64c82b"
     },
     {
       "name": "260208_002_export_stage_logs.json",
-      "size": 899,
-      "sha256_short": "97bd722b"
+      "size": 1388,
+      "sha256_short": "103f38c0"
     },
     {
       "name": "260208_002_healthcheck_53122.txt",
@@ -421,9 +421,14 @@
       "sha256_short": "8d8a7ef2"
     },
     {
+      "name": "260208_002_manual_verification.json",
+      "size": 642,
+      "sha256_short": "6104bab0"
+    },
+    {
       "name": "260208_002_runscan.json",
-      "size": 6359,
-      "sha256_short": "056b3dc7"
+      "size": 7418,
+      "sha256_short": "428db405"
     },
     {
       "name": "260208_002_ui_replay_status.txt",
@@ -657,18 +662,18 @@
     },
     {
       "name": "notify_260208_002.txt",
-      "size": 5543,
-      "sha256_short": "79419a08"
+      "size": 5526,
+      "sha256_short": "417d8169"
     },
     {
       "name": "reports/healthcheck_pairs.txt",
-      "size": 40,
-      "sha256_short": "2af2ed66"
+      "size": 15,
+      "sha256_short": "642e4cde"
     },
     {
       "name": "reports/healthcheck_root.txt",
-      "size": 30,
-      "sha256_short": "1c91a4d5"
+      "size": 10,
+      "sha256_short": "3c90dbf0"
     },
     {
       "name": "result_260206_005.json",
@@ -783,7 +788,7 @@
     {
       "name": "result_260208_002.json",
       "size": 164,
-      "sha256_short": "65298a4f"
+      "sha256_short": "fabb6138"
     },
     {
       "name": "run_260206_005.log",
@@ -899,6 +904,11 @@
       "name": "run_260208_002.log",
       "size": 334,
       "sha256_short": "47b93f72"
+    },
+    {
+      "name": "scripts/postflight_validate_envelope.mjs",
+      "size": 39758,
+      "sha256_short": "db0acb52"
     }
   ]
 }

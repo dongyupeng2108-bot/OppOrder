@@ -1,61 +1,37 @@
 [
   {
     "stage_id": "load_context",
-    "start_ts": "2026-02-07T17:44:52.539Z",
-    "end_ts": "2026-02-07T17:44:52.539Z",
+    "start_ts": "2026-02-07T17:14:17.624Z",
+    "end_ts": "2026-02-07T17:14:17.624Z",
     "dur_ms": 0,
     "input_summary": {},
-    "output_summary": {},
+    "output_summary": {
+      "from_scan_id": "sc_cb70e6dd"
+    },
     "warnings": [],
     "errors": []
   },
   {
-    "stage_id": "gen_opps",
-    "start_ts": "2026-02-07T17:44:52.539Z",
-    "end_ts": "2026-02-07T17:44:52.539Z",
-    "dur_ms": 0,
+    "stage_id": "generate_opps",
+    "start_ts": "2026-02-07T17:14:17.624Z",
+    "end_ts": "2026-02-07T17:14:17.625Z",
+    "dur_ms": 1,
     "input_summary": {
       "n_opps": 5,
       "seed": 111
     },
     "output_summary": {
-      "generated": 5
-    },
-    "warnings": [],
-    "errors": []
-  },
-  {
-    "stage_id": "score_baseline",
-    "start_ts": "2026-02-07T17:44:52.539Z",
-    "end_ts": "2026-02-07T17:44:52.539Z",
-    "dur_ms": 0,
-    "input_summary": {},
-    "output_summary": {
-      "scored": 5
-    },
-    "warnings": [],
-    "errors": []
-  },
-  {
-    "stage_id": "llm_mock",
-    "start_ts": "2026-02-07T17:44:52.539Z",
-    "end_ts": "2026-02-07T17:44:52.540Z",
-    "dur_ms": 1,
-    "input_summary": {
-      "provider": "mock"
-    },
-    "output_summary": {
-      "processed": 5,
-      "errors": 0
+      "generated": 5,
+      "errors_count": 0
     },
     "warnings": [],
     "errors": []
   },
   {
     "stage_id": "persist_store",
-    "start_ts": "2026-02-07T17:44:52.540Z",
-    "end_ts": "2026-02-07T17:44:52.543Z",
-    "dur_ms": 3,
+    "start_ts": "2026-02-07T17:14:17.625Z",
+    "end_ts": "2026-02-07T17:14:17.629Z",
+    "dur_ms": 4,
     "input_summary": {
       "persist_enabled": true
     },

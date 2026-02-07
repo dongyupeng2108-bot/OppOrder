@@ -1,0 +1,18 @@
+{
+  "llm_cache": {
+    "mock_default_6a3a5f3cc641ac47dedfac537422fc66e8af945970f6d1ff07ee18a61b2ae646_smoke_test_1967215": {
+      "llm_provider": "mock",
+      "llm_model": "mock-v1",
+      "llm_summary": "[Mock] Opportunity op_4048e37b shows moderate potential based on st_12345678. Baseline score: 2.4.",
+      "llm_confidence": 0.67,
+      "llm_tags": [
+        "mock",
+        "baseline",
+        "low_vol"
+      ],
+      "llm_latency_ms": 0,
+      "llm_error": null,
+      "llm_input_prompt": "[Mock Prompt] Analyze opportunity op_4048e37b for strategy st_12345678 with score 2.4. Summarize in 1 sentence."
+    }
+  }
+}
