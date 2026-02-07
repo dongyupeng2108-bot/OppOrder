@@ -1,0 +1,23 @@
+{
+  "task_id": "260206_021",
+  "timestamp": "2026-02-07T14:33:03.946Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260206_021",
+      "status": "DONE",
+      "summary": "Workflow: block duplicate task_id/PR; add pre_pr_check; docs updated",
+      "report_file": "notify_260206_021.txt",
+      "report_sha256_short": "817aea59"
+    }
+  }
+}

@@ -61,6 +61,13 @@
 - **Protocol**: If environment commands (e.g., `cd /d` failure) cause task failures, **STOP feature dev**.
 - **Action**: Fix the workflow/docs (Docs-only task) to ensure cross-environment compatibility before resuming business logic.
 
+### Noise Reduction
+- **Principle**: Minimize "Duplicate PRs" and "Duplicate Task IDs".
+- **Standard**: 
+  - PR granularity should be small, but `task_id` CANNOT be reused for new PRs if the previous one was merged.
+  - A Duplicate PR (re-pushing same task_id evidence) is considered a **Process Defect**.
+  - Always run `scripts/pre_pr_check.mjs` to fail-fast before creating a PR.
+
 ## Execution & Acceptance Conventions
 - **Command Templates**: All tasks MUST use the standard command templates defined in `rules/WORKFLOW.md` (ENV=PowerShell|bash). `cd /d` is strictly prohibited.
 - **Evidence**: All PRs must include standard evidence artifacts (Healthcheck, Envelope, Postflight).

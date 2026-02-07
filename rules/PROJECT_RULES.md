@@ -128,3 +128,7 @@
   - See `rules/WORKFLOW.md` for standard templates.
 - **Interactive Prompts**: Strictly forbidden.
 - **CI Path Consistency**: When generating evidence in the `OppRadar` subdirectory (workaround), MUST ensure `LATEST.json` and `result_*.json` paths are relative to Repo Root (e.g., `rules/...` NOT `OppRadar/rules/...`). Manually sanitize if necessary.
+- **Task ID Uniqueness**:
+  - **Rule**: A single `task_id` can ONLY correspond to ONE merged evidence pack in `main`.
+  - **Constraint**: Once a `task_id` is merged to `main`, it is immutable. Any fixes or rework MUST use a NEW `task_id`.
+  - **Exception**: If following a specific workflow exception (e.g., "Patch Task"), follow that protocol, but generally prefer new IDs to avoid noise.
