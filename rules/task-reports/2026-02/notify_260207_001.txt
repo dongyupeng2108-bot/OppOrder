@@ -1,7 +1,8 @@
 RESULT_JSON
 {
-  " status: " + status + ,
-  summary: " + summary +  \n}
+  " status: " + status + ",
+  " summary: " + summary + "
+}
 LOG_HEAD
 [2026-02-07T10:33:51.963Z] START Task 260207_001
 [2026-02-07T10:33:51.965Z] INFO Executing bootstrap sequence...
@@ -77,6 +78,7 @@ Files:
 260206_016_runtime_store_snapshot.json
 260206_017.json
 260206_017_healthcheck_53122.txt
+260207_001.json
 260207_001_healthcheck_53122.txt
 deliverables_index_260206_005.json
 deliverables_index_260206_006.json
@@ -119,6 +121,7 @@ result_260206_014.json
 result_260206_015.json
 result_260206_016.json
 result_260206_017.json
+result_260207_001.json
 run_260206_005.log
 run_260206_006.log
 run_260206_007.log
@@ -134,7 +137,6 @@ run_260206_016.log
 run_260206_017.log
 run_260207_001.log
 scripts
-result_260207_001.json
 HEALTHCHECK
 / -> 200
 /pairs -> 200

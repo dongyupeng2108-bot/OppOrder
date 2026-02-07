@@ -92,12 +92,14 @@ async function main() {
     const files = fs.readdirSync(resultDir).filter(f => f !== indexFilename && f !== notifyFilename);
     if (!files.includes(resultFilename)) files.push(resultFilename);
     
-    const notifyHeader = 'RESULT_JSON\n{\n  " status\: " + status + \,\n  \summary\: " + summary +  \\n}\n';
- const notifyLog = 'LOG_HEAD\n' + logHead + '\nLOG_TAIL\n' + logTail + '\n';
- const notifyIndex = 'INDEX\n(See deliverables_index_' + taskId + '.json for full details)\nFiles:\n' + files.join('\n') + '\n';
- const notifyHc = 'HEALTHCHECK\n' + hcContent;
- 
- const notifyContent = notifyHeader + notifyLog + notifyIndex + notifyHc;
+    const notifyHeader = 'RESULT_JSON\n{\n  " status: " + status + ",\n  " summary: " + summary + "\n}\n';
+    const notifyLog = 'LOG_HEAD\n' + logHead + '\nLOG_TAIL\n' + logTail + '\n';
+    const notifyIndex = 'INDEX\n(See deliverables_index_' + taskId + '.json for full details)\nFiles:\n' + files.join('\n') + '\n';
+    const notifyHc = 'HEALTHCHECK\n' + hcContent;
+    
+    let notifyContent = notifyHeader + notifyLog + notifyIndex + notifyHc;
+    // Normalize to LF to ensure consistent hashing across platforms (Windows/CI)
+    notifyContent = notifyContent.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
  const notifyHash = calculateSha256Short(notifyContent);
 
  // Write Notify
@@ -170,15 +172,22 @@ async function main() {
  fs.writeFileSync(indexPath, JSON.stringify(indexData, null, 2));
 
  // Update LATEST.json
- try {
- const latestPath = path.join(projectRoot, 'rules/LATEST.json');
- const latestJson = {
- task_id: taskId,
- result_dir: resultDir,
- timestamp: new Date().toISOString()
- };
- fs.writeFileSync(latestPath, JSON.stringify(latestJson, null, 2));
- } catch(e) {
+    try {
+        const latestPath = path.join(projectRoot, 'rules/LATEST.json');
+        
+        // Sanitize result_dir for LATEST.json to be relative to repo root (CI compatibility)
+        let sanitizedResultDir = resultDir.replace(/\\/g, '/');
+        if (sanitizedResultDir.startsWith('OppRadar/')) {
+            sanitizedResultDir = sanitizedResultDir.substring(9);
+        }
+
+        const latestJson = {
+            task_id: taskId,
+            result_dir: sanitizedResultDir,
+            timestamp: new Date().toISOString()
+        };
+        fs.writeFileSync(latestPath, JSON.stringify(latestJson, null, 2));
+    } catch(e) {
  console.log('Could not write LATEST.json: ' + e.message);
  }
 

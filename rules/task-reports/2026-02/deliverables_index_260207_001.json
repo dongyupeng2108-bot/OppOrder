@@ -281,9 +281,14 @@
       "sha256_short": "78c3acaf"
     },
     {
+      "name": "260207_001.json",
+      "size": 538,
+      "sha256_short": "4f987422"
+    },
+    {
       "name": "260207_001_healthcheck_53122.txt",
-      "size": 1020,
-      "sha256_short": "7b94eb03"
+      "size": 45,
+      "sha256_short": "36e705e8"
     },
     {
       "name": "deliverables_index_260206_005.json",
@@ -422,8 +427,8 @@
     },
     {
       "name": "notify_260207_001.txt",
-      "size": 3829,
-      "sha256_short": "b9fe06a3"
+      "size": 3847,
+      "sha256_short": "aba8c149"
     },
     {
       "name": "reports/healthcheck_pairs.txt",
@@ -503,7 +508,7 @@
     {
       "name": "result_260207_001.json",
       "size": 212,
-      "sha256_short": "2c7ebaa3"
+      "sha256_short": "3940be76"
     },
     {
       "name": "run_260206_005.log",
@@ -572,8 +577,8 @@
     },
     {
       "name": "run_260207_001.log",
-      "size": 334,
-      "sha256_short": "66f1669e"
+      "size": 340,
+      "sha256_short": "14785ab7"
     },
     {
       "name": "scripts/postflight_validate_envelope.mjs",
