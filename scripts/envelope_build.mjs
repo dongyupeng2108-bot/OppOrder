@@ -92,10 +92,24 @@ async function main() {
     const files = fs.readdirSync(resultDir).filter(f => f !== indexFilename && f !== notifyFilename);
     if (!files.includes(resultFilename)) files.push(resultFilename);
     
-    const notifyHeader = 'RESULT_JSON\n{\n  "status": "' + status + '",\n  "summary": "' + summary + '"\n}\n';
-    const notifyLog = 'LOG_HEAD\n' + logHead + '\nLOG_TAIL\n' + logTail + '\n';
-    const notifyIndex = 'INDEX\n(See deliverables_index_' + taskId + '.json for full details)\nFiles:\n' + files.join('\n') + '\n';
-    const notifyHc = 'HEALTHCHECK\n' + hcContent;
+    const notifyHeader = `RESULT_JSON
+{
+  "status": "${status}",
+  "summary": "${summary}"
+}
+`;
+    const notifyLog = `LOG_HEAD
+${logHead}
+LOG_TAIL
+${logTail}
+`;
+    const notifyIndex = `INDEX
+(See deliverables_index_${taskId}.json for full details)
+Files:
+${files.join('\n')}
+`;
+    const notifyHc = `HEALTHCHECK
+${hcContent}`;
     
     let notifyContent = notifyHeader + notifyLog + notifyIndex + notifyHc;
     // Normalize to LF to ensure consistent hashing across platforms (Windows/CI)
