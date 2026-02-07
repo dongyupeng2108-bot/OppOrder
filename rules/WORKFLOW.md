@@ -1,5 +1,28 @@
 ## Windows Environment Protocols
 
+### Command & Environment Protocols
+- **Explicit Environment**: All task templates MUST specify the execution environment (PowerShell or bash) using `ENV=PowerShell|bash`.
+- **Cross-Platform Compatibility**:
+  - **No `cd /d`**: The `cd /d` syntax is specific to `cmd.exe` and causes errors in PowerShell/bash. It is STRICTLY FORBIDDEN in documentation and scripts.
+  - **PowerShell**: Use `cd E:\OppRadar` or `Set-Location E:\OppRadar`.
+  - **Bash/WSL**: Use `cd /mnt/e/OppRadar` (adjust for actual mount point).
+- **Interactive Commands**: Forbidden (no `pause`, `choice`, `read-host`, or interactive Y/N prompts).
+
+### Command Templates
+#### PowerShell (Recommended)
+```powershell
+# ENV=PowerShell
+cd E:\OppRadar
+# ... commands ...
+```
+
+#### Bash (WSL/Git Bash)
+```bash
+# ENV=bash
+cd /mnt/e/OppRadar
+# ... commands ...
+```
+
 ### Anti-Locking Git Operations
 - **Root Context**: ALWAYS execute `git` commands from the repository root (`E:\OppRadar`). NEVER execute `git` commands while the terminal CWD is inside a subdirectory (e.g., `OppRadar/`) that might be modified/deleted by the git operation.
 - **Process Cleanup**: Before `git pull`, `git rebase`, or `git checkout`, ensure no background processes (like `node` servers) are holding locks on files in `OppRadar/` or `scripts/`.

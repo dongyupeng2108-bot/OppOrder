@@ -24,7 +24,7 @@
 
 ### Fields & Schema
 #### Strategy
-- `strategy_id`: String (Required). Format: `st_[a-z0-9]{8}`. Unique identifier.
+- `strategy_id`: String (Required). Format: `st_[a-z0-9]{8}`.
 - `name`: String (Required). Human-readable name.
 - `version`: String (Required). Semantic version (e.g., "1.0.0").
 - `status`: String (Required). State machine: `DRAFT` -> `ACTIVE` -> `DEPRECATED`.
@@ -121,3 +121,6 @@
     - List all Opportunities (ID, Strategy, Score, State, Reason).
     - **Export JSON**: Button/Link opening `/replay?scan=<scan_id>` in new tab.
 
+## Operational Standards
+- **Command & Environment**: See `rules/WORKFLOW.md` for strict command templates (PowerShell/bash) and `cd /d` prohibition.
+- **Interactive Prompts**: Strictly forbidden.
