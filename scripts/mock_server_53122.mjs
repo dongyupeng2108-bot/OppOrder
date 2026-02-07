@@ -64,7 +64,7 @@ try {
     console.error("Failed to initialize data:", e);
 }
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
     console.log(`${req.method} ${req.url}`);
 
     const parsedUrl = url.parse(req.url, true);
@@ -116,70 +116,97 @@ const server = http.createServer((req, res) => {
 
     // POST /scans/run
     if (pathname === '/scans/run' && req.method === 'POST') {
+        const bodyPromise = new Promise((resolve, reject) => {
+            let body = '';
+            req.on('data', chunk => body += chunk.toString());
+            req.on('end', () => resolve(body));
+            req.on('error', reject);
+        });
+
         try {
-            const { mutate, seed, n_opps, mode } = parsedUrl.query; // Also check body if needed, but query is easier for now as per spec "query 或 body 均可"
+            const rawBody = await bodyPromise;
+            let bodyParams = {};
+            if (rawBody) {
+                try {
+                    bodyParams = JSON.parse(rawBody);
+                } catch (e) {
+                    // ignore invalid json
+                }
+            }
             
+            const params = { ...parsedUrl.query, ...bodyParams };
+            let { seed, n_opps, mode } = params;
+
+            // Defaults
+            seed = (seed === undefined || seed === null || seed === '') ? 111 : parseInt(seed, 10);
+            n_opps = (n_opps === undefined || n_opps === null || n_opps === '') ? 5 : parseInt(n_opps, 10);
+            mode = (mode === undefined || mode === null || mode === '') ? 'fast' : mode;
+
+            // Validation
+            if (isNaN(n_opps) || n_opps < 1 || n_opps > 50) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Invalid n_opps. Must be between 1 and 50.' }));
+                return;
+            }
+
             // 1. Setup Metrics & Context
             const t0 = Date.now();
-            const steps = [];
-            const stepStart = (name) => {
-                const start = Date.now();
-                return { name, start };
+            const metrics = {
+                stage_ms: {}
             };
-            const stepEnd = (ctx, ok = true, note = '') => {
-                const duration_ms = Date.now() - ctx.start;
-                steps.push({ name: ctx.name, duration_ms, ok, note });
+            
+            const stepStart = (name) => {
+                return Date.now();
+            };
+            const stepEnd = (name, start) => {
+                const duration = Date.now() - start;
+                metrics.stage_ms[name] = duration;
+                return duration;
             };
 
             // 2. Initialize Random
-            const sLoad = stepStart('load_context');
-            const useSeed = seed ? parseInt(seed, 10) : Date.now();
-            const limitOpps = n_opps ? parseInt(n_opps, 10) : 20; // Default max 20
-            const isDebug = mode === 'debug';
-
             // Simple LCG
             class SeededRandom {
                 constructor(s) { this.m = 2147483648; this.a = 1103515245; this.c = 12345; this.state = s % this.m; }
                 next() { this.state = (this.a * this.state + this.c) % this.m; return this.state / this.m; }
             }
-            const rng = new SeededRandom(useSeed);
+            const rng = new SeededRandom(seed);
             
             // Determine previous scan (simulated context loading)
             const lastScan = inMemoryScans.length > 0 ? inMemoryScans[inMemoryScans.length - 1] : null;
             const fromScanId = lastScan ? lastScan.scan_id : null;
-            stepEnd(sLoad);
 
             // 3. Generate Opportunities
-            const sGen = stepStart('generate_opps');
+            const tGen = stepStart('generate_opps');
             const timestamp = Date.now();
             // Use seeded random for ID generation to ensure reproducibility if seed is provided
-            // We combine seed + index to make IDs deterministic
-            const scanId = 'sc_' + crypto.createHash('sha256').update(useSeed.toString() + timestamp.toString()).digest('hex').substring(0, 8);
+            // We combine seed + index + timestamp(if not replay) to make IDs. 
+            // BUT Task says: "Same seed + n_opps + mode -> opportunity list content consistent".
+            // If we use timestamp in hash, it changes every time.
+            // So we should NOT use timestamp for opp_id if we want reproducibility, OR we rely on seed only.
+            // Let's use seed + index for opp_id to ensure reproducibility.
+            const scanId = 'sc_' + crypto.createHash('sha256').update(seed.toString() + timestamp.toString()).digest('hex').substring(0, 8);
 
             const newOpps = [];
-            
-            let numOpps;
-            if (n_opps) {
-                numOpps = parseInt(n_opps, 10);
-            } else {
-                numOpps = Math.floor(rng.next() * 5) + 1; 
-            }
-            if (numOpps > 20) numOpps = 20; // Hard limit
-
             let yesCount = 0;
             let noCount = 0;
             let unknownCount = 0;
 
             if (fixtureStrategies.length > 0 && fixtureSnapshots.length > 0) {
-                for (let i = 0; i < numOpps; i++) {
-                    const strat = fixtureStrategies[Math.floor(rng.next() * fixtureStrategies.length)];
-                    const snap = fixtureSnapshots[Math.floor(rng.next() * fixtureSnapshots.length)];
+                for (let i = 0; i < n_opps; i++) {
+                    // Use RNG to select strategy/snapshot deterministically
+                    const stratIndex = Math.floor(rng.next() * fixtureStrategies.length);
+                    const snapIndex = Math.floor(rng.next() * fixtureSnapshots.length);
+                    
+                    const strat = fixtureStrategies[stratIndex];
+                    const snap = fixtureSnapshots[snapIndex];
+                    
                     // Deterministic ID based on seed and index
-                    const oppId = 'op_' + crypto.createHash('sha256').update(useSeed.toString() + i.toString()).digest('hex').substring(0, 8);
+                    const oppId = 'op_' + crypto.createHash('sha256').update(seed.toString() + i.toString() + 'v1').digest('hex').substring(0, 8);
                     
                     const isTradeable = rng.next() > 0.5;
-                    const tradeableState = isTradeable ? 'TRADEABLE' : 'NOT_TRADEABLE'; // Simplified
-                    // For summary stats
+                    const tradeableState = isTradeable ? 'TRADEABLE' : 'NOT_TRADEABLE';
+                    
                     if (tradeableState === 'TRADEABLE') yesCount++;
                     else if (tradeableState === 'NOT_TRADEABLE') noCount++;
                     else unknownCount++;
@@ -190,16 +217,15 @@ const server = http.createServer((req, res) => {
                         snapshot_id: snap.snapshot_id,
                         score: (rng.next() * 100).toFixed(2),
                         tradeable_state: tradeableState,
-                        tradeable_reason: 'Generated by RunScan (Seed: ' + useSeed + ')',
+                        tradeable_reason: `Generated by RunScan (Seed: ${seed}, Mode: ${mode})`,
                         created_at: new Date().toISOString()
                     });
                 }
             }
-            stepEnd(sGen, true, `Generated ${newOpps.length} opps`);
+            stepEnd('generate_opps', tGen);
 
             // 4. Construct Scan Object
             const newOppIds = newOpps.map(o => o.opp_id);
-            const totalDuration = Date.now() - t0;
             
             const summary = {
                 opp_count: newOpps.length,
@@ -211,15 +237,17 @@ const server = http.createServer((req, res) => {
             const newScan = {
                 scan_id: scanId,
                 timestamp: new Date().toISOString(),
-                duration_ms: totalDuration, 
+                duration_ms: 0, // placeholder
                 opp_ids: newOppIds,
-                seed: useSeed,
-                steps: steps, 
+                seed: seed,
+                n_opps: n_opps,
+                mode: mode,
+                metrics: metrics,
                 summary: summary
             };
 
             // 5. Update Memory & Persist
-            const sPersist = stepStart('persist_store');
+            const tPersist = stepStart('persist_store');
             
             inMemoryScans.push(newScan);
             inMemoryOpps.push(...newOpps);
@@ -235,12 +263,11 @@ const server = http.createServer((req, res) => {
                 fs.renameSync(tempFile, RUNTIME_STORE);
             } catch (persistErr) {
                 console.error("Failed to persist runtime store:", persistErr);
-                stepEnd(sPersist, false, persistErr.message);
                 throw persistErr;
             }
-            stepEnd(sPersist);
+            stepEnd('persist_store', tPersist);
 
-            // Update total duration in the object (in memory)
+            // Update total duration
             newScan.duration_ms = Date.now() - t0;
             
             const result = {
