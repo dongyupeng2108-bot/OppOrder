@@ -1,0 +1,23 @@
+{
+  "task_id": "260208_009",
+  "timestamp": "2026-02-07T19:37:24.992Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260208_009",
+      "status": "DONE",
+      "summary": "Docs: task_id no-reuse + tech-cost assumptions + data-capture-first",
+      "report_file": "notify_260208_009.txt",
+      "report_sha256_short": "4e93d59c"
+    }
+  }
+}

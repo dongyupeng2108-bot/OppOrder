@@ -86,6 +86,24 @@
         - Evidence Generation Count (Goal: 1 per PR)
 
 ## Engineering Standards
+### Costing Assumptions (Tech Cost)
+- **Principle**: "Tech Cost" refers to the **cost estimation model**, not the implementation details.
+- **Standard**:
+  - Use standard unit costs (e.g., per-token, per-hour, per-request).
+  - Apply these assumptions to OppRadar's specific architecture.
+  - **Do NOT** conflate cost models with schema design.
+
+### Data Capture First (Training Readiness)
+- **Principle**: **Capture EVERYTHING from Day 1**. Even if we use free/cheap models initially, we must build the dataset for future training.
+- **Requirement**:
+  - **Store**: Market Snapshots, News/Event Snapshots, Probability Changes, Trigger Logs, Re-eval Logs, LLM Inputs/Outputs, Final Labels (Settlement Results).
+  - **Purpose**: Enable future fine-tuning of local models (e.g., DeepSeek distilled) using high-quality, real-world data accumulated during the "Bootstrap" and "Cloud API" phases.
+
+### LLM Provider Strategy
+- **Phase 1 (Bootstrap)**: Use Mock / Free / Low-Cost Cloud APIs to validate the "Loop" (Monitor-Trigger-Reeval). Focus on **Data Capture** pipelines.
+- **Phase 2 (Integration)**: Integrate capable models (e.g., DeepSeek V3/R1) via API.
+- **Phase 3 (Optimization)**: Transition to local/distilled models if cost/latency dictates, using the **Captured Data** from Phase 1 & 2.
+
 ### Stability First
 - **Protocol**: If environment commands (e.g., `cd /d` failure) cause task failures, **STOP feature dev**.
 - **Action**: Fix the workflow/docs (Docs-only task) to ensure cross-environment compatibility before resuming business logic.
