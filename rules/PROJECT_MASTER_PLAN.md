@@ -56,4 +56,8 @@
   - **DoD**: 连续运行 24h 无崩溃 (Mock 环境模拟)。
   - **证据要求**: `rules/task-reports/2026-02/M6_PR2_stability_report.txt`。
 
+## Execution & Acceptance Conventions
+- **Command Templates**: All tasks MUST use the standard command templates defined in `rules/WORKFLOW.md` (ENV=PowerShell|bash). `cd /d` is strictly prohibited.
+- **Evidence**: All PRs must include standard evidence artifacts (Healthcheck, Envelope, Postflight).
+
 <!-- smoke -->
