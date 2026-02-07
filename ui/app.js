@@ -83,6 +83,38 @@ async function renderReplayDetail(scanId) {
         ? `<div class="warning">Warning: Missing Opp IDs: ${missing_opp_ids.join(', ')}</div>` 
         : '';
 
+    // New Metrics Section
+    const summary = scan.summary || {};
+    const steps = scan.steps || [];
+
+    const stepsHtml = steps.length > 0 ? `
+        <h3>Pipeline Steps</h3>
+        <table style="width: 100%; margin-bottom: 20px; border-collapse: collapse;">
+            <tr style="background: #f0f0f0;">
+                <th style="border: 1px solid #ddd; padding: 8px;">Step</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Duration (ms)</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Status</th>
+                <th style="border: 1px solid #ddd; padding: 8px;">Note</th>
+            </tr>
+            ${steps.map(s => `
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 8px;">${s.name}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">${s.duration_ms}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px; color: ${s.ok ? 'green' : 'red'};">${s.ok ? 'OK' : 'FAIL'}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">${s.note || ''}</td>
+                </tr>
+            `).join('')}
+        </table>
+    ` : '';
+
+    const summaryHtml = scan.summary ? `
+        <div class="summary-box" style="background: #eef; padding: 10px; margin-bottom: 20px; border-radius: 4px;">
+            <h3 style="margin-top: 0;">Scan Summary</h3>
+            <p><strong>Total Opps:</strong> ${summary.opp_count}</p>
+            <p><strong>Distribution:</strong> <span style="color:green">${summary.tradeable_yes_count} YES</span>, <span style="color:red">${summary.tradeable_no_count} NO</span>, <span style="color:gray">${summary.tradeable_unknown_count} UNKNOWN</span></p>
+        </div>
+    ` : '';
+
     return `
         ${renderNav()}
         <h1>Replay: ${scan.scan_id}</h1>
@@ -90,9 +122,12 @@ async function renderReplayDetail(scanId) {
             <p><strong>Timestamp:</strong> ${scan.timestamp}</p>
             <p><strong>Duration:</strong> ${scan.duration_ms}ms</p>
             <p><strong>Opp Count:</strong> ${(scan.opp_ids || []).length}</p>
+            <p><strong>Seed:</strong> ${scan.seed || 'Random'}</p>
             <a href="/export/replay.json?scan=${scanId}" target="_blank" class="button">Export JSON</a>
             <a href="/export/replay.csv?scan=${scanId}" target="_blank" class="button">Export CSV</a>
         </div>
+        ${summaryHtml}
+        ${stepsHtml}
         ${missingHtml}
         <table>
             <tr>
