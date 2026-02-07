@@ -1,0 +1,23 @@
+{
+  "task_id": "260207_003",
+  "timestamp": "2026-02-07T16:10:49.240Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260207_003",
+      "status": "DONE",
+      "summary": "M4: runscan persist toggle + perf metrics + evidence",
+      "report_file": "notify_260207_003.txt",
+      "report_sha256_short": "c13b9442"
+    }
+  }
+}
