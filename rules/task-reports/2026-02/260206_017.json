@@ -1,0 +1,23 @@
+{
+  "task_id": "260206_017",
+  "timestamp": "2026-02-07T10:15:13.282Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260206_017",
+      "status": "DONE",
+      "summary": "Docs: roadmap (milestone->PR) + merge workflow",
+      "report_file": "notify_260206_017.txt",
+      "report_sha256_short": "0695ff1c"
+    }
+  }
+}
