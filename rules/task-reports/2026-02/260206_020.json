@@ -1,0 +1,23 @@
+{
+  "task_id": "260206_020",
+  "timestamp": "2026-02-07T13:57:25.087Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260206_020",
+      "status": "DONE",
+      "summary": "Docs: ban cd /d in shell; add cross-shell cd templates; stability-first note",
+      "report_file": "notify_260206_020.txt",
+      "report_sha256_short": "0d582d9c"
+    }
+  }
+}

@@ -2,10 +2,13 @@
 
 ### Command & Environment Protocols
 - **Explicit Environment**: All task templates MUST specify the execution environment (PowerShell or bash) using `ENV=PowerShell|bash`.
+- **Default Syntax**: Task templates for `RUN` and `CMD` default to **PowerShell** syntax unless explicitly declared as CMD.
 - **Cross-Platform Compatibility**:
-  - **No `cd /d`**: The `cd /d` syntax is specific to `cmd.exe` and causes errors in PowerShell/bash. It is STRICTLY FORBIDDEN in documentation and scripts.
-  - **PowerShell**: Use `cd E:\OppRadar` or `Set-Location E:\OppRadar`.
-  - **Bash/WSL**: Use `cd /mnt/e/OppRadar` (adjust for actual mount point).
+  - **Hard Rule**: **Forbid `cd /d` in shell**. The `cd /d` syntax is specific to `cmd.exe` and causes fatal errors in PowerShell (`Set-Location : A positional parameter cannot be found...`).
+  - **Standard Templates**:
+    1. **PowerShell** (Default): `Set-Location 'E:\OppRadar'` or `cd 'E:\OppRadar'`.
+    2. **CMD** (Legacy/Specific): `cd /d E:\OppRadar` (MUST explicitly state "Only for CMD").
+    3. **Bash/zsh**: Use Windows Terminal/PowerShell preference, or in WSL: `cd /mnt/e/OppRadar`.
 - **Interactive Commands**: Forbidden (no `pause`, `choice`, `read-host`, or interactive Y/N prompts).
 
 ### Command Templates
