@@ -1,0 +1,11 @@
+Total Opportunities: 10 (Expected 10)
+Opp #0 (op_8e23f52c): [PASS] score_baseline, [PASS] score_components, [PASS] llm_summary (Mock)
+  - Summary: [Mock] Opportunity op_8e23f52c shows moderate potential based on st_12345678. Baseline score: 18.93.
+  - Score: 18.93 (Components: {"spread_edge":15.26,"liquidity":11.68,"volatility":16.91,"risk_reward":7.52})
+Opp #1 (op_3dc67ee1): [PASS] score_baseline, [PASS] score_components, [PASS] llm_summary (Mock)
+  - Summary: [Mock] Opportunity op_3dc67ee1 shows strong potential based on st_12345678. Baseline score: 40.23.
+  - Score: 40.23 (Components: {"spread_edge":25.46,"liquidity":4.84,"volatility":16.65,"risk_reward":24.63})
+Opp #2 (op_0c2f2aec): [PASS] score_baseline, [PASS] score_components, [PASS] llm_summary (Mock)
+  - Summary: [Mock] Opportunity op_0c2f2aec shows strong potential based on st_12345678. Baseline score: 39.17.
+  - Score: 39.17 (Components: {"spread_edge":8,"liquidity":4.4,"volatility":9.13,"risk_reward":15.86})
+Summary: 10/10 Opportunities passed all structure checks.
