@@ -1,0 +1,6 @@
+connection: keep-alive
+content-disposition: attachment; filename="llm_analyze_sc_6d0898ce.json"
+content-type: application/json; charset=utf-8
+date: Sat, 07 Feb 2026 18:20:32 GMT
+keep-alive: timeout=5
+transfer-encoding: chunked

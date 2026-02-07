@@ -154,6 +154,12 @@ async function renderReplayDetail(scanId) {
             <td>${o.score_baseline || o.score}</td>
             <td>${o.tradeable_state}</td>
             <td>${o.tradeable_reason}</td>
+            <td>
+                <div style="font-size: 0.9em;">
+                    <strong>${o.llm_provider || '-'}</strong> / ${o.llm_model || '-'}<br>
+                    <span style="color: gray;">${o.llm_latency_ms ? o.llm_latency_ms + 'ms' : '-'}</span>
+                </div>
+            </td>
             <td><span title="${o.llm_summary || ''}">${(o.llm_summary || '').substring(0, 30)}...</span></td>
             <td>${o.created_at}</td>
         </tr>
@@ -250,6 +256,7 @@ async function renderReplayDetail(scanId) {
                 <th>Score</th>
                 <th>State</th>
                 <th>Reason</th>
+                <th>LLM Provider/Model</th>
                 <th>LLM Summary</th>
                 <th>Created At</th>
             </tr>
@@ -461,9 +468,13 @@ async function renderOpportunityDetail(id) {
         
         <div class="llm-section" style="background: #f0f8ff; padding: 15px; margin-top: 20px; border-left: 5px solid #007bff;">
             <h3 style="margin-top: 0;">LLM Analysis</h3>
+            <p><strong>Provider:</strong> ${item.llm_provider || 'N/A'}</p>
+            <p><strong>Model:</strong> ${item.llm_model || 'N/A'}</p>
+            <p><strong>Latency:</strong> ${item.llm_latency_ms ? item.llm_latency_ms + 'ms' : 'N/A'}</p>
             <p><strong>Summary:</strong> ${item.llm_summary || 'N/A'}</p>
             <p><strong>Confidence:</strong> ${item.llm_confidence !== undefined ? item.llm_confidence : 'N/A'}</p>
             <p><strong>Tags:</strong> ${(item.llm_tags || []).join(', ')}</p>
+            ${item.llm_error ? `<p style="color:red"><strong>Error:</strong> ${item.llm_error}</p>` : ''}
         </div>
     `;
 }

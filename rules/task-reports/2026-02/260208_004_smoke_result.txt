@@ -1,0 +1,8 @@
+{
+  "steps": [
+    "Step 1: Mock PASS",
+    "Step 2: Ollama SKIPPED",
+    "Step 3: Export PASS",
+    "Step 4: UI PASS"
+  ]
+}
