@@ -1,7 +1,7 @@
 RESULT_JSON
 {
-  " status: " + status + ",
-  " summary: " + summary + "
+  "status": "DONE",
+  "summary": "Docs: ban cd /d; add PS/bash command templates; cleanup occurrences"
 }
 LOG_HEAD
 [2026-02-07T10:33:51.963Z] START Task 260207_001
@@ -78,6 +78,12 @@ Files:
 260206_016_runtime_store_snapshot.json
 260206_017.json
 260206_017_healthcheck_53122.txt
+260206_018.json
+260206_018_healthcheck_root.txt
+260206_018_repro_check.txt
+260206_018_restart_replay_status.txt
+260206_018_runscan_1.json
+260206_018_runscan_2.json
 260207_001.json
 260207_001_healthcheck_53122.txt
 deliverables_index_260206_005.json
@@ -93,6 +99,7 @@ deliverables_index_260206_014.json
 deliverables_index_260206_015.json
 deliverables_index_260206_016.json
 deliverables_index_260206_017.json
+deliverables_index_260206_018.json
 manual_verification.json
 notify_260206_005.txt
 notify_260206_006.txt
@@ -107,6 +114,7 @@ notify_260206_014.txt
 notify_260206_015.txt
 notify_260206_016.txt
 notify_260206_017.txt
+notify_260206_018.txt
 reports
 result_260206_005.json
 result_260206_006.json
@@ -121,6 +129,7 @@ result_260206_014.json
 result_260206_015.json
 result_260206_016.json
 result_260206_017.json
+result_260206_018.json
 result_260207_001.json
 run_260206_005.log
 run_260206_006.log
@@ -135,6 +144,7 @@ run_260206_014.log
 run_260206_015.log
 run_260206_016.log
 run_260206_017.log
+run_260206_018.log
 run_260207_001.log
 scripts
 HEALTHCHECK

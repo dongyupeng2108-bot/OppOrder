@@ -1,6 +1,6 @@
 {
   "task_id": "260207_001",
-  "timestamp": "2026-02-07T11:19:29.539Z",
+  "timestamp": "2026-02-07T12:48:34.330Z",
   "valid": true,
   "errors": [],
   "checks": {
@@ -17,7 +17,7 @@
       "status": "DONE",
       "summary": "Docs: ban cd /d; add PS/bash command templates; cleanup occurrences",
       "report_file": "notify_260207_001.txt",
-      "report_sha256_short": "c72f6f8e"
+      "report_sha256_short": "5c78b3c7"
     }
   }
 }
