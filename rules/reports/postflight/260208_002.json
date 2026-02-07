@@ -1,0 +1,32 @@
+{
+  "task_id": "260208_002",
+  "timestamp": "2026-02-07T17:14:56.083Z",
+  "valid": false,
+  "errors": [
+    {
+      "code": "POSTFLIGHT_STATUS_INVALID",
+      "message": "Status must be DONE or FAILED, found: success"
+    },
+    {
+      "code": "POSTFLIGHT_HEALTHCHECK_INVALID",
+      "message": "Healthcheck ֤�ݲ��ϸ�/ �� /pairs ���� 200 (Combined content check)"
+    }
+  ],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260208_002",
+      "status": "success",
+      "summary": "Scan Pipeline Stage Logs and Export Evidence",
+      "report_file": "notify_260208_002.txt",
+      "report_sha256_short": "faea223a"
+    }
+  }
+}

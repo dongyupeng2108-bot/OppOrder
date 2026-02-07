@@ -1,0 +1,23 @@
+{
+  "task_id": "260208_004",
+  "timestamp": "2026-02-07T18:20:42.566Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260208_004",
+      "status": "DONE",
+      "summary": "M4: LLM multi-provider + Ollama fallback",
+      "report_file": "notify_260208_004.txt",
+      "report_sha256_short": "7c845f95"
+    }
+  }
+}

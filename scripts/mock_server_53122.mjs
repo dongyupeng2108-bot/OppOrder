@@ -90,6 +90,16 @@ const server = http.createServer(async (req, res) => {
         let relativePath = pathname.replace(/^\/ui/, '');
         if (relativePath === '' || relativePath === '/') relativePath = '/index.html';
         
+        // SPECIAL CASE: Serve app.js from local dir if exists (for dev/workaround)
+        if (relativePath === '/app.js' || relativePath === 'app.js') {
+             const localAppJs = path.join(__dirname, 'app.js');
+             if (fs.existsSync(localAppJs)) {
+                 res.writeHead(200, { 'Content-Type': 'text/javascript' });
+                 fs.createReadStream(localAppJs).pipe(res);
+                 return;
+             }
+        }
+        
         let filePath = path.join(UI_DIR, relativePath);
         
         if (!filePath.startsWith(UI_DIR)) {
@@ -122,6 +132,83 @@ const server = http.createServer(async (req, res) => {
 
     // 3. API Routes (Custom Logic)
 
+    // GET /export/llm_analyze.json?scan=<id>
+    if (pathname === '/export/llm_analyze.json') {
+        const scanId = parsedUrl.query.scan;
+        if (!scanId) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Missing scan parameter' }));
+            return;
+        }
+
+        // Search in memory first, then file
+        let scan = inMemoryScans.find(s => s.scan_id === scanId);
+        let opps = [];
+
+        if (!scan && fs.existsSync(RUNTIME_DIR)) {
+             const scanPath = path.join(RUNTIME_DIR, `scan_${scanId}.json`);
+             if (fs.existsSync(scanPath)) {
+                 try {
+                     scan = JSON.parse(fs.readFileSync(scanPath, 'utf8'));
+                 } catch (e) {
+                     // ignore
+                 }
+             }
+        }
+
+        if (!scan) {
+            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Scan not found' }));
+            return;
+        }
+
+        // Fetch opps
+        const oppIds = scan.opp_ids || [];
+        opps = inMemoryOpps.filter(o => oppIds.includes(o.opp_id));
+        
+        // If not enough in memory, try load from disk
+        if (opps.length < oppIds.length && fs.existsSync(RUNTIME_DIR)) {
+            oppIds.forEach(oid => {
+                if (!opps.find(o => o.opp_id === oid)) {
+                    const p = path.join(RUNTIME_DIR, `${oid}.json`);
+                    if (fs.existsSync(p)) {
+                        try {
+                            opps.push(JSON.parse(fs.readFileSync(p, 'utf8')));
+                        } catch (e) {}
+                    }
+                }
+            });
+        }
+
+        // Filter stage logs
+        const llmLog = (scan.stage_logs || []).find(s => s.stage_id === 'llm_analyze');
+        
+        // Map opps to LLM fields
+        const oppsSummary = opps.map(o => ({
+            opp_id: o.opp_id,
+            llm_provider: o.llm_provider,
+            llm_model: o.llm_model,
+            llm_summary: o.llm_summary,
+            llm_confidence: o.llm_confidence,
+            llm_tags: o.llm_tags,
+            llm_latency_ms: o.llm_latency_ms,
+            llm_error: o.llm_error
+        }));
+
+        const result = {
+            scan_id: scan.scan_id,
+            llm_analyze_stage: llmLog || null,
+            opportunities: oppsSummary
+        };
+
+        res.writeHead(200, {
+            'Content-Type': 'application/json; charset=utf-8',
+            'Content-Disposition': `attachment; filename="llm_analyze_${scanId}.json"`
+        });
+        res.end(JSON.stringify(result, null, 2));
+        return;
+    }
+
     // POST /scans/run
     if (pathname === '/scans/run' && req.method === 'POST') {
         const bodyPromise = new Promise((resolve, reject) => {
@@ -143,7 +230,7 @@ const server = http.createServer(async (req, res) => {
             }
             
             const params = { ...parsedUrl.query, ...bodyParams };
-            let { seed, n_opps, mode, persist, max_n_opps } = params;
+            let { seed, n_opps, mode, persist, max_n_opps, llm_provider } = params;
 
             // Defaults
             seed = (seed === undefined || seed === null || seed === '') ? 111 : parseInt(seed, 10);
@@ -151,6 +238,10 @@ const server = http.createServer(async (req, res) => {
             mode = (mode === undefined || mode === null || mode === '') ? 'fast' : mode;
             persist = (persist === undefined || persist === null || persist === '') ? true : (String(persist) === 'true');
             max_n_opps = (max_n_opps === undefined || max_n_opps === null || max_n_opps === '') ? 50 : parseInt(max_n_opps, 10);
+            
+            // Resolve LLM Provider for this run
+            const runLLMProviderName = llm_provider || process.env.LLM_PROVIDER || 'mock';
+            const runLLMProvider = getProvider(runLLMProviderName);
 
             // Validation & Cap
             if (isNaN(n_opps_raw) || n_opps_raw < 1) {
@@ -263,27 +354,40 @@ const server = http.createServer(async (req, res) => {
             });
             logStage('score_baseline', tScoreStart, {}, { scored: newOpps.length }, [], []);
 
-            // 3.3 Stage: llm_mock
+            // 3.3 Stage: llm_analyze
             const tLlmStart = Date.now();
             let errorsCount = 0;
+            let analyzedCount = 0;
+            let fallbackCount = 0;
             const genWarnings = [];
             
             // Process sequentially for async LLM
             for (const opp of newOpps) {
                 try {
-                    const llmResult = await llmProvider.summarizeOpp(opp);
-                    opp.llm_summary = llmResult.summary;
-                    opp.llm_confidence = llmResult.confidence;
-                    opp.llm_tags = llmResult.tags;
+                    const llmResult = await runLLMProvider.summarizeOpp(opp);
+                    opp.llm_provider = llmResult.llm_provider;
+                    opp.llm_model = llmResult.llm_model;
+                    opp.llm_summary = llmResult.llm_summary;
+                    opp.llm_confidence = llmResult.llm_confidence;
+                    opp.llm_tags = llmResult.llm_tags;
+                    opp.llm_latency_ms = llmResult.llm_latency_ms;
+                    opp.llm_error = llmResult.llm_error;
+
+                    analyzedCount++;
+                    if (llmResult.llm_summary === "OLLAMA_UNAVAILABLE_FALLBACK") {
+                        fallbackCount++;
+                        genWarnings.push(`Fallback for ${opp.opp_id}: ${llmResult.llm_error}`);
+                    }
                 } catch (llmErr) {
                     console.error(`LLM Provider Error for ${opp.opp_id}:`, llmErr);
                     opp.llm_summary = "Error generating summary";
                     opp.llm_tags = ['error'];
+                    opp.llm_error = llmErr.message;
                     errorsCount++;
                     genWarnings.push(llmErr.message);
                 }
             }
-            logStage('llm_mock', tLlmStart, { provider: process.env.LLM_PROVIDER || 'mock' }, { processed: newOpps.length, errors: errorsCount }, genWarnings, []);
+            logStage('llm_analyze', tLlmStart, { provider: runLLMProviderName }, { processed: newOpps.length, analyzed_count: analyzedCount, fallback_count: fallbackCount, errors: errorsCount, provider: runLLMProviderName, model: runLLMProvider.model || 'unknown' }, genWarnings, []);
 
             // 4. Construct Scan Object
             const tConstruct = Date.now();
