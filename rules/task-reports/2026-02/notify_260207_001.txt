@@ -1,7 +1,8 @@
 RESULT_JSON
 {
-  " status: " + status + ,
-  summary: " + summary +  \n}
+  " status: " + status + ",
+  " summary: " + summary + "
+}
 LOG_HEAD
 [2026-02-07T10:33:51.963Z] START Task 260207_001
 [2026-02-07T10:33:51.965Z] INFO Executing bootstrap sequence...

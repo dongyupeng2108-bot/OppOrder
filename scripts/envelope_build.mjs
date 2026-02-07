@@ -92,12 +92,14 @@ async function main() {
     const files = fs.readdirSync(resultDir).filter(f => f !== indexFilename && f !== notifyFilename);
     if (!files.includes(resultFilename)) files.push(resultFilename);
     
-    const notifyHeader = 'RESULT_JSON\n{\n  " status\: " + status + \,\n  \summary\: " + summary +  \\n}\n';
- const notifyLog = 'LOG_HEAD\n' + logHead + '\nLOG_TAIL\n' + logTail + '\n';
- const notifyIndex = 'INDEX\n(See deliverables_index_' + taskId + '.json for full details)\nFiles:\n' + files.join('\n') + '\n';
- const notifyHc = 'HEALTHCHECK\n' + hcContent;
- 
- const notifyContent = notifyHeader + notifyLog + notifyIndex + notifyHc;
+    const notifyHeader = 'RESULT_JSON\n{\n  " status: " + status + ",\n  " summary: " + summary + "\n}\n';
+    const notifyLog = 'LOG_HEAD\n' + logHead + '\nLOG_TAIL\n' + logTail + '\n';
+    const notifyIndex = 'INDEX\n(See deliverables_index_' + taskId + '.json for full details)\nFiles:\n' + files.join('\n') + '\n';
+    const notifyHc = 'HEALTHCHECK\n' + hcContent;
+    
+    let notifyContent = notifyHeader + notifyLog + notifyIndex + notifyHc;
+    // Normalize to LF to ensure consistent hashing across platforms (Windows/CI)
+    notifyContent = notifyContent.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
  const notifyHash = calculateSha256Short(notifyContent);
 
  // Write Notify
