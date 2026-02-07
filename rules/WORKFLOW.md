@@ -8,3 +8,17 @@
   - Ensure the CWD is safe (Root).
   - If it happens, the Agent must NOT try to interact (which fails). The Agent should have prevented it by ensuring clean state.
   - **Explicit Kill**: Before major git operations that change directory structure, explicitly kill potential locking processes (e.g., `Stop-Process -Name node -ErrorAction SilentlyContinue`).
+
+## 合并职责说明 (Merge Responsibility)
+**PR 合并需要老板手工执行**。Trae 严禁自动合并 PR。
+
+### 最小合并步骤清单 (Minimal Merge Checklist)
+1. **进入 PR 页面**: 打开 GitHub PR 链接。
+2. **确认 Gate Light**: 检查 "Checks" 部分，确认 `gate-light` 工作流显示为 ✅ Pass。这是必需检查项。
+3. **Merge**: 点击 "Merge pull request" -> "Confirm merge"。
+4. **本地同步**: 在本地终端执行：
+   ```bash
+   git checkout main
+   git pull --rebase origin main
+   ```
+   *注意：必须使用 `--rebase` 以保持提交历史整洁。*
