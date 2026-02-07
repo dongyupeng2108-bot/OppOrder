@@ -374,7 +374,7 @@ const server = http.createServer(async (req, res) => {
                     opp.llm_error = llmResult.llm_error;
 
                     analyzedCount++;
-                    if (llmResult.llm_summary === "OLLAMA_UNAVAILABLE_FALLBACK") {
+                    if (llmResult.llm_summary === "OLLAMA_UNAVAILABLE_FALLBACK" || llmResult.llm_tags.includes('fallback_from_openrouter')) {
                         fallbackCount++;
                         genWarnings.push(`Fallback for ${opp.opp_id}: ${llmResult.llm_error}`);
                     }

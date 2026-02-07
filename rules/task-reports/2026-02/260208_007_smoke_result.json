@@ -1,0 +1,21 @@
+{
+  "steps": [
+    {
+      "name": "Healthcheck",
+      "status": "PASS"
+    },
+    {
+      "name": "Explicit Mock Run",
+      "status": "PASS"
+    },
+    {
+      "name": "OpenRouter Run",
+      "status": "PASS",
+      "details": "Analyzed: 3, Fallback: 0"
+    },
+    {
+      "name": "Export Headers & Content",
+      "status": "PASS"
+    }
+  ]
+}

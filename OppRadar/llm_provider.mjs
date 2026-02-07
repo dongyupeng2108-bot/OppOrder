@@ -158,14 +158,124 @@ export class OllamaProvider extends LLMProvider {
     }
 }
 
-export function getProvider(type = 'mock') {
-    switch ((type || '').toLowerCase()) {
-        case 'deepseek':
-            return new DeepSeekProvider();
-        case 'ollama':
-            return new OllamaProvider();
-        case 'mock':
-        default:
-            return new MockProvider();
+import https from 'https';
+
+export class OpenRouterProvider extends LLMProvider {
+    constructor(config = {}) {
+        super(config);
+        this.apiKey = process.env.OPENROUTER_API_KEY;
+        this.model = process.env.OPENROUTER_MODEL || 'google/gemini-2.0-flash-exp:free'; // Default to a free model
+        if (this.apiKey) {
+            const fingerprint = crypto.createHash('sha256').update(this.apiKey).digest('hex').substring(0, 8);
+            console.log(`OpenRouterProvider initialized with key fingerprint: ${fingerprint}`);
+        }
     }
+
+    async summarizeOpp(opp, ctx = {}) {
+        const start = Date.now();
+        if (!this.apiKey) {
+            // Should theoretically be handled by getProvider, but safe guard here
+            console.warn("[OpenRouter] No API Key found, falling back to Mock.");
+            const mock = new MockProvider();
+            return mock.summarizeOpp(opp, ctx);
+        }
+
+        const prompt = `Analyze opportunity ${opp.opp_id} for strategy ${opp.strategy_id} with score ${opp.score_baseline}. Summarize in 1 sentence.`;
+        
+        try {
+            const response = await this._callOpenRouter(prompt);
+            const content = response.choices?.[0]?.message?.content || "[OpenRouter] No content";
+            
+            return {
+                llm_provider: 'openrouter',
+                llm_model: this.model,
+                llm_summary: content,
+                llm_confidence: 0.9, 
+                llm_tags: ['openrouter', 'cloud'],
+                llm_latency_ms: Date.now() - start,
+                llm_error: null
+            };
+        } catch (err) {
+            console.warn(`[OpenRouter] Failed: ${err.message}. Falling back to Mock.`);
+            const mock = new MockProvider();
+            const fallbackResult = await mock.summarizeOpp(opp, ctx);
+            
+            // Merge fallback result with error info
+            return {
+                ...fallbackResult,
+                llm_summary: `[Fallback] ${fallbackResult.llm_summary}`,
+                llm_tags: [...fallbackResult.llm_tags, 'fallback_from_openrouter'],
+                llm_error: `OpenRouter error: ${err.message}`
+            };
+        }
+    }
+
+    _callOpenRouter(prompt) {
+        return new Promise((resolve, reject) => {
+            const url = new URL('https://openrouter.ai/api/v1/chat/completions');
+            const body = JSON.stringify({
+                model: this.model,
+                messages: [
+                    { role: 'user', content: prompt }
+                ]
+            });
+
+            const req = https.request(url, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${this.apiKey}`,
+                    'Content-Type': 'application/json',
+                    'Content-Length': Buffer.byteLength(body),
+                    // OpenRouter optional headers for ranking
+                    'HTTP-Referer': 'https://github.com/dongyupeng2108-bot/OppOrder', 
+                    'X-Title': 'OppRadar'
+                }
+            }, (res) => {
+                let data = '';
+                res.on('data', chunk => data += chunk);
+                res.on('end', () => {
+                    if (res.statusCode !== 200) {
+                        reject(new Error(`Status ${res.statusCode}: ${data}`));
+                    } else {
+                        try {
+                            resolve(JSON.parse(data));
+                        } catch (e) {
+                            reject(e);
+                        }
+                    }
+                });
+            });
+
+            req.on('error', (err) => reject(err));
+            req.on('timeout', () => {
+                req.destroy();
+                reject(new Error("Timeout"));
+            });
+            
+            req.setTimeout(10000); // 10s timeout
+            req.write(body);
+            req.end();
+        });
+    }
+}
+
+export function getProvider(type) {
+    // If type is explicitly provided, respect it
+    if (type) {
+        switch (type.toLowerCase()) {
+            case 'deepseek': return new DeepSeekProvider();
+            case 'ollama': return new OllamaProvider();
+            case 'openrouter': return new OpenRouterProvider();
+            case 'mock': return new MockProvider();
+            default: return new MockProvider();
+        }
+    }
+    
+    // Auto-selection logic based on Environment Variables
+    if (process.env.OPENROUTER_API_KEY) {
+        return new OpenRouterProvider();
+    }
+    
+    // Default to mock
+    return new MockProvider();
 }
