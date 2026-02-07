@@ -1,0 +1,8 @@
+{
+  "content-disposition": "attachment; filename=\"monitor_state_1770487360521.json\"",
+  "content-type": "application/json; charset=utf-8",
+  "date": "Sat, 07 Feb 2026 18:02:40 GMT",
+  "connection": "keep-alive",
+  "keep-alive": "timeout=5",
+  "transfer-encoding": "chunked"
+}
