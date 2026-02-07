@@ -1,0 +1,23 @@
+{
+  "task_id": "260206_016",
+  "timestamp": "2026-02-07T08:42:33.029Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260206_016",
+      "status": "DONE",
+      "summary": "M4: persist runscan runtime store (restart-safe) + evidence; keep / and /pairs 200",
+      "report_file": "notify_260206_016.txt",
+      "report_sha256_short": "d80a2c40"
+    }
+  }
+}

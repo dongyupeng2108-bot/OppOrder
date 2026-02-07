@@ -1,0 +1,17 @@
+{
+    "from_scan_id":  "sc_794013dd",
+    "to_scan_id":  "sc_cb70e6dd",
+    "added_opp_ids":  [
+                          "op_90ebdd7d",
+                          "op_13b64e63",
+                          "op_ba1b267f",
+                          "op_95259c05"
+                      ],
+    "removed_opp_ids":  [
+                            "op_6a71128b",
+                            "op_91df2878"
+                        ],
+    "changed":  [
+
+                ]
+}
