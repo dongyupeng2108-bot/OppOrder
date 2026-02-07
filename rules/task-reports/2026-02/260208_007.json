@@ -1,0 +1,23 @@
+{
+  "task_id": "260208_007",
+  "timestamp": "2026-02-07T19:05:17.224Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260208_007",
+      "status": "DONE",
+      "summary": "M4: OpenRouter provider with free cloud fallback",
+      "report_file": "notify_260208_007.txt",
+      "report_sha256_short": "76aa1979"
+    }
+  }
+}

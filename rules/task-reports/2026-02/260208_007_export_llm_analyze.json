@@ -1,0 +1,66 @@
+{
+  "scan_id": "sc_4b28c8aa",
+  "llm_analyze_stage": {
+    "stage_id": "llm_analyze",
+    "start_ts": "2026-02-07T19:05:03.225Z",
+    "end_ts": "2026-02-07T19:05:03.226Z",
+    "dur_ms": 1,
+    "input_summary": {
+      "provider": "openrouter"
+    },
+    "output_summary": {
+      "processed": 3,
+      "analyzed_count": 3,
+      "fallback_count": 0,
+      "errors": 0,
+      "provider": "openrouter",
+      "model": "google/gemini-2.0-flash-exp:free"
+    },
+    "warnings": [],
+    "errors": []
+  },
+  "opportunities": [
+    {
+      "opp_id": "op_ac807336",
+      "llm_provider": "mock",
+      "llm_model": "mock-v1",
+      "llm_summary": "[Mock] Opportunity op_ac807336 shows moderate potential based on st_12345678. Baseline score: 11.45.",
+      "llm_confidence": 0.68,
+      "llm_tags": [
+        "mock",
+        "baseline",
+        "low_vol"
+      ],
+      "llm_latency_ms": 0,
+      "llm_error": null
+    },
+    {
+      "opp_id": "op_f6c07dea",
+      "llm_provider": "mock",
+      "llm_model": "mock-v1",
+      "llm_summary": "[Mock] Opportunity op_f6c07dea shows weak potential based on st_12345678. Baseline score: 97.66.",
+      "llm_confidence": 0.5,
+      "llm_tags": [
+        "mock",
+        "baseline",
+        "low_vol"
+      ],
+      "llm_latency_ms": 0,
+      "llm_error": null
+    },
+    {
+      "opp_id": "op_f3d6b56f",
+      "llm_provider": "mock",
+      "llm_model": "mock-v1",
+      "llm_summary": "[Mock] Opportunity op_f3d6b56f shows moderate potential based on st_87654321. Baseline score: 8.49.",
+      "llm_confidence": 0.73,
+      "llm_tags": [
+        "mock",
+        "baseline",
+        "low_vol"
+      ],
+      "llm_latency_ms": 0,
+      "llm_error": null
+    }
+  ]
+}
