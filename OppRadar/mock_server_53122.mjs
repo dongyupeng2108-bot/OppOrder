@@ -43,7 +43,7 @@ let monitorState = {};
 
 // Helper: Run Scan Core Logic (Decoupled from HTTP)
 async function runScanCore(params) {
-    let { seed, n_opps, mode, persist, max_n_opps, llm_provider, topic_key, dedup_window_sec, dedup_mode, cache_ttl_sec } = params;
+    let { seed, n_opps, mode, persist, max_n_opps, llm_provider, topic_key, dedup_window_sec, dedup_mode, cache_ttl_sec, batch_id } = params;
 
     // Defaults
     seed = (seed === undefined || seed === null || seed === '') ? 111 : parseInt(seed, 10);
@@ -252,7 +252,7 @@ async function runScanCore(params) {
             opp.llm_json = llmResult.llm_json;
 
             // Capture Dataset Row
-            const datasetRow = createLLMDatasetRow(opp, { scan_id: scanId, trigger_reason: 'initial' });
+            const datasetRow = createLLMDatasetRow(opp, { scan_id: scanId, trigger_reason: 'initial', batch_id: batch_id });
             runtimeData.llm_dataset_rows.push(datasetRow);
 
             analyzedCount++;
@@ -349,10 +349,13 @@ async function runScanCore(params) {
 function createLLMDatasetRow(opp, ctx = {}) {
     const timestamp = new Date().toISOString();
     const row = {
+        row_type: ctx.row_type || 'scan_row',
         ids: {
+            batch_id: ctx.batch_id || null,
             scan_id: ctx.scan_id || 'unknown',
             opp_id: opp.opp_id,
-            market_id: 'default'
+            market_id: 'default',
+            reeval_job_id: ctx.reeval_job_id || null
         },
         provider: {
             provider_name: opp.llm_provider || 'unknown',
@@ -688,6 +691,7 @@ const server = http.createServer(async (req, res) => {
             // Prepare results array
             const results = [];
             const summaryMetrics = {
+                batch_id: batchId, // Add explicit batch_id in summary
                 total_topics: topics.length,
                 success_count: 0,
                 failed_count: 0,
@@ -705,6 +709,7 @@ const server = http.createServer(async (req, res) => {
                 // Merge params: topic-specific > batch-level > default
                 const runParams = {
                     topic_key: topicKey,
+                    batch_id: batchId, // Pass batch_id
                     n_opps: (topicParams.n_opps !== undefined && topicParams.n_opps !== null) ? topicParams.n_opps : n_opps,
                     seed: (topicParams.seed !== undefined && topicParams.seed !== null) ? topicParams.seed : seed,
                     mode: topicParams.mode || mode,
@@ -722,6 +727,7 @@ const server = http.createServer(async (req, res) => {
                         topic_key: topicKey,
                         topic_status: isSkipped ? 'SKIPPED' : 'OK',
                         scan_id: result.scan?.scan_id || result.scan_id, // handle skipped structure
+                        opps_count: result.scan?.n_opps_actual || result.opportunities?.length || 0,
                         duration_ms: result.metrics?.total_ms || result.scan?.duration_ms || 0,
                         metrics: result.metrics,
                         stage_logs: result.stage_logs,
@@ -805,6 +811,30 @@ const server = http.createServer(async (req, res) => {
             'Content-Disposition': `attachment; filename="batch_run_${batchId}.json"`
         });
         res.end(JSON.stringify(batch, null, 2));
+        return;
+    }
+
+    // GET /export/batch_dataset.jsonl
+    if (pathname === '/export/batch_dataset.jsonl') {
+        const { batch_id, limit } = parsedUrl.query;
+        let rows = [];
+        let filename = '';
+
+        if (batch_id) {
+            rows = runtimeData.llm_dataset_rows.filter(r => r.ids && r.ids.batch_id === batch_id);
+            filename = `batch_dataset_${batch_id}.jsonl`;
+        } else {
+            const n = parseInt(limit) || 200; 
+            const count = Math.min(runtimeData.llm_dataset_rows.length, n);
+            rows = runtimeData.llm_dataset_rows.slice(-count);
+            filename = 'batch_dataset_latest.jsonl';
+        }
+
+        const content = rows.map(r => JSON.stringify(r)).join('\n');
+        
+        res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+        res.writeHead(200, { 'Content-Type': 'application/jsonl; charset=utf-8' });
+        res.end(content);
         return;
     }
 
@@ -1022,14 +1052,50 @@ const server = http.createServer(async (req, res) => {
                     
                     // In a real system, we'd call LLM here.
                     // For mock, we generate a fake result.
-                    results.push({
+                    const result = {
                         option_id: oid,
                         status: 'COMPLETED',
                         new_baseline: state.baseline_prob,
                         llm_summary: `Re-evaluated due to ${job.reason}. New probability ${state.baseline_prob}.`
-                    });
+                    };
+                    results.push(result);
+                    
+                    // Create Reeval Row
+                    try {
+                        const reevalOpp = {
+                            opp_id: oid,
+                            llm_provider: provider,
+                            llm_model: 'mock-reeval',
+                            llm_summary: result.llm_summary,
+                            llm_confidence: 1.0,
+                            llm_tags: ['reeval', 'mock'],
+                            llm_latency_ms: 50,
+                            score_baseline: state.baseline_prob,
+                            score_components: { prev: state.last_prob, new: state.baseline_prob }
+                        };
+                        
+                        // Find batch_id from previous scan row
+                        const previousRow = runtimeData.llm_dataset_rows.slice().reverse().find(r => 
+                            r.ids.opp_id === oid && 
+                            r.ids.batch_id && 
+                            r.row_type === 'scan_row'
+                        );
+                        const linkedBatchId = previousRow ? previousRow.ids.batch_id : null;
+
+                        const datasetRow = createLLMDatasetRow(reevalOpp, {
+                            row_type: 'reeval_row',
+                            scan_id: 'unknown', // or find last scan id
+                            reeval_job_id: `job_${Date.now()}_${oid}`,
+                            trigger_reason: job.reason,
+                            batch_id: linkedBatchId
+                        });
+                        runtimeData.llm_dataset_rows.push(datasetRow);
+                    } catch (e) {
+                        console.error("Error creating reeval row:", e);
+                    }
+                    
                 } else {
-                     results.push({ option_id: oid, status: 'SKIPPED_OR_DRY_RUN' });
+                    results.push({ option_id: oid, status: 'SKIPPED_OR_DRY_RUN' });
                 }
             });
             

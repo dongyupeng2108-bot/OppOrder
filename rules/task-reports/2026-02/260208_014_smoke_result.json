@@ -1,0 +1,40 @@
+{
+  "steps": [
+    {
+      "step": "Healthcheck",
+      "status": "PASS"
+    },
+    {
+      "step": "Batch Run",
+      "status": "PASS",
+      "details": {
+        "batch_id": "batch_fa954cfc",
+        "total_topics": 3,
+        "success_count": 3,
+        "failed_count": 0,
+        "skipped_count": 0,
+        "total_duration_ms": 9,
+        "start_ts": "2026-02-08T03:15:23.666Z",
+        "end_ts": "2026-02-08T03:15:23.675Z"
+      }
+    },
+    {
+      "step": "Reeval Trigger",
+      "status": "PASS",
+      "count": 4
+    },
+    {
+      "step": "Export Verification",
+      "status": "PASS",
+      "stats": {
+        "scanRows": 6,
+        "reevalRows": 2
+      }
+    },
+    {
+      "step": "UI Verification",
+      "status": "PASS"
+    }
+  ],
+  "status": "PASS"
+}
