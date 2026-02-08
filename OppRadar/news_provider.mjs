@@ -1,9 +1,10 @@
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
+import https from 'https';
 
 // Interface for NewsProvider
-class NewsProvider {
+export class NewsProvider {
     constructor() {}
 
     /**
@@ -90,10 +91,121 @@ class WebNewsProvider extends NewsProvider {
     }
 }
 
+export class GdeltDocNewsProvider extends NewsProvider {
+    constructor() {
+        super();
+        this.baseUrl = 'https://api.gdeltproject.org/api/v2/doc/doc';
+    }
+
+    /**
+     * Fetch news from GDELT
+     * @param {string} topicKey 
+     * @param {number} limit 
+     * @returns {Promise<Array>}
+     */
+    async fetchNews(topicKey, limit = 20) {
+        // Cap limit at 50
+        const maxRecords = Math.min(Math.max(limit, 5), 50);
+        
+        // Build Query
+        // Map topicKey to query if needed, or just use topicKey
+        const query = encodeURIComponent(topicKey);
+        const timespan = '1d';
+        const mode = 'artlist';
+        const format = 'json';
+        const sort = 'datedesc';
+
+        const url = `${this.baseUrl}?query=${query}&mode=${mode}&format=${format}&sort=${sort}&timespan=${timespan}&maxrecords=${maxRecords}`;
+
+        console.log(`[GdeltDocNewsProvider] Fetching: ${url}`);
+
+        try {
+            const data = await this._fetchWithTimeout(url, 8000); // 8s timeout
+            if (!data || !data.articles) {
+                console.warn('[GdeltDocNewsProvider] No articles found or invalid format.');
+                return [];
+            }
+
+            return data.articles.map(article => this._normalize(article));
+
+        } catch (error) {
+            console.error(`[GdeltDocNewsProvider] Fetch failed: ${error.message}`);
+            // Throw to allow caller to fallback
+            throw error;
+        }
+    }
+
+    _fetchWithTimeout(url, timeoutMs) {
+        return new Promise((resolve, reject) => {
+            const req = https.get(url, (res) => {
+                if (res.statusCode !== 200) {
+                    res.resume(); // consume response data to free up memory
+                    return reject(new Error(`Status Code: ${res.statusCode}`));
+                }
+
+                let data = '';
+                res.on('data', (chunk) => data += chunk);
+                res.on('end', () => {
+                    try {
+                        resolve(JSON.parse(data));
+                    } catch (e) {
+                        reject(new Error('Invalid JSON response'));
+                    }
+                });
+            });
+
+            req.on('error', (err) => reject(err));
+            
+            req.setTimeout(timeoutMs, () => {
+                req.destroy();
+                reject(new Error('Request timed out'));
+            });
+        });
+    }
+
+    _normalize(item) {
+        // GDELT item: { url, title, seendate, domain, language, sourcecountry, ... }
+        
+        // Parse seendate: YYYYMMDDTHHMMSSZ
+        let publishedAt = new Date().toISOString();
+        if (item.seendate) {
+            // "20231026T120000Z" -> Standard ISO?
+            // GDELT format is usually ISO 8601 compact.
+            // Let's try to parse it. If standard Date parse fails, we might need manual parsing.
+            // Actually JS Date often handles ISO 8601.
+            // "20231026T120000Z"
+            const year = item.seendate.substring(0, 4);
+            const month = item.seendate.substring(4, 6);
+            const day = item.seendate.substring(6, 8);
+            const hour = item.seendate.substring(9, 11);
+            const minute = item.seendate.substring(11, 13);
+            const second = item.seendate.substring(13, 15);
+            publishedAt = `${year}-${month}-${day}T${hour}:${minute}:${second}Z`;
+        }
+
+        const rawString = JSON.stringify(item);
+        const rawHash = crypto.createHash('md5').update(rawString).digest('hex');
+
+        return {
+            source: item.domain || 'gdelt',
+            url: item.url || null,
+            published_at: publishedAt,
+            fetched_at: new Date().toISOString(),
+            title: item.title || 'Untitled',
+            snippet: '', // Artlist mode doesn't provide snippets
+            raw_hash: rawHash,
+            _raw: item,
+            provider: 'gdelt' // Explicitly mark as gdelt
+        };
+    }
+}
+
 export function getProvider(name = 'local') {
     switch (name.toLowerCase()) {
         case 'web':
             return new WebNewsProvider();
+        case 'gdelt':
+            return new GdeltDocNewsProvider();
         case 'local':
         default:
             return new LocalFileNewsProvider();
