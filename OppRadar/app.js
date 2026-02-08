@@ -117,6 +117,37 @@ topic_C</textarea>
             </div>
         </div>
 
+        <div class="batch-view-panel" style="border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; background: #eef;">
+            <h3>Batch View (Replay)</h3>
+            <div style="margin-bottom: 10px;">
+                <label>Batch ID: <input type="text" id="view_batch_id" placeholder="batch_..."></label>
+                <button onclick="loadBatchView()" style="padding: 5px 15px; background: #17a2b8; color: white; border: none; cursor: pointer;">Load Batch</button>
+            </div>
+            <div id="view_batch_status" style="margin-top: 10px; color: blue;"></div>
+            
+            <div id="view_batch_results" style="display: none; margin-top: 15px; border-top: 1px dashed #aaa; padding-top: 10px;">
+                <h4>Batch Summary</h4>
+                <div style="margin-bottom: 10px;">
+                    <a id="view_batch_export_json" href="#" target="_blank" class="button" style="margin-right: 10px;">Export JSON</a>
+                    <a id="view_batch_export_jsonl" href="#" target="_blank" class="button">Export Dataset (JSONL)</a>
+                </div>
+                <div id="view_batch_summary_text"></div>
+                <table id="view_batch_table" style="width:100%; border-collapse: collapse; margin-top: 10px;">
+                    <thead>
+                        <tr style="background: #ddd;">
+                            <th style="border: 1px solid #ccc; padding: 5px;">Topic</th>
+                            <th style="border: 1px solid #ccc; padding: 5px;">Status</th>
+                            <th style="border: 1px solid #ccc; padding: 5px;">Scan ID</th>
+                            <th style="border: 1px solid #ccc; padding: 5px;">Opps</th>
+                            <th style="border: 1px solid #ccc; padding: 5px;">Dur (ms)</th>
+                            <th style="border: 1px solid #ccc; padding: 5px;">Info</th>
+                        </tr>
+                    </thead>
+                    <tbody id="view_batch_table_body"></tbody>
+                </table>
+            </div>
+        </div>
+
         <div class="controls">
             <h3>Replay Existing</h3>
             <label>Select Scan: <select id="replay_scan">${options}</select></label>
@@ -751,3 +782,65 @@ window.runReeval = async function() {
         status.textContent = 'Error: ' + e.message;
     }
 }
+window.loadBatchView = async function() {
+    const batchId = document.getElementById('view_batch_id').value.trim();
+    const statusEl = document.getElementById('view_batch_status');
+    const resultsPanel = document.getElementById('view_batch_results');
+    const tableBody = document.getElementById('view_batch_table_body');
+    const summaryDiv = document.getElementById('view_batch_summary_text');
+    const exportJsonLink = document.getElementById('view_batch_export_json');
+    const exportJsonlLink = document.getElementById('view_batch_export_jsonl');
+
+    if (!batchId) {
+        statusEl.textContent = 'Please enter a Batch ID';
+        return;
+    }
+
+    try {
+        statusEl.textContent = 'Loading...';
+        resultsPanel.style.display = 'none';
+
+        // Use the export endpoint to fetch data (since we don't have a dedicated GET /batch API yet, reusing export JSON)
+        // Or we can add a GET /batch?id=... API. The server has GET /export/batch_run.json?batch_id=... which returns the batch object.
+        // We can fetch that.
+        const res = await fetch(`/export/batch_run.json?batch_id=${batchId}`);
+        
+        if (!res.ok) {
+            throw new Error('Batch not found or error loading');
+        }
+        
+        const batch = await res.json();
+        
+        // Update UI
+        exportJsonLink.href = `/export/batch_run.json?batch_id=${batchId}`;
+        exportJsonlLink.href = `/export/batch_dataset.jsonl?batch_id=${batchId}`;
+        
+        const sm = batch.summary_metrics || {};
+        summaryDiv.innerHTML = `
+            <p><strong>Started:</strong> ${batch.started_at}</p>
+            <p><strong>Total Topics:</strong> ${sm.total_topics} (OK: ${sm.success_count}, Fail: ${sm.failed_count}, Skip: ${sm.skipped_count})</p>
+            <p><strong>Total Duration:</strong> ${sm.total_duration_ms} ms</p>
+        `;
+        
+        tableBody.innerHTML = '';
+        (batch.results || []).forEach(r => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td style="border: 1px solid #ccc; padding: 5px;">${r.topic_key}</td>
+                <td style="border: 1px solid #ccc; padding: 5px; color: ${r.topic_status === 'OK' ? 'green' : 'red'}">${r.topic_status}</td>
+                <td style="border: 1px solid #ccc; padding: 5px;">${r.scan_id || '-'}</td>
+                <td style="border: 1px solid #ccc; padding: 5px;">${r.opps_count !== undefined ? r.opps_count : '-'}</td>
+                <td style="border: 1px solid #ccc; padding: 5px;">${r.duration_ms}</td>
+                <td style="border: 1px solid #ccc; padding: 5px;">${r.error || (r.metrics ? 'Dedup:' + r.metrics.dedup_skipped_count : '')}</td>
+            `;
+            tableBody.appendChild(tr);
+        });
+        
+        resultsPanel.style.display = 'block';
+        statusEl.textContent = 'Loaded.';
+        
+    } catch (e) {
+        statusEl.textContent = 'Error: ' + e.message;
+    }
+};
+
