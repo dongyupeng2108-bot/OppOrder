@@ -9,7 +9,7 @@ const ROOT_DIR = path.resolve(__dirname, '..');
 const RUNTIME_DIR = path.join(ROOT_DIR, 'data', 'runtime');
 
 const BASE_URL = 'http://localhost:53122';
-const TOPIC_KEY = 'topic_smoke_news_260208_017';
+const TOPIC_KEY = 'topic_smoke_news_260208_018';
 
 async function request(method, path, body = null) {
     return new Promise((resolve, reject) => {
@@ -46,8 +46,7 @@ async function request(method, path, body = null) {
 }
 
 async function main() {
-    console.log('Starting Smoke Test 260208_017...');
-
+    console.log('Starting Smoke Test 260208_018...');
     // 1. Setup News Feed
     console.log('1. Setting up news feed...');
     if (!fs.existsSync(RUNTIME_DIR)) fs.mkdirSync(RUNTIME_DIR, { recursive: true });
@@ -67,13 +66,14 @@ async function main() {
 
     // 2. Run Scan
     console.log('2. Running Scan...');
-    const scanRes = await request('POST', `/scans/run?topic_key=${TOPIC_KEY}&n_opps=3&seed=123`);
+    const scanRes = await request('POST', `/scans/run?topic_key=${TOPIC_KEY}&n_opps=3&seed=123&with_news=true`);
     if (scanRes.status !== 200) throw new Error(`Scan failed: ${JSON.stringify(scanRes.data)}`);
     const scanId = scanRes.data.to_scan_id || scanRes.data.scan?.scan_id;
     console.log('Scan OK:', scanId);
 
     // 3. Pull News
     console.log('3. Pulling News...');
+    // Even if scan pulled news, we can pull again to verify idempotency/updates
     const pullRes = await request('POST', '/news/pull', { topic_key: TOPIC_KEY, limit: 10 });
     if (pullRes.status !== 200) throw new Error(`News Pull failed: ${JSON.stringify(pullRes.data)}`);
     console.log('Pull OK:', pullRes.data);
@@ -159,7 +159,7 @@ async function main() {
     // Write result
     const reportDir = path.join(ROOT_DIR, 'rules', 'task-reports', '2026-02');
     if (!fs.existsSync(reportDir)) fs.mkdirSync(reportDir, { recursive: true });
-    fs.writeFileSync(path.join(reportDir, '260208_017_smoke_result.json'), JSON.stringify({ status: 'PASS', timestamp: new Date().toISOString() }, null, 2));
+    fs.writeFileSync(path.join(reportDir, '260208_018_smoke_result.json'), JSON.stringify({ status: 'PASS', timestamp: new Date().toISOString() }, null, 2));
 
 }
 

@@ -1,5 +1,12 @@
 # Opportunity Radar (机会雷达) Master Plan
 
+## Project Snapshot (项目快照)
+**Current Status**: M3 Completed, entering M4.
+**Core Metrics**:
+- **Coverage**: 5 Assets (Gold, Silver, MES, MNQ, BTC).
+- **Architecture**: Node.js + SQLite (Timeline) + LLM (DeepSeek/Mock).
+- **Reliability**: 100% Evidence Coverage (Healthcheck/Envelope/Postflight).
+
 ## Positioning & Slogan
 **Slogan**: 信息透明化 + 把概率可验证化 + 把决策流程标准化
 
@@ -12,6 +19,18 @@
 - 仅使用公开信息与市场数据；不承诺收益；输出只是观点/概率
 - 保留审计日志与证据包；支持回测/校准/纠错
 - 风控与合规优先：避免诱导性表达与“赌场化”宣传
+
+## Competition & Differentiation (竞争与差异化)
+**Competitors**:
+- **Signal Groups**: Subjective, non-verifiable, often "black box".
+- **Algo Bots**: Opaque logic, "trust me" PnL, curve-fitting risks.
+- **General AI**: Generic advice, lacks domain-specific structure (Monitor/Trigger/Re-eval).
+
+**OppRadar Differentiation**:
+1.  **Process Productization**: We sell the *standardized decision process*, not just the result.
+2.  **Verifiability**: Built-in "Time Machine" (Replay) and "Audit Trail" (Evidence).
+3.  **Data-First**: Accumulating a proprietary "Reasoning Dataset" for future local model training.
+4.  **Fail-Fast**: Engineering culture of immediate error detection and isolation.
 
 ## M0: Bootstrap (DONE)
 - **Status**: DONE.
@@ -36,8 +55,11 @@
 
 把剩余工作拆成 里程碑 → PR（最小可验收单元），后续开发按此推进。
 
-### Milestone M4: 扫描工程化 (Scanning Engineering)
-**目标**: 提升扫描能力与效率（增量/缓存/并发/限流/错误隔离/可观测）。
+### Milestone M4: Scanning Engineering & Data Enrichment
+**目标**: 提升扫描能力、效率与数据丰富度（News, Cache, Concurrent）。
+- **PR 0: M4: News & Timeline Integration (DONE - 260208)**
+  - **Status**: Completed via Task 017/018.
+  - **Deliverables**: NewsProvider, Timeline SQLite DB, News-Reeval Linking.
 - **PR 1: M4: scan cache (v0)**
   - **目标**: 实现基础扫描缓存，避免重复计算。
   - **DoD**: 相同参数的连续两次扫描，第二次耗时减少 > 80%。
