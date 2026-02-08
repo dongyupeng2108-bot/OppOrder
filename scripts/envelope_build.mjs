@@ -74,28 +74,54 @@ async function main() {
     let hcContent = '';
     const absResultDir = path.resolve(resultDir);
     const projectRoot = path.resolve(absResultDir, '../../..');
-    const hcRootPath = path.join(projectRoot, 'reports/healthcheck_root.txt');
-    const hcPairsPath = path.join(projectRoot, 'reports/healthcheck_pairs.txt');
     
-    if (fs.existsSync(hcRootPath)) {
-        const raw = fs.readFileSync(hcRootPath, 'utf8');
-        hcContent += raw + '\n';
-        if (raw.includes('HTTP/1.1 200') || raw.includes('HTTP/1.0 200')) {
-            hcContent += '/ -> 200 (Verified)\n';
-        }
-    } else {
-        hcContent += '/ -> 200 (Mock)\n';
-    }
+    // Look for task-specific healthcheck files in resultDir first (Standard)
+    const hcRootFilename = `${taskId}_healthcheck_53122_root.txt`;
+    const hcPairsFilename = `${taskId}_healthcheck_53122_pairs.txt`;
+    const hcRootPathStandard = path.join(resultDir, hcRootFilename);
+    const hcPairsPathStandard = path.join(resultDir, hcPairsFilename);
 
-    if (fs.existsSync(hcPairsPath)) {
-        const raw = fs.readFileSync(hcPairsPath, 'utf8');
-        hcContent += raw + '\n';
-        if (raw.includes('HTTP/1.1 200') || raw.includes('HTTP/1.0 200')) {
-            hcContent += '/pairs -> 200 (Verified)\n';
+    // Legacy paths
+    const hcRootPathLegacy = path.join(projectRoot, 'reports/healthcheck_root.txt');
+    const hcPairsPathLegacy = path.join(projectRoot, 'reports/healthcheck_pairs.txt');
+
+    let dodEvidenceRoot = null;
+    let dodEvidencePairs = null;
+
+    // Helper to process HC file
+    const processHcFile = (pathStandard, pathLegacy, label, dodKey) => {
+        let content = '';
+        let filePath = '';
+        
+        if (fs.existsSync(pathStandard)) {
+            content = fs.readFileSync(pathStandard, 'utf8');
+            filePath = pathStandard;
+        } else if (fs.existsSync(pathLegacy)) {
+            content = fs.readFileSync(pathLegacy, 'utf8');
+            filePath = pathLegacy;
         }
-    } else {
-        hcContent += '/pairs -> 200 (Mock)\n';
-    }
+
+        if (content) {
+            hcContent += content + '\n';
+            const match = content.match(/HTTP\/\d\.\d\s+200/);
+            if (match) {
+                hcContent += `${label} -> 200 (Verified)\n`;
+                // Generate DoD Excerpt
+                // Path should be relative to repo root for readability
+                const relPath = path.relative(projectRoot, filePath).replace(/\\/g, '/');
+                const matchedLine = content.split('\n').find(l => l.includes(match[0])).trim();
+                return `DOD_EVIDENCE_HEALTHCHECK_${dodKey}: ${relPath} => ${matchedLine}`;
+            } else {
+                hcContent += `${label} -> Failed/Mock\n`;
+            }
+        } else {
+            hcContent += `${label} -> Missing\n`;
+        }
+        return null;
+    };
+
+    dodEvidenceRoot = processHcFile(hcRootPathStandard, hcRootPathLegacy, '/', 'ROOT');
+    dodEvidencePairs = processHcFile(hcPairsPathStandard, hcPairsPathLegacy, '/pairs', 'PAIRS');
 
     // Get Log content
     const logContent = fs.readFileSync(logPath, 'utf8');
@@ -125,26 +151,45 @@ ${files.join('\n')}
 `;
     const notifyHc = `HEALTHCHECK
 ${hcContent}`;
+
+    let notifyDod = '';
+    if (dodEvidenceRoot && dodEvidencePairs) {
+        notifyDod = `
+DOD_EVIDENCE
+${dodEvidenceRoot}
+${dodEvidencePairs}
+`;
+    }
     
-    let notifyContent = notifyHeader + notifyLog + notifyIndex + notifyHc;
+    let notifyContent = notifyHeader + notifyLog + notifyIndex + notifyHc + notifyDod;
     // Normalize to LF to ensure consistent hashing across platforms (Windows/CI)
     notifyContent = notifyContent.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
- const notifyHash = calculateSha256Short(notifyContent);
+    const notifyHash = calculateSha256Short(notifyContent);
 
- // Write Notify
- const notifyPath = path.join(resultDir, notifyFilename);
- fs.writeFileSync(notifyPath, notifyContent);
+    // Write Notify
+    const notifyPath = path.join(resultDir, notifyFilename);
+    fs.writeFileSync(notifyPath, notifyContent);
 
- // Write Result
- const resultData = {
- task_id: taskId,
- status: status,
- summary: summary,
- report_file: notifyFilename,
- report_sha256_short: notifyHash
- };
- const resultPath = path.join(resultDir, resultFilename);
- fs.writeFileSync(resultPath, JSON.stringify(resultData, null, 2));
+    // Write Result
+    const resultData = {
+        task_id: taskId,
+        status: status,
+        summary: summary,
+        report_file: notifyFilename,
+        report_sha256_short: notifyHash
+    };
+
+    if (dodEvidenceRoot && dodEvidencePairs) {
+        resultData.dod_evidence = {
+            healthcheck: [
+                dodEvidenceRoot,
+                dodEvidencePairs
+            ]
+        };
+    }
+
+    const resultPath = path.join(resultDir, resultFilename);
+    fs.writeFileSync(resultPath, JSON.stringify(resultData, null, 2));
 
  // Build Index
  const indexFiles = [];
@@ -159,17 +204,20 @@ ${hcContent}`;
  }
  };
 
- // Copy and Index Healthcheck Files
- const targetHcDir = path.join(resultDir, 'reports');
- ensureDir(targetHcDir);
- if (fs.existsSync(hcRootPath)) {
- const dest = path.join(targetHcDir, 'healthcheck_root.txt');
- fs.copyFileSync(hcRootPath, dest);
- }
- if (fs.existsSync(hcPairsPath)) {
- const dest = path.join(targetHcDir, 'healthcheck_pairs.txt');
- fs.copyFileSync(hcPairsPath, dest);
- }
+ // Copy and Index Healthcheck Files (Legacy Support)
+    // If we used Legacy paths (projectRoot/reports/), copy them to resultDir/reports so they are captured.
+    // If we used Standard paths (resultDir/...), they are already in resultDir, so no need to copy/duplicate.
+    const targetHcDir = path.join(resultDir, 'reports');
+    ensureDir(targetHcDir);
+    
+    if (!fs.existsSync(hcRootPathStandard) && fs.existsSync(hcRootPathLegacy)) {
+        const dest = path.join(targetHcDir, 'healthcheck_root.txt');
+        fs.copyFileSync(hcRootPathLegacy, dest);
+    }
+    if (!fs.existsSync(hcPairsPathStandard) && fs.existsSync(hcPairsPathLegacy)) {
+        const dest = path.join(targetHcDir, 'healthcheck_pairs.txt');
+        fs.copyFileSync(hcPairsPathLegacy, dest);
+    }
  
  // Copy and Index Script
  const scriptSrc = path.join(projectRoot, 'scripts/postflight_validate_envelope.mjs');

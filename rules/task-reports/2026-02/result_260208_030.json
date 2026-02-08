@@ -1,0 +1,13 @@
+{
+  "task_id": "260208_030",
+  "status": "DONE",
+  "summary": "No summary provided",
+  "report_file": "notify_260208_030.txt",
+  "report_sha256_short": "eaed8a60",
+  "dod_evidence": {
+    "healthcheck": [
+      "DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260208_030_healthcheck_53122_root.txt => HTTP/1.1 200 OK",
+      "DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260208_030_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK"
+    ]
+  }
+}
