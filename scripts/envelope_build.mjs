@@ -190,10 +190,7 @@ ${hcContent}`;
         const latestPath = path.join(projectRoot, 'rules/LATEST.json');
         
         // Sanitize result_dir for LATEST.json to be relative to repo root (CI compatibility)
-        let sanitizedResultDir = resultDir.replace(/\\/g, '/');
-        if (sanitizedResultDir.startsWith('OppRadar/')) {
-            sanitizedResultDir = sanitizedResultDir.substring(9);
-        }
+        let sanitizedResultDir = path.relative(projectRoot, resultDir).replace(/\\/g, '/');
 
         const latestJson = {
             task_id: taskId,
