@@ -73,6 +73,50 @@ async function renderReplayList() {
             </div>
         </div>
 
+        <div class="batch-run-panel" style="border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; background: #eef;">
+            <h3>Batch Run</h3>
+            <div style="margin-bottom: 10px;">
+                <label style="display:block; margin-bottom:5px;">Topics (one per line):</label>
+                <textarea id="batch_topics" rows="5" style="width: 100%; box-sizing: border-box;">topic_A
+topic_B
+topic_C</textarea>
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label>Concurrency (1-16): <input type="number" id="batch_concurrency" value="4" min="1" max="16"></label>
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label><input type="checkbox" id="batch_persist" checked> Persist to Disk</label>
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label>N Opps (Optional): <input type="number" id="batch_n_opps" placeholder="default"></label>
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label>Seed (Optional): <input type="number" id="batch_seed" placeholder="default"></label>
+            </div>
+            <button onclick="runBatchScan()" style="padding: 5px 15px; background: #28a745; color: white; border: none; cursor: pointer;">Run Batch</button>
+            <div id="batch_status" style="margin-top: 10px; color: blue;"></div>
+            
+            <div id="batch_results" style="display: none; margin-top: 15px; border-top: 1px dashed #aaa; padding-top: 10px;">
+                <h4>Batch Results</h4>
+                <div style="margin-bottom: 10px;">
+                    <a id="batch_export_link" href="#" target="_blank" class="button">Export Batch JSON</a>
+                </div>
+                <div id="batch_summary"></div>
+                <table id="batch_table" style="width:100%; border-collapse: collapse; margin-top: 10px;">
+                    <thead>
+                        <tr style="background: #ddd;">
+                            <th style="border: 1px solid #ccc; padding: 5px;">Topic</th>
+                            <th style="border: 1px solid #ccc; padding: 5px;">Status</th>
+                            <th style="border: 1px solid #ccc; padding: 5px;">Scan ID</th>
+                            <th style="border: 1px solid #ccc; padding: 5px;">Dur (ms)</th>
+                            <th style="border: 1px solid #ccc; padding: 5px;">Info</th>
+                        </tr>
+                    </thead>
+                    <tbody id="batch_table_body"></tbody>
+                </table>
+            </div>
+        </div>
+
         <div class="controls">
             <h3>Replay Existing</h3>
             <label>Select Scan: <select id="replay_scan">${options}</select></label>
@@ -143,6 +187,93 @@ window.runScan = async function() {
     } catch (e) {
         statusEl.textContent = 'Error: ' + e.message;
         alert('Error running scan: ' + e.message);
+    }
+}
+
+window.runBatchScan = async function() {
+    const statusEl = document.getElementById('batch_status');
+    const resultsPanel = document.getElementById('batch_results');
+    const tableBody = document.getElementById('batch_table_body');
+    const summaryDiv = document.getElementById('batch_summary');
+    const exportLink = document.getElementById('batch_export_link');
+
+    try {
+        statusEl.textContent = 'Running Batch...';
+        resultsPanel.style.display = 'none';
+        tableBody.innerHTML = '';
+        
+        const topicsStr = document.getElementById('batch_topics').value;
+        const topics = topicsStr.split('\n').map(t => t.trim()).filter(t => t);
+        
+        const concurrency = document.getElementById('batch_concurrency').value;
+        const persist = document.getElementById('batch_persist').checked;
+        
+        // Optional params
+        const n_opps_val = document.getElementById('batch_n_opps').value;
+        const seed_val = document.getElementById('batch_seed').value;
+        
+        const payload = {
+            topics: topics,
+            concurrency: concurrency ? parseInt(concurrency) : 4,
+            persist: persist
+        };
+        
+        if (n_opps_val) payload.n_opps = parseInt(n_opps_val);
+        if (seed_val) payload.seed = parseInt(seed_val);
+
+        const res = await fetch('/scans/batch_run', { 
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        
+        if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.error || 'Batch run failed');
+        }
+        
+        const data = await res.json();
+        const results = data.results || [];
+        const summary = data.summary_metrics || {};
+
+        // Update Export Link
+        exportLink.href = `/export/batch_run.json?batch_id=${data.batch_id}`;
+        
+        // Update Summary
+        summaryDiv.innerHTML = `
+            <p><strong>Batch ID:</strong> ${data.batch_id}</p>
+            <p><strong>Total Duration:</strong> ${summary.total_duration_ms} ms</p>
+            <p><strong>Success:</strong> <span style="color:green">${summary.success_count}</span> | 
+               <strong>Failed:</strong> <span style="color:red">${summary.fail_count}</span> | 
+               <strong>Skipped:</strong> <span style="color:orange">${summary.skipped_count}</span></p>
+        `;
+
+        // Update Table
+        results.forEach(r => {
+            const row = document.createElement('tr');
+            const isError = r.topic_status === 'FAILED';
+            const isSkipped = r.topic_status === 'SKIPPED';
+            const statusColor = isError ? 'red' : (isSkipped ? 'orange' : 'green');
+            
+            row.innerHTML = `
+                <td style="border: 1px solid #ccc; padding: 5px;">${r.topic_key}</td>
+                <td style="border: 1px solid #ccc; padding: 5px; color: ${statusColor}; font-weight: bold;">${r.topic_status}</td>
+                <td style="border: 1px solid #ccc; padding: 5px;">${r.scan_id || '-'}</td>
+                <td style="border: 1px solid #ccc; padding: 5px;">${r.duration_ms}</td>
+                <td style="border: 1px solid #ccc; padding: 5px; font-size: 0.9em;">
+                    ${r.error ? `<span style="color:red">${r.error}</span>` : ''}
+                    ${r.metrics ? `Dedup Skip: ${r.metrics.dedup_skipped_count || 0}` : ''}
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+
+        resultsPanel.style.display = 'block';
+        statusEl.textContent = 'Batch Run Completed.';
+
+    } catch (e) {
+        statusEl.textContent = 'Error: ' + e.message;
+        alert('Error running batch: ' + e.message);
     }
 }
 

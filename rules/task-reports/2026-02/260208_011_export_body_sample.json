@@ -1,0 +1,319 @@
+{
+  "batch_id": "batch_c3551a31",
+  "started_at": "2026-02-08T01:54:19.187Z",
+  "params": {
+    "topics": [
+      "topic_A1",
+      "topic_A2",
+      "topic_A3"
+    ],
+    "concurrency": 2,
+    "persist": true,
+    "n_opps": 2,
+    "seed": 123
+  },
+  "results": [
+    {
+      "topic_key": "topic_A1",
+      "topic_status": "OK",
+      "scan_id": "sc_460a8d77",
+      "duration_ms": 3,
+      "metrics": {
+        "stage_ms": {
+          "persist_store": 3
+        },
+        "persist_enabled": true,
+        "truncated": false,
+        "n_opps_requested": 2,
+        "n_opps_actual": 2,
+        "seed": 123,
+        "mode": "fast",
+        "topic_key": "topic_A1",
+        "dedup_skipped_count": 0,
+        "cache_hit_count": 0,
+        "cache_miss_count": 2,
+        "total_ms": 3
+      },
+      "stage_logs": [
+        {
+          "stage_id": "load_context",
+          "start_ts": "2026-02-08T01:54:19.188Z",
+          "end_ts": "2026-02-08T01:54:19.188Z",
+          "dur_ms": 0,
+          "input_summary": {},
+          "output_summary": {},
+          "warnings": [],
+          "errors": []
+        },
+        {
+          "stage_id": "gen_opps",
+          "start_ts": "2026-02-08T01:54:19.188Z",
+          "end_ts": "2026-02-08T01:54:19.188Z",
+          "dur_ms": 0,
+          "input_summary": {
+            "n_opps": 2,
+            "seed": 123
+          },
+          "output_summary": {
+            "generated": 2
+          },
+          "warnings": [],
+          "errors": []
+        },
+        {
+          "stage_id": "score_baseline",
+          "start_ts": "2026-02-08T01:54:19.188Z",
+          "end_ts": "2026-02-08T01:54:19.188Z",
+          "dur_ms": 0,
+          "input_summary": {},
+          "output_summary": {
+            "scored": 2
+          },
+          "warnings": [],
+          "errors": []
+        },
+        {
+          "stage_id": "llm_analyze",
+          "start_ts": "2026-02-08T01:54:19.188Z",
+          "end_ts": "2026-02-08T01:54:19.188Z",
+          "dur_ms": 0,
+          "input_summary": {
+            "provider": "mock"
+          },
+          "output_summary": {
+            "processed": 2,
+            "analyzed_count": 2,
+            "fallback_count": 0,
+            "errors": 0,
+            "provider": "mock",
+            "model": "unknown"
+          },
+          "warnings": [],
+          "errors": []
+        },
+        {
+          "stage_id": "persist_store",
+          "start_ts": "2026-02-08T01:54:19.188Z",
+          "end_ts": "2026-02-08T01:54:19.191Z",
+          "dur_ms": 3,
+          "input_summary": {
+            "persist_enabled": true
+          },
+          "output_summary": {
+            "files_written": 4
+          },
+          "warnings": [
+            "Cannot read properties of null (reading 'scan_id')"
+          ],
+          "errors": []
+        }
+      ],
+      "error": null
+    },
+    {
+      "topic_key": "topic_A2",
+      "topic_status": "OK",
+      "scan_id": "sc_460a8d77",
+      "duration_ms": 5,
+      "metrics": {
+        "stage_ms": {
+          "persist_store": 2
+        },
+        "persist_enabled": true,
+        "truncated": false,
+        "n_opps_requested": 2,
+        "n_opps_actual": 2,
+        "seed": 123,
+        "mode": "fast",
+        "topic_key": "topic_A2",
+        "dedup_skipped_count": 0,
+        "cache_hit_count": 0,
+        "cache_miss_count": 2,
+        "total_ms": 5
+      },
+      "stage_logs": [
+        {
+          "stage_id": "load_context",
+          "start_ts": "2026-02-08T01:54:19.188Z",
+          "end_ts": "2026-02-08T01:54:19.188Z",
+          "dur_ms": 0,
+          "input_summary": {},
+          "output_summary": {},
+          "warnings": [],
+          "errors": []
+        },
+        {
+          "stage_id": "gen_opps",
+          "start_ts": "2026-02-08T01:54:19.188Z",
+          "end_ts": "2026-02-08T01:54:19.188Z",
+          "dur_ms": 0,
+          "input_summary": {
+            "n_opps": 2,
+            "seed": 123
+          },
+          "output_summary": {
+            "generated": 2
+          },
+          "warnings": [],
+          "errors": []
+        },
+        {
+          "stage_id": "score_baseline",
+          "start_ts": "2026-02-08T01:54:19.188Z",
+          "end_ts": "2026-02-08T01:54:19.188Z",
+          "dur_ms": 0,
+          "input_summary": {},
+          "output_summary": {
+            "scored": 2
+          },
+          "warnings": [],
+          "errors": []
+        },
+        {
+          "stage_id": "llm_analyze",
+          "start_ts": "2026-02-08T01:54:19.188Z",
+          "end_ts": "2026-02-08T01:54:19.191Z",
+          "dur_ms": 3,
+          "input_summary": {
+            "provider": "mock"
+          },
+          "output_summary": {
+            "processed": 2,
+            "analyzed_count": 2,
+            "fallback_count": 0,
+            "errors": 0,
+            "provider": "mock",
+            "model": "unknown"
+          },
+          "warnings": [],
+          "errors": []
+        },
+        {
+          "stage_id": "persist_store",
+          "start_ts": "2026-02-08T01:54:19.191Z",
+          "end_ts": "2026-02-08T01:54:19.193Z",
+          "dur_ms": 2,
+          "input_summary": {
+            "persist_enabled": true
+          },
+          "output_summary": {
+            "files_written": 4
+          },
+          "warnings": [
+            "Cannot read properties of null (reading 'scan_id')"
+          ],
+          "errors": []
+        }
+      ],
+      "error": null
+    },
+    {
+      "topic_key": "topic_A3",
+      "topic_status": "OK",
+      "scan_id": "sc_8e25e147",
+      "duration_ms": 2,
+      "metrics": {
+        "stage_ms": {
+          "persist_store": 1
+        },
+        "persist_enabled": true,
+        "truncated": false,
+        "n_opps_requested": 2,
+        "n_opps_actual": 2,
+        "seed": 123,
+        "mode": "fast",
+        "topic_key": "topic_A3",
+        "dedup_skipped_count": 0,
+        "cache_hit_count": 0,
+        "cache_miss_count": 2,
+        "total_ms": 2
+      },
+      "stage_logs": [
+        {
+          "stage_id": "load_context",
+          "start_ts": "2026-02-08T01:54:19.193Z",
+          "end_ts": "2026-02-08T01:54:19.193Z",
+          "dur_ms": 0,
+          "input_summary": {},
+          "output_summary": {
+            "from_scan_id": "sc_460a8d77"
+          },
+          "warnings": [],
+          "errors": []
+        },
+        {
+          "stage_id": "gen_opps",
+          "start_ts": "2026-02-08T01:54:19.193Z",
+          "end_ts": "2026-02-08T01:54:19.193Z",
+          "dur_ms": 0,
+          "input_summary": {
+            "n_opps": 2,
+            "seed": 123
+          },
+          "output_summary": {
+            "generated": 2
+          },
+          "warnings": [],
+          "errors": []
+        },
+        {
+          "stage_id": "score_baseline",
+          "start_ts": "2026-02-08T01:54:19.193Z",
+          "end_ts": "2026-02-08T01:54:19.193Z",
+          "dur_ms": 0,
+          "input_summary": {},
+          "output_summary": {
+            "scored": 2
+          },
+          "warnings": [],
+          "errors": []
+        },
+        {
+          "stage_id": "llm_analyze",
+          "start_ts": "2026-02-08T01:54:19.193Z",
+          "end_ts": "2026-02-08T01:54:19.193Z",
+          "dur_ms": 0,
+          "input_summary": {
+            "provider": "mock"
+          },
+          "output_summary": {
+            "processed": 2,
+            "analyzed_count": 2,
+            "fallback_count": 0,
+            "errors": 0,
+            "provider": "mock",
+            "model": "unknown"
+          },
+          "warnings": [],
+          "errors": []
+        },
+        {
+          "stage_id": "persist_store",
+          "start_ts": "2026-02-08T01:54:19.194Z",
+          "end_ts": "2026-02-08T01:54:19.195Z",
+          "dur_ms": 1,
+          "input_summary": {
+            "persist_enabled": true
+          },
+          "output_summary": {
+            "files_written": 4
+          },
+          "warnings": [
+            "Cannot read properties of null (reading 'scan_id')"
+          ],
+          "errors": []
+        }
+      ],
+      "error": null
+    }
+  ],
+  "summary_metrics": {
+    "total_topics": 3,
+    "success_count": 3,
+    "failed_count": 0,
+    "skipped_count": 0,
+    "total_duration_ms": 8,
+    "start_ts": "2026-02-08T01:54:19.187Z",
+    "end_ts": "2026-02-08T01:54:19.195Z"
+  }
+}

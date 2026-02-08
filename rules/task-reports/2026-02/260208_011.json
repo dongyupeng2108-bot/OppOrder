@@ -1,0 +1,23 @@
+{
+  "task_id": "260208_011",
+  "timestamp": "2026-02-08T01:54:42.268Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260208_011",
+      "status": "DONE",
+      "summary": "M4: batch runscan (topics+concurrency) + fail-soft + export evidence",
+      "report_file": "notify_260208_011.txt",
+      "report_sha256_short": "ba4d7feb"
+    }
+  }
+}
