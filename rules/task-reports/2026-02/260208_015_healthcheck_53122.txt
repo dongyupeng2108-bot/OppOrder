@@ -1,5 +1,5 @@
 Healthcheck: PASS
-Batch ID: batch_9b7a7299
+Batch ID: batch_2260d9d3
 Timeline Events (Topic A): 10
-Export Lines (Topic A): 18
+Export Lines (Topic A): 24
 DB Integrity: OK
