@@ -98,69 +98,25 @@
 - **Parameters**:
   - `scan`: String (Required). Target scan ID.
 - **Response** (200 OK):
-  - `scan`: Object. Full scan record (scan_id, timestamp, opp_ids, duration_ms).
-  - `opportunities`: Array<Object>. Expanded opportunity details in order of `opp_ids`.
-  - `missing_opp_ids`: Array<String>. IDs listed in scan but missing from opportunities fixture.
-- **Errors**:
-  - `400`: Missing `scan`.
-  - `404`: Scan ID not found.
-  - `500`: Internal read error.
+  - Returns array of scan objects or similar replay data.
 
-### UI Specs
-- **Paths**:
-  - `/ui/diff`:
-    - Select `from` and `to` scans (sorted by time desc).
-    - Display Added/Removed counts and lists.
-    - Display Changed fields (from -> to).
-    - Links to `/ui/opportunities/<opp_id>`.
-  - `/ui/replay`:
-    - Select `scan` (sorted by time desc).
-    - Button "Replay" -> `/ui/replay/<scan_id>`.
-  - `/ui/replay/<scan_id>`:
-    - Display Scan metadata (Time, Duration, Count).
-    - List all Opportunities (ID, Strategy, Score, State, Reason).
-    - **Export JSON**: Button/Link opening `/replay?scan=<scan_id>` in new tab.
-
-## Operational Standards
-- **Command & Environment**:
-  - **Default Shell**: PowerShell.
-  - **Constraint**: If Trae identifies the shell as non-CMD (e.g., PowerShell, bash), **`cd /d` is STRICTLY PROHIBITED**. Use `cd 'Path'` or `Set-Location`.
-  - See `rules/rules/WORKFLOW.md` for standard templates.
-- **Interactive Prompts**: Strictly forbidden.
-- **CI Path Consistency**: When generating evidence in the `OppRadar` subdirectory (workaround), MUST ensure `LATEST.json` and `result_*.json` paths are relative to Repo Root (e.g., `rules/...` NOT `OppRadar/rules/...`). Manually sanitize if necessary.
-- **Task ID Uniqueness**:
-  - **Rule**: A single `task_id` can ONLY correspond to ONE merged evidence pack in `main`.
-  - **Constraint**: Once a `task_id` is merged to `main`, it is immutable. Any fixes or rework MUST use a NEW `task_id`.
-  - **Exception**: If following a specific workflow exception (e.g., "Patch Task"), follow that protocol, but generally prefer new IDs to avoid noise.
-  - **Published = Reserved**: Even if not merged, if a `task_id` has been "announced" in a TraeTask, treat it as used. Avoid reusing it to prevent confusion in logs/history.
-
-- **Tech Cost vs Data Schema**:
-  - **Tech Cost (Pricing Model)**: When we refer to "Tech Cost" or "Pricing Assumptions", we refer strictly to the **estimation methodology** (e.g., calculation formulas, resource line items, frequency, unit costs). This logic CAN be reused from other projects.
-  - **Data Schema**: The database structure and entity definitions (Strategy/Snapshot/Opportunity) MUST be designed **specifically for OppRadar**. DO NOT blindly copy schemas from other projects just because the cost model is similar. Structure follows Project Goals.
-
-## Healthcheck Evidence Standards
-(Added in Task 260208_023)
-
-To ensure consistency and GitHub readability, all task submissions must strictly follow these healthcheck evidence rules:
-
-1.  **File Naming & Path**:
-    -   Must be located in: `rules/task-reports/YYYY-MM/` (derived from `task_id` YYMMDD_XXX).
-    -   Must match exactly:
-        -   `<task_id>_healthcheck_53122_root.txt`
-        -   `<task_id>_healthcheck_53122_pairs.txt`
-
-2.  **File Content**:
-    -   **Encoding**: Must be ASCII/UTF-8 text. Files containing NUL bytes (`\x00`) (e.g., from PowerShell `>`) are invalid.
-    -   **Validation**: Must contain `HTTP/x.x 200` (e.g., `HTTP/1.1 200 OK`).
-
-3.  **Generation Command**:
-    -   Use `curl.exe` with explicit output to avoid encoding issues.
-    -   Example:
-        ```powershell
-        curl.exe -s -i http://localhost:53122/ --output rules/task-reports/2026-02/260208_023_healthcheck_53122_root.txt
-        ```
-
-## Gate Light Checks
--   `gate-light-check` will FAIL if any of the above rules are violated.
--   It performs a strict "Path + Content" validation on the latest task.
-
+## API Contracts (v1.0)
+### News Pull API (`POST /news/pull`)
+- **Schema**: `OppRadar/contracts/news_pull_response.schema.json`
+- **Success Response (200 OK)**:
+  - `status`: "ok"
+  - `provider_used`: "local" | "gdelt"
+  - `fallback`: Boolean (true if fallback occurred)
+  - `cached`: Boolean (true if result from cache)
+  - `cache_key`: String (SHA-256) or null
+  - `inserted_count`: Number (Written to DB)
+  - `deduped_count`: Number (Skipped due to duplicate)
+  - `fetched_count`: Number (Total items from provider)
+  - `written_count`: Number (Same as inserted_count)
+  - `request`: Object (Echo of normalized inputs)
+    - `provider`, `topic_key`, `query`, `timespan`, `maxrecords`
+- **Error Response (400 Bad Request)**:
+  - `status`: "error"
+  - `code`: "MAXRECORDS_LIMIT" (if maxrecords > 50)
+  - `message`: String
+  - `request`: Object (Echo of inputs)

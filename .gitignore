@@ -1,5 +1,6 @@
 node_modules/
 data/runtime/
+OppRadar/data/runtime/
 *.log
 .DS_Store
 reports/healthcheck_*.txt
