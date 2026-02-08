@@ -1,0 +1,23 @@
+{
+  "task_id": "260208_019",
+  "timestamp": "2026-02-08T05:27:00.158Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260208_019",
+      "status": "DONE",
+      "summary": "Fix LATEST.json + rebuild TASK_REPORTS_INDEX.md; reconcile evidence pointers",
+      "report_file": "notify_260208_019.txt",
+      "report_sha256_short": "072c2501"
+    }
+  }
+}
