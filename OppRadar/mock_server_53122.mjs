@@ -5,6 +5,7 @@ import url from 'url';
 import { fileURLToPath } from 'url';
 import crypto from 'crypto';
 import { getProvider } from './llm_provider.mjs';
+import DB from './db.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -163,6 +164,11 @@ async function runScanCore(params) {
     // 3. Pipeline Execution
     const tGen = Date.now();
     
+    // DB: Ensure topic exists (Fail-soft)
+    try {
+        await DB.appendTopic(topic_key, { seed, mode });
+    } catch (e) { console.error('DB appendTopic fail:', e); }
+
     // 3.1 Stage: gen_opps (Candidates)
     const tGenStart = Date.now();
     const timestamp = Date.now();
@@ -182,6 +188,7 @@ async function runScanCore(params) {
 
             const oppObj = {
                 opp_id: oppId,
+                topic_key: topic_key, // Add topic_key for reeval lookup
                 strategy_id: strat.strategy_id,
                 snapshot_id: snap.snapshot_id,
                 tradeable_state: tradeableState,
@@ -209,6 +216,22 @@ async function runScanCore(params) {
         opp.score_components = scoreComponents;
     });
     logStage('score_baseline', tScoreStart, {}, { scored: newOpps.length }, [], []);
+
+    // DB: Append Snapshots (Fail-soft)
+    for (const opp of newOpps) {
+        try {
+            await DB.appendSnapshot({
+                id: crypto.randomUUID(),
+                topic_key: topic_key,
+                option_id: opp.opp_id,
+                ts: Date.now(),
+                prob: opp.score_baseline,
+                market_price: 0, // Mock
+                source: 'mock_run',
+                raw_json: opp
+            });
+        } catch (e) { console.error('DB appendSnapshot fail:', e); }
+    }
 
     // 3.3 Stage: llm_analyze
     const tLlmStart = Date.now();
@@ -254,6 +277,23 @@ async function runScanCore(params) {
             // Capture Dataset Row
             const datasetRow = createLLMDatasetRow(opp, { scan_id: scanId, trigger_reason: 'initial', batch_id: batch_id });
             runtimeData.llm_dataset_rows.push(datasetRow);
+
+            // DB: Append LLM Row (Fail-soft)
+            try {
+                await DB.appendLLMRow({
+                    id: crypto.randomUUID(),
+                    topic_key: topic_key,
+                    option_id: opp.opp_id,
+                    ts: Date.now(),
+                    provider: opp.llm_provider,
+                    model: opp.llm_model,
+                    prompt_hash: promptHash,
+                    llm_json: { summary: opp.llm_summary, confidence: opp.llm_confidence, error: opp.llm_error },
+                    tags_json: opp.llm_tags,
+                    latency_ms: opp.llm_latency_ms,
+                    raw_json: datasetRow
+                });
+            } catch (e) { console.error('DB appendLLMRow fail:', e); }
 
             analyzedCount++;
             if (llmResult.llm_summary === "OLLAMA_UNAVAILABLE_FALLBACK" || llmResult.llm_tags.includes('fallback_from_openrouter')) {
@@ -421,12 +461,47 @@ try {
             if (data.llm_dataset_rows) runtimeData.llm_dataset_rows = data.llm_dataset_rows;
             if (data.llm_cache) runtimeData.llm_cache = data.llm_cache;
             
-            // Merge
-            // Do NOT merge IDs from runtimeData into inMemory arrays which hold Objects
-            // inMemoryScans = [...inMemoryScans, ...runtimeData.scans];
-            // inMemoryOpps = [...inMemoryOpps, ...runtimeData.opportunities];
+            // Merge Scans (hydrate from files)
+            if (Array.isArray(runtimeData.scans)) {
+                const loadedScans = [];
+                for (const scanId of runtimeData.scans) {
+                    if (!scanId) continue;
+                    // If it's already an object (legacy), use it
+                    if (typeof scanId === 'object') {
+                        loadedScans.push(scanId);
+                        continue;
+                    }
+                    const p = path.join(RUNTIME_DIR, `scan_${scanId}.json`);
+                    if (fs.existsSync(p)) {
+                        try {
+                            loadedScans.push(JSON.parse(fs.readFileSync(p, 'utf8')));
+                        } catch (e) {}
+                    }
+                }
+                inMemoryScans = [...inMemoryScans, ...loadedScans];
+            }
+
+            // Merge Opps (hydrate from files)
+            if (Array.isArray(runtimeData.opportunities)) {
+                const loadedOpps = [];
+                for (const oppId of runtimeData.opportunities) {
+                    if (!oppId) continue;
+                     // If it's already an object (legacy), use it
+                    if (typeof oppId === 'object') {
+                        loadedOpps.push(oppId);
+                        continue;
+                    }
+                    const p = path.join(RUNTIME_DIR, `${oppId}.json`);
+                    if (fs.existsSync(p)) {
+                        try {
+                            loadedOpps.push(JSON.parse(fs.readFileSync(p, 'utf8')));
+                        } catch (e) {}
+                    }
+                }
+                inMemoryOpps = [...inMemoryOpps, ...loadedOpps];
+            }
             monitorState = { ...runtimeData.monitor_state };
-            console.log(`Loaded ${runtimeData.scans.length} scans, ${runtimeData.opportunities.length} opps, ${runtimeData.llm_dataset_rows?.length || 0} dataset rows, ${Object.keys(runtimeData.llm_cache || {}).length} cache entries, and ${Object.keys(monitorState).length} monitor states from runtime store.`);
+            console.log(`Loaded ${inMemoryScans.length} scans (total), ${inMemoryOpps.length} opps (total) from runtime store.`);
         } catch (err) {
             console.error("Failed to load runtime store:", err);
         }
@@ -1040,7 +1115,7 @@ const server = http.createServer(async (req, res) => {
             const results = [];
             const stageLogs = [];
             
-            jobs.forEach(job => {
+            for (const job of jobs) {
                 const oid = job.option_id;
                 const state = monitorState[oid];
                 
@@ -1052,21 +1127,43 @@ const server = http.createServer(async (req, res) => {
                     
                     // In a real system, we'd call LLM here.
                     // For mock, we generate a fake result.
-                    const result = {
+                    const reevalResult = {
                         option_id: oid,
                         status: 'COMPLETED',
                         new_baseline: state.baseline_prob,
                         llm_summary: `Re-evaluated due to ${job.reason}. New probability ${state.baseline_prob}.`
                     };
-                    results.push(result);
-                    
+                    results.push(reevalResult);
+
+                    // DB: Append Reeval Event (Fail-soft)
+                    try {
+                        // We need topic_key. Usually available in monitorState or job.
+                        // Assuming monitorState has topic info? 
+                        // Actually monitorState keys are just option_id. We might need to lookup topic.
+                        // For now, scan inMemoryOpps to find topic_key for this option_id.
+                        const oppRef = inMemoryOpps.find(o => o.opp_id === oid);
+                        const topicKey = oppRef ? (oppRef.topic_key || 'default_topic') : 'unknown';
+
+                        await DB.appendReevalEvent({
+                            id: `rev_${Date.now()}_${oid}`,
+                            topic_key: topicKey,
+                            option_id: oid,
+                            ts: Date.now(),
+                            trigger_json: { reason: job.reason, from: job.from_prob, to: job.to_prob },
+                            before_json: { prob: job.from_prob },
+                            after_json: { prob: state.baseline_prob },
+                            batch_id: null, // Not easily available here unless passed in params
+                            scan_id: null
+                        });
+                    } catch (e) { console.error('DB appendReevalEvent fail:', e); }
+
                     // Create Reeval Row
                     try {
                         const reevalOpp = {
                             opp_id: oid,
                             llm_provider: provider,
                             llm_model: 'mock-reeval',
-                            llm_summary: result.llm_summary,
+                            llm_summary: reevalResult.llm_summary,
                             llm_confidence: 1.0,
                             llm_tags: ['reeval', 'mock'],
                             llm_latency_ms: 50,
@@ -1093,11 +1190,10 @@ const server = http.createServer(async (req, res) => {
                     } catch (e) {
                         console.error("Error creating reeval row:", e);
                     }
-                    
                 } else {
                     results.push({ option_id: oid, status: 'SKIPPED_OR_DRY_RUN' });
                 }
-            });
+            }
             
             stageLogs.push({ stage_id: 'reeval_run', start_ts: new Date(tStart).toISOString(), end_ts: new Date().toISOString(), dur_ms: Date.now() - tStart, input_summary: { jobs_count: jobs.length, provider }, output_summary: { processed: results.length } });
             
@@ -1502,6 +1598,67 @@ const server = http.createServer(async (req, res) => {
         } else {
             res.writeHead(500, { 'Content-Type': 'text/plain' });
             res.end(`Fixture not found: ${fixtureMap[pathname]}`);
+        }
+        return;
+    }
+
+    // 5. Timeline DB Routes
+    if (pathname === '/timeline/append_snapshot' && req.method === 'POST') {
+        const bodyPromise = new Promise((resolve, reject) => {
+            let body = '';
+            req.on('data', chunk => body += chunk.toString());
+            req.on('end', () => resolve(body));
+            req.on('error', reject);
+        });
+
+        try {
+            const rawBody = await bodyPromise;
+            const params = JSON.parse(rawBody || '{}');
+            await DB.appendSnapshot(params);
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ status: 'ok', id: params.id }));
+        } catch (err) {
+            console.error(err);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: err.message }));
+        }
+        return;
+    }
+
+    if (pathname === '/timeline/topic') {
+        const { topic_key, limit } = parsedUrl.query;
+        if (!topic_key) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Missing topic_key' }));
+            return;
+        }
+        try {
+            const rows = await DB.getTimeline(topic_key, limit ? parseInt(limit) : 50);
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(rows));
+        } catch (err) {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: err.message }));
+        }
+        return;
+    }
+
+    if (pathname === '/export/timeline.jsonl') {
+        const { topic_key } = parsedUrl.query;
+        if (!topic_key) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Missing topic_key' }));
+            return;
+        }
+        try {
+            const rows = await DB.getAllTimelineForExport(topic_key);
+            const content = rows.map(r => JSON.stringify(r)).join('\n');
+            res.setHeader('Content-Disposition', `attachment; filename="timeline_${topic_key}.jsonl"`);
+            res.writeHead(200, { 'Content-Type': 'application/jsonl; charset=utf-8' });
+            res.end(content);
+        } catch (err) {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: err.message }));
         }
         return;
     }

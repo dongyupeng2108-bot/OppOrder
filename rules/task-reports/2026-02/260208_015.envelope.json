@@ -1,0 +1,14 @@
+{
+  "task_id": "260208_015",
+  "milestone": "260208",
+  "status": "SUCCESS",
+  "healthcheck": {
+    "root": 200,
+    "pairs": 200
+  },
+  "index_files": [
+    "result_260208_015.json",
+    "notify_260208_015.txt",
+    "260208_015_healthcheck_53122.txt"
+  ]
+}
