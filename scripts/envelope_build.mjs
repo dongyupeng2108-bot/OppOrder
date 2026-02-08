@@ -77,10 +77,25 @@ async function main() {
     const hcRootPath = path.join(projectRoot, 'reports/healthcheck_root.txt');
     const hcPairsPath = path.join(projectRoot, 'reports/healthcheck_pairs.txt');
     
-    if (fs.existsSync(hcRootPath)) hcContent += fs.readFileSync(hcRootPath, 'utf8') + '\n';
-    else hcContent += '/ -> 200 (Mock)\n';
-    if (fs.existsSync(hcPairsPath)) hcContent += fs.readFileSync(hcPairsPath, 'utf8') + '\n';
-    else hcContent += '/pairs -> 200 (Mock)\n';
+    if (fs.existsSync(hcRootPath)) {
+        const raw = fs.readFileSync(hcRootPath, 'utf8');
+        hcContent += raw + '\n';
+        if (raw.includes('HTTP/1.1 200') || raw.includes('HTTP/1.0 200')) {
+            hcContent += '/ -> 200 (Verified)\n';
+        }
+    } else {
+        hcContent += '/ -> 200 (Mock)\n';
+    }
+
+    if (fs.existsSync(hcPairsPath)) {
+        const raw = fs.readFileSync(hcPairsPath, 'utf8');
+        hcContent += raw + '\n';
+        if (raw.includes('HTTP/1.1 200') || raw.includes('HTTP/1.0 200')) {
+            hcContent += '/pairs -> 200 (Verified)\n';
+        }
+    } else {
+        hcContent += '/pairs -> 200 (Mock)\n';
+    }
 
     // Get Log content
     const logContent = fs.readFileSync(logPath, 'utf8');

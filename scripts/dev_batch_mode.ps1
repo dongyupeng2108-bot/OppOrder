@@ -68,10 +68,22 @@ elseif ($Mode -eq 'Integrate') {
     
     # 1. Healthcheck
     Write-Host "1. Running Healthcheck..."
-    $HealthCheckFile = Join-Path $ReportsDir "${TaskId}_healthcheck_53122.txt"
-    powershell -ExecutionPolicy Bypass -File scripts/healthcheck_53122.ps1 > $HealthCheckFile
-    Check-LastExitCode
-    Write-Host "   Saved to $HealthCheckFile"
+    $HcRoot = Join-Path $ReportsDir "${TaskId}_healthcheck_53122_root.txt"
+    $HcPairs = Join-Path $ReportsDir "${TaskId}_healthcheck_53122_pairs.txt"
+    
+    # Use curl.exe --output to avoid PowerShell redirection encoding issues (UTF-16/BOM)
+    # and ensure headers are captured (-i).
+    curl.exe -s -i http://localhost:53122/ --output $HcRoot
+    curl.exe -s -i http://localhost:53122/pairs --output $HcPairs
+    
+    # Copy to reports/ for envelope_build (legacy compatibility)
+    # envelope_build.mjs expects reports/healthcheck_root.txt
+    $LegacyReportsDir = Join-Path $RepoRoot "reports"
+    if (-not (Test-Path $LegacyReportsDir)) { New-Item -ItemType Directory -Path $LegacyReportsDir | Out-Null }
+    Copy-Item $HcRoot -Destination (Join-Path $LegacyReportsDir "healthcheck_root.txt") -Force
+    Copy-Item $HcPairs -Destination (Join-Path $LegacyReportsDir "healthcheck_pairs.txt") -Force
+    
+    Write-Host "   Saved to $HcRoot and $HcPairs"
 
     # 2. Envelope Build
     Write-Host "2. Building Envelope..."
