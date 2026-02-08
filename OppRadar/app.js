@@ -753,7 +753,7 @@ window.pullNews = async function() {
         }
         
         const data = await res.json();
-        statusEl.textContent = `News Pulled: Fetched ${data.fetched}, Written ${data.written}, Deduped ${data.deduped || 0}`;
+        statusEl.textContent = `News Pulled: Fetched ${data.fetched_count}, Written ${data.written_count}, Deduped ${data.deduped_count || 0}`;
         
         // Auto reload timeline
         await loadTimeline();
