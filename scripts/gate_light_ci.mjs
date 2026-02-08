@@ -61,6 +61,15 @@ try {
         process.exit(1);
     }
 
+    // --- News Pull Contract Check (Task 260208_028) ---
+    console.log('[Gate Light] Checking News Pull API Contract...');
+    try {
+        execSync('node scripts/check_news_pull_contract.mjs', { stdio: 'inherit' });
+    } catch (e) {
+        console.error('[Gate Light] News Pull Contract Check FAILED.');
+        process.exit(1);
+    }
+
     // --- Strict Healthcheck Validation (Task 260208_023) ---
     console.log('[Gate Light] Checking healthcheck evidence...');
 
