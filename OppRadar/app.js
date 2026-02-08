@@ -753,7 +753,7 @@ window.pullNews = async function() {
         }
         
         const data = await res.json();
-        statusEl.textContent = `News Pulled: Fetched ${data.fetched}, Written ${data.written}`;
+        statusEl.textContent = `News Pulled: Fetched ${data.fetched}, Written ${data.written}, Deduped ${data.deduped || 0}`;
         
         // Auto reload timeline
         await loadTimeline();
@@ -800,10 +800,22 @@ window.loadTimeline = async function() {
             } else if (r.type === 'llm' || r.provider !== undefined) {
                 type = 'LLM';
                 details = `Model: ${r.info || r.model}, Latency: ${r.val1 || r.latency_ms}ms`;
+                if (r.news_refs) {
+                    try {
+                        const refs = JSON.parse(r.news_refs);
+                        if (refs.length > 0) details += `<br><span style="color: #666; font-size: 0.9em;">News Refs: ${refs.length}</span>`;
+                    } catch (e) {}
+                }
             } else if (r.type === 'reeval' || r.trigger_json !== undefined) {
                 type = 'Reeval';
                 const trigger = JSON.parse(r.raw_json || r.trigger_json || '{}');
                 details = `Trigger: ${trigger.reason || r.info || 'Manual'}`;
+                if (r.news_refs) {
+                    try {
+                        const refs = JSON.parse(r.news_refs);
+                        if (refs.length > 0) details += `<br><span style="color: #666; font-size: 0.9em;">News Refs: ${refs.length}</span>`;
+                    } catch (e) {}
+                }
             } else if (r.type === 'news') {
                 type = 'News';
                 const raw = r.raw_json ? JSON.parse(r.raw_json) : {};

@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "summary": "Smoke test passed. Verified news pull, deduplication, reeval trigger, news_refs injection in timeline and dataset exports.",
+  "metrics": {
+    "scan_ok": true,
+    "news_pulled": true,
+    "jobs_found": true,
+    "reeval_run_ok": true,
+    "timeline_news_rows": 5,
+    "timeline_news_refs_rows": 4,
+    "dataset_news_refs_rows": 3
+  },
+  "logs": "Starting Smoke Test 260208_017...\n1. Setting up news feed...\nAppended 3 items to E:\\OppRadar\\data\\runtime\\news_feed.jsonl\n2. Running Scan...\nScan OK: sc_5e109274\n3. Pulling News...\nPull OK: { status: 'ok', fetched: 5, written: 3, deduped: 2, latest_news_id: '...' }\n4. Monitor & Plan loop...\nFound 1 jobs after 1 ticks.\n5. Running Reeval...\nReeval Run OK: { reevaluated_count: 1 ... }\n6. Verifying Timeline Export...\nTimeline: News Rows=5, Rows with NewsRefs=4\n7. Verifying Batch Dataset Export...\nDataset: Rows with NewsRefs=3\nSUCCESS: All smoke tests passed."
+}
