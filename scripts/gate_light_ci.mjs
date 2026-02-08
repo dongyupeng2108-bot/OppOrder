@@ -20,6 +20,45 @@ try {
 
     console.log('[Gate Light] Verifying latest task: ' + task_id);
     
+    // --- Doc Path Standards Check (Task 260208_025) ---
+    console.log('[Gate Light] Checking doc path standards...');
+    const canonicalDocs = [
+        'rules/rules/WORKFLOW.md',
+        'rules/rules/PROJECT_RULES.md',
+        'rules/rules/PROJECT_MASTER_PLAN.md'
+    ];
+    const legacyDocs = [
+        'rules/WORKFLOW.md',
+        'rules/PROJECT_RULES.md',
+        'rules/PROJECT_MASTER_PLAN.md'
+    ];
+    // Existence check for canonical docs
+    const missingDocs = canonicalDocs.filter(f => !fs.existsSync(path.resolve(f)));
+    if (missingDocs.length > 0) {
+        console.error(`[Gate Light] FAILED: Missing canonical documents in rules/rules/:`);
+        missingDocs.forEach(d => console.error(`  - ${d}`));
+        console.error(`Fix Suggestion: Move these documents to rules/rules/ and update references.`);
+        process.exit(1);
+    }
+    // Absence check for legacy docs
+    const existingLegacyDocs = legacyDocs.filter(f => fs.existsSync(path.resolve(f)));
+    if (existingLegacyDocs.length > 0) {
+        console.error(`[Gate Light] FAILED: Found legacy documents in rules/ (Must be removed/migrated):`);
+        existingLegacyDocs.forEach(d => console.error(`  - ${d}`));
+        console.error(`Fix Suggestion: Move content to rules/rules/ and delete these files to prevent fork.`);
+        process.exit(1);
+    }
+    console.log('[Gate Light] Doc path standards verified.');
+
+    // --- Doc Path Reference Check (Task 260208_026) ---
+    console.log('[Gate Light] Checking for legacy doc path references...');
+    try {
+        execSync('node scripts/check_doc_path_refs.mjs', { stdio: 'inherit' });
+    } catch (e) {
+        console.error('[Gate Light] Doc Path Reference Check FAILED.');
+        process.exit(1);
+    }
+
     // --- Strict Healthcheck Validation (Task 260208_023) ---
     console.log('[Gate Light] Checking healthcheck evidence...');
 
