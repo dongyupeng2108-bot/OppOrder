@@ -147,6 +147,43 @@ try {
     }
     // -------------------------------------------------------
 
+    // --- DoD Evidence Excerpt Check (Task 260208_030) ---
+    // Only enforce for tasks >= 260208_030
+    if (task_id >= '260208_030') {
+        console.log('[Gate Light] Checking DoD Evidence Excerpts...');
+        
+        const notifyFile = path.join(result_dir, `notify_${task_id}.txt`);
+        const resultFile = path.join(result_dir, `result_${task_id}.json`);
+        
+        if (!fs.existsSync(notifyFile) || !fs.existsSync(resultFile)) {
+             console.error(`[Gate Light] FAILED: Notify or Result file missing for DoD check.`);
+             process.exit(1);
+        }
+        
+        const notifyContent = fs.readFileSync(notifyFile, 'utf8');
+        const resultData = JSON.parse(fs.readFileSync(resultFile, 'utf8'));
+        
+        // Check Notify
+        const hasNotifyRoot = notifyContent.includes('DOD_EVIDENCE_HEALTHCHECK_ROOT:');
+        const hasNotifyPairs = notifyContent.includes('DOD_EVIDENCE_HEALTHCHECK_PAIRS:');
+        
+        if (!hasNotifyRoot || !hasNotifyPairs) {
+            console.error('[Gate Light] FAILED: Notify file missing DoD Evidence Excerpts.');
+            console.error('Expected: DOD_EVIDENCE_HEALTHCHECK_ROOT and DOD_EVIDENCE_HEALTHCHECK_PAIRS lines.');
+            process.exit(1);
+        }
+        
+        // Check Result JSON
+        if (!resultData.dod_evidence || !Array.isArray(resultData.dod_evidence.healthcheck) || resultData.dod_evidence.healthcheck.length < 2) {
+             console.error('[Gate Light] FAILED: Result JSON missing dod_evidence.healthcheck field.');
+             process.exit(1);
+        }
+        
+        console.log('[Gate Light] DoD Evidence Excerpts verified.');
+    } else {
+        console.log(`[Gate Light] Skipping DoD Evidence Check for legacy task ${task_id}`);
+    }
+
     // Construct postflight command
     // Note: Assuming scripts/postflight_validate_envelope.mjs exists relative to CWD
     const cmd = 'node scripts/postflight_validate_envelope.mjs --task_id ' + task_id + ' --result_dir ' + result_dir + ' --report_dir ' + result_dir;
