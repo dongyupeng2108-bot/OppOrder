@@ -588,27 +588,22 @@
     {
       "name": "260208_022_healthcheck_53122_pairs.txt",
       "size": 159,
-      "sha256_short": "1670d914"
+      "sha256_short": "1f35a5a8"
     },
     {
       "name": "260208_022_healthcheck_53122_root.txt",
       "size": 159,
-      "sha256_short": "1670d914"
+      "sha256_short": "1f35a5a8"
     },
     {
-      "name": "260208_023.json",
-      "size": 490,
-      "sha256_short": "fa9594ff"
-    },
-    {
-      "name": "260208_023_healthcheck_53122_pairs.txt",
+      "name": "260208_024_healthcheck_53122_pairs.txt",
       "size": 159,
-      "sha256_short": "09930f04"
+      "sha256_short": "b52d7509"
     },
     {
-      "name": "260208_023_healthcheck_53122_root.txt",
+      "name": "260208_024_healthcheck_53122_root.txt",
       "size": 159,
-      "sha256_short": "09930f04"
+      "sha256_short": "b52d7509"
     },
     {
       "name": "deliverables_index_260206_005.json",
@@ -771,9 +766,9 @@
       "sha256_short": "6fe2a764"
     },
     {
-      "name": "deliverables_index_260208_023.json",
-      "size": 28343,
-      "sha256_short": "49d94d7b"
+      "name": "deliverables_index_260208_022.json",
+      "size": 28950,
+      "sha256_short": "b606e021"
     },
     {
       "name": "manual_verification.json",
@@ -942,23 +937,23 @@
     },
     {
       "name": "notify_260208_022.txt",
-      "size": 7749,
-      "sha256_short": "03d7c668"
+      "size": 7847,
+      "sha256_short": "df7ea798"
     },
     {
-      "name": "notify_260208_023.txt",
-      "size": 7733,
-      "sha256_short": "cdaeb656"
+      "name": "notify_260208_024.txt",
+      "size": 7752,
+      "sha256_short": "2d62f1da"
     },
     {
       "name": "reports/healthcheck_pairs.txt",
       "size": 159,
-      "sha256_short": "1670d914"
+      "sha256_short": "b52d7509"
     },
     {
       "name": "reports/healthcheck_root.txt",
       "size": 159,
-      "sha256_short": "1670d914"
+      "sha256_short": "b52d7509"
     },
     {
       "name": "result_260206_005.json",
@@ -1122,13 +1117,13 @@
     },
     {
       "name": "result_260208_022.json",
-      "size": 164,
-      "sha256_short": "a1f44d5e"
+      "size": 170,
+      "sha256_short": "9920edaa"
     },
     {
-      "name": "result_260208_023.json",
+      "name": "result_260208_024.json",
       "size": 164,
-      "sha256_short": "d8b4de6e"
+      "sha256_short": "7b6b8395"
     },
     {
       "name": "run_260206_005.log",
@@ -1304,6 +1299,11 @@
       "name": "run_260208_023.log",
       "size": 334,
       "sha256_short": "7d79c93c"
+    },
+    {
+      "name": "run_260208_024.log",
+      "size": 334,
+      "sha256_short": "4509c69f"
     },
     {
       "name": "scripts/postflight_validate_envelope.mjs",
