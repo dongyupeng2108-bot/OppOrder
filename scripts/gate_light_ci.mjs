@@ -20,6 +20,56 @@ try {
 
     console.log('[Gate Light] Verifying latest task: ' + task_id);
     
+    // --- Strict Healthcheck Validation (Task 260208_023) ---
+    console.log('[Gate Light] Checking healthcheck evidence...');
+
+    // 1. Derive month dir from task_id (e.g. 260208_XXX => 2026-02)
+    // Format: YYMMDD_XXX. 26->2026, 02->02
+    const match = task_id.match(/^(\d{2})(\d{2})\d{2}_/);
+    if (!match) {
+        // Fallback or error? Strict mode implies error if we can't parse.
+        // But let's be safe, if regex fails, maybe just use result_dir if it matches pattern?
+        // Requirement says: "以 rules/LATEST.json 解析得到 task_id，并据此推导月份目录"
+        console.error(`[Gate Light] Invalid task_id format for date derivation: ${task_id}`);
+        process.exit(1);
+    }
+    const year = '20' + match[1];
+    const month = match[2];
+    const monthDir = `${year}-${month}`;
+    // Path: rules/task-reports/YYYY-MM/
+    const evidenceDir = path.join('rules', 'task-reports', monthDir);
+
+    const rootFile = path.join(evidenceDir, `${task_id}_healthcheck_53122_root.txt`);
+    const pairsFile = path.join(evidenceDir, `${task_id}_healthcheck_53122_pairs.txt`);
+
+    const checkFile = (filePath) => {
+        if (!fs.existsSync(filePath)) {
+            throw new Error(`Missing healthcheck file: ${filePath}`);
+        }
+        const buffer = fs.readFileSync(filePath);
+        if (buffer.includes(0)) { // Check for NUL byte
+             throw new Error(`File contains NUL bytes (binary/UTF-16 issue): ${filePath}`);
+        }
+        const content = buffer.toString('utf8');
+        // Regex for HTTP 200: HTTP/1.1 200 or HTTP/1.0 200
+        if (!/HTTP\/\d\.\d\s+200/.test(content)) {
+            // Show snippet
+            const snippet = content.substring(0, 100).replace(/\r/g, '').replace(/\n/g, ' ');
+            throw new Error(`File does not contain 'HTTP/x.x 200': ${filePath}. Content snippet: "${snippet}..."`);
+        }
+    };
+
+    try {
+        checkFile(rootFile);
+        checkFile(pairsFile);
+        console.log('[Gate Light] Healthcheck evidence verified (Path + Content).');
+    } catch (e) {
+        console.error(`[Gate Light] Healthcheck Verification FAILED: ${e.message}`);
+        console.error('Fix Suggestion: Use `curl.exe -s -i ... --output <path>` to generate readable ASCII text evidence.');
+        process.exit(1);
+    }
+    // -------------------------------------------------------
+
     // Construct postflight command
     // Note: Assuming scripts/postflight_validate_envelope.mjs exists relative to CWD
     const cmd = 'node scripts/postflight_validate_envelope.mjs --task_id ' + task_id + ' --result_dir ' + result_dir + ' --report_dir ' + result_dir;
