@@ -1,0 +1,23 @@
+{
+  "task_id": "260208_023",
+  "timestamp": "2026-02-08T09:25:57.858Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260208_023",
+      "status": "DONE",
+      "summary": "No summary provided",
+      "report_file": "notify_260208_023.txt",
+      "report_sha256_short": "7504aa62"
+    }
+  }
+}
