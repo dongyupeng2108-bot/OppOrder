@@ -1,0 +1,23 @@
+{
+  "task_id": "260208_014",
+  "timestamp": "2026-02-08T03:15:39.551Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260208_014",
+      "status": "DONE",
+      "summary": "M4: batch view + reeval dataset rows + batch dataset JSONL export",
+      "report_file": "notify_260208_014.txt",
+      "report_sha256_short": "72ad8b1d"
+    }
+  }
+}
