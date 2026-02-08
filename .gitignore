@@ -2,3 +2,5 @@ node_modules/
 data/runtime/
 *.log
 .DS_Store
+reports/healthcheck_*.txt
+rules/task-reports/**/reports/healthcheck_*.txt
