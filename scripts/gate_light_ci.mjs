@@ -61,6 +61,33 @@ try {
         process.exit(1);
     }
 
+    // --- Global Artifact Guard (Task 260208_029) ---
+    console.log('[Gate Light] Checking for global healthcheck artifacts...');
+    try {
+        // Use pathspecs directly with git ls-files
+        // Note: We use forward slashes for git pathspecs which work on Windows too
+        const forbiddenPatterns = [
+            'reports/healthcheck_*.txt',
+            'rules/task-reports/*/reports/healthcheck_*.txt'
+        ];
+        const cmd = `git ls-files ${forbiddenPatterns.join(' ')}`;
+        // If no files match, git ls-files returns empty string (exit code 0)
+        // If match, it returns file paths
+        const output = execSync(cmd, { encoding: 'utf8' }).trim();
+        
+        if (output.length > 0) {
+            console.error('[Gate Light] FAILED: Global healthcheck artifacts found in git index:');
+            console.error(output);
+            console.error('Fix Suggestion: run "git rm --cached <file>" and ensure .gitignore includes them.');
+            process.exit(1);
+        }
+        console.log('[Gate Light] Global Artifact Guard verified.');
+    } catch (e) {
+        // If git fails, treat as error
+        console.error(`[Gate Light] Global Artifact Guard execution error: ${e.message}`);
+        process.exit(1);
+    }
+
     // --- News Pull Contract Check (Task 260208_028) ---
     console.log('[Gate Light] Checking News Pull API Contract...');
     try {
