@@ -6,7 +6,8 @@ import { fileURLToPath } from 'url';
 import crypto from 'crypto';
 import { getProvider } from './llm_provider.mjs';
 import { getProvider as getNewsProvider } from './news_provider.mjs';
-import { generateCacheKey, getFromCache, setInCache } from './news_pull_cache.mjs';
+import { generateCacheKey as generateNewsCacheKey, getFromCache as getFromNewsCache, setInCache as setInNewsCache } from './news_pull_cache.mjs';
+import { generateCacheKey as generateScanCacheKey, getFromCache as getFromScanCache, setInCache as setInScanCache } from './scan_cache.mjs';
 import DB from './db.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -1058,10 +1059,33 @@ const server = http.createServer(async (req, res) => {
             
             const params = { ...parsedUrl.query, ...bodyParams };
             
+            // Scan Cache Check
+            const cacheKey = generateScanCacheKey(params);
+            const cachedResult = getFromScanCache(cacheKey);
+            
+            if (cachedResult) {
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({
+                    ...cachedResult,
+                    cached: true,
+                    cache_key: cacheKey,
+                    cached_from_scan_id: cachedResult.scan ? cachedResult.scan.scan_id : null
+                }));
+                return;
+            }
+            
             try {
                 const result = await runScanCore(params);
+                
+                // Scan Cache Set
+                setInScanCache(cacheKey, result);
+                
                 res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify(result));
+                res.end(JSON.stringify({
+                    ...result,
+                    cached: false,
+                    cache_key: cacheKey
+                }));
             } catch (coreErr) {
                 // If it's a known validation error, 400
                 if (coreErr.message.includes('Invalid n_opps')) {

@@ -85,6 +85,15 @@ elseif ($Mode -eq 'Integrate') {
     
     Write-Host "   Saved to $HcRoot and $HcPairs"
 
+    # 1.5 Scan Cache Smoke (Task 260209_002+)
+    if ($TaskId -ge "260209_002") {
+        Write-Host "1.5. Running Scan Cache Smoke Test..."
+        $ScanCacheSmokeFile = Join-Path $ReportsDir "scan_cache_smoke_${TaskId}.txt"
+        node scripts/smoke_scan_cache.mjs --output=$ScanCacheSmokeFile
+        Check-LastExitCode
+        Write-Host "   Saved to $ScanCacheSmokeFile"
+    }
+
     # 2. Envelope Build
     Write-Host "2. Building Envelope..."
     node scripts/envelope_build.mjs --task_id $TaskId --result_dir $ReportsDir --status DONE --summary $Summary
@@ -112,49 +121,77 @@ if (!fs.existsSync(notifyFile)) {
 let notifyContent = fs.readFileSync(notifyFile, 'utf8');
 
 // 1. Prepare DoD Lines (Extract if missing)
-    // Always extract fresh from healthcheck files to ensure correctness
-    console.log("Extracting DoD evidence from healthcheck files...");
-    const rootHcPath = path.join(reportsDir, taskId + '_healthcheck_53122_root.txt');
-    const pairsHcPath = path.join(reportsDir, taskId + '_healthcheck_53122_pairs.txt');
-    
-    if (!fs.existsSync(rootHcPath) || !fs.existsSync(pairsHcPath)) {
-        console.error("FAILED: Healthcheck files missing. Cannot generate DoD evidence.");
-        process.exit(1);
-    }
-    
-    const rootContent = fs.readFileSync(rootHcPath, 'utf8');
-    const pairsContent = fs.readFileSync(pairsHcPath, 'utf8');
-    
-    const root200 = rootContent.match(/HTTP\/[0-9.]+\s+200.*/);
-    const pairs200 = pairsContent.match(/HTTP\/[0-9.]+\s+200.*/);
-    
-    if (!root200 || !pairs200) {
-        console.error("FAILED: HTTP 200 not found in healthcheck files.");
-        process.exit(1);
-    }
-    
-    // Normalize paths to forward slashes for consistency
-    const rootPathDisplay = rootHcPath.replace(/\\/g, '/');
-    const pairsPathDisplay = pairsHcPath.replace(/\\/g, '/');
+// Always extract fresh from healthcheck files to ensure correctness
+console.log("Extracting DoD evidence from healthcheck files...");
 
-    const rootLine = `DOD_EVIDENCE_HEALTHCHECK_ROOT: ${rootPathDisplay} => ${root200[0]}`;
-    const pairsLine = `DOD_EVIDENCE_HEALTHCHECK_PAIRS: ${pairsPathDisplay} => ${pairs200[0]}`;
-    dodLines = rootLine + '\n' + pairsLine;
+const rootHcPath = path.join(reportsDir, taskId + '_healthcheck_53122_root.txt');
+const pairsHcPath = path.join(reportsDir, taskId + '_healthcheck_53122_pairs.txt');
 
-    // 2. Print to stdout
-    console.log(dodLines);
+if (!fs.existsSync(rootHcPath) || !fs.existsSync(pairsHcPath)) {
+    console.error("FAILED: Healthcheck files missing.");
+    process.exit(1);
+}
 
-    // 3. Append or Replace in notify
-    const marker = "=== DOD_EVIDENCE_STDOUT ===";
-    
-    // If marker exists, we need to replace the content after it or just replace the whole block
-    // Simplest: Remove old marker block if exists, then append new
-    if (notifyContent.includes(marker)) {
-         console.log("Replacing existing DoD evidence in notify...");
-         const parts = notifyContent.split(marker);
-         notifyContent = parts[0].trim();
+const rootContent = fs.readFileSync(rootHcPath, 'utf8');
+const pairsContent = fs.readFileSync(pairsHcPath, 'utf8');
+
+const root200 = rootContent.match(/HTTP\/[0-9.]+\s+200.*/);
+const pairs200 = pairsContent.match(/HTTP\/[0-9.]+\s+200.*/);
+
+if (!root200 || !pairs200) {
+    console.error("FAILED: HTTP 200 not found in healthcheck files.");
+    process.exit(1);
+}
+
+// Normalize paths to forward slashes for consistency
+const rootPathDisplay = rootHcPath.replace(/\\/g, '/');
+const pairsPathDisplay = pairsHcPath.replace(/\\/g, '/');
+
+let healthcheckLines = `DOD_EVIDENCE_HEALTHCHECK_ROOT: ${rootPathDisplay} => ${root200[0]}\nDOD_EVIDENCE_HEALTHCHECK_PAIRS: ${pairsPathDisplay} => ${pairs200[0]}`;
+
+// 1b. Scan Cache (Task 260209_002+)
+let scanCacheLines = '';
+if (taskId >= '260209_002') {
+    const scanCacheFile = path.join(reportsDir, 'scan_cache_smoke_' + taskId + '.txt');
+    if (fs.existsSync(scanCacheFile)) {
+        const content = fs.readFileSync(scanCacheFile, 'utf8');
+        const req1Idx = content.indexOf('--- Request 1 ---');
+        const req2Idx = content.indexOf('--- Request 2 ---');
+        
+        if (req1Idx !== -1 && req2Idx !== -1) {
+            const block1 = content.substring(req1Idx, req2Idx);
+            const block2 = content.substring(req2Idx);
+            
+            const dur1Match = block1.match(/Duration: (\d+)ms/);
+            const cached1Match = block1.match(/Cached: (false|true)/);
+            const dur2Match = block2.match(/Duration: (\d+)ms/);
+            const cached2Match = block2.match(/Cached: (false|true)/);
+            
+            if (dur1Match && cached1Match && cached1Match[1] === 'false' &&
+                dur2Match && cached2Match && cached2Match[1] === 'true') {
+                
+                const pathDisplay = scanCacheFile.replace(/\\/g, '/');
+                scanCacheLines = `DOD_EVIDENCE_SCAN_CACHE_MISS: ${pathDisplay} => cached=false duration_ms=${dur1Match[1]}\nDOD_EVIDENCE_SCAN_CACHE_HIT:  ${pathDisplay} => cached=true  duration_ms=${dur2Match[1]}`;
+            }
+        }
     }
-    
+}
+
+let dodLines = (healthcheckLines + (scanCacheLines ? '\n' + scanCacheLines : '')).trim();
+
+// 2. Print to stdout
+console.log(dodLines);
+
+// 3. Append or Replace in notify
+const marker = "=== DOD_EVIDENCE_STDOUT ===";
+
+// If marker exists, we need to replace the content after it or just replace the whole block
+// Simplest: Remove old marker block if exists, then append new
+if (notifyContent.includes(marker)) {
+        console.log("Replacing existing DoD evidence in notify...");
+        const parts = notifyContent.split(marker);
+        notifyContent = parts[0].trim();
+}
     console.log("Appending DoD evidence to notify file...");
     const appendContent = '\n\n' + marker + '\n' + dodLines + '\n';
     notifyContent += appendContent;
@@ -167,12 +204,10 @@ let notifyContent = fs.readFileSync(notifyFile, 'utf8');
     if (fs.existsSync(resultFile)) {
         const result = JSON.parse(fs.readFileSync(resultFile, 'utf8'));
         result.report_sha256_short = newHash;
-        // Ensure dod_evidence field exists (Task 030 requirement)
         if (!result.dod_evidence) result.dod_evidence = {};
-        result.dod_evidence.healthcheck = [
-            dodLines.split('\n')[0],
-            dodLines.split('\n')[1]
-        ];
+        if (healthcheckLines) result.dod_evidence.healthcheck = healthcheckLines.split('\n');
+        if (scanCacheLines) result.dod_evidence.scan_cache = scanCacheLines.split('\n');
+        
         fs.writeFileSync(resultFile, JSON.stringify(result, null, 2));
     }
 

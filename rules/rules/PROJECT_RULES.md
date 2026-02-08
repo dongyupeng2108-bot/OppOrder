@@ -120,3 +120,25 @@
   - `code`: "MAXRECORDS_LIMIT" (if maxrecords > 50)
   - `message`: String
   - `request`: Object (Echo of inputs)
+
+### Scan Run API (`POST /scans/run`)
+- **Schema**: N/A (Internal v0)
+- **Parameters** (JSON Body):
+  - `n_opps`: Number (Optional, default 5).
+  - `mode`: String (Optional, default 'random').
+  - `smoke_run_id`: String (Optional).
+- **Success Response (200 OK)**:
+  - `scan_id`: String.
+  - `opp_ids`: Array<String>.
+  - `opportunities`: Array<Object>.
+  - `cached`: Boolean.
+  - `cache_key`: String (SHA-256).
+  - `cached_from_scan_id`: String (If cached=true).
+
+## DoD Evidence Standards
+### Scan Cache Markers
+- **Required for Task ID >= 260209_002**
+- **File**: `notify_<task_id>.txt` and `result_<task_id>.json` (dod_evidence.scan_cache)
+- **Format**:
+  - MISS: `DOD_EVIDENCE_SCAN_CACHE_MISS: <path> => cached=false duration_ms=<n>`
+  - HIT:  `DOD_EVIDENCE_SCAN_CACHE_HIT:  <path> => cached=true  duration_ms=<n>`
