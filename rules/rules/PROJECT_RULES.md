@@ -125,7 +125,7 @@
 - **Command & Environment**:
   - **Default Shell**: PowerShell.
   - **Constraint**: If Trae identifies the shell as non-CMD (e.g., PowerShell, bash), **`cd /d` is STRICTLY PROHIBITED**. Use `cd 'Path'` or `Set-Location`.
-  - See `rules/WORKFLOW.md` for standard templates.
+  - See `rules/rules/WORKFLOW.md` for standard templates.
 - **Interactive Prompts**: Strictly forbidden.
 - **CI Path Consistency**: When generating evidence in the `OppRadar` subdirectory (workaround), MUST ensure `LATEST.json` and `result_*.json` paths are relative to Repo Root (e.g., `rules/...` NOT `OppRadar/rules/...`). Manually sanitize if necessary.
 - **Task ID Uniqueness**:
@@ -163,3 +163,4 @@ To ensure consistency and GitHub readability, all task submissions must strictly
 ## Gate Light Checks
 -   `gate-light-check` will FAIL if any of the above rules are violated.
 -   It performs a strict "Path + Content" validation on the latest task.
+

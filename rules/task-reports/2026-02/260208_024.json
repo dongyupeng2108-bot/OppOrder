@@ -1,8 +1,13 @@
 {
   "task_id": "260208_024",
-  "timestamp": "2026-02-08T10:04:14.130Z",
-  "valid": true,
-  "errors": [],
+  "timestamp": "2026-02-08T11:38:45.314Z",
+  "valid": false,
+  "errors": [
+    {
+      "code": "POSTFLIGHT_REPORT_BINDING_MISMATCH",
+      "message": "Report Hash Mismatch: ResultJSON(2d62f1da) != ActualFile(818e0a36)"
+    }
+  ],
   "checks": {
     "result_json": "OK",
     "notify_structure": "OK",

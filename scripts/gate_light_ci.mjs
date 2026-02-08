@@ -52,6 +52,15 @@ try {
     }
     console.log('[Gate Light] Doc path standards verified.');
 
+    // --- Doc Path Reference Check (Task 260208_026) ---
+    console.log('[Gate Light] Checking for legacy doc path references...');
+    try {
+        execSync('node scripts/check_doc_path_refs.mjs', { stdio: 'inherit' });
+    } catch (e) {
+        console.error('[Gate Light] Doc Path Reference Check FAILED.');
+        process.exit(1);
+    }
+
     // --- Strict Healthcheck Validation (Task 260208_023) ---
     console.log('[Gate Light] Checking healthcheck evidence...');
 

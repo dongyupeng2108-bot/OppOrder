@@ -138,7 +138,7 @@
   - Always run `scripts/pre_pr_check.mjs` to fail-fast before creating a PR.
 
 ## Execution & Acceptance Conventions
-- **Command Templates**: All tasks MUST use the standard command templates defined in `rules/WORKFLOW.md` (ENV=PowerShell|bash). `cd /d` is strictly prohibited.
+- **Command Templates**: All tasks MUST use the standard command templates defined in `rules/rules/WORKFLOW.md` (ENV=PowerShell|bash). `cd /d` is strictly prohibited.
 - **Evidence**: All PRs must include standard evidence artifacts (Healthcheck, Envelope, Postflight).
 
 <!-- smoke -->
