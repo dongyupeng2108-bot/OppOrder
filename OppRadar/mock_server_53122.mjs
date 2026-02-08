@@ -1127,17 +1127,12 @@ const server = http.createServer(async (req, res) => {
                     
                     // In a real system, we'd call LLM here.
                     // For mock, we generate a fake result.
-<<<<<<< HEAD
                     const reevalResult = {
-=======
-                    const result = {
->>>>>>> origin/main
                         option_id: oid,
                         status: 'COMPLETED',
                         new_baseline: state.baseline_prob,
                         llm_summary: `Re-evaluated due to ${job.reason}. New probability ${state.baseline_prob}.`
                     };
-<<<<<<< HEAD
                     results.push(reevalResult);
 
                     // DB: Append Reeval Event (Fail-soft)
@@ -1161,16 +1156,14 @@ const server = http.createServer(async (req, res) => {
                             scan_id: null
                         });
                     } catch (e) { console.error('DB appendReevalEvent fail:', e); }
-=======
-                    results.push(result);
-                    
+
                     // Create Reeval Row
                     try {
                         const reevalOpp = {
                             opp_id: oid,
                             llm_provider: provider,
                             llm_model: 'mock-reeval',
-                            llm_summary: result.llm_summary,
+                            llm_summary: reevalResult.llm_summary,
                             llm_confidence: 1.0,
                             llm_tags: ['reeval', 'mock'],
                             llm_latency_ms: 50,
@@ -1197,8 +1190,6 @@ const server = http.createServer(async (req, res) => {
                     } catch (e) {
                         console.error("Error creating reeval row:", e);
                     }
-                    
->>>>>>> origin/main
                 } else {
                     results.push({ option_id: oid, status: 'SKIPPED_OR_DRY_RUN' });
                 }
