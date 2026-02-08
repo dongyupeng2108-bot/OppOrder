@@ -184,6 +184,45 @@ try {
         console.log(`[Gate Light] Skipping DoD Evidence Check for legacy task ${task_id}`);
     }
 
+    // --- Scan Cache DoD Check (Task 260209_002) ---
+    if (task_id >= '260209_002') {
+        console.log('[Gate Light] Checking Scan Cache DoD Evidence...');
+        
+        const notifyFile = path.join(result_dir, `notify_${task_id}.txt`);
+        const resultFile = path.join(result_dir, `result_${task_id}.json`);
+        
+        // Files existence already checked above
+        const notifyContent = fs.readFileSync(notifyFile, 'utf8');
+        const resultData = JSON.parse(fs.readFileSync(resultFile, 'utf8'));
+        
+        // Check Notify
+        const hasMiss = notifyContent.match(/DOD_EVIDENCE_SCAN_CACHE_MISS:.+cached=false/);
+        const hasHit = notifyContent.match(/DOD_EVIDENCE_SCAN_CACHE_HIT:.+cached=true/);
+        
+        if (!hasMiss || !hasHit) {
+            console.error('[Gate Light] FAILED: Notify file missing valid Scan Cache DoD Evidence.');
+            console.error('Expected: DOD_EVIDENCE_SCAN_CACHE_MISS (cached=false) and DOD_EVIDENCE_SCAN_CACHE_HIT (cached=true).');
+            process.exit(1);
+        }
+        
+        // Check Result JSON
+        if (!resultData.dod_evidence || !Array.isArray(resultData.dod_evidence.scan_cache) || resultData.dod_evidence.scan_cache.length < 2) {
+             console.error('[Gate Light] FAILED: Result JSON missing dod_evidence.scan_cache field (len >= 2).');
+             process.exit(1);
+        }
+        
+        // Deep check JSON content matches required patterns
+        const jsonMiss = resultData.dod_evidence.scan_cache.find(l => l.includes('cached=false'));
+        const jsonHit = resultData.dod_evidence.scan_cache.find(l => l.includes('cached=true'));
+        
+        if (!jsonMiss || !jsonHit) {
+             console.error('[Gate Light] FAILED: Result JSON scan_cache evidence does not contain both Miss and Hit.');
+             process.exit(1);
+        }
+        
+        console.log('[Gate Light] Scan Cache DoD Evidence verified.');
+    }
+
     // Construct postflight command
     // Note: Assuming scripts/postflight_validate_envelope.mjs exists relative to CWD
     const cmd = 'node scripts/postflight_validate_envelope.mjs --task_id ' + task_id + ' --result_dir ' + result_dir + ' --report_dir ' + result_dir;
