@@ -1,0 +1,23 @@
+{
+  "task_id": "260208_025",
+  "timestamp": "2026-02-08T11:14:00.389Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260208_025",
+      "status": "DONE",
+      "summary": "Gate Light Doc Path Check",
+      "report_file": "notify_260208_025.txt",
+      "report_sha256_short": "33a78352"
+    }
+  }
+}
