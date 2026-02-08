@@ -1,0 +1,23 @@
+{
+  "task_id": "260208_015",
+  "timestamp": "2026-02-08T03:52:39.778Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260208_015",
+      "status": "DONE",
+      "summary": "M4 DB Timeline AppendOnly SQLite: Implemented 5 tables, 3 APIs, fail-soft pipeline integration, and UI panel. Smoke test passed.",
+      "report_file": "notify_260208_015.txt",
+      "report_sha256_short": "5fea05b0"
+    }
+  }
+}

@@ -117,6 +117,31 @@ topic_C</textarea>
             </div>
         </div>
 
+        <div class="timeline-panel" style="border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; background: #fff8f0;">
+            <h3>Timeline (DB)</h3>
+            <div style="margin-bottom: 10px;">
+                <label>Topic Key: <input type="text" id="tl_topic_key" placeholder="e.g. topic_A"></label>
+                <button onclick="loadTimeline()" style="padding: 5px 15px; background: #ffc107; color: black; border: none; cursor: pointer;">Load Timeline</button>
+            </div>
+            <div id="tl_status" style="margin-top: 5px; color: blue;"></div>
+            
+            <div id="tl_results" style="display: none; margin-top: 15px;">
+                <div style="margin-bottom: 10px;">
+                    <a id="tl_export_link" href="#" target="_blank" class="button">Export Timeline JSONL</a>
+                </div>
+                <table style="width:100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #ddd;">
+                            <th style="border: 1px solid #ccc; padding: 5px;">Time</th>
+                            <th style="border: 1px solid #ccc; padding: 5px;">Type</th>
+                            <th style="border: 1px solid #ccc; padding: 5px;">Details</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tl_table_body"></tbody>
+                </table>
+            </div>
+        </div>
+
         <div class="controls">
             <h3>Replay Existing</h3>
             <label>Select Scan: <select id="replay_scan">${options}</select></label>
@@ -298,170 +323,96 @@ async function renderReplayDetail(scanId) {
     const rows = opportunities.map(o => `
         <tr>
             <td><a href="/ui/opportunities/${o.opp_id}" onclick="route(event)">${o.opp_id}</a></td>
-            <td>${o.strategy_id}</td>
-            <td>${o.score_baseline || o.score}</td>
+            <td>${o.score}</td>
             <td>${o.tradeable_state}</td>
-            <td>${o.tradeable_reason}</td>
-            <td>
-                <div style="font-size: 0.9em;">
-                    <strong>${o.llm_provider || '-'}</strong> / ${o.llm_model || '-'}<br>
-                    <span style="color: gray;">${o.llm_latency_ms ? o.llm_latency_ms + 'ms' : '-'}</span>
-                </div>
-            </td>
-            <td><span title="${o.llm_summary || ''}">${(o.llm_summary || '').substring(0, 30)}...</span></td>
-            <td>${o.created_at}</td>
+            <td>${o.risk_level}</td>
+            <td>${JSON.stringify(o.market_data || {})}</td>
         </tr>
     `).join('');
-    
-    const missingHtml = missing_opp_ids.length > 0 
-        ? `<div class="warning">Warning: Missing Opp IDs: ${missing_opp_ids.join(', ')}</div>` 
-        : '';
-
-    // New Metrics Section
-    const summary = scan.summary || {};
-    const stageLogs = scan.stage_logs || [];
-    
-    const stageLogsHtml = stageLogs.length > 0 ? `
-        <h3>Stage Logs</h3>
-        <table style="width: 100%; margin-bottom: 20px; border-collapse: collapse;">
-            <tr style="background: #f0f0f0;">
-                <th style="border: 1px solid #ddd; padding: 8px;">Stage ID</th>
-                <th style="border: 1px solid #ddd; padding: 8px;">Duration (ms)</th>
-                <th style="border: 1px solid #ddd; padding: 8px;">Start</th>
-                <th style="border: 1px solid #ddd; padding: 8px;">End</th>
-                <th style="border: 1px solid #ddd; padding: 8px;">Warnings</th>
-                <th style="border: 1px solid #ddd; padding: 8px;">Errors</th>
-            </tr>
-            ${stageLogs.map(s => `
-                <tr>
-                    <td style="border: 1px solid #ddd; padding: 8px;">${s.stage_id}</td>
-                    <td style="border: 1px solid #ddd; padding: 8px;">${s.dur_ms}</td>
-                    <td style="border: 1px solid #ddd; padding: 8px;">${s.start_ts}</td>
-                    <td style="border: 1px solid #ddd; padding: 8px;">${s.end_ts}</td>
-                    <td style="border: 1px solid #ddd; padding: 8px; color: orange;">${(s.warnings || []).length}</td>
-                    <td style="border: 1px solid #ddd; padding: 8px; color: red;">${(s.errors || []).length}</td>
-                </tr>
-            `).join('')}
-        </table>
-    ` : '<p>No stage logs available.</p>';
-
-    const summaryHtml = scan.summary ? `
-        <div class="summary-box" style="background: #eef; padding: 10px; margin-bottom: 20px; border-radius: 4px;">
-            <h3 style="margin-top: 0;">Scan Summary</h3>
-            <p><strong>Total Opps:</strong> ${summary.opp_count}</p>
-            <p><strong>Distribution:</strong> <span style="color:green">${summary.tradeable_yes_count} YES</span>, <span style="color:red">${summary.tradeable_no_count} NO</span>, <span style="color:gray">${summary.tradeable_unknown_count} UNKNOWN</span></p>
-        </div>
-    ` : '';
 
     const monitorHtml = `
-        <div class="monitor-panel" style="border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; background: #fdfdfd;">
-            <h3>Monitor / Trigger / Re-eval</h3>
-            <div class="controls" style="margin-bottom: 10px;">
-                <button onclick="runMonitorTick('${scanId}')" style="padding: 5px 10px;">Run Monitor Tick (Simulate)</button>
-                <button onclick="planReeval()" style="padding: 5px 10px;">Plan Reeval</button>
-                <button onclick="runReeval()" style="padding: 5px 10px;">Run Reeval (Mock)</button>
-                <a href="/export/monitor_state.json" target="_blank" class="button">Export Monitor State</a>
-                <a href="/export/llm_dataset.jsonl?scan=${scanId}" target="_blank" class="button">Export LLM Dataset (JSONL)</a>
+        <div class="monitor-panel" style="border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; background: #eef;">
+            <h3>Monitor Simulation</h3>
+            <div style="margin-bottom: 10px;">
+                <button onclick="runMonitorTick('${scan.scan_id}')" style="padding: 5px 10px; background: #17a2b8; color: white; border: none; cursor: pointer;">Run Tick</button>
+                <button onclick="planReeval()" style="padding: 5px 10px; background: #6610f2; color: white; border: none; cursor: pointer;">Plan Reeval</button>
+                <button onclick="runReeval()" style="padding: 5px 10px; background: #d63384; color: white; border: none; cursor: pointer;">Run Reeval</button>
             </div>
-            <div id="monitor_status" style="margin-bottom: 10px; color: blue; font-weight: bold;">Ready</div>
+            <div id="monitor_status" style="margin-top: 5px; color: blue;"></div>
             
-            <div style="display: flex; gap: 20px;">
-                <div style="flex: 1; border: 1px solid #eee; padding: 5px;">
-                    <h4>Top Moves</h4>
-                    <ul id="list_top_moves" style="padding-left: 20px; font-size: 0.9em;"><li>No data</li></ul>
+            <div style="display: flex; gap: 20px; margin-top: 15px;">
+                <div style="flex: 1; border: 1px solid #ddd; padding: 10px;">
+                    <h4>Top Moves (>0.01)</h4>
+                    <ul id="list_top_moves" style="font-size: 0.9em; padding-left: 20px;"><li>-</li></ul>
                 </div>
-                <div style="flex: 1; border: 1px solid #eee; padding: 5px;">
+                <div style="flex: 1; border: 1px solid #ddd; padding: 10px;">
                     <h4>Reeval Jobs (Plan)</h4>
-                    <ul id="list_reeval_jobs" style="padding-left: 20px; font-size: 0.9em;"><li>No data</li></ul>
+                    <ul id="list_reeval_jobs" style="font-size: 0.9em; padding-left: 20px;"><li>-</li></ul>
                 </div>
-                <div style="flex: 1; border: 1px solid #eee; padding: 5px;">
+                <div style="flex: 1; border: 1px solid #ddd; padding: 10px;">
                     <h4>Reeval Results</h4>
-                    <ul id="list_reeval_results" style="padding-left: 20px; font-size: 0.9em;"><li>No data</li></ul>
+                    <ul id="list_reeval_results" style="font-size: 0.9em; padding-left: 20px;"><li>-</li></ul>
                 </div>
             </div>
         </div>
     `;
 
+    const stageLogs = scan.stage_logs || {};
+    const stageLogsHtml = Object.keys(stageLogs).length > 0 
+        ? `<div style="margin-top: 20px; border: 1px dashed #aaa; padding: 10px;">
+             <h4>Stage Logs</h4>
+             ${Object.entries(stageLogs).map(([k, v]) => `
+                <details>
+                    <summary>${k} (${Array.isArray(v) ? v.length : 'obj'})</summary>
+                    <pre style="font-size:0.8em; background:#eee; padding:5px;">${JSON.stringify(v, null, 2)}</pre>
+                </details>
+             `).join('')}
+           </div>`
+        : '';
+
+    const missingHtml = missing_opp_ids && missing_opp_ids.length > 0 
+        ? `<div style="color: red; margin-bottom: 10px;">Missing Opps in DB: ${missing_opp_ids.join(', ')}</div>` 
+        : '';
+
     return `
         ${renderNav()}
-        <h1>Replay: ${scan.scan_id}</h1>
-        <div class="meta">
-            <p><strong>Timestamp:</strong> ${scan.timestamp}</p>
-            <p><strong>Duration:</strong> ${scan.duration_ms}ms</p>
-            <p><strong>Opp Count:</strong> ${(scan.opp_ids || []).length}</p>
-            <p><strong>Seed:</strong> ${scan.seed || 'Random'}</p>
-            <p><strong>Dedup Skipped:</strong> ${scan.metrics?.dedup_skipped_count || 0}</p>
-            <p><strong>Cache:</strong> Hit ${scan.metrics?.cache_hit_count || 0} / Miss ${scan.metrics?.cache_miss_count || 0}</p>
-            <p><strong>Topic Key:</strong> ${scan.metrics?.topic_key || '-'}</p>
-            <a href="/export/replay.json?scan=${scanId}" target="_blank" class="button">Export JSON</a>
-            <a href="/export/replay.csv?scan=${scanId}" target="_blank" class="button">Export CSV</a>
-            <a href="/export/stage_logs.json?scan=${scanId}" target="_blank" class="button">Export Stage Logs JSON</a>
-        </div>
-        ${summaryHtml}
+        <h1>Replay Scan: ${scan.scan_id}</h1>
+        <p><strong>Topic:</strong> ${scan.topic_key || 'N/A'}</p>
+        <p><strong>Timestamp:</strong> ${scan.timestamp}</p>
+        <p><strong>Duration:</strong> ${scan.duration_ms} ms</p>
+        <p><strong>Metrics:</strong> ${JSON.stringify(scan.metrics || {})}</p>
+        
         ${monitorHtml}
         ${stageLogsHtml}
         ${missingHtml}
+        
         <table>
-            <tr>
-                <th>Opp ID</th>
-                <th>Strategy</th>
-                <th>Score</th>
-                <th>State</th>
-                <th>Reason</th>
-                <th>LLM Provider/Model</th>
-                <th>LLM Summary</th>
-                <th>Created At</th>
-            </tr>
+            <tr><th>Opp ID</th><th>Score</th><th>State</th><th>Risk</th><th>Market Data</th></tr>
             ${rows}
         </table>
     `;
 }
 
-async function renderHome() {
-    return `
-        ${renderNav()}
-        <h1>Welcome to OppRadar</h1>
-        <ul>
-            <li><a href="/ui/strategies" onclick="route(event)">Browse Strategies</a></li>
-            <li><a href="/ui/opportunities" onclick="route(event)">Browse Opportunities</a></li>
-            <li><a href="/ui/diff" onclick="route(event)">Compare Scans</a></li>
-            <li><a href="/ui/replay" onclick="route(event)">Replay Scans</a></li>
-        </ul>
-    `;
-}
-
 async function renderDiff() {
-    const scans = await fetchJSON('/scans');
-    // Sort by timestamp desc
-    scans.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-    
-    const options = scans.map(s => `<option value="${s.scan_id}">${s.scan_id} (${s.timestamp})</option>`).join('');
-
     return `
         ${renderNav()}
         <h1>Diff Scans</h1>
-        <div class="controls">
-            <label>From: <select id="from_scan">${options}</select></label>
-            <label>To: <select id="to_scan">${options}</select></label>
-            <button onclick="runDiff()">Compare</button>
-        </div>
-        <div id="diff-results"></div>
+        <form onsubmit="event.preventDefault(); diffScans();">
+            <label>From Scan ID: <input type="text" id="diff_from" required></label>
+            <label>To Scan ID: <input type="text" id="diff_to" required></label>
+            <button type="submit">Compare</button>
+        </form>
+        <div id="diff_result"></div>
     `;
 }
 
-window.runDiff = async function() {
-    const from = document.getElementById('from_scan').value;
-    const to = document.getElementById('to_scan').value;
-    const resultDiv = document.getElementById('diff-results');
-
-    if (!from || !to) {
-        resultDiv.innerHTML = '<p class="error">Please select both scans.</p>';
-        return;
-    }
-
-    resultDiv.innerHTML = 'Loading...';
-
+async function diffScans() {
+    const from = document.getElementById('diff_from').value;
+    const to = document.getElementById('diff_to').value;
+    const resultDiv = document.getElementById('diff_result');
+    
     try {
+        resultDiv.innerHTML = 'Loading...';
         const data = await fetchJSON(`/diff?from_scan=${from}&to_scan=${to}`);
         
         const addedHtml = data.added_opp_ids.length 
@@ -469,7 +420,7 @@ window.runDiff = async function() {
             : '<p>None</p>';
             
         const removedHtml = data.removed_opp_ids.length 
-            ? `<ul>${data.removed_opp_ids.map(id => `<li>${id}</li>`).join('')}</ul>`
+            ? `<ul>${data.removed_opp_ids.map(id => `<li><a href="/ui/opportunities/${id}" onclick="route(event)">${id}</a></li>`).join('')}</ul>`
             : '<p>None</p>';
             
         const changedHtml = data.changed.length 
@@ -572,104 +523,100 @@ async function renderOpportunities() {
         <tr>
             <td><a href="/ui/opportunities/${o.opp_id}" onclick="route(event)">${o.opp_id}</a></td>
             <td><a href="/ui/strategies/${o.strategy_id}" onclick="route(event)">${o.strategy_id}</a></td>
-            <td>${o.score}</td>
             <td>${o.tradeable_state}</td>
+            <td>${o.score}</td>
+            <td>${o.risk_level}</td>
         </tr>
     `).join('');
-
     return `
         ${renderNav()}
         <h1>Opportunities</h1>
-        <form onsubmit="applyFilter(event)">
-            <label>State: <input name="tradeable_state" value="${filterState || ''}" placeholder="e.g. YES"></label>
-            <label>Min Score: <input name="score_min" type="number" value="${filterScore || ''}" placeholder="e.g. 80"></label>
+        <form onsubmit="filterOpps(event)">
+            <label>State: <input type="text" name="tradeable_state" placeholder="e.g. ACTIVE" value="${filterState || ''}"></label>
+            <label>Min Score: <input type="number" name="score_min" value="${filterScore || ''}"></label>
             <button type="submit">Filter</button>
         </form>
         <table>
-            <tr><th>ID</th><th>Strategy</th><th>Score</th><th>State</th></tr>
+            <tr><th>ID</th><th>Strategy</th><th>State</th><th>Score</th><th>Risk</th></tr>
             ${rows}
         </table>
     `;
 }
 
-window.applyFilter = function(e) {
-    e.preventDefault();
-    const fd = new FormData(e.target);
-    const search = new URLSearchParams(fd).toString();
-    history.pushState(null, '', `/ui/opportunities?${search}`);
+function filterOpps(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const params = new URLSearchParams();
+    for (const [key, value] of formData.entries()) {
+        if (value) params.append(key, value);
+    }
+    history.pushState(null, '', `/ui/opportunities?${params.toString()}`);
     router();
 }
 
-async function renderOpportunityDetail(id) {
-    const list = await fetchJSON('/opportunities');
-    const item = list.find(o => o.opp_id === id);
-
-    if (!item) return `${renderNav()}<h1>Opportunity Not Found</h1>`;
+async function renderOppDetail(id) {
+    let opp;
+    try {
+        opp = await fetchJSON(`/opportunities/${id}`);
+    } catch (e) {
+        return `${renderNav()}<h1>Opp Not Found</h1>`;
+    }
 
     return `
         ${renderNav()}
-        <h1>Opportunity: ${item.opp_id}</h1>
-        <p><strong>Strategy ID:</strong> <a href="/ui/strategies/${item.strategy_id}" onclick="route(event)">${item.strategy_id}</a></p>
-        <p><strong>Snapshot ID:</strong> ${item.snapshot_id}</p>
-        <p><strong>Score:</strong> ${item.score}</p>
-        <p><strong>Baseline Score:</strong> ${item.score_baseline || 'N/A'}</p>
-        <p><strong>Components:</strong> ${item.score_components ? JSON.stringify(item.score_components) : 'N/A'}</p>
-        <p><strong>Created At:</strong> ${item.created_at}</p>
-        <p><strong>Tradeable:</strong> ${item.tradeable_state}</p>
-        <p><strong>Reason:</strong> ${item.tradeable_reason}</p>
+        <h1>Opportunity: ${opp.opp_id}</h1>
+        <p><strong>Strategy:</strong> ${opp.strategy_id}</p>
+        <p><strong>State:</strong> ${opp.tradeable_state}</p>
+        <p><strong>Score:</strong> ${opp.score}</p>
+        <p><strong>Risk:</strong> ${opp.risk_level}</p>
         
-        <div class="llm-section" style="background: #f0f8ff; padding: 15px; margin-top: 20px; border-left: 5px solid #007bff;">
-            <h3 style="margin-top: 0;">LLM Analysis</h3>
-            <p><strong>Provider:</strong> ${item.llm_provider || 'N/A'}</p>
-            <p><strong>Model:</strong> ${item.llm_model || 'N/A'}</p>
-            <p><strong>Latency:</strong> ${item.llm_latency_ms ? item.llm_latency_ms + 'ms' : 'N/A'}</p>
-            <p><strong>Summary:</strong> ${item.llm_summary || 'N/A'}</p>
-            <p><strong>Confidence:</strong> ${item.llm_confidence !== undefined ? item.llm_confidence : 'N/A'}</p>
-            <p><strong>Tags:</strong> ${(item.llm_tags || []).join(', ')}</p>
-            ${item.llm_error ? `<p style="color:red"><strong>Error:</strong> ${item.llm_error}</p>` : ''}
-        </div>
+        <h3>Market Data</h3>
+        <pre>${JSON.stringify(opp.market_data, null, 2)}</pre>
+        
+        <h3>Full JSON</h3>
+        <pre>${JSON.stringify(opp, null, 2)}</pre>
     `;
 }
 
-async function router() {
-    const app = document.getElementById('app');
-    const path = window.location.pathname;
-    
-    app.innerHTML = 'Loading...';
-
-    try {
-        if (path === '/ui' || path === '/ui/') {
-            app.innerHTML = await renderHome();
-        } else if (path === '/ui/strategies') {
-            app.innerHTML = await renderStrategies();
-        } else if (path.startsWith('/ui/strategies/')) {
-            const id = path.split('/')[3];
-            app.innerHTML = await renderStrategyDetail(id);
-        } else if (path === '/ui/opportunities') {
-            app.innerHTML = await renderOpportunities();
-        } else if (path.startsWith('/ui/opportunities/')) {
-            const id = path.split('/')[3];
-            app.innerHTML = await renderOpportunityDetail(id);
-        } else if (path === '/ui/diff') {
-            app.innerHTML = await renderDiff();
-        } else if (path === '/ui/replay') {
-            app.innerHTML = await renderReplayList();
-        } else if (path.startsWith('/ui/replay/')) {
-            const id = path.split('/')[3];
-            app.innerHTML = await renderReplayDetail(id);
-        } else {
-            app.innerHTML = 'Not Found';
-        }
-    } catch (e) {
-        console.error(e);
-        app.innerHTML = 'Error: ' + e.message;
+// Router
+async function route(event) {
+    if (event) {
+        event.preventDefault();
+        history.pushState(null, '', event.target.href);
     }
+    await router();
 }
 
-window.route = function(e) {
-    e.preventDefault();
-    history.pushState(null, '', e.target.href);
-    router();
+async function router() {
+    const path = window.location.pathname;
+    const app = document.getElementById('app');
+    
+    if (path === '/ui' || path === '/ui/') {
+        app.innerHTML = `
+            ${renderNav()}
+            <h1>OppRadar Dashboard</h1>
+            <p>Welcome to OppRadar UI.</p>
+        `;
+    } else if (path === '/ui/strategies') {
+        app.innerHTML = await renderStrategies();
+    } else if (path.startsWith('/ui/strategies/')) {
+        const id = path.split('/').pop();
+        app.innerHTML = await renderStrategyDetail(id);
+    } else if (path === '/ui/opportunities') {
+        app.innerHTML = await renderOpportunities();
+    } else if (path.startsWith('/ui/opportunities/')) {
+        const id = path.split('/').pop();
+        app.innerHTML = await renderOppDetail(id);
+    } else if (path === '/ui/diff') {
+        app.innerHTML = await renderDiff();
+    } else if (path === '/ui/replay') {
+        app.innerHTML = await renderReplayList();
+    } else if (path.startsWith('/ui/replay/')) {
+        const id = path.split('/').pop();
+        app.innerHTML = await renderReplayDetail(id);
+    } else {
+        app.innerHTML = `${renderNav()}<h1>404 Not Found</h1>`;
+    }
 }
 
 window.onpopstate = router;
@@ -749,5 +696,65 @@ window.runReeval = async function() {
         }
     } catch (e) {
         status.textContent = 'Error: ' + e.message;
+    }
+}
+
+window.loadTimeline = async function() {
+    const topicKey = document.getElementById('tl_topic_key').value;
+    if (!topicKey) {
+        alert('Please enter a topic key');
+        return;
+    }
+    
+    const statusEl = document.getElementById('tl_status');
+    const resultsPanel = document.getElementById('tl_results');
+    const tbody = document.getElementById('tl_table_body');
+    const exportLink = document.getElementById('tl_export_link');
+
+    try {
+        statusEl.textContent = 'Loading...';
+        resultsPanel.style.display = 'none';
+        tbody.innerHTML = '';
+        
+        const res = await fetch(`/timeline/topic?topic_key=${encodeURIComponent(topicKey)}&limit=50`);
+        if (!res.ok) throw new Error('Failed to load timeline');
+        
+        const rows = await res.json();
+        
+        // Update export link
+        exportLink.href = `/export/timeline.jsonl?topic_key=${encodeURIComponent(topicKey)}`;
+        
+        rows.forEach(r => {
+            const tr = document.createElement('tr');
+            // Format logic based on row type (snapshot, llm, reeval)
+            let type = 'Unknown';
+            let details = '';
+            const ts = new Date(r.ts).toISOString();
+            
+            if (r.prob !== undefined) {
+                type = 'Snapshot';
+                details = `Prob: ${r.prob.toFixed(4)}, Price: ${r.market_price}`;
+            } else if (r.provider !== undefined) {
+                type = 'LLM';
+                details = `Model: ${r.model}, Latency: ${r.latency_ms}ms`;
+            } else if (r.trigger_json !== undefined) {
+                type = 'Reeval';
+                const trigger = JSON.parse(r.trigger_json || '{}');
+                details = `Trigger: ${trigger.reason || 'Manual'}`;
+            }
+            
+            tr.innerHTML = `
+                <td style="border: 1px solid #ccc; padding: 5px;">${ts}</td>
+                <td style="border: 1px solid #ccc; padding: 5px;">${type}</td>
+                <td style="border: 1px solid #ccc; padding: 5px;">${details}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+        
+        resultsPanel.style.display = 'block';
+        statusEl.textContent = `Loaded ${rows.length} events.`;
+        
+    } catch (e) {
+        statusEl.textContent = 'Error: ' + e.message;
     }
 }
