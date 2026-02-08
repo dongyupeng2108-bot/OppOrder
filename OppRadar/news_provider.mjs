@@ -101,16 +101,17 @@ export class GdeltDocNewsProvider extends NewsProvider {
      * Fetch news from GDELT
      * @param {string} topicKey 
      * @param {number} limit 
+     * @param {Object} options - { query, timespan }
      * @returns {Promise<Array>}
      */
-    async fetchNews(topicKey, limit = 20) {
+    async fetchNews(topicKey, limit = 20, options = {}) {
         // Cap limit at 50
         const maxRecords = Math.min(Math.max(limit, 5), 50);
         
         // Build Query
         // Map topicKey to query if needed, or just use topicKey
-        const query = encodeURIComponent(topicKey);
-        const timespan = '1d';
+        const query = encodeURIComponent(options.query || topicKey);
+        const timespan = options.timespan || '1d';
         const mode = 'artlist';
         const format = 'json';
         const sort = 'datedesc';

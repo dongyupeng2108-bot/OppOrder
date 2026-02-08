@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import crypto from 'crypto';
 import { getProvider } from './llm_provider.mjs';
 import { getProvider as getNewsProvider } from './news_provider.mjs';
+import { generateCacheKey, getFromCache, setInCache } from './news_pull_cache.mjs';
 import DB from './db.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -724,24 +725,70 @@ const server = http.createServer(async (req, res) => {
         req.on('data', chunk => body += chunk);
         req.on('end', async () => {
             try {
-                const { topic_key, limit, provider } = JSON.parse(body);
-                if (!topic_key) throw new Error('topic_key required');
+                let params = {};
+                try { params = JSON.parse(body); } catch (e) {}
+
+                const topic_key = params.topic_key || 'default';
+                const requestedProvider = params.provider || process.env.NEWS_PROVIDER || 'local';
                 
-                const requestedProvider = provider || process.env.NEWS_PROVIDER || 'local';
+                // Validate maxrecords/limit
+                let limit = 5; // default for local
+                if (requestedProvider === 'gdelt') {
+                    // Default 20 for gdelt
+                    limit = params.maxrecords ? parseInt(params.maxrecords) : 20;
+                    if (limit > 50) {
+                        res.writeHead(400, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({ error: 'maxrecords cannot exceed 50' }));
+                        return;
+                    }
+                } else {
+                    limit = params.limit ? parseInt(params.limit) : 5;
+                }
+
+                // Cache Check
+                const cacheParams = {
+                    provider: requestedProvider,
+                    topic_key: topic_key,
+                    query: params.query,
+                    timespan: params.timespan,
+                    maxrecords: limit
+                };
+                const cacheKey = generateCacheKey(cacheParams);
+                const cachedData = getFromCache(cacheKey);
+
+                if (cachedData) {
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ 
+                        ...cachedData, 
+                        cached: true, 
+                        cache_key: cacheKey 
+                    }));
+                    return;
+                }
+
                 let newsProvider = getNewsProvider(requestedProvider);
-                
                 let newsItems = [];
                 let fallbackOccurred = false;
+                let providerUsed = requestedProvider;
 
                 try {
-                    newsItems = await newsProvider.fetchNews(topic_key, limit || 5);
+                    newsItems = await newsProvider.fetchNews(topic_key, limit, { 
+                        query: params.query, 
+                        timespan: params.timespan 
+                    });
                 } catch (e) {
                     console.error(`[NewsPull] Provider ${requestedProvider} failed: ${e.message}`);
                     if (requestedProvider !== 'local') {
                         console.log('[NewsPull] Falling back to local provider');
                         newsProvider = getNewsProvider('local');
-                        newsItems = await newsProvider.fetchNews(topic_key, limit || 5);
+                        // Local provider ignores query/timespan usually, and uses default limit 5 if we don't pass it?
+                        // We should pass the limit we calculated or default local limit?
+                        // Fallback usually implies safety. Local default is 5.
+                        // Let's use the limit we have but cap it if needed? 
+                        // Local provider fetchNews(topic, limit).
+                        newsItems = await newsProvider.fetchNews(topic_key, 5); // Fallback usually safe default
                         fallbackOccurred = true;
+                        providerUsed = 'local';
                     } else {
                         throw e;
                     }
@@ -752,7 +799,8 @@ const server = http.createServer(async (req, res) => {
                 let latest_news_id = null;
 
                 for (const item of newsItems) {
-                     const itemProvider = item.provider || 'local';
+                     const itemProvider = item.provider || providerUsed;
+                     // Use robust hash input
                      const hashInput = itemProvider + (item.url || '') + (item.title || '') + (item.published_at || '');
                      const content_hash = crypto.createHash('sha256').update(hashInput).digest('hex');
                      
@@ -774,16 +822,25 @@ const server = http.createServer(async (req, res) => {
                     if (res.id) latest_news_id = res.id;
                 }
                 
-                res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ 
+                const result = { 
                     status: 'ok', 
                     fetched: newsItems.length, 
                     written, 
                     deduped, 
                     latest_news_id,
-                    provider: fallbackOccurred ? 'local' : requestedProvider,
-                    fallback: fallbackOccurred
-                }));
+                    provider_used: providerUsed,
+                    fallback: fallbackOccurred,
+                    cached: false,
+                    cache_key: cacheKey,
+                    inserted_count: written,
+                    deduped_count: deduped
+                };
+
+                // Cache the result (for 10 min)
+                setInCache(cacheKey, result);
+
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify(result));
             } catch (e) {
                 res.writeHead(500, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ error: e.message }));
