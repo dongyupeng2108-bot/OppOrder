@@ -83,14 +83,23 @@ function initSchema() {
             publisher TEXT,
             summary TEXT,
             credibility REAL,
+            published_at TEXT,
+            content_hash TEXT,
             raw_json TEXT
         )`);
         
+        // Migrations (Idempotent) - Run BEFORE indices to ensure columns exist
+        db.run(`ALTER TABLE llm_row ADD COLUMN news_refs TEXT`, (err) => {});
+        db.run(`ALTER TABLE reeval_event ADD COLUMN news_refs TEXT`, (err) => {});
+        db.run(`ALTER TABLE news_stub ADD COLUMN published_at TEXT`, (err) => {});
+        db.run(`ALTER TABLE news_stub ADD COLUMN content_hash TEXT`, (err) => {});
+
         // Indices for performance
         db.run(`CREATE INDEX IF NOT EXISTS idx_snapshot_topic_ts ON option_snapshot(topic_key, ts)`);
         db.run(`CREATE INDEX IF NOT EXISTS idx_llm_topic_ts ON llm_row(topic_key, ts)`);
         db.run(`CREATE INDEX IF NOT EXISTS idx_reeval_topic_ts ON reeval_event(topic_key, ts)`);
         db.run(`CREATE INDEX IF NOT EXISTS idx_news_topic_ts ON news_stub(topic_key, ts)`);
+        db.run(`CREATE UNIQUE INDEX IF NOT EXISTS idx_news_content_hash ON news_stub(topic_key, content_hash)`);
     });
 }
 
@@ -150,8 +159,8 @@ export const DB = {
     async appendLLMRow(row) {
         try {
             const id = row.id || `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-            await runAsync(`INSERT INTO llm_row (id, topic_key, option_id, ts, provider, model, prompt_hash, llm_json, tags_json, latency_ms, raw_json)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            await runAsync(`INSERT INTO llm_row (id, topic_key, option_id, ts, provider, model, prompt_hash, llm_json, tags_json, latency_ms, raw_json, news_refs)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
                     id,
                     row.topic_key,
@@ -163,7 +172,8 @@ export const DB = {
                     JSON.stringify(row.llm_json || {}),
                     JSON.stringify(row.tags_json || []),
                     row.latency_ms,
-                    JSON.stringify(row.raw_json || {})
+                    JSON.stringify(row.raw_json || {}),
+                    JSON.stringify(row.news_refs || [])
                 ]
             );
         } catch (e) {
@@ -174,8 +184,8 @@ export const DB = {
     async appendReevalEvent(event) {
         try {
             const id = event.id || `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-            await runAsync(`INSERT INTO reeval_event (id, topic_key, option_id, ts, trigger_json, before_json, after_json, batch_id, scan_id)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            await runAsync(`INSERT INTO reeval_event (id, topic_key, option_id, ts, trigger_json, before_json, after_json, batch_id, scan_id, news_refs)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
                     id,
                     event.topic_key,
@@ -185,7 +195,8 @@ export const DB = {
                     JSON.stringify(event.before_json || {}),
                     JSON.stringify(event.after_json || {}),
                     event.batch_id,
-                    event.scan_id
+                    event.scan_id,
+                    JSON.stringify(event.news_refs || [])
                 ]
             );
         } catch (e) {
@@ -196,9 +207,10 @@ export const DB = {
     async appendNews(newsItem) {
         try {
             const id = newsItem.id || `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-            await runAsync(`INSERT INTO news_stub (
-                id, topic_key, ts, title, url, publisher, summary, credibility, raw_json
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            // Uses INSERT OR IGNORE to rely on unique index on (topic_key, content_hash)
+            const result = await runAsync(`INSERT OR IGNORE INTO news_stub (
+                id, topic_key, ts, title, url, publisher, summary, credibility, raw_json, published_at, content_hash
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [
                 id,
                 newsItem.topic_key,
@@ -208,20 +220,33 @@ export const DB = {
                 newsItem.publisher,
                 newsItem.summary,
                 newsItem.credibility || 0.5,
-                JSON.stringify(newsItem.raw_json || {})
+                JSON.stringify(newsItem.raw_json || {}),
+                newsItem.published_at || null,
+                newsItem.content_hash || null
             ]);
+            return { id, inserted: result.changes > 0 };
         } catch (e) {
             console.error('[DB] appendNews error:', e.message);
+            return { id: null, inserted: false };
         }
     },
     
     // Read Methods
+    async getRecentNews(topic_key, limit = 3) {
+        try {
+            return await allAsync(`SELECT * FROM news_stub WHERE topic_key = ? ORDER BY ts DESC LIMIT ?`, [topic_key, limit]);
+        } catch (e) {
+            console.error('[DB] getRecentNews error:', e.message);
+            return [];
+        }
+    },
+
     async getTimeline(topic_key, limit = 50) {
         try {
             const snapshots = await allAsync(`SELECT 'snapshot' as type, id, topic_key, ts, prob as val1, market_price as val2, source as info, raw_json FROM option_snapshot WHERE topic_key = ? ORDER BY ts DESC LIMIT ?`, [topic_key, limit]);
-            const llm_rows = await allAsync(`SELECT 'llm' as type, id, topic_key, ts, latency_ms as val1, 0 as val2, model as info, raw_json FROM llm_row WHERE topic_key = ? ORDER BY ts DESC LIMIT ?`, [topic_key, limit]);
-            const reevals = await allAsync(`SELECT 'reeval' as type, id, topic_key, ts, 0 as val1, 0 as val2, 'trigger' as info, trigger_json as raw_json FROM reeval_event WHERE topic_key = ? ORDER BY ts DESC LIMIT ?`, [topic_key, limit]);
-            const news = await allAsync(`SELECT 'news' as type, id, topic_key, ts, credibility as val1, 0 as val2, publisher as info, raw_json FROM news_stub WHERE topic_key = ? ORDER BY ts DESC LIMIT ?`, [topic_key, limit]);
+            const llm_rows = await allAsync(`SELECT 'llm' as type, id, topic_key, ts, latency_ms as val1, 0 as val2, model as info, raw_json, news_refs FROM llm_row WHERE topic_key = ? ORDER BY ts DESC LIMIT ?`, [topic_key, limit]);
+            const reevals = await allAsync(`SELECT 'reeval' as type, id, topic_key, ts, 0 as val1, 0 as val2, 'trigger' as info, trigger_json as raw_json, news_refs FROM reeval_event WHERE topic_key = ? ORDER BY ts DESC LIMIT ?`, [topic_key, limit]);
+            const news = await allAsync(`SELECT 'news' as type, id, topic_key, ts, credibility as val1, 0 as val2, publisher as info, raw_json, url, title, content_hash FROM news_stub WHERE topic_key = ? ORDER BY ts DESC LIMIT ?`, [topic_key, limit]);
             
             const all = [...snapshots, ...llm_rows, ...reevals, ...news];
             all.sort((a, b) => b.ts - a.ts); // Descending

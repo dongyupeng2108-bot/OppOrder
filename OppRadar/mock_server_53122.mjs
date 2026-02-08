@@ -177,8 +177,10 @@ async function runScanCore(params) {
                 const newsProvider = getNewsProvider(process.env.NEWS_PROVIDER || 'local');
                 const newsItems = await newsProvider.fetchNews(topic_key, 5);
                 let written = 0;
+                let deduped = 0;
                 for (const item of newsItems) {
-                    await DB.appendNews({
+                    const content_hash = crypto.createHash('sha256').update(item.title + (item.published_at || '')).digest('hex');
+                    const res = await DB.appendNews({
                         topic_key: topic_key,
                         ts: new Date(item.published_at).getTime(),
                         title: item.title,
@@ -186,11 +188,14 @@ async function runScanCore(params) {
                         publisher: item.source,
                         summary: item.snippet,
                         credibility: 0.8,
-                        raw_json: item
+                        raw_json: item,
+                        published_at: item.published_at,
+                        content_hash: content_hash
                     });
-                    written++;
+                    if (res.inserted) written++;
+                    else deduped++;
                 }
-                logStage('news_pull', tNews, { topic_key }, { fetched: newsItems.length, written }, [], []);
+                logStage('news_pull', tNews, { topic_key }, { fetched: newsItems.length, written, deduped }, [], []);
             } catch (e) {
                 logStage('news_pull', tNews, { topic_key }, {}, [], [e.message]);
             }
@@ -302,8 +307,15 @@ async function runScanCore(params) {
             opp.llm_input_prompt = llmResult.llm_input_prompt; // Capture prompt
             opp.llm_json = llmResult.llm_json;
 
+            // Fetch News Refs
+            let newsRefs = [];
+            try {
+                const recentNews = await DB.getRecentNews(topic_key, 3);
+                newsRefs = recentNews.map(n => n.id);
+            } catch (e) { console.error('Error fetching news for LLM:', e); }
+
             // Capture Dataset Row
-            const datasetRow = createLLMDatasetRow(opp, { scan_id: scanId, trigger_reason: 'initial', batch_id: batch_id });
+            const datasetRow = createLLMDatasetRow(opp, { scan_id: scanId, trigger_reason: 'initial', batch_id: batch_id, news_refs: newsRefs });
             runtimeData.llm_dataset_rows.push(datasetRow);
 
             // DB: Append LLM Row (Fail-soft)
@@ -319,7 +331,8 @@ async function runScanCore(params) {
                     llm_json: { summary: opp.llm_summary, confidence: opp.llm_confidence, error: opp.llm_error },
                     tags_json: opp.llm_tags,
                     latency_ms: opp.llm_latency_ms,
-                    raw_json: datasetRow
+                    raw_json: datasetRow,
+                    news_refs: newsRefs
                 });
             } catch (e) { console.error('DB appendLLMRow fail:', e); }
 
@@ -452,7 +465,8 @@ function createLLMDatasetRow(opp, ctx = {}) {
         },
         trigger: {
             trigger_reason: ctx.trigger_reason || 'initial'
-        }
+        },
+        news_refs: ctx.news_refs || []
     };
     
     // Hash
@@ -717,8 +731,12 @@ const server = http.createServer(async (req, res) => {
                 const newsItems = await newsProvider.fetchNews(topic_key, limit || 5);
                 
                 let written = 0;
+                let deduped = 0;
+                let latest_news_id = null;
+
                 for (const item of newsItems) {
-                     await DB.appendNews({
+                     const content_hash = crypto.createHash('sha256').update(item.title + (item.published_at || '')).digest('hex');
+                     const res = await DB.appendNews({
                         topic_key: topic_key,
                         ts: new Date(item.published_at).getTime(),
                         title: item.title,
@@ -726,13 +744,17 @@ const server = http.createServer(async (req, res) => {
                         publisher: item.source,
                         summary: item.snippet,
                         credibility: 0.8,
-                        raw_json: item
+                        raw_json: item,
+                        published_at: item.published_at,
+                        content_hash: content_hash
                     });
-                    written++;
+                    if (res.inserted) written++;
+                    else deduped++;
+                    if (res.id) latest_news_id = res.id;
                 }
                 
                 res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ status: 'ok', fetched: newsItems.length, written }));
+                res.end(JSON.stringify({ status: 'ok', fetched: newsItems.length, written, deduped, latest_news_id }));
             } catch (e) {
                 res.writeHead(500, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ error: e.message }));
@@ -1209,6 +1231,13 @@ const server = http.createServer(async (req, res) => {
                         const oppRef = inMemoryOpps.find(o => o.opp_id === oid);
                         const topicKey = oppRef ? (oppRef.topic_key || 'default_topic') : 'unknown';
 
+                        // Fetch News
+                        let newsRefs = [];
+                        try {
+                            const recentNews = await DB.getRecentNews(topicKey, 3);
+                            newsRefs = recentNews.map(n => n.id);
+                        } catch(e) { console.error('Error fetching news for Reeval:', e); }
+
                         await DB.appendReevalEvent({
                             id: `rev_${Date.now()}_${oid}`,
                             topic_key: topicKey,
@@ -1218,7 +1247,8 @@ const server = http.createServer(async (req, res) => {
                             before_json: { prob: job.from_prob },
                             after_json: { prob: state.baseline_prob },
                             batch_id: null, // Not easily available here unless passed in params
-                            scan_id: null
+                            scan_id: null,
+                            news_refs: newsRefs
                         });
                     } catch (e) { console.error('DB appendReevalEvent fail:', e); }
 
@@ -1249,7 +1279,8 @@ const server = http.createServer(async (req, res) => {
                             scan_id: 'unknown', // or find last scan id
                             reeval_job_id: `job_${Date.now()}_${oid}`,
                             trigger_reason: job.reason,
-                            batch_id: linkedBatchId
+                            batch_id: linkedBatchId,
+                            news_refs: newsRefs
                         });
                         runtimeData.llm_dataset_rows.push(datasetRow);
                     } catch (e) {
