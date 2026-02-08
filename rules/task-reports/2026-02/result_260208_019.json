@@ -1,0 +1,7 @@
+{
+  "task_id": "260208_019",
+  "status": "DONE",
+  "summary": "Fix LATEST.json + rebuild TASK_REPORTS_INDEX.md; reconcile evidence pointers",
+  "report_file": "notify_260208_019.txt",
+  "report_sha256_short": "072c2501"
+}
