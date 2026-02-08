@@ -164,12 +164,18 @@ try {
         const resultData = JSON.parse(fs.readFileSync(resultFile, 'utf8'));
         
         // Check Notify
-        const hasNotifyRoot = notifyContent.includes('DOD_EVIDENCE_HEALTHCHECK_ROOT:');
-        const hasNotifyPairs = notifyContent.includes('DOD_EVIDENCE_HEALTHCHECK_PAIRS:');
+        const rootRegex = /DOD_EVIDENCE_HEALTHCHECK_ROOT:.*=>.*HTTP\/\d\.\d\s+200\s+OK/;
+        const pairsRegex = /DOD_EVIDENCE_HEALTHCHECK_PAIRS:.*=>.*HTTP\/\d\.\d\s+200\s+OK/;
         
-        if (!hasNotifyRoot || !hasNotifyPairs) {
-            console.error('[Gate Light] FAILED: Notify file missing DoD Evidence Excerpts.');
-            console.error('Expected: DOD_EVIDENCE_HEALTHCHECK_ROOT and DOD_EVIDENCE_HEALTHCHECK_PAIRS lines.');
+        if (!rootRegex.test(notifyContent)) {
+            console.error('[Gate Light] FAILED: Notify file missing or invalid DoD Root Evidence.');
+            console.error('Expected format: DOD_EVIDENCE_HEALTHCHECK_ROOT: <path> => HTTP/1.1 200 OK');
+            process.exit(1);
+        }
+        
+        if (!pairsRegex.test(notifyContent)) {
+            console.error('[Gate Light] FAILED: Notify file missing or invalid DoD Pairs Evidence.');
+            console.error('Expected format: DOD_EVIDENCE_HEALTHCHECK_PAIRS: <path> => HTTP/1.1 200 OK');
             process.exit(1);
         }
         

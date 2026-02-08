@@ -554,6 +554,174 @@ try {
     console.error("Failed to initialize data:", e);
 }
 
+// --- Opportunity Logic ---
+
+function calculateFeatures(topic_key, timeline) {
+    // timeline is sorted by ts DESC
+    const snapshots = timeline.filter(i => i.type === 'snapshot');
+    const news = timeline.filter(i => i.type === 'news');
+    const llms = timeline.filter(i => i.type === 'llm');
+    const reevals = timeline.filter(i => i.type === 'reeval');
+
+    const now = Date.now();
+    const latestSnap = snapshots[0];
+    
+    if (!latestSnap) {
+        return null; // Cannot build opportunity without a snapshot
+    }
+
+    const priceNow = latestSnap.val1; // prob
+    const tsNow = latestSnap.ts;
+    const staleness = (now - tsNow) / 1000;
+
+    // Helper to find price at T - window
+    const getDelta = (sec) => {
+        const targetTs = tsNow - (sec * 1000);
+        // Find snapshot closest to targetTs (but not newer than it if possible, or just closest)
+        // Since sorted DESC, we iterate until we find one <= targetTs
+        const pastSnap = snapshots.find(s => s.ts <= targetTs);
+        if (!pastSnap) return null;
+        return priceNow - pastSnap.val1;
+    };
+
+    const countNews = (sec) => {
+        const cutoff = now - (sec * 1000);
+        return news.filter(n => n.ts >= cutoff).length;
+    };
+
+    const latestLLM = llms[0];
+    let llmConf = null;
+    if (latestLLM && latestLLM.raw_json) {
+        try {
+            const parsed = typeof latestLLM.raw_json === 'string' ? JSON.parse(latestLLM.raw_json) : latestLLM.raw_json;
+             // llm_json is inside raw_json or just fields? 
+             // DB.getTimeline returns: id, topic_key, ts, latency_ms as val1, 0 as val2, model as info, raw_json, news_refs
+             // In appendLLMRow: llm_json is stored. 
+             // Let's check getTimeline query: "llm_json as raw_json" ?? No.
+             // Query: "SELECT 'llm' as type, ..., raw_json, ..."
+             // raw_json in appendLLMRow is the dataset row.
+             // dataset row has output.confidence
+             if (parsed.output && parsed.output.confidence) {
+                 llmConf = parsed.output.confidence;
+             }
+        } catch (e) {}
+    }
+
+    return {
+        topic_key: topic_key,
+        prob_now: priceNow,
+        staleness_sec: staleness,
+        delta_15m: getDelta(900),
+        delta_1h: getDelta(3600),
+        delta_6h: getDelta(21600),
+        delta_24h: getDelta(86400),
+        news_count_1h: countNews(3600),
+        news_count_6h: countNews(21600),
+        llm_confidence: llmConf,
+        snapshot_ref: latestSnap.id,
+        llm_ref: latestLLM ? latestLLM.id : null,
+        news_refs: news.slice(0, 3).map(n => n.id) // Top 3 recent news refs
+    };
+}
+
+function calculateScore(features) {
+    // Weights
+    const W = {
+        delta_1h: 50.0,      // High impact: price moving fast
+        news_intensity: 10.0, // Moderate: news buzzing
+        llm_conf: 0.5,       // Multiplier for confidence (0-100) -> 0-50 pts
+        staleness: -0.1      // Penalty per second
+    };
+
+    let score = 0;
+    const breakdown = {};
+
+    // 1. Momentum (Delta 1H)
+    // If delta is positive (prob going up), good? Or just absolute volatility?
+    // "Opportunity" could be long or short. Let's assume absolute magnitude implies actionability.
+    // Or, if user logic implies "Long", then positive delta. 
+    // Let's use Absolute Delta for "Attention Score".
+    const absDelta = Math.abs(features.delta_1h || 0);
+    breakdown.momentum = absDelta * W.delta_1h;
+    score += breakdown.momentum;
+
+    // 2. News Intensity (Count 6H)
+    const newsCount = features.news_count_6h || 0;
+    breakdown.news = newsCount * W.news_intensity;
+    score += breakdown.news;
+
+    // 3. LLM Signal
+    // If confidence > 80, boost.
+    const conf = features.llm_confidence || 0;
+    breakdown.llm = conf * W.llm_conf;
+    score += breakdown.llm;
+
+    // 4. Freshness Penalty
+    // Cap penalty at -50
+    const penalty = Math.min(features.staleness_sec * W.staleness, 0); // Negative
+    breakdown.freshness = Math.max(penalty, -50);
+    score += breakdown.freshness;
+
+    return {
+        score: parseFloat(score.toFixed(2)),
+        breakdown: breakdown
+    };
+}
+
+async function buildOpportunities(limitTopics = 50, windowStr = '6h') {
+    const runId = `run_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
+    
+    // 1. Get Topics
+    let topics = await DB.getAllTopics();
+    if (topics.length > limitTopics) {
+        topics = topics.slice(0, limitTopics);
+    }
+    if (topics.length === 0) return { built_count: 0, message: "No topics found" };
+
+    let builtCount = 0;
+    let latestEventId = null;
+
+    for (const topic of topics) {
+        // 2. Get Timeline
+        // Need enough history for 24h delta if possible, but window implies relevance.
+        // Let's fetch 100 items.
+        const timeline = await DB.getTimeline(topic, 100);
+        
+        // 3. Calc Features
+        const features = calculateFeatures(topic, timeline);
+        if (!features) continue; // Skip if no snapshot
+
+        // 4. Calc Score
+        const { score, breakdown } = calculateScore(features);
+
+        // 5. Append
+        const opp = {
+            topic_key: topic,
+            score: score,
+            score_breakdown: breakdown,
+            features: features,
+            snapshot_ref: features.snapshot_ref,
+            llm_ref: features.llm_ref,
+            news_refs: features.news_refs,
+            build_run_id: runId
+        };
+
+        const id = await DB.appendOpportunity(opp);
+        if (id) {
+            builtCount++;
+            latestEventId = id;
+        }
+    }
+
+    return {
+        built_count: builtCount,
+        topic_count: topics.length,
+        window: windowStr,
+        build_run_id: runId,
+        latest_event_id: latestEventId
+    };
+}
+
 const server = http.createServer(async (req, res) => {
     console.log(`${req.method} ${req.url}`);
 
@@ -935,6 +1103,66 @@ const server = http.createServer(async (req, res) => {
             res.end(JSON.stringify({ error: 'Internal Server Error', details: err.message }));
             return;
         }
+    }
+
+    // GET /opportunities/top
+    if (pathname === '/opportunities/top') {
+        const limit = parsedUrl.query.limit ? parseInt(parsedUrl.query.limit) : 20;
+        try {
+            const opps = await DB.getTopOpportunities(limit);
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(opps));
+        } catch (e) {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: e.message }));
+        }
+        return;
+    }
+
+    // POST /opportunities/build
+    if (pathname === '/opportunities/build' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => body += chunk);
+        req.on('end', async () => {
+            try {
+                let params = {};
+                try { params = JSON.parse(body); } catch (e) {}
+                
+                const limit_topics = params.limit_topics ? parseInt(params.limit_topics) : 50;
+                const window = params.window || '6h';
+
+                if (limit_topics > 50) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ error: 'Limit topics cannot exceed 50' }));
+                    return;
+                }
+
+                const result = await buildOpportunities(limit_topics, window);
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify(result));
+            } catch (e) {
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: e.message }));
+            }
+        });
+        return;
+    }
+
+    // GET /opportunities/export
+    if (pathname === '/opportunities/export') {
+        const since = parsedUrl.query.since ? parseInt(parsedUrl.query.since) : 0;
+        try {
+            const opps = await DB.getOpportunitiesForExport(since);
+            const content = opps.map(o => JSON.stringify(o)).join('\n');
+            
+            res.setHeader('Content-Disposition', `attachment; filename="opportunities_export_${Date.now()}.jsonl"`);
+            res.writeHead(200, { 'Content-Type': 'application/jsonl; charset=utf-8' });
+            res.end(content);
+        } catch (e) {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: e.message }));
+        }
+        return;
     }
 
     // POST /scans/batch_run

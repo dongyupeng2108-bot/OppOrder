@@ -19,11 +19,28 @@ function renderNav() {
 }
 
 async function renderReplayList() {
+    const params = new URLSearchParams(window.location.search);
+    const prefillTopic = params.get('topic');
+    
     const scans = await fetchJSON('/scans');
     // Sort by timestamp desc
     scans.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
     
     const options = scans.map(s => `<option value="${s.scan_id}">${s.scan_id} (${s.timestamp})</option>`).join('');
+
+    // If prefillTopic exists, we should auto-trigger loadTimeline after render
+    // We can do this by setting a global flag or simple timeout
+    if (prefillTopic) {
+        setTimeout(() => {
+            const input = document.getElementById('tl_topic_key');
+            if (input) {
+                input.value = prefillTopic;
+                window.loadTimeline();
+                // Scroll to timeline panel
+                document.querySelector('.timeline-panel').scrollIntoView();
+            }
+        }, 500);
+    }
 
     return `
         ${renderNav()}
@@ -539,51 +556,108 @@ async function renderStrategyDetail(id) {
 
 async function renderOpportunities() {
     const params = new URLSearchParams(window.location.search);
-    const filterState = params.get('tradeable_state');
-    const filterScore = params.get('score_min');
+    const limit = params.get('limit') || '20';
 
-    let list = await fetchJSON('/opportunities');
-
-    if (filterState) {
-        list = list.filter(o => o.tradeable_state === filterState);
-    }
-    if (filterScore) {
-        list = list.filter(o => (o.score || 0) >= Number(filterScore));
+    let list = [];
+    let error = null;
+    try {
+        list = await fetchJSON(`/opportunities/top?limit=${limit}`);
+    } catch (e) {
+        error = e.message;
     }
 
-    const rows = list.map(o => `
+    const rows = list.map(o => {
+        const bd = o.score_breakdown || {};
+        const scoreTitle = Object.entries(bd).map(([k,v]) => `${k}: ${v.toFixed(2)}`).join('\n');
+        
+        return `
         <tr>
-            <td><a href="/ui/opportunities/${o.opp_id}" onclick="route(event)">${o.opp_id}</a></td>
-            <td><a href="/ui/strategies/${o.strategy_id}" onclick="route(event)">${o.strategy_id}</a></td>
-            <td>${o.tradeable_state}</td>
-            <td>${o.score}</td>
-            <td>${o.risk_level}</td>
+            <td><a href="/ui/replay?topic=${encodeURIComponent(o.topic_key)}" onclick="route(event)">${o.topic_key}</a></td>
+            <td title="${scoreTitle}">${o.score}</td>
+            <td>${o.delta_1h !== undefined ? o.delta_1h.toFixed(4) : '-'}</td>
+            <td>${o.news_count_6h !== undefined ? o.news_count_6h : '-'}</td>
+            <td>${o.llm_confidence !== undefined ? o.llm_confidence : '-'}</td>
+            <td>${o.staleness_sec !== undefined ? o.staleness_sec + 's' : '-'}</td>
         </tr>
-    `).join('');
+    `}).join('');
+
     return `
         ${renderNav()}
-        <h1>Opportunities</h1>
-        <form onsubmit="filterOpps(event)">
-            <label>State: <input type="text" name="tradeable_state" placeholder="e.g. ACTIVE" value="${filterState || ''}"></label>
-            <label>Min Score: <input type="number" name="score_min" value="${filterScore || ''}"></label>
-            <button type="submit">Filter</button>
-        </form>
-        <table>
-            <tr><th>ID</th><th>Strategy</th><th>State</th><th>Score</th><th>Risk</th></tr>
-            ${rows}
+        <h1>Top Opportunities</h1>
+        
+        <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #ccc; background: #f8f9fa;">
+            <h3>Build Opportunities</h3>
+            <label>Max Topics: 
+                <select id="build_limit">
+                    <option value="20">20</option>
+                    <option value="50" selected>50</option>
+                </select>
+            </label>
+            <button onclick="buildOpportunities()" style="margin-left: 10px; padding: 5px 15px; background: #28a745; color: white; border: none; cursor: pointer;">Build Now</button>
+            <div id="build_status" style="margin-top: 10px; color: blue;"></div>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label>Show Top: 
+                <select onchange="changeOppLimit(this.value)">
+                    <option value="10" ${limit === '10' ? 'selected' : ''}>10</option>
+                    <option value="20" ${limit === '20' ? 'selected' : ''}>20</option>
+                    <option value="50" ${limit === '50' ? 'selected' : ''}>50</option>
+                </select>
+            </label>
+            <a href="/opportunities/export" target="_blank" class="button" style="margin-left: 10px;">Export JSONL</a>
+        </div>
+
+        ${error ? `<p style="color:red">Error: ${error}</p>` : ''}
+
+        <table style="width:100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background: #ddd;">
+                    <th style="border: 1px solid #ccc; padding: 5px;">Topic (Timeline)</th>
+                    <th style="border: 1px solid #ccc; padding: 5px;">Score</th>
+                    <th style="border: 1px solid #ccc; padding: 5px;">Delta 1h</th>
+                    <th style="border: 1px solid #ccc; padding: 5px;">News 6h</th>
+                    <th style="border: 1px solid #ccc; padding: 5px;">LLM Conf</th>
+                    <th style="border: 1px solid #ccc; padding: 5px;">Staleness</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${rows.length > 0 ? rows : '<tr><td colspan="6" style="text-align:center; padding: 20px;">No opportunities found. Try building some!</td></tr>'}
+            </tbody>
         </table>
     `;
 }
 
-function filterOpps(event) {
-    event.preventDefault();
-    const formData = new FormData(event.target);
-    const params = new URLSearchParams();
-    for (const [key, value] of formData.entries()) {
-        if (value) params.append(key, value);
-    }
-    history.pushState(null, '', `/ui/opportunities?${params.toString()}`);
+window.changeOppLimit = function(limit) {
+    history.pushState(null, '', `/ui/opportunities?limit=${limit}`);
     router();
+}
+
+window.buildOpportunities = async function() {
+    const status = document.getElementById('build_status');
+    const limit = document.getElementById('build_limit').value;
+    
+    status.textContent = 'Building...';
+    try {
+        const res = await fetch('/opportunities/build', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ limit_topics: parseInt(limit) })
+        });
+        
+        if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.error || 'Build failed');
+        }
+
+        const data = await res.json();
+        status.textContent = `Success! Built: ${data.built_count} / ${data.topic_count} topics. Run ID: ${data.build_run_id}`;
+        
+        // Refresh list
+        setTimeout(() => router(), 1000);
+    } catch (e) {
+        status.textContent = 'Error: ' + e.message;
+    }
 }
 
 async function renderOppDetail(id) {

@@ -120,31 +120,34 @@ if (!fs.existsSync(notifyFile)) {
 
 let notifyContent = fs.readFileSync(notifyFile, 'utf8');
 
-// 1. Prepare DoD Lines
-// 1a. Healthcheck
-let rootMatch = notifyContent.match(/DOD_EVIDENCE_HEALTHCHECK_ROOT:.+/);
-let pairsMatch = notifyContent.match(/DOD_EVIDENCE_HEALTHCHECK_PAIRS:.+/);
-let healthcheckLines = '';
+// 1. Prepare DoD Lines (Extract if missing)
+// Always extract fresh from healthcheck files to ensure correctness
+console.log("Extracting DoD evidence from healthcheck files...");
 
-if (rootMatch && pairsMatch) {
-    healthcheckLines = rootMatch[0] + '\n' + pairsMatch[0];
-} else {
-    const rootHcPath = path.join(reportsDir, taskId + '_healthcheck_53122_root.txt');
-    const pairsHcPath = path.join(reportsDir, taskId + '_healthcheck_53122_pairs.txt');
-    
-    if (fs.existsSync(rootHcPath) && fs.existsSync(pairsHcPath)) {
-        const rootContent = fs.readFileSync(rootHcPath, 'utf8');
-        const pairsContent = fs.readFileSync(pairsHcPath, 'utf8');
-        const root200 = rootContent.match(/HTTP\/[0-9.]+\s+200.*/);
-        const pairs200 = pairsContent.match(/HTTP\/[0-9.]+\s+200.*/);
-        
-        if (root200 && pairs200) {
-            const rootPathDisplay = rootHcPath.replace(/\\/g, '/');
-            const pairsPathDisplay = pairsHcPath.replace(/\\/g, '/');
-            healthcheckLines = `DOD_EVIDENCE_HEALTHCHECK_ROOT: ${rootPathDisplay} => ${root200[0]}\nDOD_EVIDENCE_HEALTHCHECK_PAIRS: ${pairsPathDisplay} => ${pairs200[0]}`;
-        }
-    }
+const rootHcPath = path.join(reportsDir, taskId + '_healthcheck_53122_root.txt');
+const pairsHcPath = path.join(reportsDir, taskId + '_healthcheck_53122_pairs.txt');
+
+if (!fs.existsSync(rootHcPath) || !fs.existsSync(pairsHcPath)) {
+    console.error("FAILED: Healthcheck files missing.");
+    process.exit(1);
 }
+
+const rootContent = fs.readFileSync(rootHcPath, 'utf8');
+const pairsContent = fs.readFileSync(pairsHcPath, 'utf8');
+
+const root200 = rootContent.match(/HTTP\/[0-9.]+\s+200.*/);
+const pairs200 = pairsContent.match(/HTTP\/[0-9.]+\s+200.*/);
+
+if (!root200 || !pairs200) {
+    console.error("FAILED: HTTP 200 not found in healthcheck files.");
+    process.exit(1);
+}
+
+// Normalize paths to forward slashes for consistency
+const rootPathDisplay = rootHcPath.replace(/\\/g, '/');
+const pairsPathDisplay = pairsHcPath.replace(/\\/g, '/');
+
+let healthcheckLines = `DOD_EVIDENCE_HEALTHCHECK_ROOT: ${rootPathDisplay} => ${root200[0]}\nDOD_EVIDENCE_HEALTHCHECK_PAIRS: ${pairsPathDisplay} => ${pairs200[0]}`;
 
 // 1b. Scan Cache (Task 260209_002+)
 let scanCacheLines = '';
@@ -174,12 +177,21 @@ if (taskId >= '260209_002') {
     }
 }
 
-const dodLines = (healthcheckLines + (scanCacheLines ? '\n' + scanCacheLines : '')).trim();
+let dodLines = (healthcheckLines + (scanCacheLines ? '\n' + scanCacheLines : '')).trim();
+
+// 2. Print to stdout
 console.log(dodLines);
 
-// 3. Append to notify if marker missing
+// 3. Append or Replace in notify
 const marker = "=== DOD_EVIDENCE_STDOUT ===";
-if (!notifyContent.includes(marker) && dodLines) {
+
+// If marker exists, we need to replace the content after it or just replace the whole block
+// Simplest: Remove old marker block if exists, then append new
+if (notifyContent.includes(marker)) {
+        console.log("Replacing existing DoD evidence in notify...");
+        const parts = notifyContent.split(marker);
+        notifyContent = parts[0].trim();
+}
     console.log("Appending DoD evidence to notify file...");
     const appendContent = '\n\n' + marker + '\n' + dodLines + '\n';
     notifyContent += appendContent;
@@ -211,9 +223,6 @@ if (!notifyContent.includes(marker) && dodLines) {
         }
         fs.writeFileSync(indexFile, JSON.stringify(index, null, 2));
     }
-} else {
-    console.log("DoD evidence marker already present or no evidence found. Skipping append.");
-}
 '@
     $InjectScriptPath = Join-Path $RepoRoot "scripts\temp_inject_dod.js"
     $InjectScript | Out-File -FilePath $InjectScriptPath -Encoding UTF8
