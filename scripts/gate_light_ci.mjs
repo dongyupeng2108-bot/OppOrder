@@ -32,7 +32,8 @@ try {
         'rules/PROJECT_RULES.md',
         'rules/PROJECT_MASTER_PLAN.md'
     ];
-    // Existence check for canonical docs
+
+    // 1. Check for missing canonical docs
     const missingDocs = canonicalDocs.filter(f => !fs.existsSync(path.resolve(f)));
     if (missingDocs.length > 0) {
         console.error(`[Gate Light] FAILED: Missing canonical documents in rules/rules/:`);
@@ -40,7 +41,8 @@ try {
         console.error(`Fix Suggestion: Move these documents to rules/rules/ and update references.`);
         process.exit(1);
     }
-    // Absence check for legacy docs
+
+    // 2. Check for existence of legacy docs (Fail if found)
     const existingLegacyDocs = legacyDocs.filter(f => fs.existsSync(path.resolve(f)));
     if (existingLegacyDocs.length > 0) {
         console.error(`[Gate Light] FAILED: Found legacy documents in rules/ (Must be removed/migrated):`);
