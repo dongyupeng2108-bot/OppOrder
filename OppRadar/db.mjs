@@ -100,7 +100,12 @@ function initSchema() {
         db.run(`CREATE INDEX IF NOT EXISTS idx_llm_topic_ts ON llm_row(topic_key, ts)`);
         db.run(`CREATE INDEX IF NOT EXISTS idx_reeval_topic_ts ON reeval_event(topic_key, ts)`);
         db.run(`CREATE INDEX IF NOT EXISTS idx_news_topic_ts ON news_stub(topic_key, ts)`);
-        db.run(`CREATE UNIQUE INDEX IF NOT EXISTS idx_news_content_hash ON news_stub(topic_key, content_hash)`);
+        
+        // Unique Index for News Deduplication (Provider-Aware)
+        // Drop old restrictive index if exists (migration from v21)
+        db.run(`DROP INDEX IF EXISTS idx_news_content_hash`);
+        // Create new provider-aware unique index
+        db.run(`CREATE UNIQUE INDEX IF NOT EXISTS idx_news_content_hash_provider ON news_stub(topic_key, content_hash, provider)`);
     });
 }
 
