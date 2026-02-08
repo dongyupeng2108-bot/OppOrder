@@ -1,5 +1,6 @@
 import crypto from 'crypto';
 import http from 'http';
+import https from 'https';
 
 export class LLMProvider {
     constructor(config = {}) {
@@ -24,15 +25,24 @@ export class MockProvider extends LLMProvider {
         
         const prompt = `[Mock Prompt] Analyze opportunity ${opp.opp_id} for strategy ${opp.strategy_id} with score ${opp.score_baseline}. Summarize in 1 sentence.`;
 
+        const summary = `[Mock] Opportunity ${opp.opp_id} shows ${potential} potential based on ${opp.strategy_id}. Baseline score: ${opp.score_baseline}.`;
+
         return {
             llm_provider: 'mock',
             llm_model: 'mock-v1',
-            llm_summary: `[Mock] Opportunity ${opp.opp_id} shows ${potential} potential based on ${opp.strategy_id}. Baseline score: ${opp.score_baseline}.`,
+            llm_summary: summary,
             llm_confidence: parseFloat(confidence.toFixed(2)),
             llm_tags: ['mock', 'baseline', parseInt(hash[0], 16) > 8 ? 'high_vol' : 'low_vol'],
             llm_latency_ms: Date.now() - start,
             llm_error: null,
-            llm_input_prompt: prompt
+            llm_input_prompt: prompt,
+            llm_json: {
+                summary: summary,
+                signals: [
+                    { type: 'mock_signal', stance: potential === 'strong' ? 'bullish' : (potential === 'weak' ? 'bearish' : 'neutral'), strength: parseFloat(confidence.toFixed(2)), evidence: 'Random seed generation' }
+                ],
+                assumptions: ['Market conditions are normal', 'Mock data simulation']
+            }
         };
     }
 }
@@ -41,40 +51,152 @@ export class DeepSeekProvider extends LLMProvider {
     constructor(config = {}) {
         super(config);
         this.apiKey = process.env.DEEPSEEK_API_KEY;
+        this.model = process.env.DEEPSEEK_MODEL || 'deepseek-chat';
+        this.timeout = parseInt(process.env.DEEPSEEK_TIMEOUT || '30000');
+        this.maxTokens = parseInt(process.env.DEEPSEEK_MAX_TOKENS || '1024');
+        this.mockProvider = new MockProvider(config);
+
         if (this.apiKey) {
             const fingerprint = crypto.createHash('sha256').update(this.apiKey).digest('hex').substring(0, 8);
             console.log(`DeepSeekProvider initialized with key fingerprint: ${fingerprint}`);
+        } else {
+            console.log("DeepSeekProvider initialized without key (Fallback Mode)");
         }
     }
 
     async summarizeOpp(opp, ctx = {}) {
         const start = Date.now();
-        const prompt = `Analyze opportunity ${opp.opp_id} for strategy ${opp.strategy_id} with score ${opp.score_baseline}. Summarize in 1 sentence.`;
         
+        // Fail-soft Fallback if no key
         if (!this.apiKey) {
+            const mockResult = await this.mockProvider.summarizeOpp(opp, ctx);
             return {
-                llm_provider: 'deepseek',
-                llm_model: 'deepseek-chat',
-                llm_summary: "[DeepSeek] No API Key provided.",
-                llm_confidence: 0,
-                llm_tags: ['error', 'no_key'],
-                llm_latency_ms: Date.now() - start,
-                llm_error: "Missing DEEPSEEK_API_KEY",
-                llm_input_prompt: prompt
+                ...mockResult,
+                llm_provider: 'deepseek', // Identify as deepseek (fallback)
+                llm_model: this.model,
+                llm_tags: [...(mockResult.llm_tags || []), 'fallback', 'no_key'],
+                llm_latency_ms: Date.now() - start
             };
         }
+
+        const prompt = `Analyze opportunity ${opp.opp_id} for strategy ${opp.strategy_id} with score ${opp.score_baseline}. Return JSON with fields: summary, signals (array of type, stance, strength, evidence), assumptions.`;
         
-        // Placeholder for actual API call
-        return {
-            llm_provider: 'deepseek',
-            llm_model: 'deepseek-chat',
-            llm_summary: `[DeepSeek] (Shell) Analysis for ${opp.opp_id}.`,
-            llm_confidence: 0.8,
-            llm_tags: ['deepseek', 'shell'],
-            llm_latency_ms: Date.now() - start,
-            llm_error: null,
-            llm_input_prompt: prompt
-        };
+        try {
+            const response = await this._callDeepSeekWithRetry(prompt, 2);
+            
+            // Extract content from DeepSeek response
+            const contentStr = response.choices?.[0]?.message?.content || "";
+            let jsonContent = {};
+            
+            // Attempt to parse JSON from content (it might be wrapped in markdown code blocks)
+            try {
+                const jsonMatch = contentStr.match(/```json\n([\s\S]*?)\n```/) || contentStr.match(/{[\s\S]*}/);
+                if (jsonMatch) {
+                    jsonContent = JSON.parse(jsonMatch[1] || jsonMatch[0]);
+                } else {
+                    // Fallback if not valid JSON
+                    jsonContent = {
+                        summary: contentStr,
+                        signals: [],
+                        assumptions: []
+                    };
+                }
+            } catch (e) {
+                jsonContent = {
+                    summary: contentStr,
+                    signals: [],
+                    assumptions: []
+                };
+            }
+
+            return {
+                llm_provider: 'deepseek',
+                llm_model: this.model,
+                llm_summary: jsonContent.summary || contentStr.substring(0, 100),
+                llm_confidence: 0.9,
+                llm_tags: ['deepseek', 'live'],
+                llm_latency_ms: Date.now() - start,
+                llm_error: null,
+                llm_input_prompt: prompt,
+                llm_json: jsonContent
+            };
+
+        } catch (error) {
+             console.warn(`[DeepSeek] Error: ${error.message}. Fallback to Mock.`);
+             const mockResult = await this.mockProvider.summarizeOpp(opp, ctx);
+             return {
+                ...mockResult,
+                llm_provider: 'deepseek',
+                llm_model: this.model,
+                llm_tags: [...(mockResult.llm_tags || []), 'fallback', 'error'],
+                llm_error: error.message,
+                llm_latency_ms: Date.now() - start
+             };
+        }
+    }
+
+    async _callDeepSeekWithRetry(prompt, retries) {
+        let lastError;
+        for (let i = 0; i <= retries; i++) {
+            try {
+                return await this._callDeepSeek(prompt);
+            } catch (err) {
+                lastError = err;
+                console.warn(`[DeepSeek] Attempt ${i + 1} failed: ${err.message}`);
+                if (i < retries) {
+                    await new Promise(r => setTimeout(r, 1000 * (i + 1))); // Backoff
+                }
+            }
+        }
+        throw lastError;
+    }
+
+    _callDeepSeek(prompt) {
+        return new Promise((resolve, reject) => {
+            const url = new URL('https://api.deepseek.com/chat/completions');
+            const body = JSON.stringify({
+                model: this.model,
+                messages: [
+                    { role: 'system', content: 'You are a trading assistant. Output JSON only.' },
+                    { role: 'user', content: prompt }
+                ],
+                max_tokens: this.maxTokens,
+                stream: false
+            });
+
+            const req = https.request(url, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${this.apiKey}`,
+                    'Content-Type': 'application/json',
+                    'Content-Length': Buffer.byteLength(body)
+                }
+            }, (res) => {
+                let data = '';
+                res.on('data', chunk => data += chunk);
+                res.on('end', () => {
+                    if (res.statusCode !== 200) {
+                        reject(new Error(`Status ${res.statusCode}: ${data}`));
+                    } else {
+                        try {
+                            resolve(JSON.parse(data));
+                        } catch (e) {
+                            reject(e);
+                        }
+                    }
+                });
+            });
+
+            req.on('error', (err) => reject(err));
+            req.on('timeout', () => {
+                req.destroy();
+                reject(new Error("Timeout"));
+            });
+            
+            req.setTimeout(this.timeout);
+            req.write(body);
+            req.end();
+        });
     }
 }
 
@@ -92,15 +214,22 @@ export class OllamaProvider extends LLMProvider {
         
         try {
             const response = await this._callOllama(prompt);
+            const content = response.response || response.message?.content || "[Ollama] No content";
+            
             return {
                 llm_provider: 'ollama',
                 llm_model: this.model,
-                llm_summary: response.response || response.message?.content || "[Ollama] No content",
+                llm_summary: content,
                 llm_confidence: 0.7, 
                 llm_tags: ['ollama', 'local'],
                 llm_latency_ms: Date.now() - start,
                 llm_error: null,
-                llm_input_prompt: prompt
+                llm_input_prompt: prompt,
+                llm_json: {
+                    summary: content,
+                    signals: [],
+                    assumptions: []
+                }
             };
         } catch (err) {
             // console.warn(`Ollama failed: ${err.message}`); // Reduce noise
@@ -112,7 +241,8 @@ export class OllamaProvider extends LLMProvider {
                 llm_tags: ['error', 'fallback'],
                 llm_latency_ms: Date.now() - start,
                 llm_error: err.message,
-                llm_input_prompt: prompt
+                llm_input_prompt: prompt,
+                llm_json: { summary: "Fallback", signals: [], assumptions: [] }
             };
         }
     }
@@ -167,8 +297,6 @@ export class OllamaProvider extends LLMProvider {
     }
 }
 
-import https from 'https';
-
 export class OpenRouterProvider extends LLMProvider {
     constructor(config = {}) {
         super(config);
@@ -203,7 +331,12 @@ export class OpenRouterProvider extends LLMProvider {
                 llm_tags: ['openrouter', 'cloud'],
                 llm_latency_ms: Date.now() - start,
                 llm_error: null,
-                llm_input_prompt: prompt
+                llm_input_prompt: prompt,
+                llm_json: {
+                    summary: content,
+                    signals: [],
+                    assumptions: []
+                }
             };
         } catch (err) {
             console.warn(`[OpenRouter] Failed: ${err.message}. Falling back to Mock.`);
@@ -282,6 +415,10 @@ export function getProvider(type) {
     }
     
     // Auto-selection logic based on Environment Variables
+    if (process.env.DEEPSEEK_API_KEY) {
+        return new DeepSeekProvider();
+    }
+    
     if (process.env.OPENROUTER_API_KEY) {
         return new OpenRouterProvider();
     }

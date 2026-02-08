@@ -249,6 +249,7 @@ async function runScanCore(params) {
             opp.llm_latency_ms = llmResult.llm_latency_ms;
             opp.llm_error = llmResult.llm_error;
             opp.llm_input_prompt = llmResult.llm_input_prompt; // Capture prompt
+            opp.llm_json = llmResult.llm_json;
 
             // Capture Dataset Row
             const datasetRow = createLLMDatasetRow(opp, { scan_id: scanId, trigger_reason: 'initial' });
@@ -366,7 +367,7 @@ function createLLMDatasetRow(opp, ctx = {}) {
         },
         output: {
             llm_raw_text: (opp.llm_summary || '').substring(0, 200),
-            llm_schema_json: null,
+            llm_schema_json: opp.llm_json || null,
             confidence: opp.llm_confidence || 0
         },
         snapshot: {
@@ -418,8 +419,9 @@ try {
             if (data.llm_cache) runtimeData.llm_cache = data.llm_cache;
             
             // Merge
-            inMemoryScans = [...inMemoryScans, ...runtimeData.scans];
-            inMemoryOpps = [...inMemoryOpps, ...runtimeData.opportunities];
+            // Do NOT merge IDs from runtimeData into inMemory arrays which hold Objects
+            // inMemoryScans = [...inMemoryScans, ...runtimeData.scans];
+            // inMemoryOpps = [...inMemoryOpps, ...runtimeData.opportunities];
             monitorState = { ...runtimeData.monitor_state };
             console.log(`Loaded ${runtimeData.scans.length} scans, ${runtimeData.opportunities.length} opps, ${runtimeData.llm_dataset_rows?.length || 0} dataset rows, ${Object.keys(runtimeData.llm_cache || {}).length} cache entries, and ${Object.keys(monitorState).length} monitor states from runtime store.`);
         } catch (err) {
@@ -550,7 +552,8 @@ const server = http.createServer(async (req, res) => {
             llm_confidence: o.llm_confidence,
             llm_tags: o.llm_tags,
             llm_latency_ms: o.llm_latency_ms,
-            llm_error: o.llm_error
+            llm_error: o.llm_error,
+            llm_json: o.llm_json
         }));
 
         const result = {
