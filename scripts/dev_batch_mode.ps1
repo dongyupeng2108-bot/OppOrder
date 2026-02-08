@@ -112,14 +112,8 @@ if (!fs.existsSync(notifyFile)) {
 let notifyContent = fs.readFileSync(notifyFile, 'utf8');
 
 // 1. Prepare DoD Lines (Extract if missing)
-let rootMatch = notifyContent.match(/DOD_EVIDENCE_HEALTHCHECK_ROOT:.+/);
-let pairsMatch = notifyContent.match(/DOD_EVIDENCE_HEALTHCHECK_PAIRS:.+/);
-let dodLines = '';
-
-if (rootMatch && pairsMatch) {
-    dodLines = rootMatch[0] + '\n' + pairsMatch[0];
-} else {
-    console.log("DoD lines not found in notify. Extracting from healthcheck files...");
+    // Always extract fresh from healthcheck files to ensure correctness
+    console.log("Extracting DoD evidence from healthcheck files...");
     const rootHcPath = path.join(reportsDir, taskId + '_healthcheck_53122_root.txt');
     const pairsHcPath = path.join(reportsDir, taskId + '_healthcheck_53122_pairs.txt');
     
@@ -146,14 +140,21 @@ if (rootMatch && pairsMatch) {
     const rootLine = `DOD_EVIDENCE_HEALTHCHECK_ROOT: ${rootPathDisplay} => ${root200[0]}`;
     const pairsLine = `DOD_EVIDENCE_HEALTHCHECK_PAIRS: ${pairsPathDisplay} => ${pairs200[0]}`;
     dodLines = rootLine + '\n' + pairsLine;
-}
 
-// 2. Print to stdout
-console.log(dodLines);
+    // 2. Print to stdout
+    console.log(dodLines);
 
-// 3. Append to notify if marker missing
-const marker = "=== DOD_EVIDENCE_STDOUT ===";
-if (!notifyContent.includes(marker)) {
+    // 3. Append or Replace in notify
+    const marker = "=== DOD_EVIDENCE_STDOUT ===";
+    
+    // If marker exists, we need to replace the content after it or just replace the whole block
+    // Simplest: Remove old marker block if exists, then append new
+    if (notifyContent.includes(marker)) {
+         console.log("Replacing existing DoD evidence in notify...");
+         const parts = notifyContent.split(marker);
+         notifyContent = parts[0].trim();
+    }
+    
     console.log("Appending DoD evidence to notify file...");
     const appendContent = '\n\n' + marker + '\n' + dodLines + '\n';
     notifyContent += appendContent;
@@ -187,9 +188,6 @@ if (!notifyContent.includes(marker)) {
         }
         fs.writeFileSync(indexFile, JSON.stringify(index, null, 2));
     }
-} else {
-    console.log("DoD evidence marker already present. Skipping append.");
-}
 '@
     $InjectScriptPath = Join-Path $RepoRoot "scripts\temp_inject_dod.js"
     $InjectScript | Out-File -FilePath $InjectScriptPath -Encoding UTF8
