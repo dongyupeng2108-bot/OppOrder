@@ -1,0 +1,29 @@
+{
+  "task_id": "260208_031",
+  "timestamp": "2026-02-08T18:15:31.509Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260208_031",
+      "status": "DONE",
+      "summary": "No summary provided",
+      "report_file": "notify_260208_031.txt",
+      "report_sha256_short": "14c19b3e",
+      "dod_evidence": {
+        "healthcheck": [
+          "DOD_EVIDENCE_HEALTHCHECK_ROOT: E:/OppRadar/rules/task-reports/2026-02/260208_031_healthcheck_53122_root.txt => HTTP/1.1 200 OK",
+          "DOD_EVIDENCE_HEALTHCHECK_PAIRS: E:/OppRadar/rules/task-reports/2026-02/260208_031_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK"
+        ]
+      }
+    }
+  }
+}
