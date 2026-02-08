@@ -93,6 +93,7 @@ function initSchema() {
         db.run(`ALTER TABLE reeval_event ADD COLUMN news_refs TEXT`, (err) => {});
         db.run(`ALTER TABLE news_stub ADD COLUMN published_at TEXT`, (err) => {});
         db.run(`ALTER TABLE news_stub ADD COLUMN content_hash TEXT`, (err) => {});
+        db.run(`ALTER TABLE news_stub ADD COLUMN provider TEXT`, (err) => {});
 
         // Indices for performance
         db.run(`CREATE INDEX IF NOT EXISTS idx_snapshot_topic_ts ON option_snapshot(topic_key, ts)`);
@@ -209,8 +210,8 @@ export const DB = {
             const id = newsItem.id || `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
             // Uses INSERT OR IGNORE to rely on unique index on (topic_key, content_hash)
             const result = await runAsync(`INSERT OR IGNORE INTO news_stub (
-                id, topic_key, ts, title, url, publisher, summary, credibility, raw_json, published_at, content_hash
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                id, topic_key, ts, title, url, publisher, summary, credibility, raw_json, published_at, content_hash, provider
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [
                 id,
                 newsItem.topic_key,
@@ -222,7 +223,8 @@ export const DB = {
                 newsItem.credibility || 0.5,
                 JSON.stringify(newsItem.raw_json || {}),
                 newsItem.published_at || null,
-                newsItem.content_hash || null
+                newsItem.content_hash || null,
+                newsItem.provider || 'local'
             ]);
             return { id, inserted: result.changes > 0 };
         } catch (e) {

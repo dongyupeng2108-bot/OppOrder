@@ -724,18 +724,38 @@ const server = http.createServer(async (req, res) => {
         req.on('data', chunk => body += chunk);
         req.on('end', async () => {
             try {
-                const { topic_key, limit } = JSON.parse(body);
+                const { topic_key, limit, provider } = JSON.parse(body);
                 if (!topic_key) throw new Error('topic_key required');
                 
-                const newsProvider = getNewsProvider(process.env.NEWS_PROVIDER || 'local');
-                const newsItems = await newsProvider.fetchNews(topic_key, limit || 5);
+                const requestedProvider = provider || process.env.NEWS_PROVIDER || 'local';
+                let newsProvider = getNewsProvider(requestedProvider);
+                
+                let newsItems = [];
+                let fallbackOccurred = false;
+
+                try {
+                    newsItems = await newsProvider.fetchNews(topic_key, limit || 5);
+                } catch (e) {
+                    console.error(`[NewsPull] Provider ${requestedProvider} failed: ${e.message}`);
+                    if (requestedProvider !== 'local') {
+                        console.log('[NewsPull] Falling back to local provider');
+                        newsProvider = getNewsProvider('local');
+                        newsItems = await newsProvider.fetchNews(topic_key, limit || 5);
+                        fallbackOccurred = true;
+                    } else {
+                        throw e;
+                    }
+                }
                 
                 let written = 0;
                 let deduped = 0;
                 let latest_news_id = null;
 
                 for (const item of newsItems) {
-                     const content_hash = crypto.createHash('sha256').update(item.title + (item.published_at || '')).digest('hex');
+                     const itemProvider = item.provider || 'local';
+                     const hashInput = itemProvider + (item.url || '') + (item.title || '') + (item.published_at || '');
+                     const content_hash = crypto.createHash('sha256').update(hashInput).digest('hex');
+                     
                      const res = await DB.appendNews({
                         topic_key: topic_key,
                         ts: new Date(item.published_at).getTime(),
@@ -746,7 +766,8 @@ const server = http.createServer(async (req, res) => {
                         credibility: 0.8,
                         raw_json: item,
                         published_at: item.published_at,
-                        content_hash: content_hash
+                        content_hash: content_hash,
+                        provider: itemProvider
                     });
                     if (res.inserted) written++;
                     else deduped++;
@@ -754,7 +775,15 @@ const server = http.createServer(async (req, res) => {
                 }
                 
                 res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ status: 'ok', fetched: newsItems.length, written, deduped, latest_news_id }));
+                res.end(JSON.stringify({ 
+                    status: 'ok', 
+                    fetched: newsItems.length, 
+                    written, 
+                    deduped, 
+                    latest_news_id,
+                    provider: fallbackOccurred ? 'local' : requestedProvider,
+                    fallback: fallbackOccurred
+                }));
             } catch (e) {
                 res.writeHead(500, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ error: e.message }));
