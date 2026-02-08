@@ -66,6 +66,7 @@ class LocalFileNewsProvider extends NewsProvider {
         const rawHash = crypto.createHash('md5').update(rawString).digest('hex');
 
         return {
+            provider: 'local',
             source: item.source || item.publisher || 'local_file',
             url: item.url || null,
             published_at: item.published_at || item.ts || new Date().toISOString(),
@@ -188,8 +189,9 @@ export class GdeltDocNewsProvider extends NewsProvider {
         const rawHash = crypto.createHash('md5').update(rawString).digest('hex');
 
         return {
-            source: item.domain || 'gdelt',
-            url: item.url || null,
+            provider: 'gdelt',
+            source: item.source || item.source_name || 'gdelt',
+            url: item.url,
             published_at: publishedAt,
             fetched_at: new Date().toISOString(),
             title: item.title || 'Untitled',

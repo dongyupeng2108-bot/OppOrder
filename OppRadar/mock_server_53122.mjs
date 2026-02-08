@@ -728,8 +728,17 @@ const server = http.createServer(async (req, res) => {
                 let params = {};
                 try { params = JSON.parse(body); } catch (e) {}
 
-                const topic_key = params.topic_key || 'default';
-                const requestedProvider = params.provider || process.env.NEWS_PROVIDER || 'local';
+                // Normalize Params for Echo
+                const requestEcho = {
+                    provider: params.provider || process.env.NEWS_PROVIDER || 'local',
+                    topic_key: params.topic_key || 'default',
+                    query: params.query,
+                    timespan: params.timespan,
+                    maxrecords: params.maxrecords
+                };
+
+                const topic_key = requestEcho.topic_key;
+                const requestedProvider = requestEcho.provider;
                 
                 // Validate maxrecords/limit
                 let limit = 5; // default for local
@@ -738,9 +747,15 @@ const server = http.createServer(async (req, res) => {
                     limit = params.maxrecords ? parseInt(params.maxrecords) : 20;
                     if (limit > 50) {
                         res.writeHead(400, { 'Content-Type': 'application/json' });
-                        res.end(JSON.stringify({ error: 'maxrecords cannot exceed 50' }));
+                        res.end(JSON.stringify({ 
+                            status: 'error',
+                            code: 'MAXRECORDS_LIMIT',
+                            message: 'maxrecords cannot exceed 50',
+                            request: requestEcho
+                        }));
                         return;
                     }
+                    requestEcho.maxrecords = limit; // Update echo with parsed value if needed, or keep raw? User said "echo normalized"
                 } else {
                     limit = params.limit ? parseInt(params.limit) : 5;
                 }
@@ -758,10 +773,14 @@ const server = http.createServer(async (req, res) => {
 
                 if (cachedData) {
                     res.writeHead(200, { 'Content-Type': 'application/json' });
+                    // Ensure cached data has new contract fields if it was cached with old format? 
+                    // No, cache is in-memory and we just restarted/will restart.
+                    // But to be safe, we can map old fields if needed, but better to just ensure we store correct format.
                     res.end(JSON.stringify({ 
                         ...cachedData, 
                         cached: true, 
-                        cache_key: cacheKey 
+                        cache_key: cacheKey,
+                        request: requestEcho
                     }));
                     return;
                 }
@@ -781,11 +800,6 @@ const server = http.createServer(async (req, res) => {
                     if (requestedProvider !== 'local') {
                         console.log('[NewsPull] Falling back to local provider');
                         newsProvider = getNewsProvider('local');
-                        // Local provider ignores query/timespan usually, and uses default limit 5 if we don't pass it?
-                        // We should pass the limit we calculated or default local limit?
-                        // Fallback usually implies safety. Local default is 5.
-                        // Let's use the limit we have but cap it if needed? 
-                        // Local provider fetchNews(topic, limit).
                         newsItems = await newsProvider.fetchNews(topic_key, 5); // Fallback usually safe default
                         fallbackOccurred = true;
                         providerUsed = 'local';
@@ -824,16 +838,16 @@ const server = http.createServer(async (req, res) => {
                 
                 const result = { 
                     status: 'ok', 
-                    fetched: newsItems.length, 
-                    written, 
-                    deduped, 
+                    fetched_count: newsItems.length, 
+                    written_count: written, 
+                    deduped_count: deduped, 
+                    inserted_count: written,
                     latest_news_id,
                     provider_used: providerUsed,
                     fallback: fallbackOccurred,
                     cached: false,
                     cache_key: cacheKey,
-                    inserted_count: written,
-                    deduped_count: deduped
+                    request: requestEcho
                 };
 
                 // Cache the result (for 10 min)
@@ -843,7 +857,12 @@ const server = http.createServer(async (req, res) => {
                 res.end(JSON.stringify(result));
             } catch (e) {
                 res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ error: e.message }));
+                res.end(JSON.stringify({ 
+                    status: 'error',
+                    code: 'INTERNAL_ERROR',
+                    message: e.message,
+                    request: {} 
+                }));
             }
         });
         return;

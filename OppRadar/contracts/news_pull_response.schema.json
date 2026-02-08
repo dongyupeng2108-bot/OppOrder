@@ -1,0 +1,46 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "News Pull Response Contract",
+  "type": "object",
+  "oneOf": [
+    {
+      "description": "Success Response",
+      "properties": {
+        "status": { "const": "ok" },
+        "provider_used": { "type": "string", "enum": ["local", "gdelt"] },
+        "fallback": { "type": "boolean" },
+        "cached": { "type": "boolean" },
+        "cache_key": { "type": ["string", "null"] },
+        "inserted_count": { "type": "integer", "minimum": 0 },
+        "deduped_count": { "type": "integer", "minimum": 0 },
+        "fetched_count": { "type": "integer", "minimum": 0 },
+        "written_count": { "type": "integer", "minimum": 0 },
+        "request": {
+          "type": "object",
+          "properties": {
+            "provider": { "type": "string" },
+            "topic_key": { "type": "string" },
+            "query": { "type": "string" },
+            "timespan": { "type": "string" },
+            "maxrecords": { "type": ["integer", "string"] }
+          },
+          "required": ["provider", "topic_key"]
+        }
+      },
+      "required": [
+        "status", "provider_used", "fallback", "cached", "cache_key",
+        "inserted_count", "deduped_count", "fetched_count", "written_count", "request"
+      ]
+    },
+    {
+      "description": "Error Response",
+      "properties": {
+        "status": { "const": "error" },
+        "code": { "type": "string", "minLength": 1 },
+        "message": { "type": "string" },
+        "request": { "type": "object" }
+      },
+      "required": ["status", "code", "message"]
+    }
+  ]
+}

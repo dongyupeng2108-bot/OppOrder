@@ -1,7 +1,7 @@
 {
-  "task_id": "260208_027",
+  "task_id": "260208_028",
   "milestone": "260208",
-  "status": "FAILED",
+  "status": "DONE",
   "healthcheck": {
     "root": 0,
     "pairs": 0
@@ -138,8 +138,11 @@
     "260208_026.json",
     "260208_026_healthcheck_53122_pairs.txt",
     "260208_026_healthcheck_53122_root.txt",
+    "260208_027.json",
     "260208_027_healthcheck_53122_pairs.txt",
     "260208_027_healthcheck_53122_root.txt",
+    "260208_028_healthcheck_53122_pairs.txt",
+    "260208_028_healthcheck_53122_root.txt",
     "deliverables_index_260206_005.json",
     "deliverables_index_260206_006.json",
     "deliverables_index_260206_007.json",
@@ -177,6 +180,7 @@
     "deliverables_index_260208_024.json",
     "deliverables_index_260208_025.json",
     "deliverables_index_260208_026.json",
+    "deliverables_index_260208_027.json",
     "manual_verification.json",
     "notify_260206_005.txt",
     "notify_260206_006.txt",
@@ -216,6 +220,7 @@
     "notify_260208_025.txt",
     "notify_260208_026.txt",
     "notify_260208_027.txt",
+    "notify_260208_028.txt",
     "reports/healthcheck_pairs.txt",
     "reports/healthcheck_root.txt",
     "result_260206_005.json",
@@ -256,6 +261,7 @@
     "result_260208_025.json",
     "result_260208_026.json",
     "result_260208_027.json",
+    "result_260208_028.json",
     "run_260206_005.log",
     "run_260206_006.log",
     "run_260206_007.log",
@@ -295,8 +301,9 @@
     "run_260208_025.log",
     "run_260208_026.log",
     "run_260208_027.log",
+    "run_260208_028.log",
     "scripts/postflight_validate_envelope.mjs"
   ],
   "forbidden_phrases_hit": [],
-  "report_file": "notify_260208_027.txt"
+  "report_file": "notify_260208_028.txt"
 }
