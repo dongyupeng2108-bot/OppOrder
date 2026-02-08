@@ -1,3 +1,25 @@
+# Workflow & Project Standards
+
+## Core Documentation Path Standards
+**(Canonical & Strict)**
+
+To prevent path divergence and context loss, the following paths are **CANONICAL** and **MANDATORY**:
+
+1.  **Canonical Path**: `E:\OppRadar\rules\rules\`
+    -   Repository Relative: `rules/rules/`
+    -   **ALL** core documentation changes MUST target files in this directory.
+
+2.  **Core Documents**:
+    -   `rules/rules/WORKFLOW.md` (This file)
+    -   `rules/rules/PROJECT_RULES.md`
+    -   `rules/rules/PROJECT_MASTER_PLAN.md`
+
+3.  **Historical/Deprecated Path**:
+    -   `E:\OppRadar\rules\` (root `rules/`) is **DEPRECATED** for core docs.
+    -   Files found there are historical artifacts or temporary outputs. DO NOT edit them as the source of truth.
+
+---
+
 ## Windows Environment Protocols
 
 ### Command & Environment Protocols
