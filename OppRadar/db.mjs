@@ -85,7 +85,22 @@ function initSchema() {
             credibility REAL,
             published_at TEXT,
             content_hash TEXT,
-            raw_json TEXT
+            raw_json TEXT,
+            provider TEXT
+        )`);
+
+        // Opportunity Event (Append-Only)
+        db.run(`CREATE TABLE IF NOT EXISTS opportunity_event (
+            id TEXT PRIMARY KEY,
+            ts INTEGER,
+            topic_key TEXT,
+            score REAL,
+            score_breakdown_json TEXT,
+            features_json TEXT,
+            snapshot_ref TEXT,
+            llm_ref TEXT,
+            news_refs_json TEXT,
+            build_run_id TEXT
         )`);
         
         // Migrations (Idempotent) - Run BEFORE indices to ensure columns exist
@@ -100,6 +115,8 @@ function initSchema() {
         db.run(`CREATE INDEX IF NOT EXISTS idx_llm_topic_ts ON llm_row(topic_key, ts)`);
         db.run(`CREATE INDEX IF NOT EXISTS idx_reeval_topic_ts ON reeval_event(topic_key, ts)`);
         db.run(`CREATE INDEX IF NOT EXISTS idx_news_topic_ts ON news_stub(topic_key, ts)`);
+        db.run(`CREATE INDEX IF NOT EXISTS idx_opp_ts_score ON opportunity_event(ts, score)`);
+        db.run(`CREATE INDEX IF NOT EXISTS idx_opp_run_id ON opportunity_event(build_run_id)`);
         
         // Unique Index for News Deduplication (Provider-Aware)
         // Drop old restrictive index if exists (migration from v21)
@@ -237,8 +254,43 @@ export const DB = {
             return { id: null, inserted: false };
         }
     },
+
+    async appendOpportunity(opp) {
+        try {
+            const id = opp.id || `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+            await runAsync(`INSERT INTO opportunity_event (
+                id, ts, topic_key, score, score_breakdown_json, features_json, snapshot_ref, llm_ref, news_refs_json, build_run_id
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+                id,
+                opp.ts || Date.now(),
+                opp.topic_key,
+                opp.score,
+                JSON.stringify(opp.score_breakdown || {}),
+                JSON.stringify(opp.features || {}),
+                opp.snapshot_ref || null,
+                opp.llm_ref || null,
+                JSON.stringify(opp.news_refs || []),
+                opp.build_run_id || null
+            ]);
+            return id;
+        } catch (e) {
+            console.error('[DB] appendOpportunity error:', e.message);
+            return null;
+        }
+    },
     
     // Read Methods
+    async getAllTopics() {
+        try {
+            const rows = await allAsync(`SELECT topic_key FROM topic`);
+            return rows.map(r => r.topic_key);
+        } catch (e) {
+            console.error('[DB] getAllTopics error:', e.message);
+            return [];
+        }
+    },
+
     async getRecentNews(topic_key, limit = 3) {
         try {
             return await allAsync(`SELECT * FROM news_stub WHERE topic_key = ? ORDER BY ts DESC LIMIT ?`, [topic_key, limit]);
@@ -276,6 +328,53 @@ export const DB = {
             return all;
         } catch (e) {
             console.error('[DB] getAllTimelineForExport error:', e.message);
+            return [];
+        }
+    },
+
+    async getTopOpportunities(limit = 20) {
+        try {
+            // Get the latest build_run_id first to ensure we show results from the most recent run
+            // Or just sort by ts DESC, score DESC. 
+            // The requirement implies "current top list". 
+            // Let's assume we want the most recent global set, but typically opportunities are generated in batches.
+            // A simple strategy is: take top N by score from the last X hours, or just simple latest by ts/score.
+            // Given the requirement "GET /opportunities/top", let's fetch the most recent ones first.
+            // If we want "top scored", we should probably filter by a recent time window.
+            // For now, let's implement: Sort by ts DESC (freshness) then score DESC.
+            // Wait, "Top Opportunities" usually means "Highest Score".
+            // So we should find the latest `build_run_id` and get its top scores.
+            
+            const latestRun = await allAsync(`SELECT build_run_id FROM opportunity_event ORDER BY ts DESC LIMIT 1`);
+            if (!latestRun || latestRun.length === 0) return [];
+            
+            const runId = latestRun[0].build_run_id;
+            
+            const rows = await allAsync(`SELECT * FROM opportunity_event WHERE build_run_id = ? ORDER BY score DESC LIMIT ?`, [runId, limit]);
+            
+            return rows.map(row => ({
+                ...row,
+                score_breakdown: JSON.parse(row.score_breakdown_json || '{}'),
+                features: JSON.parse(row.features_json || '{}'),
+                news_refs: JSON.parse(row.news_refs_json || '[]')
+            }));
+        } catch (e) {
+            console.error('[DB] getTopOpportunities error:', e.message);
+            return [];
+        }
+    },
+
+    async getOpportunitiesForExport(sinceTs = 0) {
+        try {
+            const rows = await allAsync(`SELECT * FROM opportunity_event WHERE ts > ? ORDER BY ts ASC`, [sinceTs]);
+            return rows.map(row => ({
+                ...row,
+                score_breakdown: JSON.parse(row.score_breakdown_json || '{}'),
+                features: JSON.parse(row.features_json || '{}'),
+                news_refs: JSON.parse(row.news_refs_json || '[]')
+            }));
+        } catch (e) {
+            console.error('[DB] getOpportunitiesForExport error:', e.message);
             return [];
         }
     }
