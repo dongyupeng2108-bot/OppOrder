@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-02-07T19:22:11.534Z",
+  "timestamp": "2026-02-07T19:55:52.731Z",
   "status": "PASS",
   "checks": {
     "rowCount": true,
@@ -7,12 +7,12 @@
     "requiredFields": true,
     "hasReevalTrigger": false
   },
-  "scanId": "sc_c7444225",
+  "scanId": "sc_8d841a99",
   "rowCount": 5,
   "sample": [
     {
       "ids": {
-        "scan_id": "sc_c7444225",
+        "scan_id": "sc_8d841a99",
         "opp_id": "op_8e23f52c",
         "market_id": "default"
       },
@@ -35,7 +35,7 @@
       "snapshot": {
         "market_prob": 82.09,
         "best_bid_ask": null,
-        "timestamp": "2026-02-07T19:22:11.518Z"
+        "timestamp": "2026-02-07T19:55:52.719Z"
       },
       "scoring": {
         "score_baseline": 82.09,
@@ -49,11 +49,11 @@
       "trigger": {
         "trigger_reason": "initial"
       },
-      "hash": "051aea6f"
+      "hash": "b0f90469"
     },
     {
       "ids": {
-        "scan_id": "sc_c7444225",
+        "scan_id": "sc_8d841a99",
         "opp_id": "op_3dc67ee1",
         "market_id": "default"
       },
@@ -76,7 +76,7 @@
       "snapshot": {
         "market_prob": 26.66,
         "best_bid_ask": null,
-        "timestamp": "2026-02-07T19:22:11.518Z"
+        "timestamp": "2026-02-07T19:55:52.719Z"
       },
       "scoring": {
         "score_baseline": 26.66,
@@ -90,11 +90,11 @@
       "trigger": {
         "trigger_reason": "initial"
       },
-      "hash": "68dc3973"
+      "hash": "90d3a80a"
     },
     {
       "ids": {
-        "scan_id": "sc_c7444225",
+        "scan_id": "sc_8d841a99",
         "opp_id": "op_0c2f2aec",
         "market_id": "default"
       },
@@ -117,7 +117,7 @@
       "snapshot": {
         "market_prob": 16.02,
         "best_bid_ask": null,
-        "timestamp": "2026-02-07T19:22:11.518Z"
+        "timestamp": "2026-02-07T19:55:52.719Z"
       },
       "scoring": {
         "score_baseline": 16.02,
@@ -131,7 +131,7 @@
       "trigger": {
         "trigger_reason": "initial"
       },
-      "hash": "5e28c0c0"
+      "hash": "27dad10c"
     }
   ]
 }

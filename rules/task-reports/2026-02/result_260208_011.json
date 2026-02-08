@@ -1,0 +1,7 @@
+{
+  "task_id": "260208_011",
+  "status": "DONE",
+  "summary": "M4: batch runscan (topics+concurrency) + fail-soft + export evidence",
+  "report_file": "notify_260208_011.txt",
+  "report_sha256_short": "ba4d7feb"
+}

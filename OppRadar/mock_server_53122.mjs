@@ -27,14 +27,324 @@ const MIME_TYPES = {
 };
 
 // In-memory state
+let inMemoryBatches = []; // batch_id -> batchResult
 let inMemoryScans = [];
 let inMemoryOpps = [];
-let runtimeData = { scans: [], opportunities: [], monitor_state: [], llm_dataset_rows: [], llm_cache: {} };
 let fixtureStrategies = [];
 let fixtureSnapshots = [];
-let monitorState = {}; // option_id -> { baseline_prob, last_prob, last_seen_ts, last_reeval_ts, trigger_state, last_trigger_reason }
+let runtimeData = {
+    scans: [],
+    opportunities: [],
+    monitor_state: {},
+    llm_dataset_rows: [],
+    llm_cache: {}
+};
+let monitorState = {};
 
-// Helper to create dataset row
+// Helper: Run Scan Core Logic (Decoupled from HTTP)
+async function runScanCore(params) {
+    let { seed, n_opps, mode, persist, max_n_opps, llm_provider, topic_key, dedup_window_sec, dedup_mode, cache_ttl_sec } = params;
+
+    // Defaults
+    seed = (seed === undefined || seed === null || seed === '') ? 111 : parseInt(seed, 10);
+    let n_opps_raw = (n_opps === undefined || n_opps === null || n_opps === '') ? 5 : parseInt(n_opps, 10);
+    mode = (mode === undefined || mode === null || mode === '') ? 'fast' : mode;
+    persist = (persist === undefined || persist === null || persist === '') ? true : (String(persist) === 'true');
+    max_n_opps = (max_n_opps === undefined || max_n_opps === null || max_n_opps === '') ? 50 : parseInt(max_n_opps, 10);
+    
+    topic_key = topic_key || 'default_topic';
+    dedup_window_sec = (dedup_window_sec === undefined || dedup_window_sec === null || dedup_window_sec === '') ? 0 : parseInt(dedup_window_sec, 10);
+    dedup_mode = (dedup_mode === undefined || dedup_mode === null || dedup_mode === '') ? 'run' : dedup_mode;
+    cache_ttl_sec = (cache_ttl_sec === undefined || cache_ttl_sec === null || cache_ttl_sec === '') ? 900 : parseInt(cache_ttl_sec, 10);
+
+    // Resolve LLM Provider for this run
+    const runLLMProviderName = llm_provider || process.env.LLM_PROVIDER || 'mock';
+    const runLLMProvider = getProvider(runLLMProviderName);
+
+    // Validation & Cap
+    if (isNaN(n_opps_raw) || n_opps_raw < 1) {
+        throw new Error('Invalid n_opps. Must be >= 1.');
+    }
+    
+    const n_opps_actual = Math.min(n_opps_raw, max_n_opps);
+    const truncated = n_opps_raw > max_n_opps;
+
+    // 1. Setup Metrics & Context
+    const t0 = Date.now();
+    const metrics = {
+        stage_ms: {},
+        persist_enabled: persist,
+        truncated: truncated,
+        n_opps_requested: n_opps_raw,
+        n_opps_actual: n_opps_actual,
+        seed: seed,
+        mode: mode,
+        topic_key: topic_key,
+        dedup_skipped_count: 0,
+        cache_hit_count: 0,
+        cache_miss_count: 0
+    };
+    
+    const stageLogs = [];
+    const logStage = (id, start, input = {}, output = {}, warnings = [], errors = []) => {
+        const end = Date.now();
+        stageLogs.push({
+            stage_id: id,
+            start_ts: new Date(start).toISOString(),
+            end_ts: new Date(end).toISOString(),
+            dur_ms: end - start,
+            input_summary: input,
+            output_summary: output,
+            warnings: warnings,
+            errors: errors
+        });
+    };
+
+    const stepStart = (name) => {
+        return Date.now();
+    };
+    const stepEnd = (name, start) => {
+        const duration = Date.now() - start;
+        metrics.stage_ms[name] = duration;
+        return duration;
+    };
+
+    // 2. Initialize Random
+    // Simple LCG
+    class SeededRandom {
+        constructor(s) { this.m = 2147483648; this.a = 1103515245; this.c = 12345; this.state = s % this.m; }
+        next() { this.state = (this.a * this.state + this.c) % this.m; return this.state / this.m; }
+    }
+    const rng = new SeededRandom(seed);
+
+    // 1.1 Dedup Check
+    if (dedup_window_sec > 0) {
+        const cutoff = Date.now() - (dedup_window_sec * 1000);
+        const recentScan = inMemoryScans.slice().reverse().find(s => 
+            s.topic_key === topic_key && 
+            new Date(s.timestamp).getTime() > cutoff
+        );
+
+        if (recentScan) {
+            if (dedup_mode === 'skip') {
+                metrics.dedup_skipped_count = 1;
+                const scan = {
+                    scan_id: 'skipped_' + crypto.createHash('sha256').update(seed.toString() + Date.now().toString()).digest('hex').substring(0, 8),
+                    timestamp: new Date().toISOString(),
+                    duration_ms: Date.now() - t0,
+                    n_opps_requested: n_opps_raw,
+                    n_opps_actual: 0,
+                    status: 'skipped',
+                    topic_key: topic_key,
+                    metrics: metrics,
+                    stage_logs: [{
+                        stage_id: 'dedup_check',
+                        start_ts: new Date().toISOString(),
+                        end_ts: new Date().toISOString(),
+                        dur_ms: 0,
+                        input_summary: { topic_key, dedup_window_sec },
+                        output_summary: { skipped: true, reason: 'dedup_hit', original_scan_id: recentScan.scan_id },
+                        warnings: [`Skipped due to dedup (window: ${dedup_window_sec}s)`],
+                        errors: []
+                    }]
+                };
+                return { scan, skipped: true };
+            }
+        }
+    }
+
+    // Stage: Load Context
+    const tLoad = Date.now();
+    // Determine previous scan (simulated context loading)
+    const lastScan = inMemoryScans.length > 0 ? inMemoryScans[inMemoryScans.length - 1] : null;
+    const fromScanId = lastScan ? lastScan.scan_id : null;
+    logStage('load_context', tLoad, {}, { from_scan_id: fromScanId }, [], []);
+
+    // 3. Pipeline Execution
+    const tGen = Date.now();
+    
+    // 3.1 Stage: gen_opps (Candidates)
+    const tGenStart = Date.now();
+    const timestamp = Date.now();
+    const scanId = 'sc_' + crypto.createHash('sha256').update(seed.toString() + timestamp.toString()).digest('hex').substring(0, 8);
+    const newOpps = [];
+    
+    if (fixtureStrategies.length > 0 && fixtureSnapshots.length > 0) {
+        for (let i = 0; i < n_opps_actual; i++) {
+            const stratIndex = Math.floor(rng.next() * fixtureStrategies.length);
+            const snapIndex = Math.floor(rng.next() * fixtureSnapshots.length);
+            const strat = fixtureStrategies[stratIndex];
+            const snap = fixtureSnapshots[snapIndex];
+            const oppId = 'op_' + crypto.createHash('sha256').update(seed.toString() + i.toString() + 'v1').digest('hex').substring(0, 8);
+            
+            const isTradeable = rng.next() > 0.5;
+            const tradeableState = isTradeable ? 'TRADEABLE' : 'NOT_TRADEABLE';
+
+            const oppObj = {
+                opp_id: oppId,
+                strategy_id: strat.strategy_id,
+                snapshot_id: snap.snapshot_id,
+                tradeable_state: tradeableState,
+                tradeable_reason: `Generated by RunScan (Seed: ${seed}, Mode: ${mode})`,
+                created_at: new Date().toISOString()
+            };
+            newOpps.push(oppObj);
+        }
+    }
+    logStage('gen_opps', tGenStart, { n_opps: n_opps_actual, seed }, { generated: newOpps.length }, [], []);
+
+    // 3.2 Stage: score_baseline
+    const tScoreStart = Date.now();
+    newOpps.forEach(opp => {
+        const scoreVal = rng.next() * 100;
+        const scoreBaseline = parseFloat(scoreVal.toFixed(2));
+        const scoreComponents = {
+            spread_edge: parseFloat((rng.next() * 30).toFixed(2)),
+            liquidity: parseFloat((rng.next() * 20).toFixed(2)),
+            volatility: parseFloat((rng.next() * 20).toFixed(2)),
+            risk_reward: parseFloat((rng.next() * 30).toFixed(2))
+        };
+        opp.score = scoreBaseline;
+        opp.score_baseline = scoreBaseline;
+        opp.score_components = scoreComponents;
+    });
+    logStage('score_baseline', tScoreStart, {}, { scored: newOpps.length }, [], []);
+
+    // 3.3 Stage: llm_analyze
+    const tLlmStart = Date.now();
+    let errorsCount = 0;
+    let analyzedCount = 0;
+    let fallbackCount = 0;
+    const genWarnings = [];
+    
+    // Process sequentially for async LLM
+    for (const opp of newOpps) {
+        try {
+            // Cache Key Construction
+            const inputContent = JSON.stringify({
+                strategy: opp.strategy_id,
+                snapshot: opp.snapshot_id,
+                score: opp.score_baseline
+            });
+            const promptHash = crypto.createHash('sha256').update(inputContent).digest('hex').substring(0, 8);
+            const timeBucket = Math.floor(Date.now() / (cache_ttl_sec * 1000)); // TTL Bucket
+            const cacheKey = `${runLLMProviderName}_${runLLMProvider.model || 'default'}_${promptHash}_${topic_key}_${timeBucket}`;
+            
+            let llmResult = null;
+            if (runtimeData.llm_cache[cacheKey]) {
+                llmResult = runtimeData.llm_cache[cacheKey];
+                metrics.cache_hit_count++;
+            } else {
+                llmResult = await runLLMProvider.summarizeOpp(opp);
+                metrics.cache_miss_count++;
+                // Cache it
+                runtimeData.llm_cache[cacheKey] = llmResult;
+            }
+
+            opp.llm_provider = llmResult.llm_provider;
+            opp.llm_model = llmResult.llm_model;
+            opp.llm_summary = llmResult.llm_summary;
+            opp.llm_confidence = llmResult.llm_confidence;
+            opp.llm_tags = llmResult.llm_tags;
+            opp.llm_latency_ms = llmResult.llm_latency_ms;
+            opp.llm_error = llmResult.llm_error;
+            opp.llm_input_prompt = llmResult.llm_input_prompt; // Capture prompt
+
+            // Capture Dataset Row
+            const datasetRow = createLLMDatasetRow(opp, { scan_id: scanId, trigger_reason: 'initial' });
+            runtimeData.llm_dataset_rows.push(datasetRow);
+
+            analyzedCount++;
+            if (llmResult.llm_summary === "OLLAMA_UNAVAILABLE_FALLBACK" || llmResult.llm_tags.includes('fallback_from_openrouter')) {
+                fallbackCount++;
+                genWarnings.push(`Fallback for ${opp.opp_id}: ${llmResult.llm_error}`);
+            }
+        } catch (llmErr) {
+            console.error(`LLM Provider Error for ${opp.opp_id}:`, llmErr);
+            opp.llm_summary = "Error generating summary";
+            opp.llm_tags = ['error'];
+            opp.llm_error = llmErr.message;
+            errorsCount++;
+            genWarnings.push(llmErr.message);
+        }
+    }
+    logStage('llm_analyze', tLlmStart, { provider: runLLMProviderName }, { processed: newOpps.length, analyzed_count: analyzedCount, fallback_count: fallbackCount, errors: errorsCount, provider: runLLMProviderName, model: runLLMProvider.model || 'unknown' }, genWarnings, []);
+
+    // 4. Construct Scan Object
+    const tConstruct = Date.now();
+    
+    // Add current logs to scan
+    const scan = {
+        scan_id: scanId,
+        timestamp: new Date(timestamp).toISOString(),
+        duration_ms: Date.now() - t0, // approximate so far
+        n_opps_requested: n_opps_raw,
+        n_opps_actual: n_opps_actual,
+        seed: seed,
+        mode: mode,
+        topic_key: topic_key,
+        opp_ids: newOpps.map(o => o.opp_id),
+        stage_logs: [...stageLogs], // Copy current logs
+        metrics: metrics
+    };
+    
+    inMemoryScans.push(scan);
+    // Also push opps to inMemoryOpps
+    newOpps.forEach(o => inMemoryOpps.push(o));
+    
+    // 5. Persist
+    const tPersist = Date.now();
+    const stepPersist = stepStart('persist_store');
+    let persistWarnings = [];
+    
+    if (persist) {
+        try {
+            if (!fs.existsSync(RUNTIME_DIR)) fs.mkdirSync(RUNTIME_DIR, { recursive: true });
+
+            // Write scan
+            fs.writeFileSync(path.join(RUNTIME_DIR, `scan_${scanId}.json`), JSON.stringify(scan, null, 2));
+            // Write opps
+            newOpps.forEach(o => {
+                fs.writeFileSync(path.join(RUNTIME_DIR, `${o.opp_id}.json`), JSON.stringify(o, null, 2));
+            });
+            
+            // Update store.json
+            const storePath = path.join(RUNTIME_DIR, 'store.json');
+            const storeData = {
+                scans: inMemoryScans.map(s => s.scan_id),
+                opps: inMemoryOpps.map(o => o.opp_id),
+                monitor_state: monitorState,
+                llm_dataset_rows: runtimeData.llm_dataset_rows,
+                llm_cache: runtimeData.llm_cache
+            };
+            const tempStorePath = storePath + '.tmp';
+            fs.writeFileSync(tempStorePath, JSON.stringify(storeData, null, 2));
+            fs.renameSync(tempStorePath, storePath); // Atomic write
+        } catch (err) {
+            console.error("Persist error:", err);
+            persistWarnings.push(err.message);
+        }
+    }
+    
+    stepEnd('persist_store', stepPersist);
+    logStage('persist_store', tPersist, { persist_enabled: persist }, { files_written: persist ? (1 + newOpps.length + 1) : 0 }, persistWarnings, []);
+    
+    // Update in-memory scan with the final log
+    scan.stage_logs = [...stageLogs];
+    scan.duration_ms = Date.now() - t0; // Update total duration
+    metrics.total_ms = scan.duration_ms;
+    
+    // Return Result
+    return {
+        scan: scan,
+        opportunities: newOpps,
+        from_scan_id: fromScanId,
+        to_scan_id: scanId,
+        metrics: metrics,
+        stage_logs: scan.stage_logs
+    };
+}
+
 function createLLMDatasetRow(opp, ctx = {}) {
     const timestamp = new Date().toISOString();
     const row = {
@@ -306,317 +616,20 @@ const server = http.createServer(async (req, res) => {
             }
             
             const params = { ...parsedUrl.query, ...bodyParams };
-            let { seed, n_opps, mode, persist, max_n_opps, llm_provider, topic_key, dedup_window_sec, dedup_mode, cache_ttl_sec } = params;
-
-            // Defaults
-            seed = (seed === undefined || seed === null || seed === '') ? 111 : parseInt(seed, 10);
-            let n_opps_raw = (n_opps === undefined || n_opps === null || n_opps === '') ? 5 : parseInt(n_opps, 10);
-            mode = (mode === undefined || mode === null || mode === '') ? 'fast' : mode;
-            persist = (persist === undefined || persist === null || persist === '') ? true : (String(persist) === 'true');
-            max_n_opps = (max_n_opps === undefined || max_n_opps === null || max_n_opps === '') ? 50 : parseInt(max_n_opps, 10);
             
-            topic_key = topic_key || 'default_topic';
-            dedup_window_sec = (dedup_window_sec === undefined || dedup_window_sec === null || dedup_window_sec === '') ? 0 : parseInt(dedup_window_sec, 10);
-            dedup_mode = (dedup_mode === undefined || dedup_mode === null || dedup_mode === '') ? 'run' : dedup_mode;
-            cache_ttl_sec = (cache_ttl_sec === undefined || cache_ttl_sec === null || cache_ttl_sec === '') ? 900 : parseInt(cache_ttl_sec, 10);
-
-            // Resolve LLM Provider for this run
-            const runLLMProviderName = llm_provider || process.env.LLM_PROVIDER || 'mock';
-            const runLLMProvider = getProvider(runLLMProviderName);
-
-            // Validation & Cap
-            if (isNaN(n_opps_raw) || n_opps_raw < 1) {
-                res.writeHead(400, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ error: 'Invalid n_opps. Must be >= 1.' }));
-                return;
-            }
-            
-            const n_opps_actual = Math.min(n_opps_raw, max_n_opps);
-            const truncated = n_opps_raw > max_n_opps;
-
-            // 1. Setup Metrics & Context
-            const t0 = Date.now();
-            const metrics = {
-                stage_ms: {},
-                persist_enabled: persist,
-                truncated: truncated,
-                n_opps_requested: n_opps_raw,
-                n_opps_actual: n_opps_actual,
-                seed: seed,
-                mode: mode,
-                topic_key: topic_key,
-                dedup_skipped_count: 0,
-                cache_hit_count: 0,
-                cache_miss_count: 0
-            };
-            
-            const stageLogs = [];
-            const logStage = (id, start, input = {}, output = {}, warnings = [], errors = []) => {
-                const end = Date.now();
-                stageLogs.push({
-                    stage_id: id,
-                    start_ts: new Date(start).toISOString(),
-                    end_ts: new Date(end).toISOString(),
-                    dur_ms: end - start,
-                    input_summary: input,
-                    output_summary: output,
-                    warnings: warnings,
-                    errors: errors
-                });
-            };
-
-            const stepStart = (name) => {
-                return Date.now();
-            };
-            const stepEnd = (name, start) => {
-                const duration = Date.now() - start;
-                metrics.stage_ms[name] = duration;
-                return duration;
-            };
-
-            // 2. Initialize Random
-            // Simple LCG
-            class SeededRandom {
-                constructor(s) { this.m = 2147483648; this.a = 1103515245; this.c = 12345; this.state = s % this.m; }
-                next() { this.state = (this.a * this.state + this.c) % this.m; return this.state / this.m; }
-            }
-            const rng = new SeededRandom(seed);
-
-            // 1.1 Dedup Check
-            if (dedup_window_sec > 0) {
-                const cutoff = Date.now() - (dedup_window_sec * 1000);
-                const recentScan = inMemoryScans.slice().reverse().find(s => 
-                    s.topic_key === topic_key && 
-                    new Date(s.timestamp).getTime() > cutoff
-                );
-
-                if (recentScan) {
-                    if (dedup_mode === 'skip') {
-                        metrics.dedup_skipped_count = 1;
-                        const scan = {
-                            scan_id: 'skipped_' + crypto.createHash('sha256').update(seed.toString() + Date.now().toString()).digest('hex').substring(0, 8),
-                            timestamp: new Date().toISOString(),
-                            duration_ms: Date.now() - t0,
-                            n_opps_requested: n_opps_raw,
-                            n_opps_actual: 0,
-                            status: 'skipped',
-                            topic_key: topic_key,
-                            metrics: metrics,
-                            stage_logs: [{
-                                stage_id: 'dedup_check',
-                                start_ts: new Date().toISOString(),
-                                end_ts: new Date().toISOString(),
-                                dur_ms: 0,
-                                input_summary: { topic_key, dedup_window_sec },
-                                output_summary: { skipped: true, reason: 'dedup_hit', original_scan_id: recentScan.scan_id },
-                                warnings: [`Skipped due to dedup (window: ${dedup_window_sec}s)`],
-                                errors: []
-                            }]
-                        };
-                        res.writeHead(200, { 'Content-Type': 'application/json' });
-                        res.end(JSON.stringify(scan));
-                        return;
-                    }
+            try {
+                const result = await runScanCore(params);
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify(result));
+            } catch (coreErr) {
+                // If it's a known validation error, 400
+                if (coreErr.message.includes('Invalid n_opps')) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ error: coreErr.message }));
+                } else {
+                    throw coreErr;
                 }
             }
-
-            // Stage: Load Context
-            const tLoad = Date.now();
-            // Determine previous scan (simulated context loading)
-            const lastScan = inMemoryScans.length > 0 ? inMemoryScans[inMemoryScans.length - 1] : null;
-            const fromScanId = lastScan ? lastScan.scan_id : null;
-            logStage('load_context', tLoad, {}, { from_scan_id: fromScanId }, [], []);
-
-            // 3. Pipeline Execution
-            const tGen = Date.now();
-            
-            // 3.1 Stage: gen_opps (Candidates)
-            const tGenStart = Date.now();
-            const timestamp = Date.now();
-            const scanId = 'sc_' + crypto.createHash('sha256').update(seed.toString() + timestamp.toString()).digest('hex').substring(0, 8);
-            const newOpps = [];
-            
-            if (fixtureStrategies.length > 0 && fixtureSnapshots.length > 0) {
-                for (let i = 0; i < n_opps_actual; i++) {
-                    const stratIndex = Math.floor(rng.next() * fixtureStrategies.length);
-                    const snapIndex = Math.floor(rng.next() * fixtureSnapshots.length);
-                    const strat = fixtureStrategies[stratIndex];
-                    const snap = fixtureSnapshots[snapIndex];
-                    const oppId = 'op_' + crypto.createHash('sha256').update(seed.toString() + i.toString() + 'v1').digest('hex').substring(0, 8);
-                    
-                    const isTradeable = rng.next() > 0.5;
-                    const tradeableState = isTradeable ? 'TRADEABLE' : 'NOT_TRADEABLE';
-
-                    const oppObj = {
-                        opp_id: oppId,
-                        strategy_id: strat.strategy_id,
-                        snapshot_id: snap.snapshot_id,
-                        tradeable_state: tradeableState,
-                        tradeable_reason: `Generated by RunScan (Seed: ${seed}, Mode: ${mode})`,
-                        created_at: new Date().toISOString()
-                    };
-                    newOpps.push(oppObj);
-                }
-            }
-            logStage('gen_opps', tGenStart, { n_opps: n_opps_actual, seed }, { generated: newOpps.length }, [], []);
-
-            // 3.2 Stage: score_baseline
-            const tScoreStart = Date.now();
-            newOpps.forEach(opp => {
-                const scoreVal = rng.next() * 100;
-                const scoreBaseline = parseFloat(scoreVal.toFixed(2));
-                const scoreComponents = {
-                    spread_edge: parseFloat((rng.next() * 30).toFixed(2)),
-                    liquidity: parseFloat((rng.next() * 20).toFixed(2)),
-                    volatility: parseFloat((rng.next() * 20).toFixed(2)),
-                    risk_reward: parseFloat((rng.next() * 30).toFixed(2))
-                };
-                opp.score = scoreBaseline;
-                opp.score_baseline = scoreBaseline;
-                opp.score_components = scoreComponents;
-            });
-            logStage('score_baseline', tScoreStart, {}, { scored: newOpps.length }, [], []);
-
-            // 3.3 Stage: llm_analyze
-            const tLlmStart = Date.now();
-            let errorsCount = 0;
-            let analyzedCount = 0;
-            let fallbackCount = 0;
-            const genWarnings = [];
-            
-            // Process sequentially for async LLM
-            for (const opp of newOpps) {
-                try {
-                    // Cache Key Construction
-                    const inputContent = JSON.stringify({
-                        strategy: opp.strategy_id,
-                        snapshot: opp.snapshot_id,
-                        score: opp.score_baseline,
-                        components: opp.score_components
-                    });
-                    const promptHash = crypto.createHash('sha256').update(inputContent).digest('hex');
-                    
-                    const timeBucket = Math.floor(Date.now() / 1000 / cache_ttl_sec);
-                    const cacheKey = `${runLLMProviderName}_${runLLMProvider.model || 'default'}_${promptHash}_${topic_key}_${timeBucket}`;
-                    
-                    let llmResult = null;
-                    if (runtimeData.llm_cache[cacheKey]) {
-                        llmResult = runtimeData.llm_cache[cacheKey];
-                        metrics.cache_hit_count++;
-                    } else {
-                        llmResult = await runLLMProvider.summarizeOpp(opp);
-                        metrics.cache_miss_count++;
-                        // Cache it
-                        runtimeData.llm_cache[cacheKey] = llmResult;
-                    }
-
-                    opp.llm_provider = llmResult.llm_provider;
-                    opp.llm_model = llmResult.llm_model;
-                    opp.llm_summary = llmResult.llm_summary;
-                    opp.llm_confidence = llmResult.llm_confidence;
-                    opp.llm_tags = llmResult.llm_tags;
-                    opp.llm_latency_ms = llmResult.llm_latency_ms;
-                    opp.llm_error = llmResult.llm_error;
-                    opp.llm_input_prompt = llmResult.llm_input_prompt; // Capture prompt
-
-                    // Capture Dataset Row
-                    const datasetRow = createLLMDatasetRow(opp, { scan_id: scanId, trigger_reason: 'initial' });
-                    runtimeData.llm_dataset_rows.push(datasetRow);
-
-                    analyzedCount++;
-                    if (llmResult.llm_summary === "OLLAMA_UNAVAILABLE_FALLBACK" || llmResult.llm_tags.includes('fallback_from_openrouter')) {
-                        fallbackCount++;
-                        genWarnings.push(`Fallback for ${opp.opp_id}: ${llmResult.llm_error}`);
-                    }
-                } catch (llmErr) {
-                    console.error(`LLM Provider Error for ${opp.opp_id}:`, llmErr);
-                    opp.llm_summary = "Error generating summary";
-                    opp.llm_tags = ['error'];
-                    opp.llm_error = llmErr.message;
-                    errorsCount++;
-                    genWarnings.push(llmErr.message);
-                }
-            }
-            logStage('llm_analyze', tLlmStart, { provider: runLLMProviderName }, { processed: newOpps.length, analyzed_count: analyzedCount, fallback_count: fallbackCount, errors: errorsCount, provider: runLLMProviderName, model: runLLMProvider.model || 'unknown' }, genWarnings, []);
-
-            // 4. Construct Scan Object
-            const tConstruct = Date.now();
-            
-            // Add current logs to scan
-            // Note: persist_store is not yet logged, so it won't be in the initial disk write
-            // But we will update the in-memory object after persist
-            const scan = {
-                scan_id: scanId,
-                timestamp: new Date(timestamp).toISOString(),
-                duration_ms: Date.now() - t0, // approximate so far
-                n_opps_requested: n_opps_raw,
-                n_opps_actual: n_opps_actual,
-                seed: seed,
-                mode: mode,
-                topic_key: topic_key,
-                opp_ids: newOpps.map(o => o.opp_id),
-                stage_logs: [...stageLogs], // Copy current logs
-                metrics: metrics
-            };
-            
-            inMemoryScans.push(scan);
-            // Also push opps to inMemoryOpps
-            newOpps.forEach(o => inMemoryOpps.push(o));
-            
-            // 5. Persist
-            const tPersist = Date.now();
-            const stepPersist = stepStart('persist_store');
-            let persistWarnings = [];
-            
-            if (persist) {
-                try {
-                    if (!fs.existsSync(RUNTIME_DIR)) fs.mkdirSync(RUNTIME_DIR, { recursive: true });
-
-                    // Write scan
-                    fs.writeFileSync(path.join(RUNTIME_DIR, `scan_${scanId}.json`), JSON.stringify(scan, null, 2));
-                    // Write opps
-                    newOpps.forEach(o => {
-                        fs.writeFileSync(path.join(RUNTIME_DIR, `${o.opp_id}.json`), JSON.stringify(o, null, 2));
-                    });
-                    
-                    // Update store.json
-                    const storePath = path.join(RUNTIME_DIR, 'store.json');
-                    const storeData = {
-                        scans: inMemoryScans.map(s => s.scan_id),
-                        opps: inMemoryOpps.map(o => o.opp_id),
-                        monitor_state: monitorState,
-                        llm_dataset_rows: runtimeData.llm_dataset_rows,
-                        llm_cache: runtimeData.llm_cache
-                    };
-                    const tempStorePath = storePath + '.tmp';
-                    fs.writeFileSync(tempStorePath, JSON.stringify(storeData, null, 2));
-                    fs.renameSync(tempStorePath, storePath); // Atomic write
-                } catch (err) {
-                    console.error("Persist error:", err);
-                    persistWarnings.push(err.message);
-                }
-            }
-            
-            stepEnd('persist_store', stepPersist);
-            logStage('persist_store', tPersist, { persist_enabled: persist }, { files_written: persist ? (1 + newOpps.length + 1) : 0 }, persistWarnings, []);
-            
-            // Update in-memory scan with the final log
-            scan.stage_logs = [...stageLogs];
-            scan.duration_ms = Date.now() - t0; // Update total duration
-            metrics.total_ms = scan.duration_ms;
-            
-            // 6. Return Result
-            const result = {
-                scan: scan,
-                opportunities: newOpps,
-                from_scan_id: fromScanId,
-                to_scan_id: scanId,
-                metrics: metrics,
-                stage_logs: scan.stage_logs
-            };
-            
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify(result));
             return;
 
         } catch (err) {
@@ -625,6 +638,171 @@ const server = http.createServer(async (req, res) => {
             res.end(JSON.stringify({ error: 'Internal Server Error', details: err.message }));
             return;
         }
+    }
+
+    // POST /scans/batch_run
+    if (pathname === '/scans/batch_run' && req.method === 'POST') {
+        const bodyPromise = new Promise((resolve, reject) => {
+            let body = '';
+            req.on('data', chunk => body += chunk.toString());
+            req.on('end', () => resolve(body));
+            req.on('error', reject);
+        });
+
+        try {
+            const rawBody = await bodyPromise;
+            let bodyParams = {};
+            if (rawBody) {
+                try {
+                    bodyParams = JSON.parse(rawBody);
+                } catch (e) {
+                     res.writeHead(400, { 'Content-Type': 'application/json' });
+                     res.end(JSON.stringify({ error: 'Invalid JSON body' }));
+                     return;
+                }
+            }
+
+            // Extract batch-level params
+            let { topics, concurrency, persist, n_opps, seed, mode, dedup_window_sec, dedup_mode, cache_ttl_sec } = bodyParams;
+            
+            // Validation
+            if (!topics || !Array.isArray(topics) || topics.length === 0) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Missing or empty topics array' }));
+                return;
+            }
+
+            // Concurrency Control
+            concurrency = (concurrency === undefined || concurrency === null) ? 4 : parseInt(concurrency, 10);
+            if (concurrency > 16) concurrency = 16; // Hard cap
+            if (concurrency < 1) concurrency = 1;
+
+            // Defaults
+            persist = (persist === undefined) ? true : (String(persist) === 'true');
+            const batchId = 'batch_' + crypto.createHash('sha256').update(Date.now().toString() + Math.random().toString()).digest('hex').substring(0, 8);
+            const startedAt = new Date().toISOString();
+            
+            // Prepare results array
+            const results = [];
+            const summaryMetrics = {
+                total_topics: topics.length,
+                success_count: 0,
+                failed_count: 0,
+                skipped_count: 0,
+                total_duration_ms: 0,
+                start_ts: startedAt,
+                end_ts: null
+            };
+
+            // Helper for processing a single topic
+            const processTopic = async (topicItem) => {
+                const topicKey = typeof topicItem === 'string' ? topicItem : topicItem.topic_key;
+                const topicParams = typeof topicItem === 'object' ? topicItem : {};
+                
+                // Merge params: topic-specific > batch-level > default
+                const runParams = {
+                    topic_key: topicKey,
+                    n_opps: (topicParams.n_opps !== undefined && topicParams.n_opps !== null) ? topicParams.n_opps : n_opps,
+                    seed: (topicParams.seed !== undefined && topicParams.seed !== null) ? topicParams.seed : seed,
+                    mode: topicParams.mode || mode,
+                    dedup_window_sec: (topicParams.dedup_window_sec !== undefined && topicParams.dedup_window_sec !== null) ? topicParams.dedup_window_sec : dedup_window_sec,
+                    dedup_mode: topicParams.dedup_mode || dedup_mode,
+                    cache_ttl_sec: (topicParams.cache_ttl_sec !== undefined && topicParams.cache_ttl_sec !== null) ? topicParams.cache_ttl_sec : cache_ttl_sec,
+                    persist: persist
+                };
+
+                try {
+                    const result = await runScanCore(runParams);
+                    const isSkipped = result.skipped === true;
+                    
+                    return {
+                        topic_key: topicKey,
+                        topic_status: isSkipped ? 'SKIPPED' : 'OK',
+                        scan_id: result.scan?.scan_id || result.scan_id, // handle skipped structure
+                        duration_ms: result.metrics?.total_ms || result.scan?.duration_ms || 0,
+                        metrics: result.metrics,
+                        stage_logs: result.stage_logs,
+                        error: null
+                    };
+                } catch (err) {
+                    console.error(`Batch topic failed [${topicKey}]:`, err);
+                    return {
+                        topic_key: topicKey,
+                        topic_status: 'FAILED',
+                        scan_id: null,
+                        duration_ms: 0,
+                        metrics: null,
+                        stage_logs: [],
+                        error: err.message
+                    };
+                }
+            };
+
+            // Execute with concurrency
+            // Chunking strategy
+            for (let i = 0; i < topics.length; i += concurrency) {
+                const chunk = topics.slice(i, i + concurrency);
+                const chunkResults = await Promise.all(chunk.map(processTopic));
+                results.push(...chunkResults);
+            }
+
+            // Summarize
+            const endAt = new Date().toISOString();
+            summaryMetrics.end_ts = endAt;
+            summaryMetrics.total_duration_ms = new Date(endAt).getTime() - new Date(startedAt).getTime();
+            
+            results.forEach(r => {
+                if (r.topic_status === 'OK') summaryMetrics.success_count++;
+                else if (r.topic_status === 'FAILED') summaryMetrics.failed_count++;
+                else if (r.topic_status === 'SKIPPED') summaryMetrics.skipped_count++;
+            });
+
+            const batchResult = {
+                batch_id: batchId,
+                started_at: startedAt,
+                params: { topics, concurrency, persist, n_opps, seed, mode, dedup_window_sec },
+                results: results,
+                summary_metrics: summaryMetrics
+            };
+
+            // Store in memory
+            inMemoryBatches.push(batchResult);
+
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(batchResult));
+            return;
+
+        } catch (err) {
+            console.error(err);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal Server Error', details: err.message }));
+            return;
+        }
+    }
+
+    // GET /export/batch_run.json
+    if (pathname === '/export/batch_run.json') {
+        const batchId = parsedUrl.query.batch_id;
+        if (!batchId) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Missing batch_id parameter' }));
+            return;
+        }
+
+        const batch = inMemoryBatches.find(b => b.batch_id === batchId);
+        
+        if (!batch) {
+            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Batch not found' }));
+            return;
+        }
+
+        res.writeHead(200, {
+            'Content-Type': 'application/json; charset=utf-8',
+            'Content-Disposition': `attachment; filename="batch_run_${batchId}.json"`
+        });
+        res.end(JSON.stringify(batch, null, 2));
+        return;
     }
 
     // POST /monitor/tick

@@ -1,0 +1,10 @@
+{
+  "tests": [
+    "Healthcheck",
+    "Normal Batch",
+    "Fail-Soft",
+    "Dedup (Partial)",
+    "Export"
+  ],
+  "summary": "PASS"
+}
