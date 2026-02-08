@@ -7,9 +7,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // DB Path: E:\OppRadar\data\runtime\oppradar.sqlite
-// OppRadar root is parent of __dirname (OppRadar/OppRadar -> OppRadar)
-// But strictly speaking, if we run from root, we can just use process.cwd()
-// Let's rely on process.cwd() being E:\OppRadar as established in context
 const DB_DIR = path.join(process.cwd(), 'data', 'runtime');
 const DB_PATH = path.join(DB_DIR, 'oppradar.sqlite');
 
@@ -93,6 +90,7 @@ function initSchema() {
         db.run(`CREATE INDEX IF NOT EXISTS idx_snapshot_topic_ts ON option_snapshot(topic_key, ts)`);
         db.run(`CREATE INDEX IF NOT EXISTS idx_llm_topic_ts ON llm_row(topic_key, ts)`);
         db.run(`CREATE INDEX IF NOT EXISTS idx_reeval_topic_ts ON reeval_event(topic_key, ts)`);
+        db.run(`CREATE INDEX IF NOT EXISTS idx_news_topic_ts ON news_stub(topic_key, ts)`);
     });
 }
 
@@ -118,7 +116,7 @@ function allAsync(sql, params = []) {
 // --- Public API ---
 
 export const DB = {
-    // Write Methods (fail-soft wrapper expected in caller or here? Caller is safer but we can log error here)
+    // Write Methods
     async appendTopic(topic_key, meta = {}) {
         try {
             await runAsync(`INSERT OR IGNORE INTO topic (topic_key, created_at, meta_json) VALUES (?, ?, ?)`, 
@@ -129,7 +127,6 @@ export const DB = {
     },
 
     async appendSnapshot(snapshot) {
-        // snapshot: { id, topic_key, option_id, ts, prob, market_price, source, raw_json }
         try {
             const id = snapshot.id || `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
             await runAsync(`INSERT INTO option_snapshot (id, topic_key, option_id, ts, prob, market_price, source, raw_json) 
@@ -195,17 +192,38 @@ export const DB = {
             console.error('[DB] appendReevalEvent error:', e.message);
         }
     },
+
+    async appendNews(newsItem) {
+        try {
+            const id = newsItem.id || `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+            await runAsync(`INSERT INTO news_stub (
+                id, topic_key, ts, title, url, publisher, summary, credibility, raw_json
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+                id,
+                newsItem.topic_key,
+                newsItem.ts || Date.now(),
+                newsItem.title,
+                newsItem.url,
+                newsItem.publisher,
+                newsItem.summary,
+                newsItem.credibility || 0.5,
+                JSON.stringify(newsItem.raw_json || {})
+            ]);
+        } catch (e) {
+            console.error('[DB] appendNews error:', e.message);
+        }
+    },
     
     // Read Methods
     async getTimeline(topic_key, limit = 50) {
         try {
-            // Union all events? Or return separate arrays? User asked for "aggregated timeline"
-            // Let's fetch separately and merge in memory for simplicity as schemas differ
-            const snapshots = await allAsync(`SELECT 'snapshot' as type, * FROM option_snapshot WHERE topic_key = ? ORDER BY ts DESC LIMIT ?`, [topic_key, limit]);
-            const llm_rows = await allAsync(`SELECT 'llm' as type, * FROM llm_row WHERE topic_key = ? ORDER BY ts DESC LIMIT ?`, [topic_key, limit]);
-            const reevals = await allAsync(`SELECT 'reeval' as type, * FROM reeval_event WHERE topic_key = ? ORDER BY ts DESC LIMIT ?`, [topic_key, limit]);
+            const snapshots = await allAsync(`SELECT 'snapshot' as type, id, topic_key, ts, prob as val1, market_price as val2, source as info, raw_json FROM option_snapshot WHERE topic_key = ? ORDER BY ts DESC LIMIT ?`, [topic_key, limit]);
+            const llm_rows = await allAsync(`SELECT 'llm' as type, id, topic_key, ts, latency_ms as val1, 0 as val2, model as info, raw_json FROM llm_row WHERE topic_key = ? ORDER BY ts DESC LIMIT ?`, [topic_key, limit]);
+            const reevals = await allAsync(`SELECT 'reeval' as type, id, topic_key, ts, 0 as val1, 0 as val2, 'trigger' as info, trigger_json as raw_json FROM reeval_event WHERE topic_key = ? ORDER BY ts DESC LIMIT ?`, [topic_key, limit]);
+            const news = await allAsync(`SELECT 'news' as type, id, topic_key, ts, credibility as val1, 0 as val2, publisher as info, raw_json FROM news_stub WHERE topic_key = ? ORDER BY ts DESC LIMIT ?`, [topic_key, limit]);
             
-            const all = [...snapshots, ...llm_rows, ...reevals];
+            const all = [...snapshots, ...llm_rows, ...reevals, ...news];
             all.sort((a, b) => b.ts - a.ts); // Descending
             return all.slice(0, limit);
         } catch (e) {
@@ -216,11 +234,12 @@ export const DB = {
 
     async getAllTimelineForExport(topic_key) {
         try {
-            const snapshots = await allAsync(`SELECT 'snapshot' as type, * FROM option_snapshot WHERE topic_key = ?`, [topic_key]);
-            const llm_rows = await allAsync(`SELECT 'llm' as type, * FROM llm_row WHERE topic_key = ?`, [topic_key]);
-            const reevals = await allAsync(`SELECT 'reeval' as type, * FROM reeval_event WHERE topic_key = ?`, [topic_key]);
+            const snapshots = await allAsync(`SELECT 'snapshot' as row_type, * FROM option_snapshot WHERE topic_key = ?`, [topic_key]);
+            const llm_rows = await allAsync(`SELECT 'llm' as row_type, * FROM llm_row WHERE topic_key = ?`, [topic_key]);
+            const reevals = await allAsync(`SELECT 'reeval' as row_type, * FROM reeval_event WHERE topic_key = ?`, [topic_key]);
+            const news = await allAsync(`SELECT 'news' as row_type, * FROM news_stub WHERE topic_key = ?`, [topic_key]);
             
-            const all = [...snapshots, ...llm_rows, ...reevals];
+            const all = [...snapshots, ...llm_rows, ...reevals, ...news];
             all.sort((a, b) => a.ts - b.ts); // Ascending for export
             return all;
         } catch (e) {

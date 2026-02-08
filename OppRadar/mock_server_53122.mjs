@@ -5,6 +5,7 @@ import url from 'url';
 import { fileURLToPath } from 'url';
 import crypto from 'crypto';
 import { getProvider } from './llm_provider.mjs';
+import { getProvider as getNewsProvider } from './news_provider.mjs';
 import DB from './db.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -44,7 +45,7 @@ let monitorState = {};
 
 // Helper: Run Scan Core Logic (Decoupled from HTTP)
 async function runScanCore(params) {
-    let { seed, n_opps, mode, persist, max_n_opps, llm_provider, topic_key, dedup_window_sec, dedup_mode, cache_ttl_sec, batch_id } = params;
+    let { seed, n_opps, mode, persist, max_n_opps, llm_provider, topic_key, dedup_window_sec, dedup_mode, cache_ttl_sec, batch_id, with_news } = params;
 
     // Defaults
     seed = (seed === undefined || seed === null || seed === '') ? 111 : parseInt(seed, 10);
@@ -57,6 +58,7 @@ async function runScanCore(params) {
     dedup_window_sec = (dedup_window_sec === undefined || dedup_window_sec === null || dedup_window_sec === '') ? 0 : parseInt(dedup_window_sec, 10);
     dedup_mode = (dedup_mode === undefined || dedup_mode === null || dedup_mode === '') ? 'run' : dedup_mode;
     cache_ttl_sec = (cache_ttl_sec === undefined || cache_ttl_sec === null || cache_ttl_sec === '') ? 900 : parseInt(cache_ttl_sec, 10);
+    with_news = (with_news === undefined || with_news === null || with_news === '') ? false : (String(with_news) === 'true');
 
     // Resolve LLM Provider for this run
     const runLLMProviderName = llm_provider || process.env.LLM_PROVIDER || 'mock';
@@ -166,7 +168,33 @@ async function runScanCore(params) {
     
     // DB: Ensure topic exists (Fail-soft)
     try {
-        await DB.appendTopic(topic_key, { seed, mode });
+        await DB.appendTopic(topic_key, { seed, mode, batch_id });
+
+        // News Pull (Optional)
+        if (with_news) {
+            const tNews = Date.now();
+            try {
+                const newsProvider = getNewsProvider(process.env.NEWS_PROVIDER || 'local');
+                const newsItems = await newsProvider.fetchNews(topic_key, 5);
+                let written = 0;
+                for (const item of newsItems) {
+                    await DB.appendNews({
+                        topic_key: topic_key,
+                        ts: new Date(item.published_at).getTime(),
+                        title: item.title,
+                        url: item.url,
+                        publisher: item.source,
+                        summary: item.snippet,
+                        credibility: 0.8,
+                        raw_json: item
+                    });
+                    written++;
+                }
+                logStage('news_pull', tNews, { topic_key }, { fetched: newsItems.length, written }, [], []);
+            } catch (e) {
+                logStage('news_pull', tNews, { topic_key }, {}, [], [e.message]);
+            }
+        }
     } catch (e) { console.error('DB appendTopic fail:', e); }
 
     // 3.1 Stage: gen_opps (Candidates)
@@ -673,6 +701,43 @@ const server = http.createServer(async (req, res) => {
         res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
         res.writeHead(200, { 'Content-Type': 'application/jsonl; charset=utf-8' });
         res.end(content);
+        return;
+    }
+
+    // POST /news/pull
+    if (pathname === '/news/pull' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => body += chunk);
+        req.on('end', async () => {
+            try {
+                const { topic_key, limit } = JSON.parse(body);
+                if (!topic_key) throw new Error('topic_key required');
+                
+                const newsProvider = getNewsProvider(process.env.NEWS_PROVIDER || 'local');
+                const newsItems = await newsProvider.fetchNews(topic_key, limit || 5);
+                
+                let written = 0;
+                for (const item of newsItems) {
+                     await DB.appendNews({
+                        topic_key: topic_key,
+                        ts: new Date(item.published_at).getTime(),
+                        title: item.title,
+                        url: item.url,
+                        publisher: item.source,
+                        summary: item.snippet,
+                        credibility: 0.8,
+                        raw_json: item
+                    });
+                    written++;
+                }
+                
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ status: 'ok', fetched: newsItems.length, written }));
+            } catch (e) {
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: e.message }));
+            }
+        });
         return;
     }
 

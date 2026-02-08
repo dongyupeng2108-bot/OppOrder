@@ -153,6 +153,7 @@ topic_C</textarea>
             <div style="margin-bottom: 10px;">
                 <label>Topic Key: <input type="text" id="tl_topic_key" placeholder="e.g. topic_A"></label>
                 <button onclick="loadTimeline()" style="padding: 5px 15px; background: #ffc107; color: black; border: none; cursor: pointer;">Load Timeline</button>
+                <button onclick="pullNews()" style="padding: 5px 15px; background: #0dcaf0; color: white; border: none; cursor: pointer; margin-left: 10px;">Pull News</button>
             </div>
             <div id="tl_status" style="margin-top: 5px; color: blue;"></div>
             
@@ -729,7 +730,38 @@ window.runReeval = async function() {
         status.textContent = 'Error: ' + e.message;
     }
 }
-<<<<<<< HEAD
+
+window.pullNews = async function() {
+    const topicKey = document.getElementById('tl_topic_key').value;
+    if (!topicKey) {
+        alert('Please enter a topic key');
+        return;
+    }
+    
+    const statusEl = document.getElementById('tl_status');
+    try {
+        statusEl.textContent = 'Pulling news...';
+        const res = await fetch('/news/pull', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ topic_key: topicKey, limit: 5 })
+        });
+        
+        if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.error || 'Pull failed');
+        }
+        
+        const data = await res.json();
+        statusEl.textContent = `News Pulled: Fetched ${data.fetched}, Written ${data.written}`;
+        
+        // Auto reload timeline
+        await loadTimeline();
+        
+    } catch (e) {
+        statusEl.textContent = 'Error: ' + e.message;
+    }
+}
 
 window.loadTimeline = async function() {
     const topicKey = document.getElementById('tl_topic_key').value;
@@ -742,7 +774,58 @@ window.loadTimeline = async function() {
     const resultsPanel = document.getElementById('tl_results');
     const tbody = document.getElementById('tl_table_body');
     const exportLink = document.getElementById('tl_export_link');
-=======
+
+    try {
+        statusEl.textContent = 'Loading...';
+        resultsPanel.style.display = 'none';
+        tbody.innerHTML = '';
+        
+        const res = await fetch(`/timeline/topic?topic_key=${encodeURIComponent(topicKey)}&limit=50`);
+        if (!res.ok) throw new Error('Failed to load timeline');
+        
+        const rows = await res.json();
+        
+        // Update export link
+        exportLink.href = `/export/timeline.jsonl?topic_key=${encodeURIComponent(topicKey)}`;
+        
+        rows.forEach(r => {
+            const tr = document.createElement('tr');
+            let type = 'Unknown';
+            let details = '';
+            const ts = new Date(r.ts).toISOString();
+            
+            if (r.type === 'snapshot' || r.prob !== undefined) {
+                type = 'Snapshot';
+                details = `Prob: ${r.val1 !== undefined ? r.val1.toFixed(4) : r.prob}, Price: ${r.val2 || r.market_price}`;
+            } else if (r.type === 'llm' || r.provider !== undefined) {
+                type = 'LLM';
+                details = `Model: ${r.info || r.model}, Latency: ${r.val1 || r.latency_ms}ms`;
+            } else if (r.type === 'reeval' || r.trigger_json !== undefined) {
+                type = 'Reeval';
+                const trigger = JSON.parse(r.raw_json || r.trigger_json || '{}');
+                details = `Trigger: ${trigger.reason || r.info || 'Manual'}`;
+            } else if (r.type === 'news') {
+                type = 'News';
+                const raw = r.raw_json ? JSON.parse(r.raw_json) : {};
+                details = `Source: ${r.info}, Cred: ${r.val1}<br><small><a href="${raw.url || '#'}" target="_blank">${raw.title || 'No Title'}</a></small>`;
+            }
+            
+            tr.innerHTML = `
+                <td style="border: 1px solid #ccc; padding: 5px;">${ts}</td>
+                <td style="border: 1px solid #ccc; padding: 5px;">${type}</td>
+                <td style="border: 1px solid #ccc; padding: 5px;">${details}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+        
+        resultsPanel.style.display = 'block';
+        statusEl.textContent = `Loaded ${rows.length} events.`;
+        
+    } catch (e) {
+        statusEl.textContent = 'Error: ' + e.message;
+    }
+}
+
 window.loadBatchView = async function() {
     const batchId = document.getElementById('view_batch_id').value.trim();
     const statusEl = document.getElementById('view_batch_status');
@@ -756,56 +839,11 @@ window.loadBatchView = async function() {
         statusEl.textContent = 'Please enter a Batch ID';
         return;
     }
->>>>>>> origin/main
 
     try {
         statusEl.textContent = 'Loading...';
         resultsPanel.style.display = 'none';
-<<<<<<< HEAD
-        tbody.innerHTML = '';
-        
-        const res = await fetch(`/timeline/topic?topic_key=${encodeURIComponent(topicKey)}&limit=50`);
-        if (!res.ok) throw new Error('Failed to load timeline');
-        
-        const rows = await res.json();
-        
-        // Update export link
-        exportLink.href = `/export/timeline.jsonl?topic_key=${encodeURIComponent(topicKey)}`;
-        
-        rows.forEach(r => {
-            const tr = document.createElement('tr');
-            // Format logic based on row type (snapshot, llm, reeval)
-            let type = 'Unknown';
-            let details = '';
-            const ts = new Date(r.ts).toISOString();
-            
-            if (r.prob !== undefined) {
-                type = 'Snapshot';
-                details = `Prob: ${r.prob.toFixed(4)}, Price: ${r.market_price}`;
-            } else if (r.provider !== undefined) {
-                type = 'LLM';
-                details = `Model: ${r.model}, Latency: ${r.latency_ms}ms`;
-            } else if (r.trigger_json !== undefined) {
-                type = 'Reeval';
-                const trigger = JSON.parse(r.trigger_json || '{}');
-                details = `Trigger: ${trigger.reason || 'Manual'}`;
-            }
-            
-            tr.innerHTML = `
-                <td style="border: 1px solid #ccc; padding: 5px;">${ts}</td>
-                <td style="border: 1px solid #ccc; padding: 5px;">${type}</td>
-                <td style="border: 1px solid #ccc; padding: 5px;">${details}</td>
-            `;
-            tbody.appendChild(tr);
-        });
-        
-        resultsPanel.style.display = 'block';
-        statusEl.textContent = `Loaded ${rows.length} events.`;
-=======
 
-        // Use the export endpoint to fetch data (since we don't have a dedicated GET /batch API yet, reusing export JSON)
-        // Or we can add a GET /batch?id=... API. The server has GET /export/batch_run.json?batch_id=... which returns the batch object.
-        // We can fetch that.
         const res = await fetch(`/export/batch_run.json?batch_id=${batchId}`);
         
         if (!res.ok) {
@@ -841,14 +879,8 @@ window.loadBatchView = async function() {
         
         resultsPanel.style.display = 'block';
         statusEl.textContent = 'Loaded.';
->>>>>>> origin/main
         
     } catch (e) {
         statusEl.textContent = 'Error: ' + e.message;
     }
-<<<<<<< HEAD
 }
-=======
-};
-
->>>>>>> origin/main
