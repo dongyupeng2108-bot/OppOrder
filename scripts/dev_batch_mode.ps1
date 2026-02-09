@@ -66,6 +66,15 @@ elseif ($Mode -eq 'Integrate') {
     # --- Integrate Phase ---
     Write-Host "--- [Integrate Phase] ---" -ForegroundColor Yellow
     
+    # 0. Pre-PR Check (Hard Guard for Duplicate Task ID)
+    # MUST run before any evidence generation or file writes
+    Write-Host "0. Running Pre-PR Check (Duplicate Task ID Guard)..."
+    node scripts/pre_pr_check.mjs --task_id $TaskId
+    if ($LASTEXITCODE -ne 0) {
+        # Stdout from node script (including REJECT block) is already passed through
+        exit $LASTEXITCODE
+    }
+
     # 1. Healthcheck
     Write-Host "1. Running Healthcheck..."
     $HcRoot = Join-Path $ReportsDir "${TaskId}_healthcheck_53122_root.txt"

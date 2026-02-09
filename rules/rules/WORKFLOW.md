@@ -90,14 +90,19 @@ To reduce repository overhead and conflicts, we adopt a two-phase workflow for e
     *   OR encapsulate them in a script (like `dev_batch_mode.ps1`) and run the script.
 
 ## PR Creation Standards (Agent/Dev)
-### Anti-Duplicate & Noise Control (Hard Rule)
-1. **Unique Task ID**: If `rules/task-reports/**/result_<task_id>.json` already exists in **main** (or local main), **FORBID** re-execution of `envelope_build` and **FORBID** creating a new PR. You MUST use a new task_id.
-2. **Pre-PR Check**: Before creating a PR, you **MUST** run the `pre_pr_check` script:
+### Anti-Duplicate & Noise Control (Hard Guard)
+1. **Mandatory Pre-Check**: Before starting any task execution (especially Integrate phase), MUST run `pre_pr_check`:
    ```powershell
    node scripts/pre_pr_check.mjs --task_id <task_id>
    ```
-   - If it exits with code 2 (Duplicate), **STOP** immediately. Do not push. Do not create PR.
-   - If it exits with code 0 (PASS), proceed.
+2. **Duplicate Detection & Rejection**:
+   - The script checks `origin/main` for existing `task_id` (files or LATEST.json occupation).
+   - If found, it outputs a 3-line REJECT block (`REJECT_DUPLICATE_TASK_ID`, `REJECT_REASON`, `EXECUTION_ABORTED=1`) and exits with **Code 21**.
+   - **Action**: Agent MUST abort immediately. Do NOT generate evidence. Do NOT create PR.
+3. **Integrate Phase Interception**:
+   - `scripts/dev_batch_mode.ps1` (Integrate mode) automatically runs this check as the **FIRST STEP**.
+   - If it fails (Exit Code 21), the script exits immediately with **0 side effects** (no files written).
+
 
 3. **Fail-Fast Logic**:
    - If `git diff --name-only origin/main...HEAD` shows only `rules/task-reports/**` changes AND the task_id exists in `origin/main`, the PR is considered "Duplicate Noise". Abort.
