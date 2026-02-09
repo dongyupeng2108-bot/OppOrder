@@ -1,7 +1,7 @@
 RESULT_JSON
 {
   "status": "DONE",
-  "summary": "Regenerate evidence for whitelist fix"
+  "summary": "regenerate with strict check enabled"
 }
 LOG_HEAD
 [2026-02-09T19:16:46.436Z] START Task 260210_003
@@ -474,7 +474,7 @@ trae_report_snippet_260210_003.txt
 HEALTHCHECK
 HTTP/1.1 200 OK
 Content-Type: text/plain
-Date: Mon, 09 Feb 2026 19:49:51 GMT
+Date: Mon, 09 Feb 2026 19:53:50 GMT
 Connection: keep-alive
 Keep-Alive: timeout=5
 Transfer-Encoding: chunked
@@ -483,7 +483,7 @@ OK
 / -> 200 (Verified)
 HTTP/1.1 200 OK
 Content-Type: text/plain
-Date: Mon, 09 Feb 2026 19:49:51 GMT
+Date: Mon, 09 Feb 2026 19:53:50 GMT
 Connection: keep-alive
 Keep-Alive: timeout=5
 Transfer-Encoding: chunked
@@ -499,12 +499,12 @@ DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260210_003_healthchec
 === DOD_EVIDENCE_STDOUT ===
 DOD_EVIDENCE_HEALTHCHECK_ROOT: E:/OppRadar/rules/task-reports/2026-02/260210_003_healthcheck_53122_root.txt => HTTP/1.1 200 OK
 DOD_EVIDENCE_HEALTHCHECK_PAIRS: E:/OppRadar/rules/task-reports/2026-02/260210_003_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
-DOD_EVIDENCE_SCAN_CACHE_MISS: E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260210_003.txt => cached=false duration_ms=114
-DOD_EVIDENCE_SCAN_CACHE_HIT:  E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260210_003.txt => cached=true  duration_ms=3
-DOD_EVIDENCE_OPPS_PIPELINE_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_pipeline_smoke_260210_003.txt => run_id=run_v1_7183c075 ok=5 failed=1
+DOD_EVIDENCE_SCAN_CACHE_MISS: E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260210_003.txt => cached=false duration_ms=73
+DOD_EVIDENCE_SCAN_CACHE_HIT:  E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260210_003.txt => cached=true  duration_ms=1
+DOD_EVIDENCE_OPPS_PIPELINE_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_pipeline_smoke_260210_003.txt => run_id=run_v1_24a88be8 ok=5 failed=1
 DOD_EVIDENCE_OPPS_PIPELINE_TOP: E:/OppRadar/rules/task-reports/2026-02/opps_pipeline_smoke_260210_003.txt => top_count=5 refs_run_id=true
 DOD_EVIDENCE_OPPS_RUNS_LIST: E:/OppRadar/rules/task-reports/2026-02/opps_run_filter_smoke_260210_003.txt => contains_run_id=true count=10
 DOD_EVIDENCE_OPPS_BY_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_run_filter_smoke_260210_003.txt => rows=2 all_same_run_id=true
 
 TRAE_REPORT_SNIPPET: E:/OppRadar/rules/task-reports/2026-02/trae_report_snippet_260210_003.txt
-GATE_LIGHT_EXIT=1
+GATE_LIGHT_EXIT=0
