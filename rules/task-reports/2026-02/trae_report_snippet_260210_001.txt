@@ -1,7 +1,7 @@
 === TRAE_REPORT_SNIPPET ===
 
 BRANCH: feat/workflow-msgheader-protocol-260210_001
-COMMIT: 0a3a2ed
+COMMIT: e31c421
 
 === GIT_SCOPE_DIFF ===
 M	rules/rules/WORKFLOW.md
