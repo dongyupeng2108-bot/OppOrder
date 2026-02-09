@@ -594,6 +594,7 @@ async function renderOpportunities() {
                 </select>
             </label>
             <button onclick="buildOpportunities()" style="margin-left: 10px; padding: 5px 15px; background: #28a745; color: white; border: none; cursor: pointer;">Build Now</button>
+            <button onclick="buildOpportunitiesV1()" style="margin-left: 10px; padding: 5px 15px; background: #007bff; color: white; border: none; cursor: pointer;">Build v1 (Batch)</button>
             <div id="build_status" style="margin-top: 10px; color: blue;"></div>
         </div>
 
@@ -657,6 +658,67 @@ window.buildOpportunities = async function() {
         setTimeout(() => router(), 1000);
     } catch (e) {
         status.textContent = 'Error: ' + e.message;
+    }
+}
+
+window.buildOpportunitiesV1 = async function() {
+    const status = document.getElementById('build_status');
+    status.textContent = 'Building v1 (Batch)...';
+    
+    // Default jobs: 5 success, 1 failure
+    const jobs = [
+        { symbol: 'BTC', timeframe: '1h', n_opps: 5 },
+        { symbol: 'ETH', timeframe: '4h', n_opps: 5 },
+        { symbol: 'SOL', timeframe: '15m', n_opps: 5 },
+        { symbol: 'DOGE', timeframe: '1d', n_opps: 5 },
+        { symbol: 'XRP', timeframe: '30m', n_opps: 5 },
+        { symbol: 'FAIL_TEST', timeframe: '1h', n_opps: -1 } // Intentional failure
+    ];
+
+    try {
+        const res = await fetch('/opportunities/build_v1', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ 
+                jobs: jobs,
+                concurrency: 3
+            })
+        });
+        
+        const data = await res.json();
+        
+        if (data.error) {
+            status.textContent = 'Error: ' + data.error;
+            status.style.color = 'red';
+        } else {
+            status.innerHTML = `Success! Run: ${data.run_id} <br/> OK: ${data.jobs_ok}, Failed: ${data.jobs_failed}, Concurrency: ${data.concurrency_used}`;
+            status.style.color = 'green';
+            
+            // Auto-refresh top list manually to preserve status
+            const listRes = await fetch('/opportunities/top?limit=20');
+            const list = await listRes.json();
+            
+            const rows = list.map(o => {
+                const bd = o.score_breakdown || {};
+                const scoreTitle = Object.entries(bd).map(([k,v]) => `${k}: ${v.toFixed(2)}`).join('\n');
+                
+                return `
+                <tr>
+                    <td><a href="/ui/replay?topic=${encodeURIComponent(o.topic_key)}" onclick="route(event)">${o.topic_key}</a></td>
+                    <td title="${scoreTitle}">${o.score}</td>
+                    <td>${o.delta_1h !== undefined ? o.delta_1h.toFixed(4) : '-'}</td>
+                    <td>${o.news_count_6h !== undefined ? o.news_count_6h : '-'}</td>
+                    <td>${o.llm_confidence !== undefined ? o.llm_confidence : '-'}</td>
+                    <td>${o.staleness_sec !== undefined ? o.staleness_sec + 's' : '-'}</td>
+                </tr>
+            `}).join('');
+            
+            const tbody = document.querySelector('tbody');
+            if (tbody) tbody.innerHTML = rows;
+        }
+    } catch (e) {
+        status.textContent = 'Error: ' + e.message;
+        status.style.color = 'red';
     }
 }
 

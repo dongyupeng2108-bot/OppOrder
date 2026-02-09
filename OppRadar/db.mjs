@@ -100,7 +100,8 @@ function initSchema() {
             snapshot_ref TEXT,
             llm_ref TEXT,
             news_refs_json TEXT,
-            build_run_id TEXT
+            build_run_id TEXT,
+            refs_json TEXT
         )`);
         
         // Migrations (Idempotent) - Run BEFORE indices to ensure columns exist
@@ -109,6 +110,7 @@ function initSchema() {
         db.run(`ALTER TABLE news_stub ADD COLUMN published_at TEXT`, (err) => {});
         db.run(`ALTER TABLE news_stub ADD COLUMN content_hash TEXT`, (err) => {});
         db.run(`ALTER TABLE news_stub ADD COLUMN provider TEXT`, (err) => {});
+        db.run(`ALTER TABLE opportunity_event ADD COLUMN refs_json TEXT`, (err) => {});
 
         // Indices for performance
         db.run(`CREATE INDEX IF NOT EXISTS idx_snapshot_topic_ts ON option_snapshot(topic_key, ts)`);
@@ -259,8 +261,8 @@ export const DB = {
         try {
             const id = opp.id || `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
             await runAsync(`INSERT INTO opportunity_event (
-                id, ts, topic_key, score, score_breakdown_json, features_json, snapshot_ref, llm_ref, news_refs_json, build_run_id
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                id, ts, topic_key, score, score_breakdown_json, features_json, snapshot_ref, llm_ref, news_refs_json, build_run_id, refs_json
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [
                 id,
                 opp.ts || Date.now(),
@@ -271,7 +273,8 @@ export const DB = {
                 opp.snapshot_ref || null,
                 opp.llm_ref || null,
                 JSON.stringify(opp.news_refs || []),
-                opp.build_run_id || null
+                opp.build_run_id || null,
+                JSON.stringify(opp.refs || {})
             ]);
             return id;
         } catch (e) {
@@ -356,7 +359,8 @@ export const DB = {
                 ...row,
                 score_breakdown: JSON.parse(row.score_breakdown_json || '{}'),
                 features: JSON.parse(row.features_json || '{}'),
-                news_refs: JSON.parse(row.news_refs_json || '[]')
+                news_refs: JSON.parse(row.news_refs_json || '[]'),
+                refs: JSON.parse(row.refs_json || '{}')
             }));
         } catch (e) {
             console.error('[DB] getTopOpportunities error:', e.message);
@@ -371,7 +375,8 @@ export const DB = {
                 ...row,
                 score_breakdown: JSON.parse(row.score_breakdown_json || '{}'),
                 features: JSON.parse(row.features_json || '{}'),
-                news_refs: JSON.parse(row.news_refs_json || '[]')
+                news_refs: JSON.parse(row.news_refs_json || '[]'),
+                refs: JSON.parse(row.refs_json || '{}')
             }));
         } catch (e) {
             console.error('[DB] getOpportunitiesForExport error:', e.message);

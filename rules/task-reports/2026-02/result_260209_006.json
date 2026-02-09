@@ -1,0 +1,21 @@
+{
+  "task_id": "260209_006",
+  "status": "DONE",
+  "summary": "Opportunity Pipeline v1: run_batch+cache+news+score+UI+DoD automation",
+  "report_file": "notify_260209_006.txt",
+  "report_sha256_short": "8080c756",
+  "dod_evidence": {
+    "healthcheck": [
+      "DOD_EVIDENCE_HEALTHCHECK_ROOT: E:/OppRadar/rules/task-reports/2026-02/260209_006_healthcheck_53122_root.txt => HTTP/1.1 200 OK",
+      "DOD_EVIDENCE_HEALTHCHECK_PAIRS: E:/OppRadar/rules/task-reports/2026-02/260209_006_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK"
+    ],
+    "scan_cache": [
+      "DOD_EVIDENCE_SCAN_CACHE_MISS: E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260209_006.txt => cached=false duration_ms=63",
+      "DOD_EVIDENCE_SCAN_CACHE_HIT:  E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260209_006.txt => cached=true  duration_ms=2"
+    ],
+    "opps_pipeline": [
+      "DOD_EVIDENCE_OPPS_PIPELINE_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_pipeline_smoke_260209_006.txt => run_id=run_v1_5247ee0f ok=5 failed=1",
+      "DOD_EVIDENCE_OPPS_PIPELINE_TOP: E:/OppRadar/rules/task-reports/2026-02/opps_pipeline_smoke_260209_006.txt => top_count=5 refs_run_id=true"
+    ]
+  }
+}
