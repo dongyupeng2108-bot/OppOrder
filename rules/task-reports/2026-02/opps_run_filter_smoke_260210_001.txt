@@ -1,0 +1,11 @@
+[2026-02-09T17:59:19.382Z] Starting Smoke Test for 260209_008
+1. Triggering POST /opportunities/build_v1...
+   => run_id=run_v1_eb8fa0d8
+2. Verifying GET /opportunities/runs...
+   => Found run in list: {"run_id":"run_v1_eb8fa0d8","ts":1770659959469,"jobs_total":2,"jobs_ok":2,"jobs_failed":0,"inserted_count":2,"concurrency":2,"meta_json":"{\"started_at\":\"2026-02-09T17:59:19.404Z\"}","meta":{"started_at":"2026-02-09T17:59:19.404Z"}}
+DOD_EVIDENCE_OPPS_RUNS_LIST: E:\OppRadar\rules\task-reports\2026-02\opps_run_filter_smoke_260210_001.txt => contains_run_id=true count=10
+3. Verifying GET /opportunities/by_run...
+   => Returned 2 opportunities
+   => All 2 opportunities match run_id
+DOD_EVIDENCE_OPPS_BY_RUN: E:\OppRadar\rules\task-reports\2026-02\opps_run_filter_smoke_260210_001.txt => rows=2 all_same_run_id=true
+PASS: true
