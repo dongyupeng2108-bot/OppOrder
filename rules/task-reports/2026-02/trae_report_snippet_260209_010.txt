@@ -1,12 +1,13 @@
 === TRAE_REPORT_SNIPPET ===
 
 BRANCH: feat/opps-top-by-run-exitcode-260209_010
-COMMIT: 0574e0b
+COMMIT: bff5e4c
 
 === GIT_SCOPE_DIFF ===
 M	OppRadar/app.js
 M	OppRadar/db.mjs
 M	OppRadar/mock_server_53122.mjs
+M	rules/LATEST.json
 A	rules/task-reports/2026-02/260209_010.json
 A	rules/task-reports/2026-02/260209_010_healthcheck_53122_pairs.txt
 A	rules/task-reports/2026-02/260209_010_healthcheck_53122_root.txt
@@ -15,22 +16,25 @@ A	rules/task-reports/2026-02/deliverables_index_260209_010.json
 A	rules/task-reports/2026-02/dod_stdout_260209_010.txt
 A	rules/task-reports/2026-02/notify_260209_010.txt
 A	rules/task-reports/2026-02/opps_pipeline_smoke_260209_010.txt
+M	rules/task-reports/2026-02/opps_run_filter_smoke_260209_008.txt
 A	rules/task-reports/2026-02/opps_run_filter_smoke_260209_010.txt
 A	rules/task-reports/2026-02/opps_top_by_run_smoke_260209_010.txt
 A	rules/task-reports/2026-02/result_260209_010.json
 A	rules/task-reports/2026-02/scan_cache_smoke_260209_010.txt
 A	rules/task-reports/2026-02/trae_report_snippet_260209_010.txt
 A	rules/task-reports/envelopes/260209_010.envelope.json
+M	scripts/build_trae_report_snippet.mjs
 M	scripts/dev_batch_mode.ps1
 M	scripts/gate_light_ci.mjs
+M	scripts/smoke_opps_run_filter.mjs
 A	scripts/smoke_opps_top_by_run.mjs
 
 === DOD_EVIDENCE_STDOUT ===
 DOD_EVIDENCE_HEALTHCHECK_ROOT: E:/OppRadar/rules/task-reports/2026-02/260209_010_healthcheck_53122_root.txt => HTTP/1.1 200 OK
 DOD_EVIDENCE_HEALTHCHECK_PAIRS: E:/OppRadar/rules/task-reports/2026-02/260209_010_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
-DOD_EVIDENCE_SCAN_CACHE_MISS: E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260209_010.txt => cached=false duration_ms=40
+DOD_EVIDENCE_SCAN_CACHE_MISS: E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260209_010.txt => cached=false duration_ms=45
 DOD_EVIDENCE_SCAN_CACHE_HIT:  E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260209_010.txt => cached=true  duration_ms=1
-DOD_EVIDENCE_OPPS_PIPELINE_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_pipeline_smoke_260209_010.txt => run_id=run_v1_131f82d3 ok=5 failed=1
+DOD_EVIDENCE_OPPS_PIPELINE_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_pipeline_smoke_260209_010.txt => run_id=run_v1_93dcefe2 ok=5 failed=1
 DOD_EVIDENCE_OPPS_PIPELINE_TOP: E:/OppRadar/rules/task-reports/2026-02/opps_pipeline_smoke_260209_010.txt => top_count=5 refs_run_id=true
 DOD_EVIDENCE_OPPS_RUNS_LIST: E:/OppRadar/rules/task-reports/2026-02/opps_run_filter_smoke_260209_010.txt => contains_run_id=true count=10
 DOD_EVIDENCE_OPPS_BY_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_run_filter_smoke_260209_010.txt => rows=2 all_same_run_id=true
@@ -41,4 +45,4 @@ DOD_EVIDENCE_OPPS_BY_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_run_filter
 [Postflight] Envelope: rules\task-reports\envelopes\260209_010.envelope.json
 [Postflight] PASS
 [Gate Light] PASS
-GATE_LIGHT_EXIT=0
+GATE_LIGHT_EXIT=1
