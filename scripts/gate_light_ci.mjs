@@ -450,6 +450,13 @@ try {
 
         // A) NoHistoricalEvidenceTouch
         try {
+            // FIX for CI: Fetch origin main to ensure diff context exists
+            try {
+                execSync('git fetch origin main', { stdio: 'ignore' });
+            } catch (ignored) {
+                // Ignore fetch errors (e.g. offline), but diff check might fail later if ref is missing
+            }
+
             // Note: This requires git to be available and origin/main to be fetched
             const diffOutput = execSync('git diff --name-status origin/main...HEAD', { encoding: 'utf8' });
             const forbiddenModifications = [];

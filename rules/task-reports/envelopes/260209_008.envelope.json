@@ -1,7 +1,7 @@
 {
   "task_id": "260209_008",
   "milestone": "260209",
-  "status": "FAILED",
+  "status": "DONE",
   "healthcheck": {
     "root": 0,
     "pairs": 0
