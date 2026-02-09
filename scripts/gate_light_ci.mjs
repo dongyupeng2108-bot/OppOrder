@@ -605,6 +605,54 @@ try {
         // So no extra check needed here for C.
     }
 
+    // --- GATE_LIGHT_EXIT Mechanism Check (Task 260209_010) ---
+    if (task_id >= '260209_010') {
+        console.log('[Gate Light] Checking GATE_LIGHT_EXIT Mechanism...');
+        
+        const notifyFile = path.join(result_dir, `notify_${task_id}.txt`);
+        const resultFile = path.join(result_dir, `result_${task_id}.json`);
+        const snippetFile = path.join(result_dir, `trae_report_snippet_${task_id}.txt`);
+        
+        // 1. Check Notify
+        if (!fs.existsSync(notifyFile)) {
+             console.error(`[Gate Light] FAILED: Notify file missing: ${notifyFile}`);
+             process.exit(1);
+        }
+        const notifyContent = fs.readFileSync(notifyFile, 'utf8');
+        if (!/GATE_LIGHT_EXIT=\d+/.test(notifyContent)) {
+             console.error(`[Gate Light] FAILED: Notify file missing 'GATE_LIGHT_EXIT=<code/0>' line.`);
+             process.exit(1);
+        }
+
+        // 2. Check Result JSON
+        if (!fs.existsSync(resultFile)) {
+             console.error(`[Gate Light] FAILED: Result file missing: ${resultFile}`);
+             process.exit(1);
+        }
+        const resultData = JSON.parse(fs.readFileSync(resultFile, 'utf8'));
+        // Check in dod_evidence or meta. User allowed both. Checking dod_evidence.gate_light_exit
+        const inDod = resultData.dod_evidence && resultData.dod_evidence.gate_light_exit !== undefined;
+        const inMeta = resultData.meta && resultData.meta.gate_light_exit !== undefined;
+        
+        if (!inDod && !inMeta) {
+             console.error(`[Gate Light] FAILED: Result JSON missing 'gate_light_exit' in dod_evidence or meta.`);
+             process.exit(1);
+        }
+
+        // 3. Check Trae Report Snippet
+        if (!fs.existsSync(snippetFile)) {
+             console.error(`[Gate Light] FAILED: Snippet file missing: ${snippetFile}`);
+             process.exit(1);
+        }
+        const snippetContent = fs.readFileSync(snippetFile, 'utf8');
+        if (!/GATE_LIGHT_EXIT=\d+/.test(snippetContent)) {
+             console.error(`[Gate Light] FAILED: Snippet file missing 'GATE_LIGHT_EXIT=<code/0>' line.`);
+             process.exit(1);
+        }
+        
+        console.log('[Gate Light] GATE_LIGHT_EXIT Mechanism verified.');
+    }
+
     // Construct postflight command
     // Note: Assuming scripts/postflight_validate_envelope.mjs exists relative to CWD
     const cmd = 'node scripts/postflight_validate_envelope.mjs --task_id ' + task_id + ' --result_dir ' + result_dir + ' --report_dir ' + result_dir;
