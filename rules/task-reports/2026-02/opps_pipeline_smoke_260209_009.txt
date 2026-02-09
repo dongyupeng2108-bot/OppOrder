@@ -1,0 +1,14 @@
+Test started at 2026-02-09T13:22:54.602Z
+Step 1: Calling POST /opportunities/build_v1 with 5 OK + 1 Failed jobs...
+Response received. Run ID: run_v1_14458c39
+jobs_ok: 5, jobs_failed: 1
+PASS: Fail-soft isolation verified.
+Step 2: Calling GET /opportunities/top?limit=5...
+Received 5 top opportunities.
+Opp [0] default_topic: Score=0.27, RunID=run_v1_14458c39
+Opp [1] default_topic: Score=0.27, RunID=run_v1_14458c39
+Opp [2] default_topic: Score=0.27, RunID=run_v1_14458c39
+Opp [3] default_topic: Score=0.27, RunID=run_v1_14458c39
+Opp [4] default_topic: Score=0.27, RunID=run_v1_14458c39
+PASS: Top list verification successful.
+PASS: true

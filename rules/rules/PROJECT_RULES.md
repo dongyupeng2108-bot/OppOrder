@@ -167,3 +167,16 @@
   - `dod_stdout_<task_id>.txt` must exist in `rules/task-reports/YYYY-MM/`.
   - `notify_<task_id>.txt` must contain the same block.
   - All `DOD_EVIDENCE_` lines must contain `=>` followed by the excerpt.
+
+## Gate Light Hardening Rules (Task 260209_009)
+### NoHistoricalEvidenceTouch
+- **Rule**: Modifications to `rules/task-reports/**` files that do NOT contain the current `task_id` in their filename are strictly PROHIBITED.
+- **Goal**: Prevent accidental modification of historical evidence or cross-talk between tasks.
+- **Failure Example**: Modifying `rules/task-reports/2026-02/opps_pipeline_smoke_260209_008.txt` while working on task `260209_009`.
+- **Fix**: Revert the file using `git restore --source=origin/main -- <path>`. If the data is new, save it to a new file containing the current `task_id`.
+
+### SnippetCommitMustMatch
+- **Rule**: The `COMMIT:` field in `trae_report_snippet_<task_id>.txt` must match `git rev-parse --short HEAD`.
+- **Goal**: Prevent "Snippet Drift" where evidence is generated on commit A, but the code is amended to commit B without regenerating evidence.
+- **Failure Example**: `Snippet COMMIT (abc1234) does not match HEAD (def5678)`.
+- **Fix**: Re-run the Integrate phase (or just the snippet builder) to regenerate the snippet with the current HEAD.
