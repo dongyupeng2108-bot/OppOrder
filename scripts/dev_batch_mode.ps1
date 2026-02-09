@@ -179,26 +179,33 @@ if (taskId >= '260209_002') {
 
 let dodLines = (healthcheckLines + (scanCacheLines ? '\n' + scanCacheLines : '')).trim();
 
+const marker = "=== DOD_EVIDENCE_STDOUT ===";
+const stdoutBlock = marker + '\n' + dodLines;
+
 // 2. Print to stdout
-console.log(dodLines);
+console.log(stdoutBlock);
 
 // 3. Append or Replace in notify
-const marker = "=== DOD_EVIDENCE_STDOUT ===";
-
 // If marker exists, we need to replace the content after it or just replace the whole block
-// Simplest: Remove old marker block if exists, then append new
 if (notifyContent.includes(marker)) {
-        console.log("Replacing existing DoD evidence in notify...");
-        const parts = notifyContent.split(marker);
-        notifyContent = parts[0].trim();
+    console.log("Replacing existing DoD evidence in notify...");
+    const parts = notifyContent.split(marker);
+    notifyContent = parts[0].trim();
 }
-    console.log("Appending DoD evidence to notify file...");
-    const appendContent = '\n\n' + marker + '\n' + dodLines + '\n';
-    notifyContent += appendContent;
-    fs.writeFileSync(notifyFile, notifyContent);
+console.log("Appending DoD evidence to notify file...");
+const appendContent = '\n\n' + stdoutBlock + '\n';
+notifyContent += appendContent;
+fs.writeFileSync(notifyFile, notifyContent);
 
-    // 4. Update Hash in Result and Index
-    const newHash = crypto.createHash('sha256').update(notifyContent).digest('hex').substring(0, 8);
+// 3b. Write to dod_stdout_<taskId>.txt (Task 260209_003+)
+if (taskId >= '260209_003') {
+    const dodStdoutFile = path.join(reportsDir, 'dod_stdout_' + taskId + '.txt');
+    console.log("Writing DoD evidence to " + dodStdoutFile);
+    fs.writeFileSync(dodStdoutFile, stdoutBlock);
+}
+
+// 4. Update Hash in Result and Index
+const newHash = crypto.createHash('sha256').update(notifyContent).digest('hex').substring(0, 8);
     
     // Update Result
     if (fs.existsSync(resultFile)) {

@@ -229,6 +229,65 @@ try {
         console.log('[Gate Light] Scan Cache DoD Evidence verified.');
     }
 
+    // --- DoD Stdout Mechanism Check (Task 260209_003) ---
+    if (task_id >= '260209_003') {
+        console.log('[Gate Light] Checking DoD Stdout Mechanism...');
+
+        const notifyFile = path.join(result_dir, `notify_${task_id}.txt`);
+        const dodStdoutFile = path.join(result_dir, `dod_stdout_${task_id}.txt`);
+        
+        // 1. Check dod_stdout file existence
+        if (!fs.existsSync(dodStdoutFile)) {
+            console.error(`[Gate Light] FAILED: dod_stdout_${task_id}.txt missing.`);
+            process.exit(1);
+        }
+
+        const notifyContent = fs.readFileSync(notifyFile, 'utf8');
+        const dodStdoutContent = fs.readFileSync(dodStdoutFile, 'utf8');
+
+        // 2. Check for Stdout Block in Notify
+        const marker = "=== DOD_EVIDENCE_STDOUT ===";
+        if (!notifyContent.includes(marker)) {
+             console.error(`[Gate Light] FAILED: Notify file missing '${marker}' block.`);
+             process.exit(1);
+        }
+
+        // 3. Check dod_stdout content
+        if (!dodStdoutContent.includes(marker)) {
+             console.error(`[Gate Light] FAILED: dod_stdout file missing '${marker}' header.`);
+             process.exit(1);
+        }
+
+        const dodLines = dodStdoutContent.split('\n')
+            .map(l => l.trim())
+            .filter(l => l.startsWith('DOD_EVIDENCE_'));
+
+        if (dodLines.length < 2) {
+             console.error(`[Gate Light] FAILED: dod_stdout file has fewer than 2 DOD_EVIDENCE_ lines.`);
+             process.exit(1);
+        }
+
+        // 4. Validate Format (=>)
+        const invalidLines = dodLines.filter(l => !l.includes('=>'));
+        if (invalidLines.length > 0) {
+             console.error(`[Gate Light] FAILED: DOD_EVIDENCE_ lines must contain '=>'. Invalid lines:`);
+             invalidLines.forEach(l => console.error(`  ${l}`));
+             process.exit(1);
+        }
+
+        // 5. Consistency Check (Notify vs dod_stdout)
+        // Ensure all DoD lines in dod_stdout are present in notify
+        for (const line of dodLines) {
+            if (!notifyContent.includes(line)) {
+                console.error(`[Gate Light] FAILED: Notify file missing DoD line from dod_stdout:`);
+                console.error(`  ${line}`);
+                process.exit(1);
+            }
+        }
+
+        console.log('[Gate Light] DoD Stdout Mechanism verified.');
+    }
+
     // Construct postflight command
     // Note: Assuming scripts/postflight_validate_envelope.mjs exists relative to CWD
     const cmd = 'node scripts/postflight_validate_envelope.mjs --task_id ' + task_id + ' --result_dir ' + result_dir + ' --report_dir ' + result_dir;
