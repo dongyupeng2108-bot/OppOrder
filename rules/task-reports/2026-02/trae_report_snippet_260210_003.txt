@@ -1,18 +1,33 @@
 === TRAE_REPORT_SNIPPET ===
 
 BRANCH: feat/duplicate-taskid-hard-guard-260210_003
-COMMIT: 3b2d658
+COMMIT: 61b95c8
 
 === GIT_SCOPE_DIFF ===
-EMPTY_DIFF_OK
-Reason: No code changes detected against origin/main (Evidence/Docs update only)
+M	rules/LATEST.json
+M	rules/rules/WORKFLOW.md
+A	rules/task-reports/2026-02/260210_003.json
+A	rules/task-reports/2026-02/260210_003_healthcheck_53122_pairs.txt
+A	rules/task-reports/2026-02/260210_003_healthcheck_53122_root.txt
+A	rules/task-reports/2026-02/M4_PR2_concurrent_log_260210_003.txt
+A	rules/task-reports/2026-02/deliverables_index_260210_003.json
+A	rules/task-reports/2026-02/dod_stdout_260210_003.txt
+A	rules/task-reports/2026-02/notify_260210_003.txt
+A	rules/task-reports/2026-02/opps_pipeline_smoke_260210_003.txt
+A	rules/task-reports/2026-02/opps_run_filter_smoke_260210_003.txt
+A	rules/task-reports/2026-02/result_260210_003.json
+A	rules/task-reports/2026-02/scan_cache_smoke_260210_003.txt
+A	rules/task-reports/2026-02/trae_report_snippet_260210_003.txt
+A	rules/task-reports/envelopes/260210_003.envelope.json
+M	scripts/dev_batch_mode.ps1
+M	scripts/pre_pr_check.mjs
 
 === DOD_EVIDENCE_STDOUT ===
 DOD_EVIDENCE_HEALTHCHECK_ROOT: E:/OppRadar/rules/task-reports/2026-02/260210_003_healthcheck_53122_root.txt => HTTP/1.1 200 OK
 DOD_EVIDENCE_HEALTHCHECK_PAIRS: E:/OppRadar/rules/task-reports/2026-02/260210_003_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
-DOD_EVIDENCE_SCAN_CACHE_MISS: E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260210_003.txt => cached=false duration_ms=44
-DOD_EVIDENCE_SCAN_CACHE_HIT:  E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260210_003.txt => cached=true  duration_ms=1
-DOD_EVIDENCE_OPPS_PIPELINE_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_pipeline_smoke_260210_003.txt => run_id=run_v1_1c743079 ok=5 failed=1
+DOD_EVIDENCE_SCAN_CACHE_MISS: E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260210_003.txt => cached=false duration_ms=102
+DOD_EVIDENCE_SCAN_CACHE_HIT:  E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260210_003.txt => cached=true  duration_ms=2
+DOD_EVIDENCE_OPPS_PIPELINE_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_pipeline_smoke_260210_003.txt => run_id=run_v1_6e5c8218 ok=5 failed=1
 DOD_EVIDENCE_OPPS_PIPELINE_TOP: E:/OppRadar/rules/task-reports/2026-02/opps_pipeline_smoke_260210_003.txt => top_count=5 refs_run_id=true
 DOD_EVIDENCE_OPPS_RUNS_LIST: E:/OppRadar/rules/task-reports/2026-02/opps_run_filter_smoke_260210_003.txt => contains_run_id=true count=10
 DOD_EVIDENCE_OPPS_BY_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_run_filter_smoke_260210_003.txt => rows=2 all_same_run_id=true

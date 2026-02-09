@@ -186,6 +186,7 @@
     "260210_002.json",
     "260210_002_healthcheck_53122_pairs.txt",
     "260210_002_healthcheck_53122_root.txt",
+    "260210_003.json",
     "260210_003_healthcheck_53122_pairs.txt",
     "260210_003_healthcheck_53122_root.txt",
     "deliverables_index_260206_005.json",
@@ -250,6 +251,7 @@
     "dod_stdout_260209_010.txt",
     "dod_stdout_260210_001.txt",
     "dod_stdout_260210_002.txt",
+    "dod_stdout_260210_003.txt",
     "git_scope_diff_260209_006.txt",
     "git_scope_diff_260209_008.txt",
     "M4_PR2_concurrent_log_260209_004.txt",
@@ -460,7 +462,8 @@
     "trae_report_snippet_260209_009.txt",
     "trae_report_snippet_260209_010.txt",
     "trae_report_snippet_260210_001.txt",
-    "trae_report_snippet_260210_002.txt"
+    "trae_report_snippet_260210_002.txt",
+    "trae_report_snippet_260210_003.txt"
   ],
   "forbidden_phrases_hit": [],
   "report_file": "notify_260210_003.txt"
