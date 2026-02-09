@@ -27,8 +27,8 @@ try {
     try {
         execSync('git fetch origin main', { stdio: 'inherit' });
     } catch (e) {
-        console.error('[Snippet Builder] FAILED: Could not fetch origin main. Cannot determine valid scope diff.');
-        process.exit(1);
+        console.warn('[Snippet Builder] WARNING: Could not fetch origin main. Using local cache if available.');
+        // Do not exit, continue to try diff against local origin/main
     }
 
     branchName = execSync('git rev-parse --abbrev-ref HEAD').toString().trim();
