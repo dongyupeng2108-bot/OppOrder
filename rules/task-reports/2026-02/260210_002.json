@@ -1,0 +1,42 @@
+{
+  "task_id": "260210_002",
+  "timestamp": "2026-02-09T18:34:17.090Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260210_002",
+      "status": "DONE",
+      "summary": "Task 260210_002: Workflow comm protocol (TraeTask_/FIX/Discuss) + merge-ready rules",
+      "report_file": "notify_260210_002.txt",
+      "report_sha256_short": "3959c5fc",
+      "dod_evidence": {
+        "healthcheck": [
+          "DOD_EVIDENCE_HEALTHCHECK_ROOT: E:/OppRadar/rules/task-reports/2026-02/260210_002_healthcheck_53122_root.txt => HTTP/1.1 200 OK",
+          "DOD_EVIDENCE_HEALTHCHECK_PAIRS: E:/OppRadar/rules/task-reports/2026-02/260210_002_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK"
+        ],
+        "scan_cache": [
+          "DOD_EVIDENCE_SCAN_CACHE_MISS: E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260210_002.txt => cached=false duration_ms=49",
+          "DOD_EVIDENCE_SCAN_CACHE_HIT:  E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260210_002.txt => cached=true  duration_ms=1"
+        ],
+        "opps_pipeline": [
+          "DOD_EVIDENCE_OPPS_PIPELINE_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_pipeline_smoke_260210_002.txt => run_id=run_v1_7480440e ok=5 failed=1",
+          "DOD_EVIDENCE_OPPS_PIPELINE_TOP: E:/OppRadar/rules/task-reports/2026-02/opps_pipeline_smoke_260210_002.txt => top_count=5 refs_run_id=true"
+        ],
+        "opps_run_filter": [
+          "DOD_EVIDENCE_OPPS_RUNS_LIST: E:/OppRadar/rules/task-reports/2026-02/opps_run_filter_smoke_260210_002.txt => contains_run_id=true count=10",
+          "DOD_EVIDENCE_OPPS_BY_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_run_filter_smoke_260210_002.txt => rows=2 all_same_run_id=true"
+        ],
+        "gate_light_exit": "0"
+      }
+    }
+  }
+}

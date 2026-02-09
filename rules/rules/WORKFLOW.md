@@ -98,6 +98,7 @@ To reduce repository overhead and conflicts, we adopt a two-phase workflow for e
    ```
    - If it exits with code 2 (Duplicate), **STOP** immediately. Do not push. Do not create PR.
    - If it exits with code 0 (PASS), proceed.
+
 3. **Fail-Fast Logic**:
    - If `git diff --name-only origin/main...HEAD` shows only `rules/task-reports/**` changes AND the task_id exists in `origin/main`, the PR is considered "Duplicate Noise". Abort.
 
@@ -182,3 +183,19 @@ To reduce repository overhead and conflicts, we adopt a two-phase workflow for e
     1.  **停止**当前任务流程。
     2.  **报告**错误详情。
     3.  **请求**用户以 `FIX:` 消息头下发修复指令。
+
+### 4. Merge-Ready (可合并) 通知规则
+仅当满足以下所有条件时，Agent 才允许发送“PASS / 可合并”通知：
+
+1.  **Gate Light 真实 PASS**: `scripts/gate_light_ci.mjs` 执行结果必须为 PASS，且退出码为 0。
+2.  **证据可复制**: 最终回报消息中必须包含**可直接复制**的 `=== TRAE_REPORT_SNIPPET ===` 块。
+3.  **包含关键行**: Snippet 中必须显式包含 `GATE_LIGHT_EXIT=0`（或实际退出码）。
+4.  **禁止口头 PASS**: 任何未附带上述证据的“PASS”均视为无效。
+
+**示例回报格式**:
+...
+=== TRAE_REPORT_SNIPPET ===
+...
+=== GATE_LIGHT_PREVIEW ===
+[Gate Light] PASS
+GATE_LIGHT_EXIT=0
