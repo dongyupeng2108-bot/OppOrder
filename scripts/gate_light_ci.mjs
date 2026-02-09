@@ -448,15 +448,17 @@ try {
     if (task_id >= '260209_009') {
         console.log('[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...');
 
+        // PREP: Ensure origin/main is available and has enough history for merge-base calculation
+        try {
+            console.log('[Gate Light] Fetching origin/main history for diff context...');
+            // Force update of remote tracking branch and ensure depth
+            execSync('git fetch origin main:refs/remotes/origin/main --depth=100', { stdio: 'ignore' });
+        } catch (e) {
+            console.log('[Gate Light] Warning: git fetch failed (offline?), will try using existing refs.');
+        }
+
         // A) NoHistoricalEvidenceTouch
         try {
-            // FIX for CI: Fetch origin main to ensure diff context exists
-            try {
-                execSync('git fetch origin main', { stdio: 'ignore' });
-            } catch (ignored) {
-                // Ignore fetch errors (e.g. offline), but diff check might fail later if ref is missing
-            }
-
             // Note: This requires git to be available and origin/main to be fetched
             const diffOutput = execSync('git diff --name-status origin/main...HEAD', { encoding: 'utf8' });
             const forbiddenModifications = [];
@@ -491,8 +493,49 @@ try {
             console.log('[Gate Light] NoHistoricalEvidenceTouch verified.');
 
         } catch (e) {
-             console.error(`[Gate Light] Git diff check failed: ${e.message}`);
-             process.exit(1);
+             const errMessage = e.message || '';
+             // If "no merge base" or "unknown revision", try deepening history and retry
+             if (errMessage.includes('no merge base') || errMessage.includes('unknown revision') || errMessage.includes('ambiguous argument')) {
+                 console.log('[Gate Light] Diff failed (missing history/ref). Attempting to deepen fetch...');
+                 try {
+                     execSync('git fetch origin main:refs/remotes/origin/main --deepen=500', { stdio: 'ignore' });
+                     const retryDiff = execSync('git diff --name-status origin/main...HEAD', { encoding: 'utf8' });
+                     // Process retry output (same logic as above, but just checking if it works essentially)
+                     // Actually need to run the check logic again.
+                     // To avoid code duplication, we'll just check if it throws.
+                     // But we need to check forbidden mods! 
+                     // Let's recurse or just copy logic? Copy logic for safety.
+                     const forbiddenModifications = [];
+                     retryDiff.split('\n').forEach(line => {
+                         const parts = line.trim().split(/\s+/);
+                         if (parts.length < 2) return;
+                         const filePath = parts[parts.length - 1];
+                         const normalizedPath = filePath.replace(/\\/g, '/');
+                         if (normalizedPath.startsWith('rules/task-reports/')) {
+                             const filename = path.basename(normalizedPath);
+                             if (!filename.includes(task_id)) {
+                                 forbiddenModifications.push(`${parts[0]} ${filePath}`);
+                             }
+                         }
+                     });
+                     if (forbiddenModifications.length > 0) {
+                         console.error(`[Gate Light] FAILED: NoHistoricalEvidenceTouch violation (after fetch).`);
+                         forbiddenModifications.forEach(m => console.error(`  - ${m}`));
+                         process.exit(1);
+                     }
+                     console.log('[Gate Light] NoHistoricalEvidenceTouch verified (after deepen).');
+                 } catch (retryErr) {
+                     console.error(`[Gate Light] Git diff check failed even after retry: ${retryErr.message}`);
+                     console.log('[Gate Light] Fallback: Skipping NoHistoricalEvidenceTouch due to git environment limitations.');
+                     // Fail soft or hard? 
+                     // Hard failure is safer, but "unknown revision" might mean totally broken git env.
+                     // Let's fail hard as requested ("Hard Failure").
+                     process.exit(1); 
+                 }
+             } else {
+                 console.error(`[Gate Light] Git diff check failed: ${e.message}`);
+                 process.exit(1);
+             }
         }
 
         // B) SnippetCommitMustMatch
