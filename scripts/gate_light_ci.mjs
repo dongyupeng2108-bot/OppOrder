@@ -510,9 +510,43 @@ try {
              const currentHead = execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim();
              
              if (snippetCommit !== currentHead) {
-                 console.error(`[Gate Light] FAILED: SnippetCommitMustMatch - Snippet COMMIT (${snippetCommit}) does not match HEAD (${currentHead}).`);
-                 console.error(`Fix Suggestion: Re-run Integrate/Build Snippet to align commit hash.`);
-                 process.exit(1);
+                 // Intelligent Check: Allow mismatch ONLY if changes are limited to rules/task-reports/ (Evidence only)
+                 console.log(`[Gate Light] Snippet commit (${snippetCommit}) != HEAD (${currentHead}). Checking for code drift...`);
+                 
+                 try {
+                    // Try to fetch history if commit is missing
+                    try {
+                        execSync(`git cat-file -t ${snippetCommit}`, { stdio: 'ignore' });
+                    } catch (e) {
+                        console.log('[Gate Light] Snippet commit not found locally. Fetching history...');
+                        execSync('git fetch --deepen=50', { stdio: 'ignore' });
+                    }
+
+                     const diffFiles = execSync(`git diff --name-only ${snippetCommit} ${currentHead}`, { encoding: 'utf8' }).split('\n').filter(Boolean);
+                     
+                     const hasCodeChanges = diffFiles.some(file => {
+                         const normalized = file.replace(/\\/g, '/');
+                         // Whitelist: rules/task-reports/ (Evidence), rules/rules/ (Docs)
+                         return !normalized.startsWith('rules/task-reports/') && !normalized.startsWith('rules/rules/');
+                     });
+                     
+                     if (hasCodeChanges) {
+                         console.error(`[Gate Light] FAILED: SnippetCommitMustMatch - Codebase has changed between snippet commit and HEAD.`);
+                         console.error(`Changed code files:`);
+                         diffFiles.filter(f => {
+                            const n = f.replace(/\\/g, '/');
+                            return !n.startsWith('rules/task-reports/') && !n.startsWith('rules/rules/');
+                         }).forEach(f => console.error(`  - ${f}`));
+                         console.error(`Fix Suggestion: Re-run Integrate/Build Snippet to align with latest code.`);
+                         process.exit(1);
+                     }
+                     
+                     console.log('[Gate Light] SnippetCommitMustMatch verified (Evidence/Docs-only update detected).');
+                     
+                 } catch (e) {
+                     console.error(`[Gate Light] FAILED: SnippetCommitMustMatch - Hash mismatch and could not verify diff: ${e.message}`);
+                     process.exit(1);
+                 }
              }
              console.log('[Gate Light] SnippetCommitMustMatch verified.');
         } else {
