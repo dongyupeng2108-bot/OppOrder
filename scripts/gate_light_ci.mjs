@@ -359,6 +359,49 @@ try {
         console.log('[Gate Light] Trae Report Snippet verified.');
     }
 
+    // --- Opps Pipeline DoD Check (Task 260209_006) ---
+    if (task_id >= '260209_006') {
+        console.log('[Gate Light] Checking Opps Pipeline DoD Evidence...');
+        
+        const notifyFile = path.join(result_dir, `notify_${task_id}.txt`);
+        
+        // Ensure notify file exists
+        if (!fs.existsSync(notifyFile)) {
+             console.error(`[Gate Light] FAILED: Notify file missing: ${notifyFile}`);
+             process.exit(1);
+        }
+        
+        const notifyContent = fs.readFileSync(notifyFile, 'utf8');
+        
+        // 1. Check for DOD_EVIDENCE_OPPS_PIPELINE_RUN with specific fields
+        const runMarker = 'DOD_EVIDENCE_OPPS_PIPELINE_RUN:';
+        if (!notifyContent.includes(runMarker)) {
+             console.error(`[Gate Light] FAILED: Notify file missing '${runMarker}'.`);
+             process.exit(1);
+        }
+        
+        const runLine = notifyContent.split('\n').find(l => l.includes(runMarker));
+        if (!runLine.includes('=>') || !runLine.includes('run_id=') || !runLine.includes('ok=') || !runLine.includes('failed=')) {
+             console.error(`[Gate Light] FAILED: '${runMarker}' line has invalid format or missing fields (=>, run_id, ok, failed).`);
+             process.exit(1);
+        }
+        
+        // 2. Check for DOD_EVIDENCE_OPPS_PIPELINE_TOP with specific fields
+        const topMarker = 'DOD_EVIDENCE_OPPS_PIPELINE_TOP:';
+        if (!notifyContent.includes(topMarker)) {
+             console.error(`[Gate Light] FAILED: Notify file missing '${topMarker}'.`);
+             process.exit(1);
+        }
+        
+        const topLine = notifyContent.split('\n').find(l => l.includes(topMarker));
+        if (!topLine.includes('=>') || !topLine.includes('top_count=') || !topLine.includes('refs_run_id=true')) {
+             console.error(`[Gate Light] FAILED: '${topMarker}' line has invalid format or missing fields (=>, top_count, refs_run_id).`);
+             process.exit(1);
+        }
+
+        console.log('[Gate Light] Opps Pipeline DoD Evidence verified.');
+    }
+
     // Construct postflight command
     // Note: Assuming scripts/postflight_validate_envelope.mjs exists relative to CWD
     const cmd = 'node scripts/postflight_validate_envelope.mjs --task_id ' + task_id + ' --result_dir ' + result_dir + ' --report_dir ' + result_dir;

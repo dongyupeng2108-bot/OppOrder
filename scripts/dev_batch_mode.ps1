@@ -104,6 +104,16 @@ elseif ($Mode -eq 'Integrate') {
         Write-Host "   Saved to $ConcurrentSmokeFile"
     }
 
+    # 1.7 Opps Pipeline Smoke (Task 260209_006+)
+    if ($TaskId -ge "260209_006") {
+        Write-Host "1.7. Running Opps Pipeline Smoke Test..."
+        $OppsSmokeFile = Join-Path $ReportsDir "opps_pipeline_smoke_${TaskId}.txt"
+        # Script handles file writing internally to avoid EBUSY from shell redirection
+        cmd /c "node scripts/smoke_opps_pipeline.mjs"
+        Check-LastExitCode
+        Write-Host "   Saved to $OppsSmokeFile"
+    }
+
     # 2. Envelope Build
     Write-Host "2. Building Envelope..."
     node scripts/envelope_build.mjs --task_id $TaskId --result_dir $ReportsDir --status DONE --summary $Summary
@@ -187,7 +197,25 @@ if (taskId >= '260209_002') {
     }
 }
 
-let dodLines = (healthcheckLines + (scanCacheLines ? '\n' + scanCacheLines : '')).trim();
+// 1c. Opps Pipeline (Task 260209_006+)
+let oppsPipelineLines = '';
+if (taskId >= '260209_006') {
+    const oppsSmokeFile = path.join(reportsDir, 'opps_pipeline_smoke_' + taskId + '.txt');
+    if (fs.existsSync(oppsSmokeFile)) {
+        const content = fs.readFileSync(oppsSmokeFile, 'utf8');
+        const runIdMatch = content.match(/Run ID: ([a-zA-Z0-9_]+)/);
+        const okMatch = content.match(/jobs_ok: (\d+)/);
+        const failedMatch = content.match(/jobs_failed: (\d+)/);
+        const topMatch = content.match(/Received (\d+) top opportunities/);
+        
+        if (runIdMatch && okMatch && failedMatch && topMatch) {
+            const pathDisplay = oppsSmokeFile.replace(/\\/g, '/');
+            oppsPipelineLines = `DOD_EVIDENCE_OPPS_PIPELINE_RUN: ${pathDisplay} => run_id=${runIdMatch[1]} ok=${okMatch[1]} failed=${failedMatch[1]}\nDOD_EVIDENCE_OPPS_PIPELINE_TOP: ${pathDisplay} => top_count=${topMatch[1]} refs_run_id=true`;
+        }
+    }
+}
+
+let dodLines = (healthcheckLines + (scanCacheLines ? '\n' + scanCacheLines : '') + (oppsPipelineLines ? '\n' + oppsPipelineLines : '')).trim();
 
 const marker = "=== DOD_EVIDENCE_STDOUT ===";
 const stdoutBlock = marker + '\n' + dodLines;
@@ -224,6 +252,7 @@ const newHash = crypto.createHash('sha256').update(notifyContent).digest('hex').
         if (!result.dod_evidence) result.dod_evidence = {};
         if (healthcheckLines) result.dod_evidence.healthcheck = healthcheckLines.split('\n');
         if (scanCacheLines) result.dod_evidence.scan_cache = scanCacheLines.split('\n');
+        if (oppsPipelineLines) result.dod_evidence.opps_pipeline = oppsPipelineLines.split('\n');
         
         fs.writeFileSync(resultFile, JSON.stringify(result, null, 2));
     }

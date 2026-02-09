@@ -1119,6 +1119,228 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    // POST /opportunities/build_v1 (Task 260209_006)
+    if (pathname === '/opportunities/build_v1' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => body += chunk);
+        req.on('end', async () => {
+            try {
+                let params = {};
+                try { params = JSON.parse(body); } catch (e) {}
+
+                // 1. Inputs
+                let { jobs, concurrency, provider, topic_key: global_topic_key, query, timespan, maxrecords } = params;
+
+                if (!jobs || !Array.isArray(jobs) || jobs.length === 0) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ error: 'Missing or empty jobs array' }));
+                    return;
+                }
+
+                concurrency = (concurrency === undefined || concurrency === null) ? 3 : parseInt(concurrency, 10);
+                if (concurrency > 5) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ error: 'Concurrency limit exceeded (max 5)' }));
+                    return;
+                }
+                if (concurrency < 1) concurrency = 1;
+
+                const runId = 'run_v1_' + crypto.createHash('sha256').update(Date.now().toString() + Math.random().toString()).digest('hex').substring(0, 8);
+                const startedAt = new Date().toISOString();
+                
+                const results = [];
+                let jobs_ok = 0;
+                let jobs_failed = 0;
+                let inserted_count = 0;
+
+                // 2. Job Executor
+                const executeJob = async (jobParams, index) => {
+                    const jobStart = Date.now();
+                    const jobId = `job_${index}_${crypto.randomUUID().substring(0,8)}`;
+                    // Use job-specific topic or fallback to global or default
+                    const topicKey = jobParams.topic_key || global_topic_key || 'default_topic';
+                    
+                    try {
+                        // a) Run Scan (Snapshots)
+                        // Ensure persist is true so we can build opportunity from it
+                        const scanParams = { ...jobParams, topic_key: topicKey, persist: true, with_news: false }; // We handle news separately
+                        
+                        let scanResult;
+                        try {
+                            scanResult = await runScanCore(scanParams);
+                        } catch (scanErr) {
+                            throw new Error(`Scan failed: ${scanErr.message}`);
+                        }
+
+                        const scanId = scanResult.scan?.scan_id || 'unknown';
+
+                        // b) News Pull
+                        const newsProviderName = provider || process.env.NEWS_PROVIDER || 'local';
+                        const newsLimit = maxrecords ? parseInt(maxrecords) : 5;
+                        const newsQuery = query || undefined;
+                        const newsTimespan = timespan || undefined;
+                        
+                        let newsCached = false;
+                        let newsProviderUsed = newsProviderName;
+                        let newsCount = 0;
+
+                        try {
+                            // Check Cache
+                            const cacheParams = {
+                                provider: newsProviderName,
+                                topic_key: topicKey,
+                                query: newsQuery,
+                                timespan: newsTimespan,
+                                maxrecords: newsLimit
+                            };
+                            const cacheKey = generateNewsCacheKey(cacheParams);
+                            const cachedData = getFromNewsCache(cacheKey);
+
+                            if (cachedData) {
+                                newsCached = true;
+                                newsCount = cachedData.fetched_count || 0;
+                                // We assume cached data is already in DB or we don't need to re-insert if it was just fetched?
+                                // Actually, cache stores the *result object* which doesn't contain the full items usually?
+                                // Wait, /news/pull stores { status: 'ok', fetched_count: ... } in cache. 
+                                // It does NOT store the items themselves in cache (lines 1022). 
+                                // But the items were written to DB when cached.
+                                // So if cached, we assume DB is populated.
+                            } else {
+                                // Fetch & Write
+                                let newsProvider = getNewsProvider(newsProviderName);
+                                let newsItems = [];
+                                try {
+                                    newsItems = await newsProvider.fetchNews(topicKey, newsLimit, { query: newsQuery, timespan: newsTimespan });
+                                } catch (npErr) {
+                                    if (newsProviderName !== 'local') {
+                                        newsProvider = getNewsProvider('local');
+                                        newsItems = await newsProvider.fetchNews(topicKey, 5);
+                                        newsProviderUsed = 'local';
+                                    } else {
+                                        throw npErr;
+                                    }
+                                }
+
+                                for (const item of newsItems) {
+                                    const itemProvider = item.provider || newsProviderUsed;
+                                    const hashInput = itemProvider + (item.url || '') + (item.title || '') + (item.published_at || '');
+                                    const content_hash = crypto.createHash('sha256').update(hashInput).digest('hex');
+                                    
+                                    await DB.appendNews({
+                                        topic_key: topicKey,
+                                        ts: new Date(item.published_at).getTime(),
+                                        title: item.title,
+                                        url: item.url,
+                                        publisher: item.source,
+                                        summary: item.snippet,
+                                        credibility: 0.8,
+                                        raw_json: item,
+                                        published_at: item.published_at,
+                                        content_hash: content_hash,
+                                        provider: itemProvider
+                                    });
+                                }
+                                newsCount = newsItems.length;
+
+                                // Set Cache (summary only)
+                                setInNewsCache(cacheKey, {
+                                    status: 'ok',
+                                    fetched_count: newsCount,
+                                    provider_used: newsProviderUsed
+                                });
+                            }
+                        } catch (newsErr) {
+                            console.error(`News pull failed for ${topicKey}:`, newsErr);
+                            // Fail-soft for news? Yes.
+                        }
+
+                        // c) Score & Opportunity Event
+                        // Fetch Timeline
+                        const timeline = await DB.getTimeline(topicKey, 100);
+                        const features = calculateFeatures(topicKey, timeline);
+                        
+                        let oppId = null;
+                        if (features) {
+                            const { score, breakdown } = calculateScore(features);
+                            
+                            const oppEvent = {
+                                topic_key: topicKey,
+                                score: score,
+                                score_breakdown: breakdown,
+                                features: features,
+                                snapshot_ref: features.snapshot_ref,
+                                llm_ref: features.llm_ref,
+                                news_refs: features.news_refs,
+                                build_run_id: runId,
+                                refs: {
+                                    run_id: runId,
+                                    job_id: jobId,
+                                    scan_id: scanId,
+                                    provider_used: newsProviderUsed,
+                                    cached: newsCached
+                                }
+                            };
+                            
+                            oppId = await DB.appendOpportunity(oppEvent);
+                            if (oppId) inserted_count++;
+                        }
+
+                        return {
+                            job_id: jobId,
+                            status: 'ok',
+                            scan_id: scanId,
+                            news_count: newsCount,
+                            opp_event_id: oppId,
+                            score: features ? calculateScore(features).score : null
+                        };
+
+                    } catch (err) {
+                        return {
+                            job_id: jobId,
+                            status: 'failed',
+                            error: err.message
+                        };
+                    }
+                };
+
+                // 3. Queue Execution
+                for (let i = 0; i < jobs.length; i += concurrency) {
+                    const chunk = jobs.slice(i, i + concurrency);
+                    const chunkResults = await Promise.all(chunk.map((job, idx) => executeJob(job, i + idx)));
+                    results.push(...chunkResults);
+                }
+
+                // 4. Stats
+                results.forEach(r => {
+                    if (r.status === 'ok') jobs_ok++;
+                    else jobs_failed++;
+                });
+
+                // 5. Top Preview
+                const top_preview = await DB.getTopOpportunities(5);
+
+                const response = {
+                    run_id: runId,
+                    jobs_total: jobs.length,
+                    jobs_ok: jobs_ok,
+                    jobs_failed: jobs_failed,
+                    inserted_count: inserted_count,
+                    concurrency_used: concurrency,
+                    top_preview: top_preview,
+                    results: results
+                };
+
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify(response));
+
+            } catch (e) {
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: e.message }));
+            }
+        });
+        return;
+    }
+
     // POST /opportunities/build
     if (pathname === '/opportunities/build' && req.method === 'POST') {
         let body = '';
