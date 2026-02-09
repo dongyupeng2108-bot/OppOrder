@@ -1119,6 +1119,52 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    // GET /opportunities/runs (Task 260209_008)
+    if (pathname === '/opportunities/runs') {
+        const limit = parsedUrl.query.limit ? parseInt(parsedUrl.query.limit) : 5;
+        if (limit > 50) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Limit cannot exceed 50' }));
+            return;
+        }
+        try {
+            const runs = await DB.getRuns(limit);
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(runs));
+        } catch (e) {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: e.message }));
+        }
+        return;
+    }
+
+    // GET /opportunities/by_run (Task 260209_008)
+    if (pathname === '/opportunities/by_run') {
+        const runId = parsedUrl.query.run_id;
+        const limit = parsedUrl.query.limit ? parseInt(parsedUrl.query.limit) : 20;
+        
+        if (!runId) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Missing run_id parameter' }));
+            return;
+        }
+        if (limit > 50) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Limit cannot exceed 50' }));
+            return;
+        }
+
+        try {
+            const opps = await DB.getOpportunitiesByRun(runId, limit);
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(opps));
+        } catch (e) {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: e.message }));
+        }
+        return;
+    }
+
     // POST /opportunities/build_v1 (Task 260209_006)
     if (pathname === '/opportunities/build_v1' && req.method === 'POST') {
         let body = '';
@@ -1318,6 +1364,18 @@ const server = http.createServer(async (req, res) => {
 
                 // 5. Top Preview
                 const top_preview = await DB.getTopOpportunities(5);
+
+                // Record Run (Task 260209_008)
+                await DB.appendRun({
+                    run_id: runId,
+                    ts: Date.now(),
+                    jobs_total: jobs.length,
+                    jobs_ok: jobs_ok,
+                    jobs_failed: jobs_failed,
+                    inserted_count: inserted_count,
+                    concurrency: concurrency,
+                    meta: { started_at: startedAt }
+                });
 
                 const response = {
                     run_id: runId,

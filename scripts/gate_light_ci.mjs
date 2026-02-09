@@ -398,8 +398,50 @@ try {
              console.error(`[Gate Light] FAILED: '${topMarker}' line has invalid format or missing fields (=>, top_count, refs_run_id).`);
              process.exit(1);
         }
-
+        
         console.log('[Gate Light] Opps Pipeline DoD Evidence verified.');
+    }
+
+    // --- Opps Run Filter DoD Check (Task 260209_008) ---
+    if (task_id >= '260209_008') {
+        console.log('[Gate Light] Checking Opps Run Filter DoD Evidence...');
+        
+        const notifyFile = path.join(result_dir, `notify_${task_id}.txt`);
+        
+        if (!fs.existsSync(notifyFile)) {
+             console.error(`[Gate Light] FAILED: Notify file missing: ${notifyFile}`);
+             process.exit(1);
+        }
+        
+        const notifyContent = fs.readFileSync(notifyFile, 'utf8');
+        
+        // 1. Check DOD_EVIDENCE_OPPS_RUNS_LIST
+        const runsListMarker = 'DOD_EVIDENCE_OPPS_RUNS_LIST:';
+        if (!notifyContent.includes(runsListMarker)) {
+             console.error(`[Gate Light] FAILED: Notify file missing '${runsListMarker}'.`);
+             process.exit(1);
+        }
+        
+        const runsListLine = notifyContent.split('\n').find(l => l.includes(runsListMarker));
+        if (!runsListLine.includes('=>') || !runsListLine.includes('contains_run_id=true')) {
+             console.error(`[Gate Light] FAILED: '${runsListMarker}' line has invalid format or missing 'contains_run_id=true'.`);
+             process.exit(1);
+        }
+
+        // 2. Check DOD_EVIDENCE_OPPS_BY_RUN
+        const byRunMarker = 'DOD_EVIDENCE_OPPS_BY_RUN:';
+        if (!notifyContent.includes(byRunMarker)) {
+             console.error(`[Gate Light] FAILED: Notify file missing '${byRunMarker}'.`);
+             process.exit(1);
+        }
+        
+        const byRunLine = notifyContent.split('\n').find(l => l.includes(byRunMarker));
+        if (!byRunLine.includes('=>') || !byRunLine.includes('all_same_run_id=true')) {
+             console.error(`[Gate Light] FAILED: '${byRunMarker}' line has invalid format or missing 'all_same_run_id=true'.`);
+             process.exit(1);
+        }
+        
+        console.log('[Gate Light] Opps Run Filter DoD Evidence verified.');
     }
 
     // Construct postflight command

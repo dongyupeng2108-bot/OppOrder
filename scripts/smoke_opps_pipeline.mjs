@@ -34,8 +34,14 @@ function get(path) {
 
 async function runSmoke() {
     console.log('Starting Smoke Test for Opportunity Pipeline v1...');
-    const evidencePath = path.resolve('rules/task-reports/2026-02/opps_pipeline_smoke_260209_006.txt');
-    const logLines = [];
+    // Support custom output path (argv[2]) or default to historical 006 path
+    const evidencePath = process.argv[2] 
+         ? path.resolve(process.argv[2]) 
+         : path.resolve('rules/task-reports/2026-02/opps_pipeline_smoke_260209_006.txt');
+     
+     console.log(`Writing evidence to: ${evidencePath}`); // DEBUG log
+     
+     const logLines = [];
 
     const log = (msg) => {
         console.log(msg);

@@ -103,6 +103,18 @@ function initSchema() {
             build_run_id TEXT,
             refs_json TEXT
         )`);
+
+        // Opportunity Run (Summary)
+        db.run(`CREATE TABLE IF NOT EXISTS opportunity_run (
+            run_id TEXT PRIMARY KEY,
+            ts INTEGER,
+            jobs_total INTEGER,
+            jobs_ok INTEGER,
+            jobs_failed INTEGER,
+            inserted_count INTEGER,
+            concurrency INTEGER,
+            meta_json TEXT
+        )`);
         
         // Migrations (Idempotent) - Run BEFORE indices to ensure columns exist
         db.run(`ALTER TABLE llm_row ADD COLUMN news_refs TEXT`, (err) => {});
@@ -331,6 +343,56 @@ export const DB = {
             return all;
         } catch (e) {
             console.error('[DB] getAllTimelineForExport error:', e.message);
+            return [];
+        }
+    },
+
+    async appendRun(run) {
+        try {
+            await runAsync(`INSERT INTO opportunity_run (
+                run_id, ts, jobs_total, jobs_ok, jobs_failed, inserted_count, concurrency, meta_json
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [
+                run.run_id,
+                run.ts || Date.now(),
+                run.jobs_total,
+                run.jobs_ok,
+                run.jobs_failed,
+                run.inserted_count,
+                run.concurrency,
+                JSON.stringify(run.meta || {})
+            ]);
+            return run.run_id;
+        } catch (e) {
+            console.error('[DB] appendRun error:', e.message);
+            return null;
+        }
+    },
+
+    async getRuns(limit = 5) {
+        try {
+            const rows = await allAsync(`SELECT * FROM opportunity_run ORDER BY ts DESC LIMIT ?`, [limit]);
+            return rows.map(r => ({
+                ...r,
+                meta: JSON.parse(r.meta_json || '{}')
+            }));
+        } catch (e) {
+            console.error('[DB] getRuns error:', e.message);
+            return [];
+        }
+    },
+
+    async getOpportunitiesByRun(run_id, limit = 20) {
+        try {
+            const rows = await allAsync(`SELECT * FROM opportunity_event WHERE build_run_id = ? ORDER BY score DESC LIMIT ?`, [run_id, limit]);
+            return rows.map(row => ({
+                ...row,
+                score_breakdown: JSON.parse(row.score_breakdown_json || '{}'),
+                features: JSON.parse(row.features_json || '{}'),
+                news_refs: JSON.parse(row.news_refs_json || '[]'),
+                refs: JSON.parse(row.refs_json || '{}')
+            }));
+        } catch (e) {
+            console.error('[DB] getOpportunitiesByRun error:', e.message);
             return [];
         }
     },

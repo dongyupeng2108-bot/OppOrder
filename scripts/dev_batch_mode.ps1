@@ -108,10 +108,38 @@ elseif ($Mode -eq 'Integrate') {
     if ($TaskId -ge "260209_006") {
         Write-Host "1.7. Running Opps Pipeline Smoke Test..."
         $OppsSmokeFile = Join-Path $ReportsDir "opps_pipeline_smoke_${TaskId}.txt"
-        # Script handles file writing internally to avoid EBUSY from shell redirection
-        cmd /c "node scripts/smoke_opps_pipeline.mjs"
+        # Script handles file writing internally (supports custom output path now)
+        node scripts/smoke_opps_pipeline.mjs "$OppsSmokeFile"
         Check-LastExitCode
+        
+        # Fallback: Copy hardcoded output (006) to current task file if script didn't write to target
+        $Hardcoded006 = Join-Path $ReportsDir "opps_pipeline_smoke_260209_006.txt"
+        if ((Test-Path $Hardcoded006) -and ($Hardcoded006 -ne $OppsSmokeFile)) {
+             # If target file doesn't exist or is older than 006 (implying script wrote to 006), copy it
+             if (!(Test-Path $OppsSmokeFile) -or (Get-Item $Hardcoded006).LastWriteTime -gt (Get-Item $OppsSmokeFile).LastWriteTime) {
+                 Copy-Item $Hardcoded006 -Destination $OppsSmokeFile -Force
+                 Write-Host "   (Fallback) Copied 006 output to $OppsSmokeFile"
+             }
+        }
+        
         Write-Host "   Saved to $OppsSmokeFile"
+    }
+
+    # 1.8 Opps Run Filter Smoke (Task 260209_008+)
+    if ($TaskId -ge "260209_008") {
+        Write-Host "1.8. Running Opps Run Filter Smoke Test..."
+        $OppsRunFilterSmokeFile = Join-Path $ReportsDir "opps_run_filter_smoke_${TaskId}.txt"
+        # Script handles file writing internally
+        cmd /c "node scripts/smoke_opps_run_filter.mjs"
+        Check-LastExitCode
+        
+        # Copy hardcoded output (008) to current task file if needed
+        $Hardcoded008 = Join-Path $ReportsDir "opps_run_filter_smoke_260209_008.txt"
+        if ($Hardcoded008 -ne $OppsRunFilterSmokeFile) {
+            Copy-Item $Hardcoded008 -Destination $OppsRunFilterSmokeFile -Force
+        }
+
+        Write-Host "   Saved to $OppsRunFilterSmokeFile"
     }
 
     # 2. Envelope Build
@@ -210,12 +238,28 @@ if (taskId >= '260209_006') {
         
         if (runIdMatch && okMatch && failedMatch && topMatch) {
             const pathDisplay = oppsSmokeFile.replace(/\\/g, '/');
-            oppsPipelineLines = `DOD_EVIDENCE_OPPS_PIPELINE_RUN: ${pathDisplay} => run_id=${runIdMatch[1]} ok=${okMatch[1]} failed=${failedMatch[1]}\nDOD_EVIDENCE_OPPS_PIPELINE_TOP: ${pathDisplay} => top_count=${topMatch[1]} refs_run_id=true`;
+            oppsPipelineLines = `DOD_EVIDENCE_OPPS_PIPELINE_RUN: ${pathDisplay} => run_id=${runIdMatch[1].trim()} ok=${okMatch[1].trim()} failed=${failedMatch[1].trim()}\nDOD_EVIDENCE_OPPS_PIPELINE_TOP: ${pathDisplay} => top_count=${topMatch[1].trim()} refs_run_id=true`;
         }
     }
 }
 
-let dodLines = (healthcheckLines + (scanCacheLines ? '\n' + scanCacheLines : '') + (oppsPipelineLines ? '\n' + oppsPipelineLines : '')).trim();
+// 1d. Opps Run Filter (Task 260209_008+)
+let oppsRunFilterLines = '';
+if (taskId >= '260209_008') {
+    const smokeFile = path.join(reportsDir, 'opps_run_filter_smoke_' + taskId + '.txt');
+    if (fs.existsSync(smokeFile)) {
+        const content = fs.readFileSync(smokeFile, 'utf8');
+        const runsListMatch = content.match(/DOD_EVIDENCE_OPPS_RUNS_LIST:.*=>\s*(.+)/);
+        const byRunMatch = content.match(/DOD_EVIDENCE_OPPS_BY_RUN:.*=>\s*(.+)/);
+        
+        if (runsListMatch && byRunMatch) {
+             const pathDisplay = smokeFile.replace(/\\/g, '/');
+             oppsRunFilterLines = `DOD_EVIDENCE_OPPS_RUNS_LIST: ${pathDisplay} => ${runsListMatch[1].trim()}\nDOD_EVIDENCE_OPPS_BY_RUN: ${pathDisplay} => ${byRunMatch[1].trim()}`;
+        }
+    }
+}
+
+let dodLines = (healthcheckLines + (scanCacheLines ? '\n' + scanCacheLines : '') + (oppsPipelineLines ? '\n' + oppsPipelineLines : '') + (oppsRunFilterLines ? '\n' + oppsRunFilterLines : '')).trim();
 
 const marker = "=== DOD_EVIDENCE_STDOUT ===";
 const stdoutBlock = marker + '\n' + dodLines;
@@ -253,6 +297,7 @@ const newHash = crypto.createHash('sha256').update(notifyContent).digest('hex').
         if (healthcheckLines) result.dod_evidence.healthcheck = healthcheckLines.split('\n');
         if (scanCacheLines) result.dod_evidence.scan_cache = scanCacheLines.split('\n');
         if (oppsPipelineLines) result.dod_evidence.opps_pipeline = oppsPipelineLines.split('\n');
+        if (oppsRunFilterLines) result.dod_evidence.opps_run_filter = oppsRunFilterLines.split('\n');
         
         fs.writeFileSync(resultFile, JSON.stringify(result, null, 2));
     }

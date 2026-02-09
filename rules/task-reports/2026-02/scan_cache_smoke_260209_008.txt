@@ -1,0 +1,14 @@
+Timestamp: 2026-02-09T12:31:40.499Z
+RunID: 1770640300464
+--- Request 1 ---
+Status: 200
+Cached: false
+CacheKey: f01079e5cd987012e61db9d1f7013271686c2b35f01b26d9cbd19721958fe6eb
+Duration: 31ms
+--- Request 2 ---
+Status: 200
+Cached: true
+CacheKey: f01079e5cd987012e61db9d1f7013271686c2b35f01b26d9cbd19721958fe6eb
+Duration: 1ms
+--- Verification ---
+PASS: true
