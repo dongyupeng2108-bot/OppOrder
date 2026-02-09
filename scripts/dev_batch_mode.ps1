@@ -94,6 +94,16 @@ elseif ($Mode -eq 'Integrate') {
         Write-Host "   Saved to $ScanCacheSmokeFile"
     }
 
+    # 1.6 Concurrent Scan Smoke (Task 260209_004+)
+    if ($TaskId -ge "260209_004") {
+        Write-Host "1.6. Running Concurrent Scan Smoke Test..."
+        $ConcurrentSmokeFile = Join-Path $ReportsDir "M4_PR2_concurrent_log_${TaskId}.txt"
+        # Use cmd /c to ensure UTF-8/ASCII output without BOM
+        cmd /c "node scripts/smoke_concurrent_scan.mjs > ""$ConcurrentSmokeFile"""
+        Check-LastExitCode
+        Write-Host "   Saved to $ConcurrentSmokeFile"
+    }
+
     # 2. Envelope Build
     Write-Host "2. Building Envelope..."
     node scripts/envelope_build.mjs --task_id $TaskId --result_dir $ReportsDir --status DONE --summary $Summary

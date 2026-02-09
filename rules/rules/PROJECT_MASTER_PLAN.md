@@ -64,7 +64,9 @@
   - **目标**: 实现基础扫描缓存，避免重复计算。
   - **DoD**: 相同参数的连续两次扫描，第二次耗时减少 > 80%。
   - **证据要求**: `rules/task-reports/2026-02/M4_PR1_cache_smoke.txt` (记录两次扫描耗时对比)。
-- **PR 2: M4: concurrent scan engine**
+- PR 2: M4: concurrent scan engine (DONE - 260209)
+  - **Status**: Completed via Task 260209_004.
+  - **Deliverables**: `POST /scans/run_batch` API, Concurrency Control (limit 5), Fail-soft Isolation.
   - **目标**: 支持多品种/多时间周期并发扫描。
   - **DoD**: 支持至少 3 个并发任务不阻塞。
   - **证据要求**: `rules/task-reports/2026-02/M4_PR2_concurrent_log.txt`。
