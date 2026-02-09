@@ -557,14 +557,29 @@ async function renderStrategyDetail(id) {
 async function renderOpportunities() {
     const params = new URLSearchParams(window.location.search);
     const limit = params.get('limit') || '20';
+    const runId = params.get('run_id') || '';
+
+    // Fetch Runs (Task 260209_008)
+    let runs = [];
+    try {
+        runs = await fetchJSON('/opportunities/runs?limit=10');
+    } catch (e) {
+        console.error('Failed to fetch runs', e);
+    }
 
     let list = [];
     let error = null;
     try {
-        list = await fetchJSON(`/opportunities/top?limit=${limit}`);
+        if (runId) {
+            list = await fetchJSON(`/opportunities/by_run?run_id=${runId}&limit=${limit}`);
+        } else {
+            list = await fetchJSON(`/opportunities/top?limit=${limit}`);
+        }
     } catch (e) {
         error = e.message;
     }
+
+    const currentRun = runs.find(r => r.run_id === runId);
 
     const rows = list.map(o => {
         const bd = o.score_breakdown || {};
@@ -599,6 +614,22 @@ async function renderOpportunities() {
         </div>
 
         <div style="margin-bottom: 20px;">
+            <label>Run Filter: 
+                <select onchange="changeRun(this.value)">
+                    <option value="">Latest (Top)</option>
+                    ${runs.map(r => `
+                        <option value="${r.run_id}" ${r.run_id === runId ? 'selected' : ''}>
+                            ${new Date(r.ts).toLocaleTimeString()} - ${r.run_id} (OK:${r.jobs_ok})
+                        </option>
+                    `).join('')}
+                </select>
+            </label>
+            ${currentRun ? `<span style="margin-left: 10px; color: #666; font-size: 0.9em;">
+                Run: ${currentRun.run_id} | Jobs: ${currentRun.jobs_total} (OK:${currentRun.jobs_ok}, Fail:${currentRun.jobs_failed}) | Created: ${new Date(currentRun.ts).toLocaleString()}
+            </span>` : ''}
+        </div>
+
+        <div style="margin-bottom: 20px;">
             <label>Show Top: 
                 <select onchange="changeOppLimit(this.value)">
                     <option value="10" ${limit === '10' ? 'selected' : ''}>10</option>
@@ -627,6 +658,17 @@ async function renderOpportunities() {
             </tbody>
         </table>
     `;
+}
+
+window.changeRun = function(runId) {
+    const params = new URLSearchParams(window.location.search);
+    if (runId) {
+        params.set('run_id', runId);
+    } else {
+        params.delete('run_id');
+    }
+    history.pushState(null, '', `/ui/opportunities?${params.toString()}`);
+    router();
 }
 
 window.changeOppLimit = function(limit) {

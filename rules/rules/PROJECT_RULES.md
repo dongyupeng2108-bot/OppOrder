@@ -98,6 +98,23 @@
 - **Parameters**:
   - `scan`: String (Required). Target scan ID.
 - **Response** (200 OK):
+  - `scan_id`: String.
+  - `replay_events`: Array<Object>. Replayable events (e.g. snapshots).
+
+### Pipeline v1 APIs (M4)
+#### Runs List API
+- **Endpoint**: `GET /opportunities/runs`
+- **Parameters**: `limit` (max 50, default 20)
+- **Response**: Array of `{ run_id, ts, jobs_ok, jobs_failed, meta_json }`
+
+#### Opportunities By Run API
+- **Endpoint**: `GET /opportunities/by_run`
+- **Parameters**: `run_id` (Required), `limit` (max 50, default 20)
+- **Response**: Array of Opportunity Objects (sorted by score desc)
+
+## DoD Markers (Gate Light)
+- **DOD_EVIDENCE_OPPS_RUNS_LIST**: `<path> => contains_run_id=true count=...`
+- **DOD_EVIDENCE_OPPS_BY_RUN**: `<path> => rows=... all_same_run_id=true`
   - Returns array of scan objects or similar replay data.
 
 ## API Contracts (v1.0)
