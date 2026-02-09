@@ -1,6 +1,6 @@
 {
   "task_id": "260210_003",
-  "timestamp": "2026-02-09T19:49:58.264Z",
+  "timestamp": "2026-02-09T19:52:59.903Z",
   "valid": true,
   "errors": [],
   "checks": {
@@ -17,7 +17,7 @@
       "status": "DONE",
       "summary": "Regenerate evidence for whitelist fix",
       "report_file": "notify_260210_003.txt",
-      "report_sha256_short": "b729b801",
+      "report_sha256_short": "e1341ade",
       "dod_evidence": {
         "healthcheck": [
           "DOD_EVIDENCE_HEALTHCHECK_ROOT: E:/OppRadar/rules/task-reports/2026-02/260210_003_healthcheck_53122_root.txt => HTTP/1.1 200 OK",
@@ -34,7 +34,8 @@
         "opps_run_filter": [
           "DOD_EVIDENCE_OPPS_RUNS_LIST: E:/OppRadar/rules/task-reports/2026-02/opps_run_filter_smoke_260210_003.txt => contains_run_id=true count=10",
           "DOD_EVIDENCE_OPPS_BY_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_run_filter_smoke_260210_003.txt => rows=2 all_same_run_id=true"
-        ]
+        ],
+        "gate_light_exit": "1"
       }
     }
   }

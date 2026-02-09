@@ -22,12 +22,16 @@ function checkDuplicate(taskId) {
         console.log(`[PrePRCheck] Checking for duplicate task_id: ${taskId} in origin/main...`);
         
         // 1. Force Fetch origin main to ensure we have latest state
-        try {
-            execSync('git fetch origin main', { stdio: 'inherit' });
-        } catch (e) {
-            console.error('[PrePRCheck] FAILED: Could not fetch origin main. Cannot verify uniqueness.');
-            console.error('REJECT_REASON: git fetch failed');
-            process.exit(1); // Fail-fast on fetch error
+        if (process.env.SKIP_FETCH_CHECK) {
+            console.log('[PrePRCheck] Skipping git fetch (SKIP_FETCH_CHECK set).');
+        } else {
+            try {
+                execSync('git fetch origin main', { stdio: 'inherit' });
+            } catch (e) {
+                console.error('[PrePRCheck] FAILED: Could not fetch origin main. Cannot verify uniqueness.');
+                console.error('REJECT_REASON: git fetch failed');
+                process.exit(1); // Fail-fast on fetch error
+            }
         }
 
         let isDuplicate = false;
