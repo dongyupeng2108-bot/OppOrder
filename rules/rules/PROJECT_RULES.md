@@ -142,3 +142,11 @@
 - **Format**:
   - MISS: `DOD_EVIDENCE_SCAN_CACHE_MISS: <path> => cached=false duration_ms=<n>`
   - HIT:  `DOD_EVIDENCE_SCAN_CACHE_HIT:  <path> => cached=true  duration_ms=<n>`
+
+### DoD Stdout Mechanism
+- **Required for Task ID >= 260209_003**
+- **Reporting**: Reports MUST paste the `=== DOD_EVIDENCE_STDOUT ===` block (automatically printed by Integrate phase) directly into the PR/Report.
+- **Artifacts**:
+  - `dod_stdout_<task_id>.txt` must exist in `rules/task-reports/YYYY-MM/`.
+  - `notify_<task_id>.txt` must contain the same block.
+  - All `DOD_EVIDENCE_` lines must contain `=>` followed by the excerpt.
