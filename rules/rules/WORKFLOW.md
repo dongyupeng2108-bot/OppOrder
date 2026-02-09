@@ -98,6 +98,9 @@ To reduce repository overhead and conflicts, we adopt a two-phase workflow for e
 2. **Duplicate Detection & Rejection**:
    - The script checks `origin/main` for existing `task_id` (files or LATEST.json occupation).
    - If found, it outputs a 3-line REJECT block (`REJECT_DUPLICATE_TASK_ID`, `REJECT_REASON`, `EXECUTION_ABORTED=1`) and exits with **Code 21**.
+3. **Integrate Phase Interception**:
+   - `scripts/dev_batch_mode.ps1` (Integrate mode) MUST run this check as step 0.
+   - If check fails (non-zero exit), it MUST abort immediately without generating any evidence/artifacts.
    - **Action**: Agent MUST abort immediately. Do NOT generate evidence. Do NOT create PR.
 3. **Integrate Phase Interception**:
    - `scripts/dev_batch_mode.ps1` (Integrate mode) automatically runs this check as the **FIRST STEP**.
