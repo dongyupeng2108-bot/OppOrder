@@ -24,7 +24,12 @@ let scopeDiff = '';
 
 try {
     // Fail-fast fetch to ensure we have origin/main
-    execSync('git fetch origin main', { stdio: 'inherit' });
+    try {
+        execSync('git fetch origin main', { stdio: 'inherit' });
+    } catch (e) {
+        console.error('[Snippet Builder] FAILED: Could not fetch origin main. Cannot determine valid scope diff.');
+        process.exit(1);
+    }
 
     branchName = execSync('git rev-parse --abbrev-ref HEAD').toString().trim();
     commitHash = execSync('git rev-parse --short HEAD').toString().trim();
@@ -37,7 +42,7 @@ try {
     }
 
     if (!scopeDiff) {
-        scopeDiff = 'EMPTY_DIFF_OK (Reason: Pure evidence update or no code changes detected against origin/main)';
+        scopeDiff = 'EMPTY_DIFF_OK\nReason: No code changes detected against origin/main (Evidence/Docs update only)';
     }
 } catch (e) {
     console.warn('[Snippet Builder] Git command failed:', e.message);

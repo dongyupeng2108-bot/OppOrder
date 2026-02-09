@@ -444,6 +444,83 @@ try {
         console.log('[Gate Light] Opps Run Filter DoD Evidence verified.');
     }
 
+    // --- Workflow Hardening Check (Task 260209_009) ---
+    if (task_id >= '260209_009') {
+        console.log('[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...');
+
+        // A) NoHistoricalEvidenceTouch
+        try {
+            // Note: This requires git to be available and origin/main to be fetched
+            const diffOutput = execSync('git diff --name-status origin/main...HEAD', { encoding: 'utf8' });
+            const forbiddenModifications = [];
+            
+            diffOutput.split('\n').forEach(line => {
+                const parts = line.trim().split(/\s+/);
+                if (parts.length < 2) return;
+                
+                // Status is first part (M, A, D, etc.)
+                // File path is the last part
+                const filePath = parts[parts.length - 1]; 
+                
+                // Only enforce for rules/task-reports/
+                // Use forward slashes for consistency check
+                const normalizedPath = filePath.replace(/\\/g, '/');
+                
+                if (normalizedPath.startsWith('rules/task-reports/')) {
+                    // Check if filename contains current task_id
+                    const filename = path.basename(normalizedPath);
+                    if (!filename.includes(task_id)) {
+                        forbiddenModifications.push(`${parts[0]} ${filePath}`);
+                    }
+                }
+            });
+
+            if (forbiddenModifications.length > 0) {
+                console.error(`[Gate Light] FAILED: NoHistoricalEvidenceTouch violation. Found modifications to historical evidence:`);
+                forbiddenModifications.forEach(m => console.error(`  - ${m}`));
+                console.error(`Fix Suggestion: Use 'git restore --source=origin/main -- <path>' to revert, or ensure new files contain '${task_id}'.`);
+                process.exit(1);
+            }
+            console.log('[Gate Light] NoHistoricalEvidenceTouch verified.');
+
+        } catch (e) {
+             console.error(`[Gate Light] Git diff check failed: ${e.message}`);
+             process.exit(1);
+        }
+
+        // B) SnippetCommitMustMatch
+        const snippetFile = path.join(result_dir, `trae_report_snippet_${task_id}.txt`);
+        if (fs.existsSync(snippetFile)) {
+             const snippetContent = fs.readFileSync(snippetFile, 'utf8');
+             const commitMatch = snippetContent.match(/COMMIT:\s*(\w+)/);
+             
+             if (!commitMatch) {
+                 console.error(`[Gate Light] FAILED: SnippetCommitMustMatch - Could not find 'COMMIT:' in snippet.`);
+                 process.exit(1);
+             }
+             
+             const snippetCommit = commitMatch[1];
+             const currentHead = execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim();
+             
+             if (snippetCommit !== currentHead) {
+                 console.error(`[Gate Light] FAILED: SnippetCommitMustMatch - Snippet COMMIT (${snippetCommit}) does not match HEAD (${currentHead}).`);
+                 console.error(`Fix Suggestion: Re-run Integrate/Build Snippet to align commit hash.`);
+                 process.exit(1);
+             }
+             console.log('[Gate Light] SnippetCommitMustMatch verified.');
+        } else {
+             // If snippet is missing, it fails the earlier check, but let's be safe
+             console.error(`[Gate Light] FAILED: Snippet file missing for Commit Match check.`);
+             process.exit(1);
+        }
+        
+        // C) Snippet Stdout Check (Verification of dev_batch_mode behavior is implicit via evidence existence, 
+        // but checking the file structure is covered by Snippet Content Markers check above.
+        // The requirement says: "gate_light_ci.mjs 增加检查：trae_report_snippet_<task_id>.txt 必须存在...且包含 === DOD_EVIDENCE_STDOUT ==="
+        // This is already covered by Task 260209_005 check (Snippet Content Markers).
+        // So no extra check needed here for C.
+    }
+
     // Construct postflight command
     // Note: Assuming scripts/postflight_validate_envelope.mjs exists relative to CWD
     const cmd = 'node scripts/postflight_validate_envelope.mjs --task_id ' + task_id + ' --result_dir ' + result_dir + ' --report_dir ' + result_dir;
