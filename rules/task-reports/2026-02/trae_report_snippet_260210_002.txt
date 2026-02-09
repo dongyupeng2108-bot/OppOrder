@@ -1,0 +1,26 @@
+=== TRAE_REPORT_SNIPPET ===
+
+BRANCH: feat/workflow-comm-protocol-260210_002
+COMMIT: 7c2c212
+
+=== GIT_SCOPE_DIFF ===
+EMPTY_DIFF_OK
+Reason: No code changes detected against origin/main (Evidence/Docs update only)
+
+=== DOD_EVIDENCE_STDOUT ===
+DOD_EVIDENCE_HEALTHCHECK_ROOT: E:/OppRadar/rules/task-reports/2026-02/260210_002_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: E:/OppRadar/rules/task-reports/2026-02/260210_002_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_SCAN_CACHE_MISS: E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260210_002.txt => cached=false duration_ms=49
+DOD_EVIDENCE_SCAN_CACHE_HIT:  E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260210_002.txt => cached=true  duration_ms=1
+DOD_EVIDENCE_OPPS_PIPELINE_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_pipeline_smoke_260210_002.txt => run_id=run_v1_7480440e ok=5 failed=1
+DOD_EVIDENCE_OPPS_PIPELINE_TOP: E:/OppRadar/rules/task-reports/2026-02/opps_pipeline_smoke_260210_002.txt => top_count=5 refs_run_id=true
+DOD_EVIDENCE_OPPS_RUNS_LIST: E:/OppRadar/rules/task-reports/2026-02/opps_run_filter_smoke_260210_002.txt => contains_run_id=true count=10
+DOD_EVIDENCE_OPPS_BY_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_run_filter_smoke_260210_002.txt => rows=2 all_same_run_id=true
+
+=== GATE_LIGHT_PREVIEW ===
+[Postflight] Validating 260210_002 in rules\task-reports\2026-02...
+[Postflight] Report: rules\task-reports\2026-02\260210_002.json
+[Postflight] Envelope: rules\task-reports\envelopes\260210_002.envelope.json
+[Postflight] PASS
+[Gate Light] PASS
+GATE_LIGHT_EXIT=0
