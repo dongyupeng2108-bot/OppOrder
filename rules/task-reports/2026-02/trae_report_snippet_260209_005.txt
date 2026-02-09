@@ -1,0 +1,37 @@
+=== TRAE_REPORT_SNIPPET ===
+
+BRANCH: feat/trae-report-snippet-260209_005
+COMMIT: f3c75ac
+
+=== GIT_SCOPE_DIFF ===
+M	rules/LATEST.json
+A	rules/reports/envelopes/260209_005.envelope.json
+A	rules/reports/postflight/260209_005.json
+M	rules/rules/PROJECT_MASTER_PLAN.md
+A	rules/task-reports/2026-02/260209_005.json
+A	rules/task-reports/2026-02/260209_005_healthcheck_53122_pairs.txt
+A	rules/task-reports/2026-02/260209_005_healthcheck_53122_root.txt
+A	rules/task-reports/2026-02/M4_PR2_concurrent_log_260209_005.txt
+A	rules/task-reports/2026-02/deliverables_index_260209_005.json
+A	rules/task-reports/2026-02/dod_stdout_260209_005.txt
+A	rules/task-reports/2026-02/notify_260209_005.txt
+A	rules/task-reports/2026-02/result_260209_005.json
+A	rules/task-reports/2026-02/scan_cache_smoke_260209_005.txt
+A	rules/task-reports/2026-02/trae_report_snippet_260209_005.txt
+A	rules/task-reports/envelopes/260209_005.envelope.json
+A	scripts/build_trae_report_snippet.mjs
+M	scripts/dev_batch_mode.ps1
+M	scripts/gate_light_ci.mjs
+
+=== DOD_EVIDENCE_STDOUT ===
+DOD_EVIDENCE_HEALTHCHECK_ROOT: E:/OppRadar/rules/task-reports/2026-02/260209_005_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: E:/OppRadar/rules/task-reports/2026-02/260209_005_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_SCAN_CACHE_MISS: E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260209_005.txt => cached=false duration_ms=35
+DOD_EVIDENCE_SCAN_CACHE_HIT:  E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260209_005.txt => cached=true  duration_ms=2
+
+=== GATE_LIGHT_PREVIEW ===
+[Postflight] Validating 260209_005 in rules\task-reports\2026-02...
+[Postflight] Report: rules\task-reports\2026-02\260209_005.json
+[Postflight] Envelope: rules\task-reports\envelopes\260209_005.envelope.json
+[Postflight] PASS
+[Gate Light] PASS

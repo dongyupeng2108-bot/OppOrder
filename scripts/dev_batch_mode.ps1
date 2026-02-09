@@ -257,6 +257,20 @@ const newHash = crypto.createHash('sha256').update(notifyContent).digest('hex').
     node scripts/pre_pr_check.mjs --task_id $TaskId
     Check-LastExitCode
 
+    # 5. Generate Trae Report Snippet (Task 260209_005+)
+    if ($TaskId -ge "260209_005") {
+        Write-Host "5. Generating Trae Report Snippet..."
+        node scripts/build_trae_report_snippet.mjs --task_id=$TaskId --result_dir=$ReportsDir
+        Check-LastExitCode
+        
+        $SnippetFile = Join-Path $ReportsDir "trae_report_snippet_${TaskId}.txt"
+        if (Test-Path $SnippetFile) {
+            Write-Host "--- Snippet Preview (First 80 lines) ---" -ForegroundColor Cyan
+            Get-Content $SnippetFile -TotalCount 80
+            Write-Host "----------------------------------------" -ForegroundColor Cyan
+        }
+    }
+
     Write-Host "--- [Integrate Phase Complete] ---" -ForegroundColor Green
     Write-Host "Ready to commit and push:"
     Write-Host "  git add -A"

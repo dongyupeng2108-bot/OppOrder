@@ -35,6 +35,7 @@
 ## M0: Bootstrap (DONE)
 - **Status**: DONE.
 - **Deliverables**: Infrastructure, Gate Light, Evidence Envelope, Healthcheck.
+- **Enhancement**: Mechanize Trae Report Snippet & Gate Enforcement (Task 260209_005).
 
 ## M1: Core Data & Strategy (DONE)
 - **Status**: DONE.
