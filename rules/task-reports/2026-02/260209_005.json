@@ -1,0 +1,33 @@
+{
+  "task_id": "260209_005",
+  "timestamp": "2026-02-09T09:42:43.741Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260209_005",
+      "status": "DONE",
+      "summary": "Mechanize Trae report snippet + gate enforcement",
+      "report_file": "notify_260209_005.txt",
+      "report_sha256_short": "871b6c41",
+      "dod_evidence": {
+        "healthcheck": [
+          "DOD_EVIDENCE_HEALTHCHECK_ROOT: E:/OppRadar/rules/task-reports/2026-02/260209_005_healthcheck_53122_root.txt => HTTP/1.1 200 OK",
+          "DOD_EVIDENCE_HEALTHCHECK_PAIRS: E:/OppRadar/rules/task-reports/2026-02/260209_005_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK"
+        ],
+        "scan_cache": [
+          "DOD_EVIDENCE_SCAN_CACHE_MISS: E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260209_005.txt => cached=false duration_ms=35",
+          "DOD_EVIDENCE_SCAN_CACHE_HIT:  E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260209_005.txt => cached=true  duration_ms=2"
+        ]
+      }
+    }
+  }
+}

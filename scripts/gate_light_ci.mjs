@@ -317,6 +317,48 @@ try {
         }
     }
 
+    // --- Trae Report Snippet Check (Task 260209_005) ---
+    if (task_id >= '260209_005') {
+        console.log('[Gate Light] Checking Trae Report Snippet...');
+
+        const snippetFile = path.join(result_dir, `trae_report_snippet_${task_id}.txt`);
+        const notifyFile = path.join(result_dir, `notify_${task_id}.txt`);
+
+        // 1. Check Snippet Existence
+        if (!fs.existsSync(snippetFile)) {
+            console.error(`[Gate Light] FAILED: Snippet file missing: ${snippetFile}`);
+            process.exit(1);
+        }
+
+        const snippetContent = fs.readFileSync(snippetFile, 'utf8');
+        const notifyContent = fs.existsSync(notifyFile) ? fs.readFileSync(notifyFile, 'utf8') : '';
+
+        // 2. Check Snippet Content Markers
+        const requiredMarkers = [
+            'BRANCH:',
+            'COMMIT:',
+            '=== GIT_SCOPE_DIFF ===',
+            '=== DOD_EVIDENCE_STDOUT ===',
+            '[Postflight] PASS',
+            '[Gate Light] PASS'
+        ];
+
+        const missingMarkers = requiredMarkers.filter(m => !snippetContent.includes(m));
+        if (missingMarkers.length > 0) {
+            console.error(`[Gate Light] FAILED: Snippet file missing required markers:`);
+            missingMarkers.forEach(m => console.error(`  - ${m}`));
+            process.exit(1);
+        }
+
+        // 3. Check Notify Reference
+        if (!notifyContent.includes('TRAE_REPORT_SNIPPET:')) {
+            console.error(`[Gate Light] FAILED: Notify file missing 'TRAE_REPORT_SNIPPET:' reference.`);
+            process.exit(1);
+        }
+
+        console.log('[Gate Light] Trae Report Snippet verified.');
+    }
+
     // Construct postflight command
     // Note: Assuming scripts/postflight_validate_envelope.mjs exists relative to CWD
     const cmd = 'node scripts/postflight_validate_envelope.mjs --task_id ' + task_id + ' --result_dir ' + result_dir + ' --report_dir ' + result_dir;
