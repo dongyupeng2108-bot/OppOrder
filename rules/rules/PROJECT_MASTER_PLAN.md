@@ -75,6 +75,12 @@
   - **目标**: 增加扫描过程的可观测性（日志、进度、错误隔离）。
   - **DoD**: 单个品种扫描失败不影响全局，且有明确错误报告。
   - **证据要求**: `rules/task-reports/2026-02/M4_PR3_error_isolation.txt`。
+- **PR 4: M4: Top Opportunities & Gate Exit Mechanization (DONE - 260209)**
+  - **Status**: Completed via Task 260209_010.
+  - **Deliverables**: `GET /opportunities/top?run_id=...`, mechanized GATE_LIGHT_EXIT (stdout/notify/result), automated DoD evidence.
+  - **目标**: 实现基于 run_id 的机会筛选与自动化验收流程。
+  - **DoD**: 成功通过 run_id 筛选并生成标准化验收证据，Gate Exit Code 自动化注入。
+  - **证据要求**: `rules/task-reports/2026-02/opps_top_by_run_smoke_260209_010.txt`.
 
 ### Milestone M5: 机会算法+LLM (Algo & DeepSeek)
 **目标**: 机会路由、结构化输出、成本控制、DeepSeek 调用。
