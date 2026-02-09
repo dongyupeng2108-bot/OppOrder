@@ -366,11 +366,11 @@ const newHash = crypto.createHash('sha256').update(notifyContent).digest('hex').
         Check-LastExitCode
         
         $SnippetFile = Join-Path $ReportsDir "trae_report_snippet_${TaskId}.txt"
-        if (Test-Path $SnippetFile) {
-            Write-Host "--- Snippet Preview (First 80 lines) ---" -ForegroundColor Cyan
-            Get-Content $SnippetFile -TotalCount 80
-            Write-Host "----------------------------------------" -ForegroundColor Cyan
-        }
+    if (Test-Path $SnippetFile) {
+        Write-Host "=== TRAE_REPORT_SNIPPET_STDOUT_BEGIN ===" -ForegroundColor Cyan
+        Get-Content $SnippetFile
+        Write-Host "=== TRAE_REPORT_SNIPPET_STDOUT_END ===" -ForegroundColor Cyan
+    }
     }
 
     # 6. Gate Light & Exit Code Mechanism (Task 260209_010+)

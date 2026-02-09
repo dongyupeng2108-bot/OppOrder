@@ -444,6 +444,167 @@ try {
         console.log('[Gate Light] Opps Run Filter DoD Evidence verified.');
     }
 
+    // --- Workflow Hardening Check (Task 260209_009) ---
+    if (task_id >= '260209_009') {
+        console.log('[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...');
+
+        // PREP: Ensure origin/main is available and has enough history for merge-base calculation
+        try {
+            console.log('[Gate Light] Fetching origin/main history for diff context...');
+            // Force update of remote tracking branch and ensure depth
+            execSync('git fetch origin main:refs/remotes/origin/main --depth=100', { stdio: 'ignore' });
+        } catch (e) {
+            console.log('[Gate Light] Warning: git fetch failed (offline?), will try using existing refs.');
+        }
+
+        // A) NoHistoricalEvidenceTouch
+        try {
+            // Note: This requires git to be available and origin/main to be fetched
+            const diffOutput = execSync('git diff --name-status origin/main...HEAD', { encoding: 'utf8' });
+            const forbiddenModifications = [];
+            
+            diffOutput.split('\n').forEach(line => {
+                const parts = line.trim().split(/\s+/);
+                if (parts.length < 2) return;
+                
+                // Status is first part (M, A, D, etc.)
+                // File path is the last part
+                const filePath = parts[parts.length - 1]; 
+                
+                // Only enforce for rules/task-reports/
+                // Use forward slashes for consistency check
+                const normalizedPath = filePath.replace(/\\/g, '/');
+                
+                if (normalizedPath.startsWith('rules/task-reports/')) {
+                    // Check if filename contains current task_id
+                    const filename = path.basename(normalizedPath);
+                    if (!filename.includes(task_id)) {
+                        forbiddenModifications.push(`${parts[0]} ${filePath}`);
+                    }
+                }
+            });
+
+            if (forbiddenModifications.length > 0) {
+                console.error(`[Gate Light] FAILED: NoHistoricalEvidenceTouch violation. Found modifications to historical evidence:`);
+                forbiddenModifications.forEach(m => console.error(`  - ${m}`));
+                console.error(`Fix Suggestion: Use 'git restore --source=origin/main -- <path>' to revert, or ensure new files contain '${task_id}'.`);
+                process.exit(1);
+            }
+            console.log('[Gate Light] NoHistoricalEvidenceTouch verified.');
+
+        } catch (e) {
+             const errMessage = e.message || '';
+             // If "no merge base" or "unknown revision", try deepening history and retry
+             if (errMessage.includes('no merge base') || errMessage.includes('unknown revision') || errMessage.includes('ambiguous argument')) {
+                 console.log('[Gate Light] Diff failed (missing history/ref). Attempting to deepen fetch...');
+                 try {
+                     execSync('git fetch origin main:refs/remotes/origin/main --deepen=500', { stdio: 'ignore' });
+                     const retryDiff = execSync('git diff --name-status origin/main...HEAD', { encoding: 'utf8' });
+                     // Process retry output (same logic as above, but just checking if it works essentially)
+                     // Actually need to run the check logic again.
+                     // To avoid code duplication, we'll just check if it throws.
+                     // But we need to check forbidden mods! 
+                     // Let's recurse or just copy logic? Copy logic for safety.
+                     const forbiddenModifications = [];
+                     retryDiff.split('\n').forEach(line => {
+                         const parts = line.trim().split(/\s+/);
+                         if (parts.length < 2) return;
+                         const filePath = parts[parts.length - 1];
+                         const normalizedPath = filePath.replace(/\\/g, '/');
+                         if (normalizedPath.startsWith('rules/task-reports/')) {
+                             const filename = path.basename(normalizedPath);
+                             if (!filename.includes(task_id)) {
+                                 forbiddenModifications.push(`${parts[0]} ${filePath}`);
+                             }
+                         }
+                     });
+                     if (forbiddenModifications.length > 0) {
+                         console.error(`[Gate Light] FAILED: NoHistoricalEvidenceTouch violation (after fetch).`);
+                         forbiddenModifications.forEach(m => console.error(`  - ${m}`));
+                         process.exit(1);
+                     }
+                     console.log('[Gate Light] NoHistoricalEvidenceTouch verified (after deepen).');
+                 } catch (retryErr) {
+                     console.error(`[Gate Light] Git diff check failed even after retry: ${retryErr.message}`);
+                     console.log('[Gate Light] Fallback: Skipping NoHistoricalEvidenceTouch due to git environment limitations.');
+                     // Fail soft or hard? 
+                     // Hard failure is safer, but "unknown revision" might mean totally broken git env.
+                     // Let's fail hard as requested ("Hard Failure").
+                     process.exit(1); 
+                 }
+             } else {
+                 console.error(`[Gate Light] Git diff check failed: ${e.message}`);
+                 process.exit(1);
+             }
+        }
+
+        // B) SnippetCommitMustMatch
+        const snippetFile = path.join(result_dir, `trae_report_snippet_${task_id}.txt`);
+        if (fs.existsSync(snippetFile)) {
+             const snippetContent = fs.readFileSync(snippetFile, 'utf8');
+             const commitMatch = snippetContent.match(/COMMIT:\s*(\w+)/);
+             
+             if (!commitMatch) {
+                 console.error(`[Gate Light] FAILED: SnippetCommitMustMatch - Could not find 'COMMIT:' in snippet.`);
+                 process.exit(1);
+             }
+             
+             const snippetCommit = commitMatch[1];
+             const currentHead = execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim();
+             
+             if (snippetCommit !== currentHead) {
+                 // Intelligent Check: Allow mismatch ONLY if changes are limited to rules/task-reports/ (Evidence only)
+                 console.log(`[Gate Light] Snippet commit (${snippetCommit}) != HEAD (${currentHead}). Checking for code drift...`);
+                 
+                 try {
+                    // Try to fetch history if commit is missing
+                    try {
+                        execSync(`git cat-file -t ${snippetCommit}`, { stdio: 'ignore' });
+                    } catch (e) {
+                        console.log('[Gate Light] Snippet commit not found locally. Fetching history...');
+                        execSync('git fetch --deepen=50', { stdio: 'ignore' });
+                    }
+
+                     const diffFiles = execSync(`git diff --name-only ${snippetCommit} ${currentHead}`, { encoding: 'utf8' }).split('\n').filter(Boolean);
+                     
+                     const hasCodeChanges = diffFiles.some(file => {
+                         const normalized = file.replace(/\\/g, '/');
+                         // Whitelist: rules/task-reports/ (Evidence), rules/rules/ (Docs)
+                         return !normalized.startsWith('rules/task-reports/') && !normalized.startsWith('rules/rules/');
+                     });
+                     
+                     if (hasCodeChanges) {
+                         console.error(`[Gate Light] FAILED: SnippetCommitMustMatch - Codebase has changed between snippet commit and HEAD.`);
+                         console.error(`Changed code files:`);
+                         diffFiles.filter(f => {
+                            const n = f.replace(/\\/g, '/');
+                            return !n.startsWith('rules/task-reports/') && !n.startsWith('rules/rules/');
+                         }).forEach(f => console.error(`  - ${f}`));
+                         console.error(`Fix Suggestion: Re-run Integrate/Build Snippet to align with latest code.`);
+                         process.exit(1);
+                     }
+                     
+                     console.log('[Gate Light] SnippetCommitMustMatch verified (Evidence/Docs-only update detected).');
+                     
+                 } catch (e) {
+                     console.error(`[Gate Light] FAILED: SnippetCommitMustMatch - Hash mismatch and could not verify diff: ${e.message}`);
+                     process.exit(1);
+                 }
+             }
+             console.log('[Gate Light] SnippetCommitMustMatch verified.');
+        } else {
+             // If snippet is missing, it fails the earlier check, but let's be safe
+             console.error(`[Gate Light] FAILED: Snippet file missing for Commit Match check.`);
+             process.exit(1);
+        }
+        
+        // C) Snippet Stdout Check (Verification of dev_batch_mode behavior is implicit via evidence existence, 
+        // but checking the file structure is covered by Snippet Content Markers check above.
+        // The requirement says: "gate_light_ci.mjs 增加检查：trae_report_snippet_<task_id>.txt 必须存在...且包含 === DOD_EVIDENCE_STDOUT ==="
+        // This is already covered by Task 260209_005 check (Snippet Content Markers).
+        // So no extra check needed here for C.
+    }
+
     // --- GATE_LIGHT_EXIT Mechanism Check (Task 260209_010) ---
     if (task_id >= '260209_010') {
         console.log('[Gate Light] Checking GATE_LIGHT_EXIT Mechanism...');
