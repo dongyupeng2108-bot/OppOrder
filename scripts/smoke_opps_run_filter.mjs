@@ -2,10 +2,15 @@ import http from 'http';
 import fs from 'fs';
 import path from 'path';
 
+const args = process.argv.slice(2);
+const outputFileArg = args.find(arg => !arg.startsWith('--')); // Assume first non-flag arg is output file, or just use first arg if simple
+
 const TASK_ID = '260209_008';
 const REPORT_DIR = path.join(process.cwd(), 'rules/task-reports/2026-02');
 if (!fs.existsSync(REPORT_DIR)) fs.mkdirSync(REPORT_DIR, { recursive: true });
-const LOG_FILE = path.join(REPORT_DIR, `opps_run_filter_smoke_${TASK_ID}.txt`);
+
+// Use provided output file if available, else default to hardcoded
+const LOG_FILE = outputFileArg ? path.resolve(outputFileArg) : path.join(REPORT_DIR, `opps_run_filter_smoke_${TASK_ID}.txt`);
 
 // Clear log
 fs.writeFileSync(LOG_FILE, `[${new Date().toISOString()}] Starting Smoke Test for ${TASK_ID}\n`);

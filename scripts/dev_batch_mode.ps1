@@ -129,16 +129,10 @@ elseif ($Mode -eq 'Integrate') {
     if ($TaskId -ge "260209_008") {
         Write-Host "1.8. Running Opps Run Filter Smoke Test..."
         $OppsRunFilterSmokeFile = Join-Path $ReportsDir "opps_run_filter_smoke_${TaskId}.txt"
-        # Script handles file writing internally
-        cmd /c "node scripts/smoke_opps_run_filter.mjs"
+        # Script handles file writing internally (supports custom output path now)
+        cmd /c "node scripts/smoke_opps_run_filter.mjs ""$OppsRunFilterSmokeFile"""
         Check-LastExitCode
         
-        # Copy hardcoded output (008) to current task file if needed
-        $Hardcoded008 = Join-Path $ReportsDir "opps_run_filter_smoke_260209_008.txt"
-        if ($Hardcoded008 -ne $OppsRunFilterSmokeFile) {
-            Copy-Item $Hardcoded008 -Destination $OppsRunFilterSmokeFile -Force
-        }
-
         Write-Host "   Saved to $OppsRunFilterSmokeFile"
     }
 
