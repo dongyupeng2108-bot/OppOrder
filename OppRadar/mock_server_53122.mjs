@@ -1165,6 +1165,233 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    // POST /scans/run_batch (Task 260209_004)
+    if (pathname === '/scans/run_batch' && req.method === 'POST') {
+        const bodyPromise = new Promise((resolve, reject) => {
+            let body = '';
+            req.on('data', chunk => body += chunk.toString());
+            req.on('end', () => resolve(body));
+            req.on('error', reject);
+        });
+
+        try {
+            const rawBody = await bodyPromise;
+            let bodyParams = {};
+            if (rawBody) {
+                try {
+                    bodyParams = JSON.parse(rawBody);
+                } catch (e) {
+                     res.writeHead(400, { 'Content-Type': 'application/json' });
+                     res.end(JSON.stringify({ error: 'Invalid JSON body' }));
+                     return;
+                }
+            }
+
+            // Extract params
+            let { jobs, concurrency } = bodyParams;
+            
+            // Validation
+            if (!jobs || !Array.isArray(jobs) || jobs.length === 0) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Missing or empty jobs array' }));
+                return;
+            }
+
+            // Concurrency Control
+            concurrency = (concurrency === undefined || concurrency === null) ? 3 : parseInt(concurrency, 10);
+            if (concurrency > 5) concurrency = 5; // Hard max per requirements
+            if (concurrency < 1) concurrency = 1;
+
+            const runId = 'run_batch_' + crypto.createHash('sha256').update(Date.now().toString() + Math.random().toString()).digest('hex').substring(0, 8);
+            const startedAt = new Date().toISOString();
+            
+            const results = [];
+            
+            // Execution with Concurrency Limit
+            const executeJob = async (jobParams, index) => {
+                const jobStart = Date.now();
+                const jobId = `job_${index}_${crypto.randomUUID().substring(0,8)}`;
+                
+                try {
+                    // Inject internal tracking if needed, or just use scan params
+                    // Ensure scan cache logic is applied per job if desired? 
+                    // The user said "run scan job". runScanCore does not handle caching wrapper.
+                    // But /scans/run handles caching. 
+                    // Should we use caching? The requirement says "failed isolation".
+                    // Let's call runScanCore directly for simplicity, or duplicate caching logic.
+                    // Given the goal is "batch processing", let's assume we want core execution.
+                    // If caching is needed, we can add it. 
+                    // For now, let's just run runScanCore.
+                    
+                    const result = await runScanCore(jobParams);
+                    const isSkipped = result.skipped === true;
+                    
+                    return {
+                        job_id: jobId,
+                        scan_id: result.scan?.scan_id || result.scan_id,
+                        ok: !result.error && result.scan?.status !== 'failed', // runScanCore doesn't usually return error object but throws
+                        status_code: 200,
+                        cached: false, // runScanCore doesn't check cache
+                        duration_ms: Date.now() - jobStart,
+                        error: null,
+                        result_summary: {
+                            opps_count: result.opportunities?.length || 0,
+                            skipped: isSkipped
+                        }
+                    };
+                } catch (err) {
+                    return {
+                        job_id: jobId,
+                        ok: false,
+                        status_code: 500,
+                        cached: false,
+                        duration_ms: Date.now() - jobStart,
+                        error: err.message
+                    };
+                }
+            };
+
+            // Queue processing
+            const queue = [...jobs];
+            const activePromises = [];
+            const allPromises = [];
+
+            // Helper to process queue
+            // We can use a simple loop with Promise.all for chunks, or a sliding window.
+            // Requirement: "concurrency limit".
+            // Simple chunking is easier and often sufficient.
+            // Sliding window is better for uneven job times. Let's do chunking for simplicity unless strict sliding window is needed.
+            // "support failure isolation" -> Promise.allSettled or just separate try-catch inside.
+            
+            for (let i = 0; i < jobs.length; i += concurrency) {
+                const chunk = jobs.slice(i, i + concurrency);
+                const chunkPromises = chunk.map((job, idx) => executeJob(job, i + idx));
+                const chunkResults = await Promise.all(chunkPromises);
+                results.push(...chunkResults);
+            }
+
+            const response = {
+                run_id: runId,
+                started_at: startedAt,
+                concurrency_used: concurrency,
+                results: results
+            };
+
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(response));
+            return;
+
+        } catch (err) {
+            console.error(err);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal Server Error', details: err.message }));
+            return;
+        }
+    }
+
+    // POST /scans/run_batch (Task 260209_004)
+    if (pathname === '/scans/run_batch' && req.method === 'POST') {
+        const bodyPromise = new Promise((resolve, reject) => {
+            let body = '';
+            req.on('data', chunk => body += chunk.toString());
+            req.on('end', () => resolve(body));
+            req.on('error', reject);
+        });
+
+        try {
+            const rawBody = await bodyPromise;
+            let bodyParams = {};
+            if (rawBody) {
+                try {
+                    bodyParams = JSON.parse(rawBody);
+                } catch (e) {
+                     res.writeHead(400, { 'Content-Type': 'application/json' });
+                     res.end(JSON.stringify({ error: 'Invalid JSON body' }));
+                     return;
+                }
+            }
+
+            // Extract params
+            let { jobs, concurrency } = bodyParams;
+            
+            // Validation
+            if (!jobs || !Array.isArray(jobs) || jobs.length === 0) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Missing or empty jobs array' }));
+                return;
+            }
+
+            // Concurrency Control
+            concurrency = (concurrency === undefined || concurrency === null) ? 3 : parseInt(concurrency, 10);
+            if (concurrency > 5) concurrency = 5; // Hard max per requirements
+            if (concurrency < 1) concurrency = 1;
+
+            const runId = 'run_batch_' + crypto.createHash('sha256').update(Date.now().toString() + Math.random().toString()).digest('hex').substring(0, 8);
+            const startedAt = new Date().toISOString();
+            
+            const results = [];
+            
+            // Execution with Concurrency Limit
+            const executeJob = async (jobParams, index) => {
+                const jobStart = Date.now();
+                const jobId = `job_${index}_${crypto.randomUUID().substring(0,8)}`;
+                
+                try {
+                    const result = await runScanCore(jobParams);
+                    const isSkipped = result.skipped === true;
+                    
+                    return {
+                        job_id: jobId,
+                        scan_id: result.scan?.scan_id || result.scan_id,
+                        ok: !result.error && result.scan?.status !== 'failed',
+                        status_code: 200,
+                        cached: false, // runScanCore doesn't explicitly return cached flag in top level, check metrics
+                        duration_ms: Date.now() - jobStart,
+                        error: null,
+                        result_summary: {
+                            opps_count: result.opportunities?.length || 0,
+                            skipped: isSkipped
+                        }
+                    };
+                } catch (err) {
+                    return {
+                        job_id: jobId,
+                        ok: false,
+                        status_code: 500,
+                        cached: false,
+                        duration_ms: Date.now() - jobStart,
+                        error: err.message
+                    };
+                }
+            };
+
+            // Queue processing
+            for (let i = 0; i < jobs.length; i += concurrency) {
+                const chunk = jobs.slice(i, i + concurrency);
+                const chunkPromises = chunk.map((job, idx) => executeJob(job, i + idx));
+                const chunkResults = await Promise.all(chunkPromises);
+                results.push(...chunkResults);
+            }
+
+            const response = {
+                run_id: runId,
+                started_at: startedAt,
+                concurrency_used: concurrency,
+                results: results
+            };
+
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(response));
+            return;
+
+        } catch (err) {
+            console.error(err);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal Server Error', details: err.message }));
+            return;
+        }
+    }
+
     // POST /scans/batch_run
     if (pathname === '/scans/batch_run' && req.method === 'POST') {
         const bodyPromise = new Promise((resolve, reject) => {

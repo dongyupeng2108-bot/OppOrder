@@ -288,6 +288,35 @@ try {
         console.log('[Gate Light] DoD Stdout Mechanism verified.');
     }
 
+    // --- Concurrent Scan DoD Check (Task 260209_004) ---
+    if (task_id >= '260209_004') {
+        console.log('[Gate Light] Checking Concurrent Scan DoD Evidence...');
+        
+        // Re-derive evidenceDir if needed, but it should be available from above
+        // Format: YYMMDD_XXX. 26->2026, 02->02
+        const match = task_id.match(/^(\d{2})(\d{2})\d{2}_/);
+        if (match) {
+            const year = '20' + match[1];
+            const month = match[2];
+            const monthDir = `${year}-${month}`;
+            const evidenceDirLocal = path.join('rules', 'task-reports', monthDir);
+            
+            const logFile = path.join(evidenceDirLocal, `M4_PR2_concurrent_log_${task_id}.txt`);
+            
+            if (!fs.existsSync(logFile)) {
+                console.error(`[Gate Light] FAILED: Concurrent Scan Log missing: ${logFile}`);
+                process.exit(1);
+            }
+            
+            const content = fs.readFileSync(logFile, 'utf8');
+            if (!content.includes('PASS: Concurrent Batch Scan Verified')) {
+                console.error('[Gate Light] FAILED: Concurrent Scan Log does not contain PASS message.');
+                process.exit(1);
+            }
+            console.log('[Gate Light] Concurrent Scan DoD Evidence verified.');
+        }
+    }
+
     // Construct postflight command
     // Note: Assuming scripts/postflight_validate_envelope.mjs exists relative to CWD
     const cmd = 'node scripts/postflight_validate_envelope.mjs --task_id ' + task_id + ' --result_dir ' + result_dir + ' --report_dir ' + result_dir;
