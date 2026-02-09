@@ -142,6 +142,16 @@ elseif ($Mode -eq 'Integrate') {
         Write-Host "   Saved to $OppsRunFilterSmokeFile"
     }
 
+    # 1.9 Opps Top By Run Smoke (Task 260209_010+)
+    if ($TaskId -ge "260209_010") {
+        Write-Host "1.9. Running Opps Top By Run Smoke Test..."
+        $OppsTopByRunSmokeFile = Join-Path $ReportsDir "opps_top_by_run_smoke_${TaskId}.txt"
+        # Script handles file writing internally
+        cmd /c "node scripts/smoke_opps_top_by_run.mjs ""$OppsTopByRunSmokeFile"""
+        Check-LastExitCode
+        Write-Host "   Saved to $OppsTopByRunSmokeFile"
+    }
+
     # 2. Envelope Build
     Write-Host "2. Building Envelope..."
     node scripts/envelope_build.mjs --task_id $TaskId --result_dir $ReportsDir --status DONE --summary $Summary
@@ -259,7 +269,24 @@ if (taskId >= '260209_008') {
     }
 }
 
-let dodLines = (healthcheckLines + (scanCacheLines ? '\n' + scanCacheLines : '') + (oppsPipelineLines ? '\n' + oppsPipelineLines : '') + (oppsRunFilterLines ? '\n' + oppsRunFilterLines : '')).trim();
+// 1e. Opps Top By Run (Task 260209_010+)
+let oppsTopByRunLines = '';
+if (taskId >= '260209_010') {
+    const smokeFile = path.join(reportsDir, 'opps_top_by_run_smoke_' + taskId + '.txt');
+    if (fs.existsSync(smokeFile)) {
+        const content = fs.readFileSync(smokeFile, 'utf8');
+        const marker = 'DOD_EVIDENCE_OPPS_TOP_BY_RUN:';
+        if (content.includes(marker)) {
+            const match = content.match(new RegExp(marker + '.*=>(.+)'));
+            if (match) {
+                 const pathDisplay = smokeFile.replace(/\\/g, '/');
+                 oppsTopByRunLines = `${marker} ${pathDisplay} => ${match[1].trim()}`;
+            }
+        }
+    }
+}
+
+let dodLines = (healthcheckLines + (scanCacheLines ? '\n' + scanCacheLines : '') + (oppsPipelineLines ? '\n' + oppsPipelineLines : '') + (oppsRunFilterLines ? '\n' + oppsRunFilterLines : '') + (oppsTopByRunLines ? '\n' + oppsTopByRunLines : '')).trim();
 
 const marker = "=== DOD_EVIDENCE_STDOUT ===";
 const stdoutBlock = marker + '\n' + dodLines;
@@ -298,6 +325,7 @@ const newHash = crypto.createHash('sha256').update(notifyContent).digest('hex').
         if (scanCacheLines) result.dod_evidence.scan_cache = scanCacheLines.split('\n');
         if (oppsPipelineLines) result.dod_evidence.opps_pipeline = oppsPipelineLines.split('\n');
         if (oppsRunFilterLines) result.dod_evidence.opps_run_filter = oppsRunFilterLines.split('\n');
+        if (oppsTopByRunLines) result.dod_evidence.opps_top_by_run = oppsTopByRunLines.split('\n');
         
         fs.writeFileSync(resultFile, JSON.stringify(result, null, 2));
     }
@@ -342,6 +370,118 @@ const newHash = crypto.createHash('sha256').update(notifyContent).digest('hex').
             Write-Host "--- Snippet Preview (First 80 lines) ---" -ForegroundColor Cyan
             Get-Content $SnippetFile -TotalCount 80
             Write-Host "----------------------------------------" -ForegroundColor Cyan
+        }
+    }
+
+    # 6. Gate Light & Exit Code Mechanism (Task 260209_010+)
+    if ($TaskId -ge "260209_010") {
+        Write-Host "6. Running Gate Light & Exit Code Mechanism..."
+        
+        $GateInjectScript = @'
+const fs = require('fs');
+const path = require('path');
+const crypto = require('crypto');
+const taskId = process.argv[2];
+const reportsDir = process.argv[3];
+const exitCode = process.argv[4];
+
+const notifyFile = path.join(reportsDir, 'notify_' + taskId + '.txt');
+const resultFile = path.join(reportsDir, 'result_' + taskId + '.json');
+const snippetFile = path.join(reportsDir, 'trae_report_snippet_' + taskId + '.txt');
+const indexFile = path.join(reportsDir, 'deliverables_index_' + taskId + '.json');
+
+function updateFile(filePath, code) {
+    if (fs.existsSync(filePath)) {
+        let content = fs.readFileSync(filePath, 'utf8');
+        const line = `GATE_LIGHT_EXIT=${code}`;
+        if (content.includes('GATE_LIGHT_EXIT=')) {
+            content = content.replace(/GATE_LIGHT_EXIT=\d+/, line);
+        } else {
+            if (content.length > 0 && !content.endsWith('\n')) content += '\n';
+            content += `${line}\n`;
+        }
+        fs.writeFileSync(filePath, content);
+        console.log(`Updated ${path.basename(filePath)} with ${line.trim()}`);
+        return content;
+    }
+    return null;
+}
+
+// 1. Update Notify & Snippet
+const notifyContent = updateFile(notifyFile, exitCode);
+updateFile(snippetFile, exitCode);
+
+// 2. Calculate New Hash for Notify
+let newHash = null;
+let newSize = 0;
+if (notifyContent) {
+    newHash = crypto.createHash('sha256').update(notifyContent).digest('hex').substring(0, 8);
+    newSize = Buffer.byteLength(notifyContent, 'utf8');
+}
+
+// 3. Update Result JSON (field + hash)
+if (fs.existsSync(resultFile)) {
+    let content = fs.readFileSync(resultFile, 'utf8');
+    let json = JSON.parse(content);
+    
+    // Update gate_light_exit
+    if (!json.dod_evidence) json.dod_evidence = {};
+    json.dod_evidence.gate_light_exit = exitCode;
+    
+    // Update Hash if notify changed
+    if (newHash) {
+        json.report_sha256_short = newHash;
+    }
+    
+    fs.writeFileSync(resultFile, JSON.stringify(json, null, 2));
+    console.log(`Updated ${path.basename(resultFile)} with gate_light_exit=${exitCode} and hash=${newHash}`);
+}
+
+// 4. Update Index JSON (hash + size)
+if (fs.existsSync(indexFile) && newHash) {
+    let content = fs.readFileSync(indexFile, 'utf8');
+    let index = JSON.parse(content);
+    const filename = 'notify_' + taskId + '.txt';
+    const reportEntry = index.files.find(f => (f.name === filename || (f.path && f.path.endsWith(filename))));
+    
+    if (reportEntry) {
+        reportEntry.sha256_short = newHash;
+        reportEntry.size = newSize;
+        fs.writeFileSync(indexFile, JSON.stringify(index, null, 2));
+        console.log(`Updated ${path.basename(indexFile)} with new hash/size for notify`);
+    }
+}
+'@
+        $GateInjectScriptPath = Join-Path $RepoRoot "scripts\temp_gate_inject.js"
+        $GateInjectScript | Out-File -FilePath $GateInjectScriptPath -Encoding UTF8
+        
+        # 6.1 Optimistic Injection (0)
+        Write-Host "   Injecting optimistic GATE_LIGHT_EXIT=0..."
+        node $GateInjectScriptPath $TaskId $ReportsDir "0"
+        
+        # 6.2 Run Gate Light
+        Write-Host "   Executing gate_light_ci.mjs..."
+        node scripts/gate_light_ci.mjs
+        $GateExitCode = $LASTEXITCODE
+        
+        Write-Host "   Gate Light Exit Code: $GateExitCode"
+        
+        # 6.3 Update if failed
+        if ($GateExitCode -ne 0) {
+             Write-Host "   Gate Light Failed. Updating artifacts with Exit Code $GateExitCode..."
+             node $GateInjectScriptPath $TaskId $ReportsDir "$GateExitCode"
+        }
+        
+        # 6.4 Print to Stdout
+        Write-Host "GATE_LIGHT_EXIT=$GateExitCode" -ForegroundColor Magenta
+        
+        # Cleanup
+        Remove-Item $GateInjectScriptPath -ErrorAction SilentlyContinue
+        
+        # 6.5 Fail if Gate Failed
+        if ($GateExitCode -ne 0) {
+            Write-Error "Gate Light Failed with exit code $GateExitCode"
+            exit $GateExitCode
         }
     }
 

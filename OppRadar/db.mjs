@@ -397,25 +397,17 @@ export const DB = {
         }
     },
 
-    async getTopOpportunities(limit = 20) {
+    async getTopOpportunities(limit = 20, run_id = null) {
         try {
-            // Get the latest build_run_id first to ensure we show results from the most recent run
-            // Or just sort by ts DESC, score DESC. 
-            // The requirement implies "current top list". 
-            // Let's assume we want the most recent global set, but typically opportunities are generated in batches.
-            // A simple strategy is: take top N by score from the last X hours, or just simple latest by ts/score.
-            // Given the requirement "GET /opportunities/top", let's fetch the most recent ones first.
-            // If we want "top scored", we should probably filter by a recent time window.
-            // For now, let's implement: Sort by ts DESC (freshness) then score DESC.
-            // Wait, "Top Opportunities" usually means "Highest Score".
-            // So we should find the latest `build_run_id` and get its top scores.
+            let targetRunId = run_id;
+
+            if (!targetRunId) {
+                const latestRun = await allAsync(`SELECT build_run_id FROM opportunity_event ORDER BY ts DESC LIMIT 1`);
+                if (!latestRun || latestRun.length === 0) return [];
+                targetRunId = latestRun[0].build_run_id;
+            }
             
-            const latestRun = await allAsync(`SELECT build_run_id FROM opportunity_event ORDER BY ts DESC LIMIT 1`);
-            if (!latestRun || latestRun.length === 0) return [];
-            
-            const runId = latestRun[0].build_run_id;
-            
-            const rows = await allAsync(`SELECT * FROM opportunity_event WHERE build_run_id = ? ORDER BY score DESC LIMIT ?`, [runId, limit]);
+            const rows = await allAsync(`SELECT * FROM opportunity_event WHERE build_run_id = ? ORDER BY score DESC LIMIT ?`, [targetRunId, limit]);
             
             return rows.map(row => ({
                 ...row,

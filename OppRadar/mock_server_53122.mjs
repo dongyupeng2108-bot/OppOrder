@@ -1108,8 +1108,9 @@ const server = http.createServer(async (req, res) => {
     // GET /opportunities/top
     if (pathname === '/opportunities/top') {
         const limit = parsedUrl.query.limit ? parseInt(parsedUrl.query.limit) : 20;
+        const runId = parsedUrl.query.run_id || null;
         try {
-            const opps = await DB.getTopOpportunities(limit);
+            const opps = await DB.getTopOpportunities(limit, runId);
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify(opps));
         } catch (e) {

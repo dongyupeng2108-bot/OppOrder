@@ -571,7 +571,7 @@ async function renderOpportunities() {
     let error = null;
     try {
         if (runId) {
-            list = await fetchJSON(`/opportunities/by_run?run_id=${runId}&limit=${limit}`);
+            list = await fetchJSON(`/opportunities/top?run_id=${runId}&limit=${limit}`);
         } else {
             list = await fetchJSON(`/opportunities/top?limit=${limit}`);
         }
