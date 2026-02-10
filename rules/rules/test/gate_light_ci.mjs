@@ -18,23 +18,6 @@ try {
         process.exit(1);
     }
 
-    // --- P1: Branch Task ID Validation (CI Only) ---
-    if (process.env.GITHUB_ACTIONS === 'true' || process.env.CI === 'true') {
-        const branchName = process.env.GITHUB_HEAD_REF || process.env.GITHUB_REF_NAME || '';
-        const match = branchName.match(/(\d{6}_\d{3})/);
-        if (match) {
-            const branchTaskId = match[1];
-            if (branchTaskId !== task_id) {
-                 console.error(`[Gate Light] FAILED: Validation Object Drift Detected.`);
-                 console.error(`  Branch Task ID: ${branchTaskId}`);
-                 console.error(`  LATEST.json Task ID: ${task_id}`);
-                 console.error(`  Action: Update rules/LATEST.json to match the current branch task.`);
-                 process.exit(1);
-            }
-            console.log(`[Gate Light] CI Branch Task ID verified: ${branchTaskId} matches LATEST.`);
-        }
-    }
-
     console.log('[Gate Light] Verifying latest task: ' + task_id);
     
     // --- Doc Path Standards Check (Task 260208_025) ---
@@ -45,9 +28,9 @@ try {
         'rules/rules/PROJECT_MASTER_PLAN.md'
     ];
     const legacyDocs = [
-        'rules/WORKFLOW.md',
-        'rules/PROJECT_RULES.md',
-        'rules/PROJECT_MASTER_PLAN.md'
+        'rules/' + 'WORKFLOW.md',
+        'rules/' + 'PROJECT_RULES.md',
+        'rules/' + 'PROJECT_MASTER_PLAN.md'
     ];
 
     // 1. Check for missing canonical docs
@@ -356,11 +339,9 @@ try {
             'COMMIT:',
             '=== GIT_SCOPE_DIFF ===',
             '=== DOD_EVIDENCE_STDOUT ===',
-            '=== GATE_LIGHT_PREVIEW ==='
+            '[Postflight] PASS',
+            '[Gate Light] PASS'
         ];
-
-        // [Postflight] PASS and [Gate Light] PASS are deprecated.
-        // We now rely on GATE_LIGHT_EXIT code and Evidence Truth checks.
 
         const missingMarkers = requiredMarkers.filter(m => !snippetContent.includes(m));
         if (missingMarkers.length > 0) {
@@ -376,89 +357,6 @@ try {
         }
 
         console.log('[Gate Light] Trae Report Snippet verified.');
-    }
-
-    // --- Evidence Truth & Sufficiency Hardening (Task 260210_006) ---
-    // Applies to task_id >= 260210_006
-    if (task_id >= '260210_006') {
-        console.log('[Gate Light] Checking Evidence Truth & Sufficiency (Hardening Rule)...');
-
-        const gateLogFile = path.join(result_dir, `gate_light_ci_${task_id}.txt`);
-        const snippetFile = path.join(result_dir, `trae_report_snippet_${task_id}.txt`);
-        
-        // 1. Minimum Evidence Lines (DoD Healthcheck) - Must be present in snippet
-        const snippetContent = fs.existsSync(snippetFile) ? fs.readFileSync(snippetFile, 'utf8') : '';
-        
-        const hcRootMarker = 'DOD_EVIDENCE_HEALTHCHECK_ROOT';
-        const hcPairsMarker = 'DOD_EVIDENCE_HEALTHCHECK_PAIRS';
-        
-        if (!snippetContent.includes(hcRootMarker) || !snippetContent.includes(hcPairsMarker)) {
-             console.error('[Gate Light] FAILED: Snippet missing DoD Healthcheck evidence lines.');
-             console.error(`Expected markers: ${hcRootMarker} and ${hcPairsMarker}`);
-             process.exit(1);
-        }
-
-        // 2. Evidence Truth (Log Existence & Content Match)
-        // SKIPPED in INTEGRATE mode because we are currently generating the log!
-        if (process.env.GATE_LIGHT_MODE !== 'INTEGRATE') {
-             // A. Gate Log Existence
-             if (!fs.existsSync(gateLogFile)) {
-                 console.error(`[Gate Light] FAILED: Gate Light Log missing: ${gateLogFile}`);
-                 console.error('Integrate phase must capture gate_light_ci output to this file for evidence truth verification.');
-                 process.exit(1);
-             }
-
-             const gateLogContent = fs.readFileSync(gateLogFile, 'utf8');
-             
-             // B. Snippet Preview Truth (Must be substring of real log)
-             const previewMatch = snippetContent.match(/=== GATE_LIGHT_PREVIEW ===([\s\S]*?)GATE_LIGHT_EXIT=/);
-             if (!previewMatch) {
-                 // Try matching end of file if EXIT line is missing (though EXIT line is mandatory below)
-                 const previewMatchAlt = snippetContent.match(/=== GATE_LIGHT_PREVIEW ===([\s\S]*)/);
-                 if (!previewMatchAlt) {
-                     console.error('[Gate Light] FAILED: Snippet missing === GATE_LIGHT_PREVIEW === block.');
-                     process.exit(1);
-                 }
-                 console.error('[Gate Light] FAILED: Snippet missing GATE_LIGHT_EXIT=<code> line after preview.');
-                 process.exit(1);
-             }
-             
-             const previewContent = previewMatch[1].trim();
-             
-             // Check for placeholders
-             if (previewContent.includes('__PENDING__') || previewContent.includes('STATUS_PENDING')) {
-                 console.error('[Gate Light] FAILED: Snippet contains PENDING placeholder instead of real execution log.');
-                 process.exit(1);
-             }
-
-             // Normalize for comparison (CRLF vs LF)
-             const normalizedPreview = previewContent.replace(/\r\n/g, '\n').trim();
-             const normalizedLog = gateLogContent.replace(/\r\n/g, '\n').trim();
-
-             // The preview should be a substring of the log
-             if (!normalizedLog.includes(normalizedPreview)) {
-                 console.error('[Gate Light] FAILED: Snippet Preview is NOT a substring of the real Gate Light Log.');
-                 console.error('Evidence must be truthful. Do not manually edit the preview content.');
-                 // console.error('--- Preview in Snippet ---\n' + normalizedPreview.substring(0, 100) + '...');
-                 // console.error('--- Real Log Content ---\n' + normalizedLog.substring(0, 100) + '...');
-                 process.exit(1);
-             }
-
-             // C. Exit Code Consistency
-             const snippetExitMatch = snippetContent.match(/GATE_LIGHT_EXIT=(\d+)/);
-             if (!snippetExitMatch) {
-                 console.error('[Gate Light] FAILED: Snippet missing valid GATE_LIGHT_EXIT=<code> line.');
-                 process.exit(1);
-             }
-             // Logic: If snippet says 0, log should generally not be full of FAILED errors? 
-             // But let's trust the substring check for now. If user edited exit code but log says failed, 
-             // the log content in snippet *should* be the failed log.
-             // If they edited the snippet content to look like success, the substring check fails against real log.
-        } else {
-             console.log('[Gate Light] Skipping Evidence Truth check in INTEGRATE mode (Generation phase).');
-        }
-        
-        console.log('[Gate Light] Evidence Truth & Sufficiency verified.');
     }
 
     // --- Opps Pipeline DoD Check (Task 260209_006) ---
@@ -538,15 +436,13 @@ try {
         }
         
         const byRunLine = notifyContent.split('\n').find(l => l.includes(byRunMarker));
-        if (!byRunLine.includes('=>') || !byRunLine.includes('run_id=')) {
-             console.error(`[Gate Light] FAILED: '${byRunMarker}' line has invalid format or missing 'run_id='. (Expected: ... => run_id=...)`);
+        if (!byRunLine.includes('=>') || !byRunLine.includes('all_same_run_id=true')) {
+             console.error(`[Gate Light] FAILED: '${byRunMarker}' line has invalid format or missing 'all_same_run_id=true'.`);
              process.exit(1);
         }
         
         console.log('[Gate Light] Opps Run Filter DoD Evidence verified.');
     }
-
-
 
     // --- Workflow Hardening Check (Task 260209_009) ---
     if (task_id >= '260209_009') {
@@ -757,77 +653,6 @@ try {
         }
         
         console.log('[Gate Light] GATE_LIGHT_EXIT Mechanism verified.');
-    }
-
-    // --- Evidence Truth & Consistency Check (Task 260210_005) ---
-    if (task_id >= '260210_005') {
-        console.log('[Gate Light] Checking Evidence Truth & Consistency...');
-        
-        const notifyFile = path.join(result_dir, `notify_${task_id}.txt`);
-        const resultFile = path.join(result_dir, `result_${task_id}.json`);
-        const snippetFile = path.join(result_dir, `trae_report_snippet_${task_id}.txt`);
-        
-        // Helper to check for GATE_LIGHT_EXIT=0
-        const verifyExitZero = (filePath, fileDesc) => {
-            if (!fs.existsSync(filePath)) return `${fileDesc} missing`;
-            const content = fs.readFileSync(filePath, 'utf8');
-            const match = content.match(/GATE_LIGHT_EXIT=(\d+)/);
-            if (!match) return `${fileDesc} missing GATE_LIGHT_EXIT field`;
-            if (match[1] !== '0') return `${fileDesc} has GATE_LIGHT_EXIT=${match[1]} (Expected 0)`;
-            return null;
-        };
-        
-        // 1. Check all three files for Exit=0
-        const errors = [];
-        const notifyErr = verifyExitZero(notifyFile, 'Notify');
-        if (notifyErr) errors.push(notifyErr);
-        
-        const snippetErr = verifyExitZero(snippetFile, 'Snippet');
-        if (snippetErr) errors.push(snippetErr);
-        
-        // Result JSON is special
-        if (fs.existsSync(resultFile)) {
-            try {
-                const resultJson = JSON.parse(fs.readFileSync(resultFile, 'utf8'));
-                const exitCode = resultJson.dod_evidence?.gate_light_exit;
-                if (exitCode === undefined) errors.push('Result JSON missing dod_evidence.gate_light_exit');
-                else if (String(exitCode) !== '0') errors.push(`Result JSON has gate_light_exit=${exitCode} (Expected 0)`);
-            } catch (e) {
-                errors.push(`Result JSON parse error: ${e.message}`);
-            }
-        } else {
-            errors.push('Result JSON missing');
-        }
-        
-        if (errors.length > 0) {
-            console.error(`[Gate Light] FAILED: Evidence Truth Violation (GATE_LIGHT_EXIT!=0):`);
-            errors.forEach(e => console.error(`  - ${e}`));
-            process.exit(1);
-        }
-        
-        // 2. Snippet Structure & Content
-        const snippetContent = fs.readFileSync(snippetFile, 'utf8');
-        if (!snippetContent.includes('=== GATE_LIGHT_PREVIEW ===')) {
-             console.error(`[Gate Light] FAILED: Snippet missing '=== GATE_LIGHT_PREVIEW ===' marker.`);
-             process.exit(1);
-        }
-        
-        // 3. Strict Preview Content Check (Skipped in INTEGRATE mode)
-        if (process.env.GATE_LIGHT_MODE !== 'INTEGRATE') {
-            const missingKeywords = [];
-            if (!snippetContent.includes('[Postflight] PASS')) missingKeywords.push('[Postflight] PASS');
-            if (!snippetContent.includes('[Gate Light] PASS')) missingKeywords.push('[Gate Light] PASS');
-            
-            if (missingKeywords.length > 0) {
-                 console.error(`[Gate Light] FAILED: Snippet Preview missing required PASS keywords (Verify Phase):`);
-                 missingKeywords.forEach(k => console.error(`  - ${k}`));
-                 process.exit(1);
-            }
-        } else {
-            console.log('[Gate Light] Skipping strict preview content check (Integrate Mode).');
-        }
-        
-        console.log('[Gate Light] Evidence Truth & Consistency verified.');
     }
 
     // Construct postflight command

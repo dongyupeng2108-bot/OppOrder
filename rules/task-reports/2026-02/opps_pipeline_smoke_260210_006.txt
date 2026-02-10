@@ -1,0 +1,14 @@
+Test started at 2026-02-10T02:55:30.508Z
+Step 1: Calling POST /opportunities/build_v1 with 5 OK + 1 Failed jobs...
+Response received. Run ID: mock_build_1770692130522
+jobs_ok: 5, jobs_failed: 1
+PASS: Fail-soft isolation verified.
+Step 2: Calling GET /opportunities/top?limit=5...
+Received 5 top opportunities.
+Opp [0] SOL: Score=99, RunID=mock_build_1770690526511
+Opp [1] BTC: Score=99, RunID=mock_build_1770690570656
+Opp [2] SOL: Score=99, RunID=mock_build_1770690570656
+Opp [3] BTC: Score=99, RunID=mock_build_1770691142823
+Opp [4] SOL: Score=97, RunID=mock_build_1770690302489
+PASS: Top list verification successful.
+PASS: true

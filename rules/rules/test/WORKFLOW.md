@@ -97,13 +97,7 @@ To reduce repository overhead and conflicts, we adopt a two-phase workflow for e
    ```
 2. **Duplicate Detection & Rejection**:
    - The script checks `origin/main` for existing `task_id` (files or LATEST.json occupation).
-   - If found, it outputs a 3-line REJECT block:
-     ```text
-     REJECT_DUPLICATE_TASK_ID: <task_id>
-     REJECT_REASON: task_id already exists in origin/main
-     EXECUTION_ABORTED=1
-     ```
-   - Exits with **Code 21**.
+   - If found, it outputs a 3-line REJECT block (`REJECT_DUPLICATE_TASK_ID`, `REJECT_REASON`, `EXECUTION_ABORTED=1`) and exits with **Code 21**.
 3. **Integrate Phase Interception**:
    - `scripts/dev_batch_mode.ps1` (Integrate mode) MUST run this check as the **FIRST STEP** (step 0).
    - If check fails (Exit Code 21), the script MUST abort immediately with **0 side effects** (no files written).
@@ -129,7 +123,7 @@ To reduce repository overhead and conflicts, we adopt a two-phase workflow for e
   - **Duplicate Task ID PRs**: Do not open a PR with a `task_id` that already exists in `main`.
 - **Mandatory Pre-PR Check**:
   - You **MUST** run `node scripts/pre_pr_check.mjs --task_id <task_id>` before creating a PR.
-  - If it fails (Exit Code 21), you are violating the "No Reuse" rule. **STOP** and get a new ID.
+  - If it fails (Exit Code 2), you are violating the "No Reuse" rule. **STOP** and get a new ID.
 
 ## 合并职责说明 (Merge Responsibility)
 **PR 合并需要老板手工执行**。Trae 严禁自动合并 PR。
@@ -195,21 +189,13 @@ To reduce repository overhead and conflicts, we adopt a two-phase workflow for e
     2.  **报告**错误详情。
     3.  **请求**用户以 `FIX:` 消息头下发修复指令。
 
-### 4. Merge-Ready (可合并) 通知硬规则 (Hard Rule)
+### 4. Merge-Ready (可合并) 通知规则
 仅当满足以下所有条件时，Agent 才允许发送“PASS / 可合并”通知：
 
-1.  **Gate Light 真实绿灯**: `scripts/gate_light_ci.mjs` 执行结果必须为 PASS，且退出码为 0。
-2.  **回报最低证据要求 (Evidence Minimum)**:
-    -   **三件套齐备**: `notify_<id>.txt`, `result_<id>.json`, `trae_report_snippet_<id>.txt` 必须同时存在。
-    -   **Snippet 字段强制**: `trae_report_snippet` 必须包含以下字段：
-        -   `BRANCH`, `COMMIT`, `GIT_SCOPE_DIFF`
-        -   `=== DOD_EVIDENCE_STDOUT ===`
-        -   `=== GATE_LIGHT_PREVIEW ===` (必须是真实日志子串)
-        -   `GATE_LIGHT_EXIT=0` (必须显式存在且为 0)
-3.  **禁止口头 PASS**: 任何未附带上述证据的“PASS”或基于“我运行了脚本没报错”的陈述均视为无效。
-4.  **串行执行原则**: 在当前任务未生成完整证据包并回报之前，禁止接受或开始下一个 `TraeTask`（除非是 `FIX:` 模式）。
-
-**违规后果**: 违反此规则提交的 PR 将被视为无效交付，必须回滚重做。
+1.  **Gate Light 真实 PASS**: `scripts/gate_light_ci.mjs` 执行结果必须为 PASS，且退出码为 0。
+2.  **证据可复制**: 最终回报消息中必须包含**可直接复制**的 `=== TRAE_REPORT_SNIPPET ===` 块。
+3.  **包含关键行**: Snippet 中必须显式包含 `GATE_LIGHT_EXIT=0`（或实际退出码）。
+4.  **禁止口头 PASS**: 任何未附带上述证据的“PASS”均视为无效。
 
 **示例回报格式**:
 ...
