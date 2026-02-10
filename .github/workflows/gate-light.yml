@@ -20,4 +20,6 @@ jobs:
           node-version: '18'
           
       - name: Run Gate Light CI
-        run: node scripts/gate_light_ci.mjs
+        run: |
+          git fetch origin main
+          node scripts/gate_light_ci.mjs
