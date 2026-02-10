@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": ["ok", "error"]
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "provider_used": {
+      "type": "string",
+      "enum": ["mock", "deepseek"]
+    },
+    "model_used": {
+      "type": "string"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "opp_id": {
+            "type": "string"
+          },
+          "llm_json": {
+            "type": "object"
+          }
+        },
+        "required": ["opp_id", "llm_json"]
+      }
+    },
+    "code": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    }
+  },
+  "required": ["status"],
+  "if": {
+    "properties": {
+      "status": { "const": "ok" }
+    }
+  },
+  "then": {
+    "required": ["run_id", "provider_used", "model_used", "items"]
+  },
+  "else": {
+    "required": ["code", "message"]
+  }
+}

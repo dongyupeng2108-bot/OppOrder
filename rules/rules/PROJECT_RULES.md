@@ -144,6 +144,26 @@
   - `message`: String
   - `request`: Object (Echo of inputs)
 
+### LLM Route API (`POST /opportunities/llm_route`)
+- **Schema**: `OppRadar/contracts/llm_route_response.schema.json`
+- **Parameters** (JSON Body):
+  - `run_id`: String (Required).
+  - `limit`: Number (Optional, max 50).
+  - `provider`: String (Optional, "mock"|"deepseek").
+  - `model`: String (Optional).
+- **Success Response (200 OK)**:
+  - `status`: "ok"
+  - `run_id`: String
+  - `provider_used`: "mock" | "deepseek"
+  - `model_used`: String
+  - `items`: Array<Object>
+    - `opp_id`: String
+    - `llm_json`: Object (Structured output)
+- **Error Response (400 Bad Request)**:
+  - `status`: "error"
+  - `code`: String
+  - `message`: String
+
 ### Scan Run API (`POST /scans/run`)
 - **Schema**: N/A (Internal v0)
 - **Parameters** (JSON Body):
