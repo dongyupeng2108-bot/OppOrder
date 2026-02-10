@@ -450,10 +450,29 @@ try {
                  console.error('[Gate Light] FAILED: Snippet missing valid GATE_LIGHT_EXIT=<code> line.');
                  process.exit(1);
              }
-             // Logic: If snippet says 0, log should generally not be full of FAILED errors? 
-             // But let's trust the substring check for now. If user edited exit code but log says failed, 
-             // the log content in snippet *should* be the failed log.
-             // If they edited the snippet content to look like success, the substring check fails against real log.
+             
+             // Check against Log content
+             // The log should contain "GATE_LIGHT_EXIT=<same_code>" near the end
+             const snippetExitCode = snippetExitMatch[1];
+             // We search for the LAST occurrence of GATE_LIGHT_EXIT= in the log, just in case
+             const logExitMatches = [...gateLogContent.matchAll(/GATE_LIGHT_EXIT=(\d+)/g)];
+             
+             if (logExitMatches.length > 0) {
+                 const lastLogExit = logExitMatches[logExitMatches.length - 1][1];
+                 if (snippetExitCode !== lastLogExit) {
+                     console.error(`[Gate Light] FAILED: Snippet Exit Code (${snippetExitCode}) does not match Log Exit Code (${lastLogExit}).`);
+                     process.exit(1);
+                 }
+             } else {
+                 // If log doesn't have it explicitly, we might infer from content?
+                 // But dev_batch_mode guarantees it. 
+                 // If missing, maybe older log? But we are task >= 260210_006.
+                 console.error('[Gate Light] WARNING: Could not find GATE_LIGHT_EXIT=<code> in gate_light_ci log. Assuming 0 if PASS?');
+                 if (normalizedLog.includes('[Gate Light] PASS') && snippetExitCode !== '0') {
+                      console.error(`[Gate Light] FAILED: Log says PASS but Snippet Exit Code is ${snippetExitCode}.`);
+                      process.exit(1);
+                 }
+             }
         } else {
              console.log('[Gate Light] Skipping Evidence Truth check in INTEGRATE mode (Generation phase).');
         }

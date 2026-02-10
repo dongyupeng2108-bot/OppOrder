@@ -572,6 +572,9 @@ if (fs.existsSync(indexFile) && newHash) {
         
         Write-Host "   Gate Light Exit Code: $GateExitCode"
         
+        # Append Exit Code to Log File for Evidence Truth
+        Add-Content -Path $GateLogFile -Value "`nGATE_LIGHT_EXIT=$GateExitCode"
+        
         # 6.3 ALWAYS Update artifacts with Real Exit Code & Preview
         Write-Host "   Updating artifacts with Real Exit Code $GateExitCode & Preview..."
         node $GateInjectScriptPath $TaskId $ReportsDir "$GateExitCode" "$GateLogFile"
