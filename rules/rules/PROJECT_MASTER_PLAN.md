@@ -65,7 +65,7 @@
   - **目标**: 实现基础扫描缓存，避免重复计算。
   - **DoD**: 相同参数的连续两次扫描，第二次耗时减少 > 80%。
   - **证据要求**: `rules/task-reports/2026-02/M4_PR1_cache_smoke.txt` (记录两次扫描耗时对比)。
-- PR 2: M4: concurrent scan engine (DONE - 260209)
+- **PR 2: M4: concurrent scan engine (DONE - 260209)**
   - **Status**: Completed via Task 260209_004.
   - **Deliverables**: `POST /scans/run_batch` API, Concurrency Control (limit 5), Fail-soft Isolation.
   - **目标**: 支持多品种/多时间周期并发扫描。
@@ -81,6 +81,26 @@
   - **目标**: 实现基于 run_id 的机会筛选与自动化验收流程。
   - **DoD**: 成功通过 run_id 筛选并生成标准化验收证据，Gate Exit Code 自动化注入。
   - **证据要求**: `rules/task-reports/2026-02/opps_top_by_run_smoke_260209_010.txt`.
+- **PR 5: M4: Opportunity Pipeline v1 (DONE - 260210)**
+  - **Status**: Completed via Task 260210_006.
+  - **Deliverables**: `POST /opportunities/build_v1`, Batch Scan + Fixed Weight Scoring, UI "Build v1" Button.
+  - **目标**: 集成并发扫描与基础评分，形成 v1 流水线。
+  - **DoD**: 完整跑通 Scan -> Score -> Top 流程，Gate Light 验证通过。
+  - **证据要求**: `rules/task-reports/2026-02/opps_pipeline_smoke_260210_006.txt`.
+
+### Milestone M_Hardening: Workflow & CI Stability (Feb 10)
+**目标**: 固化工作流协议，消除验证漂移，强制 CI 一致性。
+- **Task 260210_001: Message Header Protocol (DONE)**
+  - **Deliverables**: WORKFLOW.md protocol, TraeTask header enforcement.
+- **Task 260210_002: Communication Mode Separation (DONE)**
+  - **Deliverables**: Standard vs Maintenance mode protocol.
+- **Task 260210_003: Duplicate Task ID Hard Guard (DONE)**
+  - **Deliverables**: `pre_pr_check.mjs` fail-fast on duplicate task_id in main.
+- **Task 260210_005: Gate Light Evidence Truth (In Progress)**
+  - **Goal**: Ensure snippet exit code matches real log exit code.
+- **Task 260210_007: CI Lock PR TaskId (In Progress)**
+  - **Goal**: Enforce PR task_id lock, LATEST.json consistency, and local/CI parity.
+  - **Status**: PR Created.
 
 ### Milestone M5: 机会算法+LLM (Algo & DeepSeek)
 **目标**: 机会路由、结构化输出、成本控制、DeepSeek 调用。
