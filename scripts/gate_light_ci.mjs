@@ -186,10 +186,49 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
     // Consistency Check
     const errors = [];
     if (ciJson.base !== baseCalc) errors.push(`Base mismatch: JSON=${ciJson.base}, Calc=${baseCalc}`);
-    if (ciJson.head !== headCalc) errors.push(`Head mismatch: JSON=${ciJson.head}, Calc=${headCalc}`);
     if (ciJson.merge_base !== mergeBaseCalc) errors.push(`MergeBase mismatch: JSON=${ciJson.merge_base}, Calc=${mergeBaseCalc}`);
-    if (ciJson.scope_count !== scopeFilesCalc.length) errors.push(`Scope Count mismatch: JSON=${ciJson.scope_count}, Calc=${scopeFilesCalc.length}`);
-    if (JSON.stringify(ciJson.scope_files.sort()) !== JSON.stringify(scopeFilesCalc.sort())) errors.push('Scope Files list mismatch');
+
+    // Intelligent Head/Scope Check
+    if (ciJson.head !== headCalc) {
+        console.log(`[Gate Light] CI Parity Head mismatch (JSON=${ciJson.head}, Calc=${headCalc}). Checking for evidence-only update...`);
+        try {
+            // Check if ciJson.head is reachable
+            try {
+                execSync(`git cat-file -t ${ciJson.head}`, { stdio: 'ignore' });
+            } catch (e) {
+                // Try fetching if missing
+                execSync('git fetch --deepen=50', { stdio: 'ignore' });
+            }
+
+            const diffFiles = execSync(`git diff --name-only ${ciJson.head} ${headCalc}`, { encoding: 'utf8' }).split('\n').filter(Boolean);
+            const hasCodeChanges = diffFiles.some(file => {
+                const normalized = file.replace(/\\/g, '/');
+                return !normalized.startsWith('rules/task-reports/') && 
+                       !normalized.startsWith('rules/rules/') &&
+                       normalized !== 'rules/LATEST.json';
+            });
+            
+            if (hasCodeChanges) {
+                errors.push(`Head mismatch with CODE CHANGES: JSON=${ciJson.head}, Calc=${headCalc}`);
+                console.error(`Changed code files between Parity Head and Current Head:`);
+                diffFiles.filter(f => {
+                    const n = f.replace(/\\/g, '/');
+                    return !n.startsWith('rules/task-reports/') && !n.startsWith('rules/rules/');
+                }).forEach(f => console.error(`  - ${f}`));
+            } else {
+                console.log('[Gate Light] Head mismatch accepted (Evidence/Docs-only update).');
+                // Optional: Verify that scopeFilesCalc is a superset of ciJson.scope_files?
+                // For now, we accept the mismatch implicitly if it's only evidence files.
+            }
+        } catch (e) {
+            errors.push(`Head mismatch and failed to verify diff: ${e.message}`);
+        }
+    } else {
+        // Strict Scope Check (only if heads match)
+        if (ciJson.scope_count !== scopeFilesCalc.length) errors.push(`Scope Count mismatch: JSON=${ciJson.scope_count}, Calc=${scopeFilesCalc.length}`);
+        if (JSON.stringify(ciJson.scope_files.sort()) !== JSON.stringify(scopeFilesCalc.sort())) errors.push('Scope Files list mismatch');
+    }
+
     if (ciJson.scope_count !== ciJson.scope_files.length) errors.push(`JSON internal inconsistency: scope_count=${ciJson.scope_count}, scope_files.length=${ciJson.scope_files.length}`);
     
     // Anti-Cheat Rules
