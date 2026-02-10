@@ -95,6 +95,7 @@ if (taskId >= '260210_009') {
 Base: ${data.base ? data.base.substring(0, 7) : 'N/A'}
 Head: ${data.head ? data.head.substring(0, 7) : 'N/A'}
 MergeBase: ${data.merge_base ? data.merge_base.substring(0, 7) : 'N/A'}
+Source: JSON (Evidence-as-Code)
 Scope: ${data.scope_count} files
 Files (Top 3):
 ${data.scope_files ? data.scope_files.slice(0, 3).map(f => `  - ${f}`).join('\n') : ''}
