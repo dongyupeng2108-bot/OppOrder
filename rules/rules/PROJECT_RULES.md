@@ -73,6 +73,7 @@
 - **LATEST.json**: A pointer file in rules/ that tracks the most recently generated task evidence location. CI uses this to know what to validate.
 
 ## Gate Light Hardening Rules
+- **CI Parity Evidence-as-Code**: Task evidence MUST include `ci_parity_<task_id>.json`. Gate Light performs mandatory re-calculation and anti-cheat validation (e.g., prohibiting `head != base` with 0 files).
 - **Clean-State Integration**: The Integrate phase (`dev_batch_mode -Mode Integrate`) strictly enforces a clean git working directory. Uncommitted changes to code files (anything other than `rules/task-reports/**`, `rules/rules/**`, `rules/LATEST.json`) will trigger a hard block (`exit 31`).
 
 ## M2 Interfaces (Diff & Replay)

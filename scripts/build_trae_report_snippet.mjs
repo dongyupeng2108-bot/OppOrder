@@ -81,19 +81,38 @@ if (fs.existsSync(notifyPath)) {
     }
 }
 
-// 2.5. CI Parity Probe (Task 260210_009+)
+// 2.5. CI Parity Probe (Task 260211_002)
 let ciParityContent = '';
 if (taskId >= '260210_009') {
-    const probeFile = path.join(resultDir, `ci_parity_${taskId}.txt`);
-    if (fs.existsSync(probeFile)) {
-        const content = fs.readFileSync(probeFile, 'utf8');
+    // Try JSON first (Task 260211_002+)
+    const probeJson = path.join(resultDir, `ci_parity_${taskId}.json`);
+    const probeTxt = path.join(resultDir, `ci_parity_${taskId}.txt`); // Legacy
+
+    if (fs.existsSync(probeJson)) {
+        try {
+            const data = JSON.parse(fs.readFileSync(probeJson, 'utf8'));
+            ciParityContent = `=== CI_PARITY_PREVIEW ===
+Base: ${data.base ? data.base.substring(0, 7) : 'N/A'}
+Head: ${data.head ? data.head.substring(0, 7) : 'N/A'}
+MergeBase: ${data.merge_base ? data.merge_base.substring(0, 7) : 'N/A'}
+Scope: ${data.scope_count} files
+Files (Top 3):
+${data.scope_files ? data.scope_files.slice(0, 3).map(f => `  - ${f}`).join('\n') : ''}
+${data.scope_files && data.scope_files.length > 3 ? '  ... (truncated)' : ''}
+=========================`;
+        } catch (e) {
+            console.warn(`[Snippet Builder] Warning: Failed to parse CI Parity JSON: ${e.message}`);
+        }
+    } else if (fs.existsSync(probeTxt)) {
+         // Legacy text fallback
+        const content = fs.readFileSync(probeTxt, 'utf8');
         const marker = '=== CI_PARITY_PREVIEW ===';
         if (content.includes(marker)) {
             const parts = content.split(marker);
-            ciParityContent = marker + parts[1]; // Include everything after marker
+            ciParityContent = marker + parts[1];
         }
     } else {
-        console.warn(`[Snippet Builder] Warning: CI Parity Probe file missing: ${probeFile}`);
+        console.warn(`[Snippet Builder] Warning: CI Parity Probe file missing.`);
     }
 }
 

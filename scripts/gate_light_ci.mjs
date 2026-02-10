@@ -150,6 +150,67 @@ if (latestJson && latestJson.task_id === task_id) {
 
 console.log('[Gate Light] Verifying task_id: ' + task_id);
     
+    // --- 2. Check CI Parity JSON Evidence (Task 260211_002) ---
+    // Hard Guard: Must exist, be valid JSON, match current git state, and pass anti-cheat.
+    console.log('[Gate Light] Checking CI Parity JSON Evidence...');
+    const ciParityFile = path.join('rules', 'task-reports', '2026-02', `ci_parity_${targetTaskId}.json`);
+    
+    if (!fs.existsSync(ciParityFile)) {
+        console.error(`[Gate Light] FAIL: CI Parity JSON file missing: ${ciParityFile}`);
+        process.exit(1);
+    }
+    
+    let ciJson;
+    try {
+        ciJson = JSON.parse(fs.readFileSync(ciParityFile, 'utf8'));
+    } catch (e) {
+        console.error(`[Gate Light] FAIL: CI Parity JSON invalid: ${e.message}`);
+        process.exit(1);
+    }
+    
+    // Re-calculate local state for verification
+    let baseCalc, headCalc, mergeBaseCalc, scopeFilesCalc;
+    try {
+        baseCalc = execSync('git rev-parse origin/main', { encoding: 'utf8' }).trim();
+        headCalc = execSync('git rev-parse HEAD', { encoding: 'utf8' }).trim();
+        mergeBaseCalc = execSync('git merge-base origin/main HEAD', { encoding: 'utf8' }).trim();
+        const diff = execSync('git diff --name-only origin/main...HEAD', { encoding: 'utf8' }).trim();
+        scopeFilesCalc = diff ? diff.split('\n').filter(Boolean) : [];
+    } catch (e) {
+        console.error(`[Gate Light] FAIL: Git re-calculation failed: ${e.message}`);
+        process.exit(1);
+    }
+    
+    // Consistency Check
+    const errors = [];
+    if (ciJson.base !== baseCalc) errors.push(`Base mismatch: JSON=${ciJson.base}, Calc=${baseCalc}`);
+    if (ciJson.head !== headCalc) errors.push(`Head mismatch: JSON=${ciJson.head}, Calc=${headCalc}`);
+    if (ciJson.merge_base !== mergeBaseCalc) errors.push(`MergeBase mismatch: JSON=${ciJson.merge_base}, Calc=${mergeBaseCalc}`);
+    if (ciJson.scope_count !== scopeFilesCalc.length) errors.push(`Scope Count mismatch: JSON=${ciJson.scope_count}, Calc=${scopeFilesCalc.length}`);
+    if (JSON.stringify(ciJson.scope_files.sort()) !== JSON.stringify(scopeFilesCalc.sort())) errors.push('Scope Files list mismatch');
+    if (ciJson.scope_count !== ciJson.scope_files.length) errors.push(`JSON internal inconsistency: scope_count=${ciJson.scope_count}, scope_files.length=${ciJson.scope_files.length}`);
+    
+    // Anti-Cheat Rules
+    if (ciJson.head !== ciJson.base && ciJson.scope_count === 0) {
+        errors.push('[ANTI-CHEAT] HEAD != BASE but scope_count is 0. Impossible state.');
+    }
+    if (ciJson.head === ciJson.base && ciJson.scope_count > 0) {
+        errors.push('[ANTI-CHEAT] HEAD == BASE but scope_count > 0. Impossible state.');
+    }
+    // Explicitly fail if head == base (PR should be blocked upstream)
+    if (ciJson.head === ciJson.base) {
+        errors.push('[ANTI-CHEAT] HEAD equals BASE; PR should be blocked upstream (Empty PR).');
+    }
+    
+    if (errors.length > 0) {
+        console.error('[Gate Light] FAIL: CI Parity JSON Evidence validation failed:');
+        errors.forEach(e => console.error(`  - ${e}`));
+        console.error('ACTION: Re-run ci_parity_probe.mjs and ensure no manual tampering.');
+        process.exit(1);
+    }
+    
+    console.log('[Gate Light] CI Parity JSON Evidence verified.');
+
     // --- Doc Path Standards Check (Task 260208_025) ---
     console.log('[Gate Light] Checking doc path standards...');
     const canonicalDocs = [

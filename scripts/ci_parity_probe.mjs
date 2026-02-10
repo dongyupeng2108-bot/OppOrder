@@ -3,9 +3,6 @@ import path from 'path';
 import { execSync } from 'child_process';
 
 const args = process.argv.slice(2);
-const taskIdArg = args.find(arg => arg.startsWith('--task_id=') || arg === '--task_id');
-const resultDirArg = args.find(arg => arg.startsWith('--result_dir=') || arg === '--result_dir');
-const detectionSourceArg = args.find(arg => arg.startsWith('--detection_source=') || arg === '--detection_source');
 
 // Handle both --key=value and --key value
 function getArgValue(key, fallback) {
@@ -18,7 +15,8 @@ function getArgValue(key, fallback) {
 
 const taskId = getArgValue('--task_id');
 const resultDir = getArgValue('--result_dir', process.cwd());
-const detectionSource = getArgValue('--detection_source', 'unknown');
+// No longer used in JSON structure but kept for compat if needed, though not required by spec
+// const detectionSource = getArgValue('--detection_source', 'unknown');
 
 if (!taskId) {
     console.error('Error: --task_id required');
@@ -29,71 +27,61 @@ function runGit(cmd) {
     try {
         return execSync(cmd, { encoding: 'utf8' }).trim();
     } catch (e) {
-        return `ERROR: ${e.message.replace(/\n/g, ' ')}`;
+        throw new Error(`Git command failed: ${cmd}\n${e.message}`);
     }
 }
 
-console.log(`[CI Parity Probe] Running for task ${taskId}...`);
+console.log(`[CI Parity Probe] Running for task ${taskId} (JSON Mode)...`);
+
+// 0. Fail-fast origin/main check
+try {
+    runGit('git fetch origin main');
+} catch (e) {
+    console.error('[CI Parity Probe] FATAL: git fetch origin main failed.');
+    console.error(e.message);
+    process.exit(1);
+}
 
 // 1. Gather Git Context
 let originMain;
 try {
     originMain = runGit('git rev-parse origin/main');
 } catch (e) {
-    console.log('[CI Parity Probe] origin/main not found, fetching...');
-    runGit('git fetch origin main');
-    originMain = runGit('git rev-parse origin/main');
+    console.error('[CI Parity Probe] FATAL: origin/main not found after fetch.');
+    process.exit(1);
 }
 
 const head = runGit('git rev-parse HEAD');
-let mergeBase = 'unknown';
+let mergeBase;
 try {
     mergeBase = runGit(`git merge-base origin/main HEAD`);
 } catch (e) {
-    mergeBase = 'ERROR: No merge base found';
+    console.error('[CI Parity Probe] FATAL: git merge-base failed.');
+    process.exit(1);
 }
 
 const diffScope = runGit('git diff --name-only origin/main...HEAD');
-const fileCount = diffScope ? diffScope.split('\n').filter(Boolean).length : 0;
+const scopeFiles = diffScope ? diffScope.split('\n').filter(Boolean) : [];
+const scopeCount = scopeFiles.length;
 
-// 2. Build Report Content
-const outputLines = [];
-outputLines.push(`CI Parity Probe Report`);
-outputLines.push(`Task ID: ${taskId}`);
-outputLines.push(`Timestamp: ${new Date().toISOString()}`);
-outputLines.push(`----------------------------------------`);
-outputLines.push(`Git Context:`);
-outputLines.push(`  Origin/Main: ${originMain}`);
-outputLines.push(`  HEAD:        ${head}`);
-outputLines.push(`  Merge Base:  ${mergeBase}`);
-outputLines.push(`----------------------------------------`);
-outputLines.push(`Task Detection:`);
-outputLines.push(`  Source:      ${detectionSource}`);
-outputLines.push(`----------------------------------------`);
-outputLines.push(`Scope (Diff origin/main...HEAD):`);
-outputLines.push(`  File Count:  ${fileCount}`);
-if (fileCount > 0) {
-    outputLines.push(diffScope.split('\n').map(l => `  - ${l}`).join('\n'));
-} else {
-    outputLines.push(`  (No changes detected)`);
-}
-outputLines.push(`----------------------------------------`);
-outputLines.push(``);
-outputLines.push(`=== CI_PARITY_PREVIEW ===`);
-outputLines.push(`Base: ${originMain.substring(0, 7)}`);
-outputLines.push(`Head: ${head.substring(0, 7)}`);
-outputLines.push(`MergeBase: ${mergeBase.substring(0, 7)}`);
-outputLines.push(`Source: ${detectionSource}`);
-outputLines.push(`Scope: ${fileCount} files`);
-outputLines.push(`=========================`);
+// 2. Build JSON Content
+const evidence = {
+    task_id: taskId,
+    base: originMain,
+    head: head,
+    merge_base: mergeBase,
+    scope_files: scopeFiles,
+    scope_count: scopeCount,
+    generated_at: new Date().toISOString()
+};
 
 // 3. Write to File
-const outputFile = path.join(resultDir, `ci_parity_${taskId}.txt`);
+const outputFile = path.join(resultDir, `ci_parity_${taskId}.json`);
+
 // Ensure directory exists
 if (!fs.existsSync(resultDir)) {
     fs.mkdirSync(resultDir, { recursive: true });
 }
 
-fs.writeFileSync(outputFile, outputLines.join('\n'));
-console.log(`[CI Parity Probe] Report written to: ${outputFile}`);
-console.log(outputLines.join('\n'));
+fs.writeFileSync(outputFile, JSON.stringify(evidence, null, 2));
+console.log(`[CI Parity Probe] Evidence written to: ${outputFile}`);

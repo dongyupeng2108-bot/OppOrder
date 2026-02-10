@@ -75,7 +75,16 @@ To reduce repository overhead and conflicts, we adopt a two-phase workflow for e
         *   Generates evidence, updates `LATEST.json`, runs postflight & pre-pr checks.
     *   **Command**: Use `scripts/dev_batch_mode.ps1 -Mode Integrate`.
 
-### Conflict Minimization
+### Gate Light Evidence Standards (CI Parity)
+
+*   **Evidence-as-Code (JSON)**: CI Parity Evidence MUST be a structured JSON file (`rules/task-reports/.../ci_parity_<task_id>.json`) containing `task_id`, `base`, `head`, `merge_base`, `scope_files`, `scope_count`, and `generated_at`. Text-based evidence is DEPRECATED.
+*   **Gate Light Recalculation**: Gate Light CI (`gate_light_ci.mjs`) MUST independently recalculate git state (`base`, `head`, `merge_base`, `scope_files`) and validate it against the provided JSON evidence byte-for-byte.
+*   **Anti-Cheat**:
+    *   If `head != base`, `scope_count` MUST be > 0.
+    *   If `head == base`, `scope_count` MUST be 0 (Empty PR warning/fail).
+    *   `merge_base` MUST match calculated value.
+
+## Conflict Minimization
 *   **LATEST.json**: Only update during the Integration Phase (1 modification per PR).
 *   **Task Reports**: Only write to `rules/task-reports/**` during the Integration Phase.
 *   **Repo Operation Budget**: Limit git operations to ≤ 8 steps per task.
