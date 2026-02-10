@@ -1,24 +1,47 @@
 CI Parity Probe Report
 Task ID: 260210_009
-Timestamp: 2026-02-10T15:23:54.280Z
+Timestamp: 2026-02-10T15:34:14.006Z
 ----------------------------------------
 Git Context:
-  Origin/Main: ce930605e5ab8113132839ed5379abca50edbd6c
-  HEAD:        ce930605e5ab8113132839ed5379abca50edbd6c
-  Merge Base:  ce930605e5ab8113132839ed5379abca50edbd6c
+  Origin/Main: afb9fddb3ab297149f1c680b2b2e86182bf60d9d
+  HEAD:        c16df127a2200f60af972454777371679d7c58be
+  Merge Base:  afb9fddb3ab297149f1c680b2b2e86182bf60d9d
 ----------------------------------------
 Task Detection:
   Source:      INTEGRATE_MODE
 ----------------------------------------
 Scope (Diff origin/main...HEAD):
-  File Count:  0
-  (No changes detected)
+  File Count:  24
+  - rules/LATEST.json
+  - rules/rules/PROJECT_RULES.md
+  - rules/rules/WORKFLOW.md
+  - rules/task-reports/2026-02/260210_009.json
+  - rules/task-reports/2026-02/260210_009_healthcheck_53122_pairs.txt
+  - rules/task-reports/2026-02/260210_009_healthcheck_53122_root.txt
+  - rules/task-reports/2026-02/M4_PR2_concurrent_log_260210_009.txt
+  - rules/task-reports/2026-02/ci_parity_260210_009.txt
+  - rules/task-reports/2026-02/deliverables_index_260210_009.json
+  - rules/task-reports/2026-02/dod_stdout_260210_009.txt
+  - rules/task-reports/2026-02/gate_light_ci_260210_009.txt
+  - rules/task-reports/2026-02/notify_260210_009.txt
+  - rules/task-reports/2026-02/opps_pipeline_smoke_260210_009.txt
+  - rules/task-reports/2026-02/opps_run_filter_smoke_260210_009.txt
+  - rules/task-reports/2026-02/opps_top_by_run_smoke_260210_009.txt
+  - rules/task-reports/2026-02/result_260210_009.json
+  - rules/task-reports/2026-02/scan_cache_smoke_260210_009.txt
+  - rules/task-reports/2026-02/scripts/postflight_validate_envelope_260210_009.mjs
+  - rules/task-reports/2026-02/trae_report_snippet_260210_009.txt
+  - rules/task-reports/envelopes/260210_009.envelope.json
+  - scripts/build_trae_report_snippet.mjs
+  - scripts/ci_parity_probe.mjs
+  - scripts/dev_batch_mode.ps1
+  - scripts/gate_light_ci.mjs
 ----------------------------------------
 
 === CI_PARITY_PREVIEW ===
-Base: ce93060
-Head: ce93060
-MergeBase: ce93060
+Base: afb9fdd
+Head: c16df12
+MergeBase: afb9fdd
 Source: INTEGRATE_MODE
-Scope: 0 files
+Scope: 24 files
 =========================

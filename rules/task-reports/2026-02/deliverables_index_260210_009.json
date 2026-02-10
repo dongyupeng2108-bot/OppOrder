@@ -941,9 +941,24 @@
       "sha256_short": "338e5c7f"
     },
     {
+      "name": "260210_008.json",
+      "size": 1947,
+      "sha256_short": "bf119981"
+    },
+    {
+      "name": "260210_008_healthcheck_53122_pairs.txt",
+      "size": 40,
+      "sha256_short": "673c659a"
+    },
+    {
+      "name": "260210_008_healthcheck_53122_root.txt",
+      "size": 35,
+      "sha256_short": "338e5c7f"
+    },
+    {
       "name": "260210_009.json",
-      "size": 1918,
-      "sha256_short": "a57dc6ee"
+      "size": 1951,
+      "sha256_short": "124eecab"
     },
     {
       "name": "260210_009_healthcheck_53122_pairs.txt",
@@ -957,8 +972,8 @@
     },
     {
       "name": "ci_parity_260210_009.txt",
-      "size": 1817,
-      "sha256_short": "715c0bac"
+      "size": 704,
+      "sha256_short": "0dde97b9"
     },
     {
       "name": "deliverables_index_260206_005.json",
@@ -1241,6 +1256,11 @@
       "sha256_short": "441c0fd0"
     },
     {
+      "name": "deliverables_index_260210_008.json",
+      "size": 58215,
+      "sha256_short": "39726632"
+    },
+    {
       "name": "dod_stdout_260209_003.txt",
       "size": 550,
       "sha256_short": "89b98162"
@@ -1301,9 +1321,14 @@
       "sha256_short": "f3cd39f2"
     },
     {
+      "name": "dod_stdout_260210_008.txt",
+      "size": 1118,
+      "sha256_short": "05c92276"
+    },
+    {
       "name": "dod_stdout_260210_009.txt",
       "size": 1118,
-      "sha256_short": "5a65026a"
+      "sha256_short": "d196405d"
     },
     {
       "name": "gate_light_ci_260210_006.txt",
@@ -1316,9 +1341,14 @@
       "sha256_short": "11b7d914"
     },
     {
+      "name": "gate_light_ci_260210_008.txt",
+      "size": 2928,
+      "sha256_short": "b3f82714"
+    },
+    {
       "name": "gate_light_ci_260210_009.txt",
-      "size": 3480,
-      "sha256_short": "1327314b"
+      "size": 3014,
+      "sha256_short": "f67cc475"
     },
     {
       "name": "git_scope_diff_260209_006.txt",
@@ -1386,9 +1416,14 @@
       "sha256_short": "e332a09b"
     },
     {
+      "name": "M4_PR2_concurrent_log_260210_008.txt",
+      "size": 430,
+      "sha256_short": "94817bbb"
+    },
+    {
       "name": "M4_PR2_concurrent_log_260210_009.txt",
       "size": 415,
-      "sha256_short": "69ccf88a"
+      "sha256_short": "152344ff"
     },
     {
       "name": "manual_verification.json",
@@ -1676,9 +1711,14 @@
       "sha256_short": "83d9e5ab"
     },
     {
+      "name": "notify_260210_008.txt",
+      "size": 16547,
+      "sha256_short": "f8a6da24"
+    },
+    {
       "name": "notify_260210_009.txt",
-      "size": 16032,
-      "sha256_short": "ddd0e4e7"
+      "size": 16469,
+      "sha256_short": "c80c4af5"
     },
     {
       "name": "opps_pipeline_smoke_260209_006.txt",
@@ -1726,9 +1766,14 @@
       "sha256_short": "4175c129"
     },
     {
+      "name": "opps_pipeline_smoke_260210_008.txt",
+      "size": 659,
+      "sha256_short": "32471af2"
+    },
+    {
       "name": "opps_pipeline_smoke_260210_009.txt",
       "size": 646,
-      "sha256_short": "44eeb2a7"
+      "sha256_short": "274a0a8e"
     },
     {
       "name": "opps_run_filter_smoke_260209_008.txt",
@@ -1771,9 +1816,14 @@
       "sha256_short": "4291dd1a"
     },
     {
+      "name": "opps_run_filter_smoke_260210_008.txt",
+      "size": 680,
+      "sha256_short": "d1ae139c"
+    },
+    {
       "name": "opps_run_filter_smoke_260210_009.txt",
       "size": 669,
-      "sha256_short": "14c99eb0"
+      "sha256_short": "acd4c63f"
     },
     {
       "name": "opps_top_260209_001.json",
@@ -1796,9 +1846,14 @@
       "sha256_short": "22550c7b"
     },
     {
+      "name": "opps_top_by_run_smoke_260210_008.txt",
+      "size": 303,
+      "sha256_short": "d2a6b175"
+    },
+    {
       "name": "opps_top_by_run_smoke_260210_009.txt",
       "size": 298,
-      "sha256_short": "8efe2a56"
+      "sha256_short": "2fbb8c2c"
     },
     {
       "name": "reports/healthcheck_pairs.txt",
@@ -2091,9 +2146,14 @@
       "sha256_short": "5f16fe3f"
     },
     {
+      "name": "result_260210_008.json",
+      "size": 1529,
+      "sha256_short": "a8334fe4"
+    },
+    {
       "name": "result_260210_009.json",
-      "size": 489,
-      "sha256_short": "305d30f3"
+      "size": 485,
+      "sha256_short": "7c928192"
     },
     {
       "name": "run_260206_005.log",
@@ -2451,9 +2511,14 @@
       "sha256_short": "57fec1b6"
     },
     {
+      "name": "scan_cache_smoke_260210_008.txt",
+      "size": 303,
+      "sha256_short": "a086482e"
+    },
+    {
       "name": "scan_cache_smoke_260210_009.txt",
       "size": 290,
-      "sha256_short": "f8354369"
+      "sha256_short": "ea77c485"
     },
     {
       "name": "scripts/postflight_validate_envelope.mjs",
@@ -2467,6 +2532,11 @@
     },
     {
       "name": "scripts/postflight_validate_envelope_260210_007.mjs",
+      "size": 42433,
+      "sha256_short": "a556e24a"
+    },
+    {
+      "name": "scripts/postflight_validate_envelope_260210_008.mjs",
       "size": 42433,
       "sha256_short": "a556e24a"
     },
@@ -2526,9 +2596,14 @@
       "sha256_short": "9ea82f92"
     },
     {
+      "name": "trae_report_snippet_260210_008.txt",
+      "size": 5319,
+      "sha256_short": "aa92682d"
+    },
+    {
       "name": "trae_report_snippet_260210_009.txt",
-      "size": 2608,
-      "sha256_short": "96d9d483"
+      "size": 4556,
+      "sha256_short": "21cad0e1"
     }
   ]
 }
