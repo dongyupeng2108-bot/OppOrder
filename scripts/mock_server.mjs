@@ -84,6 +84,32 @@ const server = http.createServer((req, res) => {
             return;
         }
 
+        if (pathname === '/news/pull') {
+            readBody().then(body => {
+                // Normalize params for cache key simulation
+                const params = {
+                    provider: body.provider || 'gdelt',
+                    topic_key: body.topic_key || 'GOLD',
+                    query: body.query || '',
+                    timespan: body.timespan || '1d',
+                    maxrecords: body.maxrecords || 50
+                };
+                const key = JSON.stringify(params);
+                const cached = scanCache.has(key);
+                
+                if (!cached) scanCache.set(key, true);
+                
+                sendJson({
+                    provider_used: params.provider,
+                    fallback: false,
+                    cached: cached,
+                    cache_key: crypto.createHash('sha256').update(key).digest('hex'),
+                    data: [] // Mock data
+                });
+            });
+            return;
+        }
+
         if (pathname === '/scans/run_batch') {
             readBody().then(body => {
                 const results = body.jobs.map((job, idx) => {
