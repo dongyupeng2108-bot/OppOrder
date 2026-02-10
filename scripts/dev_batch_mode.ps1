@@ -77,8 +77,23 @@ elseif ($Mode -eq 'Integrate') {
         foreach ($Line in $StatusLines) {
             if ([string]::IsNullOrWhiteSpace($Line)) { continue }
             # Format: XY PATH or XY "PATH" (if spaces) or R  OLD -> NEW
-            # Extract Path: Take substring after first 3 chars, split by -> for renames, take last part, trim quotes/spaces
-            $Path = $Line.Substring(3).Split("->")[-1].Trim().Trim('"')
+            # Regex parsing to avoid Substring issues
+            if ($Line -match '^.{3}(.*)$') {
+                $PathRaw = $Matches[1]
+                
+                # Check for rename (R old -> new) - use regex split to avoid splitting on hyphens in filenames!
+                if ($PathRaw -match ' -> ') {
+                    $Path = ($PathRaw -split ' -> ')[-1].Trim().Trim('"')
+                } else {
+                    $Path = $PathRaw.Trim().Trim('"')
+                }
+            } else {
+                # Fallback
+                $Path = $Line.Substring(3).Trim()
+            }
+            
+            # DEBUG: Print parsed path
+            Write-Host "DEBUG: Line='$Line' Path='$Path'" -ForegroundColor Magenta
             # Normalize to forward slashes for regex
             $NormalizedPath = $Path -replace '\\', '/'
             
