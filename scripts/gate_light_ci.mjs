@@ -678,7 +678,26 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         console.log('[Gate Light] Opps Run Filter DoD Evidence verified.');
     }
 
-
+    // --- CI Parity Probe Check (Task 260210_009) ---
+    if (task_id >= '260210_009') {
+        console.log('[Gate Light] Checking CI Parity Preview...');
+        const snippetFile = path.join(result_dir, `trae_report_snippet_${task_id}.txt`);
+        if (fs.existsSync(snippetFile)) {
+            const content = fs.readFileSync(snippetFile, 'utf8');
+            if (!content.includes('=== CI_PARITY_PREVIEW ===')) {
+                console.error('[Gate Light] FAILED: Snippet missing === CI_PARITY_PREVIEW === block.');
+                process.exit(1);
+            }
+            // Check for key fields
+            const requiredFields = ['Base:', 'Head:', 'MergeBase:', 'Source:', 'Scope:'];
+            const missing = requiredFields.filter(f => !content.includes(f));
+            if (missing.length > 0) {
+                 console.error(`[Gate Light] FAILED: CI Parity Preview missing fields: ${missing.join(', ')}`);
+                 process.exit(1);
+            }
+            console.log('[Gate Light] CI Parity Preview verified.');
+        }
+    }
 
     // --- Workflow Hardening Check (Task 260209_009) ---
     if (process.env.GATE_LIGHT_SKIP_HISTORICAL_CHECK === '1') {

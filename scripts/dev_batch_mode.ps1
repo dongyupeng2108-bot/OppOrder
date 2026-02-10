@@ -403,6 +403,13 @@ const newSize = fileBuffer.length;
     Check-LastExitCode
     Remove-Item $InjectScriptPath -ErrorAction SilentlyContinue
 
+    # 2.55 CI Parity Probe (Task 260210_009+)
+    if ($TaskId -ge "260210_009") {
+        Write-Host "2.55. Running CI Parity Probe..."
+        node scripts/ci_parity_probe.mjs --task_id $TaskId --result_dir $ReportsDir --detection_source "INTEGRATE_MODE"
+        Check-LastExitCode
+    }
+
     # 2.6. Generate Trae Report Snippet (Task 260209_005+)
     if ($TaskId -ge "260209_005") {
         Write-Host "2.6. Generating Trae Report Snippet..."

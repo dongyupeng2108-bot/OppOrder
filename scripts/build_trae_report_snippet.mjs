@@ -81,10 +81,27 @@ if (fs.existsSync(notifyPath)) {
     }
 }
 
+// 2.5. CI Parity Probe (Task 260210_009+)
+let ciParityContent = '';
+if (taskId >= '260210_009') {
+    const probeFile = path.join(resultDir, `ci_parity_${taskId}.txt`);
+    if (fs.existsSync(probeFile)) {
+        const content = fs.readFileSync(probeFile, 'utf8');
+        const marker = '=== CI_PARITY_PREVIEW ===';
+        if (content.includes(marker)) {
+            const parts = content.split(marker);
+            ciParityContent = marker + parts[1]; // Include everything after marker
+        }
+    } else {
+        console.warn(`[Snippet Builder] Warning: CI Parity Probe file missing: ${probeFile}`);
+    }
+}
+
 // 3. Construct Snippet Content
 // Requirement:
 // BRANCH / COMMIT
 // === DOD_EVIDENCE_STDOUT ===
+// === CI_PARITY_PREVIEW === (If applicable)
 // === GATE_LIGHT_PREVIEW === (Placeholder)
 // GATE_LIGHT_EXIT=<code> (Placeholder)
 
@@ -98,6 +115,8 @@ COMMIT: ${commitHash}
 ${scopeDiff || '(No changes detected or new branch)'}
 
 ${dodContent}
+
+${ciParityContent}
 
 === GATE_LIGHT_PREVIEW ===
 (Pending Gate Light Execution...)

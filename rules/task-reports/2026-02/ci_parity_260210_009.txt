@@ -1,0 +1,24 @@
+CI Parity Probe Report
+Task ID: 260210_009
+Timestamp: 2026-02-10T15:23:54.280Z
+----------------------------------------
+Git Context:
+  Origin/Main: ce930605e5ab8113132839ed5379abca50edbd6c
+  HEAD:        ce930605e5ab8113132839ed5379abca50edbd6c
+  Merge Base:  ce930605e5ab8113132839ed5379abca50edbd6c
+----------------------------------------
+Task Detection:
+  Source:      INTEGRATE_MODE
+----------------------------------------
+Scope (Diff origin/main...HEAD):
+  File Count:  0
+  (No changes detected)
+----------------------------------------
+
+=== CI_PARITY_PREVIEW ===
+Base: ce93060
+Head: ce93060
+MergeBase: ce93060
+Source: INTEGRATE_MODE
+Scope: 0 files
+=========================
