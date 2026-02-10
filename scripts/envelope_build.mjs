@@ -220,13 +220,14 @@ ${dodEvidencePairs}
     }
  
  // Copy and Index Script
- const scriptSrc = path.join(projectRoot, 'scripts/postflight_validate_envelope.mjs');
- const targetScriptDir = path.join(resultDir, 'scripts');
- ensureDir(targetScriptDir);
- if (fs.existsSync(scriptSrc)) {
- const dest = path.join(targetScriptDir, 'postflight_validate_envelope.mjs');
- fs.copyFileSync(scriptSrc, dest);
- }
+    const scriptSrc = path.join(projectRoot, 'scripts/postflight_validate_envelope.mjs');
+    const targetScriptDir = path.join(resultDir, 'scripts');
+    ensureDir(targetScriptDir);
+    if (fs.existsSync(scriptSrc)) {
+        // Use task-specific name to avoid NoHistoricalEvidenceTouch violation
+        const dest = path.join(targetScriptDir, `postflight_validate_envelope_${taskId}.mjs`);
+        fs.copyFileSync(scriptSrc, dest);
+    }
 
  const scanDir = (dir, base) => {
  const items = fs.readdirSync(dir);
