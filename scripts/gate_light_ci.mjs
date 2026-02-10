@@ -696,6 +696,25 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                  process.exit(1);
             }
             console.log('[Gate Light] CI Parity Preview verified.');
+
+        // Anti-Cheating Check: If Head != Base, Scope must NOT be 0 (Task 260210_009)
+        const baseMatch = ciParityContent.match(/Base:\s*([a-f0-9]+)/);
+        const headMatch = ciParityContent.match(/Head:\s*([a-f0-9]+)/);
+        const scopeMatch = ciParityContent.match(/Scope:\s*(\d+)\s*files/);
+
+        if (baseMatch && headMatch && scopeMatch) {
+            const baseHash = baseMatch[1];
+            const headHash = headMatch[1];
+            const fileCount = parseInt(scopeMatch[1], 10);
+
+            if (baseHash !== headHash && fileCount === 0) {
+                console.error('[Gate Light] CI PARITY VALIDATION FAILED: Head differs from Base but Scope is 0.');
+                console.error(`Base: ${baseHash}, Head: ${headHash}, Scope: ${fileCount}`);
+                console.error('ACTION: Ensure changes are committed before generating evidence.');
+                process.exit(1);
+            }
+        }
+
         }
     }
 

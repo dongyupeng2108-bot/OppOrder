@@ -36,7 +36,15 @@ function runGit(cmd) {
 console.log(`[CI Parity Probe] Running for task ${taskId}...`);
 
 // 1. Gather Git Context
-const originMain = runGit('git rev-parse origin/main');
+let originMain;
+try {
+    originMain = runGit('git rev-parse origin/main');
+} catch (e) {
+    console.log('[CI Parity Probe] origin/main not found, fetching...');
+    runGit('git fetch origin main');
+    originMain = runGit('git rev-parse origin/main');
+}
+
 const head = runGit('git rev-parse HEAD');
 let mergeBase = 'unknown';
 try {
