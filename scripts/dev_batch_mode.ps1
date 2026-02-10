@@ -134,14 +134,15 @@ elseif ($Mode -eq 'Integrate') {
     $LockFile = Join-Path $LocksDir "${TaskId}.lock.json"
     
     if (Test-Path $LockFile) {
-        Write-Host "========================================" -ForegroundColor Red
-        Write-Host "[BLOCK] IMMUTABLE_INTEGRATE_LOCK" -ForegroundColor Red
-        Write-Host "========================================" -ForegroundColor Red
-        Write-Host "[DETAIL] Task $TaskId has already been integrated and locked."
-        Write-Host "Lock File: $LockFile"
-        Write-Host "Action: Use a new task_id for new changes. This task is immutable."
-        exit 33
-    }
+            Write-Output "========================================"
+            Write-Output "[BLOCK] IMMUTABLE_INTEGRATE_LOCK"
+            Write-Output "========================================"
+            Write-Output "[DETAIL] Task $TaskId has already been integrated and locked."
+            Write-Output "Lock File: $LockFile"
+            Write-Output "Action: Use a new task_id for new changes. This task is immutable."
+            Write-Output "EXIT=33"
+            exit 33
+        }
 
     # 1. Healthcheck
     Write-Host "1. Running Healthcheck..."
