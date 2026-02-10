@@ -561,13 +561,13 @@ if (fs.existsSync(indexFile) && newHash) {
         node $GateInjectScriptPath $TaskId $ReportsDir "0"
         
         # 6.2 Run Gate Light (Save to file)
-        $GateLogFile = Join-Path $ReportsDir "gate_light_ci_${TaskId}.txt"
-        Write-Host "   Executing gate_light_ci.mjs > $GateLogFile ..."
-        # Use cmd /c to ensure redirection works as expected in all PS versions
-        # Set GATE_LIGHT_MODE=INTEGRATE to bypass strict preview content check during generation
-        $env:GATE_LIGHT_MODE = "INTEGRATE"
-        cmd /c "node scripts/gate_light_ci.mjs > `"$GateLogFile`" 2>&1"
-        $GateExitCode = $LASTEXITCODE
+    $GateLogFile = Join-Path $ReportsDir "gate_light_ci_${TaskId}.txt"
+    Write-Host "   Executing gate_light_ci.mjs > $GateLogFile ..."
+    # Use cmd /c to ensure redirection works as expected in all PS versions
+    # Set GATE_LIGHT_MODE=INTEGRATE to bypass strict preview content check during generation
+    $env:GATE_LIGHT_MODE = "INTEGRATE"
+    cmd /c "node scripts/gate_light_ci.mjs --task_id $TaskId > `"$GateLogFile`" 2>&1"
+    $GateExitCode = $LASTEXITCODE
         $env:GATE_LIGHT_MODE = $null
         
         Write-Host "   Gate Light Exit Code: $GateExitCode"

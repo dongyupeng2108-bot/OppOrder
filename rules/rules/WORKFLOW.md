@@ -195,6 +195,21 @@ To reduce repository overhead and conflicts, we adopt a two-phase workflow for e
     2.  **报告**错误详情。
     3.  **请求**用户以 `FIX:` 消息头下发修复指令。
 
+### 3.2 PR Task Lock & LATEST Consistency
+**(CI 校验对象锁定与 LATEST 一致性)**
+
+*   **PR 校验锁定**: 
+    *   PR 门禁必须校验“本 PR 的 `task_id`”（优先从分支名解析，其次从 git diff 变更证据中提取），不得仅依赖 `rules/LATEST.json`。
+    *   若 PR 无法解析出唯一 `task_id`（0 个或多个候选），CI 必须 **FAIL-fast** 并输出 `PR_TASK_ID_DETECT_FAILED=1`。
+
+*   **LATEST 一致性硬规则**: 
+    *   当 PR 解析出 `pr_task_id` 时，`rules/LATEST.json.task_id` 必须严格等于 `pr_task_id`。
+    *   **Mismatch 必红灯**: 若不一致，门禁 FAIL 并输出 `LATEST_OUT_OF_SYNC=1`。这意味着 `LATEST.json` 过期，必须在 PR 中一并更新，而不是绕过。
+
+*   **环境对齐**: 
+    *   **本地 Integrate**: `dev_batch_mode.ps1` 必须通过 `--task_id <id>` 显式传参给 `gate_light_ci.mjs`，确保本地验证对象与 PR 一致。
+    *   **CI**: `gate_light_ci.mjs` 自动执行 PR 锁定逻辑。
+
 ### 4. Merge-Ready (可合并) 通知硬规则 (Hard Rule)
 仅当满足以下所有条件时，Agent 才允许发送“PASS / 可合并”通知：
 

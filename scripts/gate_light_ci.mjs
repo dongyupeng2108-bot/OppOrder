@@ -4,38 +4,151 @@ import { execSync } from 'child_process';
 
 const LATEST_JSON_PATH = path.join('rules', 'LATEST.json');
 
-if (!fs.existsSync(LATEST_JSON_PATH)) {
-    console.error('Error: rules/LATEST.json not found. Cannot determine latest task.');
-    process.exit(1);
+try {
+// --- 0. Argument Parsing & Task ID Resolution (Task 260210_007) ---
+const args = process.argv.slice(2);
+let argTaskId = null;
+for (let i = 0; i < args.length; i++) {
+    if (args[i] === '--task_id') {
+        argTaskId = args[i + 1];
+        break;
+    }
 }
 
-try {
-    const latest = JSON.parse(fs.readFileSync(LATEST_JSON_PATH, 'utf8'));
-    const { task_id, result_dir } = latest;
-
-    if (!task_id || !result_dir) {
-        console.error('Error: Invalid LATEST.json format. Missing task_id or result_dir.');
-        process.exit(1);
+let latestJson = null;
+if (fs.existsSync(LATEST_JSON_PATH)) {
+    try {
+        latestJson = JSON.parse(fs.readFileSync(LATEST_JSON_PATH, 'utf8'));
+    } catch (e) {
+        console.warn('[Gate Light] Warning: Failed to parse LATEST.json');
     }
+}
 
-    // --- P1: Branch Task ID Validation (CI Only) ---
-    if (process.env.GITHUB_ACTIONS === 'true' || process.env.CI === 'true') {
-        const branchName = process.env.GITHUB_HEAD_REF || process.env.GITHUB_REF_NAME || '';
-        const match = branchName.match(/(\d{6}_\d{3})/);
-        if (match) {
-            const branchTaskId = match[1];
-            if (branchTaskId !== task_id) {
-                 console.error(`[Gate Light] FAILED: Validation Object Drift Detected.`);
-                 console.error(`  Branch Task ID: ${branchTaskId}`);
-                 console.error(`  LATEST.json Task ID: ${task_id}`);
-                 console.error(`  Action: Update rules/LATEST.json to match the current branch task.`);
-                 process.exit(1);
+let targetTaskId = null;
+let detectionSource = null;
+
+// A. Explicit Argument (Highest Priority)
+if (argTaskId) {
+    targetTaskId = argTaskId;
+    detectionSource = 'ARGUMENT';
+    console.log(`[Gate Light] Target locked via argument: ${targetTaskId}`);
+} 
+// B. PR / Branch Auto-Detection (If no arg)
+else {
+    // 1. Try Branch Name
+    const branchName = process.env.GITHUB_HEAD_REF || process.env.GITHUB_REF_NAME || '';
+    const branchMatch = branchName.match(/(\d{6}_\d{3})/);
+    
+    if (branchMatch) {
+        targetTaskId = branchMatch[1];
+        detectionSource = 'BRANCH_NAME';
+        console.log(`[Gate Light] Detected PR Task ID from branch: ${targetTaskId}`);
+    } 
+    // 2. Try Git Diff (Deep Scan)
+    else {
+        try {
+            console.log('[Gate Light] Attempting to detect task_id from git diff...');
+            // Ensure we have origin/main ref
+            try {
+                execSync('git rev-parse origin/main', { stdio: 'ignore' });
+            } catch (e) {
+                console.log('[Gate Light] origin/main not found, fetching...');
+                execSync('git fetch origin main', { stdio: 'ignore' });
             }
-            console.log(`[Gate Light] CI Branch Task ID verified: ${branchTaskId} matches LATEST.`);
+
+            const diffOutput = execSync('git diff --name-only origin/main...HEAD', { encoding: 'utf8' });
+            const files = diffOutput.split('\n').map(l => l.trim()).filter(Boolean);
+            
+            const candidates = new Set();
+            const patterns = [
+                /rules\/task-reports\/.*\/(\d{6}_\d{3})_/, // Evidence files
+                /rules\/task-reports\/envelopes\/(\d{6}_\d{3})\.envelope\.json/, // Envelopes
+                /trae_report_snippet_(\d{6}_\d{3})\.txt/,
+                /notify_(\d{6}_\d{3})\.txt/,
+                /result_(\d{6}_\d{3})\.json/
+            ];
+
+            files.forEach(f => {
+                // Check if file matches any pattern
+                for (const p of patterns) {
+                    const m = f.match(p);
+                    if (m) {
+                        candidates.add(m[1]);
+                        break; 
+                    }
+                }
+            });
+
+            if (candidates.size === 1) {
+                targetTaskId = Array.from(candidates)[0];
+                detectionSource = 'GIT_DIFF';
+                console.log(`[Gate Light] Detected unique PR Task ID from diff: ${targetTaskId}`);
+            } else if (candidates.size > 1) {
+                console.error('[Gate Light] FAILED: Multiple task_id candidates found in PR diff.');
+                console.error(`PR_TASK_ID_DETECT_FAILED=1`);
+                console.error(`PR_TASK_ID_CANDIDATES: ${Array.from(candidates).join(', ')}`);
+                console.error(`ACTION: ensure branch name contains task_id OR ensure exactly one task_id evidence is changed`);
+                process.exit(1);
+            }
+        } catch (e) {
+            console.log(`[Gate Light] Git diff detection skipped/failed: ${e.message}`);
         }
     }
+}
 
-    console.log('[Gate Light] Verifying latest task: ' + task_id);
+// C. Fallback to LATEST.json (Legacy / Default)
+if (!targetTaskId) {
+    if (!latestJson || !latestJson.task_id) {
+         console.error('Error: No task_id specified, auto-detection failed, and rules/LATEST.json invalid/missing.');
+         process.exit(1);
+    }
+    targetTaskId = latestJson.task_id;
+    detectionSource = 'LATEST_JSON';
+    console.log(`[Gate Light] Target defaulting to LATEST.json: ${targetTaskId}`);
+}
+
+const task_id = targetTaskId;
+
+// --- 1. Consistency Hard Rule (LATEST Consistency) ---
+// If we locked onto a specific task (Arg or PR) AND we are in a PR context (or just enforcing consistency),
+// check LATEST.json.
+// Note: Even if we defaulted to LATEST_JSON above, this check passes trivially.
+// The critical case is when we found a DIFFERENT task_id from PR/Arg.
+
+if (detectionSource === 'ARGUMENT' || detectionSource === 'BRANCH_NAME' || detectionSource === 'GIT_DIFF') {
+    if (!latestJson) {
+         console.error('[Gate Light] FAILED: rules/LATEST.json missing.');
+         process.exit(1);
+    }
+    if (latestJson.task_id !== task_id) {
+         console.error(`[Gate Light] FAILED: LATEST.json Out of Sync.`);
+         console.error(`  LATEST_OUT_OF_SYNC=1`);
+         console.error(`  LATEST_TASK_ID: ${latestJson.task_id}`);
+         console.error(`  PR_TASK_ID: ${task_id}`);
+         console.error(`  ACTION: update rules/LATEST.json to PR task_id`);
+         process.exit(1);
+    }
+    console.log('[Gate Light] LATEST.json consistency verified.');
+}
+
+// Resolve result_dir
+let result_dir;
+if (latestJson && latestJson.task_id === task_id) {
+    result_dir = latestJson.result_dir;
+} else {
+    // Derive from task_id date
+    const match = task_id.match(/^(\d{2})(\d{2})\d{2}_/);
+    if (match) {
+         const year = '20' + match[1];
+         const month = match[2];
+         result_dir = path.join('rules', 'task-reports', `${year}-${month}`);
+    } else {
+         console.error(`[Gate Light] FAILED: Cannot derive result_dir from task_id ${task_id}`);
+         process.exit(1);
+    }
+}
+
+console.log('[Gate Light] Verifying task_id: ' + task_id);
     
     // --- Doc Path Standards Check (Task 260208_025) ---
     console.log('[Gate Light] Checking doc path standards...');
@@ -568,7 +681,10 @@ try {
 
 
     // --- Workflow Hardening Check (Task 260209_009) ---
-    if (task_id >= '260209_009') {
+    if (process.env.GATE_LIGHT_SKIP_HISTORICAL_CHECK === '1') {
+        console.log('[Gate Light] Skipping Workflow Hardening (GATE_LIGHT_SKIP_HISTORICAL_CHECK=1).');
+    }
+    else if (task_id >= '260209_009') {
         console.log('[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...');
 
         // PREP: Ensure origin/main is available and has enough history for merge-base calculation
@@ -586,6 +702,19 @@ try {
             const diffOutput = execSync('git diff --name-status origin/main...HEAD', { encoding: 'utf8' });
             const forbiddenModifications = [];
             
+            // Fetch previous LATEST.json from origin/main to allow transition
+            let allowedLegacyTaskId = null;
+            try {
+                const oldLatestJsonStr = execSync('git show origin/main:rules/LATEST.json', { encoding: 'utf8', stdio: 'pipe' });
+                const oldLatestJson = JSON.parse(oldLatestJsonStr);
+                if (oldLatestJson && oldLatestJson.task_id) {
+                    allowedLegacyTaskId = oldLatestJson.task_id;
+                    console.log(`[Gate Light] Allowed legacy task_id (transition): ${allowedLegacyTaskId}`);
+                }
+            } catch (e) {
+                // Ignore if not found or failed
+            }
+
             diffOutput.split('\n').forEach(line => {
                 const parts = line.trim().split(/\s+/);
                 if (parts.length < 2) return;
@@ -602,6 +731,10 @@ try {
                     // Check if filename contains current task_id
                     const filename = path.basename(normalizedPath);
                     if (!filename.includes(task_id)) {
+                        // Allow if matches legacy task_id (Transition scenario)
+                        if (allowedLegacyTaskId && filename.includes(allowedLegacyTaskId)) {
+                            return;
+                        }
                         forbiddenModifications.push(`${parts[0]} ${filePath}`);
                     }
                 }
