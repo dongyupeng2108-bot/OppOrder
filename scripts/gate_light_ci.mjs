@@ -698,9 +698,9 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
             console.log('[Gate Light] CI Parity Preview verified.');
 
         // Anti-Cheating Check: If Head != Base, Scope must NOT be 0 (Task 260210_009)
-        const baseMatch = ciParityContent.match(/Base:\s*([a-f0-9]+)/);
-        const headMatch = ciParityContent.match(/Head:\s*([a-f0-9]+)/);
-        const scopeMatch = ciParityContent.match(/Scope:\s*(\d+)\s*files/);
+        const baseMatch = content.match(/Base:\s*([a-f0-9]+)/);
+        const headMatch = content.match(/Head:\s*([a-f0-9]+)/);
+        const scopeMatch = content.match(/Scope:\s*(\d+)\s*files/);
 
         if (baseMatch && headMatch && scopeMatch) {
             const baseHash = baseMatch[1];
