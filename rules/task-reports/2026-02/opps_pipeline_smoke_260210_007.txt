@@ -1,6 +1,6 @@
-Test started at 2026-02-10T11:20:22.999Z
+Test started at 2026-02-10T11:36:41.510Z
 Step 1: Calling POST /opportunities/build_v1 with 5 OK + 1 Failed jobs...
-Response received. Run ID: mock_build_1770722423016
+Response received. Run ID: mock_build_1770723401527
 jobs_ok: 5, jobs_failed: 1
 PASS: Fail-soft isolation verified.
 Step 2: Calling GET /opportunities/top?limit=5...

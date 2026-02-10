@@ -1,44 +1,40 @@
 === TRAE_REPORT_SNIPPET ===
 
 BRANCH: feat/ci-lock-pr-taskid-260210_007
-COMMIT: c18ffee
+COMMIT: 1df8231
 
 === GIT_SCOPE_DIFF ===
 M	.github/workflows/gate-light.yml
 M	rules/LATEST.json
+M	rules/rules/PROJECT_RULES.md
 M	rules/rules/WORKFLOW.md
-A	rules/task-reports/2026-02/260210_006.json
-A	rules/task-reports/2026-02/260210_006_healthcheck_53122_pairs.txt
-A	rules/task-reports/2026-02/260210_006_healthcheck_53122_root.txt
-A	rules/task-reports/2026-02/M4_PR2_concurrent_log_260210_006.txt
-A	rules/task-reports/2026-02/deliverables_index_260210_006.json
-A	rules/task-reports/2026-02/dod_stdout_260210_006.txt
-A	rules/task-reports/2026-02/gate_light_ci_260210_006.txt
-A	rules/task-reports/2026-02/notify_260210_006.txt
-A	rules/task-reports/2026-02/opps_pipeline_smoke_260210_006.txt
-A	rules/task-reports/2026-02/opps_run_filter_smoke_260210_006.txt
-A	rules/task-reports/2026-02/opps_top_by_run_smoke_260210_006.txt
-A	rules/task-reports/2026-02/result_260210_006.json
-A	rules/task-reports/2026-02/scan_cache_smoke_260210_006.txt
-A	rules/task-reports/2026-02/scripts/postflight_validate_envelope_260210_006.mjs
-A	rules/task-reports/2026-02/trae_report_snippet_260210_006.txt
-A	rules/task-reports/envelopes/260210_006.envelope.json
-M	scripts/build_trae_report_snippet.mjs
+A	rules/task-reports/2026-02/260210_007.json
+A	rules/task-reports/2026-02/260210_007_healthcheck_53122_pairs.txt
+A	rules/task-reports/2026-02/260210_007_healthcheck_53122_root.txt
+A	rules/task-reports/2026-02/M4_PR2_concurrent_log_260210_007.txt
+A	rules/task-reports/2026-02/deliverables_index_260210_007.json
+A	rules/task-reports/2026-02/dod_stdout_260210_007.txt
+A	rules/task-reports/2026-02/gate_light_ci_260210_007.txt
+A	rules/task-reports/2026-02/notify_260210_007.txt
+A	rules/task-reports/2026-02/opps_pipeline_smoke_260210_007.txt
+A	rules/task-reports/2026-02/opps_run_filter_smoke_260210_007.txt
+A	rules/task-reports/2026-02/opps_top_by_run_smoke_260210_007.txt
+A	rules/task-reports/2026-02/result_260210_007.json
+A	rules/task-reports/2026-02/scan_cache_smoke_260210_007.txt
+A	rules/task-reports/2026-02/scripts/postflight_validate_envelope_260210_007.mjs
+A	rules/task-reports/2026-02/trae_report_snippet_260210_007.txt
+A	rules/task-reports/envelopes/260210_007.envelope.json
 M	scripts/dev_batch_mode.ps1
-M	scripts/envelope_build.mjs
 M	scripts/gate_light_ci.mjs
-A	scripts/mock_server.mjs
-M	scripts/postflight_validate_envelope.mjs
-M	scripts/smoke_opps_top_by_run.mjs
 
 === DOD_EVIDENCE_STDOUT ===
 DOD_EVIDENCE_HEALTHCHECK_ROOT: E:/OppRadar/rules/task-reports/2026-02/260210_007_healthcheck_53122_root.txt => HTTP/1.1 200 OK
 DOD_EVIDENCE_HEALTHCHECK_PAIRS: E:/OppRadar/rules/task-reports/2026-02/260210_007_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
-DOD_EVIDENCE_SCAN_CACHE_MISS: E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260210_007.txt => cached=false duration_ms=15
+DOD_EVIDENCE_SCAN_CACHE_MISS: E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260210_007.txt => cached=false duration_ms=16
 DOD_EVIDENCE_SCAN_CACHE_HIT:  E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260210_007.txt => cached=true  duration_ms=1
-DOD_EVIDENCE_OPPS_PIPELINE_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_pipeline_smoke_260210_007.txt => run_id=mock_build_1770722423016 ok=5 failed=1
+DOD_EVIDENCE_OPPS_PIPELINE_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_pipeline_smoke_260210_007.txt => run_id=mock_build_1770723401527 ok=5 failed=1
 DOD_EVIDENCE_OPPS_PIPELINE_TOP: E:/OppRadar/rules/task-reports/2026-02/opps_pipeline_smoke_260210_007.txt => top_count=5 refs_run_id=true
-DOD_EVIDENCE_OPPS_RUNS_LIST: E:/OppRadar/rules/task-reports/2026-02/opps_run_filter_smoke_260210_007.txt => contains_run_id=true count=32
+DOD_EVIDENCE_OPPS_RUNS_LIST: E:/OppRadar/rules/task-reports/2026-02/opps_run_filter_smoke_260210_007.txt => contains_run_id=true count=35
 DOD_EVIDENCE_OPPS_BY_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_run_filter_smoke_260210_007.txt => rows=4 all_same_run_id=true
 
 === GATE_LIGHT_PREVIEW ===
