@@ -957,8 +957,8 @@
     },
     {
       "name": "260210_009.json",
-      "size": 1947,
-      "sha256_short": "dfd67864"
+      "size": 1853,
+      "sha256_short": "9001b489"
     },
     {
       "name": "260210_009_healthcheck_53122_pairs.txt",
@@ -969,11 +969,6 @@
       "name": "260210_009_healthcheck_53122_root.txt",
       "size": 33,
       "sha256_short": "4cdcb89c"
-    },
-    {
-      "name": "ci_parity_260210_009.txt",
-      "size": 1995,
-      "sha256_short": "bde43b33"
     },
     {
       "name": "deliverables_index_260206_005.json",
@@ -1327,8 +1322,8 @@
     },
     {
       "name": "dod_stdout_260210_009.txt",
-      "size": 1118,
-      "sha256_short": "bd2b7f26"
+      "size": 1109,
+      "sha256_short": "9037f7a5"
     },
     {
       "name": "gate_light_ci_260210_006.txt",
@@ -1344,11 +1339,6 @@
       "name": "gate_light_ci_260210_008.txt",
       "size": 2928,
       "sha256_short": "b3f82714"
-    },
-    {
-      "name": "gate_light_ci_260210_009.txt",
-      "size": 3014,
-      "sha256_short": "440f88ec"
     },
     {
       "name": "git_scope_diff_260209_006.txt",
@@ -1423,7 +1413,7 @@
     {
       "name": "M4_PR2_concurrent_log_260210_009.txt",
       "size": 415,
-      "sha256_short": "325234ae"
+      "sha256_short": "4b8f4aed"
     },
     {
       "name": "manual_verification.json",
@@ -1717,8 +1707,8 @@
     },
     {
       "name": "notify_260210_009.txt",
-      "size": 16448,
-      "sha256_short": "4dba3549"
+      "size": 16359,
+      "sha256_short": "399eb5d3"
     },
     {
       "name": "opps_pipeline_smoke_260209_006.txt",
@@ -1772,8 +1762,8 @@
     },
     {
       "name": "opps_pipeline_smoke_260210_009.txt",
-      "size": 631,
-      "sha256_short": "f3df9db8"
+      "size": 630,
+      "sha256_short": "082c20dc"
     },
     {
       "name": "opps_run_filter_smoke_260209_008.txt",
@@ -1823,7 +1813,7 @@
     {
       "name": "opps_run_filter_smoke_260210_009.txt",
       "size": 668,
-      "sha256_short": "dff6a7d5"
+      "sha256_short": "1bead1b7"
     },
     {
       "name": "opps_top_260209_001.json",
@@ -1853,7 +1843,7 @@
     {
       "name": "opps_top_by_run_smoke_260210_009.txt",
       "size": 298,
-      "sha256_short": "19412043"
+      "sha256_short": "8ecc7be7"
     },
     {
       "name": "reports/healthcheck_pairs.txt",
@@ -2153,7 +2143,7 @@
     {
       "name": "result_260210_009.json",
       "size": 465,
-      "sha256_short": "13ea8127"
+      "sha256_short": "89197fd7"
     },
     {
       "name": "run_260206_005.log",
@@ -2518,7 +2508,7 @@
     {
       "name": "scan_cache_smoke_260210_009.txt",
       "size": 290,
-      "sha256_short": "b8e18001"
+      "sha256_short": "cb0a414f"
     },
     {
       "name": "scripts/postflight_validate_envelope.mjs",
@@ -2599,11 +2589,6 @@
       "name": "trae_report_snippet_260210_008.txt",
       "size": 5319,
       "sha256_short": "aa92682d"
-    },
-    {
-      "name": "trae_report_snippet_260210_009.txt",
-      "size": 5726,
-      "sha256_short": "4caa547e"
     }
   ]
 }

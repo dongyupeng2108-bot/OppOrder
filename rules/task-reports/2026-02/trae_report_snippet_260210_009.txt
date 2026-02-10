@@ -1,7 +1,7 @@
 === TRAE_REPORT_SNIPPET ===
 
 BRANCH: feat/ci-local-parity-acceptance-260210_009
-COMMIT: a333c60
+COMMIT: d3fd23c
 
 === GIT_SCOPE_DIFF ===
 M	rules/LATEST.json
@@ -32,16 +32,16 @@ M	scripts/gate_light_ci.mjs
 === DOD_EVIDENCE_STDOUT ===
 DOD_EVIDENCE_HEALTHCHECK_ROOT: E:/OppRadar/rules/task-reports/2026-02/260210_009_healthcheck_53122_root.txt => HTTP/1.1 200 OK
 DOD_EVIDENCE_HEALTHCHECK_PAIRS: E:/OppRadar/rules/task-reports/2026-02/260210_009_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
-DOD_EVIDENCE_SCAN_CACHE_MISS: E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260210_009.txt => cached=false duration_ms=21
+DOD_EVIDENCE_SCAN_CACHE_MISS: E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260210_009.txt => cached=false duration_ms=15
 DOD_EVIDENCE_SCAN_CACHE_HIT:  E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260210_009.txt => cached=true  duration_ms=1
-DOD_EVIDENCE_OPPS_PIPELINE_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_pipeline_smoke_260210_009.txt => run_id=mock_build_1770738888414 ok=5 failed=1
+DOD_EVIDENCE_OPPS_PIPELINE_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_pipeline_smoke_260210_009.txt => run_id=mock_build_1770740446047 ok=5 failed=1
 DOD_EVIDENCE_OPPS_PIPELINE_TOP: E:/OppRadar/rules/task-reports/2026-02/opps_pipeline_smoke_260210_009.txt => top_count=5 refs_run_id=true
-DOD_EVIDENCE_OPPS_RUNS_LIST: E:/OppRadar/rules/task-reports/2026-02/opps_run_filter_smoke_260210_009.txt => contains_run_id=true count=2
+DOD_EVIDENCE_OPPS_RUNS_LIST: E:/OppRadar/rules/task-reports/2026-02/opps_run_filter_smoke_260210_009.txt => contains_run_id=true count=8
 DOD_EVIDENCE_OPPS_BY_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_run_filter_smoke_260210_009.txt => rows=4 all_same_run_id=true
 
 === CI_PARITY_PREVIEW ===
 Base: afb9fdd
-Head: a333c60
+Head: d3fd23c
 MergeBase: afb9fdd
 Source: INTEGRATE_MODE
 Scope: 24 files
@@ -55,7 +55,7 @@ Scope: 24 files
 [Gate Light] Doc path standards verified.
 [Gate Light] Checking for legacy doc path references...
 [CheckDocPathRefs] Scanning for legacy doc path references...
-[CheckDocPathRefs] Scan completed in 17ms.
+[CheckDocPathRefs] Scan completed in 13ms.
 [CheckDocPathRefs] PASS: No legacy doc path references found.
 [Gate Light] Checking for global healthcheck artifacts...
 [Gate Light] Global Artifact Guard verified.

@@ -201,7 +201,6 @@
     "260210_009.json",
     "260210_009_healthcheck_53122_pairs.txt",
     "260210_009_healthcheck_53122_root.txt",
-    "ci_parity_260210_009.txt",
     "deliverables_index_260206_005.json",
     "deliverables_index_260206_006.json",
     "deliverables_index_260206_007.json",
@@ -276,7 +275,6 @@
     "gate_light_ci_260210_006.txt",
     "gate_light_ci_260210_007.txt",
     "gate_light_ci_260210_008.txt",
-    "gate_light_ci_260210_009.txt",
     "git_scope_diff_260209_006.txt",
     "git_scope_diff_260209_008.txt",
     "M4_PR2_concurrent_log_260209_004.txt",
@@ -526,8 +524,7 @@
     "trae_report_snippet_260210_003.txt",
     "trae_report_snippet_260210_006.txt",
     "trae_report_snippet_260210_007.txt",
-    "trae_report_snippet_260210_008.txt",
-    "trae_report_snippet_260210_009.txt"
+    "trae_report_snippet_260210_008.txt"
   ],
   "forbidden_phrases_hit": [],
   "report_file": "notify_260210_009.txt"

@@ -1,14 +1,14 @@
-Test started at 2026-02-10T15:54:48.400Z
+Test started at 2026-02-10T16:20:46.031Z
 Step 1: Calling POST /opportunities/build_v1 with 5 OK + 1 Failed jobs...
-Response received. Run ID: mock_build_1770738888414
+Response received. Run ID: mock_build_1770740446047
 jobs_ok: 5, jobs_failed: 1
 PASS: Fail-soft isolation verified.
 Step 2: Calling GET /opportunities/top?limit=5...
 Received 5 top opportunities.
 Opp [0] BTC: Score=99, RunID=mock_build_1770738888414
-Opp [1] ETH: Score=97, RunID=mock_build_1770738888414
-Opp [2] SOL: Score=94, RunID=mock_build_1770738888414
-Opp [3] SOL: Score=89, RunID=mock_build_1770738888414
-Opp [4] DOGE: Score=82, RunID=mock_build_1770738888414
+Opp [1] ETH: Score=98, RunID=mock_build_1770740446047
+Opp [2] ETH: Score=97, RunID=mock_build_1770738888414
+Opp [3] ETH: Score=97, RunID=mock_build_1770740339673
+Opp [4] ETH: Score=96, RunID=mock_build_1770740339673
 PASS: Top list verification successful.
 PASS: true
