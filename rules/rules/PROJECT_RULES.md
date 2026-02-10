@@ -73,6 +73,8 @@
 - **LATEST.json**: A pointer file in rules/ that tracks the most recently generated task evidence location. CI uses this to know what to validate.
 
 ## Gate Light Hardening Rules
+- **Immutable Integrate**: Once a task passes Integrate, it is LOCKED via `rules/task-reports/locks/<task_id>.lock.json`. Reruns are blocked (Exit 33). Any new changes require a NEW `task_id`.
+- **SafeCmd**: Chained shell commands (`;`, `&&`, `||`) are prohibited in `command_audit` logs to prevent high-risk execution bypass. Use `scripts/safe_commit.ps1` or `scripts/safe_push.ps1` instead.
 - **CI Parity Evidence-as-Code**: Task evidence MUST include `ci_parity_<task_id>.json`. Gate Light performs mandatory re-calculation and anti-cheat validation (e.g., prohibiting `head != base` with 0 files).
 - **Clean-State Integration**: The Integrate phase (`dev_batch_mode -Mode Integrate`) strictly enforces a clean git working directory. Uncommitted changes to code files (anything other than `rules/task-reports/**`, `rules/rules/**`, `rules/LATEST.json`) will trigger a hard block (`exit 31`).
 

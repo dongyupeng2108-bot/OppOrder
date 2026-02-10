@@ -77,6 +77,17 @@ To reduce repository overhead and conflicts, we adopt a two-phase workflow for e
 
 ### Gate Light Evidence Standards (CI Parity)
 
+*   **Immutable Integrate (One-Shot)**:
+    *   **Lock File**: The first successful Integrate run creates `rules/task-reports/locks/<task_id>.lock.json`.
+    *   **Rerun Block**: Subsequent attempts to run Integrate on the same `task_id` are BLOCKED (Exit 33).
+    *   **Action**: To change code, you MUST use a new `task_id`. The old task is immutable.
+*   **Append-Only Archive**:
+    *   Evidence is archived to `rules/task-reports/runs/<task_id>/<run_id>/`.
+    *   This is an append-only operation; history is preserved (though LATEST.json points to the newest).
+*   **SafeCmd Enforcement**:
+    *   **Forbidden**: Chained commands (e.g., `git add . ; git commit ...`) are strictly prohibited in `command_audit` files.
+    *   **Detection**: Gate Light scans `command_audit`, `dod_stdout`, and `trae_report_snippet` for prohibited operators (` ; `, ` && `, ` || `).
+    *   **Solution**: Use atomic script calls (`safe_commit.ps1`, `safe_push.ps1`) or separate tool calls.
 *   **Evidence-as-Code (JSON)**: CI Parity Evidence MUST be a structured JSON file (`rules/task-reports/.../ci_parity_<task_id>.json`) containing `task_id`, `base`, `head`, `merge_base`, `scope_files`, `scope_count`, and `generated_at`. Text-based evidence is DEPRECATED.
 *   **Gate Light Recalculation**: Gate Light CI (`gate_light_ci.mjs`) MUST independently recalculate git state (`base`, `head`, `merge_base`, `scope_files`) and validate it against the provided JSON evidence byte-for-byte.
 *   **Anti-Cheat**:

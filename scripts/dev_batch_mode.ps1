@@ -695,8 +695,9 @@ if (fs.existsSync(indexFile) && newHash) {
     Write-Host "   Locked: $LockFile"
     
     # 7.2 Run Archive (Append-only)
-    $RunsDir = Join-Path $ReportsDir "runs"
-    $TaskRunDir = Join-Path $RunsDir "$TaskId\$RunId"
+    # Use global runs directory: rules/task-reports/runs/
+    $RunsBaseDir = Join-Path $RepoRoot "rules\task-reports\runs"
+    $TaskRunDir = Join-Path $RunsBaseDir "$TaskId\$RunId"
     if (-not (Test-Path $TaskRunDir)) { New-Item -ItemType Directory -Path $TaskRunDir -Force | Out-Null }
     
     Write-Host "   Archiving artifacts to $TaskRunDir..."
