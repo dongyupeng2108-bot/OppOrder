@@ -1,0 +1,10 @@
+0. Running Pre-PR Check (Duplicate Task ID Guard)...
+[PrePRCheck] Checking for duplicate task_id: 260211_003 in origin/main...
+[PrePRCheck] No duplicates found. PASS.
+========================================
+[BLOCK] IMMUTABLE_INTEGRATE_LOCK
+========================================
+[DETAIL] Task 260211_003 has already been integrated and locked.
+Lock File: E:\OppRadar\rules\task-reports\2026-02\locks\260211_003.lock.json
+Action: Use a new task_id for new changes. This task is immutable.
+EXIT=33
