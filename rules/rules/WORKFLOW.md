@@ -229,8 +229,7 @@ To reduce repository overhead and conflicts, we adopt a two-phase workflow for e
     *   若本地 Pass 但 CI Fail，视为**未完成**。必须以 CI 报错为准进行修复。
 
 2.  **Parity Probe (一致性探针)**:
-    *   验收证据必须包含 `=== CI_PARITY_PREVIEW ===` 块（由 `scripts/ci_parity_probe.mjs` 生成）。
-    *   该探针必须展示 `origin/main` 基准、`merge-base`、`task_id` 解析来源等信息，证明本地运行上下文与 CI 环境一致。
+    *   验收证据必须包含 `=== CI_PARITY_PREVIEW ===` 证据，该探针必须展示 `origin/main` 基准、`merge-base`、`task_id` 解析来源等信息，证明本地运行上下文与 CI 环境一致。
 
 3.  **Fail-Fast Hard Guard**:
     *   任何阶段（Pre-check, Integrate, CI）检测到 `task_id` 冲突、LATEST 不一致、或对象漂移，必须立即**Fail-fast**（退出码非 0），严禁尝试自动纠错。
@@ -258,3 +257,17 @@ To reduce repository overhead and conflicts, we adopt a two-phase workflow for e
 === GATE_LIGHT_PREVIEW ===
 [Gate Light] PASS
 GATE_LIGHT_EXIT=0
+
+### 5. Immutable Integrate & SafeCmd (Task 260211_003)
+
+*   **Immutable Integrate (一次性集成)**:
+    *   同一 `task_id` 的 Integrate 阶段只允许成功一次。
+    *   **Lock Mechanism**: 首次 Integrate 成功后会生成 `rules/task-reports/locks/<task_id>.lock.json`。
+    *   **Rerun Block**: 若锁文件存在，后续 Integrate 将被硬阻断（`EXIT=33`），防止历史证据被覆盖。若需修改代码，必须申请新的 `task_id`。
+    *   **Run Archive**: 每次成功 Integrate 会将关键证据归档至 `rules/task-reports/runs/<task_id>/<run_id>/`（Append-only）。
+
+*   **SafeCmd (安全命令机制)**:
+    *   **禁止链式命令**: 严禁在 `TraeTask` 中使用 `;`, `&&`, `||` 连接多个命令（如 `git add . && git commit`）。Gate Light 会扫描证据并拦截此类行为。
+    *   **推荐工具**:
+        *   `scripts/safe_commit.ps1 -Message "..."`: 安全的原子化提交（Add + Check + Commit）。
+        *   `scripts/safe_push.ps1`: 安全的单分支推送。

@@ -1081,6 +1081,77 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         console.log('[Gate Light] Evidence Truth & Consistency verified.');
     }
 
+    // --- Immutable Integrate & SafeCmd Enforcement (Task 260211_003) ---
+    if (task_id >= '260211_003') {
+        console.log('[Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...');
+
+        // 1. Run Count Check (Immutable Integrate)
+        // rules/task-reports/runs/<task_id>/ should have <= 1 directory
+        const runsDir = path.join('rules', 'task-reports', 'runs', task_id);
+        if (fs.existsSync(runsDir)) {
+            const runDirs = fs.readdirSync(runsDir).filter(name => {
+                const fullPath = path.join(runsDir, name);
+                return fs.statSync(fullPath).isDirectory();
+            });
+            if (runDirs.length > 1) {
+                console.error(`[Gate Light] FAILED: Immutable Integrate violation. Found multiple run directories for task ${task_id}:`);
+                runDirs.forEach(d => console.error(`  - ${d}`));
+                console.error('Action: This task is immutable. Use a new task_id for new changes.');
+                process.exit(1);
+            }
+        }
+
+        // 2. Chained Command Detection (SafeCmd)
+        // Files to scan:
+        // - rules/task-reports/**/trae_report_snippet_<task_id>.txt
+        // - rules/task-reports/**/dod_stdout_<task_id>.txt
+        // - rules/task-reports/**/command_audit_<task_id>.txt (New)
+        
+        // We scan result_dir which is usually rules/task-reports/YYYY-MM
+        const filesToScan = [
+            path.join(result_dir, `trae_report_snippet_${task_id}.txt`),
+            path.join(result_dir, `dod_stdout_${task_id}.txt`),
+            path.join(result_dir, `command_audit_${task_id}.txt`)
+        ];
+
+        let chainDetected = false;
+        
+        filesToScan.forEach(file => {
+            if (fs.existsSync(file)) {
+                const content = fs.readFileSync(file, 'utf8');
+                const lines = content.split('\n');
+                const chainedLines = [];
+                
+                lines.forEach((line, index) => {
+                    const trimmed = line.trim();
+                    // Check for CMD: or command: prefix
+                    if (trimmed.startsWith('CMD:') || trimmed.startsWith('command:')) {
+                        // Check for forbidden operators: ; && ||
+                        // Be careful with false positives? The rule is strict: "命中 ; 或 && 或 || -> FAIL"
+                        if (trimmed.includes(';') || trimmed.includes('&&') || trimmed.includes('||')) {
+                            chainedLines.push(`Line ${index + 1}: ${trimmed}`);
+                        }
+                    }
+                });
+
+                if (chainedLines.length > 0) {
+                    console.error(`[Gate Light] [FAIL] CHAINED_CMD_DETECTED in ${path.basename(file)}:`);
+                    chainedLines.slice(0, 10).forEach(l => console.error(`  - ${l}`));
+                    if (chainedLines.length > 10) console.error(`  ... and ${chainedLines.length - 10} more.`);
+                    chainDetected = true;
+                }
+            }
+        });
+
+        if (chainDetected) {
+            console.error('[Gate Light] SafeCmd Violation: Chained commands are prohibited.');
+            console.error('Action: Use safe_commit.ps1 / safe_push.ps1 or separate commands.');
+            process.exit(1);
+        }
+
+        console.log('[Gate Light] Immutable Integrate & SafeCmd Enforcement verified.');
+    }
+
     // Construct postflight command
     // Note: Assuming scripts/postflight_validate_envelope.mjs exists relative to CWD
     const cmd = 'node scripts/postflight_validate_envelope.mjs --task_id ' + task_id + ' --result_dir ' + result_dir + ' --report_dir ' + result_dir;

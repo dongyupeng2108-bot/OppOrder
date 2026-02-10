@@ -193,3 +193,13 @@
 - **Exception**: Mismatch is ALLOWED if the diff between Snippet COMMIT and HEAD contains ONLY changes to `rules/task-reports/**` (Evidence), `rules/rules/**` (Docs), or `rules/LATEST.json`.
 - **Failure Example**: `Snippet COMMIT (abc1234) does not match HEAD (def5678)` with code changes.
 - **Fix**: Re-run the Integrate phase (or just the snippet builder) to regenerate the snippet with the current HEAD.
+
+## Immutable Integrate & SafeCmd (Task 260211_003)
+*   **Immutable Integrate (One-shot)**:
+    *   **Lock**: The Integrate phase creates `rules/task-reports/locks/<task_id>.lock.json` on success.
+    *   **Rerun Block**: Subsequent runs for the same `task_id` are BLOCKED (`EXIT=33`) if the lock exists.
+    *   **Archive**: Evidence is archived to `rules/task-reports/runs/<task_id>/<run_id>/` (append-only) for audit.
+*   **SafeCmd Mechanism**:
+    *   **Prohibited**: Chained commands (`;`, `&&`, `||`) in `TraeTask` commands.
+    *   **Enforcement**: Gate Light scans evidence (`trae_report_snippet`, `dod_stdout`, `command_audit`) and fails if chains are detected.
+    *   **Recommended**: Use `scripts/safe_commit.ps1` and `scripts/safe_push.ps1`.

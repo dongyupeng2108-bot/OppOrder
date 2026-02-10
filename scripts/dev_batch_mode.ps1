@@ -128,16 +128,19 @@ elseif ($Mode -eq 'Integrate') {
         exit $LASTEXITCODE
     }
 
-    # 0.5 Integrate-Once Guard (Task 260210_009)
-    # Prevent overwriting existing evidence to ensure reproducibility
-    $ExistingGateLightLog = Join-Path $ReportsDir "gate_light_ci_${TaskId}.txt"
-    $ExistingEnvelope = Join-Path $ReportsDir "envelopes\${TaskId}.envelope.json"
+    # 0.5 Immutable Integrate Lock Check (Task 260211_003)
+    # Lock file prevents re-running successful integrate phases for same task_id
+    $LocksDir = Join-Path $ReportsDir "locks"
+    $LockFile = Join-Path $LocksDir "${TaskId}.lock.json"
     
-    if ((Test-Path $ExistingGateLightLog) -or (Test-Path $ExistingEnvelope)) {
-        Write-Error "INTEGRATE_ONCE_VIOLATION: Evidence for Task $TaskId already exists."
-        Write-Error "Found: $ExistingGateLightLog or $ExistingEnvelope"
-        Write-Error "ACTION: Do not re-run Integrate phase. If you must regenerate, manually delete old evidence files first."
-        exit 1
+    if (Test-Path $LockFile) {
+        Write-Host "========================================" -ForegroundColor Red
+        Write-Host "[BLOCK] IMMUTABLE_INTEGRATE_LOCK" -ForegroundColor Red
+        Write-Host "========================================" -ForegroundColor Red
+        Write-Host "[DETAIL] Task $TaskId has already been integrated and locked."
+        Write-Host "Lock File: $LockFile"
+        Write-Host "Action: Use a new task_id for new changes. This task is immutable."
+        exit 33
     }
 
     # 1. Healthcheck
@@ -669,6 +672,57 @@ if (fs.existsSync(indexFile) && newHash) {
             exit $GateExitCode
         }
     }
+
+    # 7. Immutable Lock & Run Archive (Task 260211_003)
+    Write-Host "7. Finalizing Immutable Integrate..."
+    
+    # 7.1 Create Lock File
+    if (-not (Test-Path $LocksDir)) { New-Item -ItemType Directory -Path $LocksDir -Force | Out-Null }
+    
+    $Timestamp = Get-Date -Format "yyyy-MM-ddTHH:mm:ssZ"
+    $RunId = "$(Get-Date -Format 'yyyyMMdd_HHmmss')_$(git rev-parse --short HEAD)"
+    
+    $LockContent = @{
+        task_id = $TaskId
+        run_id = $RunId
+        timestamp = $Timestamp
+        status = "LOCKED"
+    } | ConvertTo-Json
+    
+    $LockContent | Out-File -FilePath $LockFile -Encoding UTF8
+    Write-Host "   Locked: $LockFile"
+    
+    # 7.2 Run Archive (Append-only)
+    $RunsDir = Join-Path $ReportsDir "runs"
+    $TaskRunDir = Join-Path $RunsDir "$TaskId\$RunId"
+    if (-not (Test-Path $TaskRunDir)) { New-Item -ItemType Directory -Path $TaskRunDir -Force | Out-Null }
+    
+    Write-Host "   Archiving artifacts to $TaskRunDir..."
+    
+    # Copy key artifacts
+    $Artifacts = @(
+        "notify_${TaskId}.txt",
+        "result_${TaskId}.json",
+        "trae_report_snippet_${TaskId}.txt",
+        "gate_light_ci_${TaskId}.txt",
+        "deliverables_index_${TaskId}.json",
+        "${TaskId}_healthcheck_*.txt",
+        "ci_parity_${TaskId}.json",
+        "envelopes\${TaskId}.envelope.json"
+    )
+    
+    foreach ($Item in $Artifacts) {
+        $SourcePath = Join-Path $ReportsDir $Item
+        if (Test-Path $SourcePath) {
+            # Handle subdirectories (like envelopes\) by ensuring destination structure
+            $DestPath = Join-Path $TaskRunDir $Item
+            $DestParent = Split-Path $DestPath -Parent
+            if (-not (Test-Path $DestParent)) { New-Item -ItemType Directory -Path $DestParent -Force | Out-Null }
+            
+            Copy-Item $SourcePath -Destination $DestPath -Force
+        }
+    }
+    Write-Host "   Archive Complete."
 
     Write-Host "--- [Integrate Phase Complete] ---" -ForegroundColor Green
     Write-Host "Ready to commit and push:"
