@@ -71,6 +71,7 @@ To reduce repository overhead and conflicts, we adopt a two-phase workflow for e
     *   **Focus**: Final validation, evidence generation, PR creation.
     *   **Constraints**:
         *   Run **ONCE** at the end of the task.
+        *   **Clean State**: MUST NOT run with uncommitted code changes (only evidence/docs allowed).
         *   Generates evidence, updates `LATEST.json`, runs postflight & pre-pr checks.
     *   **Command**: Use `scripts/dev_batch_mode.ps1 -Mode Integrate`.
 

@@ -1,0 +1,38 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20260211005954
+Username: DESKTOP-BOHP945\ypdong
+RunAs User: DESKTOP-BOHP945\ypdong
+Configuration Name: 
+Machine: DESKTOP-BOHP945 (Microsoft Windows NT 10.0.19045.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -Command . 'D:\Trae\resources\app\out\vs\workbench\contrib\terminal\common\scripts\safe_rm_aliases.ps1'; Start-Transcript -Path rules/task-reports/2026-02/clean_state_guard_negative_260211_001.txt; scripts/dev_batch_mode.ps1 -Mode integrate -TaskId 260211_001 -Summary 'Clean-State Integration Guard Negative Test'; Stop-Transcript
+Process ID: 6036
+PSVersion: 5.1.19041.6456
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.19041.6456
+BuildVersion: 10.0.19041.6456
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is rules/task-reports/2026-02/clean_state_guard_negative_260211_001.txt
+>>> Starting Batch Mode: integrate (Task: 260211_001)
+--- [Integrate Phase] ---
+0. Running Clean-State Integration Guard...
+========================================
+[BLOCK] CLEAN_STATE_GUARD
+========================================
+[DETAIL] Uncommitted non-evidence changes detected:
+  - 02/260210_009.json
+  - scripts/dev_batch_mode.ps1
+  - .traerules
+  - head_check.txt
+  - 02/clean_state_guard_negative_260211_001.txt
+
+[ACTION] Commit code changes first, then rerun Integrate.
+========================================
+**********************
+Windows PowerShell transcript end
+End time: 20260211005954
+**********************

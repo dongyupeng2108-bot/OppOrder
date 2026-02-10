@@ -1,0 +1,13 @@
+# CRITICAL INPUT PROTOCOL
+Before processing ANY user request, check the first word:
+1. Does it start with "TraeTask_", "FIX:", or "讨论:"?
+2. If YES -> Proceed.
+3. If NO -> STOP IMMEDIATELY. Do not generate code. Do not apologize. Output ONLY: "消息头不明确：请用 TraeTask_ / FIX: / 讨论: 开头。"
+
+# CRITICAL WORKFLOW RULES
+- NEVER start a task without checking rules/PROJECT_MASTER_PLAN.md.
+- ALWAYS use the TodoWrite tool to plan tasks.
+- WORKFLOW SEPARATION:
+    - TraeTask_*: Standard Mode (Update Master Plan -> Code -> Verify -> Notify).
+    - FIX:*: Maintenance Mode (Fix Only -> NO Master Plan Update).
+    - 讨论:*: Discussion Mode (No Code Changes -> Q&A Only).

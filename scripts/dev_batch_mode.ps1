@@ -66,7 +66,45 @@ elseif ($Mode -eq 'Integrate') {
     # --- Integrate Phase ---
     Write-Host "--- [Integrate Phase] ---" -ForegroundColor Yellow
     
-    # 0. Pre-PR Check (Hard Guard for Duplicate Task ID)
+    # 0. Clean-State Integration Guard (Task 260211_001)
+    Write-Host "0. Running Clean-State Integration Guard..."
+    $StatusOutput = git status --porcelain
+    $DirtyFiles = @()
+    if ($StatusOutput) {
+        # git status --porcelain returns array of strings in PowerShell if multiple lines
+        # Ensure it's treated as array even if single line
+        $StatusLines = @($StatusOutput)
+        foreach ($Line in $StatusLines) {
+            if ([string]::IsNullOrWhiteSpace($Line)) { continue }
+            # Format: XY PATH or XY "PATH" (if spaces) or R  OLD -> NEW
+            # Extract Path: Take substring after first 3 chars, split by -> for renames, take last part, trim quotes/spaces
+            $Path = $Line.Substring(3).Split("->")[-1].Trim().Trim('"')
+            # Normalize to forward slashes for regex
+            $NormalizedPath = $Path -replace '\\', '/'
+            
+            # Allowlist check (Evidence, Docs, LATEST.json)
+            if ($NormalizedPath -match '^rules/task-reports/') { continue }
+            if ($NormalizedPath -match '^rules/rules/') { continue }
+            if ($NormalizedPath -eq 'rules/LATEST.json') { continue }
+            
+            $DirtyFiles += $Path
+        }
+    }
+    
+    if ($DirtyFiles.Count -gt 0) {
+        Write-Host "========================================" -ForegroundColor Red
+        Write-Host "[BLOCK] CLEAN_STATE_GUARD" -ForegroundColor Red
+        Write-Host "========================================" -ForegroundColor Red
+        Write-Host "[DETAIL] Uncommitted non-evidence changes detected:"
+        $DirtyFiles | Select-Object -First 30 | ForEach-Object { Write-Host "  - $_" -ForegroundColor Red }
+        if ($DirtyFiles.Count -gt 30) { Write-Host "  ... (truncated)" -ForegroundColor Red }
+        Write-Host ""
+        Write-Host "[ACTION] Commit code changes first, then rerun Integrate." -ForegroundColor Yellow
+        Write-Host "========================================" -ForegroundColor Red
+        exit 31
+    }
+
+    # 0.1 Pre-PR Check (Hard Guard for Duplicate Task ID)
     # MUST run before any evidence generation or file writes
     Write-Host "0. Running Pre-PR Check (Duplicate Task ID Guard)..."
     node scripts/pre_pr_check.mjs --task_id $TaskId
