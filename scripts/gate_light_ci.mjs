@@ -15,10 +15,12 @@ for (let i = 0; i < args.length; i++) {
     }
 }
 
+console.log(`[Gate Light] DEBUG: Checking LATEST.json at ${path.resolve(LATEST_JSON_PATH)}`);
 let latestJson = null;
 if (fs.existsSync(LATEST_JSON_PATH)) {
     try {
-        latestJson = JSON.parse(fs.readFileSync(LATEST_JSON_PATH, 'utf8'));
+        const content = fs.readFileSync(LATEST_JSON_PATH, 'utf8').replace(/^\uFEFF/, '');
+        latestJson = JSON.parse(content);
     } catch (e) {
         console.warn('[Gate Light] Warning: Failed to parse LATEST.json');
     }
