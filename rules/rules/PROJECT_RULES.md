@@ -186,5 +186,6 @@
 ### SnippetCommitMustMatch
 - **Rule**: The `COMMIT:` field in `trae_report_snippet_<task_id>.txt` must match `git rev-parse --short HEAD`.
 - **Goal**: Prevent "Snippet Drift" where evidence is generated on commit A, but the code is amended to commit B without regenerating evidence.
-- **Failure Example**: `Snippet COMMIT (abc1234) does not match HEAD (def5678)`.
+- **Exception**: Mismatch is ALLOWED if the diff between Snippet COMMIT and HEAD contains ONLY changes to `rules/task-reports/**` (Evidence), `rules/rules/**` (Docs), or `rules/LATEST.json`.
+- **Failure Example**: `Snippet COMMIT (abc1234) does not match HEAD (def5678)` with code changes.
 - **Fix**: Re-run the Integrate phase (or just the snippet builder) to regenerate the snippet with the current HEAD.
