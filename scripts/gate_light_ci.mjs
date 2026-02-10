@@ -569,8 +569,10 @@ try {
                      
                      const hasCodeChanges = diffFiles.some(file => {
                          const normalized = file.replace(/\\/g, '/');
-                         // Whitelist: rules/task-reports/ (Evidence), rules/rules/ (Docs)
-                         return !normalized.startsWith('rules/task-reports/') && !normalized.startsWith('rules/rules/');
+                         // Whitelist: rules/task-reports/ (Evidence), rules/rules/ (Docs), rules/LATEST.json
+                         return !normalized.startsWith('rules/task-reports/') && 
+                                !normalized.startsWith('rules/rules/') &&
+                                normalized !== 'rules/LATEST.json';
                      });
                      
                      if (hasCodeChanges) {
