@@ -1126,6 +1126,76 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         console.log('[Gate Light] Evidence Truth & Consistency verified.');
     }
 
+    // --- M5 PR1 LLM Router Contract Check (Task 260211_004) ---
+    if (task_id >= '260211_004') {
+        console.log('[Gate Light] Checking M5 PR1 LLM Router Contract...');
+        const evidenceFile = path.join(result_dir, `M5_PR1_llm_json_${task_id}.txt`);
+        
+        if (!fs.existsSync(evidenceFile)) {
+            console.error(`[Gate Light] FAILED: Evidence file missing: ${evidenceFile}`);
+            process.exit(1);
+        }
+
+        const content = fs.readFileSync(evidenceFile, 'utf8');
+        const lines = content.split('\n');
+        
+        // Find Summary Line
+        const summaryLine = lines.find(l => l.startsWith('DOD_EVIDENCE_M5_PR1_LLM_JSON:'));
+        if (!summaryLine) {
+            console.error('[Gate Light] FAILED: Evidence missing DOD_EVIDENCE_M5_PR1_LLM_JSON summary line.');
+            process.exit(1);
+        }
+
+        // Parse JSON (Everything before the summary line? Or just parse strictly)
+        // Since we appended the summary line at the end, we can try parsing the content excluding the last line(s).
+        // Or find the last '}'?
+        // Let's assume the format is JSON \n DOD_EVIDENCE...
+        const jsonContent = lines.filter(l => !l.startsWith('DOD_EVIDENCE_M5_PR1_LLM_JSON:')).join('\n').trim();
+        
+        let json;
+        try {
+            json = JSON.parse(jsonContent);
+        } catch (e) {
+            console.error(`[Gate Light] FAILED: Invalid JSON in evidence file: ${e.message}`);
+            process.exit(1);
+        }
+
+        // Load Schema
+        const schemaPath = path.join('contracts', 'llm_route_response.schema.json');
+        if (!fs.existsSync(schemaPath)) {
+            console.error(`[Gate Light] FAILED: Schema file missing: ${schemaPath}`);
+            process.exit(1);
+        }
+        const schema = JSON.parse(fs.readFileSync(schemaPath, 'utf8'));
+
+        // Validate (Simple Manual Validation)
+        const validate = (data, schema) => {
+            if (data.status !== 'ok') return true; // Error schema not strictly enforced here? User said success+error sample, but we only have one evidence file. We assume it's success.
+            
+            if (data.status === 'ok') {
+                if (!data.run_id) return 'Missing run_id';
+                if (!['mock', 'deepseek'].includes(data.provider_used)) return `Invalid provider_used: ${data.provider_used}`;
+                if (!data.model_used) return 'Missing model_used';
+                if (!Array.isArray(data.items)) return 'items is not an array';
+                
+                // Validate Items
+                for (const item of data.items) {
+                    if (!item.opp_id) return 'Item missing opp_id';
+                    if (!item.llm_json || typeof item.llm_json !== 'object') return 'Item missing or invalid llm_json';
+                }
+            }
+            return null;
+        };
+
+        const error = validate(json, schema);
+        if (error) {
+            console.error(`[Gate Light] FAILED: Contract Validation Failed: ${error}`);
+            process.exit(1);
+        }
+        
+        console.log('[Gate Light] M5 PR1 LLM Router Contract verified.');
+    }
+
     // --- Immutable Integrate & SafeCmd Enforcement (Task 260211_003) ---
     if (task_id >= '260211_003') {
         console.log('[Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...');

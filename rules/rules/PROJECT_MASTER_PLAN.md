@@ -107,7 +107,7 @@
 - **PR 1: M5: LLM router & structured output**
   - **目标**: 实现机会路由到 LLM (DeepSeek) 并获取结构化 JSON。
   - **DoD**: 成功将 Opportunity 转换为标准 JSON 格式 (DeepSeek V3/R1)。
-  - **证据要求**: `rules/task-reports/2026-02/M5_PR1_llm_json.txt`。
+  - **证据要求**: `rules/task-reports/2026-02/M5_PR1_llm_json_260211_005.txt` (DOD_EVIDENCE_M5_PR1_LLM_JSON).
 - **PR 2: M5: cost gate & fallback**
   - **目标**: 增加成本控制闸门与降级逻辑。
   - **DoD**: 达到预设成本阈值后自动切换到低成本模型或停止。

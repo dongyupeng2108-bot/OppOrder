@@ -1,5 +1,6 @@
 import http from 'http';
 import { URL } from 'url';
+import { routeOpportunities } from './llm_router.mjs';
 
 const PORT = 53122;
 const scanCache = new Map();
@@ -166,6 +167,14 @@ const server = http.createServer((req, res) => {
                     jobs_ok: okCount,
                     jobs_failed: failCount
                 });
+            });
+            return;
+        }
+
+        if (pathname === '/opportunities/llm_route') {
+            readBody().then(async body => {
+                const result = await routeOpportunities(body.run_id, opportunities, body);
+                sendJson(result, result.status === 'ok' ? 200 : 400);
             });
             return;
         }

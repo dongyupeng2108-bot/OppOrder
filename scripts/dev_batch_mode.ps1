@@ -265,6 +265,22 @@ fetch('http://localhost:53122/pairs', '${PairsHcFileJS}');
         Remove-Item $HcScriptPath -ErrorAction SilentlyContinue
     }
 
+    # 1.11 LLM Route Smoke (Task 260211_005+)
+    if ($TaskId -ge "260211_005") {
+        Write-Host "1.11. Running LLM Route Smoke Test..."
+        # Script writes directly to task-reports path
+        node scripts/smoke_llm_route.mjs
+        Check-LastExitCode
+        
+        $LlmEvidenceFile = Join-Path $ReportsDir "M5_PR1_llm_json_${TaskId}.txt"
+        if (Test-Path $LlmEvidenceFile) {
+            Write-Host "   Verified evidence file: $LlmEvidenceFile"
+        } else {
+            Write-Error "   Failed to generate evidence file: $LlmEvidenceFile"
+            exit 1
+        }
+    }
+
     # 2. Envelope Build
     Write-Host "2. Building Envelope..."
     node scripts/envelope_build.mjs --task_id $TaskId --result_dir $ReportsDir --status DONE --summary $Summary
@@ -399,7 +415,24 @@ if (taskId >= '260209_010') {
     }
 }
 
-let dodLines = (healthcheckLines + (scanCacheLines ? '\n' + scanCacheLines : '') + (oppsPipelineLines ? '\n' + oppsPipelineLines : '') + (oppsRunFilterLines ? '\n' + oppsRunFilterLines : '') + (oppsTopByRunLines ? '\n' + oppsTopByRunLines : '')).trim();
+// 1f. LLM Route (Task 260211_005+)
+let llmRouteLines = '';
+if (taskId >= '260211_005') {
+    const evidenceFile = path.join(reportsDir, 'M5_PR1_llm_json_' + taskId + '.txt');
+    if (fs.existsSync(evidenceFile)) {
+        const content = fs.readFileSync(evidenceFile, 'utf8');
+        const marker = 'DOD_EVIDENCE_M5_PR1_LLM_JSON:';
+        if (content.includes(marker)) {
+            const match = content.match(new RegExp(marker + '.*=>(.+)'));
+            if (match) {
+                 const pathDisplay = evidenceFile.replace(/\\/g, '/');
+                 llmRouteLines = `${marker} ${pathDisplay} => ${match[1].trim()}`;
+            }
+        }
+    }
+}
+
+let dodLines = (healthcheckLines + (scanCacheLines ? '\n' + scanCacheLines : '') + (oppsPipelineLines ? '\n' + oppsPipelineLines : '') + (oppsRunFilterLines ? '\n' + oppsRunFilterLines : '') + (oppsTopByRunLines ? '\n' + oppsTopByRunLines : '') + (llmRouteLines ? '\n' + llmRouteLines : '')).trim();
 
 const marker = "=== DOD_EVIDENCE_STDOUT ===";
 const stdoutBlock = marker + '\n' + dodLines;
@@ -449,6 +482,7 @@ const newSize = fileBuffer.length;
         if (oppsPipelineLines) result.dod_evidence.opps_pipeline = oppsPipelineLines.split('\n');
         if (oppsRunFilterLines) result.dod_evidence.opps_run_filter = oppsRunFilterLines.split('\n');
         if (oppsTopByRunLines) result.dod_evidence.opps_top_by_run = oppsTopByRunLines.split('\n');
+        if (llmRouteLines) result.dod_evidence.llm_route = llmRouteLines.split('\n');
         
         fs.writeFileSync(resultFile, JSON.stringify(result, null, 2));
     }
