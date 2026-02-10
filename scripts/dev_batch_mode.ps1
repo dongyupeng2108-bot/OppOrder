@@ -710,19 +710,22 @@ if (fs.existsSync(indexFile) && newHash) {
         "deliverables_index_${TaskId}.json",
         "${TaskId}_healthcheck_*.txt",
         "ci_parity_${TaskId}.json",
-        "envelopes\${TaskId}.envelope.json"
+        "envelopes/${TaskId}.envelope.json"
     )
     
     foreach ($Item in $Artifacts) {
         $SourcePath = Join-Path $ReportsDir $Item
         if (Test-Path $SourcePath) {
-            # Handle subdirectories (like envelopes\) by ensuring destination structure
-            $DestPath = Join-Path $TaskRunDir $Item
-            Write-Host "DEBUG: DestPath='$DestPath'"
-            $DestParent = Split-Path $DestPath -Parent
-            if (-not (Test-Path $DestParent)) { New-Item -ItemType Directory -Path $DestParent -Force | Out-Null }
-            
-            Copy-Item $SourcePath -Destination $DestPath -Force
+            if ($Item -match "\*") {
+                # Wildcard: Copy matches directly to run dir (flat)
+                Copy-Item $SourcePath -Destination $TaskRunDir -Force
+            } else {
+                # Specific file (preserve structure if any)
+                $DestPath = Join-Path $TaskRunDir $Item
+                $DestParent = Split-Path $DestPath -Parent
+                if (-not (Test-Path $DestParent)) { New-Item -ItemType Directory -Path $DestParent -Force | Out-Null }
+                Copy-Item $SourcePath -Destination $DestPath -Force
+            }
         }
     }
     
