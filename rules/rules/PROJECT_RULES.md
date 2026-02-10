@@ -170,9 +170,11 @@
 
 ## Gate Light Hardening Rules (Task 260209_009)
 ### CI 校验对象锁定与 LATEST 一致性 (PR Task Lock + LATEST Consistency)
+*   **Single Source of Truth**: 以 CI Checks (GitHub Actions) 结果为准。本地 Pass 仅作为参考，必须通过 CI 门禁才能合并。
 *   **PR Task Lock**: PR 门禁必须校验“本 PR 的 `task_id`”（从分支名或 PR diff 解析），不得仅依赖 `rules/LATEST.json`。
 *   **LATEST Consistency**: 不得跳过 `rules/LATEST.json`。当 PR 解析出 `pr_task_id` 时，`rules/LATEST.json.task_id` 必须等于 `pr_task_id`，否则门禁 FAIL（`LATEST_OUT_OF_SYNC=1`）。
 *   **Environment Alignment**: 本地 Integrate（集成）与 CI（持续集成）必须对齐：两者运行 `gate_light_ci.mjs` 时要校验同一个 `task_id`（本地通过 `--task_id` 显式传参，CI 通过 PR 自动锁定或显式传参）。
+*   **CI Parity Probe**: 必须生成 `=== CI_PARITY_PREVIEW ===` 证据，显式展示 Git Context (Origin/Main, HEAD, MergeBase) 和 Task Detection Source。
 *   **Ambiguity Fail-fast**: 若 PR 无法解析唯一 `task_id`（0 个或多个候选），必须 FAIL-fast 并输出固定提示块 `PR_TASK_ID_DETECT_FAILED=1`，要求修正分支命名或证据变更范围。
 
 ### NoHistoricalEvidenceTouch

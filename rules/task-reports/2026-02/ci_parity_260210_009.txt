@@ -1,0 +1,47 @@
+CI Parity Probe Report
+Task ID: 260210_009
+Timestamp: 2026-02-10T16:20:48.685Z
+----------------------------------------
+Git Context:
+  Origin/Main: afb9fddb3ab297149f1c680b2b2e86182bf60d9d
+  HEAD:        d3fd23ca8c16d048f4294a9de19cc8c37862fd7e
+  Merge Base:  afb9fddb3ab297149f1c680b2b2e86182bf60d9d
+----------------------------------------
+Task Detection:
+  Source:      INTEGRATE_MODE
+----------------------------------------
+Scope (Diff origin/main...HEAD):
+  File Count:  24
+  - rules/LATEST.json
+  - rules/rules/PROJECT_RULES.md
+  - rules/rules/WORKFLOW.md
+  - rules/task-reports/2026-02/260210_009.json
+  - rules/task-reports/2026-02/260210_009_healthcheck_53122_pairs.txt
+  - rules/task-reports/2026-02/260210_009_healthcheck_53122_root.txt
+  - rules/task-reports/2026-02/M4_PR2_concurrent_log_260210_009.txt
+  - rules/task-reports/2026-02/ci_parity_260210_009.txt
+  - rules/task-reports/2026-02/deliverables_index_260210_009.json
+  - rules/task-reports/2026-02/dod_stdout_260210_009.txt
+  - rules/task-reports/2026-02/gate_light_ci_260210_009.txt
+  - rules/task-reports/2026-02/notify_260210_009.txt
+  - rules/task-reports/2026-02/opps_pipeline_smoke_260210_009.txt
+  - rules/task-reports/2026-02/opps_run_filter_smoke_260210_009.txt
+  - rules/task-reports/2026-02/opps_top_by_run_smoke_260210_009.txt
+  - rules/task-reports/2026-02/result_260210_009.json
+  - rules/task-reports/2026-02/scan_cache_smoke_260210_009.txt
+  - rules/task-reports/2026-02/scripts/postflight_validate_envelope_260210_009.mjs
+  - rules/task-reports/2026-02/trae_report_snippet_260210_009.txt
+  - rules/task-reports/envelopes/260210_009.envelope.json
+  - scripts/build_trae_report_snippet.mjs
+  - scripts/ci_parity_probe.mjs
+  - scripts/dev_batch_mode.ps1
+  - scripts/gate_light_ci.mjs
+----------------------------------------
+
+=== CI_PARITY_PREVIEW ===
+Base: afb9fdd
+Head: d3fd23c
+MergeBase: afb9fdd
+Source: INTEGRATE_MODE
+Scope: 24 files
+=========================

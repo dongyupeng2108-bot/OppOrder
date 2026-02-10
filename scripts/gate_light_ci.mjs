@@ -678,7 +678,45 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         console.log('[Gate Light] Opps Run Filter DoD Evidence verified.');
     }
 
+    // --- CI Parity Probe Check (Task 260210_009) ---
+    if (task_id >= '260210_009') {
+        console.log('[Gate Light] Checking CI Parity Preview...');
+        const snippetFile = path.join(result_dir, `trae_report_snippet_${task_id}.txt`);
+        if (fs.existsSync(snippetFile)) {
+            const content = fs.readFileSync(snippetFile, 'utf8');
+            if (!content.includes('=== CI_PARITY_PREVIEW ===')) {
+                console.error('[Gate Light] FAILED: Snippet missing === CI_PARITY_PREVIEW === block.');
+                process.exit(1);
+            }
+            // Check for key fields
+            const requiredFields = ['Base:', 'Head:', 'MergeBase:', 'Source:', 'Scope:'];
+            const missing = requiredFields.filter(f => !content.includes(f));
+            if (missing.length > 0) {
+                 console.error(`[Gate Light] FAILED: CI Parity Preview missing fields: ${missing.join(', ')}`);
+                 process.exit(1);
+            }
+            console.log('[Gate Light] CI Parity Preview verified.');
 
+        // Anti-Cheating Check: If Head != Base, Scope must NOT be 0 (Task 260210_009)
+        const baseMatch = content.match(/Base:\s*([a-f0-9]+)/);
+        const headMatch = content.match(/Head:\s*([a-f0-9]+)/);
+        const scopeMatch = content.match(/Scope:\s*(\d+)\s*files/);
+
+        if (baseMatch && headMatch && scopeMatch) {
+            const baseHash = baseMatch[1];
+            const headHash = headMatch[1];
+            const fileCount = parseInt(scopeMatch[1], 10);
+
+            if (baseHash !== headHash && fileCount === 0) {
+                console.error('[Gate Light] CI PARITY VALIDATION FAILED: Head differs from Base but Scope is 0.');
+                console.error(`Base: ${baseHash}, Head: ${headHash}, Scope: ${fileCount}`);
+                console.error('ACTION: Ensure changes are committed before generating evidence.');
+                process.exit(1);
+            }
+        }
+
+        }
+    }
 
     // --- Workflow Hardening Check (Task 260209_009) ---
     if (process.env.GATE_LIGHT_SKIP_HISTORICAL_CHECK === '1') {

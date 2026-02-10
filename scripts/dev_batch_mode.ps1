@@ -75,6 +75,18 @@ elseif ($Mode -eq 'Integrate') {
         exit $LASTEXITCODE
     }
 
+    # 0.5 Integrate-Once Guard (Task 260210_009)
+    # Prevent overwriting existing evidence to ensure reproducibility
+    $ExistingGateLightLog = Join-Path $ReportsDir "gate_light_ci_${TaskId}.txt"
+    $ExistingEnvelope = Join-Path $ReportsDir "envelopes\${TaskId}.envelope.json"
+    
+    if ((Test-Path $ExistingGateLightLog) -or (Test-Path $ExistingEnvelope)) {
+        Write-Error "INTEGRATE_ONCE_VIOLATION: Evidence for Task $TaskId already exists."
+        Write-Error "Found: $ExistingGateLightLog or $ExistingEnvelope"
+        Write-Error "ACTION: Do not re-run Integrate phase. If you must regenerate, manually delete old evidence files first."
+        exit 1
+    }
+
     # 1. Healthcheck
     Write-Host "1. Running Healthcheck..."
     $HcRoot = Join-Path $ReportsDir "${TaskId}_healthcheck_53122_root.txt"
@@ -402,6 +414,13 @@ const newSize = fileBuffer.length;
     node $InjectScriptPath $TaskId $ReportsDir
     Check-LastExitCode
     Remove-Item $InjectScriptPath -ErrorAction SilentlyContinue
+
+    # 2.55 CI Parity Probe (Task 260210_009+)
+    if ($TaskId -ge "260210_009") {
+        Write-Host "2.55. Running CI Parity Probe..."
+        node scripts/ci_parity_probe.mjs --task_id $TaskId --result_dir $ReportsDir --detection_source "INTEGRATE_MODE"
+        Check-LastExitCode
+    }
 
     # 2.6. Generate Trae Report Snippet (Task 260209_005+)
     if ($TaskId -ge "260209_005") {

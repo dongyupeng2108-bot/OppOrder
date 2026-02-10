@@ -210,6 +210,21 @@ To reduce repository overhead and conflicts, we adopt a two-phase workflow for e
     *   **本地 Integrate**: `dev_batch_mode.ps1` 必须通过 `--task_id <id>` 显式传参给 `gate_light_ci.mjs`，确保本地验证对象与 PR 一致。
     *   **CI**: `gate_light_ci.mjs` 自动执行 PR 锁定逻辑。
 
+### 3.3 CI Parity & Acceptance Standard
+**(CI 一致性与验收口径)**
+
+1.  **Single Source of Truth (以 CI Checks 为准)**:
+    *   本地 Gate Light 通过仅作为开发阶段的参考。
+    *   **最终验收标准**必须是 GitHub Actions 的 `gate-light` 工作流全绿 (Pass)。
+    *   若本地 Pass 但 CI Fail，视为**未完成**。必须以 CI 报错为准进行修复。
+
+2.  **Parity Probe (一致性探针)**:
+    *   验收证据必须包含 `=== CI_PARITY_PREVIEW ===` 块（由 `scripts/ci_parity_probe.mjs` 生成）。
+    *   该探针必须展示 `origin/main` 基准、`merge-base`、`task_id` 解析来源等信息，证明本地运行上下文与 CI 环境一致。
+
+3.  **Fail-Fast Hard Guard**:
+    *   任何阶段（Pre-check, Integrate, CI）检测到 `task_id` 冲突、LATEST 不一致、或对象漂移，必须立即**Fail-fast**（退出码非 0），严禁尝试自动纠错。
+
 ### 4. Merge-Ready (可合并) 通知硬规则 (Hard Rule)
 仅当满足以下所有条件时，Agent 才允许发送“PASS / 可合并”通知：
 
