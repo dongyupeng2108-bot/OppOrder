@@ -66,7 +66,60 @@ elseif ($Mode -eq 'Integrate') {
     # --- Integrate Phase ---
     Write-Host "--- [Integrate Phase] ---" -ForegroundColor Yellow
     
-    # 0. Pre-PR Check (Hard Guard for Duplicate Task ID)
+    # 0. Clean-State Integration Guard (Task 260211_001)
+    Write-Host "0. Running Clean-State Integration Guard..."
+    $StatusOutput = git status --porcelain
+    $DirtyFiles = @()
+    if ($StatusOutput) {
+        # git status --porcelain returns array of strings in PowerShell if multiple lines
+        # Ensure it's treated as array even if single line
+        $StatusLines = @($StatusOutput)
+        foreach ($Line in $StatusLines) {
+            if ([string]::IsNullOrWhiteSpace($Line)) { continue }
+            # Format: XY PATH or XY "PATH" (if spaces) or R  OLD -> NEW
+            # Regex parsing to avoid Substring issues
+            if ($Line -match '^.{3}(.*)$') {
+                $PathRaw = $Matches[1]
+                
+                # Check for rename (R old -> new) - use regex split to avoid splitting on hyphens in filenames!
+                if ($PathRaw -match ' -> ') {
+                    $Path = ($PathRaw -split ' -> ')[-1].Trim().Trim('"')
+                } else {
+                    $Path = $PathRaw.Trim().Trim('"')
+                }
+            } else {
+                # Fallback
+                $Path = $Line.Substring(3).Trim()
+            }
+            
+            # DEBUG: Print parsed path
+            Write-Host "DEBUG: Line='$Line' Path='$Path'" -ForegroundColor Magenta
+            # Normalize to forward slashes for regex
+            $NormalizedPath = $Path -replace '\\', '/'
+            
+            # Allowlist check (Evidence, Docs, LATEST.json)
+            if ($NormalizedPath -match '^rules/task-reports/') { continue }
+            if ($NormalizedPath -match '^rules/rules/') { continue }
+            if ($NormalizedPath -eq 'rules/LATEST.json') { continue }
+            
+            $DirtyFiles += $Path
+        }
+    }
+    
+    if ($DirtyFiles.Count -gt 0) {
+        Write-Host "========================================" -ForegroundColor Red
+        Write-Host "[BLOCK] CLEAN_STATE_GUARD" -ForegroundColor Red
+        Write-Host "========================================" -ForegroundColor Red
+        Write-Host "[DETAIL] Uncommitted non-evidence changes detected:"
+        $DirtyFiles | Select-Object -First 30 | ForEach-Object { Write-Host "  - $_" -ForegroundColor Red }
+        if ($DirtyFiles.Count -gt 30) { Write-Host "  ... (truncated)" -ForegroundColor Red }
+        Write-Host ""
+        Write-Host "[ACTION] Commit code changes first, then rerun Integrate." -ForegroundColor Yellow
+        Write-Host "========================================" -ForegroundColor Red
+        exit 31
+    }
+
+    # 0.1 Pre-PR Check (Hard Guard for Duplicate Task ID)
     # MUST run before any evidence generation or file writes
     Write-Host "0. Running Pre-PR Check (Duplicate Task ID Guard)..."
     node scripts/pre_pr_check.mjs --task_id $TaskId
@@ -75,17 +128,21 @@ elseif ($Mode -eq 'Integrate') {
         exit $LASTEXITCODE
     }
 
-    # 0.5 Integrate-Once Guard (Task 260210_009)
-    # Prevent overwriting existing evidence to ensure reproducibility
-    $ExistingGateLightLog = Join-Path $ReportsDir "gate_light_ci_${TaskId}.txt"
-    $ExistingEnvelope = Join-Path $ReportsDir "envelopes\${TaskId}.envelope.json"
+    # 0.5 Immutable Integrate Lock Check (Task 260211_003)
+    # Lock file prevents re-running successful integrate phases for same task_id
+    $LocksDir = Join-Path $ReportsDir "locks"
+    $LockFile = Join-Path $LocksDir "${TaskId}.lock.json"
     
-    if ((Test-Path $ExistingGateLightLog) -or (Test-Path $ExistingEnvelope)) {
-        Write-Error "INTEGRATE_ONCE_VIOLATION: Evidence for Task $TaskId already exists."
-        Write-Error "Found: $ExistingGateLightLog or $ExistingEnvelope"
-        Write-Error "ACTION: Do not re-run Integrate phase. If you must regenerate, manually delete old evidence files first."
-        exit 1
-    }
+    if (Test-Path $LockFile) {
+            Write-Output "========================================"
+            Write-Output "[BLOCK] IMMUTABLE_INTEGRATE_LOCK"
+            Write-Output "========================================"
+            Write-Output "[DETAIL] Task $TaskId has already been integrated and locked."
+            Write-Output "Lock File: $LockFile"
+            Write-Output "Action: Use a new task_id for new changes. This task is immutable."
+            Write-Output "EXIT=33"
+            exit 33
+        }
 
     # 1. Healthcheck
     Write-Host "1. Running Healthcheck..."
@@ -616,6 +673,74 @@ if (fs.existsSync(indexFile) && newHash) {
             exit $GateExitCode
         }
     }
+
+    # 7. Immutable Lock & Run Archive (Task 260211_003)
+    Write-Host "7. Finalizing Immutable Integrate..."
+    
+    # 7.1 Create Lock File
+    if (-not (Test-Path $LocksDir)) { New-Item -ItemType Directory -Path $LocksDir -Force | Out-Null }
+    
+    $Timestamp = Get-Date -Format "yyyy-MM-ddTHH:mm:ssZ"
+    $ShortHash = (git rev-parse --short HEAD).Trim()
+    $RunId = "$(Get-Date -Format 'yyyyMMdd_HHmmss')_$ShortHash"
+    
+    $LockContent = @{
+        task_id = $TaskId
+        run_id = $RunId
+        timestamp = $Timestamp
+        status = "LOCKED"
+    } | ConvertTo-Json
+    
+    $LockContent | Out-File -FilePath $LockFile -Encoding UTF8
+    Write-Host "   Locked: $LockFile"
+    
+    # 7.2 Run Archive (Append-only)
+    # Use global runs directory: rules/task-reports/runs/
+    $RunsBaseDir = Join-Path $RepoRoot "rules\task-reports\runs"
+    $TaskRunDir = Join-Path $RunsBaseDir "$TaskId\$RunId"
+    if (-not (Test-Path $TaskRunDir)) { New-Item -ItemType Directory -Path $TaskRunDir -Force | Out-Null }
+    
+    Write-Host "   Archiving artifacts to $TaskRunDir..."
+    
+    # Copy key artifacts
+    $Artifacts = @(
+        "notify_${TaskId}.txt",
+        "result_${TaskId}.json",
+        "trae_report_snippet_${TaskId}.txt",
+        "gate_light_ci_${TaskId}.txt",
+        "deliverables_index_${TaskId}.json",
+        "${TaskId}_healthcheck_*.txt",
+        "ci_parity_${TaskId}.json",
+        "envelopes/${TaskId}.envelope.json"
+    )
+    
+    foreach ($Item in $Artifacts) {
+        $SourcePath = Join-Path $ReportsDir $Item
+        if (Test-Path $SourcePath) {
+            if ($Item -match "\*") {
+                # Wildcard: Copy matches directly to run dir (flat)
+                Copy-Item $SourcePath -Destination $TaskRunDir -Force
+            } else {
+                # Specific file (preserve structure if any)
+                $DestPath = Join-Path $TaskRunDir $Item
+                $DestParent = Split-Path $DestPath -Parent
+                if (-not (Test-Path $DestParent)) { New-Item -ItemType Directory -Path $DestParent -Force | Out-Null }
+                Copy-Item $SourcePath -Destination $DestPath -Force
+            }
+        }
+    }
+    
+    # Update LATEST.json with run_id info
+    $LatestJsonPath = Join-Path "rules" "LATEST.json"
+    if (Test-Path $LatestJsonPath) {
+        $LatestJson = Get-Content $LatestJsonPath | ConvertFrom-Json
+        $LatestJson | Add-Member -Name "run_id" -Value $RunId -MemberType NoteProperty -Force
+        $LatestJson | Add-Member -Name "run_dir" -Value "rules/task-reports/runs/$TaskId/$RunId" -MemberType NoteProperty -Force
+        $LatestJson | ConvertTo-Json -Depth 4 | Out-File -FilePath $LatestJsonPath -Encoding UTF8
+        Write-Host "   Updated LATEST.json with run_id."
+    }
+
+    Write-Host "   Archive Complete."
 
     Write-Host "--- [Integrate Phase Complete] ---" -ForegroundColor Green
     Write-Host "Ready to commit and push:"

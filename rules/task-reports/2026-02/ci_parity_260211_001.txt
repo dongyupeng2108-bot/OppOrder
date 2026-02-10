@@ -1,0 +1,30 @@
+CI Parity Probe Report
+Task ID: 260211_001
+Timestamp: 2026-02-10T17:17:42.728Z
+----------------------------------------
+Git Context:
+  Origin/Main: 914bfaf4fac7c5acc8d1a5b1faab2c4d3cb8a21e
+  HEAD:        583342f0d2e99bfcd7b747240b4623a2addb5217
+  Merge Base:  02f8cb2928ef125050408b0418871893335e8a4a
+----------------------------------------
+Task Detection:
+  Source:      INTEGRATE_MODE
+----------------------------------------
+Scope (Diff origin/main...HEAD):
+  File Count:  7
+  - .traerules
+  - rules/LATEST.json
+  - rules/rules/PROJECT_RULES.md
+  - rules/rules/WORKFLOW.md
+  - rules/task-reports/2026-02/260210_009.json
+  - rules/task-reports/2026-02/clean_state_guard_negative_260211_001.txt
+  - scripts/dev_batch_mode.ps1
+----------------------------------------
+
+=== CI_PARITY_PREVIEW ===
+Base: 914bfaf
+Head: 583342f
+MergeBase: 02f8cb2
+Source: INTEGRATE_MODE
+Scope: 7 files
+=========================

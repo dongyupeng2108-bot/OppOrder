@@ -1,0 +1,11 @@
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260211_003
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] Verifying task_id: 260211_003
+...
+[Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...
+[Gate Light] [FAIL] CHAINED_CMD_DETECTED in command_audit_260211_003.txt:
+  - Line 1: CMD: git add . ; git commit -m "Bad command"
+[Gate Light] SafeCmd Violation: Chained commands are prohibited.
+Action: Use safe_commit.ps1 / safe_push.ps1 or separate commands.
+EXIT_CODE=1

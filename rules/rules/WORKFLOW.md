@@ -71,10 +71,31 @@ To reduce repository overhead and conflicts, we adopt a two-phase workflow for e
     *   **Focus**: Final validation, evidence generation, PR creation.
     *   **Constraints**:
         *   Run **ONCE** at the end of the task.
+        *   **Clean State**: MUST NOT run with uncommitted code changes (only evidence/docs allowed).
         *   Generates evidence, updates `LATEST.json`, runs postflight & pre-pr checks.
     *   **Command**: Use `scripts/dev_batch_mode.ps1 -Mode Integrate`.
 
-### Conflict Minimization
+### Gate Light Evidence Standards (CI Parity)
+
+*   **Immutable Integrate (One-Shot)**:
+    *   **Lock File**: The first successful Integrate run creates `rules/task-reports/locks/<task_id>.lock.json`.
+    *   **Rerun Block**: Subsequent attempts to run Integrate on the same `task_id` are BLOCKED (Exit 33).
+    *   **Action**: To change code, you MUST use a new `task_id`. The old task is immutable.
+*   **Append-Only Archive**:
+    *   Evidence is archived to `rules/task-reports/runs/<task_id>/<run_id>/`.
+    *   This is an append-only operation; history is preserved (though LATEST.json points to the newest).
+*   **SafeCmd Enforcement**:
+    *   **Forbidden**: Chained commands (e.g., `git add . ; git commit ...`) are strictly prohibited in `command_audit` files.
+    *   **Detection**: Gate Light scans `command_audit`, `dod_stdout`, and `trae_report_snippet` for prohibited operators (` ; `, ` && `, ` || `).
+    *   **Solution**: Use atomic script calls (`safe_commit.ps1`, `safe_push.ps1`) or separate tool calls.
+*   **Evidence-as-Code (JSON)**: CI Parity Evidence MUST be a structured JSON file (`rules/task-reports/.../ci_parity_<task_id>.json`) containing `task_id`, `base`, `head`, `merge_base`, `scope_files`, `scope_count`, and `generated_at`. Text-based evidence is DEPRECATED.
+*   **Gate Light Recalculation**: Gate Light CI (`gate_light_ci.mjs`) MUST independently recalculate git state (`base`, `head`, `merge_base`, `scope_files`) and validate it against the provided JSON evidence byte-for-byte.
+*   **Anti-Cheat**:
+    *   If `head != base`, `scope_count` MUST be > 0.
+    *   If `head == base`, `scope_count` MUST be 0 (Empty PR warning/fail).
+    *   `merge_base` MUST match calculated value.
+
+## Conflict Minimization
 *   **LATEST.json**: Only update during the Integration Phase (1 modification per PR).
 *   **Task Reports**: Only write to `rules/task-reports/**` during the Integration Phase.
 *   **Repo Operation Budget**: Limit git operations to ≤ 8 steps per task.
@@ -219,8 +240,7 @@ To reduce repository overhead and conflicts, we adopt a two-phase workflow for e
     *   若本地 Pass 但 CI Fail，视为**未完成**。必须以 CI 报错为准进行修复。
 
 2.  **Parity Probe (一致性探针)**:
-    *   验收证据必须包含 `=== CI_PARITY_PREVIEW ===` 块（由 `scripts/ci_parity_probe.mjs` 生成）。
-    *   该探针必须展示 `origin/main` 基准、`merge-base`、`task_id` 解析来源等信息，证明本地运行上下文与 CI 环境一致。
+    *   验收证据必须包含 `=== CI_PARITY_PREVIEW ===` 证据，该探针必须展示 `origin/main` 基准、`merge-base`、`task_id` 解析来源等信息，证明本地运行上下文与 CI 环境一致。
 
 3.  **Fail-Fast Hard Guard**:
     *   任何阶段（Pre-check, Integrate, CI）检测到 `task_id` 冲突、LATEST 不一致、或对象漂移，必须立即**Fail-fast**（退出码非 0），严禁尝试自动纠错。
@@ -248,3 +268,17 @@ To reduce repository overhead and conflicts, we adopt a two-phase workflow for e
 === GATE_LIGHT_PREVIEW ===
 [Gate Light] PASS
 GATE_LIGHT_EXIT=0
+
+### 5. Immutable Integrate & SafeCmd (Task 260211_003)
+
+*   **Immutable Integrate (一次性集成)**:
+    *   同一 `task_id` 的 Integrate 阶段只允许成功一次。
+    *   **Lock Mechanism**: 首次 Integrate 成功后会生成 `rules/task-reports/locks/<task_id>.lock.json`。
+    *   **Rerun Block**: 若锁文件存在，后续 Integrate 将被硬阻断（`EXIT=33`），防止历史证据被覆盖。若需修改代码，必须申请新的 `task_id`。
+    *   **Run Archive**: 每次成功 Integrate 会将关键证据归档至 `rules/task-reports/runs/<task_id>/<run_id>/`（Append-only）。
+
+*   **SafeCmd (安全命令机制)**:
+    *   **禁止链式命令**: 严禁在 `TraeTask` 中使用 `;`, `&&`, `||` 连接多个命令（如 `git add . && git commit`）。Gate Light 会扫描证据并拦截此类行为。
+    *   **推荐工具**:
+        *   `scripts/safe_commit.ps1 -Message "..."`: 安全的原子化提交（Add + Check + Commit）。
+        *   `scripts/safe_push.ps1`: 安全的单分支推送。

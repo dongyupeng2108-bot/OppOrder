@@ -1,0 +1,6 @@
+Test started at 2026-02-10T17:17:40.213Z
+Step 1: Calling POST /opportunities/build_v1...
+Run ID generated: mock_build_1770743860230
+Step 2: Calling GET /opportunities/top?run_id=mock_build_1770743860230&limit=10...
+Received 10 items.
+PASS: rows >= 1, all_same_run_id=true, sorted_by_score_desc=true

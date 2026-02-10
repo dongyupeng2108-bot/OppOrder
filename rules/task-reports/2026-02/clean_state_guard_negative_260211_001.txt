@@ -1,0 +1,41 @@
+﻿**********************
+Windows PowerShell transcript start
+Start time: 20260211012428
+Username: DESKTOP-BOHP945\ypdong
+RunAs User: DESKTOP-BOHP945\ypdong
+Configuration Name: 
+Machine: DESKTOP-BOHP945 (Microsoft Windows NT 10.0.19045.0)
+Host Application: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File scripts/run_neg.ps1
+Process ID: 25440
+PSVersion: 5.1.19041.6456
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.19041.6456
+BuildVersion: 10.0.19041.6456
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+Transcript started, output file is rules/task-reports/2026-02/clean_state_guard_negative_260211_001.txt
+>>> Starting Batch Mode: integrate (Task: 260211_001)
+--- [Integrate Phase] ---
+0. Running Clean-State Integration Guard...
+DEBUG: Line=' M rules/LATEST.json' Path='rules/LATEST.json'
+DEBUG: Line=' M rules/task-reports/2026-02/clean_state_guard_negative_260211_001.txt' Path='rules/task-reports/2026-02/clean_state_guard_negative_260211_001.txt'
+DEBUG: Line='?? rules/task-reports/envelopes/260211_001.envelope.json' Path='rules/task-reports/envelopes/260211_001.envelope.json'
+DEBUG: Line='?? scripts/_tmp_guard_block.txt' Path='scripts/_tmp_guard_block.txt'
+DEBUG: Line='?? scripts/run_neg.ps1' Path='scripts/run_neg.ps1'
+========================================
+[BLOCK] CLEAN_STATE_GUARD
+========================================
+[DETAIL] Uncommitted non-evidence changes detected:
+  - scripts/_tmp_guard_block.txt
+  - scripts/run_neg.ps1
+
+[ACTION] Commit code changes first, then rerun Integrate.
+========================================
+**********************
+Windows PowerShell transcript end
+End time: 20260211012428
+**********************
+EXIT=31

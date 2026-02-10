@@ -1,0 +1,116 @@
+=== TRAE_REPORT_SNIPPET ===
+
+BRANCH: feat/immutable-integrate-oneshot-260211_003
+COMMIT: 3104f31
+
+=== GIT_SCOPE_DIFF ===
+A	.traerules
+M	rules/LATEST.json
+M	rules/rules/PROJECT_RULES.md
+M	rules/rules/WORKFLOW.md
+M	rules/task-reports/2026-02/260210_009.json
+A	rules/task-reports/2026-02/260211_001.json
+A	rules/task-reports/2026-02/260211_001_healthcheck_53122_pairs.txt
+A	rules/task-reports/2026-02/260211_001_healthcheck_53122_root.txt
+A	rules/task-reports/2026-02/260211_002.json
+A	rules/task-reports/2026-02/260211_002_healthcheck_53122_pairs.txt
+A	rules/task-reports/2026-02/260211_002_healthcheck_53122_root.txt
+A	rules/task-reports/2026-02/260211_003.json
+A	rules/task-reports/2026-02/260211_003_healthcheck_53122_pairs.txt
+A	rules/task-reports/2026-02/260211_003_healthcheck_53122_root.txt
+A	rules/task-reports/2026-02/M4_PR2_concurrent_log_260211_001.txt
+A	rules/task-reports/2026-02/M4_PR2_concurrent_log_260211_002.txt
+A	rules/task-reports/2026-02/M4_PR2_concurrent_log_260211_003.txt
+A	rules/task-reports/2026-02/chained_cmd_negative_260211_003.txt
+A	rules/task-reports/2026-02/ci_parity_260211_001.txt
+A	rules/task-reports/2026-02/ci_parity_260211_002.json
+A	rules/task-reports/2026-02/ci_parity_260211_003.json
+A	rules/task-reports/2026-02/ci_parity_json_negative_260211_002.txt
+A	rules/task-reports/2026-02/clean_state_guard_negative_260211_001.txt
+A	rules/task-reports/2026-02/deliverables_index_260211_001.json
+A	rules/task-reports/2026-02/deliverables_index_260211_002.json
+A	rules/task-reports/2026-02/deliverables_index_260211_003.json
+A	rules/task-reports/2026-02/dod_stdout_260211_001.txt
+A	rules/task-reports/2026-02/dod_stdout_260211_002.txt
+A	rules/task-reports/2026-02/dod_stdout_260211_003.txt
+A	rules/task-reports/2026-02/gate_light_ci_260211_001.txt
+A	rules/task-reports/2026-02/gate_light_ci_260211_002.txt
+A	rules/task-reports/2026-02/gate_light_ci_260211_003.txt
+A	rules/task-reports/2026-02/immutable_integrate_rerun_block_260211_003.txt
+A	rules/task-reports/2026-02/locks/260211_003.lock.json
+A	rules/task-reports/2026-02/notify_260211_001.txt
+A	rules/task-reports/2026-02/notify_260211_002.txt
+A	rules/task-reports/2026-02/notify_260211_003.txt
+A	rules/task-reports/2026-02/opps_pipeline_smoke_260211_001.txt
+A	rules/task-reports/2026-02/opps_pipeline_smoke_260211_002.txt
+A	rules/task-reports/2026-02/opps_pipeline_smoke_260211_003.txt
+A	rules/task-reports/2026-02/opps_run_filter_smoke_260211_001.txt
+A	rules/task-reports/2026-02/opps_run_filter_smoke_260211_002.txt
+A	rules/task-reports/2026-02/opps_run_filter_smoke_260211_003.txt
+A	rules/task-reports/2026-02/opps_top_by_run_smoke_260211_001.txt
+A	rules/task-reports/2026-02/opps_top_by_run_smoke_260211_002.txt
+A	rules/task-reports/2026-02/opps_top_by_run_smoke_260211_003.txt
+A	rules/task-reports/2026-02/result_260211_001.json
+A	rules/task-reports/2026-02/result_260211_002.json
+A	rules/task-reports/2026-02/result_260211_003.json
+A	rules/task-reports/2026-02/scan_cache_smoke_260211_001.txt
+A	rules/task-reports/2026-02/scan_cache_smoke_260211_002.txt
+A	rules/task-reports/2026-02/scan_cache_smoke_260211_003.txt
+A	rules/task-reports/2026-02/scripts/postflight_validate_envelope_260211_001.mjs
+A	rules/task-reports/2026-02/scripts/postflight_validate_envelope_260211_002.mjs
+A	rules/task-reports/2026-02/scripts/postflight_validate_envelope_260211_003.mjs
+A	rules/task-reports/2026-02/trae_report_snippet_260211_001.txt
+A	rules/task-reports/2026-02/trae_report_snippet_260211_002.txt
+A	rules/task-reports/2026-02/trae_report_snippet_260211_003.txt
+A	rules/task-reports/envelopes/260211_001.envelope.json
+A	rules/task-reports/envelopes/260211_002.envelope.json
+A	rules/task-reports/envelopes/260211_003.envelope.json
+A	rules/task-reports/runs/260211_003/20260211_031919_2a2ce02/260211_003_healthcheck_53122_pairs.txt
+A	rules/task-reports/runs/260211_003/20260211_031919_2a2ce02/260211_003_healthcheck_53122_root.txt
+A	rules/task-reports/runs/260211_003/20260211_031919_2a2ce02/ci_parity_260211_003.json
+A	rules/task-reports/runs/260211_003/20260211_031919_2a2ce02/deliverables_index_260211_003.json
+A	rules/task-reports/runs/260211_003/20260211_031919_2a2ce02/gate_light_ci_260211_003.txt
+A	rules/task-reports/runs/260211_003/20260211_031919_2a2ce02/notify_260211_003.txt
+A	rules/task-reports/runs/260211_003/20260211_031919_2a2ce02/result_260211_003.json
+A	rules/task-reports/runs/260211_003/20260211_031919_2a2ce02/trae_report_snippet_260211_003.txt
+M	scripts/build_trae_report_snippet.mjs
+M	scripts/ci_parity_probe.mjs
+M	scripts/dev_batch_mode.ps1
+M	scripts/gate_light_ci.mjs
+A	scripts/safe_commit.ps1
+A	scripts/safe_push.ps1
+
+=== DOD_EVIDENCE_STDOUT ===
+DOD_EVIDENCE_HEALTHCHECK_ROOT: E:/OppRadar/rules/task-reports/2026-02/260211_003_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: E:/OppRadar/rules/task-reports/2026-02/260211_003_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_SCAN_CACHE_MISS: E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260211_003.txt => cached=false duration_ms=15
+DOD_EVIDENCE_SCAN_CACHE_HIT:  E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260211_003.txt => cached=true  duration_ms=1
+DOD_EVIDENCE_OPPS_PIPELINE_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_pipeline_smoke_260211_003.txt => run_id=mock_build_1770751151961 ok=5 failed=1
+DOD_EVIDENCE_OPPS_PIPELINE_TOP: E:/OppRadar/rules/task-reports/2026-02/opps_pipeline_smoke_260211_003.txt => top_count=5 refs_run_id=true
+DOD_EVIDENCE_OPPS_RUNS_LIST: E:/OppRadar/rules/task-reports/2026-02/opps_run_filter_smoke_260211_003.txt => contains_run_id=true count=41
+DOD_EVIDENCE_OPPS_BY_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_run_filter_smoke_260211_003.txt => rows=4 all_same_run_id=true
+
+=== CI_PARITY_PREVIEW ===
+Base: 914bfaf
+Head: 3104f31
+MergeBase: 914bfaf
+Source: JSON (Evidence-as-Code)
+Scope: 29 files
+Files (Top 3):
+  - .traerules
+  - rules/LATEST.json
+  - rules/rules/PROJECT_RULES.md
+  ... (truncated)
+=========================
+
+=== GATE_LIGHT_PREVIEW ===
+[Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...
+[Gate Light] Immutable Integrate & SafeCmd Enforcement verified.
+[Gate Light] Executing: node scripts/postflight_validate_envelope.mjs --task_id 260211_003 --result_dir rules/task-reports/2026-02 --report_dir rules/task-reports/2026-02
+[Postflight] Validating 260211_003 in rules/task-reports/2026-02...
+[Postflight] Report: rules\task-reports\2026-02\260211_003.json
+[Postflight] Envelope: rules\task-reports\envelopes\260211_003.envelope.json
+[Postflight] PASS
+[Gate Light] PASS
+
+GATE_LIGHT_EXIT=0
