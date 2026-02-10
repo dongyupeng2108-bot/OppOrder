@@ -1,29 +1,48 @@
 === TRAE_REPORT_SNIPPET ===
 
 BRANCH: feat/plan-window-progress-260210_008
-COMMIT: a5fa610
+COMMIT: e2d68f8
 
 === GIT_SCOPE_DIFF ===
-EMPTY_DIFF_OK
-Reason: No code changes detected against origin/main (Evidence/Docs update only)
+M	rules/LATEST.json
+M	rules/rules/PROJECT_MASTER_PLAN.md
+A	rules/task-reports/2026-02/260210_008.json
+A	rules/task-reports/2026-02/260210_008_healthcheck_53122_pairs.txt
+A	rules/task-reports/2026-02/260210_008_healthcheck_53122_root.txt
+A	rules/task-reports/2026-02/M4_PR2_concurrent_log_260210_008.txt
+A	rules/task-reports/2026-02/deliverables_index_260210_008.json
+A	rules/task-reports/2026-02/dod_stdout_260210_008.txt
+A	rules/task-reports/2026-02/gate_light_ci_260210_008.txt
+A	rules/task-reports/2026-02/notify_260210_008.txt
+A	rules/task-reports/2026-02/opps_pipeline_smoke_260210_008.txt
+A	rules/task-reports/2026-02/opps_run_filter_smoke_260210_008.txt
+A	rules/task-reports/2026-02/opps_top_by_run_smoke_260210_008.txt
+A	rules/task-reports/2026-02/result_260210_008.json
+A	rules/task-reports/2026-02/scan_cache_smoke_260210_008.txt
+A	rules/task-reports/2026-02/scripts/postflight_validate_envelope_260210_008.mjs
+A	rules/task-reports/2026-02/trae_report_snippet_260210_008.txt
+A	rules/task-reports/envelopes/260210_008.envelope.json
+A	scripts/temp_gather_task_status.mjs
 
 === DOD_EVIDENCE_STDOUT ===
 DOD_EVIDENCE_HEALTHCHECK_ROOT: E:/OppRadar/rules/task-reports/2026-02/260210_008_healthcheck_53122_root.txt => HTTP/1.1 200 OK
 DOD_EVIDENCE_HEALTHCHECK_PAIRS: E:/OppRadar/rules/task-reports/2026-02/260210_008_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
-DOD_EVIDENCE_SCAN_CACHE_MISS: E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260210_008.txt => cached=false duration_ms=16
+DOD_EVIDENCE_SCAN_CACHE_MISS: E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260210_008.txt => cached=false duration_ms=14
 DOD_EVIDENCE_SCAN_CACHE_HIT:  E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260210_008.txt => cached=true  duration_ms=1
-DOD_EVIDENCE_OPPS_PIPELINE_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_pipeline_smoke_260210_008.txt => run_id=mock_build_1770728198287 ok=5 failed=1
+DOD_EVIDENCE_OPPS_PIPELINE_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_pipeline_smoke_260210_008.txt => run_id=mock_build_1770737357530 ok=5 failed=1
 DOD_EVIDENCE_OPPS_PIPELINE_TOP: E:/OppRadar/rules/task-reports/2026-02/opps_pipeline_smoke_260210_008.txt => top_count=5 refs_run_id=true
-DOD_EVIDENCE_OPPS_RUNS_LIST: E:/OppRadar/rules/task-reports/2026-02/opps_run_filter_smoke_260210_008.txt => contains_run_id=true count=39
+DOD_EVIDENCE_OPPS_RUNS_LIST: E:/OppRadar/rules/task-reports/2026-02/opps_run_filter_smoke_260210_008.txt => contains_run_id=true count=48
 DOD_EVIDENCE_OPPS_BY_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_run_filter_smoke_260210_008.txt => rows=4 all_same_run_id=true
 
 === GATE_LIGHT_PREVIEW ===
-[Gate Light] Verifying latest task: 260210_008
+[Gate Light] Target locked via argument: 260210_008
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] Verifying task_id: 260210_008
 [Gate Light] Checking doc path standards...
 [Gate Light] Doc path standards verified.
 [Gate Light] Checking for legacy doc path references...
 [CheckDocPathRefs] Scanning for legacy doc path references...
-[CheckDocPathRefs] Scan completed in 16ms.
+[CheckDocPathRefs] Scan completed in 15ms.
 [CheckDocPathRefs] PASS: No legacy doc path references found.
 [Gate Light] Checking for global healthcheck artifacts...
 [Gate Light] Global Artifact Guard verified.
@@ -55,6 +74,7 @@ PASS
 [Gate Light] Opps Run Filter DoD Evidence verified.
 [Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
 [Gate Light] Fetching origin/main history for diff context...
+[Gate Light] Allowed legacy task_id (transition): 260210_007
 [Gate Light] NoHistoricalEvidenceTouch verified.
 [Gate Light] SnippetCommitMustMatch verified.
 [Gate Light] Checking GATE_LIGHT_EXIT Mechanism...
