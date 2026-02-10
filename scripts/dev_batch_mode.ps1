@@ -722,6 +722,17 @@ if (fs.existsSync(indexFile) && newHash) {
             Copy-Item $SourcePath -Destination $DestPath -Force
         }
     }
+    
+    # Update LATEST.json with run_id info
+    $LatestJsonPath = Join-Path "rules" "LATEST.json"
+    if (Test-Path $LatestJsonPath) {
+        $LatestJson = Get-Content $LatestJsonPath | ConvertFrom-Json
+        $LatestJson | Add-Member -Name "run_id" -Value $RunId -MemberType NoteProperty -Force
+        $LatestJson | Add-Member -Name "run_dir" -Value "rules/task-reports/runs/$TaskId/$RunId" -MemberType NoteProperty -Force
+        $LatestJson | ConvertTo-Json -Depth 4 | Out-File -FilePath $LatestJsonPath -Encoding UTF8
+        Write-Host "   Updated LATEST.json with run_id."
+    }
+
     Write-Host "   Archive Complete."
 
     Write-Host "--- [Integrate Phase Complete] ---" -ForegroundColor Green
