@@ -681,7 +681,8 @@ if (fs.existsSync(indexFile) && newHash) {
     if (-not (Test-Path $LocksDir)) { New-Item -ItemType Directory -Path $LocksDir -Force | Out-Null }
     
     $Timestamp = Get-Date -Format "yyyy-MM-ddTHH:mm:ssZ"
-    $RunId = "$(Get-Date -Format 'yyyyMMdd_HHmmss')_$(git rev-parse --short HEAD)"
+    $ShortHash = (git rev-parse --short HEAD).Trim()
+    $RunId = "$(Get-Date -Format 'yyyyMMdd_HHmmss')_$ShortHash"
     
     $LockContent = @{
         task_id = $TaskId
