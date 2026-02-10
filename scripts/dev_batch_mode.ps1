@@ -718,6 +718,7 @@ if (fs.existsSync(indexFile) && newHash) {
         if (Test-Path $SourcePath) {
             # Handle subdirectories (like envelopes\) by ensuring destination structure
             $DestPath = Join-Path $TaskRunDir $Item
+            Write-Host "DEBUG: DestPath='$DestPath'"
             $DestParent = Split-Path $DestPath -Parent
             if (-not (Test-Path $DestParent)) { New-Item -ItemType Directory -Path $DestParent -Force | Out-Null }
             
