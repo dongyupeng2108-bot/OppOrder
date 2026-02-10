@@ -1,10 +1,10 @@
 CI Parity Probe Report
 Task ID: 260210_009
-Timestamp: 2026-02-10T15:34:14.006Z
+Timestamp: 2026-02-10T15:54:51.108Z
 ----------------------------------------
 Git Context:
   Origin/Main: afb9fddb3ab297149f1c680b2b2e86182bf60d9d
-  HEAD:        c16df127a2200f60af972454777371679d7c58be
+  HEAD:        a333c6020bd990ac52d47583dd207b28021ed8f9
   Merge Base:  afb9fddb3ab297149f1c680b2b2e86182bf60d9d
 ----------------------------------------
 Task Detection:
@@ -40,7 +40,7 @@ Scope (Diff origin/main...HEAD):
 
 === CI_PARITY_PREVIEW ===
 Base: afb9fdd
-Head: c16df12
+Head: a333c60
 MergeBase: afb9fdd
 Source: INTEGRATE_MODE
 Scope: 24 files
