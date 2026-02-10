@@ -1,7 +1,7 @@
 {
   "task_id": "260211_003",
   "base": "914bfaf4fac7c5acc8d1a5b1faab2c4d3cb8a21e",
-  "head": "6986a809bd8d07a47697097ebb0806ab2205e98a",
+  "head": "3104f31787046195ecf4131f911f704e78a5b885",
   "merge_base": "914bfaf4fac7c5acc8d1a5b1faab2c4d3cb8a21e",
   "scope_files": [
     ".traerules",
@@ -12,9 +12,6 @@
     "rules/task-reports/2026-02/260211_001.json",
     "rules/task-reports/2026-02/260211_001_healthcheck_53122_pairs.txt",
     "rules/task-reports/2026-02/260211_001_healthcheck_53122_root.txt",
-    "rules/task-reports/2026-02/260211_002.json",
-    "rules/task-reports/2026-02/260211_002_healthcheck_53122_pairs.txt",
-    "rules/task-reports/2026-02/260211_002_healthcheck_53122_root.txt",
     "rules/task-reports/2026-02/260211_003.json",
     "rules/task-reports/2026-02/260211_003_healthcheck_53122_pairs.txt",
     "rules/task-reports/2026-02/260211_003_healthcheck_53122_root.txt",
@@ -80,6 +77,6 @@
     "scripts/safe_commit.ps1",
     "scripts/safe_push.ps1"
   ],
-  "scope_count": 75,
-  "generated_at": "2026-02-10T20:19:04.882Z"
+  "scope_count": 72,
+  "generated_at": "2026-02-10T20:36:02.489Z"
 }

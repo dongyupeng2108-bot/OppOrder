@@ -1,7 +1,7 @@
 === TRAE_REPORT_SNIPPET ===
 
 BRANCH: feat/immutable-integrate-oneshot-260211_003
-COMMIT: 20102132e451dcab1910d2027e0d5d12b3c8fda1
+COMMIT: 3104f31
 
 === GIT_SCOPE_DIFF ===
 A	.traerules
@@ -92,8 +92,8 @@ DOD_EVIDENCE_OPPS_BY_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_run_filter
 
 === CI_PARITY_PREVIEW ===
 Base: 914bfaf
-Head: 2a2ce02
-MergeBase: 02f8cb2
+Head: 3104f31
+MergeBase: 914bfaf
 Source: JSON (Evidence-as-Code)
 Scope: 29 files
 Files (Top 3):
