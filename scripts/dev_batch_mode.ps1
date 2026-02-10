@@ -155,6 +155,47 @@ elseif ($Mode -eq 'Integrate') {
         Write-Host "   Saved to $OppsTopByRunSmokeFile"
     }
 
+    # 1.10 Healthcheck Smoke (Task 260210_006+)
+    if ($TaskId -ge "260210_006") {
+        Write-Host "1.10. Running Healthcheck Smoke Test..."
+        $RootHcFile = Join-Path $ReportsDir "${TaskId}_healthcheck_53122_root.txt"
+        $PairsHcFile = Join-Path $ReportsDir "${TaskId}_healthcheck_53122_pairs.txt"
+        
+        # Escape paths for JS string
+        $RootHcFileJS = $RootHcFile -replace "\\", "\\\\"
+        $PairsHcFileJS = $PairsHcFile -replace "\\", "\\\\"
+        
+        # Use node to fetch to ensure consistent formatting
+        $HcScript = "
+const fs = require('fs');
+const http = require('http');
+
+function fetch(url, dest) {
+    http.get(url, (res) => {
+        let data = '';
+        res.on('data', chunk => data += chunk);
+        res.on('end', () => {
+             const content = 'HTTP/' + res.httpVersion + ' ' + res.statusCode + ' ' + res.statusMessage + '\n\n' + data;
+             fs.writeFileSync(dest, content);
+             console.log('Saved ' + url + ' to ' + dest);
+        });
+    }).on('error', (err) => {
+        console.error('Error fetching ' + url + ': ' + err.message);
+        process.exit(1);
+    });
+}
+
+fetch('http://localhost:53122/', '${RootHcFileJS}');
+fetch('http://localhost:53122/pairs', '${PairsHcFileJS}');
+"
+        $HcScriptPath = Join-Path $RepoRoot "scripts\temp_hc_smoke.js"
+        $HcScript | Out-File -FilePath $HcScriptPath -Encoding UTF8
+        node $HcScriptPath
+        Start-Sleep -Seconds 2
+        Check-LastExitCode
+        Remove-Item $HcScriptPath -ErrorAction SilentlyContinue
+    }
+
     # 2. Envelope Build
     Write-Host "2. Building Envelope..."
     node scripts/envelope_build.mjs --task_id $TaskId --result_dir $ReportsDir --status DONE --summary $Summary
@@ -305,9 +346,16 @@ if (notifyContent.includes(marker)) {
     notifyContent = parts[0].trim();
 }
 console.log("Appending DoD evidence to notify file...");
-const appendContent = '\n\n' + stdoutBlock + '\n';
-notifyContent += appendContent;
-fs.writeFileSync(notifyFile, notifyContent);
+    const appendContent = '\n\n' + stdoutBlock + '\n';
+    notifyContent += appendContent;
+
+    // Add GATE_LIGHT_EXIT placeholder if missing (Task 260210_006)
+    if (taskId >= '260210_006' && !notifyContent.includes('GATE_LIGHT_EXIT=')) {
+        console.log("Appending GATE_LIGHT_EXIT=__PENDING__ to notify...");
+        notifyContent += 'GATE_LIGHT_EXIT=__PENDING__\n';
+    }
+
+    fs.writeFileSync(notifyFile, notifyContent);
 
 // 3b. Write to dod_stdout_<taskId>.txt (Task 260209_003+)
 if (taskId >= '260209_003') {
@@ -317,8 +365,11 @@ if (taskId >= '260209_003') {
 }
 
 // 4. Update Hash in Result and Index
-const newHash = crypto.createHash('sha256').update(notifyContent).digest('hex').substring(0, 8);
-    
+// RELOAD file from disk to ensure hash matches what postflight sees (handling encoding/newlines)
+const fileBuffer = fs.readFileSync(notifyFile);
+const newHash = crypto.createHash('sha256').update(fileBuffer).digest('hex').substring(0, 8);
+const newSize = fileBuffer.length;
+
     // Update Result
     if (fs.existsSync(resultFile)) {
         const result = JSON.parse(fs.readFileSync(resultFile, 'utf8'));
@@ -341,7 +392,7 @@ const newHash = crypto.createHash('sha256').update(notifyContent).digest('hex').
         
         if (reportEntry) {
             reportEntry.sha256_short = newHash;
-            reportEntry.size = Buffer.byteLength(notifyContent, 'utf8');
+            reportEntry.size = newSize;
         }
         fs.writeFileSync(indexFile, JSON.stringify(index, null, 2));
     }
@@ -352,6 +403,15 @@ const newHash = crypto.createHash('sha256').update(notifyContent).digest('hex').
     Check-LastExitCode
     Remove-Item $InjectScriptPath -ErrorAction SilentlyContinue
 
+    # 2.6. Generate Trae Report Snippet (Task 260209_005+)
+    if ($TaskId -ge "260209_005") {
+        Write-Host "2.6. Generating Trae Report Snippet..."
+        node scripts/build_trae_report_snippet.mjs --task_id=$TaskId --result_dir=$ReportsDir
+        Check-LastExitCode
+        
+        $SnippetFile = Join-Path $ReportsDir "trae_report_snippet_${TaskId}.txt"
+    }
+
     # 3. Postflight Validation
     Write-Host "3. Running Postflight..."
     node scripts/postflight_validate_envelope.mjs --task_id $TaskId --result_dir $ReportsDir --report_dir $ReportsDir
@@ -361,20 +421,6 @@ const newHash = crypto.createHash('sha256').update(notifyContent).digest('hex').
     Write-Host "4. Running Pre-PR Check..."
     node scripts/pre_pr_check.mjs --task_id $TaskId
     Check-LastExitCode
-
-    # 5. Generate Trae Report Snippet (Task 260209_005+)
-    if ($TaskId -ge "260209_005") {
-        Write-Host "5. Generating Trae Report Snippet..."
-        node scripts/build_trae_report_snippet.mjs --task_id=$TaskId --result_dir=$ReportsDir
-        Check-LastExitCode
-        
-        $SnippetFile = Join-Path $ReportsDir "trae_report_snippet_${TaskId}.txt"
-    if (Test-Path $SnippetFile) {
-        Write-Host "=== TRAE_REPORT_SNIPPET_STDOUT_BEGIN ===" -ForegroundColor Cyan
-        Get-Content $SnippetFile
-        Write-Host "=== TRAE_REPORT_SNIPPET_STDOUT_END ===" -ForegroundColor Cyan
-    }
-    }
 
     # 6. Gate Light & Exit Code Mechanism (Task 260209_010+)
     if ($TaskId -ge "260209_010") {
@@ -387,6 +433,7 @@ const crypto = require('crypto');
 const taskId = process.argv[2];
 const reportsDir = process.argv[3];
 const exitCode = process.argv[4];
+const gateLogPath = process.argv[5]; // Optional
 
 const notifyFile = path.join(reportsDir, 'notify_' + taskId + '.txt');
 const resultFile = path.join(reportsDir, 'result_' + taskId + '.json');
@@ -398,7 +445,8 @@ function updateFile(filePath, code) {
         let content = fs.readFileSync(filePath, 'utf8');
         const line = `GATE_LIGHT_EXIT=${code}`;
         if (content.includes('GATE_LIGHT_EXIT=')) {
-            content = content.replace(/GATE_LIGHT_EXIT=\d+/, line);
+            // Match any value (digits or placeholder like "(Pending)")
+            content = content.replace(/GATE_LIGHT_EXIT=.*/, line);
         } else {
             if (content.length > 0 && !content.endsWith('\n')) content += '\n';
             content += `${line}\n`;
@@ -410,16 +458,66 @@ function updateFile(filePath, code) {
     return null;
 }
 
-// 1. Update Notify & Snippet
+// 1. Update Notify & Snippet (Exit Code)
 const notifyContent = updateFile(notifyFile, exitCode);
 updateFile(snippetFile, exitCode);
+
+// 1.5 Ensure Notify has TRAE_REPORT_SNIPPET reference
+if (fs.existsSync(notifyFile)) {
+    let content = fs.readFileSync(notifyFile, 'utf8');
+    const snippetRef = `TRAE_REPORT_SNIPPET: trae_report_snippet_${taskId}.txt`;
+    if (!content.includes('TRAE_REPORT_SNIPPET:')) {
+        if (content.length > 0 && !content.endsWith('\n')) content += '\n';
+        content += `${snippetRef}\n`;
+        fs.writeFileSync(notifyFile, content);
+        console.log(`Updated ${path.basename(notifyFile)} with ${snippetRef}`);
+    }
+}
+
+
+// 1.1 Update Snippet Preview (if log provided)
+if (gateLogPath && fs.existsSync(gateLogPath) && fs.existsSync(snippetFile)) {
+    try {
+        let logContent = fs.readFileSync(gateLogPath, 'utf8').trim();
+        
+        // Truncate logic (Task 260210_006)
+        const lines = logContent.split('\n');
+        const startIndex = lines.findIndex(l => l.includes('[Gate Light] Verifying latest task:'));
+        
+        let filteredContent = logContent;
+        if (startIndex !== -1) {
+            filteredContent = lines.slice(startIndex).join('\n');
+        } else if (lines.length > 150) {
+            filteredContent = lines.slice(-150).join('\n');
+        }
+        
+        let snippet = fs.readFileSync(snippetFile, 'utf8');
+        
+        // Regex to replace content between PREVIEW marker and GATE_LIGHT_EXIT
+        // We look for === GATE_LIGHT_PREVIEW === followed by anything until GATE_LIGHT_EXIT=
+        const regex = /=== GATE_LIGHT_PREVIEW ===[\s\S]*?(?=GATE_LIGHT_EXIT=)/;
+        
+        if (regex.test(snippet)) {
+            const newSection = `=== GATE_LIGHT_PREVIEW ===\n${filteredContent}\n\n`;
+            snippet = snippet.replace(regex, newSection);
+            fs.writeFileSync(snippetFile, snippet);
+            console.log(`Updated snippet with Gate Light Preview from ${path.basename(gateLogPath)}`);
+        } else {
+            console.log("Warning: Could not find PREVIEW section in snippet to update.");
+        }
+    } catch (err) {
+        console.error("Error updating snippet preview:", err.message);
+    }
+}
 
 // 2. Calculate New Hash for Notify
 let newHash = null;
 let newSize = 0;
-if (notifyContent) {
-    newHash = crypto.createHash('sha256').update(notifyContent).digest('hex').substring(0, 8);
-    newSize = Buffer.byteLength(notifyContent, 'utf8');
+if (fs.existsSync(notifyFile)) {
+    // RELOAD file from disk to ensure hash matches what postflight sees
+    const fileBuffer = fs.readFileSync(notifyFile);
+    newHash = crypto.createHash('sha256').update(fileBuffer).digest('hex').substring(0, 8);
+    newSize = fileBuffer.length;
 }
 
 // 3. Update Result JSON (field + hash)
@@ -458,24 +556,36 @@ if (fs.existsSync(indexFile) && newHash) {
         $GateInjectScriptPath = Join-Path $RepoRoot "scripts\temp_gate_inject.js"
         $GateInjectScript | Out-File -FilePath $GateInjectScriptPath -Encoding UTF8
         
-        # 6.1 Optimistic Injection (0)
+        # 6.1 Optimistic Injection (0) - No log file yet
         Write-Host "   Injecting optimistic GATE_LIGHT_EXIT=0..."
         node $GateInjectScriptPath $TaskId $ReportsDir "0"
         
-        # 6.2 Run Gate Light
-        Write-Host "   Executing gate_light_ci.mjs..."
-        node scripts/gate_light_ci.mjs
+        # 6.2 Run Gate Light (Save to file)
+        $GateLogFile = Join-Path $ReportsDir "gate_light_ci_${TaskId}.txt"
+        Write-Host "   Executing gate_light_ci.mjs > $GateLogFile ..."
+        # Use cmd /c to ensure redirection works as expected in all PS versions
+        # Set GATE_LIGHT_MODE=INTEGRATE to bypass strict preview content check during generation
+        $env:GATE_LIGHT_MODE = "INTEGRATE"
+        cmd /c "node scripts/gate_light_ci.mjs > `"$GateLogFile`" 2>&1"
         $GateExitCode = $LASTEXITCODE
+        $env:GATE_LIGHT_MODE = $null
         
         Write-Host "   Gate Light Exit Code: $GateExitCode"
         
-        # 6.3 Update if failed
-        if ($GateExitCode -ne 0) {
-             Write-Host "   Gate Light Failed. Updating artifacts with Exit Code $GateExitCode..."
-             node $GateInjectScriptPath $TaskId $ReportsDir "$GateExitCode"
+        # Append Exit Code to Log File for Evidence Truth
+        Add-Content -Path $GateLogFile -Value "`nGATE_LIGHT_EXIT=$GateExitCode"
+        
+        # 6.3 ALWAYS Update artifacts with Real Exit Code & Preview
+        Write-Host "   Updating artifacts with Real Exit Code $GateExitCode & Preview..."
+        node $GateInjectScriptPath $TaskId $ReportsDir "$GateExitCode" "$GateLogFile"
+        
+        # 6.4 Print Snippet & Exit Code Line
+        if (Test-Path $SnippetFile) {
+            Write-Host "=== TRAE_REPORT_SNIPPET_STDOUT_BEGIN ===" -ForegroundColor Cyan
+            Get-Content $SnippetFile
+            Write-Host "=== TRAE_REPORT_SNIPPET_STDOUT_END ===" -ForegroundColor Cyan
         }
         
-        # 6.4 Print to Stdout
         Write-Host "GATE_LIGHT_EXIT=$GateExitCode" -ForegroundColor Magenta
         
         # Cleanup

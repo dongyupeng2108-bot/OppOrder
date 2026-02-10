@@ -34,7 +34,9 @@ function get(path) {
 
 async function runSmoke() {
     console.log('Starting Smoke Test for Top Opportunities by Run ID...');
-    const evidencePath = path.resolve('rules/task-reports/2026-02/opps_top_by_run_smoke_260209_010.txt');
+    const evidencePath = process.argv[2] 
+        ? path.resolve(process.argv[2])
+        : path.resolve('rules/task-reports/2026-02/opps_top_by_run_smoke_260209_010.txt');
     console.log(`Writing evidence to: ${evidencePath}`);
 
     const logLines = [];
