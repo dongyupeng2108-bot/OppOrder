@@ -469,6 +469,7 @@
     "scan_cache_smoke_260210_003.txt",
     "scan_cache_smoke_260210_006.txt",
     "scripts/postflight_validate_envelope.mjs",
+    "scripts/postflight_validate_envelope_260210_006.mjs",
     "trae_report_snippet_260209_005.txt",
     "trae_report_snippet_260209_006.txt",
     "trae_report_snippet_260209_008.txt",

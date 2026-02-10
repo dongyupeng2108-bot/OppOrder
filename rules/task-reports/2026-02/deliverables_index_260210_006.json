@@ -912,8 +912,8 @@
     },
     {
       "name": "260210_006.json",
-      "size": 1896,
-      "sha256_short": "7d3738f7"
+      "size": 1897,
+      "sha256_short": "3e4f3b6a"
     },
     {
       "name": "260210_006_healthcheck_53122_pairs.txt",
@@ -1247,13 +1247,13 @@
     },
     {
       "name": "dod_stdout_260210_006.txt",
-      "size": 1109,
-      "sha256_short": "6460fce4"
+      "size": 1110,
+      "sha256_short": "1440df1b"
     },
     {
       "name": "gate_light_ci_260210_006.txt",
       "size": 2718,
-      "sha256_short": "b5404f10"
+      "sha256_short": "e39ffff3"
     },
     {
       "name": "git_scope_diff_260209_006.txt",
@@ -1313,7 +1313,7 @@
     {
       "name": "M4_PR2_concurrent_log_260210_006.txt",
       "size": 415,
-      "sha256_short": "5a29e3be"
+      "sha256_short": "8994a5b3"
     },
     {
       "name": "manual_verification.json",
@@ -1592,8 +1592,8 @@
     },
     {
       "name": "notify_260210_006.txt",
-      "size": 15047,
-      "sha256_short": "32717aa5"
+      "size": 15055,
+      "sha256_short": "5330c88b"
     },
     {
       "name": "opps_pipeline_smoke_260209_006.txt",
@@ -1632,8 +1632,8 @@
     },
     {
       "name": "opps_pipeline_smoke_260210_006.txt",
-      "size": 631,
-      "sha256_short": "ca2d23d6"
+      "size": 646,
+      "sha256_short": "b458cc5c"
     },
     {
       "name": "opps_run_filter_smoke_260209_008.txt",
@@ -1668,7 +1668,7 @@
     {
       "name": "opps_run_filter_smoke_260210_006.txt",
       "size": 669,
-      "sha256_short": "51bba0cf"
+      "sha256_short": "16810d9e"
     },
     {
       "name": "opps_top_260209_001.json",
@@ -1683,7 +1683,7 @@
     {
       "name": "opps_top_by_run_smoke_260210_006.txt",
       "size": 298,
-      "sha256_short": "91c283e5"
+      "sha256_short": "eb8f4f30"
     },
     {
       "name": "reports/healthcheck_pairs.txt",
@@ -1968,7 +1968,7 @@
     {
       "name": "result_260210_006.json",
       "size": 476,
-      "sha256_short": "18207777"
+      "sha256_short": "2aa4aeec"
     },
     {
       "name": "run_260206_005.log",
@@ -2303,10 +2303,15 @@
     {
       "name": "scan_cache_smoke_260210_006.txt",
       "size": 290,
-      "sha256_short": "a9a6e613"
+      "sha256_short": "09102bca"
     },
     {
       "name": "scripts/postflight_validate_envelope.mjs",
+      "size": 39758,
+      "sha256_short": "db0acb52"
+    },
+    {
+      "name": "scripts/postflight_validate_envelope_260210_006.mjs",
       "size": 42433,
       "sha256_short": "a556e24a"
     },
@@ -2352,8 +2357,8 @@
     },
     {
       "name": "trae_report_snippet_260210_006.txt",
-      "size": 5185,
-      "sha256_short": "7910ebda"
+      "size": 5186,
+      "sha256_short": "de86ebcf"
     }
   ]
 }
