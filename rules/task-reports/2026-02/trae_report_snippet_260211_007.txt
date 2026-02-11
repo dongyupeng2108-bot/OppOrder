@@ -1,11 +1,27 @@
 === TRAE_REPORT_SNIPPET ===
 
 BRANCH: feat/evidence-truth-two-pass-no-auto-merge-260211_007
-COMMIT: da19c9a
+COMMIT: 4622560
 
 === GIT_SCOPE_DIFF ===
+M	rules/LATEST.json
 M	rules/rules/PROJECT_RULES.md
 M	rules/rules/WORKFLOW.md
+A	rules/task-reports/2026-02/260211_007.json
+A	rules/task-reports/2026-02/260211_007_healthcheck_53122_pairs.txt
+A	rules/task-reports/2026-02/260211_007_healthcheck_53122_root.txt
+A	rules/task-reports/2026-02/260211_007_report.json
+A	rules/task-reports/2026-02/M4_PR2_concurrent_log_260211_007.txt
+A	rules/task-reports/2026-02/M5_PR1_llm_json_260211_007.txt
+A	rules/task-reports/2026-02/ci_parity_260211_007.json
+A	rules/task-reports/2026-02/deliverables_index_260211_007.json
+A	rules/task-reports/2026-02/dod_stdout_260211_007.txt
+A	rules/task-reports/2026-02/gate_light_ci_260211_007.txt
+A	rules/task-reports/2026-02/gate_light_preview_260211_007.txt
+A	rules/task-reports/2026-02/notify_260211_007.txt
+A	rules/task-reports/2026-02/result_260211_007.json
+A	rules/task-reports/2026-02/trae_report_snippet_260211_007.txt
+A	rules/task-reports/envelopes/260211_007.envelope.json
 M	scripts/build_trae_report_snippet.mjs
 A	scripts/extract_gate_light_preview.mjs
 M	scripts/gate_light_ci.mjs
@@ -23,21 +39,22 @@ DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260211_007_healthchec
 
 === CI_PARITY_PREVIEW ===
 Base: 534db86
-Head: da19c9a
+Head: 4622560
 MergeBase: 534db86
 Source: JSON (Evidence-as-Code)
-Scope: 5 files
+Scope: 21 files
 Files (Top 3):
+  - rules/LATEST.json
   - rules/rules/PROJECT_RULES.md
   - rules/rules/WORKFLOW.md
-  - scripts/build_trae_report_snippet.mjs
   ... (truncated)
 =========================
 
 === GATE_LIGHT_PREVIEW ===
 [Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
 [Gate Light] Attempting to detect task_id from git diff...
-[Gate Light] Target defaulting to LATEST.json: 260211_007
+[Gate Light] Detected unique PR Task ID from diff: 260211_007
+[Gate Light] LATEST.json consistency verified.
 [Gate Light] Verifying task_id: 260211_007
 [Gate Light] Checking CI Parity JSON Evidence...
 [Gate Light] CI Parity JSON Evidence verified.
@@ -45,7 +62,7 @@ Files (Top 3):
 [Gate Light] Doc path standards verified.
 [Gate Light] Checking for legacy doc path references...
 [CheckDocPathRefs] Scanning for legacy doc path references...
-[CheckDocPathRefs] Scan completed in 19ms.
+[CheckDocPathRefs] Scan completed in 18ms.
 [CheckDocPathRefs] PASS: No legacy doc path references found.
 [Gate Light] Checking for global healthcheck artifacts...
 [Gate Light] Global Artifact Guard verified.
@@ -93,6 +110,7 @@ PASS
 [Gate Light] M5 PR1 LLM Router Contract verified.
 [Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...
 [Gate Light] Immutable Integrate & SafeCmd Enforcement verified.
+[Gate Light] Checking Two-Pass Evidence Truth & No Auto-Merge...
 [Gate Light] Two-Pass Evidence Truth & No Auto-Merge verified.
 [Gate Light] Executing: node scripts/postflight_validate_envelope.mjs --task_id 260211_007 --result_dir rules/task-reports/2026-02 --report_dir rules/task-reports/2026-02
 [Postflight] Validating 260211_007 in rules/task-reports/2026-02...

@@ -1,15 +1,31 @@
 {
   "task_id": "260211_007",
   "base": "534db86d5ab70ca14b7436b42a407a3948a219c3",
-  "head": "da19c9accaefe218543a224554c627c2976cf591",
+  "head": "4622560d6d53fc4076484d534c61a53ab1aad0a0",
   "merge_base": "534db86d5ab70ca14b7436b42a407a3948a219c3",
   "scope_files": [
+    "rules/LATEST.json",
     "rules/rules/PROJECT_RULES.md",
     "rules/rules/WORKFLOW.md",
+    "rules/task-reports/2026-02/260211_007.json",
+    "rules/task-reports/2026-02/260211_007_healthcheck_53122_pairs.txt",
+    "rules/task-reports/2026-02/260211_007_healthcheck_53122_root.txt",
+    "rules/task-reports/2026-02/260211_007_report.json",
+    "rules/task-reports/2026-02/M4_PR2_concurrent_log_260211_007.txt",
+    "rules/task-reports/2026-02/M5_PR1_llm_json_260211_007.txt",
+    "rules/task-reports/2026-02/ci_parity_260211_007.json",
+    "rules/task-reports/2026-02/deliverables_index_260211_007.json",
+    "rules/task-reports/2026-02/dod_stdout_260211_007.txt",
+    "rules/task-reports/2026-02/gate_light_ci_260211_007.txt",
+    "rules/task-reports/2026-02/gate_light_preview_260211_007.txt",
+    "rules/task-reports/2026-02/notify_260211_007.txt",
+    "rules/task-reports/2026-02/result_260211_007.json",
+    "rules/task-reports/2026-02/trae_report_snippet_260211_007.txt",
+    "rules/task-reports/envelopes/260211_007.envelope.json",
     "scripts/build_trae_report_snippet.mjs",
     "scripts/extract_gate_light_preview.mjs",
     "scripts/gate_light_ci.mjs"
   ],
-  "scope_count": 5,
-  "generated_at": "2026-02-11T14:33:33.886Z"
+  "scope_count": 21,
+  "generated_at": "2026-02-11T17:48:37.942Z"
 }
