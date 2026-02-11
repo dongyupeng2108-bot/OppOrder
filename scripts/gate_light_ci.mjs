@@ -1343,6 +1343,57 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         console.log('[Gate Light] Immutable Integrate & SafeCmd Enforcement verified.');
     }
 
+    // --- Two-Pass Evidence Truth & No Auto-Merge (Task 260211_007) ---
+    if (task_id >= '260211_007') {
+        console.log('[Gate Light] Checking Two-Pass Evidence Truth & No Auto-Merge...');
+
+        // A. No Auto-Merge Enforcement (Exit 62)
+        // Scan command_audit specifically for forbidden commands
+        const auditFile = path.join(result_dir, `command_audit_${task_id}.txt`);
+        if (fs.existsSync(auditFile)) {
+            const content = fs.readFileSync(auditFile, 'utf8');
+            const lines = content.split('\n');
+            const strictForbidden = [
+                { pattern: /git\s+merge/i, reason: 'MERGE_DETECTED' },
+                { pattern: /push\s+.*main/i, reason: 'PUSH_MAIN_DETECTED' },
+                // Allow checkout main if read-only, but block if followed by write? 
+                // For now, blocking explicit checkout main in audit is safest per "No Auto-Merge" rule.
+                { pattern: /checkout\s+main/i, reason: 'CHECKOUT_MAIN_DETECTED' }
+            ];
+
+            lines.forEach((line, idx) => {
+                const trimmed = line.trim();
+                strictForbidden.forEach(rule => {
+                    if (rule.pattern.test(trimmed)) {
+                        console.error(`[Gate Light] [BLOCK] NO_AUTO_MERGE_VIOLATION in ${path.basename(auditFile)} line ${idx+1}`);
+                        console.error(`  Reason: ${rule.reason}`);
+                        console.error(`  Line: ${trimmed}`);
+                        console.error('  ACTION: Agent MUST NOT merge/push main. PR Only.');
+                        process.exit(62);
+                    }
+                });
+            });
+        }
+
+        // B. Evidence Truth Mismatch (Exit 63)
+        const snippetPath = path.join(result_dir, `trae_report_snippet_${task_id}.txt`);
+        const previewPath = path.join(result_dir, `gate_light_preview_${task_id}.txt`);
+        
+        if (fs.existsSync(snippetPath) && fs.existsSync(previewPath)) {
+             const snippetContent = fs.readFileSync(snippetPath, 'utf8').replace(/\r\n/g, '\n');
+             const previewContent = fs.readFileSync(previewPath, 'utf8').trim().replace(/\r\n/g, '\n');
+             
+             if (!snippetContent.includes(previewContent)) {
+                 console.error('[Gate Light] [BLOCK] EVIDENCE_TRUTH_MISMATCH');
+                 console.error(`  Snippet Preview does NOT match ${path.basename(previewPath)}`);
+                 console.error('  ACTION: Do NOT manually edit snippet. Use extract_gate_light_preview.mjs.');
+                 process.exit(63);
+             }
+        }
+        
+        console.log('[Gate Light] Two-Pass Evidence Truth & No Auto-Merge verified.');
+    }
+
     // Construct postflight command
     // Note: Assuming scripts/postflight_validate_envelope.mjs exists relative to CWD
     const cmd = 'node scripts/postflight_validate_envelope.mjs --task_id ' + task_id + ' --result_dir ' + result_dir + ' --report_dir ' + result_dir;
