@@ -556,7 +556,13 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         const indexFile = path.join(repo_root, 'rules/task-reports/index/runs_index.jsonl');
         
         if (fs.existsSync(indexFile)) {
-            const indexContent = fs.readFileSync(indexFile, 'utf8');
+            let indexContent = '';
+            try {
+                indexContent = fs.readFileSync(indexFile, 'utf8');
+            } catch (e) {
+                console.warn(`[Gate Light] WARNING: Failed to read index file: ${e.message}`);
+            }
+
             const lines = indexContent.split('\n').filter(l => l.trim().length > 0);
             let firstEntry = null;
             
@@ -586,11 +592,36 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                     process.exit(41);
                 }
                 console.log('[Gate Light] Deletion Audit verified (Lock & Run exist).');
-            } else if (task_id >= '260211_006') {
-                 console.warn('[Gate Light] WARNING: No Deletion Audit Index entry found for this task (Expected after Integrate).');
+            } else {
+                 // Index exists, but no entry for this task.
+                 // Check if Lock exists. If Lock exists, it means we missed the index entry (Audit Failure).
+                 // If Lock does NOT exist, it means we are in First Run (Integrate Phase).
+                 const lockFile = path.join(repo_root, `rules/task-reports/locks/${task_id}.lock.json`);
+                 if (fs.existsSync(lockFile)) {
+                     console.error('[BLOCK] DELETION_AUDIT_VIOLATION');
+                     console.error(`[DETAIL] Lock file exists but Index entry missing for task_id=${task_id}`);
+                     console.error('[ACTION] This violates Immutable Index rules. Index must be appended during Integrate.');
+                     process.exit(41);
+                 } else {
+                     if (task_id >= '260211_006') {
+                        console.log('[Gate Light] Deletion Audit skipped (First Run / No Lock yet).');
+                     }
+                 }
             }
-        } else if (task_id >= '260211_006') {
-            console.warn('[Gate Light] WARNING: Index file missing (rules/task-reports/index/runs_index.jsonl).');
+        } else {
+            // Index file missing.
+            // Same logic: Check if Lock exists.
+             const lockFile = path.join(repo_root, `rules/task-reports/locks/${task_id}.lock.json`);
+             if (fs.existsSync(lockFile)) {
+                 console.error('[BLOCK] DELETION_AUDIT_VIOLATION');
+                 console.error(`[DETAIL] Lock file exists but Index file missing for task_id=${task_id}`);
+                 console.error('[ACTION] This violates Immutable Index rules.');
+                 process.exit(41);
+             } else {
+                 if (task_id >= '260211_006') {
+                    console.log('[Gate Light] Deletion Audit skipped (First Run / No Lock yet).');
+                 }
+             }
         }
     }
 
