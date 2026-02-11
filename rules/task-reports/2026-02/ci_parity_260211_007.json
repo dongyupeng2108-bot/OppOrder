@@ -1,0 +1,15 @@
+{
+  "task_id": "260211_007",
+  "base": "534db86d5ab70ca14b7436b42a407a3948a219c3",
+  "head": "da19c9accaefe218543a224554c627c2976cf591",
+  "merge_base": "534db86d5ab70ca14b7436b42a407a3948a219c3",
+  "scope_files": [
+    "rules/rules/PROJECT_RULES.md",
+    "rules/rules/WORKFLOW.md",
+    "scripts/build_trae_report_snippet.mjs",
+    "scripts/extract_gate_light_preview.mjs",
+    "scripts/gate_light_ci.mjs"
+  ],
+  "scope_count": 5,
+  "generated_at": "2026-02-11T14:33:33.886Z"
+}

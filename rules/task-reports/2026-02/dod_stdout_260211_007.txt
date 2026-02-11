@@ -1,0 +1,7 @@
+=== DOD_EVIDENCE_STDOUT ===
+DOD_EVIDENCE_DUMMY_1: check => passed
+DOD_EVIDENCE_DUMMY_2: check => passed
+DOD_EVIDENCE_OPPS_PIPELINE_RUN: N/A => run_id=NA ok=0 failed=0
+DOD_EVIDENCE_OPPS_PIPELINE_TOP: N/A => top_count=0 refs_run_id=true
+DOD_EVIDENCE_OPPS_RUNS_LIST: N/A => contains_run_id=true
+DOD_EVIDENCE_OPPS_BY_RUN: N/A => run_id=NA

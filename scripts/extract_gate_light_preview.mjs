@@ -18,8 +18,8 @@ if (!fs.existsSync(logPath)) {
     process.exit(1);
 }
 
-const logContent = fs.readFileSync(logPath, 'utf8');
-const lines = logContent.split('\n');
+const logContent = fs.readFileSync(logPath, 'utf8').replace(/^\uFEFF/, '');
+const lines = logContent.split(/\r?\n/);
 
 // Strategy: Extract from first '[Gate Light]' to 'GATE_LIGHT_EXIT='
 let startIndex = -1;
