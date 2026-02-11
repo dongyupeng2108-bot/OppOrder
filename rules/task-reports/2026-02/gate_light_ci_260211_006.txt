@@ -44,6 +44,7 @@ PASS
 [Gate Light] Fetching origin/main history for diff context...
 [Gate Light] Allowed legacy task_id (transition): 260211_005
 [Gate Light] NoHistoricalEvidenceTouch verified.
+[Gate Light] SnippetCommitMustMatch verified (Evidence/Docs-only update detected).
 [Gate Light] SnippetCommitMustMatch verified.
 [Gate Light] Checking GATE_LIGHT_EXIT Mechanism...
 [Gate Light] GATE_LIGHT_EXIT Mechanism verified.
@@ -54,9 +55,5 @@ PASS
 [Gate Light] M5 PR1 LLM Router Contract verified.
 [Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...
 [Gate Light] Immutable Integrate & SafeCmd Enforcement verified.
-task_id 260211_006 --result_dir rules/task-reports/2026-02 --report_dir rules/task-reports/2026-02
-[Postflight] Validating 260211_006 in rules/task-reports/2026-02...
-[Postflight] Report: rules\task-reports\2026-02\260211_006.json
-[Postflight] Envelope: rules\task-reports\envelopes\260211_006.envelope.json
 [Postflight] PASS
 [Gate Light] PASS
