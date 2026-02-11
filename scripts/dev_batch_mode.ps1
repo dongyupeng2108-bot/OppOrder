@@ -130,8 +130,17 @@ elseif ($Mode -eq 'Integrate') {
 
     # 0.5 Immutable Integrate Lock Check (Task 260211_003)
     # Lock file prevents re-running successful integrate phases for same task_id
-    $LocksDir = Join-Path $ReportsDir "locks"
+    # Updated Task 260211_006: Use Global Locks Directory
+    $LocksDir = Join-Path $RulesDir "task-reports\locks"
     $LockFile = Join-Path $LocksDir "${TaskId}.lock.json"
+    
+    # Check legacy monthly lock if global lock missing (Compatibility)
+    if (-not (Test-Path $LockFile)) {
+        $LegacyLockFile = Join-Path $ReportsDir "locks\${TaskId}.lock.json"
+        if (Test-Path $LegacyLockFile) {
+            $LockFile = $LegacyLockFile
+        }
+    }
     
     if (Test-Path $LockFile) {
             Write-Output "========================================"
@@ -551,6 +560,9 @@ const newSize = fileBuffer.length;
         status = "LOCKED"
     } | ConvertTo-Json
     
+    # Create Global Locks Dir if missing
+    if (-not (Test-Path $LocksDir)) { New-Item -ItemType Directory -Path $LocksDir -Force | Out-Null }
+
     $LockContent | Out-File -FilePath $LockFile -Encoding UTF8
     Write-Host "   Locked: $LockFile"
     
