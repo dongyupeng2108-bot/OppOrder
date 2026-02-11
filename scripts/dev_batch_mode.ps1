@@ -269,7 +269,7 @@ fetch('http://localhost:53122/pairs', '${PairsHcFileJS}');
     if ($TaskId -ge "260211_005") {
         Write-Host "1.11. Running LLM Route Smoke Test..."
         # Script writes directly to task-reports path
-        node scripts/smoke_llm_route.mjs
+        node scripts/smoke_llm_route.mjs $TaskId
         Check-LastExitCode
         
         $LlmEvidenceFile = Join-Path $ReportsDir "M5_PR1_llm_json_${TaskId}.txt"
