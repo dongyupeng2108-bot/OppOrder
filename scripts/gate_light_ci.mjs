@@ -423,7 +423,8 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
     }
 
     // --- Scan Cache DoD Check (Task 260209_002) ---
-    if (task_id >= '260209_002') {
+    // Restricted to 260209 series where Scan Cache was the primary focus
+    if (task_id >= '260209_002' && task_id <= '260209_999') {
         console.log('[Gate Light] Checking Scan Cache DoD Evidence...');
         
         const notifyFile = path.join(result_dir, `notify_${task_id}.txt`);

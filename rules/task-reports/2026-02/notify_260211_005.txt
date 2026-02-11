@@ -1,7 +1,7 @@
 RESULT_JSON
 {
   "status": "DONE",
-  "summary": "M5 PR1 LLM router & structured output"
+  "summary": "M5 PR1 LLM router & structured output (Merge Fix)"
 }
 LOG_HEAD
 [2026-02-10T21:51:56.268Z] START Task 260211_005
@@ -216,6 +216,10 @@ Files:
 260211_003.json
 260211_003_healthcheck_53122_pairs.txt
 260211_003_healthcheck_53122_root.txt
+260211_004.json
+260211_004_healthcheck_53122_pairs.txt
+260211_004_healthcheck_53122_root.txt
+260211_005.json
 260211_005_healthcheck_53122_pairs.txt
 260211_005_healthcheck_53122_root.txt
 chained_cmd_negative_260211_003.txt
@@ -223,6 +227,8 @@ ci_parity_260210_009.txt
 ci_parity_260211_001.txt
 ci_parity_260211_002.json
 ci_parity_260211_003.json
+ci_parity_260211_004.json
+ci_parity_260211_005.json
 ci_parity_json_negative_260211_002.txt
 clean_state_guard_negative_260211_001.txt
 deliverables_index_260206_005.json
@@ -286,6 +292,7 @@ deliverables_index_260210_009.json
 deliverables_index_260211_001.json
 deliverables_index_260211_002.json
 deliverables_index_260211_003.json
+deliverables_index_260211_004.json
 dod_stdout_260209_003.txt
 dod_stdout_260209_004.txt
 dod_stdout_260209_005.txt
@@ -303,6 +310,8 @@ dod_stdout_260210_009.txt
 dod_stdout_260211_001.txt
 dod_stdout_260211_002.txt
 dod_stdout_260211_003.txt
+dod_stdout_260211_004.txt
+dod_stdout_260211_005.txt
 gate_light_ci_260210_006.txt
 gate_light_ci_260210_007.txt
 gate_light_ci_260210_008.txt
@@ -310,6 +319,8 @@ gate_light_ci_260210_009.txt
 gate_light_ci_260211_001.txt
 gate_light_ci_260211_002.txt
 gate_light_ci_260211_003.txt
+gate_light_ci_260211_004.txt
+gate_light_ci_260211_005.txt
 git_scope_diff_260209_006.txt
 git_scope_diff_260209_008.txt
 immutable_integrate_rerun_block_260211_003.txt
@@ -330,7 +341,9 @@ M4_PR2_concurrent_log_260210_009.txt
 M4_PR2_concurrent_log_260211_001.txt
 M4_PR2_concurrent_log_260211_002.txt
 M4_PR2_concurrent_log_260211_003.txt
+M4_PR2_concurrent_log_260211_004.txt
 M4_PR2_concurrent_log_260211_005.txt
+M5_PR1_llm_json_260211_004.txt
 M5_PR1_llm_json_260211_005.txt
 manual_verification.json
 notify_260206_005.txt
@@ -394,6 +407,7 @@ notify_260210_009.txt
 notify_260211_001.txt
 notify_260211_002.txt
 notify_260211_003.txt
+notify_260211_004.txt
 opps_pipeline_smoke_260209_006.txt
 opps_pipeline_smoke_260209_008.txt
 opps_pipeline_smoke_260209_009.txt
@@ -408,6 +422,7 @@ opps_pipeline_smoke_260210_009.txt
 opps_pipeline_smoke_260211_001.txt
 opps_pipeline_smoke_260211_002.txt
 opps_pipeline_smoke_260211_003.txt
+opps_pipeline_smoke_260211_004.txt
 opps_pipeline_smoke_260211_005.txt
 opps_run_filter_smoke_260209_008.txt
 opps_run_filter_smoke_260209_009.txt
@@ -422,6 +437,7 @@ opps_run_filter_smoke_260210_009.txt
 opps_run_filter_smoke_260211_001.txt
 opps_run_filter_smoke_260211_002.txt
 opps_run_filter_smoke_260211_003.txt
+opps_run_filter_smoke_260211_004.txt
 opps_run_filter_smoke_260211_005.txt
 opps_top_260209_001.json
 opps_top_by_run_smoke_260209_010.txt
@@ -432,6 +448,7 @@ opps_top_by_run_smoke_260210_009.txt
 opps_top_by_run_smoke_260211_001.txt
 opps_top_by_run_smoke_260211_002.txt
 opps_top_by_run_smoke_260211_003.txt
+opps_top_by_run_smoke_260211_004.txt
 opps_top_by_run_smoke_260211_005.txt
 reports
 result_260206_005.json
@@ -495,6 +512,8 @@ result_260210_009.json
 result_260211_001.json
 result_260211_002.json
 result_260211_003.json
+result_260211_004.json
+result_260211_005.json
 run_260206_005.log
 run_260206_006.log
 run_260206_007.log
@@ -576,6 +595,7 @@ scan_cache_smoke_260210_009.txt
 scan_cache_smoke_260211_001.txt
 scan_cache_smoke_260211_002.txt
 scan_cache_smoke_260211_003.txt
+scan_cache_smoke_260211_004.txt
 scan_cache_smoke_260211_005.txt
 scripts
 trae_report_snippet_260209_005.txt
@@ -593,7 +613,8 @@ trae_report_snippet_260210_009.txt
 trae_report_snippet_260211_001.txt
 trae_report_snippet_260211_002.txt
 trae_report_snippet_260211_003.txt
-result_260211_005.json
+trae_report_snippet_260211_004.txt
+trae_report_snippet_260211_005.txt
 HEALTHCHECK
 HTTP/1.1 200 OK
 
@@ -608,6 +629,7 @@ DOD_EVIDENCE
 DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260211_005_healthcheck_53122_root.txt => HTTP/1.1 200 OK
 DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260211_005_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
 
+TRAE_REPORT_SNIPPET: rules/task-reports/2026-02/trae_report_snippet_260211_005.txt
 
 === DOD_EVIDENCE_STDOUT ===
 DOD_EVIDENCE_HEALTHCHECK_ROOT: E:/OppRadar/rules/task-reports/2026-02/260211_005_healthcheck_53122_root.txt => HTTP/1.1 200 OK
@@ -619,5 +641,5 @@ DOD_EVIDENCE_OPPS_PIPELINE_TOP: E:/OppRadar/rules/task-reports/2026-02/opps_pipe
 DOD_EVIDENCE_OPPS_RUNS_LIST: E:/OppRadar/rules/task-reports/2026-02/opps_run_filter_smoke_260211_005.txt => contains_run_id=true count=2
 DOD_EVIDENCE_OPPS_BY_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_run_filter_smoke_260211_005.txt => rows=4 all_same_run_id=true
 DOD_EVIDENCE_M5_PR1_LLM_JSON: E:/OppRadar/rules/task-reports/2026-02/M5_PR1_llm_json_260211_005.txt => status=ok items=0 provider=mock model=mock-gpt-4
+
 GATE_LIGHT_EXIT=0
-TRAE_REPORT_SNIPPET: trae_report_snippet_260211_005.txt
