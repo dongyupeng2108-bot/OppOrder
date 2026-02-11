@@ -532,6 +532,56 @@ const newSize = fileBuffer.length;
     node scripts/pre_pr_check.mjs --task_id $TaskId
     Check-LastExitCode
 
+    # 5.9 Immutable Setup (Lock, RunDir, Index) - Must run BEFORE Gate Light
+    Write-Host "5.9. Setting up Immutable Lock & Index..."
+    
+    $LocksDir = Join-Path $ReportsDir "locks"
+    if (-not (Test-Path $LocksDir)) { New-Item -ItemType Directory -Path $LocksDir -Force | Out-Null }
+    
+    $Timestamp = Get-Date -Format "yyyy-MM-ddTHH:mm:ssZ"
+    $ShortHash = (git rev-parse --short HEAD).Trim()
+    $RunId = "$(Get-Date -Format 'yyyyMMdd_HHmmss')_$ShortHash"
+    
+    $LockFile = Join-Path $LocksDir "${TaskId}.lock.json"
+    
+    $LockContent = @{
+        task_id = $TaskId
+        run_id = $RunId
+        timestamp = $Timestamp
+        status = "LOCKED"
+    } | ConvertTo-Json
+    
+    $LockContent | Out-File -FilePath $LockFile -Encoding UTF8
+    Write-Host "   Locked: $LockFile"
+    
+    # Create Run Dir (Empty for now, needed for Gate Light check)
+    $RunsBaseDir = Join-Path $RepoRoot "rules\task-reports\runs"
+    $TaskRunDir = Join-Path $RunsBaseDir "$TaskId\$RunId"
+    if (-not (Test-Path $TaskRunDir)) { New-Item -ItemType Directory -Path $TaskRunDir -Force | Out-Null }
+    
+    # Append to Index
+    $IndexDir = Join-Path $RepoRoot "rules\task-reports\index"
+    if (-not (Test-Path $IndexDir)) { New-Item -ItemType Directory -Path $IndexDir -Force | Out-Null }
+    $IndexFile = Join-Path $IndexDir "runs_index.jsonl"
+    
+    $Head = (git rev-parse HEAD).Trim()
+    $Base = "origin/main"
+    $MergeBase = try { (git merge-base HEAD $Base).Trim() } catch { "unknown" }
+    
+    $IndexEntry = @{
+        task_id = $TaskId
+        run_id = $RunId
+        timestamp_utc = $Timestamp
+        lock_path = "rules/task-reports/locks/${TaskId}.lock.json"
+        run_dir = "rules/task-reports/runs/$TaskId/$RunId"
+        head = $Head
+        base = $Base
+        merge_base = $MergeBase
+    } | ConvertTo-Json -Compress
+    
+    Add-Content -Path $IndexFile -Value $IndexEntry -Encoding UTF8
+    Write-Host "   Indexed: $IndexFile (Append)"
+
     # 6. Gate Light & Exit Code Mechanism (Task 260209_010+)
     if ($TaskId -ge "260209_010") {
         Write-Host "6. Running Gate Light & Exit Code Mechanism..."
@@ -708,35 +758,12 @@ if (fs.existsSync(indexFile) && newHash) {
         }
     }
 
-    # 7. Immutable Lock & Run Archive (Task 260211_003)
-    Write-Host "7. Finalizing Immutable Integrate..."
+    # 7. Archive Artifacts (Post-Gate)
+    Write-Host "7. Archiving Artifacts..."
     
-    # 7.1 Create Lock File
-    if (-not (Test-Path $LocksDir)) { New-Item -ItemType Directory -Path $LocksDir -Force | Out-Null }
-    
-    $Timestamp = Get-Date -Format "yyyy-MM-ddTHH:mm:ssZ"
-    $ShortHash = (git rev-parse --short HEAD).Trim()
-    $RunId = "$(Get-Date -Format 'yyyyMMdd_HHmmss')_$ShortHash"
-    
-    $LockContent = @{
-        task_id = $TaskId
-        run_id = $RunId
-        timestamp = $Timestamp
-        status = "LOCKED"
-    } | ConvertTo-Json
-    
-    $LockContent | Out-File -FilePath $LockFile -Encoding UTF8
-    Write-Host "   Locked: $LockFile"
-    
-    # 7.2 Run Archive (Append-only)
-    # Use global runs directory: rules/task-reports/runs/
-    $RunsBaseDir = Join-Path $RepoRoot "rules\task-reports\runs"
-    $TaskRunDir = Join-Path $RunsBaseDir "$TaskId\$RunId"
-    if (-not (Test-Path $TaskRunDir)) { New-Item -ItemType Directory -Path $TaskRunDir -Force | Out-Null }
-    
+    # Copy key artifacts to already created $TaskRunDir
     Write-Host "   Archiving artifacts to $TaskRunDir..."
     
-    # Copy key artifacts
     $Artifacts = @(
         "notify_${TaskId}.txt",
         "result_${TaskId}.json",
@@ -752,10 +779,8 @@ if (fs.existsSync(indexFile) && newHash) {
         $SourcePath = Join-Path $ReportsDir $Item
         if (Test-Path $SourcePath) {
             if ($Item -match "\*") {
-                # Wildcard: Copy matches directly to run dir (flat)
                 Copy-Item $SourcePath -Destination $TaskRunDir -Force
             } else {
-                # Specific file (preserve structure if any)
                 $DestPath = Join-Path $TaskRunDir $Item
                 $DestParent = Split-Path $DestPath -Parent
                 if (-not (Test-Path $DestParent)) { New-Item -ItemType Directory -Path $DestParent -Force | Out-Null }
@@ -764,7 +789,7 @@ if (fs.existsSync(indexFile) && newHash) {
         }
     }
     
-    # Update LATEST.json with run_id info
+    # Update LATEST.json
     $LatestJsonPath = Join-Path "rules" "LATEST.json"
     if (Test-Path $LatestJsonPath) {
         $LatestJson = Get-Content $LatestJsonPath | ConvertFrom-Json
@@ -773,30 +798,6 @@ if (fs.existsSync(indexFile) && newHash) {
         $LatestJson | ConvertTo-Json -Depth 4 | Out-File -FilePath $LatestJsonPath -Encoding UTF8
         Write-Host "   Updated LATEST.json with run_id."
     }
-
-    # 7.3 Deletion Audit Index (Append-only) (Task 260211_006)
-    # File: rules/task-reports/index/runs_index.jsonl
-    $IndexDir = Join-Path $RepoRoot "rules\task-reports\index"
-    if (-not (Test-Path $IndexDir)) { New-Item -ItemType Directory -Path $IndexDir -Force | Out-Null }
-    $IndexFile = Join-Path $IndexDir "runs_index.jsonl"
-    
-    $Head = (git rev-parse HEAD).Trim()
-    $Base = "origin/main"
-    $MergeBase = try { (git merge-base HEAD $Base).Trim() } catch { "unknown" }
-    
-    $IndexEntry = @{
-        task_id = $TaskId
-        run_id = $RunId
-        timestamp_utc = $Timestamp
-        lock_path = "rules/task-reports/locks/${TaskId}.lock.json"
-        run_dir = "rules/task-reports/runs/$TaskId/$RunId"
-        head = $Head
-        base = $Base
-        merge_base = $MergeBase
-    } | ConvertTo-Json -Compress
-    
-    Add-Content -Path $IndexFile -Value $IndexEntry -Encoding UTF8
-    Write-Host "   Indexed: $IndexFile (Append)"
 
     Write-Host "   Archive Complete."
 
