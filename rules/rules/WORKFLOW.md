@@ -285,3 +285,22 @@ GATE_LIGHT_EXIT=0
     *   **推荐工具**:
         *   `scripts/safe_commit.ps1 -Message "..."`: 安全的原子化提交（Add + Check + Commit）。
         *   `scripts/safe_push.ps1`: 安全的单分支推送。
+
+### 6. Two-Pass Evidence Truth & No Auto-Merge (Task 260211_007)
+
+*   **Two-Pass Evidence Truth (两段式证据真值)**:
+    *   **Goal**: Ensure `trae_report_snippet`'s preview block is an exact, unedited substring of the real Gate Light execution log.
+    *   **Mechanism**:
+        1.  **Pass 1**: Run `gate_light_ci.mjs` (Log Output).
+        2.  **Extract**: Run `extract_gate_light_preview.mjs` to extract `rules/task-reports/.../gate_light_preview_<task_id>.txt`.
+        3.  **Inject**: `build_trae_report_snippet.mjs` reads the preview file and injects it into the snippet.
+        4.  **Pass 2 (Verification)**: Run `gate_light_ci.mjs` again. It compares the Snippet's preview block vs the Preview File.
+    *   **Enforcement**:
+        *   **Exit 61**: `build_trae_report_snippet` fails if `gate_light_preview_<task_id>.txt` is missing.
+        *   **Exit 63**: `gate_light_ci` fails if Snippet Preview != Preview File Content.
+
+*   **No Auto-Merge (禁止自动合并)**:
+    *   **Hard Rule**: The Agent MUST NOT execute `git merge` or `git push ... main` (or to any protected branch).
+    *   **Gate Light Check**: Scans `command_audit` logs for forbidden commands.
+    *   **Exit 62**: If `git merge` or `push main` is detected, Gate Light FAILS immediately.
+    *   **Responsibility**: Only the Human User (Owner) can perform the merge. The Agent's job ends at "PR Created + Gate Light PASS".

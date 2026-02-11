@@ -1,0 +1,33 @@
+{
+  "task_id": "260211_007",
+  "base": "534db86d5ab70ca14b7436b42a407a3948a219c3",
+  "head": "d33f5a29cad66cac1913597296c8ef0a3871c87e",
+  "merge_base": "534db86d5ab70ca14b7436b42a407a3948a219c3",
+  "scope_files": [
+    "gate_light_preview_260211_007.txt",
+    "rules/LATEST.json",
+    "rules/rules/PROJECT_RULES.md",
+    "rules/rules/WORKFLOW.md",
+    "rules/task-reports/2026-02/260211_006_fix_report_for_chatgpt.md",
+    "rules/task-reports/2026-02/260211_007.json",
+    "rules/task-reports/2026-02/260211_007_healthcheck_53122_pairs.txt",
+    "rules/task-reports/2026-02/260211_007_healthcheck_53122_root.txt",
+    "rules/task-reports/2026-02/260211_007_report.json",
+    "rules/task-reports/2026-02/M4_PR2_concurrent_log_260211_007.txt",
+    "rules/task-reports/2026-02/M5_PR1_llm_json_260211_007.txt",
+    "rules/task-reports/2026-02/ci_parity_260211_007.json",
+    "rules/task-reports/2026-02/deliverables_index_260211_007.json",
+    "rules/task-reports/2026-02/dod_stdout_260211_007.txt",
+    "rules/task-reports/2026-02/gate_light_ci_260211_007.txt",
+    "rules/task-reports/2026-02/gate_light_preview_260211_007.txt",
+    "rules/task-reports/2026-02/notify_260211_007.txt",
+    "rules/task-reports/2026-02/result_260211_007.json",
+    "rules/task-reports/2026-02/trae_report_snippet_260211_007.txt",
+    "rules/task-reports/envelopes/260211_007.envelope.json",
+    "scripts/build_trae_report_snippet.mjs",
+    "scripts/extract_gate_light_preview.mjs",
+    "scripts/gate_light_ci.mjs"
+  ],
+  "scope_count": 23,
+  "generated_at": "2026-02-11T18:35:21.393Z"
+}

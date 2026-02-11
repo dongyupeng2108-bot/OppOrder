@@ -1,0 +1,75 @@
+{
+  "task_id": "260211_007",
+  "files": [
+    {
+      "path": "rules/task-reports/2026-02/260211_007_report.json",
+      "name": "260211_007_report.json",
+      "description": "260211_007_report.json",
+      "sha256_short": "5b1c2914",
+      "size_bytes": 95
+    },
+    {
+      "path": "rules/task-reports/2026-02/result_260211_007.json",
+      "name": "result_260211_007.json",
+      "description": "result_260211_007.json",
+      "sha256_short": "72ba47a4",
+      "size_bytes": 470
+    },
+    {
+      "path": "rules/task-reports/2026-02/notify_260211_007.txt",
+      "name": "notify_260211_007.txt",
+      "description": "notify_260211_007.txt",
+      "sha256_short": "4baa327b",
+      "size_bytes": 1669
+    },
+    {
+      "path": "rules/task-reports/2026-02/dod_stdout_260211_007.txt",
+      "name": "dod_stdout_260211_007.txt",
+      "description": "dod_stdout_260211_007.txt",
+      "sha256_short": "cabca428",
+      "size_bytes": 334
+    },
+    {
+      "path": "rules/task-reports/2026-02/M5_PR1_llm_json_260211_007.txt",
+      "name": "M5_PR1_llm_json_260211_007.txt",
+      "description": "M5_PR1_llm_json_260211_007.txt",
+      "sha256_short": "6d174812",
+      "size_bytes": 367
+    },
+    {
+      "path": "rules/task-reports/2026-02/260211_007_healthcheck_53122_root.txt",
+      "name": "260211_007_healthcheck_53122_root.txt",
+      "description": "260211_007_healthcheck_53122_root.txt",
+      "sha256_short": "0e473e8c",
+      "size_bytes": 173
+    },
+    {
+      "path": "rules/task-reports/2026-02/260211_007_healthcheck_53122_pairs.txt",
+      "name": "260211_007_healthcheck_53122_pairs.txt",
+      "description": "260211_007_healthcheck_53122_pairs.txt",
+      "sha256_short": "187100f8",
+      "size_bytes": 178
+    },
+    {
+      "path": "rules/task-reports/2026-02/ci_parity_260211_007.json",
+      "name": "ci_parity_260211_007.json",
+      "description": "ci_parity_260211_007.json",
+      "sha256_short": "09a7bed3",
+      "size_bytes": 477
+    },
+    {
+      "path": "rules/task-reports/2026-02/M4_PR2_concurrent_log_260211_007.txt",
+      "name": "M4_PR2_concurrent_log_260211_007.txt",
+      "description": "M4_PR2_concurrent_log_260211_007.txt",
+      "sha256_short": "d0f4c2b4",
+      "size_bytes": 72
+    },
+    {
+      "path": "rules/task-reports/2026-02/manual_verification.json",
+      "name": "manual_verification.json",
+      "description": "manual_verification.json",
+      "sha256_short": "1e98b3dd",
+      "size_bytes": 947
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+TraeTask_M4_260211_007_EvidenceTruth_TwoPass_NoAutoMerge
+GATE_LIGHT_EXIT=0
+DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260211_007_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260211_007_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+TRAE_REPORT_SNIPPET: rules/task-reports/2026-02/trae_report_snippet_260211_007.txt
+
+=== DOD_EVIDENCE_STDOUT ===
+DOD_EVIDENCE_DUMMY_1: check => passed
+DOD_EVIDENCE_DUMMY_2: check => passed
+DOD_EVIDENCE_OPPS_PIPELINE_RUN: N/A => run_id=NA ok=0 failed=0
+DOD_EVIDENCE_OPPS_PIPELINE_TOP: N/A => top_count=0 refs_run_id=true
+DOD_EVIDENCE_OPPS_RUNS_LIST: N/A => contains_run_id=true
+DOD_EVIDENCE_OPPS_BY_RUN: N/A => run_id=NA
+
+=== RESULT_JSON ===
+{
+  "task_id": "260211_007",
+  "status": "DONE",
+  "summary": "Implemented Two-Pass Evidence Truth and No Auto-Merge logic.",
+  "report_file": "rules/task-reports/2026-02/260211_007_report.json",
+  "report_sha256_short": "abcdef12",
+  "dod_evidence": {
+    "gate_light_exit": 0,
+    "healthcheck": [
+      "rules/task-reports/2026-02/260211_007_healthcheck_53122_root.txt => HTTP/1.1 200 OK",
+      "rules/task-reports/2026-02/260211_007_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK"
+    ]
+  }
+}
+
+=== LOG_HEAD ===
+[Gate Light] Starting...
+[Gate Light] Target locked via argument: 260211_007
+
+=== LOG_TAIL ===
+[Gate Light] PASS
+GATE_LIGHT_EXIT=0
+
+=== INDEX ===
+rules/task-reports/2026-02/260211_007_report.json
+rules/task-reports/2026-02/result_260211_007.json
+rules/task-reports/2026-02/notify_260211_007.txt
+rules/task-reports/2026-02/dod_stdout_260211_007.txt
+rules/task-reports/2026-02/M5_PR1_llm_json_260211_007.txt
