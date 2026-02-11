@@ -1062,8 +1062,8 @@
     },
     {
       "name": "ci_parity_260211_005.json",
-      "size": 575,
-      "sha256_short": "eb4fbc87"
+      "size": 2481,
+      "sha256_short": "97f70d42"
     },
     {
       "name": "ci_parity_json_negative_260211_002.txt",
@@ -3058,7 +3058,7 @@
     {
       "name": "trae_report_snippet_260211_005.txt",
       "size": 5274,
-      "sha256_short": "67527a9a"
+      "sha256_short": "360abfb0"
     }
   ]
 }

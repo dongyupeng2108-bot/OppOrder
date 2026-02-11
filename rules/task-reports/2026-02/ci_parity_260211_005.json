@@ -1,7 +1,7 @@
 {
   "task_id": "260211_005",
   "base": "fad5b202c43ac56851e5d51d456bd5e25cd0accb",
-  "head": "357f6777c02ed7ff6407cdc206ad60950339a149",
+  "head": "5965bc32dd775b3b892f2794b7dc956d81933da7",
   "merge_base": "fad5b202c43ac56851e5d51d456bd5e25cd0accb",
   "scope_files": [
     "rules/LATEST.json",
@@ -34,8 +34,9 @@
     "rules/task-reports/runs/260211_005/20260211_055201_d73550b/result_260211_005.json",
     "rules/task-reports/runs/260211_005/20260211_055201_d73550b/trae_report_snippet_260211_005.txt",
     "scripts/dev_batch_mode.ps1",
+    "scripts/gate_light_ci.mjs",
     "scripts/smoke_llm_route.mjs"
   ],
-  "scope_count": 31,
-  "generated_at": "2026-02-11T09:00:31.121Z"
+  "scope_count": 32,
+  "generated_at": "2026-02-11T09:17:43.019Z"
 }
