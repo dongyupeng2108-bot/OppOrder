@@ -562,15 +562,23 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
 
         let indexEntry = null;
         if (fs.existsSync(indexFile)) {
-            const lines = fs.readFileSync(indexFile, 'utf8').split('\n').filter(l => l.trim());
+            let content = fs.readFileSync(indexFile, 'utf8');
+            // Remove BOM if present
+            if (content.charCodeAt(0) === 0xFEFF) {
+                content = content.slice(1);
+            }
+            const lines = content.split('\n').filter(l => l.trim());
             for (const line of lines) {
                 try {
-                    const entry = JSON.parse(line);
+                    const entry = JSON.parse(line.trim());
                     if (entry.task_id === task_id) {
                         indexEntry = entry;
                         break; // Found first run
                     }
-                } catch (e) {}
+                } catch (e) {
+                    console.error(`[Gate Light] Warning: Failed to parse index line: ${e.message}`);
+                    console.error(`Line content: [${line}]`);
+                }
             }
         }
 
