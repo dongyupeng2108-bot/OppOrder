@@ -550,6 +550,50 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         }
     }
 
+    // --- Deletion Audit Check (Task 260211_006) ---
+    if (task_id >= '260211_006' || fs.existsSync(path.join(repo_root, 'rules/task-reports/index/runs_index.jsonl'))) {
+        console.log('[Gate Light] Checking Deletion Audit (Locks & Runs)...');
+        const indexFile = path.join(repo_root, 'rules/task-reports/index/runs_index.jsonl');
+        
+        if (fs.existsSync(indexFile)) {
+            const indexContent = fs.readFileSync(indexFile, 'utf8');
+            const lines = indexContent.split('\n').filter(l => l.trim().length > 0);
+            let firstEntry = null;
+            
+            for (const line of lines) {
+                try {
+                    const entry = JSON.parse(line);
+                    if (entry.task_id === task_id) {
+                        firstEntry = entry;
+                        break;
+                    }
+                } catch (e) {}
+            }
+            
+            if (firstEntry) {
+                const lockPath = path.join(repo_root, firstEntry.lock_path);
+                const runDir = path.join(repo_root, firstEntry.run_dir);
+                let missing = [];
+                
+                if (!fs.existsSync(lockPath)) missing.push(`Lock File: ${firstEntry.lock_path}`);
+                if (!fs.existsSync(runDir)) missing.push(`Run Dir: ${firstEntry.run_dir}`);
+                
+                if (missing.length > 0) {
+                    console.error('[BLOCK] DELETION_AUDIT_VIOLATION');
+                    console.error(`[DETAIL] Missing lock or run dir for task_id=${task_id}`);
+                    missing.forEach(m => console.error(`  - ${m}`));
+                    console.error('[ACTION] Do NOT delete locks/runs. Use new task_id to redo evidence.');
+                    process.exit(41);
+                }
+                console.log('[Gate Light] Deletion Audit verified (Lock & Run exist).');
+            } else if (task_id >= '260211_006') {
+                 console.warn('[Gate Light] WARNING: No Deletion Audit Index entry found for this task (Expected after Integrate).');
+            }
+        } else if (task_id >= '260211_006') {
+            console.warn('[Gate Light] WARNING: Index file missing (rules/task-reports/index/runs_index.jsonl).');
+        }
+    }
+
     // --- Trae Report Snippet Check (Task 260209_005) ---
     if (task_id >= '260209_005') {
         console.log('[Gate Light] Checking Trae Report Snippet...');

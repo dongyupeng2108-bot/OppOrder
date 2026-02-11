@@ -94,6 +94,9 @@ To reduce repository overhead and conflicts, we adopt a two-phase workflow for e
     *   If `head != base`, `scope_count` MUST be > 0.
     *   If `head == base`, `scope_count` MUST be 0 (Empty PR warning/fail).
     *   `merge_base` MUST match calculated value.
+*   **Deletion Audit (Task 260211_006)**:
+    *   **Rule**: locks/runs is append-only; deletion is forbidden; Gate Light will fail if missing.
+    *   **Mechanism**: `dev_batch_mode.ps1` appends to `rules/task-reports/index/runs_index.jsonl`. `gate_light_ci.mjs` checks index first run against filesystem.
 
 ## Conflict Minimization
 *   **LATEST.json**: Only update during the Integration Phase (1 modification per PR).

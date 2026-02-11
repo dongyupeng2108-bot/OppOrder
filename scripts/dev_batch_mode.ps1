@@ -774,6 +774,30 @@ if (fs.existsSync(indexFile) && newHash) {
         Write-Host "   Updated LATEST.json with run_id."
     }
 
+    # 7.3 Deletion Audit Index (Append-only) (Task 260211_006)
+    # File: rules/task-reports/index/runs_index.jsonl
+    $IndexDir = Join-Path $RepoRoot "rules\task-reports\index"
+    if (-not (Test-Path $IndexDir)) { New-Item -ItemType Directory -Path $IndexDir -Force | Out-Null }
+    $IndexFile = Join-Path $IndexDir "runs_index.jsonl"
+    
+    $Head = (git rev-parse HEAD).Trim()
+    $Base = "origin/main"
+    $MergeBase = try { (git merge-base HEAD $Base).Trim() } catch { "unknown" }
+    
+    $IndexEntry = @{
+        task_id = $TaskId
+        run_id = $RunId
+        timestamp_utc = $Timestamp
+        lock_path = "rules/task-reports/locks/${TaskId}.lock.json"
+        run_dir = "rules/task-reports/runs/$TaskId/$RunId"
+        head = $Head
+        base = $Base
+        merge_base = $MergeBase
+    } | ConvertTo-Json -Compress
+    
+    Add-Content -Path $IndexFile -Value $IndexEntry -Encoding UTF8
+    Write-Host "   Indexed: $IndexFile (Append)"
+
     Write-Host "   Archive Complete."
 
     Write-Host "--- [Integrate Phase Complete] ---" -ForegroundColor Green
