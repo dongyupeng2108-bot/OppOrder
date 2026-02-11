@@ -951,6 +951,10 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                         if (filename.includes('260211_001') || filename.includes('260211_002')) {
                             return;
                         }
+                        // Allow Shared Index file (Task 260211_006)
+                        if (filename === 'runs_index.jsonl') {
+                            return;
+                        }
                         forbiddenModifications.push(`${parts[0]} ${filePath}`);
                     }
                 }
