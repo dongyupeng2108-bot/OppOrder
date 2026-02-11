@@ -1,0 +1,8 @@
+{
+  "status": "ok",
+  "run_id": "mock_run_1770760316205",
+  "provider_used": "mock",
+  "model_used": "mock-gpt-4",
+  "items": []
+}
+DOD_EVIDENCE_M5_PR1_LLM_JSON: rules/task-reports/2026-02/M5_PR1_llm_json_260211_005.txt => status=ok items=0 provider=mock model=mock-gpt-4

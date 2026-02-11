@@ -1,0 +1,11 @@
+[2026-02-10T21:51:53.964Z] Starting Smoke Test for 260209_008
+1. Triggering POST /opportunities/build_v1...
+   => run_id=mock_build_1770760313980
+2. Verifying GET /opportunities/runs...
+   => Found run in list: {"run_id":"mock_build_1770760313980","timestamp":1770760313980}
+DOD_EVIDENCE_OPPS_RUNS_LIST: E:\OppRadar\rules\task-reports\2026-02\opps_run_filter_smoke_260211_005.txt => contains_run_id=true count=2
+3. Verifying GET /opportunities/by_run...
+   => Returned 4 opportunities
+   => All 4 opportunities match run_id
+DOD_EVIDENCE_OPPS_BY_RUN: E:\OppRadar\rules\task-reports\2026-02\opps_run_filter_smoke_260211_005.txt => rows=4 all_same_run_id=true
+PASS: true
