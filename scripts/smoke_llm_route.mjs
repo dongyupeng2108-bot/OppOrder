@@ -2,7 +2,7 @@ import http from 'http';
 import fs from 'fs';
 import path from 'path';
 
-const TASK_ID = '260211_005';
+const TASK_ID = process.argv[2] || '260211_005';
 const PORT = 53122;
 
 const runId = 'mock_run_' + Date.now();
