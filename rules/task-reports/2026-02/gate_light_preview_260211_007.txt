@@ -1,7 +1,6 @@
 === GATE_LIGHT_PREVIEW ===
 [Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
-[Gate Light] Attempting to detect task_id from git diff...
-[Gate Light] Detected unique PR Task ID from diff: 260211_007
+[Gate Light] Target locked via argument: 260211_007
 [Gate Light] LATEST.json consistency verified.
 [Gate Light] Verifying task_id: 260211_007
 [Gate Light] Checking CI Parity JSON Evidence...
@@ -10,7 +9,7 @@
 [Gate Light] Doc path standards verified.
 [Gate Light] Checking for legacy doc path references...
 [CheckDocPathRefs] Scanning for legacy doc path references...
-[CheckDocPathRefs] Scan completed in 18ms.
+[CheckDocPathRefs] Scan completed in 14ms.
 [CheckDocPathRefs] PASS: No legacy doc path references found.
 [Gate Light] Checking for global healthcheck artifacts...
 [Gate Light] Global Artifact Guard verified.

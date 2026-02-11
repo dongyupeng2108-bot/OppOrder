@@ -1,12 +1,14 @@
 === TRAE_REPORT_SNIPPET ===
 
 BRANCH: feat/evidence-truth-two-pass-no-auto-merge-260211_007
-COMMIT: 3624f4d
+COMMIT: d33f5a2
 
 === GIT_SCOPE_DIFF ===
+A	gate_light_preview_260211_007.txt
 M	rules/LATEST.json
 M	rules/rules/PROJECT_RULES.md
 M	rules/rules/WORKFLOW.md
+A	rules/task-reports/2026-02/260211_006_fix_report_for_chatgpt.md
 A	rules/task-reports/2026-02/260211_007.json
 A	rules/task-reports/2026-02/260211_007_healthcheck_53122_pairs.txt
 A	rules/task-reports/2026-02/260211_007_healthcheck_53122_root.txt
@@ -39,21 +41,20 @@ DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260211_007_healthchec
 
 === CI_PARITY_PREVIEW ===
 Base: 534db86
-Head: 3624f4d
+Head: d33f5a2
 MergeBase: 534db86
 Source: JSON (Evidence-as-Code)
-Scope: 21 files
+Scope: 23 files
 Files (Top 3):
+  - gate_light_preview_260211_007.txt
   - rules/LATEST.json
   - rules/rules/PROJECT_RULES.md
-  - rules/rules/WORKFLOW.md
   ... (truncated)
 =========================
 
 === GATE_LIGHT_PREVIEW ===
 [Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
-[Gate Light] Attempting to detect task_id from git diff...
-[Gate Light] Detected unique PR Task ID from diff: 260211_007
+[Gate Light] Target locked via argument: 260211_007
 [Gate Light] LATEST.json consistency verified.
 [Gate Light] Verifying task_id: 260211_007
 [Gate Light] Checking CI Parity JSON Evidence...
@@ -62,7 +63,7 @@ Files (Top 3):
 [Gate Light] Doc path standards verified.
 [Gate Light] Checking for legacy doc path references...
 [CheckDocPathRefs] Scanning for legacy doc path references...
-[CheckDocPathRefs] Scan completed in 18ms.
+[CheckDocPathRefs] Scan completed in 14ms.
 [CheckDocPathRefs] PASS: No legacy doc path references found.
 [Gate Light] Checking for global healthcheck artifacts...
 [Gate Light] Global Artifact Guard verified.
