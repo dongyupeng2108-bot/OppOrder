@@ -1,0 +1,86 @@
+﻿--- Running Gate Light (Missing Lock File) ---
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260211_006
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] Verifying task_id: 260211_006
+[Gate Light] Checking CI Parity JSON Evidence...
+[Gate Light] CI Parity JSON Evidence verified.
+[Gate Light] Checking doc path standards...
+[Gate Light] Doc path standards verified.
+[Gate Light] Checking for legacy doc path references...
+[CheckDocPathRefs] Scanning for legacy doc path references...
+[CheckDocPathRefs] Scan completed in 19ms.
+[CheckDocPathRefs] PASS: No legacy doc path references found.
+[Gate Light] Checking for global healthcheck artifacts...
+[Gate Light] Global Artifact Guard verified.
+[Gate Light] Checking News Pull API Contract...
+[Contract Check] Loading schema from: E:\OppRadar\OppRadar\contracts\news_pull_response.schema.json
+[Contract Check] Validating Success Sample...
+PASS
+[Contract Check] Validating Error Sample...
+PASS
+[Contract Check] All samples validated against schema.
+[Gate Light] Checking healthcheck evidence...
+[Gate Light] Healthcheck evidence verified (Path + Content).
+[Gate Light] Checking DoD Evidence Excerpts...
+[Gate Light] DoD Evidence Excerpts verified.
+[Gate Light] Checking DoD Stdout Mechanism...
+[Gate Light] DoD Stdout Mechanism verified.
+[Gate Light] Checking Concurrent Scan DoD Evidence...
+[Gate Light] Concurrent Scan DoD Evidence verified.
+[Gate Light] Checking Deletion Audit (Locks & Runs)...
+node : [BLOCK] DELETION_AUDIT_VIOLATION
+所在位置 E:\OppRadar\scripts\verify_deletion_audit_negative.ps1:24 字符: 15
++     $output = node $GateScript --task_id $TaskId 2>&1
++               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([BLOCK] DELETION_AUDIT_VIOLATION:String) [], RemoteExcept 
+   ion
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[DETAIL] Missing lock or run dir for task_id=260211_006
+   - Missing Lock: rules/task-reports/locks/260211_006.lock.json
+[ACTION] Do NOT delete locks/runs. Use new task_id to redo evidence.
+EXIT_CODE=41
+--- Running Gate Light (Missing Run Directory) ---
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260211_006
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] Verifying task_id: 260211_006
+[Gate Light] Checking CI Parity JSON Evidence...
+[Gate Light] CI Parity JSON Evidence verified.
+[Gate Light] Checking doc path standards...
+[Gate Light] Doc path standards verified.
+[Gate Light] Checking for legacy doc path references...
+[CheckDocPathRefs] Scanning for legacy doc path references...
+[CheckDocPathRefs] Scan completed in 15ms.
+[CheckDocPathRefs] PASS: No legacy doc path references found.
+[Gate Light] Checking for global healthcheck artifacts...
+[Gate Light] Global Artifact Guard verified.
+[Gate Light] Checking News Pull API Contract...
+[Contract Check] Loading schema from: E:\OppRadar\OppRadar\contracts\news_pull_response.schema.json
+[Contract Check] Validating Success Sample...
+PASS
+[Contract Check] Validating Error Sample...
+PASS
+[Contract Check] All samples validated against schema.
+[Gate Light] Checking healthcheck evidence...
+[Gate Light] Healthcheck evidence verified (Path + Content).
+[Gate Light] Checking DoD Evidence Excerpts...
+[Gate Light] DoD Evidence Excerpts verified.
+[Gate Light] Checking DoD Stdout Mechanism...
+[Gate Light] DoD Stdout Mechanism verified.
+[Gate Light] Checking Concurrent Scan DoD Evidence...
+[Gate Light] Concurrent Scan DoD Evidence verified.
+[Gate Light] Checking Deletion Audit (Locks & Runs)...
+node : [BLOCK] DELETION_AUDIT_VIOLATION
+所在位置 E:\OppRadar\scripts\verify_deletion_audit_negative.ps1:24 字符: 15
++     $output = node $GateScript --task_id $TaskId 2>&1
++               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([BLOCK] DELETION_AUDIT_VIOLATION:String) [], RemoteExcept 
+   ion
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+[DETAIL] Missing lock or run dir for task_id=260211_006
+   - Missing RunDir: rules/task-reports/runs/260211_006/20260211_193347_750911b
+[ACTION] Do NOT delete locks/runs. Use new task_id to redo evidence.
+EXIT_CODE=41
