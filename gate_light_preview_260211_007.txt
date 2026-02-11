@@ -1,55 +1,3 @@
-=== TRAE_REPORT_SNIPPET ===
-
-BRANCH: feat/evidence-truth-two-pass-no-auto-merge-260211_007
-COMMIT: 3624f4d
-
-=== GIT_SCOPE_DIFF ===
-M	rules/LATEST.json
-M	rules/rules/PROJECT_RULES.md
-M	rules/rules/WORKFLOW.md
-A	rules/task-reports/2026-02/260211_007.json
-A	rules/task-reports/2026-02/260211_007_healthcheck_53122_pairs.txt
-A	rules/task-reports/2026-02/260211_007_healthcheck_53122_root.txt
-A	rules/task-reports/2026-02/260211_007_report.json
-A	rules/task-reports/2026-02/M4_PR2_concurrent_log_260211_007.txt
-A	rules/task-reports/2026-02/M5_PR1_llm_json_260211_007.txt
-A	rules/task-reports/2026-02/ci_parity_260211_007.json
-A	rules/task-reports/2026-02/deliverables_index_260211_007.json
-A	rules/task-reports/2026-02/dod_stdout_260211_007.txt
-A	rules/task-reports/2026-02/gate_light_ci_260211_007.txt
-A	rules/task-reports/2026-02/gate_light_preview_260211_007.txt
-A	rules/task-reports/2026-02/notify_260211_007.txt
-A	rules/task-reports/2026-02/result_260211_007.json
-A	rules/task-reports/2026-02/trae_report_snippet_260211_007.txt
-A	rules/task-reports/envelopes/260211_007.envelope.json
-M	scripts/build_trae_report_snippet.mjs
-A	scripts/extract_gate_light_preview.mjs
-M	scripts/gate_light_ci.mjs
-
-=== DOD_EVIDENCE_STDOUT ===
-DOD_EVIDENCE_DUMMY_1: check => passed
-DOD_EVIDENCE_DUMMY_2: check => passed
-DOD_EVIDENCE_OPPS_PIPELINE_RUN: N/A => run_id=NA ok=0 failed=0
-DOD_EVIDENCE_OPPS_PIPELINE_TOP: N/A => top_count=0 refs_run_id=true
-DOD_EVIDENCE_OPPS_RUNS_LIST: N/A => contains_run_id=true
-DOD_EVIDENCE_OPPS_BY_RUN: N/A => run_id=NA
-
-DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260211_007_healthcheck_53122_root.txt => HTTP/1.1 200 OK
-DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260211_007_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
-
-=== CI_PARITY_PREVIEW ===
-Base: 534db86
-Head: 3624f4d
-MergeBase: 534db86
-Source: JSON (Evidence-as-Code)
-Scope: 21 files
-Files (Top 3):
-  - rules/LATEST.json
-  - rules/rules/PROJECT_RULES.md
-  - rules/rules/WORKFLOW.md
-  ... (truncated)
-=========================
-
 === GATE_LIGHT_PREVIEW ===
 [Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
 [Gate Light] Attempting to detect task_id from git diff...
@@ -62,7 +10,7 @@ Files (Top 3):
 [Gate Light] Doc path standards verified.
 [Gate Light] Checking for legacy doc path references...
 [CheckDocPathRefs] Scanning for legacy doc path references...
-[CheckDocPathRefs] Scan completed in 18ms.
+[CheckDocPathRefs] Scan completed in 16ms.
 [CheckDocPathRefs] PASS: No legacy doc path references found.
 [Gate Light] Checking for global healthcheck artifacts...
 [Gate Light] Global Artifact Guard verified.
@@ -87,7 +35,7 @@ PASS
 [Gate Light] Trae Report Snippet verified.
 [Gate Light] Checking No Auto-Merge (Git Forbidden Commands)...
 [Gate Light] No Auto-Merge verified.
-[Gate Light] Checking Evidence Truth & Sufficiency (Hardening Rule)...
+[Gate Light] Checking Evidence Truth & Sufficiency (Hardening Rule)...  
 [Gate Light] Skipping Evidence Truth check (Generation Mode).
 [Gate Light] Evidence Truth & Sufficiency verified.
 [Gate Light] Checking Opps Pipeline DoD Evidence...
@@ -108,12 +56,13 @@ PASS
 [Gate Light] Evidence Truth & Consistency verified.
 [Gate Light] Checking M5 PR1 LLM Router Contract...
 [Gate Light] M5 PR1 LLM Router Contract verified.
-[Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...
-[Gate Light] Immutable Integrate & SafeCmd Enforcement verified.
-[Gate Light] Checking Two-Pass Evidence Truth & No Auto-Merge...
+[Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...      
+[Gate Light] Immutable Integrate & SafeCmd Enforcement verified.        
+[Gate Light] Checking Two-Pass Evidence Truth & No Auto-Merge...        
 [Gate Light] Two-Pass Evidence Truth & No Auto-Merge verified.
-[Gate Light] Executing: node scripts/postflight_validate_envelope.mjs --task_id 260211_007 --result_dir rules/task-reports/2026-02 --report_dir rules/task-reports/2026-02
-[Postflight] Validating 260211_007 in rules/task-reports/2026-02...
+task_id 260211_007 --result_dir rules/task-reports/2026-02 --report_dir 
+rules/task-reports/2026-02
+[Postflight] Validating 260211_007 in rules/task-reports/2026-02...     
 [Postflight] Report: rules\task-reports\2026-02\260211_007.json
 [Postflight] Envelope: rules\task-reports\envelopes\260211_007.envelope.json
 [Postflight] PASS
