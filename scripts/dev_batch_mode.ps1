@@ -544,7 +544,8 @@ const newSize = fileBuffer.length;
     # 5.9 Immutable Setup (Lock, RunDir, Index) - Must run BEFORE Gate Light
     Write-Host "5.9. Setting up Immutable Lock & Index..."
     
-    $LocksDir = Join-Path $ReportsDir "locks"
+    # Global Lock (Task 260211_006+)
+    $LocksDir = Join-Path $RepoRoot "rules\task-reports\locks"
     if (-not (Test-Path $LocksDir)) { New-Item -ItemType Directory -Path $LocksDir -Force | Out-Null }
     
     $Timestamp = Get-Date -Format "yyyy-MM-ddTHH:mm:ssZ"
