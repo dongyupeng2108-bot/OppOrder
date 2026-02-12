@@ -1,0 +1,8 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Thu, 12 Feb 2026 19:05:38 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Content-Length: 177
+
+{"status":"ok","provider_used":"local","fallback":false,"cached":false,"cache_key":"mock_cache_key_...","inserted_count":20,"deduped_count":0,"fetched_count":20,"written_count":20,"request":{"provider":"local","topic_key":"MOCK_TOPIC","query":"","timespan":"1d","maxrecords":20}}

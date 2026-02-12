@@ -1,0 +1,15 @@
+{
+  "task_id": "260212_001",
+  "base": "eb829b45e8ac9ad4d661f544a228f33f99576566",
+  "head": "efb4beb8d1925e1572fc3d6e042180897777ec79",
+  "merge_base": "eb829b45e8ac9ad4d661f544a228f33f99576566",
+  "scope_files": [
+    "OppRadar/mock_server_53122.mjs",
+    "rules/LATEST.json",
+    "rules/task-reports/2026-02/spec_260212_001.md",
+    "scripts/generate_evidence_260212_001.js",
+    "scripts/test_news_pull_260212_001.mjs"
+  ],
+  "scope_count": 5,
+  "generated_at": "2026-02-12T19:05:38.774Z"
+}

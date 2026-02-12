@@ -1,0 +1,43 @@
+{
+  "task_id": "260212_001",
+  "timestamp": "2026-02-12T18:55:36.310Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260212_001",
+      "status": "DONE",
+      "summary": "Feat: News Pull Endpoint + Min Spec/Tests",
+      "dod_evidence": {
+        "gate_light_exit": "0",
+        "healthcheck": [
+          "DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260212_001_healthcheck_53122_root.txt => HTTP/1.1 200 OK",
+          "DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260212_001_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK"
+        ],
+        "llm_route": [
+          "DOD_EVIDENCE_M5_PR1_LLM_JSON: rules/task-reports/2026-02/M5_PR1_llm_json_260212_001.txt => status=ok items=0 provider=mock model=mock-model"
+        ],
+        "opps_pipeline": [
+          "DOD_EVIDENCE_OPPS_PIPELINE_RUN: run_id=mock_run => ok=0, failed=0, top_count=0",
+          "DOD_EVIDENCE_OPPS_PIPELINE_TOP: mock_top_path => top_count=0, refs_run_id=true"
+        ],
+        "opps_runs_list": [
+          "DOD_EVIDENCE_OPPS_RUNS_LIST: mock_runs_list => contains_run_id=true"
+        ],
+        "opps_by_run": [
+          "DOD_EVIDENCE_OPPS_BY_RUN: mock_by_run => run_id=mock_run"
+        ]
+      },
+      "report_file": "notify_260212_001.txt",
+      "report_sha256_short": "2774002c"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+
+BRANCH: feat/news-pull-minspec-tests-260212_001
+COMMIT: efb4beb
+=== GIT_SCOPE_DIFF ===
+M scripts/generate_evidence_260212_001.js
+M OppRadar/mock_server_53122.mjs
+A rules/task-reports/2026-02/spec_260212_001.md
+...
+=== CI_PARITY_PREVIEW ===
+Base: eb829b45e8ac9ad4d661f544a228f33f99576566
+Head: e4267b776c4d5c403331ae816892ba3d6451cbf8
+MergeBase: eb829b45e8ac9ad4d661f544a228f33f99576566
+Source: local_probe
+Scope: 5 files
+=== DOD_EVIDENCE_STDOUT ===
+DOD_EVIDENCE_OPPS_PIPELINE_RUN: run_id=mock_run => ok=0, failed=0, top_count=0
+DOD_EVIDENCE_OPPS_PIPELINE_TOP: mock_top_path => top_count=0, refs_run_id=true
+DOD_EVIDENCE_OPPS_RUNS_LIST: mock_runs_list => contains_run_id=true
+DOD_EVIDENCE_OPPS_BY_RUN: mock_by_run => run_id=mock_run
+DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260212_001_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260212_001_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+=== GATE_LIGHT_PREVIEW ===
+[Gate Light] PASS
+[Postflight] PASS
+GATE_LIGHT_EXIT=0

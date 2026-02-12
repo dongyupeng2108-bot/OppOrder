@@ -1,0 +1,8 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Thu, 12 Feb 2026 19:05:38 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Content-Length: 106
+
+{"status":"ok","count":2,"pairs":["XAUUSD","BTCUSD"],"provider":"mock","timestamp":"2026-02-13T00:00:00.000Z"}
