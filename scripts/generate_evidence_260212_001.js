@@ -160,7 +160,7 @@ test_${taskId}.log
 ${taskId}_healthcheck_53122_root.txt
 ${taskId}_healthcheck_53122_pairs.txt
 M5_PR1_llm_json_${taskId}.txt
-manual_verification.json
+manual_verification_${taskId}.json
 dod_stdout_${taskId}.txt
 === DOD_EVIDENCE_STDOUT ===
 DOD_EVIDENCE_OPPS_PIPELINE_RUN: run_id=mock_run => ok=0, failed=0, top_count=0

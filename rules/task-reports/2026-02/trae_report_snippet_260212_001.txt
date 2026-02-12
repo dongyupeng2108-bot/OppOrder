@@ -1,6 +1,6 @@
 
 BRANCH: feat/news-pull-minspec-tests-260212_001
-COMMIT: 350b338
+COMMIT: 5ae2a5d
 === GIT_SCOPE_DIFF ===
 M scripts/generate_evidence_260212_001.js
 M OppRadar/mock_server_53122.mjs
@@ -8,10 +8,10 @@ A rules/task-reports/2026-02/spec_260212_001.md
 ...
 === CI_PARITY_PREVIEW ===
 Base: eb829b45e8ac9ad4d661f544a228f33f99576566
-Head: efb4beb8d1925e1572fc3d6e042180897777ec79
+Head: 350b3381fff3210a6adaf9d594e3b7a7f531633b
 MergeBase: eb829b45e8ac9ad4d661f544a228f33f99576566
 Source: local_probe
-Scope: 5 files
+Scope: 20 files
 === DOD_EVIDENCE_STDOUT ===
 DOD_EVIDENCE_OPPS_PIPELINE_RUN: run_id=mock_run => ok=0, failed=0, top_count=0
 DOD_EVIDENCE_OPPS_PIPELINE_TOP: mock_top_path => top_count=0, refs_run_id=true
