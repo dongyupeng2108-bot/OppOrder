@@ -1,15 +1,30 @@
 {
   "task_id": "260212_001",
   "base": "eb829b45e8ac9ad4d661f544a228f33f99576566",
-  "head": "efb4beb8d1925e1572fc3d6e042180897777ec79",
+  "head": "350b3381fff3210a6adaf9d594e3b7a7f531633b",
   "merge_base": "eb829b45e8ac9ad4d661f544a228f33f99576566",
   "scope_files": [
     "OppRadar/mock_server_53122.mjs",
     "rules/LATEST.json",
+    "rules/task-reports/2026-02/260212_001.json",
+    "rules/task-reports/2026-02/260212_001_healthcheck_53122_pairs.txt",
+    "rules/task-reports/2026-02/260212_001_healthcheck_53122_root.txt",
+    "rules/task-reports/2026-02/M4_PR2_concurrent_log_260212_001.txt",
+    "rules/task-reports/2026-02/M5_PR1_llm_json_260212_001.txt",
+    "rules/task-reports/2026-02/ci_parity_260212_001.json",
+    "rules/task-reports/2026-02/deliverables_index_260212_001.json",
+    "rules/task-reports/2026-02/dod_stdout_260212_001.txt",
+    "rules/task-reports/2026-02/gate_light_raw_log_260212_001.txt",
+    "rules/task-reports/2026-02/manual_verification.json",
+    "rules/task-reports/2026-02/notify_260212_001.txt",
+    "rules/task-reports/2026-02/result_260212_001.json",
     "rules/task-reports/2026-02/spec_260212_001.md",
+    "rules/task-reports/2026-02/trae_report_snippet_260212_001.txt",
+    "rules/task-reports/envelopes/260212_001.envelope.json",
     "scripts/generate_evidence_260212_001.js",
+    "scripts/postflight_validate_envelope.mjs",
     "scripts/test_news_pull_260212_001.mjs"
   ],
-  "scope_count": 5,
-  "generated_at": "2026-02-12T19:05:38.774Z"
+  "scope_count": 20,
+  "generated_at": "2026-02-12T19:40:00.277Z"
 }

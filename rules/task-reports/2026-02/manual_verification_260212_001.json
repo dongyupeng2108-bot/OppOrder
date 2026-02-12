@@ -1,0 +1,5 @@
+{
+  "status": "verified",
+  "method": "manual_curl",
+  "notes": "Verified endpoint /news/pull via curl and test script."
+}
