@@ -4,7 +4,7 @@ import { execSync } from 'child_process';
 import crypto from 'crypto';
 
 const taskId = '260212_001';
-const reportDir = path.join('rules', 'task-reports', '2026-02');
+const reportDir = path.join(process.cwd(), 'rules', 'task-reports', '2026-02');
 
 function calculateFileHash(filePath) {
     try {
@@ -35,6 +35,10 @@ JSON conforming to news_pull_response.schema.json.
 - No real third-party integration (mock only).
 - No persistence.
 - No UI.
+
+## Evidence Generation Tools
+- generate_evidence_260212_001.js: Helper script to generate strictly formatted Gate Light evidence suite (deliverables_index, result json, notify file). Downgraded to task-reports as per minimal closed loop requirement.
+- manual_verification_260212_001.json: Task-specific manual verification record.
 `;
 fs.writeFileSync(path.join(reportDir, `spec_${taskId}.md`), specContent);
 
@@ -123,7 +127,7 @@ const initialResultJson = {
     status: "DONE",
     summary: "Feat: News Pull Endpoint + Min Spec/Tests",
     dod_evidence: {
-        gate_light_exit: "0",
+        gate_light_exit: 0,
         healthcheck: [
             healthRootLine,
             healthPairsLine
@@ -213,7 +217,14 @@ try {
         ciParity = JSON.parse(fs.readFileSync(ciParityPath, 'utf8'));
         console.log('Loaded CI Parity JSON:', ciParityPath);
     } else {
-        console.warn('CI Parity JSON not found at:', ciParityPath);
+        // Fallback to reportDir
+        const ciParityReportPath = path.join(reportDir, `ci_parity_${taskId}.json`);
+        if (fs.existsSync(ciParityReportPath)) {
+            ciParity = JSON.parse(fs.readFileSync(ciParityReportPath, 'utf8'));
+            console.log('Loaded CI Parity JSON from Report Dir:', ciParityReportPath);
+        } else {
+            console.warn('CI Parity JSON not found at:', ciParityPath, 'or', ciParityReportPath);
+        }
     }
 } catch (e) {
     console.warn('Error reading CI Parity JSON:', e.message);

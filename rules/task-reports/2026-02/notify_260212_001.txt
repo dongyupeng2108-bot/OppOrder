@@ -4,7 +4,7 @@ RESULT_JSON
   "status": "DONE",
   "summary": "Feat: News Pull Endpoint + Min Spec/Tests",
   "dod_evidence": {
-    "gate_light_exit": "0",
+    "gate_light_exit": 0,
     "healthcheck": [
       "DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260212_001_healthcheck_53122_root.txt => HTTP/1.1 200 OK",
       "DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260212_001_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK"

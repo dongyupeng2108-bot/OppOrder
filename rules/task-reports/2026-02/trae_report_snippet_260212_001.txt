@@ -1,6 +1,6 @@
 
 BRANCH: feat/news-pull-minspec-tests-260212_001
-COMMIT: 79811e3
+COMMIT: 7b50c1a
 === GIT_SCOPE_DIFF ===
 M scripts/generate_evidence_260212_001.js
 M OppRadar/mock_server_53122.mjs
@@ -8,7 +8,7 @@ A rules/task-reports/2026-02/spec_260212_001.md
 ...
 === CI_PARITY_PREVIEW ===
 Base: eb829b45e8ac9ad4d661f544a228f33f99576566
-Head: 350b3381fff3210a6adaf9d594e3b7a7f531633b
+Head: 79811e34ddc9170eb5ffc05cabc66e1689879393
 MergeBase: eb829b45e8ac9ad4d661f544a228f33f99576566
 Source: local_probe
 Scope: 20 files
