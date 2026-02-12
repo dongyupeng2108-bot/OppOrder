@@ -1,7 +1,7 @@
 {
   "task_id": "260212_001",
   "base": "eb829b45e8ac9ad4d661f544a228f33f99576566",
-  "head": "350b3381fff3210a6adaf9d594e3b7a7f531633b",
+  "head": "79811e34ddc9170eb5ffc05cabc66e1689879393",
   "merge_base": "eb829b45e8ac9ad4d661f544a228f33f99576566",
   "scope_files": [
     "OppRadar/mock_server_53122.mjs",
@@ -15,7 +15,7 @@
     "rules/task-reports/2026-02/deliverables_index_260212_001.json",
     "rules/task-reports/2026-02/dod_stdout_260212_001.txt",
     "rules/task-reports/2026-02/gate_light_raw_log_260212_001.txt",
-    "rules/task-reports/2026-02/manual_verification.json",
+    "rules/task-reports/2026-02/manual_verification_260212_001.json",
     "rules/task-reports/2026-02/notify_260212_001.txt",
     "rules/task-reports/2026-02/result_260212_001.json",
     "rules/task-reports/2026-02/spec_260212_001.md",
@@ -26,5 +26,5 @@
     "scripts/test_news_pull_260212_001.mjs"
   ],
   "scope_count": 20,
-  "generated_at": "2026-02-12T19:40:00.277Z"
+  "generated_at": "2026-02-12T19:52:57.402Z"
 }

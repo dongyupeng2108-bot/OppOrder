@@ -1,6 +1,6 @@
 
 BRANCH: feat/news-pull-minspec-tests-260212_001
-COMMIT: 5ae2a5d
+COMMIT: 79811e3
 === GIT_SCOPE_DIFF ===
 M scripts/generate_evidence_260212_001.js
 M OppRadar/mock_server_53122.mjs
