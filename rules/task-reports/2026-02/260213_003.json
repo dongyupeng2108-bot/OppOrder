@@ -1,0 +1,36 @@
+{
+  "task_id": "260213_003",
+  "timestamp": "2026-02-13T14:11:17.983Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260213_003",
+      "status": "DONE",
+      "summary": "Implemented news pagination (since_id) and idempotency.",
+      "report_file": "notify_260213_003.txt",
+      "report_sha256_short": "beb1e267",
+      "verification": {
+        "healthcheck_root": "pass",
+        "healthcheck_pairs": "pass",
+        "pagination_test": "pass"
+      },
+      "dod_evidence": {
+        "gate_light_exit": 0,
+        "healthcheck": [
+          "rules/task-reports/2026-02/260213_003_healthcheck_53122_root.txt",
+          "rules/task-reports/2026-02/260213_003_healthcheck_53122_pairs.txt"
+        ]
+      },
+      "notes": "Implemented since_id pagination and fixed cache key generation bug."
+    }
+  }
+}

@@ -30,7 +30,7 @@ class LocalFileNewsProvider extends NewsProvider {
         }
     }
 
-    async fetchNews(topicKey, limit = 5) {
+    async fetchNews(topicKey, limit = 5, options = {}) {
         if (!fs.existsSync(this.filePath)) {
             console.warn(`[LocalFileNewsProvider] File not found: ${this.filePath}`);
             return [];
@@ -39,7 +39,7 @@ class LocalFileNewsProvider extends NewsProvider {
         const fileContent = fs.readFileSync(this.filePath, 'utf-8');
         const lines = fileContent.split('\n').filter(line => line.trim() !== '');
         
-        const allNews = [];
+        let allNews = [];
         for (const line of lines) {
             try {
                 const item = JSON.parse(line);
@@ -51,6 +51,11 @@ class LocalFileNewsProvider extends NewsProvider {
             } catch (e) {
                 console.error('[LocalFileNewsProvider] Parse error:', e);
             }
+        }
+
+        // Filter by min_ts if provided
+        if (options.min_ts) {
+            allNews = allNews.filter(n => new Date(n.published_at).getTime() > options.min_ts);
         }
 
         // Sort by published_at desc

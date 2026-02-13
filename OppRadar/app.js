@@ -909,7 +909,7 @@ window.runReeval = async function() {
     }
 }
 
-window.pullNews = async function() {
+window.pullNews = async function(sinceId = null) {
     const topicKey = document.getElementById('tl_topic_key').value;
     if (!topicKey) {
         alert('Please enter a topic key');
@@ -919,10 +919,13 @@ window.pullNews = async function() {
     const statusEl = document.getElementById('tl_status');
     try {
         statusEl.textContent = 'Pulling news...';
+        const payload = { topic_key: topicKey, limit: 5 };
+        if (sinceId) payload.since_id = sinceId;
+
         const res = await fetch('/news/pull', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ topic_key: topicKey, limit: 5 })
+            body: JSON.stringify(payload)
         });
         
         if (!res.ok) {

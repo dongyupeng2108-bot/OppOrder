@@ -1,0 +1,11 @@
+Starting News Pagination Tests...
+[PASS] Healthcheck /pairs 200
+[PASS] Pull Limit 2 OK. Fetched: 2
+[INFO] Newest ID: 1770991865297_w9546a8of
+[INFO] Oldest ID: 1770991865297_7yzp24p3n
+[INFO] Latest News ID (Server): 1770991865297_7yzp24p3n
+[TEST] Pagination: since_id=1770991865297_7yzp24p3n
+[INFO] Fetched 0 items since 1770991865297_7yzp24p3n
+[PASS] All items are newer than since_id
+[PASS] GDELT Limit Clamp 60 -> 400 OK
+All Tests Passed

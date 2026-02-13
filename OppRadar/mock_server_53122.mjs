@@ -903,12 +903,23 @@ const server = http.createServer(async (req, res) => {
                     topic_key: params.topic_key || 'default',
                     query: params.query,
                     timespan: params.timespan,
-                    maxrecords: params.maxrecords
+                    maxrecords: params.maxrecords,
+                    since_id: params.since_id || params.cursor
                 };
 
                 const topic_key = requestEcho.topic_key;
                 const requestedProvider = requestEcho.provider;
                 
+                // Parse since_id to min_ts
+                let min_ts = 0;
+                if (requestEcho.since_id && typeof requestEcho.since_id === 'string') {
+                    const parts = requestEcho.since_id.split('_');
+                    if (parts.length >= 1) {
+                        const ts = parseInt(parts[0]);
+                        if (!isNaN(ts)) min_ts = ts;
+                    }
+                }
+
                 // Validate maxrecords/limit
                 let limit = 5; // default for local
                 if (requestedProvider === 'gdelt') {
@@ -935,10 +946,11 @@ const server = http.createServer(async (req, res) => {
                     topic_key: topic_key,
                     query: params.query,
                     timespan: params.timespan,
-                    maxrecords: limit
+                    maxrecords: limit,
+                    min_ts: min_ts
                 };
-                const cacheKey = generateCacheKey(cacheParams);
-                const cachedData = getFromCache(cacheKey);
+                const cacheKey = generateNewsCacheKey(cacheParams);
+                const cachedData = getFromNewsCache(cacheKey);
 
                 if (cachedData) {
                     res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -962,14 +974,15 @@ const server = http.createServer(async (req, res) => {
                 try {
                     newsItems = await newsProvider.fetchNews(topic_key, limit, { 
                         query: params.query, 
-                        timespan: params.timespan 
+                        timespan: params.timespan,
+                        min_ts: min_ts
                     });
                 } catch (e) {
                     console.error(`[NewsPull] Provider ${requestedProvider} failed: ${e.message}`);
                     if (requestedProvider !== 'local') {
                         console.log('[NewsPull] Falling back to local provider');
                         newsProvider = getNewsProvider('local');
-                        newsItems = await newsProvider.fetchNews(topic_key, 5); // Fallback usually safe default
+                        newsItems = await newsProvider.fetchNews(topic_key, 5, { min_ts: min_ts }); // Fallback usually safe default
                         fallbackOccurred = true;
                         providerUsed = 'local';
                     } else {
@@ -980,6 +993,7 @@ const server = http.createServer(async (req, res) => {
                 let written = 0;
                 let deduped = 0;
                 let latest_news_id = null;
+                const processedItems = [];
 
                 for (const item of newsItems) {
                      const itemProvider = item.provider || providerUsed;
@@ -1003,6 +1017,12 @@ const server = http.createServer(async (req, res) => {
                     if (res.inserted) written++;
                     else deduped++;
                     if (res.id) latest_news_id = res.id;
+                    
+                    processedItems.push({
+                        ...item,
+                        id: res.id,
+                        inserted: res.inserted
+                    });
                 }
                 
                 const result = { 
@@ -1012,6 +1032,8 @@ const server = http.createServer(async (req, res) => {
                     deduped_count: deduped, 
                     inserted_count: written,
                     latest_news_id,
+                    has_more: newsItems.length >= limit,
+                    items: processedItems,
                     provider_used: providerUsed,
                     fallback: fallbackOccurred,
                     cached: false,
@@ -1020,7 +1042,7 @@ const server = http.createServer(async (req, res) => {
                 };
 
                 // Cache the result (for 10 min)
-                setInCache(cacheKey, result);
+                setInNewsCache(cacheKey, result);
 
                 res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify(result));
