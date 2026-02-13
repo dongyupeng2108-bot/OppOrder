@@ -13,6 +13,7 @@ Verified via automated tests (idempotency, pagination) and Gate Light.
 - Gate Light: PASS
 - Healthcheck: PASS
 - Snippet: PASS
+GATE_LIGHT_EXIT=0
 
 === ENVELOPE_DATA ===
 RESULT_JSON: See result_260213_004.json
