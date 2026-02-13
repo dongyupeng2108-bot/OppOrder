@@ -37,7 +37,6 @@ Files (Top 3):
 =========================
 
 === GATE_LIGHT_PREVIEW ===
-=== GATE_LIGHT_PREVIEW ===
 [Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
 [Gate Light] Attempting to detect task_id from git diff...
 [Gate Light] Detected unique PR Task ID from diff: 260214_005
