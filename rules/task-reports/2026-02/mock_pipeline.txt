@@ -1,8 +1,0 @@
-run_id=run_ba4f51a6
-ok=0
-failed=0
-top_count=0
-refs_run_id=true
-contains_run_id=true
-match_count=0
-filter_run_id=run_ba4f51a6
