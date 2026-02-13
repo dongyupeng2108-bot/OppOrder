@@ -10,10 +10,10 @@
   ],
   "gate_light_exit": 0,
   "dod_evidence": {
-    "healthcheck": {
-      "root": "rules/task-reports/2026-02/260213_004_healthcheck_53122_root.txt",
-      "pairs": "rules/task-reports/2026-02/260213_004_healthcheck_53122_pairs.txt"
-    }
+    "healthcheck": [
+      "rules/task-reports/2026-02/260213_004_healthcheck_53122_root.txt",
+      "rules/task-reports/2026-02/260213_004_healthcheck_53122_pairs.txt"
+    ]
   },
   "lineage": {
     "type": "standard",
