@@ -11,10 +11,69 @@ export class NewsProvider {
      * Fetch news for a given topic
      * @param {string} topicKey
      * @param {number} limit
-     * @returns {Promise<Array<{source, url, published_at, fetched_at, title, snippet, raw_hash}>>}
+     * @param {Object} options - { since_id, query, timespan, min_ts }
+     * @returns {Promise<Array<{id, source, url, published_at, fetched_at, title, snippet, raw_hash}>>}
      */
-    async fetchNews(topicKey, limit = 5) {
+    async fetchNews(topicKey, limit = 5, options = {}) {
         throw new Error('Not implemented');
+    }
+}
+
+class MockNewsProvider extends NewsProvider {
+    constructor() {
+        super();
+        // Generate deterministic mock data (Source of Truth)
+        // 100 items, ID 1 to 100 (padded strings for comparison)
+        this.mockData = [];
+        const baseTime = 1700000000000; // Fixed base time
+        for (let i = 1; i <= 100; i++) {
+            const id = i.toString().padStart(10, '0'); // "0000000001"
+            this.mockData.push({
+                id: id,
+                provider: 'mock',
+                source: 'Mock Source',
+                url: `http://mock.com/news/${id}`,
+                published_at: new Date(baseTime + i * 1000).toISOString(),
+                fetched_at: new Date().toISOString(),
+                title: `Mock News Title ${id}`,
+                snippet: `This is a deterministic mock news snippet for item ${id}.`,
+                raw_hash: crypto.createHash('md5').update(`mock-${id}`).digest('hex'),
+                _raw: { id, i }
+            });
+        }
+        // Data is naturally sorted by ID/Time ascending.
+        // Usually APIs return latest first?
+        // Requirement: "since_id: return id > since_id"
+        // If we want "latest news", we usually fetch descending.
+        // But "since_id" usually implies "give me everything AFTER this ID".
+        // If IDs are monotonic with time, "after" means "newer".
+        // Let's assume the provider returns items in the order requested (usually Descending for news feed, or Ascending for history?).
+        // Standard "since_id" (like Twitter) returns newest items that have ID > since_id.
+        // Let's stick to: Source data is static.
+        // We filter by since_id, then sort by ID DESC (newest first), then take limit.
+    }
+
+    async fetchNews(topicKey, limit = 5, options = {}) {
+        let filtered = [...this.mockData];
+
+        // 1. Filter by since_id
+        if (options.since_id) {
+            filtered = filtered.filter(item => item.id > options.since_id);
+        }
+
+        // 2. Sort (Default Newest First for News)
+        // Ensure IDs are comparable as strings
+        filtered.sort((a, b) => b.id.localeCompare(a.id));
+
+        // 3. Apply Limit (Clamp handled by caller? No, provider should respect limit)
+        // User requirement: "limit: clamp (use current clamp rules)" -> "limit=0 / limit<0 / limit huge => behave compliant"
+        // Standard clamp: min 1, max 50? Or just return empty if 0?
+        // Let's handle it safely.
+        let safeLimit = parseInt(limit);
+        if (isNaN(safeLimit) || safeLimit <= 0) safeLimit = 5; // Default/Min
+        if (safeLimit > 50) safeLimit = 50; // Max Cap
+
+        return filtered.slice(0, safeLimit);
     }
 }
 
@@ -210,6 +269,8 @@ export class GdeltDocNewsProvider extends NewsProvider {
 
 export function getProvider(name = 'local') {
     switch (name.toLowerCase()) {
+        case 'mock':
+            return new MockNewsProvider();
         case 'web':
             return new WebNewsProvider();
         case 'gdelt':

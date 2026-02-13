@@ -1188,58 +1188,94 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    // GET /news/pull (Task 260212_001)
+    // GET /news/pull (Task 260213_004: Provider Abstraction)
     if (pathname === '/news/pull') {
-        const limit = parsedUrl.query.limit ? parseInt(parsedUrl.query.limit) : 20;
-        const since = parsedUrl.query.since || null;
-        const simError = parsedUrl.query.sim_error === 'true'; // For testing
+        const limitRaw = parsedUrl.query.limit;
+        const sinceId = parsedUrl.query.since_id || null;
+        const topicKey = parsedUrl.query.topic_key || 'default';
+        const simError = parsedUrl.query.sim_error === 'true';
 
-        // Spec: Limit cap at 50
-        if (limit > 50) {
-            res.writeHead(400, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ 
-                status: 'error', 
-                code: 'INVALID_LIMIT', 
-                message: 'Limit cannot exceed 50',
-                request: { limit }
-            }));
-            return;
-        }
+        // 1. Resolve Provider
+        // Priority: Env Var > Default 'mock'
+        // (Allow query override for testing if needed, but per spec "Internal single point selection")
+        const providerName = process.env.NEWS_PROVIDER || 'mock';
+        
+        // 2. Validate Limit (Clamp logic moved to Provider? No, API layer should also validate/clamp inputs)
+        // Spec: "limit: clamp (use current clamp rules)"
+        // Current clamp rules: > 50 error? Or clamp?
+        // Previous implementation returned 400 for > 50.
+        // Task 3.2 says: "limit=0 / limit<0 / limit huge => behavior matches clamp".
+        // Let's implement robust clamping here:
+        // If > 50, clamp to 50? Or error?
+        // Requirement 3.2: "limit=0 / limit<0 / limit huge => behavior matches clamp"
+        // Usually "clamp" means force into range [min, max].
+        // But the previous implementation threw 400 for > 50.
+        // Let's stick to the previous behavior of 400 for > 50 to maintain contract if strict.
+        // BUT "limit huge => behavior matches clamp" suggests we should CLAMP it, not error.
+        // Let's assume CLAMP [1, 50].
+        let limit = limitRaw ? parseInt(limitRaw, 10) : 5;
+        if (isNaN(limit) || limit < 1) limit = 5;
+        if (limit > 50) limit = 50; 
 
-        // Test Case 2: Sim Error
+        // 3. Sim Error
         if (simError) {
              res.writeHead(500, { 'Content-Type': 'application/json' });
              res.end(JSON.stringify({
                  status: 'error',
                  code: 'SIMULATED_ERROR',
                  message: 'Simulated error for testing',
-                 request: { limit, since }
+                 request: { limit, since_id: sinceId }
              }));
              return;
         }
 
-        // Success Response (Mock)
-        const response = {
-            status: 'ok',
-            provider_used: 'local',
-            fallback: false,
-            cached: false,
-            cache_key: 'mock_cache_key_' + Date.now(),
-            inserted_count: limit,
-            deduped_count: 0,
-            fetched_count: limit,
-            written_count: limit,
-            request: {
-                provider: 'local',
-                topic_key: 'MOCK_TOPIC',
-                query: '',
-                timespan: '1d',
-                maxrecords: limit
-            }
-        };
+        try {
+            // 4. Fetch from Provider
+            const provider = getNewsProvider(providerName);
+            const items = await provider.fetchNews(topicKey, limit, { since_id: sinceId });
 
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify(response));
+            // 5. Build Response
+            // Calculate metrics
+            const insertedCount = items.length; // Mock assumes all are "new" to the client
+            const latestId = items.length > 0 ? items[0].id : (sinceId || null); 
+            // Note: If items are returned Newest First, index 0 is latest.
+
+            const response = {
+                status: 'ok',
+                provider_used: providerName,
+                fallback: false,
+                cached: false,
+                cache_key: null, // No caching for this direct pull yet
+                inserted_count: insertedCount,
+                deduped_count: 0,
+                fetched_count: insertedCount,
+                written_count: insertedCount,
+                latest_news_id: latestId,
+                has_more: items.length === limit, // Heuristic
+                items: items,
+                request: {
+                    provider: providerName,
+                    topic_key: topicKey,
+                    query: '',
+                    timespan: '1d',
+                    maxrecords: limit,
+                    since_id: sinceId
+                }
+            };
+
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(response));
+
+        } catch (e) {
+            console.error(`[NewsPull] GET failed: ${e.message}`);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({
+                status: 'error',
+                code: 'INTERNAL_ERROR',
+                message: e.message,
+                request: { limit, since_id: sinceId }
+            }));
+        }
         return;
     }
 
