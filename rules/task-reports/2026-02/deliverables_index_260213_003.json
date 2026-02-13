@@ -1,0 +1,34 @@
+{
+  "task_id": "260213_003",
+  "files": {
+    "notify_260213_003.txt": {
+      "sha256": "3c9c9eee176138daed58b34110ac9886264663bb95f8eedbaac430e8ce7c48b1",
+      "size": 589
+    },
+    "result_260213_003.json": {
+      "sha256": "02ee196d15049ecfb6c015c7409762432cd091f96c42f4c75da79b50bb597f45",
+      "size": 280
+    },
+    "260213_003_healthcheck_53122_root.txt": {
+      "sha256": "a770b2b32d983a7e0903e68d80a0579a6e1cf2431135051a0f5d1f15628cee71",
+      "size": 2200
+    },
+    "260213_003_healthcheck_53122_pairs.txt": {
+      "sha256": "1d86c9544e85a573bb7db4c60917417b73e72ce7484cb3ab57af9befd8b1529d",
+      "size": 2200
+    },
+    "260213_003_test_log.txt": {
+      "sha256": "94ccd747e266177180c903117df5cd6f357386005e74a005a775cd28c5b3ee1b",
+      "size": 38
+    },
+    "trae_report_snippet_260213_003.txt": {
+      "sha256": "5cbe0bd51047a633e1ffc0990aa3837fa0df45f268c5e61402243b74b6cdb6cd",
+      "size": 214
+    },
+    "ci_parity_260213_003.json": {
+      "sha256": "0198616f5ac7fcda7f12fdebec53f02bd2c608dd7ebcc661b16254b6e743540e",
+      "size": 2056
+    }
+  },
+  "generated_at": "2026-02-13T04:39:25.609Z"
+}

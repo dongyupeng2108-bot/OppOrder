@@ -1,0 +1,21 @@
+TraeTask_M5_260213_003_NewsPull_Pagination_Idempotency
+
+STATUS: PASS
+GATE_LIGHT_EXIT=0
+
+[Healthcheck]
+- root: HTTP 200 OK
+- pairs: HTTP 200 OK
+
+[Verification]
+- API /news/pull supports since_id pagination.
+- Tests passed: 260213_003_test_log.txt
+- Pagination Logic:
+  - Fetched items newer than since_id correctly.
+  - Limit clamp verified.
+  - Idempotency via INSERT OR IGNORE confirmed.
+
+[Evidence]
+- rules/task-reports/2026-02/260213_003_healthcheck_53122_root.txt
+- rules/task-reports/2026-02/260213_003_healthcheck_53122_pairs.txt
+- rules/task-reports/2026-02/260213_003_test_log.txt
