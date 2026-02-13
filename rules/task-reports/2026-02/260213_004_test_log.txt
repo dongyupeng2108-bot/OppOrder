@@ -1,0 +1,8 @@
+Starting News Provider Tests...
+[PASS] Healthcheck /
+[PASS] Healthcheck /pairs
+[PASS] Default Pull (Mock, Limit 5)
+[PASS] Idempotency (Deterministic)
+[PASS] Pagination (since_id)
+[PASS] Boundary Tests (Clamp)
+All Tests Passed!

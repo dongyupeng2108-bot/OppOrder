@@ -1,0 +1,54 @@
+{
+  "task_id": "260213_004",
+  "files": [
+    {
+      "path": "scripts/postflight_validate_envelope.mjs",
+      "sha256": "a132cef78e611e6650ae4b52692268914af4b53886f8a8317157b959e42aaedb",
+      "sha256_short": "a132cef7",
+      "size": 41591
+    },
+    {
+      "path": "notify_260213_004.txt",
+      "sha256": "2d52dfbcd25b653fe11aafc03ebb4c1a0c5d6cc4aa812cce0324179f18d1924e",
+      "sha256_short": "2d52dfbc",
+      "size": 732
+    },
+    {
+      "path": "result_260213_004.json",
+      "sha256": "dada6ceb835c9d91cf27bf4dd4bd962a821bb8fb6d4650af5417fe671eaf112c",
+      "sha256_short": "dada6ceb",
+      "size": 552
+    },
+    {
+      "path": "260213_004_healthcheck_53122_root.txt",
+      "sha256": "d094d761c3bbb4bfa69b6bfe976f07436d749da9bf81709636ff5ef98e9e1fd1",
+      "sha256_short": "d094d761",
+      "size": 152
+    },
+    {
+      "path": "260213_004_healthcheck_53122_pairs.txt",
+      "sha256": "90cc3a15d6bbf2323ed31da4fa70941e044c52db0d913dde2caf6c0f3c333d5b",
+      "sha256_short": "90cc3a15",
+      "size": 152
+    },
+    {
+      "path": "260213_004_test_log.txt",
+      "sha256": "db0c5afdf7b23ad5f7a1d3c955c81024a2bdc288c453f5e7d6b4dc7b9f1fbcc2",
+      "sha256_short": "db0c5afd",
+      "size": 227
+    },
+    {
+      "path": "trae_report_snippet_260213_004.txt",
+      "sha256": "d2ce8ab484d031ff25d143f98a5c8baf3b1a26ab93c20be438c086fa1aebe462",
+      "sha256_short": "d2ce8ab4",
+      "size": 1799
+    },
+    {
+      "path": "ci_parity_260213_004.json",
+      "sha256": "b894e7b7ce9a69a97e03fb1e3f2cf2911181db9f8594c5224a398d2f65a696e0",
+      "sha256_short": "b894e7b7",
+      "size": 2493
+    }
+  ],
+  "generated_at": "2026-02-13T15:01:11.399Z"
+}

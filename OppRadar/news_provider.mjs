@@ -34,7 +34,7 @@ class MockNewsProvider extends NewsProvider {
                 source: 'Mock Source',
                 url: `http://mock.com/news/${id}`,
                 published_at: new Date(baseTime + i * 1000).toISOString(),
-                fetched_at: new Date().toISOString(),
+                fetched_at: new Date(baseTime + i * 1000 + 100).toISOString(), // Deterministic fetch time
                 title: `Mock News Title ${id}`,
                 snippet: `This is a deterministic mock news snippet for item ${id}.`,
                 raw_hash: crypto.createHash('md5').update(`mock-${id}`).digest('hex'),

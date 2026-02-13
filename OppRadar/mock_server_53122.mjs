@@ -899,7 +899,7 @@ const server = http.createServer(async (req, res) => {
 
                 // Normalize Params for Echo
                 const requestEcho = {
-                    provider: params.provider || process.env.NEWS_PROVIDER || 'local',
+                    provider: params.provider || process.env.NEWS_PROVIDER || 'mock',
                     topic_key: params.topic_key || 'default',
                     query: params.query,
                     timespan: params.timespan,
@@ -975,7 +975,8 @@ const server = http.createServer(async (req, res) => {
                     newsItems = await newsProvider.fetchNews(topic_key, limit, { 
                         query: params.query, 
                         timespan: params.timespan,
-                        min_ts: min_ts
+                        min_ts: min_ts,
+                        since_id: requestEcho.since_id
                     });
                 } catch (e) {
                     console.error(`[NewsPull] Provider ${requestedProvider} failed: ${e.message}`);
