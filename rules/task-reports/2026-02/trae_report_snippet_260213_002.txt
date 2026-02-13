@@ -1,0 +1,42 @@
+BRANCH: docs/plan-sync-260213_002
+COMMIT: 081a2f344cbc4fb3e883cf79cb3523543cc2420d
+
+[Gate Light] Starting verification for task 260213_002...
+[Gate Light] Checking specific evidence files...
+[Gate Light] M5 PR1 LLM Router Contract verified.
+[Gate Light] Healthcheck (Root) verified.
+[Gate Light] Healthcheck (Pairs) verified.
+[Gate Light] GATE_LIGHT_EXIT=0
+[Postflight] PASS
+[Gate Light] PASS
+
+=== DOD_EVIDENCE_STDOUT ===
+DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260213_002_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260213_002_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_M5_PR1_LLM_JSON: rules/task-reports/2026-02/M5_PR1_llm_json_260213_002.txt => status=ok items=1 provider=mock model=mock-v1
+DOD_EVIDENCE_OPPS_PIPELINE_RUN: rules/task-reports/2026-02/mock_pipeline_260213_002.txt => run_id=run_237c7456 ok=0 failed=0
+DOD_EVIDENCE_OPPS_PIPELINE_TOP: rules/task-reports/2026-02/mock_pipeline_260213_002.txt => top_count=0 refs_run_id=true
+DOD_EVIDENCE_OPPS_RUNS_LIST: rules/task-reports/2026-02/mock_pipeline_260213_002.txt => contains_run_id=true
+DOD_EVIDENCE_OPPS_BY_RUN: rules/task-reports/2026-02/mock_pipeline_260213_002.txt => match_count=0 filter_run_id=run_237c7456
+
+=== CI_PARITY_PREVIEW ===
+Base: a91b239efca88e7e1692c637a9954fbfc09ea2dd
+Head: 081a2f344cbc4fb3e883cf79cb3523543cc2420d
+MergeBase: a91b239efca88e7e1692c637a9954fbfc09ea2dd
+Source: origin/main
+Scope: 20 files
+
+=== GIT_SCOPE_DIFF ===
+M       rules/rules/PROJECT_MASTER_PLAN.md
+A       rules/task-reports/2026-02/M5_PR1_llm_json_260213_002.txt
+A       rules/task-reports/2026-02/deliverables_index_260213_002.json
+A       rules/task-reports/2026-02/dod_stdout_260213_002.txt
+A       rules/task-reports/2026-02/gate_light_preview_260213_002.txt
+A       rules/task-reports/2026-02/generate_evidence_260213_002.js
+A       rules/task-reports/2026-02/notify_260213_002.txt
+A       rules/task-reports/2026-02/result_260213_002.json
+A       rules/task-reports/2026-02/trae_report_snippet_260213_002.txt
+
+=== GATE_LIGHT_PREVIEW ===
+[Gate Light] PASS
+GATE_LIGHT_EXIT=0
