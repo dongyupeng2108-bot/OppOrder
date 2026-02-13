@@ -1,6 +1,6 @@
 {
   "task_id": "260213_002",
-  "timestamp": "2026-02-13T03:41:46.921Z",
+  "timestamp": "2026-02-13T05:58:50.496Z",
   "valid": true,
   "errors": [],
   "checks": {
@@ -16,10 +16,10 @@
       "task_id": "260213_002",
       "status": "DONE",
       "gate_light_exit": 0,
-      "run_id": "run_8d2255ad",
+      "run_id": "run_6a44eb38",
       "summary": "Sync chat progress to PROJECT_MASTER_PLAN.md with all required evidence files",
       "report_file": "notify_260213_002.txt",
-      "report_sha256_short": "6790689d",
+      "report_sha256_short": "21f36225",
       "evidence": {
         "notify": "notify_260213_002.txt",
         "snippet": "trae_report_snippet_260213_002.txt"
@@ -34,10 +34,10 @@
           "DOD_EVIDENCE_M5_PR1_LLM_JSON: rules/task-reports/2026-02/M5_PR1_llm_json_260213_002.txt => status=ok items=1 provider=mock model=mock-v1"
         ],
         "pipeline_dummy": [
-          "DOD_EVIDENCE_OPPS_PIPELINE_RUN: rules/task-reports/2026-02/mock_pipeline.txt => run_id=run_8d2255ad ok=0 failed=0",
+          "DOD_EVIDENCE_OPPS_PIPELINE_RUN: rules/task-reports/2026-02/mock_pipeline.txt => run_id=run_6a44eb38 ok=0 failed=0",
           "DOD_EVIDENCE_OPPS_PIPELINE_TOP: rules/task-reports/2026-02/mock_pipeline.txt => top_count=0 refs_run_id=true",
           "DOD_EVIDENCE_OPPS_RUNS_LIST: rules/task-reports/2026-02/mock_pipeline.txt => contains_run_id=true",
-          "DOD_EVIDENCE_OPPS_BY_RUN: rules/task-reports/2026-02/mock_pipeline.txt => match_count=0 filter_run_id=run_8d2255ad"
+          "DOD_EVIDENCE_OPPS_BY_RUN: rules/task-reports/2026-02/mock_pipeline.txt => match_count=0 filter_run_id=run_6a44eb38"
         ]
       }
     }

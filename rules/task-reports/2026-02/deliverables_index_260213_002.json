@@ -3,27 +3,27 @@
     {
       "name": "notify_260213_002.txt",
       "size": 1546,
-      "sha256_short": "6790689d"
+      "sha256_short": "21f36225"
     },
     {
       "name": "result_260213_002.json",
       "size": 1385,
-      "sha256_short": "f2f8758c"
+      "sha256_short": "1350249a"
     },
     {
       "name": "trae_report_snippet_260213_002.txt",
-      "size": 2083,
-      "sha256_short": "e18bb248"
+      "size": 2084,
+      "sha256_short": "40c50fab"
     },
     {
       "name": "gate_light_preview_260213_002.txt",
-      "size": 2083,
-      "sha256_short": "e18bb248"
+      "size": 2084,
+      "sha256_short": "40c50fab"
     },
     {
       "name": "M5_PR1_llm_json_260213_002.txt",
       "size": 287,
-      "sha256_short": "b9d23802"
+      "sha256_short": "f7f42437"
     },
     {
       "name": "260213_002_healthcheck_53122_root.txt",
@@ -38,12 +38,22 @@
     {
       "name": "dod_stdout_260213_002.txt",
       "size": 833,
-      "sha256_short": "d0660de0"
+      "sha256_short": "603315cc"
     },
     {
       "name": "ui_copy_details_260213_002.json",
       "size": 84,
       "sha256_short": "a0f6af9c"
+    },
+    {
+      "name": "ci_parity_260213_002.json",
+      "size": 1378,
+      "sha256_short": "1a560f24"
+    },
+    {
+      "name": "mock_pipeline.txt",
+      "size": 124,
+      "sha256_short": "a397b030"
     }
   ]
 }
