@@ -33,10 +33,10 @@ const dodLlm = `DOD_EVIDENCE_M5_PR1_LLM_JSON: rules/task-reports/2026-02/M5_PR1_
 
 // Dummy Evidence for Legacy Pipeline Checks (Required for task_id >= 260209_006/008)
 // This task is Docs Sync, but Gate Light enforces these checks based on ID range.
-const dodPipelineRun = `DOD_EVIDENCE_OPPS_PIPELINE_RUN: rules/task-reports/2026-02/mock_pipeline.txt => run_id=${runId} ok=0 failed=0`;
-const dodPipelineTop = `DOD_EVIDENCE_OPPS_PIPELINE_TOP: rules/task-reports/2026-02/mock_pipeline.txt => top_count=0 refs_run_id=true`;
-const dodRunsList = `DOD_EVIDENCE_OPPS_RUNS_LIST: rules/task-reports/2026-02/mock_pipeline.txt => contains_run_id=true`;
-const dodByRun = `DOD_EVIDENCE_OPPS_BY_RUN: rules/task-reports/2026-02/mock_pipeline.txt => match_count=0 filter_run_id=${runId}`;
+const dodPipelineRun = `DOD_EVIDENCE_OPPS_PIPELINE_RUN: rules/task-reports/2026-02/mock_pipeline_${taskId}.txt => run_id=${runId} ok=0 failed=0`;
+const dodPipelineTop = `DOD_EVIDENCE_OPPS_PIPELINE_TOP: rules/task-reports/2026-02/mock_pipeline_${taskId}.txt => top_count=0 refs_run_id=true`;
+const dodRunsList = `DOD_EVIDENCE_OPPS_RUNS_LIST: rules/task-reports/2026-02/mock_pipeline_${taskId}.txt => contains_run_id=true`;
+const dodByRun = `DOD_EVIDENCE_OPPS_BY_RUN: rules/task-reports/2026-02/mock_pipeline_${taskId}.txt => match_count=0 filter_run_id=${runId}`;
 
 const notifyContent = `Trae Task Report
 Task ID: ${taskId}
@@ -175,7 +175,7 @@ try {
 }
 
 // Ensure mock_pipeline.txt exists (referenced in notify)
-const mockPipelinePath = path.join(reportDir, 'mock_pipeline.txt');
+const mockPipelinePath = path.join(reportDir, `mock_pipeline_${taskId}.txt`);
 if (!fs.existsSync(mockPipelinePath)) {
     fs.writeFileSync(mockPipelinePath, `run_id=${runId}\nok=0\nfailed=0\ntop_count=0\nrefs_run_id=true\ncontains_run_id=true\nmatch_count=0\nfilter_run_id=${runId}`);
 }
@@ -250,7 +250,7 @@ const filesToIndex = [
     `dod_stdout_${taskId}.txt`,
     `ui_copy_details_${taskId}.json`, // Added business evidence
     `ci_parity_${taskId}.json`,
-    `mock_pipeline.txt`
+    `mock_pipeline_${taskId}.txt`
 ];
 
 const deliverables = { files: [] }; // Fixed structure to files array
