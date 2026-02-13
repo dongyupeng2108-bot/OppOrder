@@ -1,0 +1,12 @@
+{
+  "task_id": "260213_002",
+  "base": "eb829b45e8ac9ad4d661f544a228f33f99576566",
+  "head": "47f721a6197cc74f66d4f60a4d0b75911121f71f",
+  "merge_base": "eb829b45e8ac9ad4d661f544a228f33f99576566",
+  "scope_files": [
+    "rules/LATEST.json",
+    "rules/rules/PROJECT_MASTER_PLAN.md"
+  ],
+  "scope_count": 2,
+  "generated_at": "2026-02-12T21:24:45.839Z"
+}

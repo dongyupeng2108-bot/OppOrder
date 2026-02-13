@@ -173,6 +173,7 @@
 ## Progress Log / Changelog (进度日志)
 | Task ID | Summary | Status | Key Evidence | Impact |
 | :--- | :--- | :--- | :--- | :--- |
+| **260213_002** | Docs: Sync Chat Progress into PROJECT_MASTER_PLAN | **PASS** (EXIT=0) | `rules/task-reports/2026-02/notify_260213_002.txt` | 确保 Master Plan 与实际开发进度对齐 |
 | **260212_001** | News Pull Endpoint (MinSpec/Tests) + 脚本降级搬迁 | **PASS** (EXIT=0) | `rules/task-reports/2026-02/notify_260212_001.txt` | 确立了“辅助脚本不进 scripts 目录”的最小化原则 |
 | **260211_007** | Two-Pass Evidence Truth + No Auto-Merge | **PASS** (EXIT=0) | `rules/task-reports/2026-02/notify_260211_007.txt` | 强制执行“双通道验证”与“禁止自动合并”规则 |
 | **260211_006** | Historical Evidence Retrofit + Deletion Audit + CI Parity | **PASS** (EXIT=0) | `rules/task-reports/2026-02/notify_260211_006.txt` | 确立了历史证据补齐的收敛方式与防篡改机制 |

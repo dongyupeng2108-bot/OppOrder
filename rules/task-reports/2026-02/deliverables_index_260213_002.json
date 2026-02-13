@@ -1,0 +1,49 @@
+{
+  "files": [
+    {
+      "name": "notify_260213_002.txt",
+      "size": 1546,
+      "sha256_short": "6790689d"
+    },
+    {
+      "name": "result_260213_002.json",
+      "size": 1385,
+      "sha256_short": "f2f8758c"
+    },
+    {
+      "name": "trae_report_snippet_260213_002.txt",
+      "size": 2083,
+      "sha256_short": "e18bb248"
+    },
+    {
+      "name": "gate_light_preview_260213_002.txt",
+      "size": 2083,
+      "sha256_short": "e18bb248"
+    },
+    {
+      "name": "M5_PR1_llm_json_260213_002.txt",
+      "size": 287,
+      "sha256_short": "b9d23802"
+    },
+    {
+      "name": "260213_002_healthcheck_53122_root.txt",
+      "size": 159,
+      "sha256_short": "aa7a4574"
+    },
+    {
+      "name": "260213_002_healthcheck_53122_pairs.txt",
+      "size": 159,
+      "sha256_short": "81a7083d"
+    },
+    {
+      "name": "dod_stdout_260213_002.txt",
+      "size": 833,
+      "sha256_short": "d0660de0"
+    },
+    {
+      "name": "ui_copy_details_260213_002.json",
+      "size": 84,
+      "sha256_short": "a0f6af9c"
+    }
+  ]
+}

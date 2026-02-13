@@ -1,0 +1,8 @@
+=== DOD_EVIDENCE_STDOUT ===
+DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260213_002_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260213_002_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_M5_PR1_LLM_JSON: rules/task-reports/2026-02/M5_PR1_llm_json_260213_002.txt => status=ok items=1 provider=mock model=mock-v1
+DOD_EVIDENCE_OPPS_PIPELINE_RUN: rules/task-reports/2026-02/mock_pipeline.txt => run_id=run_8d2255ad ok=0 failed=0
+DOD_EVIDENCE_OPPS_PIPELINE_TOP: rules/task-reports/2026-02/mock_pipeline.txt => top_count=0 refs_run_id=true
+DOD_EVIDENCE_OPPS_RUNS_LIST: rules/task-reports/2026-02/mock_pipeline.txt => contains_run_id=true
+DOD_EVIDENCE_OPPS_BY_RUN: rules/task-reports/2026-02/mock_pipeline.txt => match_count=0 filter_run_id=run_8d2255ad

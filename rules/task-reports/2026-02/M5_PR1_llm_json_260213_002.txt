@@ -1,0 +1,16 @@
+{
+  "status": "ok",
+  "run_id": "run_8d2255ad",
+  "provider_used": "mock",
+  "model_used": "mock-v1",
+  "items": [
+    {
+      "opp_id": "opp-123",
+      "llm_json": {
+        "score": 0.85,
+        "summary": "Test summary"
+      }
+    }
+  ]
+}
+DOD_EVIDENCE_M5_PR1_LLM_JSON: run_8d2255ad
