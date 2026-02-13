@@ -1,7 +1,7 @@
 {
   "task_id": "260214_005",
   "base": "82fa4230e2575b4abd1668e81f78642a53632c20",
-  "head": "7d638a169df010d35a1d8a9dad19d9d6bd2421a8",
+  "head": "0264a60e2ff82ba9b1e4ac332c2d1e8d4cf3359b",
   "merge_base": "82fa4230e2575b4abd1668e81f78642a53632c20",
   "scope_files": [
     "OppRadar/mock_server_53122.mjs",
@@ -16,8 +16,9 @@
     "rules/task-reports/2026-02/notify_260214_005.txt",
     "rules/task-reports/2026-02/result_260214_005.json",
     "rules/task-reports/2026-02/trae_report_snippet_260214_005.txt",
+    "scripts/mock_server.mjs",
     "scripts/test_news_store_260214_005.mjs"
   ],
-  "scope_count": 13,
-  "generated_at": "2026-02-13T22:10:56.595Z"
+  "scope_count": 14,
+  "generated_at": "2026-02-13T23:14:56.024Z"
 }
