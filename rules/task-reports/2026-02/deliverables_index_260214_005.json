@@ -1,12 +1,31 @@
 {
   "task_id": "260214_005",
   "files": [
-    "result_260214_005.json",
-    "notify_260214_005.txt",
-    "trae_report_snippet_260214_005.txt",
-    "260214_005_healthcheck_53122_root.txt",
-    "260214_005_healthcheck_53122_pairs.txt",
-    "260214_005_test_log.txt",
-    "ci_parity_260214_005.json"
-  ]
+    {
+      "name": "notify_260214_005.txt",
+      "size": 1560,
+      "sha256_short": "d0cfc731"
+    },
+    {
+      "name": "result_260214_005.json",
+      "size": 815,
+      "sha256_short": "1a38c952"
+    },
+    {
+      "name": "260214_005_healthcheck_53122_root.txt",
+      "size": 173,
+      "sha256_short": "716357d9"
+    },
+    {
+      "name": "260214_005_healthcheck_53122_pairs.txt",
+      "size": 178,
+      "sha256_short": "769b8183"
+    },
+    {
+      "name": "manual_verification_260214_005.json",
+      "size": 388,
+      "sha256_short": "ab2b8bcb"
+    }
+  ],
+  "generated_at": "2026-02-13T23:17:58.679Z"
 }

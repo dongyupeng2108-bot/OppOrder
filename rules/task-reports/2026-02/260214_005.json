@@ -1,0 +1,47 @@
+{
+  "task_id": "260214_005",
+  "timestamp": "2026-02-13T23:20:13.355Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260214_005",
+      "status": "DONE",
+      "summary": "Implemented NewsStore with sync/list methods and mock server integration.",
+      "run_id": "run_2026-02-13T23-17-58-677Z",
+      "artifacts": [
+        "notify_260214_005.txt",
+        "260214_005_healthcheck_53122_root.txt",
+        "260214_005_healthcheck_53122_pairs.txt",
+        "manual_verification_260214_005.json"
+      ],
+      "metrics": {
+        "tests_passed": true,
+        "server_log_len": 34
+      },
+      "dod_evidence": {
+        "gate_light_exit": 0,
+        "healthcheck": [
+          {
+            "path": "260214_005_healthcheck_53122_root.txt",
+            "status": "HTTP/1.1 200 OK"
+          },
+          {
+            "path": "260214_005_healthcheck_53122_pairs.txt",
+            "status": "HTTP/1.1 200 OK"
+          }
+        ]
+      },
+      "report_file": "notify_260214_005.txt",
+      "report_sha256_short": "d0cfc731"
+    }
+  }
+}

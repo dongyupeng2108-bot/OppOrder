@@ -1,42 +1,3 @@
-=== TRAE_REPORT_SNIPPET ===
-
-BRANCH: feat/news-store-list-260214_005
-COMMIT: b1f0c11
-
-=== GIT_SCOPE_DIFF ===
-M	OppRadar/mock_server_53122.mjs
-A	OppRadar/news_store.mjs
-M	rules/LATEST.json
-A	rules/task-reports/2026-02/260214_005_healthcheck_53122_pairs.txt
-A	rules/task-reports/2026-02/260214_005_healthcheck_53122_root.txt
-A	rules/task-reports/2026-02/260214_005_test_log.txt
-A	rules/task-reports/2026-02/ci_parity_260214_005.json
-A	rules/task-reports/2026-02/deliverables_index_260214_005.json
-A	rules/task-reports/2026-02/generate_evidence_260214_005.js
-A	rules/task-reports/2026-02/notify_260214_005.txt
-A	rules/task-reports/2026-02/result_260214_005.json
-A	rules/task-reports/2026-02/trae_report_snippet_260214_005.txt
-M	scripts/mock_server.mjs
-A	scripts/test_news_store_260214_005.mjs
-
-(DoD Evidence)
-DOD_EVIDENCE_HEALTHCHECK_ROOT: 260214_005_healthcheck_53122_root.txt => HTTP/1.1 200 OK
-DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260214_005_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
-
-=== CI_PARITY_PREVIEW ===
-Base: 82fa423
-Head: 0264a60
-MergeBase: 82fa423
-Source: JSON (Evidence-as-Code)
-Scope: 14 files
-Files (Top 3):
-  - OppRadar/mock_server_53122.mjs
-  - OppRadar/news_store.mjs
-  - rules/LATEST.json
-  ... (11 more)
-=========================
-
-=== GATE_LIGHT_PREVIEW ===
 === GATE_LIGHT_PREVIEW ===
 [Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
 [Gate Light] Attempting to detect task_id from git diff...
@@ -95,5 +56,4 @@ task_id 260214_005 --result_dir rules\task-reports\2026-02 --report_dir rules\ta
 [Postflight] Envelope: rules\task-reports\envelopes\260214_005.envelope.json
 [Postflight] PASS
 [Gate Light] PASS
-GATE_LIGHT_EXIT=0
 GATE_LIGHT_EXIT=0
