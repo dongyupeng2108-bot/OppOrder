@@ -7,6 +7,9 @@ GATE_LIGHT_EXIT=0
 - root: HTTP 200 OK
 - pairs: HTTP 200 OK
 
+DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260213_003_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260213_003_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+
 [Verification]
 - API /news/pull supports since_id pagination.
 - Tests passed: 260213_003_test_log.txt
