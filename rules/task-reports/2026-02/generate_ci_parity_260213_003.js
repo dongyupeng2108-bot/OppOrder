@@ -28,7 +28,8 @@ try {
         `rules/task-reports/2026-02/trae_report_snippet_${taskId}.txt`,
         `rules/task-reports/2026-02/deliverables_index_${taskId}.json`,
         `rules/task-reports/2026-02/envelope_${taskId}.json`,
-        `rules/task-reports/2026-02/ci_parity_${taskId}.json` // Itself
+        `rules/task-reports/2026-02/ci_parity_${taskId}.json`,
+        `rules/task-reports/2026-02/ui_copy_details_${taskId}.json`
     ];
 
     // Combine and Deduplicate
