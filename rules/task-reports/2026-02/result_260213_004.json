@@ -9,6 +9,12 @@
     "rules/task-reports/2026-02/ci_parity_260213_004.json"
   ],
   "gate_light_exit": 0,
+  "dod_evidence": {
+    "healthcheck": {
+      "root": "rules/task-reports/2026-02/260213_004_healthcheck_53122_root.txt",
+      "pairs": "rules/task-reports/2026-02/260213_004_healthcheck_53122_pairs.txt"
+    }
+  },
   "lineage": {
     "type": "standard",
     "base": "origin/main",
