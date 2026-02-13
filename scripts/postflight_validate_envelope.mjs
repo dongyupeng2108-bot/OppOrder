@@ -661,7 +661,7 @@ async function validate(resultDir, taskId, report) {
             const n = f.name || f.path;
             return n.match(/ui_copy_details.*\.json/) || 
                    n.match(/sse_capture.*\.out/) || 
-                   n === 'manual_verification.json';
+                   n.match(/manual_verification.*\.json/);
         });
         
         if (evidenceFiles.length === 0) {

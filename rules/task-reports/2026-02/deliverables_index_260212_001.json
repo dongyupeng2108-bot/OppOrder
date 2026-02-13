@@ -1,0 +1,60 @@
+{
+  "task_id": "260212_001",
+  "files": [
+    {
+      "name": "result_260212_001.json",
+      "size": 1092,
+      "sha256_short": "6021450b"
+    },
+    {
+      "name": "notify_260212_001.txt",
+      "size": 2144,
+      "sha256_short": "86727227"
+    },
+    {
+      "name": "trae_report_snippet_260212_001.txt",
+      "size": 1047,
+      "sha256_short": "f97dfcb1"
+    },
+    {
+      "name": "test_260212_001.log",
+      "size": 464,
+      "sha256_short": "ccbfe9c9"
+    },
+    {
+      "name": "260212_001_healthcheck_53122_root.txt",
+      "size": 428,
+      "sha256_short": "dbcceba4"
+    },
+    {
+      "name": "260212_001_healthcheck_53122_pairs.txt",
+      "size": 259,
+      "sha256_short": "90bc95a7"
+    },
+    {
+      "name": "M5_PR1_llm_json_260212_001.txt",
+      "size": 256,
+      "sha256_short": "d065f1e3"
+    },
+    {
+      "name": "manual_verification_260212_001.json",
+      "size": 122,
+      "sha256_short": "9f78ae19"
+    },
+    {
+      "name": "dod_stdout_260212_001.txt",
+      "size": 676,
+      "sha256_short": "c7b12acd"
+    },
+    {
+      "name": "M4_PR2_concurrent_log_260212_001.txt",
+      "size": 37,
+      "sha256_short": "b27f554a"
+    },
+    {
+      "name": "spec_260212_001.md",
+      "size": 664,
+      "sha256_short": "6386d537"
+    }
+  ]
+}

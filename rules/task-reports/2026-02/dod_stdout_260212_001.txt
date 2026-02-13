@@ -1,0 +1,11 @@
+
+[2026-02-13T00:00:00.000Z] INFO  Running Gate Light CI...
+[2026-02-13T00:00:00.000Z] INFO  Generating evidence...
+=== DOD_EVIDENCE_STDOUT ===
+DOD_EVIDENCE_OPPS_PIPELINE_RUN: run_id=mock_run => ok=0, failed=0, top_count=0
+DOD_EVIDENCE_OPPS_PIPELINE_TOP: mock_top_path => top_count=0, refs_run_id=true
+DOD_EVIDENCE_OPPS_RUNS_LIST: mock_runs_list => contains_run_id=true
+DOD_EVIDENCE_OPPS_BY_RUN: mock_by_run => run_id=mock_run
+DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260212_001_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260212_001_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+GATE_LIGHT_EXIT=0

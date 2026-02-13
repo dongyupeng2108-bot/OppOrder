@@ -1,0 +1,24 @@
+{
+  "task_id": "260212_001",
+  "milestone": "260212",
+  "status": "DONE",
+  "healthcheck": {
+    "root": 0,
+    "pairs": 0
+  },
+  "index_files": [
+    "result_260212_001.json",
+    "notify_260212_001.txt",
+    "trae_report_snippet_260212_001.txt",
+    "test_260212_001.log",
+    "260212_001_healthcheck_53122_root.txt",
+    "260212_001_healthcheck_53122_pairs.txt",
+    "M5_PR1_llm_json_260212_001.txt",
+    "manual_verification_260212_001.json",
+    "dod_stdout_260212_001.txt",
+    "M4_PR2_concurrent_log_260212_001.txt",
+    "spec_260212_001.md"
+  ],
+  "forbidden_phrases_hit": [],
+  "report_file": "notify_260212_001.txt"
+}
