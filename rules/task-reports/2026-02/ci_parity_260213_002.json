@@ -1,11 +1,11 @@
 {
   "task_id": "260213_002",
   "base": "a91b239efca88e7e1692c637a9954fbfc09ea2dd",
-  "head": "1ff5558395ae9d57e1b1f5cf4aa0dede6c296dd7",
+  "head": "081a2f344cbc4fb3e883cf79cb3523543cc2420d",
   "merge_base": "a91b239efca88e7e1692c637a9954fbfc09ea2dd",
   "scope_files": [
     ".trae/rules/rules.md",
-    "ci_parity_260213_002.json",
+    "gate_light_preview_260211_007.txt",
     "rules/LATEST.json",
     "rules/rules/PROJECT_MASTER_PLAN.md",
     "rules/task-reports/2026-02/260213_002.json",
@@ -26,5 +26,5 @@
     "rules/task-reports/envelopes/260213_002.envelope.json"
   ],
   "scope_count": 20,
-  "generated_at": "2026-02-13T07:49:58.278Z"
+  "generated_at": "2026-02-13T07:55:38.358Z"
 }
