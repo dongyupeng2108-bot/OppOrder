@@ -1,0 +1,21 @@
+{
+  "task_id": "260213_004",
+  "milestone": "260213",
+  "status": "FAILED",
+  "healthcheck": {
+    "root": 0,
+    "pairs": 0
+  },
+  "index_files": [
+    "scripts/postflight_validate_envelope.mjs",
+    "notify_260213_004.txt",
+    "result_260213_004.json",
+    "260213_004_healthcheck_53122_root.txt",
+    "260213_004_healthcheck_53122_pairs.txt",
+    "260213_004_test_log.txt",
+    "trae_report_snippet_260213_004.txt",
+    "ci_parity_260213_004.json"
+  ],
+  "forbidden_phrases_hit": [],
+  "report_file": null
+}
