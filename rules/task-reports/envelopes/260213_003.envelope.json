@@ -7,6 +7,7 @@
     "pairs": 0
   },
   "index_files": [
+    "scripts/postflight_validate_envelope.mjs",
     "notify_260213_003.txt",
     "result_260213_003.json",
     "260213_003_healthcheck_53122_root.txt",

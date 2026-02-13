@@ -22,6 +22,24 @@ const index = {
     generated_at: new Date().toISOString()
 };
 
+// Special handling for postflight script (required by v3.9 Gate)
+const postflightScript = 'scripts/postflight_validate_envelope.mjs';
+const postflightPath = path.resolve(baseDir, '../../../', postflightScript);
+
+if (fs.existsSync(postflightPath)) {
+    const content = fs.readFileSync(postflightPath);
+    const hash = crypto.createHash('sha256').update(content).digest('hex');
+    const size = fs.statSync(postflightPath).size;
+    index.files.push({
+        path: postflightScript,
+        sha256: hash,
+        sha256_short: hash.substring(0, 8),
+        size: size
+    });
+} else {
+    console.warn(`Postflight script not found: ${postflightPath}`);
+}
+
 files.forEach(file => {
     const filePath = path.join(baseDir, file);
     if (fs.existsSync(filePath)) {

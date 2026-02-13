@@ -1,10 +1,10 @@
 TraeTask_M5_260213_003_NewsPull_Pagination_Idempotency
 BRANCH: feat/news-pull-pagination-260213_003-clean
-COMMIT: 0c4219bc72a283b0eed2a6d81980c690ad42ae66
+COMMIT: cb0aae5c9dcd90b9bcfc51e34088c9662e9fc4df
 
 === CI_PARITY_PREVIEW ===
 Base: 46cb5e3edd2182b56e753adfdddbcf90c7dae7e0
-Head: 0c4219bc72a283b0eed2a6d81980c690ad42ae66
+Head: cb0aae5c9dcd90b9bcfc51e34088c9662e9fc4df
 MergeBase: 46cb5e3edd2182b56e753adfdddbcf90c7dae7e0
 Source: rules/task-reports/2026-02/ci_parity_260213_003.json
 Scope: 24 files (See JSON)
@@ -21,7 +21,7 @@ Scope: 24 files (See JSON)
 [Gate Light] Doc path standards verified.
 [Gate Light] Checking for legacy doc path references...
 [CheckDocPathRefs] Scanning for legacy doc path references...
-[CheckDocPathRefs] Scan completed in 15ms.
+[CheckDocPathRefs] Scan completed in 16ms.
 [CheckDocPathRefs] PASS: No legacy doc path references found.
 [Gate Light] Checking for global healthcheck artifacts...
 [Gate Light] Global Artifact Guard verified.
@@ -95,11 +95,11 @@ OppRadar/app.js                                    |   7 +-
 Starting News Pagination Tests...
 [PASS] Healthcheck /pairs 200
 [PASS] Pull Limit 2 OK. Fetched: 2
-[INFO] Newest ID: 1770973038586_402femz9z
-[INFO] Oldest ID: 1770973038587_oixrox1ti
-[INFO] Latest News ID (Server): 1770973038587_oixrox1ti
-[TEST] Pagination: since_id=1770973038587_oixrox1ti
-[INFO] Fetched 5 items since 1770973038587_oixrox1ti
+[INFO] Newest ID: 1770976754021_6uu5fok7r
+[INFO] Oldest ID: 1770976754021_jkehrjxyn
+[INFO] Latest News ID (Server): 1770976754021_jkehrjxyn
+[TEST] Pagination: since_id=1770976754021_jkehrjxyn
+[INFO] Fetched 5 items since 1770976754021_jkehrjxyn
 [PASS] All items are newer than since_id
 [PASS] GDELT Limit Clamp 60 -> 400 OK
 All Tests Passed
