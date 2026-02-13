@@ -15,7 +15,9 @@
     "260213_002_healthcheck_53122_root.txt",
     "260213_002_healthcheck_53122_pairs.txt",
     "dod_stdout_260213_002.txt",
-    "ui_copy_details_260213_002.json"
+    "ui_copy_details_260213_002.json",
+    "ci_parity_260213_002.json",
+    "mock_pipeline_260213_002.txt"
   ],
   "forbidden_phrases_hit": [],
   "report_file": "notify_260213_002.txt"
