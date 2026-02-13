@@ -53,6 +53,14 @@ const parityFile = `rules/task-reports/2026-02/ci_parity_${taskId}.json`;
 const healthcheckRoot = `rules/task-reports/2026-02/${taskId}_healthcheck_53122_root.txt`;
 const healthcheckPairs = `rules/task-reports/2026-02/${taskId}_healthcheck_53122_pairs.txt`;
 
+// Read parity data
+let parityData = {};
+try {
+    parityData = JSON.parse(fs.readFileSync(path.join(rootDir, parityFile), 'utf8'));
+} catch (e) {
+    console.warn('Failed to read parity file', e);
+}
+
 const snippetContent = `Trae Task Report Snippet
 ------------------------
 Task ID: ${taskId}
@@ -73,7 +81,11 @@ DOD_EVIDENCE_HEALTHCHECK_ROOT: ${healthcheckRoot} => HTTP/1.1 200 OK
 DOD_EVIDENCE_HEALTHCHECK_PAIRS: ${healthcheckPairs} => HTTP/1.1 200 OK
 
 === CI_PARITY_PREVIEW ===
-(See ${parityFile})
+Base: ${parityData.base || 'unknown'}
+Head: ${parityData.head || 'unknown'}
+MergeBase: ${parityData.merge_base || 'unknown'}
+Source: origin/main
+Scope: ${parityData.scope_count || 0} files
 
 GATE_LIGHT_EXIT=0
 `;
