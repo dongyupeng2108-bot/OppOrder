@@ -14,3 +14,8 @@ EVIDENCE:
 - CI Parity: rules/task-reports/2026-02/ci_parity_260213_004.json
 - Snippet: rules/task-reports/2026-02/trae_report_snippet_260213_004.txt
 - Index: rules/task-reports/2026-02/deliverables_index_260213_004.json
+
+=== DOD_EVIDENCE_STDOUT ===
+DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260213_004_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260213_004_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+TRAE_REPORT_SNIPPET: rules/task-reports/2026-02/trae_report_snippet_260213_004.txt
