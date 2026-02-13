@@ -1,49 +1,27 @@
 Trae Task Report Snippet
 ------------------------
 Task ID: 260213_004
-Date: 2026-02-13T15:14:55.638Z
+Date: 2026-02-13T15:18:03.743Z
 
 BRANCH: feat/news-pull-provider-260213_004
-COMMIT: 2d88da96b9f91a3619759a32acfc6110d1bef2f1
+COMMIT: d7cf2cda2272d2e2b14ff01950a8bfdcca7d92b9
 
 GIT_SCOPE_DIFF:
-OppRadar/app.js
-OppRadar/contracts/news_pull_response.schema.json
 OppRadar/mock_server_53122.mjs
 OppRadar/news_provider.mjs
 rules/LATEST.json
-rules/rules/PROJECT_MASTER_PLAN.md
-rules/task-reports/2026-02/.gitattributes
-rules/task-reports/2026-02/260213_003.json
-rules/task-reports/2026-02/260213_003_healthcheck_53122_pairs.txt
-rules/task-reports/2026-02/260213_003_healthcheck_53122_root.txt
-rules/task-reports/2026-02/260213_003_test_log.txt
 rules/task-reports/2026-02/260213_004_healthcheck_53122_pairs.txt
 rules/task-reports/2026-02/260213_004_healthcheck_53122_root.txt
 rules/task-reports/2026-02/260213_004_test_log.txt
-rules/task-reports/2026-02/ci_parity_260213_003.json
 rules/task-reports/2026-02/ci_parity_260213_004.json
-rules/task-reports/2026-02/deliverables_index_260213_003.json
 rules/task-reports/2026-02/deliverables_index_260213_004.json
-rules/task-reports/2026-02/envelope_260213_003.json
 rules/task-reports/2026-02/envelope_260213_004.json
-rules/task-reports/2026-02/generate_ci_parity_260213_003.js
 rules/task-reports/2026-02/generate_ci_parity_260213_004.js
-rules/task-reports/2026-02/generate_evidence_260213_003.js
 rules/task-reports/2026-02/generate_evidence_260213_004.js
-rules/task-reports/2026-02/generate_index_260213_003.js
 rules/task-reports/2026-02/generate_index_260213_004.js
-rules/task-reports/2026-02/manual_verification_260213_003.json
-rules/task-reports/2026-02/notify_260213_003.txt
 rules/task-reports/2026-02/notify_260213_004.txt
-rules/task-reports/2026-02/result_260213_003.json
 rules/task-reports/2026-02/result_260213_004.json
-rules/task-reports/2026-02/trae_report_snippet_260213_003.txt
 rules/task-reports/2026-02/trae_report_snippet_260213_004.txt
-rules/task-reports/2026-02/ui_copy_details_260213_003.json
-rules/task-reports/envelopes/260213_003.envelope.json
-scripts/gate_light_ci.mjs
-scripts/test_news_pagination_260213_003.mjs
 scripts/test_news_provider_260213_004.mjs
 
 === GATE_LIGHT_PREVIEW ===
@@ -55,10 +33,10 @@ DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260213_004_healthcheck
 DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260213_004_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
 
 === CI_PARITY_PREVIEW ===
-Base: 46cb5e3edd2182b56e753adfdddbcf90c7dae7e0
-Head: 2d88da96b9f91a3619759a32acfc6110d1bef2f1
-MergeBase: 46cb5e3edd2182b56e753adfdddbcf90c7dae7e0
+Base: 820b3d156094c82bfdf961fbccbc5b44d1d2648c
+Head: d7cf2cda2272d2e2b14ff01950a8bfdcca7d92b9
+MergeBase: b19d3064a56e91b9a05b27e21987f6cbbc5d4653
 Source: origin/main
-Scope: 39 files
+Scope: 17 files
 
 GATE_LIGHT_EXIT=0
