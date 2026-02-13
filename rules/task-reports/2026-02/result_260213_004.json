@@ -1,0 +1,27 @@
+{
+  "task_id": "260213_004",
+  "status": "DONE",
+  "summary": "Implemented NewsProvider abstraction and Deterministic Mock Provider.",
+  "report_file": "notify_260213_004.txt",
+  "report_sha256_short": "22360c41",
+  "artifacts": [
+    "rules/task-reports/2026-02/260213_004_test_log.txt",
+    "rules/task-reports/2026-02/260213_004_healthcheck_53122_root.txt",
+    "rules/task-reports/2026-02/260213_004_healthcheck_53122_pairs.txt",
+    "rules/task-reports/2026-02/trae_report_snippet_260213_004.txt",
+    "rules/task-reports/2026-02/ci_parity_260213_004.json"
+  ],
+  "gate_light_exit": 0,
+  "dod_evidence": {
+    "gate_light_exit": 0,
+    "healthcheck": [
+      "rules/task-reports/2026-02/260213_004_healthcheck_53122_root.txt",
+      "rules/task-reports/2026-02/260213_004_healthcheck_53122_pairs.txt"
+    ]
+  },
+  "lineage": {
+    "type": "standard",
+    "base": "origin/main",
+    "landing": "feat/news-pull-provider-260213_004"
+  }
+}

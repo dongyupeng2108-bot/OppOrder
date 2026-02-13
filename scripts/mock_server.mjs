@@ -7,6 +7,20 @@ const scanCache = new Map();
 const runs = [];
 const opportunities = [];
 
+// Generate mock items ONCE (100 total, IDs 0000000001 to 0000000100)
+const mockNewsItems = [];
+const now = Date.now();
+for (let i = 100; i >= 1; i--) {
+    const id = i.toString().padStart(10, '0');
+    mockNewsItems.push({
+        id: id,
+        title: `Mock News Item ${id}`,
+        url: `http://example.com/news/${id}`,
+        published_at: new Date(now - (101 - i) * 60000).toISOString(), // newer items first
+        provider: 'mock'
+    });
+}
+
 const server = http.createServer((req, res) => {
     // Handle error if URL parsing fails
     let parsedUrl;
@@ -40,6 +54,37 @@ const server = http.createServer((req, res) => {
         if (pathname === '/' || pathname === '/pairs') {
             res.writeHead(200, { 'Content-Type': 'text/plain' });
             res.end(`Mock Server ${pathname} OK`);
+            return;
+        }
+
+        if (pathname === '/news/pull') {
+            let limit = parseInt(parsedUrl.searchParams.get('limit'));
+            if (isNaN(limit) || limit <= 0) limit = 5;
+            limit = Math.min(limit, 50);
+
+            const sinceId = parsedUrl.searchParams.get('since_id');
+            
+            let filtered = mockNewsItems;
+            if (sinceId) {
+                // Return items strictly newer than sinceId (so ID > sinceId)
+                // Since IDs are sorted desc, we take items BEFORE the one with sinceId
+                const sinceIdx = mockNewsItems.findIndex(item => item.id === sinceId);
+                if (sinceIdx !== -1) {
+                    filtered = mockNewsItems.slice(0, sinceIdx);
+                } else {
+                    // If sinceId not found, maybe it's too old? Or too new?
+                    // Assuming standard pagination: newer items have larger IDs.
+                    // If sinceId is "0000000098", we want "0000000100", "0000000099".
+                    filtered = mockNewsItems.filter(item => item.id > sinceId);
+                }
+            }
+            
+            const result = filtered.slice(0, limit);
+            
+            sendJson({
+                provider_used: 'mock',
+                items: result
+            });
             return;
         }
 
