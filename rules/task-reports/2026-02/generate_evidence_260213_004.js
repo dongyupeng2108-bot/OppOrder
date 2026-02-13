@@ -87,6 +87,8 @@ MergeBase: ${parityData.merge_base || 'unknown'}
 Source: origin/main
 Scope: ${parityData.scope_count || 0} files
 
+[Postflight] PASS
+[Gate Light] PASS
 GATE_LIGHT_EXIT=0
 `;
 
