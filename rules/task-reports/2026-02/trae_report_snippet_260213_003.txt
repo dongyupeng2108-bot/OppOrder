@@ -1,11 +1,11 @@
 TraeTask_M5_260213_003_NewsPull_Pagination_Idempotency
 BRANCH: feat/news-pull-pagination-260213_003-clean
-COMMIT: fe485999e9b23be800968ed502978935e8b72f2f
+COMMIT: 0c4219bc72a283b0eed2a6d81980c690ad42ae66
 
 === CI_PARITY_PREVIEW ===
 Base: 46cb5e3edd2182b56e753adfdddbcf90c7dae7e0
-Head: fe485999e9b23be800968ed502978935e8b72f2f
-MergeBase: a91b239efca88e7e1692c637a9954fbfc09ea2dd
+Head: 0c4219bc72a283b0eed2a6d81980c690ad42ae66
+MergeBase: 46cb5e3edd2182b56e753adfdddbcf90c7dae7e0
 Source: rules/task-reports/2026-02/ci_parity_260213_003.json
 Scope: 24 files (See JSON)
 
@@ -21,7 +21,7 @@ Scope: 24 files (See JSON)
 [Gate Light] Doc path standards verified.
 [Gate Light] Checking for legacy doc path references...
 [CheckDocPathRefs] Scanning for legacy doc path references...
-[CheckDocPathRefs] Scan completed in 14ms.
+[CheckDocPathRefs] Scan completed in 15ms.
 [CheckDocPathRefs] PASS: No legacy doc path references found.
 [Gate Light] Checking for global healthcheck artifacts...
 [Gate Light] Global Artifact Guard verified.
@@ -69,37 +69,37 @@ OppRadar/app.js                                    |   7 +-
  OppRadar/contracts/news_pull_response.schema.json  |   6 +
  OppRadar/mock_server_53122.mjs                     |  36 ++++-
  OppRadar/news_provider.mjs                         |   9 +-
- rules/LATEST.json                                  |   4 +-
+ rules/LATEST.json                                  |   7 +-
  rules/rules/PROJECT_MASTER_PLAN.md                 |   9 ++
  rules/task-reports/2026-02/260213_003.json         |  36 +++++
  .../2026-02/260213_003_healthcheck_53122_pairs.txt |   8 +
  .../2026-02/260213_003_healthcheck_53122_root.txt  |   8 +
  rules/task-reports/2026-02/260213_003_test_log.txt |  11 ++
- .../task-reports/2026-02/ci_parity_260213_003.json |  31 ++++
+ .../task-reports/2026-02/ci_parity_260213_003.json |  33 +++++
  .../2026-02/deliverables_index_260213_003.json     |  54 +++++++
  .../task-reports/2026-02/envelope_260213_003.json  |   5 +
  .../2026-02/generate_ci_parity_260213_003.js       |  72 +++++++++
- .../2026-02/generate_evidence_260213_003.js        | 161 +++++++++++++++++++++
+ .../2026-02/generate_evidence_260213_003.js        | 162 +++++++++++++++++++++
  .../2026-02/generate_index_260213_003.js           |  55 +++++++
  .../2026-02/manual_verification_260213_003.json    |  11 ++
  rules/task-reports/2026-02/notify_260213_003.txt   |  31 ++++
  rules/task-reports/2026-02/result_260213_003.json  |  20 +++
- .../2026-02/trae_report_snippet_260213_003.txt     | 101 +++++++++++++
+ .../2026-02/trae_report_snippet_260213_003.txt     | 105 +++++++++++++
  .../2026-02/ui_copy_details_260213_003.json        |   5 +
  .../envelopes/260213_003.envelope.json             |  21 +++
  scripts/gate_light_ci.mjs                          |  52 ++++---
- scripts/test_news_pagination_260213_003.mjs        | 153 ++++++++++++++++++++
- 24 files changed, 871 insertions(+), 35 deletions(-)
+ scripts/test_news_pagination_260213_003.mjs        | 153 +++++++++++++++++++
+ 24 files changed, 880 insertions(+), 36 deletions(-)
 
 === DOD_EVIDENCE_STDOUT ===
 Starting News Pagination Tests...
 [PASS] Healthcheck /pairs 200
 [PASS] Pull Limit 2 OK. Fetched: 2
-[INFO] Newest ID: 1770970542492_bgub35rby
-[INFO] Oldest ID: 1770970542493_wgu1bjlpk
-[INFO] Latest News ID (Server): 1770970542493_wgu1bjlpk
-[TEST] Pagination: since_id=1770970542493_wgu1bjlpk
-[INFO] Fetched 5 items since 1770970542493_wgu1bjlpk
+[INFO] Newest ID: 1770973038586_402femz9z
+[INFO] Oldest ID: 1770973038587_oixrox1ti
+[INFO] Latest News ID (Server): 1770973038587_oixrox1ti
+[TEST] Pagination: since_id=1770973038587_oixrox1ti
+[INFO] Fetched 5 items since 1770973038587_oixrox1ti
 [PASS] All items are newer than since_id
 [PASS] GDELT Limit Clamp 60 -> 400 OK
 All Tests Passed
