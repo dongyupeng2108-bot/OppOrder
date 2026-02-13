@@ -101,6 +101,10 @@
 - **Task 260210_007: CI Lock PR TaskId (In Progress)**
   - **Goal**: Enforce PR task_id lock, LATEST.json consistency, and local/CI parity.
   - **Status**: PR Created.
+- **Task 260213_002: Docs Sync Fix (DONE)**
+  - **Goal**: Fix Gate Light CI failure (CI Parity) for docs sync task.
+  - **Deliverables**: Updated `generate_evidence_260213_002.js` and valid CI Parity JSON.
+  - **Status**: DONE (GATE_LIGHT_EXIT=0).
 
 ### Milestone M5: 机会算法+LLM (Algo & DeepSeek)
 **目标**: 机会路由、结构化输出、成本控制、DeepSeek 调用。
@@ -112,6 +116,11 @@
   - **目标**: 增加成本控制闸门与降级逻辑。
   - **DoD**: 达到预设成本阈值后自动切换到低成本模型或停止。
   - **证据要求**: `rules/task-reports/2026-02/M5_PR2_cost_gate.txt`。
+- **PR 3: M5: News Pull Pagination (DONE - 260213)**
+  - **Status**: Completed via Task 260213_003.
+  - **Deliverables**: `POST /news/pull` with `since_id` pagination, Idempotency (INSERT OR IGNORE), PR-only merge workflow.
+  - **DoD**: Sustainable pull without duplicates, Gate Light Pass.
+  - **证据要求**: `rules/task-reports/2026-02/news_pull_pagination_260213_003_log.txt`.
 
 ### Milestone M6: 证据导出与稳定性 (Evidence & Stability)
 **目标**: 调试日志标准化、验收证据自动化、运行稳定性增强。
