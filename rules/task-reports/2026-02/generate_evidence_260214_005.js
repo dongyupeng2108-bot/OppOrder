@@ -43,7 +43,7 @@ setTimeout(async () => {
     let exitCode = 0;
     try {
         console.log('Running healthcheck...');
-        execSync(`curl -v http://localhost:53122/ --output "${HEALTHCHECK_FILE}"`, { stdio: 'inherit' });
+        execSync(`curl -i -s http://localhost:53122/ --output "${HEALTHCHECK_FILE}"`, { stdio: 'inherit' });
         
         console.log('Running tests...');
         const testOutput = execSync(`node "${TEST_SCRIPT}"`, { cwd: ROOT_DIR, encoding: 'utf8' });
