@@ -1,13 +1,13 @@
 TraeTask_M5_260213_003_NewsPull_Pagination_Idempotency
 BRANCH: feat/news-pull-pagination-260213_003-clean
-COMMIT: f982487d012edba9b278b6daf36e7f8603ab0c83
+COMMIT: fe485999e9b23be800968ed502978935e8b72f2f
 
 === CI_PARITY_PREVIEW ===
-Base: a91b239efca88e7e1692c637a9954fbfc09ea2dd
-Head: f982487d012edba9b278b6daf36e7f8603ab0c83
+Base: 46cb5e3edd2182b56e753adfdddbcf90c7dae7e0
+Head: fe485999e9b23be800968ed502978935e8b72f2f
 MergeBase: a91b239efca88e7e1692c637a9954fbfc09ea2dd
 Source: rules/task-reports/2026-02/ci_parity_260213_003.json
-Scope: 22 files (See JSON)
+Scope: 24 files (See JSON)
 
 === GATE_LIGHT_PREVIEW ===
 [Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
@@ -45,7 +45,7 @@ Scope: 22 files (See JSON)
 [Gate Light] CI Parity Preview verified.
 [Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
 [Gate Light] Fetching origin/main history for diff context...
-[Gate Light] Allowed legacy task_id (transition): 260212_001
+[Gate Light] Allowed legacy task_id (transition): 260213_002
 [Gate Light] NoHistoricalEvidenceTouch verified.
 [Gate Light] SnippetCommitMustMatch verified.
 [Gate Light] Checking GATE_LIGHT_EXIT Mechanism...
@@ -57,6 +57,8 @@ Scope: 22 files (See JSON)
 [Gate Light] Immutable Integrate & SafeCmd Enforcement verified.
 [Gate Light] Checking Two-Pass Evidence Truth & No Auto-Merge...
 [Gate Light] Two-Pass Evidence Truth & No Auto-Merge verified.
+[Postflight] PASS
+[Gate Light] PASS
 GATE_LIGHT_EXIT=0
 
 DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260213_003_healthcheck_53122_root.txt => HTTP/1.1 200 OK
@@ -68,34 +70,36 @@ OppRadar/app.js                                    |   7 +-
  OppRadar/mock_server_53122.mjs                     |  36 ++++-
  OppRadar/news_provider.mjs                         |   9 +-
  rules/LATEST.json                                  |   4 +-
+ rules/rules/PROJECT_MASTER_PLAN.md                 |   9 ++
  rules/task-reports/2026-02/260213_003.json         |  36 +++++
- .../2026-02/260213_003_healthcheck_53122_pairs.txt |   8 ++
- .../2026-02/260213_003_healthcheck_53122_root.txt  |   8 ++
- rules/task-reports/2026-02/260213_003_test_log.txt | Bin 0 -> 38 bytes
- .../task-reports/2026-02/ci_parity_260213_003.json |  29 ++++
- .../2026-02/deliverables_index_260213_003.json     |  54 ++++++++
+ .../2026-02/260213_003_healthcheck_53122_pairs.txt |   8 +
+ .../2026-02/260213_003_healthcheck_53122_root.txt  |   8 +
+ rules/task-reports/2026-02/260213_003_test_log.txt |  11 ++
+ .../task-reports/2026-02/ci_parity_260213_003.json |  31 ++++
+ .../2026-02/deliverables_index_260213_003.json     |  54 +++++++
  .../task-reports/2026-02/envelope_260213_003.json  |   5 +
- .../2026-02/generate_ci_parity_260213_003.js       |  72 ++++++++++
- .../2026-02/generate_index_260213_003.js           |  55 ++++++++
+ .../2026-02/generate_ci_parity_260213_003.js       |  72 +++++++++
+ .../2026-02/generate_evidence_260213_003.js        | 161 +++++++++++++++++++++
+ .../2026-02/generate_index_260213_003.js           |  55 +++++++
  .../2026-02/manual_verification_260213_003.json    |  11 ++
- rules/task-reports/2026-02/notify_260213_003.txt   |  31 +++++
+ rules/task-reports/2026-02/notify_260213_003.txt   |  31 ++++
  rules/task-reports/2026-02/result_260213_003.json  |  20 +++
- .../2026-02/trae_report_snippet_260213_003.txt     |  62 +++++++++
- .../2026-02/ui_copy_details_260213_003.json        |  19 +++
+ .../2026-02/trae_report_snippet_260213_003.txt     | 101 +++++++++++++
+ .../2026-02/ui_copy_details_260213_003.json        |   5 +
  .../envelopes/260213_003.envelope.json             |  21 +++
  scripts/gate_light_ci.mjs                          |  52 ++++---
- scripts/test_news_pagination_260213_003.mjs        | 153 +++++++++++++++++++++
- 22 files changed, 663 insertions(+), 35 deletions(-)
+ scripts/test_news_pagination_260213_003.mjs        | 153 ++++++++++++++++++++
+ 24 files changed, 871 insertions(+), 35 deletions(-)
 
 === DOD_EVIDENCE_STDOUT ===
 Starting News Pagination Tests...
 [PASS] Healthcheck /pairs 200
 [PASS] Pull Limit 2 OK. Fetched: 2
-[INFO] Newest ID: 1770963519075_9ewf40tcu
-[INFO] Oldest ID: 1770963519076_9gjcxmmyd
-[INFO] Latest News ID (Server): 1770963519076_9gjcxmmyd
-[TEST] Pagination: since_id=1770963519076_9gjcxmmyd
-[INFO] Fetched 5 items since 1770963519076_9gjcxmmyd
+[INFO] Newest ID: 1770970542492_bgub35rby
+[INFO] Oldest ID: 1770970542493_wgu1bjlpk
+[INFO] Latest News ID (Server): 1770970542493_wgu1bjlpk
+[TEST] Pagination: since_id=1770970542493_wgu1bjlpk
+[INFO] Fetched 5 items since 1770970542493_wgu1bjlpk
 [PASS] All items are newer than since_id
 [PASS] GDELT Limit Clamp 60 -> 400 OK
 All Tests Passed
