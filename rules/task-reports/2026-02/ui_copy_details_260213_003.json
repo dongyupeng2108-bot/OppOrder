@@ -1,0 +1,19 @@
+{
+  "task_id": "260213_003",
+  "component": "News Pagination",
+  "ui_elements": [
+    {
+      "element": "Pull Button",
+      "action": "click",
+      "api_call": "POST /news/pull",
+      "parameters": {
+        "since_id": "auto-detected",
+        "limit": 50
+      }
+    }
+  ],
+  "copy_text": {
+    "success": "News pulled successfully",
+    "pagination": "Loaded {count} new items"
+  }
+}

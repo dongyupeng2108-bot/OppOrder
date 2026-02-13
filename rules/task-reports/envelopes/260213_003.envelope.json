@@ -1,0 +1,21 @@
+{
+  "task_id": "260213_003",
+  "milestone": "260213",
+  "status": "DONE",
+  "healthcheck": {
+    "root": 0,
+    "pairs": 0
+  },
+  "index_files": [
+    "notify_260213_003.txt",
+    "result_260213_003.json",
+    "260213_003_healthcheck_53122_root.txt",
+    "260213_003_healthcheck_53122_pairs.txt",
+    "260213_003_test_log.txt",
+    "trae_report_snippet_260213_003.txt",
+    "ci_parity_260213_003.json",
+    "ui_copy_details_260213_003.json"
+  ],
+  "forbidden_phrases_hit": [],
+  "report_file": "notify_260213_003.txt"
+}

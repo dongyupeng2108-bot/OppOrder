@@ -1,13 +1,16 @@
 {
   "task_id": "260213_003",
-  "status": "success",
+  "status": "DONE",
+  "summary": "Implemented news pagination (since_id) and idempotency.",
+  "report_file": "notify_260213_003.txt",
+  "report_sha256_short": "beb1e267",
   "verification": {
     "healthcheck_root": "pass",
     "healthcheck_pairs": "pass",
-    "pagination_test": "pass",
-    "gate_light_exit": 0
+    "pagination_test": "pass"
   },
   "dod_evidence": {
+    "gate_light_exit": 0,
     "healthcheck": [
         "rules/task-reports/2026-02/260213_003_healthcheck_53122_root.txt",
         "rules/task-reports/2026-02/260213_003_healthcheck_53122_pairs.txt"

@@ -1,10 +1,11 @@
 {
   "task_id": "260213_003",
   "base": "eb829b45e8ac9ad4d661f544a228f33f99576566",
-  "head": "cf35dd479c1ed96603c4206f060592c6b075d7c5",
+  "head": "f03a9428d046c101f9495da607c59a438a74410e",
   "merge_base": "eb829b45e8ac9ad4d661f544a228f33f99576566",
   "scope_files": [
     ".trae/rules/rules.md",
+    "OppRadar/app.js",
     "OppRadar/contracts/news_pull_response.schema.json",
     "OppRadar/mock_server_53122.mjs",
     "OppRadar/news_provider.mjs",
@@ -39,5 +40,5 @@
     "rules/task-reports/envelopes/260213_002.envelope.json",
     "scripts/test_news_pagination_260213_003.mjs"
   ],
-  "scope_count": 34
+  "scope_count": 35
 }

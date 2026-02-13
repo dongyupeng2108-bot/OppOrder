@@ -12,12 +12,13 @@ const files = [
     `${taskId}_healthcheck_53122_pairs.txt`,
     `${taskId}_test_log.txt`,
     `trae_report_snippet_${taskId}.txt`,
-    `ci_parity_${taskId}.json`
+    `ci_parity_${taskId}.json`,
+    `ui_copy_details_${taskId}.json`
 ];
 
 const index = {
     task_id: taskId,
-    files: {},
+    files: [],
     generated_at: new Date().toISOString()
 };
 
@@ -27,10 +28,12 @@ files.forEach(file => {
         const content = fs.readFileSync(filePath);
         const hash = crypto.createHash('sha256').update(content).digest('hex');
         const size = fs.statSync(filePath).size;
-        index.files[file] = {
+        index.files.push({
+            path: file,
             sha256: hash,
+            sha256_short: hash.substring(0, 8),
             size: size
-        };
+        });
     } else {
         console.warn(`File not found: ${file}`);
     }

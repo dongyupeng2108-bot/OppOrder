@@ -1,34 +1,54 @@
 {
   "task_id": "260213_003",
-  "files": {
-    "notify_260213_003.txt": {
-      "sha256": "001fb3909290ba26cfe86065d824267b90b913c6453de4b9a6d5c649088df880",
-      "size": 822
+  "files": [
+    {
+      "path": "notify_260213_003.txt",
+      "sha256": "beb1e267d8fcc2c29b1bb6a873fe12a68f654b88453450f26238b2310515ada2",
+      "sha256_short": "beb1e267",
+      "size": 1013
     },
-    "result_260213_003.json": {
-      "sha256": "5593de13aab80c1aa8bb1fb64617681ed38da838b87a624abdfb954143c5d858",
-      "size": 485
+    {
+      "path": "result_260213_003.json",
+      "sha256": "4713754a070ba980d45318759c51e406e8241409f7c75547068fd2b54e1a287d",
+      "sha256_short": "4713754a",
+      "size": 632
     },
-    "260213_003_healthcheck_53122_root.txt": {
+    {
+      "path": "260213_003_healthcheck_53122_root.txt",
       "sha256": "01fb92cfa5fa8277738bdfd00263364121839a9c56431c08569522f74fe789f1",
+      "sha256_short": "01fb92cf",
       "size": 159
     },
-    "260213_003_healthcheck_53122_pairs.txt": {
+    {
+      "path": "260213_003_healthcheck_53122_pairs.txt",
       "sha256": "01fb92cfa5fa8277738bdfd00263364121839a9c56431c08569522f74fe789f1",
+      "sha256_short": "01fb92cf",
       "size": 159
     },
-    "260213_003_test_log.txt": {
+    {
+      "path": "260213_003_test_log.txt",
       "sha256": "94ccd747e266177180c903117df5cd6f357386005e74a005a775cd28c5b3ee1b",
+      "sha256_short": "94ccd747",
       "size": 38
     },
-    "trae_report_snippet_260213_003.txt": {
-      "sha256": "5cbe0bd51047a633e1ffc0990aa3837fa0df45f268c5e61402243b74b6cdb6cd",
-      "size": 214
+    {
+      "path": "trae_report_snippet_260213_003.txt",
+      "sha256": "35b5a4a3d6a673a08801adbd215659d76a9390fe4ac831aee095274f2107327c",
+      "sha256_short": "35b5a4a3",
+      "size": 3086
     },
-    "ci_parity_260213_003.json": {
-      "sha256": "ce742c5af673fb660c1e0e58c0da5b36353656e2c66388528d58bfb28798fa2b",
-      "size": 2215
+    {
+      "path": "ci_parity_260213_003.json",
+      "sha256": "9cd9687c0f0c5f9effc22d8eec388ceda639263bf798c8b285ea23c87bfe1c8e",
+      "sha256_short": "9cd9687c",
+      "size": 2238
+    },
+    {
+      "path": "ui_copy_details_260213_003.json",
+      "sha256": "5ba85562c790c0d8a8cddbce278e35947b20139e5f04b997137f5e44b4268f2d",
+      "sha256_short": "5ba85562",
+      "size": 391
     }
-  },
-  "generated_at": "2026-02-13T04:42:58.840Z"
+  ],
+  "generated_at": "2026-02-13T05:34:34.872Z"
 }
