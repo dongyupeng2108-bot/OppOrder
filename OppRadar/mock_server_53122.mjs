@@ -1166,6 +1166,61 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    // GET /news/pull (Task 260212_001)
+    if (pathname === '/news/pull') {
+        const limit = parsedUrl.query.limit ? parseInt(parsedUrl.query.limit) : 20;
+        const since = parsedUrl.query.since || null;
+        const simError = parsedUrl.query.sim_error === 'true'; // For testing
+
+        // Spec: Limit cap at 50
+        if (limit > 50) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ 
+                status: 'error', 
+                code: 'INVALID_LIMIT', 
+                message: 'Limit cannot exceed 50',
+                request: { limit }
+            }));
+            return;
+        }
+
+        // Test Case 2: Sim Error
+        if (simError) {
+             res.writeHead(500, { 'Content-Type': 'application/json' });
+             res.end(JSON.stringify({
+                 status: 'error',
+                 code: 'SIMULATED_ERROR',
+                 message: 'Simulated error for testing',
+                 request: { limit, since }
+             }));
+             return;
+        }
+
+        // Success Response (Mock)
+        const response = {
+            status: 'ok',
+            provider_used: 'local',
+            fallback: false,
+            cached: false,
+            cache_key: 'mock_cache_key_' + Date.now(),
+            inserted_count: limit,
+            deduped_count: 0,
+            fetched_count: limit,
+            written_count: limit,
+            request: {
+                provider: 'local',
+                topic_key: 'MOCK_TOPIC',
+                query: '',
+                timespan: '1d',
+                maxrecords: limit
+            }
+        };
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(response));
+        return;
+    }
+
     // POST /opportunities/build_v1 (Task 260209_006)
     if (pathname === '/opportunities/build_v1' && req.method === 'POST') {
         let body = '';
