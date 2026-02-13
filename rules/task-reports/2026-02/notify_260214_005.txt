@@ -1,0 +1,4 @@
+Task 260214_005 Completed.
+Feature: NewsStore + GET /news endpoint + /news/pull integration.
+Verification: MinSpec tests passed (Cases A-D).
+GATE_LIGHT_EXIT=0

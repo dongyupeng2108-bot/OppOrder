@@ -1,0 +1,14 @@
+{
+  "task_id": "260214_005",
+  "status": "completed",
+  "gate_light_exit": 0,
+  "artifacts": [
+    "260214_005_healthcheck_53122_root.txt",
+    "260214_005_healthcheck_53122_pairs.txt",
+    "260214_005_test_log.txt"
+  ],
+  "lineage": {
+    "base": "origin/main",
+    "landing": "HEAD"
+  }
+}
