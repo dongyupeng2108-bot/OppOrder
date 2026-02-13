@@ -60,7 +60,7 @@ COMMIT: ${commit}
 GIT_SCOPE_DIFF:
 ${diff}
 
-GATE_LIGHT_PREVIEW:
+=== GATE_LIGHT_PREVIEW ===
 [PASS] Test Execution: scripts/test_news_provider_${taskId}.mjs
 [PASS] CI Parity Check: rules/task-reports/2026-02/ci_parity_${taskId}.json
 [PASS] Healthcheck: rules/task-reports/2026-02/${taskId}_healthcheck_53122_root.txt

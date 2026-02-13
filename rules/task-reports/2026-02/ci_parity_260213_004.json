@@ -1,7 +1,7 @@
 {
   "task_id": "260213_004",
   "base": "46cb5e3edd2182b56e753adfdddbcf90c7dae7e0",
-  "head": "6e889ef6808c60ffd21e738f322a17f56bec208b",
+  "head": "a6593e75cae66bfc4b2b586b3677dd513758cc27",
   "merge_base": "46cb5e3edd2182b56e753adfdddbcf90c7dae7e0",
   "scope_files": [
     "OppRadar/app.js",

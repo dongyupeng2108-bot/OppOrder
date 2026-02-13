@@ -1,10 +1,10 @@
 Trae Task Report Snippet
 ------------------------
 Task ID: 260213_004
-Date: 2026-02-13T15:11:19.138Z
+Date: 2026-02-13T15:12:46.700Z
 
 BRANCH: feat/news-pull-provider-260213_004
-COMMIT: 6e889ef6808c60ffd21e738f322a17f56bec208b
+COMMIT: a6593e75cae66bfc4b2b586b3677dd513758cc27
 
 GIT_SCOPE_DIFF:
 OppRadar/app.js
@@ -46,7 +46,7 @@ scripts/gate_light_ci.mjs
 scripts/test_news_pagination_260213_003.mjs
 scripts/test_news_provider_260213_004.mjs
 
-GATE_LIGHT_PREVIEW:
+=== GATE_LIGHT_PREVIEW ===
 [PASS] Test Execution: scripts/test_news_provider_260213_004.mjs
 [PASS] CI Parity Check: rules/task-reports/2026-02/ci_parity_260213_004.json
 [PASS] Healthcheck: rules/task-reports/2026-02/260213_004_healthcheck_53122_root.txt
