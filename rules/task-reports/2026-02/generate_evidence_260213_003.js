@@ -16,10 +16,13 @@ try {
             cwd: rootDir, 
             encoding: 'utf8' 
         });
-        fs.writeFileSync(path.join(reportDir, `${taskId}_test_log.txt`), testOutput);
+        // Normalize to LF
+        const normalizedOutput = testOutput.replace(/\r\n/g, '\n');
+        fs.writeFileSync(path.join(reportDir, `${taskId}_test_log.txt`), normalizedOutput);
     } catch (e) {
         console.error('Tests failed!');
-        fs.writeFileSync(path.join(reportDir, `${taskId}_test_log.txt`), e.stdout + '\n' + e.stderr);
+        const normalizedOutput = (e.stdout + '\n' + e.stderr).replace(/\r\n/g, '\n');
+        fs.writeFileSync(path.join(reportDir, `${taskId}_test_log.txt`), normalizedOutput);
         // Continue? Maybe not if tests fail.
         // But for now, let's continue to generate evidence of failure if needed.
     }
@@ -28,7 +31,12 @@ try {
     console.log('Updating Result JSON with Notify Hash...');
     const crypto = require('crypto');
     const notifyPath = path.join(reportDir, `notify_${taskId}.txt`);
-    const notifyContent = fs.readFileSync(notifyPath);
+    
+    // Normalize Notify content to LF before hashing and writing back
+    let notifyContent = fs.readFileSync(notifyPath, 'utf8');
+    notifyContent = notifyContent.replace(/\r\n/g, '\n');
+    fs.writeFileSync(notifyPath, notifyContent); // Write back LF version
+    
     const notifyHash = crypto.createHash('sha256').update(notifyContent).digest('hex').substring(0, 8);
     
     const resultPath = path.join(reportDir, `result_${taskId}.json`);

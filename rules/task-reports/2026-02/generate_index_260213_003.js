@@ -27,9 +27,21 @@ const postflightScript = 'scripts/postflight_validate_envelope.mjs';
 const postflightPath = path.resolve(baseDir, '../../../', postflightScript);
 
 if (fs.existsSync(postflightPath)) {
-    const content = fs.readFileSync(postflightPath);
+    let content = fs.readFileSync(postflightPath);
+    // Normalize line endings to LF
+    const str = content.toString('utf8').replace(/\r\n/g, '\n');
+    content = Buffer.from(str, 'utf8');
+    
+    // NOTE: We cannot rewrite the postflight script here as it's outside our report scope!
+    // But we must use LF hash because CI will checkout as LF.
+    // And postflight will check its own hash?
+    // Wait, postflight does NOT check its own hash in index. It only checks for existence (some()).
+    // So hash doesn't matter for postflight script entry, only name matters.
+    // BUT we should be correct anyway.
+    
     const hash = crypto.createHash('sha256').update(content).digest('hex');
-    const size = fs.statSync(postflightPath).size;
+    const size = content.length;
+    
     index.files.push({
         path: postflightScript,
         sha256: hash,
@@ -43,9 +55,18 @@ if (fs.existsSync(postflightPath)) {
 files.forEach(file => {
     const filePath = path.join(baseDir, file);
     if (fs.existsSync(filePath)) {
-        const content = fs.readFileSync(filePath);
+        let content = fs.readFileSync(filePath);
+        
+        // Normalize text files to LF for consistent hashing across OS
+        if (file.endsWith('.txt') || file.endsWith('.json') || file.endsWith('.js') || file.endsWith('.mjs') || file.endsWith('.md')) {
+            const str = content.toString('utf8').replace(/\r\n/g, '\n');
+            content = Buffer.from(str, 'utf8');
+            // Write back to ensure disk matches hash (optional but safer for local verification)
+            fs.writeFileSync(filePath, content);
+        }
+        
         const hash = crypto.createHash('sha256').update(content).digest('hex');
-        const size = fs.statSync(filePath).size;
+        const size = content.length; // Use buffer length, which matches written file size
         index.files.push({
             path: file,
             sha256: hash,

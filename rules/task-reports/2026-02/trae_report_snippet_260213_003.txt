@@ -1,10 +1,10 @@
 TraeTask_M5_260213_003_NewsPull_Pagination_Idempotency
 BRANCH: feat/news-pull-pagination-260213_003-clean
-COMMIT: cb0aae5c9dcd90b9bcfc51e34088c9662e9fc4df
+COMMIT: 2454fc507164f2224e9487f4c8b0a4a48c78a690
 
 === CI_PARITY_PREVIEW ===
 Base: 46cb5e3edd2182b56e753adfdddbcf90c7dae7e0
-Head: cb0aae5c9dcd90b9bcfc51e34088c9662e9fc4df
+Head: 2454fc507164f2224e9487f4c8b0a4a48c78a690
 MergeBase: 46cb5e3edd2182b56e753adfdddbcf90c7dae7e0
 Source: rules/task-reports/2026-02/ci_parity_260213_003.json
 Scope: 24 files (See JSON)
@@ -76,30 +76,30 @@ OppRadar/app.js                                    |   7 +-
  .../2026-02/260213_003_healthcheck_53122_root.txt  |   8 +
  rules/task-reports/2026-02/260213_003_test_log.txt |  11 ++
  .../task-reports/2026-02/ci_parity_260213_003.json |  33 +++++
- .../2026-02/deliverables_index_260213_003.json     |  54 +++++++
+ .../2026-02/deliverables_index_260213_003.json     |  60 ++++++++
  .../task-reports/2026-02/envelope_260213_003.json  |   5 +
  .../2026-02/generate_ci_parity_260213_003.js       |  72 +++++++++
  .../2026-02/generate_evidence_260213_003.js        | 162 +++++++++++++++++++++
- .../2026-02/generate_index_260213_003.js           |  55 +++++++
+ .../2026-02/generate_index_260213_003.js           |  73 ++++++++++
  .../2026-02/manual_verification_260213_003.json    |  11 ++
  rules/task-reports/2026-02/notify_260213_003.txt   |  31 ++++
  rules/task-reports/2026-02/result_260213_003.json  |  20 +++
  .../2026-02/trae_report_snippet_260213_003.txt     | 105 +++++++++++++
  .../2026-02/ui_copy_details_260213_003.json        |   5 +
- .../envelopes/260213_003.envelope.json             |  21 +++
+ .../envelopes/260213_003.envelope.json             |  22 +++
  scripts/gate_light_ci.mjs                          |  52 ++++---
  scripts/test_news_pagination_260213_003.mjs        | 153 +++++++++++++++++++
- 24 files changed, 880 insertions(+), 36 deletions(-)
+ 24 files changed, 905 insertions(+), 36 deletions(-)
 
 === DOD_EVIDENCE_STDOUT ===
 Starting News Pagination Tests...
 [PASS] Healthcheck /pairs 200
 [PASS] Pull Limit 2 OK. Fetched: 2
-[INFO] Newest ID: 1770976754021_6uu5fok7r
-[INFO] Oldest ID: 1770976754021_jkehrjxyn
-[INFO] Latest News ID (Server): 1770976754021_jkehrjxyn
-[TEST] Pagination: since_id=1770976754021_jkehrjxyn
-[INFO] Fetched 5 items since 1770976754021_jkehrjxyn
+[INFO] Newest ID: 1770991865297_w9546a8of
+[INFO] Oldest ID: 1770991865297_7yzp24p3n
+[INFO] Latest News ID (Server): 1770991865297_7yzp24p3n
+[TEST] Pagination: since_id=1770991865297_7yzp24p3n
+[INFO] Fetched 0 items since 1770991865297_7yzp24p3n
 [PASS] All items are newer than since_id
 [PASS] GDELT Limit Clamp 60 -> 400 OK
 All Tests Passed
