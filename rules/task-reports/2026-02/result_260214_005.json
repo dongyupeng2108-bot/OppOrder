@@ -1,14 +1,13 @@
 {
   "task_id": "260214_005",
-  "status": "completed",
-  "gate_light_exit": 0,
+  "status": "success",
+  "run_id": "run_2026-02-13T22-02-38-163Z",
   "artifacts": [
-    "260214_005_healthcheck_53122_root.txt",
-    "260214_005_healthcheck_53122_pairs.txt",
-    "260214_005_test_log.txt"
+    "notify_260214_005.txt",
+    "260214_005_healthcheck_53122_root.txt"
   ],
-  "lineage": {
-    "base": "origin/main",
-    "landing": "HEAD"
+  "metrics": {
+    "tests_passed": true,
+    "server_log_len": 199
   }
 }

@@ -1,4 +1,21 @@
-Task 260214_005 Completed.
-Feature: NewsStore + GET /news endpoint + /news/pull integration.
-Verification: MinSpec tests passed (Cases A-D).
-GATE_LIGHT_EXIT=0
+Task 260214_005 Completed
+
+PASS
+
+Evidence:
+- Healthcheck: PASS
+- Tests: PASS
+
+Test Output:
+Starting NewsStore Tests (260214_005)...
+[PASS] Healthcheck
+[INFO] Initial count: 0
+[PASS] Case A: Initial store empty
+[INFO] Pulling 2 items...
+[PASS] Case B: Pull -> Store -> List
+[INFO] Repeating Pull...
+[PASS] Case C: Deduplication
+[INFO] First IDs: 0000000100, 0000000099
+[INFO] Case D: Pagination (Backfill simulation)
+[PASS] Case D: Incremental Pull
+[SUCCESS] All tests passed

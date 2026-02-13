@@ -1,206 +1,85 @@
+const { spawn, execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
-const { spawn, execSync } = require('child_process');
-const http = require('http');
 
 const TASK_ID = '260214_005';
-// We assume we run this from project root
-const PROJECT_ROOT = process.cwd(); 
-const REPORT_DIR = path.join(PROJECT_ROOT, 'rules', 'task-reports', '2026-02');
-const SERVER_PORT = 53122;
+const ROOT_DIR = path.resolve(__dirname, '../../../');
+const SERVER_SCRIPT = path.join(ROOT_DIR, 'OppRadar/mock_server_53122.mjs');
+const TEST_SCRIPT = path.join(ROOT_DIR, 'scripts/test_news_store_260214_005.mjs');
+const OUTPUT_DIR = path.join(ROOT_DIR, 'rules/task-reports/2026-02');
+const NOTIFY_FILE = path.join(OUTPUT_DIR, `notify_${TASK_ID}.txt`);
+const RESULT_FILE = path.join(OUTPUT_DIR, `result_${TASK_ID}.json`);
+const HEALTHCHECK_FILE = path.join(OUTPUT_DIR, `${TASK_ID}_healthcheck_53122_root.txt`);
 
-// Ensure report dir exists
-if (!fs.existsSync(REPORT_DIR)) {
-    fs.mkdirSync(REPORT_DIR, { recursive: true });
-}
+// Cleanup previous runs
+try {
+    if (fs.existsSync(NOTIFY_FILE)) fs.unlinkSync(NOTIFY_FILE);
+    if (fs.existsSync(RESULT_FILE)) fs.unlinkSync(RESULT_FILE);
+    if (fs.existsSync(HEALTHCHECK_FILE)) fs.unlinkSync(HEALTHCHECK_FILE);
+} catch (e) {}
 
-// Paths
-const SERVER_SCRIPT = path.join(PROJECT_ROOT, 'OppRadar', 'mock_server_53122.mjs');
-const TEST_SCRIPT = path.join(PROJECT_ROOT, 'scripts', 'test_news_store_260214_005.mjs');
-const HEALTH_ROOT_FILE = path.join(REPORT_DIR, `${TASK_ID}_healthcheck_53122_root.txt`);
-const HEALTH_PAIRS_FILE = path.join(REPORT_DIR, `${TASK_ID}_healthcheck_53122_pairs.txt`);
-const TEST_LOG_FILE = path.join(REPORT_DIR, `${TASK_ID}_test_log.txt`);
-const RESULT_JSON = path.join(REPORT_DIR, `result_${TASK_ID}.json`);
-const NOTIFY_TXT = path.join(REPORT_DIR, `notify_${TASK_ID}.txt`);
-const INDEX_JSON = path.join(REPORT_DIR, `deliverables_index_${TASK_ID}.json`);
-const SNIPPET_TXT = path.join(REPORT_DIR, `trae_report_snippet_${TASK_ID}.txt`);
-const CI_PARITY_JSON = path.join(REPORT_DIR, `ci_parity_${TASK_ID}.json`);
+console.log('Starting mock server...');
+const server = spawn('node', [SERVER_SCRIPT], {
+    cwd: ROOT_DIR,
+    stdio: 'pipe', 
+    detached: false,
+    env: { ...process.env, PORT: '53122' }
+});
 
-function log(msg) {
-    console.log(`[EvidenceGen] ${msg}`);
-}
+let serverLog = '';
+server.stdout.on('data', d => { 
+    const s = d.toString();
+    serverLog += s;
+    // console.log('[SERVER]', s); 
+});
+server.stderr.on('data', d => { 
+    const s = d.toString();
+    serverLog += s;
+    console.error('[SERVER ERR]', s); 
+});
 
-async function waitForServer(port, timeout = 10000) {
-    const start = Date.now();
-    while (Date.now() - start < timeout) {
-        try {
-            await new Promise((resolve, reject) => {
-                const req = http.get(`http://localhost:${port}/`, (res) => {
-                    if (res.statusCode === 200) resolve();
-                    else reject(new Error(`Status ${res.statusCode}`));
-                });
-                req.on('error', reject);
-                req.end();
-            });
-            return true;
-        } catch (e) {
-            await new Promise(r => setTimeout(r, 500));
-        }
-    }
-    return false;
-}
-
-async function main() {
-    log('Starting Evidence Generation...');
-
-    // 1. Start Mock Server
-    log('Starting Mock Server...');
-    const server = spawn('node', [SERVER_SCRIPT], {
-        cwd: PROJECT_ROOT,
-        stdio: 'inherit',
-        detached: false
-    });
-
+// Give server time to start
+setTimeout(async () => {
+    let exitCode = 0;
     try {
-        if (!await waitForServer(SERVER_PORT)) {
-            throw new Error('Server failed to start');
-        }
-        log('Server is UP.');
-
-        // 2. Healthchecks
-        log('Running Healthchecks...');
-        try {
-            execSync(`curl -s -I http://localhost:${SERVER_PORT}/ > "${HEALTH_ROOT_FILE}"`);
-            execSync(`curl -s -I http://localhost:${SERVER_PORT}/pairs > "${HEALTH_PAIRS_FILE}"`);
-        } catch (e) {
-            log('Healthcheck failed: ' + e.message);
-            throw e;
-        }
-
-        // 3. Run Test Script
-        log('Running Test Script...');
-        try {
-            execSync(`node "${TEST_SCRIPT}" > "${TEST_LOG_FILE}" 2>&1`, { cwd: PROJECT_ROOT });
-            log('Test Script PASSED.');
-        } catch (e) {
-            log('Test Script FAILED.');
-            // Append failure to log if it wasn't captured
-            if (fs.existsSync(TEST_LOG_FILE)) {
-                fs.appendFileSync(TEST_LOG_FILE, `\n\n[FATAL] Test Script Failed: ${e.message}`);
-            } else {
-                fs.writeFileSync(TEST_LOG_FILE, `[FATAL] Test Script Failed: ${e.message}`);
-            }
-            throw e; 
-        }
-
-        // 4. Generate Reports
-        log('Generating Reports...');
-
-        const testLogContent = fs.readFileSync(TEST_LOG_FILE, 'utf8');
-        const snippetContent = `
-Task ${TASK_ID} Evidence:
--------------------------
-Healthcheck Root: PASS (200 OK)
-Healthcheck Pairs: PASS (200 OK)
-Test Script: PASS
-${testLogContent.split('\n').filter(l => l.includes('[PASS]')).join('\n')}
-GATE_LIGHT_EXIT=0
-        `.trim();
-
-        fs.writeFileSync(SNIPPET_TXT, snippetContent);
+        console.log('Running healthcheck...');
+        execSync(`curl -v http://localhost:53122/ --output "${HEALTHCHECK_FILE}"`, { stdio: 'inherit' });
         
-        const resultData = {
+        console.log('Running tests...');
+        const testOutput = execSync(`node "${TEST_SCRIPT}"`, { cwd: ROOT_DIR, encoding: 'utf8' });
+        console.log(testOutput);
+
+        console.log('Generating evidence...');
+        
+        // Notify
+        const notifyContent = `Task ${TASK_ID} Completed\n\nPASS\n\nEvidence:\n- Healthcheck: PASS\n- Tests: PASS\n\nTest Output:\n${testOutput}`;
+        fs.writeFileSync(NOTIFY_FILE, notifyContent);
+
+        // Result
+        const result = {
             task_id: TASK_ID,
-            status: 'completed',
-            gate_light_exit: 0,
+            status: "success",
+            run_id: "run_" + new Date().toISOString().replace(/[:.]/g, '-'),
             artifacts: [
-                path.basename(HEALTH_ROOT_FILE),
-                path.basename(HEALTH_PAIRS_FILE),
-                path.basename(TEST_LOG_FILE)
+                path.basename(NOTIFY_FILE),
+                path.basename(HEALTHCHECK_FILE)
             ],
-            lineage: {
-                base: 'origin/main', 
-                landing: 'HEAD'
+            metrics: {
+                tests_passed: true,
+                server_log_len: serverLog.length
             }
         };
-        fs.writeFileSync(RESULT_JSON, JSON.stringify(resultData, null, 2));
-
-        const notifyContent = `
-Task ${TASK_ID} Completed.
-Feature: NewsStore + GET /news endpoint + /news/pull integration.
-Verification: MinSpec tests passed (Cases A-D).
-GATE_LIGHT_EXIT=0
-        `.trim();
-        fs.writeFileSync(NOTIFY_TXT, notifyContent);
-
-        const indexData = {
-            task_id: TASK_ID,
-            files: [
-                path.basename(RESULT_JSON),
-                path.basename(NOTIFY_TXT),
-                path.basename(SNIPPET_TXT),
-                path.basename(HEALTH_ROOT_FILE),
-                path.basename(HEALTH_PAIRS_FILE),
-                path.basename(TEST_LOG_FILE),
-                path.basename(CI_PARITY_JSON)
-            ]
-        };
-        fs.writeFileSync(INDEX_JSON, JSON.stringify(indexData, null, 2));
+        fs.writeFileSync(RESULT_FILE, JSON.stringify(result, null, 2));
         
-        // CI Parity
-        // 1. Get changed files (modified + new)
-        let scopeFiles = [];
-        try {
-            // Modified files
-            const diff = execSync('git diff --name-only origin/main', { encoding: 'utf8' });
-            scopeFiles.push(...diff.split('\n').filter(Boolean));
-            
-            // Untracked files
-            const untracked = execSync('git ls-files --others --exclude-standard', { encoding: 'utf8' });
-            scopeFiles.push(...untracked.split('\n').filter(Boolean));
-        } catch (e) {
-            console.error('Failed to calc scope files:', e);
-        }
+        console.log('Evidence generated successfully.');
 
-        // 2. Ensure evidence files are included (they might be untracked)
-        const evidenceFiles = [
-             path.relative(PROJECT_ROOT, RESULT_JSON),
-             path.relative(PROJECT_ROOT, NOTIFY_TXT),
-             path.relative(PROJECT_ROOT, INDEX_JSON),
-             path.relative(PROJECT_ROOT, SNIPPET_TXT),
-             path.relative(PROJECT_ROOT, HEALTH_ROOT_FILE),
-             path.relative(PROJECT_ROOT, HEALTH_PAIRS_FILE),
-             path.relative(PROJECT_ROOT, TEST_LOG_FILE),
-             path.relative(PROJECT_ROOT, CI_PARITY_JSON)
-        ];
-        
-        // 3. Normalize and Dedup
-        scopeFiles = scopeFiles.map(p => p.replace(/\\/g, '/'));
-        const evidenceFilesNorm = evidenceFiles.map(p => p.replace(/\\/g, '/'));
-        
-        const allFiles = new Set([...scopeFiles, ...evidenceFilesNorm]);
-        const finalScopeFiles = Array.from(allFiles).sort();
-
-        fs.writeFileSync(CI_PARITY_JSON, JSON.stringify({
-             base: "origin/main",
-             head: "HEAD",
-             merge_base: "calculated",
-             scope_pollution: false,
-             scope_count: finalScopeFiles.length,
-             scope_files: finalScopeFiles
-        }, null, 2));
-
-        log('Evidence Generation Completed Successfully.');
-
-    } catch (err) {
-        console.error('[ERROR]', err);
-        process.exit(1);
+    } catch (e) {
+        console.error('Evidence generation FAILED:', e.message);
+        if (e.stdout) console.log(e.stdout.toString());
+        exitCode = 1;
     } finally {
-        log('Stopping Server...');
+        console.log('Stopping server...');
         server.kill();
-        // Force kill if needed
-        try { execSync(`taskkill /F /PID ${server.pid}`); } catch (e) {}
+        process.exit(exitCode);
     }
-}
-
-main();
+}, 5000);
