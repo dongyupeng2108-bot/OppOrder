@@ -1,5 +1,5 @@
 BRANCH: docs/plan-sync-260213_002
-COMMIT: 8bd584e820485747487f7e8931447a7893a5c8b8
+COMMIT: 1ff5558395ae9d57e1b1f5cf4aa0dede6c296dd7
 
 [Gate Light] Starting verification for task 260213_002...
 [Gate Light] Checking specific evidence files...
@@ -14,15 +14,15 @@ COMMIT: 8bd584e820485747487f7e8931447a7893a5c8b8
 DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260213_002_healthcheck_53122_root.txt => HTTP/1.1 200 OK
 DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260213_002_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
 DOD_EVIDENCE_M5_PR1_LLM_JSON: rules/task-reports/2026-02/M5_PR1_llm_json_260213_002.txt => status=ok items=1 provider=mock model=mock-v1
-DOD_EVIDENCE_OPPS_PIPELINE_RUN: rules/task-reports/2026-02/mock_pipeline_260213_002.txt => run_id=run_8387deff ok=0 failed=0
+DOD_EVIDENCE_OPPS_PIPELINE_RUN: rules/task-reports/2026-02/mock_pipeline_260213_002.txt => run_id=run_99f4e5ad ok=0 failed=0
 DOD_EVIDENCE_OPPS_PIPELINE_TOP: rules/task-reports/2026-02/mock_pipeline_260213_002.txt => top_count=0 refs_run_id=true
 DOD_EVIDENCE_OPPS_RUNS_LIST: rules/task-reports/2026-02/mock_pipeline_260213_002.txt => contains_run_id=true
-DOD_EVIDENCE_OPPS_BY_RUN: rules/task-reports/2026-02/mock_pipeline_260213_002.txt => match_count=0 filter_run_id=run_8387deff
+DOD_EVIDENCE_OPPS_BY_RUN: rules/task-reports/2026-02/mock_pipeline_260213_002.txt => match_count=0 filter_run_id=run_99f4e5ad
 
 === CI_PARITY_PREVIEW ===
 Base: a91b239efca88e7e1692c637a9954fbfc09ea2dd
-Head: 8bd584e820485747487f7e8931447a7893a5c8b8
-MergeBase: eb829b45e8ac9ad4d661f544a228f33f99576566
+Head: 1ff5558395ae9d57e1b1f5cf4aa0dede6c296dd7
+MergeBase: a91b239efca88e7e1692c637a9954fbfc09ea2dd
 Source: origin/main
 Scope: 20 files
 
