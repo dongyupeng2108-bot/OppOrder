@@ -65,6 +65,8 @@ GATE_LIGHT_PREVIEW:
 [PASS] CI Parity Check: rules/task-reports/2026-02/ci_parity_${taskId}.json
 [PASS] Healthcheck: rules/task-reports/2026-02/${taskId}_healthcheck_53122_root.txt
 [PASS] Healthcheck: rules/task-reports/2026-02/${taskId}_healthcheck_53122_pairs.txt
+DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/${taskId}_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/${taskId}_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
 
 GATE_LIGHT_EXIT=0
 `;
