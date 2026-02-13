@@ -1,37 +1,8 @@
 {
   "task_id": "260213_004",
-  "timestamp": "2026-02-13T15:22:13.744Z",
-  "valid": false,
-  "errors": [
-    {
-      "code": "POSTFLIGHT_STATUS_INVALID",
-      "message": "Status must be DONE or FAILED, found: success"
-    },
-    {
-      "code": "POSTFLIGHT_RESULT_JSON_TOO_THIN",
-      "message": "Result JSON must have a summary field with meaningful content."
-    },
-    {
-      "code": "POSTFLIGHT_REPORT_BINDING_INVALID_FORMAT",
-      "message": "Result JSON missing valid 'report_file' field."
-    },
-    {
-      "code": "POSTFLIGHT_REPORT_BINDING_INVALID_FORMAT",
-      "message": "Result JSON 'report_sha256_short' must be 8-char lowercase hex."
-    },
-    {
-      "code": "POSTFLIGHT_ENVELOPE_SECTIONS_MISSING",
-      "message": "Notify missing sections: RESULT_JSON, LOG_HEAD, LOG_TAIL, INDEX"
-    },
-    {
-      "code": "POSTFLIGHT_REPORT_BINDING_INDEX_MISSING",
-      "message": "Report file 'undefined' declared in Result JSON but missing from Index."
-    },
-    {
-      "code": "POSTFLIGHT_EVIDENCE_ENVELOPE_MISSING",
-      "message": "Missing Business Evidence: ui_copy_details*.json / sse_capture*.out / manual_verification.json"
-    }
-  ],
+  "timestamp": "2026-02-13T15:39:17.986Z",
+  "valid": true,
+  "errors": [],
   "checks": {
     "result_json": "OK",
     "notify_structure": "OK",
@@ -43,7 +14,10 @@
   "context": {
     "resultData": {
       "task_id": "260213_004",
-      "status": "success",
+      "status": "DONE",
+      "summary": "Implemented NewsProvider abstraction and Deterministic Mock Provider.",
+      "report_file": "notify_260213_004.txt",
+      "report_sha256_short": "22360c41",
       "artifacts": [
         "rules/task-reports/2026-02/260213_004_test_log.txt",
         "rules/task-reports/2026-02/260213_004_healthcheck_53122_root.txt",

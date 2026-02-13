@@ -3,6 +3,14 @@ const fs = require('fs');
 const path = require('path');
 
 const taskId = '260213_004';
+
+try {
+    console.log('Fetching origin/main to ensure CI Parity...');
+    execSync('git fetch origin main');
+} catch (e) {
+    console.warn('Warning: git fetch origin main failed. Parity calculation might be stale if origin/main is outdated.');
+}
+
 // Base must be the full hash of origin/main to match what Gate Light calculates
 const base = execSync('git rev-parse origin/main').toString().trim();
 

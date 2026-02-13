@@ -1,8 +1,8 @@
 {
   "task_id": "260213_004",
   "base": "820b3d156094c82bfdf961fbccbc5b44d1d2648c",
-  "head": "6f38808751e0e204a25095d9472d024d6dbfeb75",
-  "merge_base": "b19d3064a56e91b9a05b27e21987f6cbbc5d4653",
+  "head": "5a1e03bcfdd430f88a30dfe3b0f36d125f1eef4a",
+  "merge_base": "820b3d156094c82bfdf961fbccbc5b44d1d2648c",
   "scope_files": [
     "OppRadar/mock_server_53122.mjs",
     "OppRadar/news_provider.mjs",
@@ -14,6 +14,7 @@
     "rules/task-reports/2026-02/ci_parity_260213_004.json",
     "rules/task-reports/2026-02/deliverables_index_260213_004.json",
     "rules/task-reports/2026-02/envelope_260213_004.json",
+    "rules/task-reports/2026-02/fix_envelope_260213_004.js",
     "rules/task-reports/2026-02/generate_ci_parity_260213_004.js",
     "rules/task-reports/2026-02/generate_evidence_260213_004.js",
     "rules/task-reports/2026-02/generate_index_260213_004.js",
@@ -22,7 +23,8 @@
     "rules/task-reports/2026-02/trae_report_snippet_260213_004.txt",
     "rules/task-reports/2026-02/ui_copy_details_260213_004.json",
     "rules/task-reports/envelopes/260213_004.envelope.json",
+    "scripts/mock_server.mjs",
     "scripts/test_news_provider_260213_004.mjs"
   ],
-  "scope_count": 19
+  "scope_count": 21
 }
