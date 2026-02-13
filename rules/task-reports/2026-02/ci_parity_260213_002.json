@@ -1,0 +1,30 @@
+{
+  "task_id": "260213_002",
+  "base": "a91b239efca88e7e1692c637a9954fbfc09ea2dd",
+  "head": "081a2f344cbc4fb3e883cf79cb3523543cc2420d",
+  "merge_base": "a91b239efca88e7e1692c637a9954fbfc09ea2dd",
+  "scope_files": [
+    ".trae/rules/rules.md",
+    "gate_light_preview_260211_007.txt",
+    "rules/LATEST.json",
+    "rules/rules/PROJECT_MASTER_PLAN.md",
+    "rules/task-reports/2026-02/260213_002.json",
+    "rules/task-reports/2026-02/260213_002_healthcheck_53122_pairs.txt",
+    "rules/task-reports/2026-02/260213_002_healthcheck_53122_root.txt",
+    "rules/task-reports/2026-02/M4_PR2_concurrent_log_260213_002.txt",
+    "rules/task-reports/2026-02/M5_PR1_llm_json_260213_002.txt",
+    "rules/task-reports/2026-02/ci_parity_260213_002.json",
+    "rules/task-reports/2026-02/deliverables_index_260213_002.json",
+    "rules/task-reports/2026-02/dod_stdout_260213_002.txt",
+    "rules/task-reports/2026-02/gate_light_preview_260213_002.txt",
+    "rules/task-reports/2026-02/generate_evidence_260213_002.js",
+    "rules/task-reports/2026-02/mock_pipeline_260213_002.txt",
+    "rules/task-reports/2026-02/notify_260213_002.txt",
+    "rules/task-reports/2026-02/result_260213_002.json",
+    "rules/task-reports/2026-02/trae_report_snippet_260213_002.txt",
+    "rules/task-reports/2026-02/ui_copy_details_260213_002.json",
+    "rules/task-reports/envelopes/260213_002.envelope.json"
+  ],
+  "scope_count": 20,
+  "generated_at": "2026-02-13T07:55:38.358Z"
+}
