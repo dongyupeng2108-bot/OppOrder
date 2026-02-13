@@ -96,4 +96,3 @@ task_id 260214_005 --result_dir rules\task-reports\2026-02 --report_dir rules\ta
 [Postflight] PASS
 [Gate Light] PASS
 GATE_LIGHT_EXIT=0
-GATE_LIGHT_EXIT=0
