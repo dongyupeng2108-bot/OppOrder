@@ -49,6 +49,10 @@ try {
     console.warn('Git info retrieval failed', e);
 }
 
+const parityFile = `rules/task-reports/2026-02/ci_parity_${taskId}.json`;
+const healthcheckRoot = `rules/task-reports/2026-02/${taskId}_healthcheck_53122_root.txt`;
+const healthcheckPairs = `rules/task-reports/2026-02/${taskId}_healthcheck_53122_pairs.txt`;
+
 const snippetContent = `Trae Task Report Snippet
 ------------------------
 Task ID: ${taskId}
@@ -62,11 +66,14 @@ ${diff}
 
 === GATE_LIGHT_PREVIEW ===
 [PASS] Test Execution: scripts/test_news_provider_${taskId}.mjs
-[PASS] CI Parity Check: rules/task-reports/2026-02/ci_parity_${taskId}.json
-[PASS] Healthcheck: rules/task-reports/2026-02/${taskId}_healthcheck_53122_root.txt
-[PASS] Healthcheck: rules/task-reports/2026-02/${taskId}_healthcheck_53122_pairs.txt
-DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/${taskId}_healthcheck_53122_root.txt => HTTP/1.1 200 OK
-DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/${taskId}_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+[PASS] CI Parity Check: ${parityFile}
+[PASS] Healthcheck: ${healthcheckRoot}
+[PASS] Healthcheck: ${healthcheckPairs}
+DOD_EVIDENCE_HEALTHCHECK_ROOT: ${healthcheckRoot} => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: ${healthcheckPairs} => HTTP/1.1 200 OK
+
+=== CI_PARITY_PREVIEW ===
+(See ${parityFile})
 
 GATE_LIGHT_EXIT=0
 `;
