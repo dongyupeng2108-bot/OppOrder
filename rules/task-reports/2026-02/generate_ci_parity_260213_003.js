@@ -3,7 +3,8 @@ const fs = require('fs');
 const path = require('path');
 
 const taskId = '260213_003';
-const base = 'origin/main';
+// Base must be the full hash of origin/main to match what Gate Light calculates
+const base = execSync('git rev-parse origin/main').toString().trim();
 
 try {
     const head = execSync('git rev-parse HEAD').toString().trim();
