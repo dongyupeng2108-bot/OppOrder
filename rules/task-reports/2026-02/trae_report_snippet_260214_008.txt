@@ -1,15 +1,15 @@
 === GATE_LIGHT_PREVIEW ===
 Task ID: 260214_008
 Status: PASS
-Gate Light Exit: 0
-Timestamp: 2026-02-14T11:10:45.258Z
+GATE_LIGHT_EXIT=0
+Timestamp: 2026-02-14T11:45:14.170Z
 
 === CI_PARITY_PREVIEW ===
-Head: cbe1d44a5f30c91447a5a1fc0a5ceb637da6f77c
+Head: d47855aebf8bcfcd2c70567020b92d7d4826110e
 Base: 32c94d82df8c009b7e514f522cc8317a0cfe8e1f
 MergeBase: 4e86b082c25bf86361dbc7d4046875a50acd5dbb
 Source: docs/plan-update-published-tasks-only-260214_008
-Scope: 10 files
+Scope: 13 files
 
 [DoD Evidence]
 DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260214_008_healthcheck_53122_root.txt

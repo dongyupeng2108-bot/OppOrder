@@ -159,7 +159,7 @@ const snippetContent = `
 === GATE_LIGHT_PREVIEW ===
 Task ID: ${TASK_ID}
 Status: PASS
-Gate Light Exit: 0
+GATE_LIGHT_EXIT=0
 Timestamp: ${new Date().toISOString()}
 
 === CI_PARITY_PREVIEW ===
