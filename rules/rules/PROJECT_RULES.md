@@ -73,12 +73,15 @@
 - **LATEST.json**: A pointer file in rules/ that tracks the most recently generated task evidence location. CI uses this to know what to validate.
 
 ## Evidence Standards
+- **Trust Level: Verifiable & Traceable** (Not "Absolute Trust"):
+  - Gate Light ensures evidence is **traceable** (linked to git commit), **recalculable** (via scripts), and **tamper-evident** (hash binding).
+  - It detects non-expected changes within its coverage scope but does not mathematically prove "correctness".
 - **Atomic Evidence Rule (Evidence Integrity)**:
   - ANY modification to `notify`, `result`, `preview`, or `healthcheck` files MUST be immediately followed by a regeneration of `deliverables_index.json` and `envelope.json`.
-  - Gate Light enforces strict hash binding (`POSTFLIGHT_REPORT_BINDING_MISMATCH`). Never update evidence files in isolation.
-- **Cross-Platform Text Evidence**:
-  - **LF Normalization**: All text-based evidence files (`.txt`, `.json`, `.log`) MUST use LF (Line Feed) line endings to ensure consistent hashing between Windows (Dev) and Linux (CI).
-  - **Encoding**: Avoid PowerShell's default UTF-16 (BOM). Use `Set-Content -Encoding UTF8` or `curl.exe` for output redirection to prevent NUL byte injection.
+  - Gate Light enforces strict hash binding (`POSTFLIGHT_REPORT_BINDING_MISMATCH`).
+- **Cross-Platform Hard Rules**:
+  - **LF Normalization**: All text-based evidence files (`.txt`, `.json`, `.log`) MUST use LF (Line Feed) line endings. Scripts must enforce `.replace(/\r\n/g, '\n')` before hashing.
+  - **No UTF-16/NUL**: PROHIBIT PowerShell default redirection (`>`) which creates UTF-16/BOM. MUST use `Set-Content -Encoding UTF8` or `curl.exe --output` or Node.js `fs.writeFileSync`.
 - **Task-Specific Script Location**:
   - One-off evidence generation scripts MUST be placed in `rules/task-reports/<YYYY-MM>/generate_evidence_<task_id>.js`.
   - DO NOT pollute the root `scripts/` directory with task-specific generators unless they are formally proposed as reusable tools.
