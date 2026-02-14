@@ -1,32 +1,12 @@
 === TRAE_REPORT_SNIPPET ===
 
 BRANCH: docs/lessons-006-007-settings-index-260214_006
-COMMIT: 7b6a772
+COMMIT: 2841ea3
 
 === GIT_SCOPE_DIFF ===
-rules/LATEST.json
 rules/rules/PROJECT_MASTER_PLAN.md
 rules/rules/PROJECT_RULES.md
-rules/rules/TRAE_SETTINGS_INDEX.txt
 rules/rules/WORKFLOW.md
-rules/task-reports/2026-02/260214_006.json
-rules/task-reports/2026-02/260214_006_healthcheck_53122_pairs.txt
-rules/task-reports/2026-02/260214_006_healthcheck_53122_root.txt
-rules/task-reports/2026-02/append_content_260214_006.txt
-rules/task-reports/2026-02/build_snippet_260214_006.js
-rules/task-reports/2026-02/ci_parity_260214_006.json
-rules/task-reports/2026-02/deliverables_index_260214_006.json
-rules/task-reports/2026-02/dod_stdout_260214_006.txt
-rules/task-reports/2026-02/gate_light_ci_260214_006.txt
-rules/task-reports/2026-02/gate_light_preview_260214_006.txt
-rules/task-reports/2026-02/generate_evidence_260214_006.js
-rules/task-reports/2026-02/notify_260214_006.txt
-rules/task-reports/2026-02/result_260214_006.json
-rules/task-reports/2026-02/scripts/postflight_validate_envelope_260214_006.mjs
-rules/task-reports/2026-02/trae_report_snippet_260214_006.txt
-rules/task-reports/envelopes/260214_006.envelope.json
-scripts/check_doc_path_refs.mjs
-scripts/envelope_build.mjs
 
 DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260214_006_healthcheck_53122_root.txt => HTTP/1.1 200 OK
 DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260214_006_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
@@ -40,11 +20,11 @@ DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260214_006_healthchec
 
 
 === CI_PARITY_PREVIEW ===
-Base: e0d6e294d9ccd64fe6ab8addcb949855b6d30e42
-Head: 7b6a77234ca551f59d8935cf3c3a26f86a767953
-MergeBase: e0d6e294d9ccd64fe6ab8addcb949855b6d30e42
+Base: a99f681d627a4fc6cc345cbcc450fb539b5e8a4c
+Head: 2841ea34636295c5c22d9edc0385f57aed142ad9
+MergeBase: 5a6c3d6b929839c11a6274323b95a5686a0011f6
 Source: ci_parity_260214_006.json
-Scope: 23 files
+Scope: 3 files
 
 
 === GATE_LIGHT_PREVIEW ===
@@ -83,7 +63,7 @@ PASS
 [Gate Light] CI Parity Preview verified.
 [Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
 [Gate Light] Fetching origin/main history for diff context...
-[Gate Light] Allowed legacy task_id (transition): 260214_005
+[Gate Light] Allowed legacy task_id (transition): 260214_006
 [Gate Light] NoHistoricalEvidenceTouch verified.
 [Gate Light] SnippetCommitMustMatch verified.
 [Gate Light] Checking GATE_LIGHT_EXIT Mechanism...
