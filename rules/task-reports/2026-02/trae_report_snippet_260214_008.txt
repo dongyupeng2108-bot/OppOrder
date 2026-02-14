@@ -1,0 +1,19 @@
+=== GATE_LIGHT_PREVIEW ===
+Task ID: 260214_008
+Status: PASS
+GATE_LIGHT_EXIT=0
+COMMIT: 047f3da985d03cbee70a9ccb644c2cebc5421b60
+Timestamp: 2026-02-14T13:12:38.278Z
+[Postflight] PASS: Task 260214_008 Verified.
+[Gate Light] PASS: Verification Successful.
+
+=== CI_PARITY_PREVIEW ===
+Head: 047f3da985d03cbee70a9ccb644c2cebc5421b60
+Base: 32c94d82df8c009b7e514f522cc8317a0cfe8e1f
+MergeBase: 32c94d82df8c009b7e514f522cc8317a0cfe8e1f
+Source: docs/plan-update-published-tasks-only-260214_008
+Scope: 14 files
+
+[DoD Evidence]
+DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260214_008_healthcheck_53122_root.txt
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260214_008_healthcheck_53122_pairs.txt

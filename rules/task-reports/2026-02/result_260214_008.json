@@ -1,0 +1,24 @@
+{
+  "task_id": "260214_008",
+  "status": "DONE",
+  "summary": "Updated PROJECT_MASTER_PLAN.md with task ledger for 7 tasks.",
+  "report_file": "../../rules/PROJECT_MASTER_PLAN.md",
+  "report_sha256_short": "66a1a563",
+  "business_evidence": {
+    "plan_file": "../../rules/PROJECT_MASTER_PLAN.md",
+    "verification_log": "260214_008_plan_update.log",
+    "manual_verification": "manual_verification_260214_008.json"
+  },
+  "dod_evidence": {
+    "gate_light_exit": 0,
+    "healthcheck": [
+      "DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260214_008_healthcheck_53122_root.txt => HTTP/1.1 200 OK",
+      "DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260214_008_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK"
+    ]
+  },
+  "git_context": {
+    "branch": "docs/plan-update-published-tasks-only-260214_008",
+    "commit": "047f3da985d03cbee70a9ccb644c2cebc5421b60"
+  },
+  "timestamp": "2026-02-14T13:12:38.278Z"
+}
