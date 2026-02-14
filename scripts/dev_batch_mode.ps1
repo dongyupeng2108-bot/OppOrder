@@ -290,6 +290,29 @@ fetch('http://localhost:53122/pairs', '${PairsHcFileJS}');
         }
     }
 
+    # 1.12 Opps Rank V2 (Task 260214_009+)
+    if ($TaskId -ge "260214_009") {
+        Write-Host "1.12. Running Opps Rank V2 Evidence Generation..."
+        # Use the specific generation script for this task
+        # Note: ReportsDir is already task-reports/2026-02
+        $GenScript = Join-Path $ReportsDir "generate_evidence_${TaskId}.mjs"
+        if (Test-Path $GenScript) {
+             node $GenScript
+             Check-LastExitCode
+        } else {
+             Write-Error "Generation script not found: $GenScript"
+             exit 1
+        }
+        
+        $RankEvidenceFile = Join-Path $ReportsDir "opps_rank_v2_${TaskId}.json"
+        if (Test-Path $RankEvidenceFile) {
+            Write-Host "   Verified evidence file: $RankEvidenceFile"
+        } else {
+            Write-Error "   Failed to generate evidence file: $RankEvidenceFile"
+            exit 1
+        }
+    }
+
     # 2. Envelope Build
     Write-Host "2. Building Envelope..."
     node scripts/envelope_build.mjs --task_id $TaskId --result_dir $ReportsDir --status DONE --summary $Summary
@@ -441,7 +464,19 @@ if (taskId >= '260211_005') {
     }
 }
 
-let dodLines = (healthcheckLines + (scanCacheLines ? '\n' + scanCacheLines : '') + (oppsPipelineLines ? '\n' + oppsPipelineLines : '') + (oppsRunFilterLines ? '\n' + oppsRunFilterLines : '') + (oppsTopByRunLines ? '\n' + oppsTopByRunLines : '') + (llmRouteLines ? '\n' + llmRouteLines : '')).trim();
+// 1g. Opps Rank V2 (Task 260214_009+)
+let oppsRankV2Lines = '';
+if (taskId >= '260214_009') {
+    const dodFile = path.join(reportsDir, 'dod_opps_rank_v2_' + taskId + '.txt');
+    if (fs.existsSync(dodFile)) {
+        const content = fs.readFileSync(dodFile, 'utf8');
+        if (content.trim().startsWith('DOD_EVIDENCE_OPPS_RANK_V2:')) {
+             oppsRankV2Lines = content.trim();
+        }
+    }
+}
+
+let dodLines = (healthcheckLines + (scanCacheLines ? '\n' + scanCacheLines : '') + (oppsPipelineLines ? '\n' + oppsPipelineLines : '') + (oppsRunFilterLines ? '\n' + oppsRunFilterLines : '') + (oppsTopByRunLines ? '\n' + oppsTopByRunLines : '') + (llmRouteLines ? '\n' + llmRouteLines : '') + (oppsRankV2Lines ? '\n' + oppsRankV2Lines : '')).trim();
 
 const marker = "=== DOD_EVIDENCE_STDOUT ===";
 const stdoutBlock = marker + '\n' + dodLines;
@@ -492,6 +527,7 @@ const newSize = fileBuffer.length;
         if (oppsRunFilterLines) result.dod_evidence.opps_run_filter = oppsRunFilterLines.split('\n');
         if (oppsTopByRunLines) result.dod_evidence.opps_top_by_run = oppsTopByRunLines.split('\n');
         if (llmRouteLines) result.dod_evidence.llm_route = llmRouteLines.split('\n');
+        if (oppsRankV2Lines) result.dod_evidence.opps_rank_v2 = oppsRankV2Lines.split('\n');
         
         fs.writeFileSync(resultFile, JSON.stringify(result, null, 2));
     }
