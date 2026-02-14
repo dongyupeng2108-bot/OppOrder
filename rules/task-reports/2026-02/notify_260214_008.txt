@@ -7,7 +7,7 @@ Gate Light: GATE_LIGHT_EXIT=0
 DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260214_008_healthcheck_53122_root.txt => HTTP/1.1 200 OK
 HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-Date: Sat, 14 Feb 2026 11:46:17 GMT
+Date: Sat, 14 Feb 2026 11:47:06 GMT
 Connection: close
 
 {"status":"ok","mock":"doc-only-task"}
@@ -18,7 +18,7 @@ Connection: close
 DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260214_008_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
 HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-Date: Sat, 14 Feb 2026 11:46:17 GMT
+Date: Sat, 14 Feb 2026 11:47:06 GMT
 Connection: close
 
 {"status":"ok","mock":"doc-only-task"}
@@ -46,9 +46,9 @@ Connection: close
   },
   "git_context": {
     "branch": "docs/plan-update-published-tasks-only-260214_008",
-    "commit": "4a11577db51d54fa4d7c7d5d65f95941fa4deaab"
+    "commit": "82657ba0d00947819b299e9f8b8389dd56d4d4c3"
   },
-  "timestamp": "2026-02-14T11:46:17.102Z"
+  "timestamp": "2026-02-14T11:47:06.328Z"
 }
 === RESULT_JSON_END ===
 
@@ -56,7 +56,7 @@ Connection: close
 
 Task: 260214_008
 Action: Update PROJECT_MASTER_PLAN.md with current session task ledger.
-Timestamp: 2026-02-14T11:46:15.593Z
+Timestamp: 2026-02-14T11:47:04.769Z
 Verification:
 - Ledger Section Present: YES
 - Task IDs Covered: 260212_001, 260213_002, 260213_003, 260213_004, 260214_005, 260214_006, 260214_007
@@ -85,20 +85,20 @@ MERGED | UNKNOWN | 2454fc5 | 0 | rules/task-reports/2026-02/notify_260213_003.tx
   "files": [
     {
       "path": "rules/task-reports/2026-02/result_260214_008.json",
-      "sha256": "febdc871885cfc49638e583255e4983c03b7aaf250cd4c52d1c2fd63f6de9c9e",
-      "sha256_short": "febdc871",
+      "sha256": "70874691f49a262027fdb6048186425838357925fc132b4240cec907e22f3fc1",
+      "sha256_short": "70874691",
       "size": 939
     },
     {
       "path": "rules/task-reports/2026-02/trae_report_snippet_260214_008.txt",
-      "sha256": "135d727b2ee50d744bee1fbf0ef9130570faf1d0df86e5adab93f0fdf2f0bbf2",
-      "sha256_short": "135d727b",
-      "size": 618
+      "sha256": "1743934d4e9f412205d6d88eb9361e9d79f6ef3a21e098d2a81bf7361fa987c0",
+      "sha256_short": "1743934d",
+      "size": 707
     },
     {
       "path": "rules/task-reports/2026-02/260214_008_plan_update.log",
-      "sha256": "ec03f847aec67265cdf6790e65f47935308f53bea2eb8534223ddff30a066726",
-      "sha256_short": "ec03f847",
+      "sha256": "d472506b679cba2529d5aa550e7ce5f66867682be1dff42bcb99da4c1e743d88",
+      "sha256_short": "d472506b",
       "size": 1177
     },
     {
@@ -109,26 +109,26 @@ MERGED | UNKNOWN | 2454fc5 | 0 | rules/task-reports/2026-02/notify_260213_003.tx
     },
     {
       "path": "rules/task-reports/2026-02/ci_parity_260214_008.json",
-      "sha256": "b90128175c6db08e9609788ac299c18288d18ebc73998440b359be1a382a98ac",
-      "sha256_short": "b9012817",
+      "sha256": "654cd8f8de58cc95103f701311aafabbc1eb467878e776716a0308cb634e5c8a",
+      "sha256_short": "654cd8f8",
       "size": 1052
     },
     {
       "path": "rules/task-reports/2026-02/260214_008_healthcheck_53122_root.txt",
-      "sha256": "a203530f886b60ef081da7d8bafc9f9b930a5e9a57552f80e7e2460b4db1c722",
-      "sha256_short": "a203530f",
+      "sha256": "ec8d49ee824598adf2d588e96f4075d0ae88cc9780dfd439653dd69950b8041f",
+      "sha256_short": "ec8d49ee",
       "size": 156
     },
     {
       "path": "rules/task-reports/2026-02/260214_008_healthcheck_53122_pairs.txt",
-      "sha256": "a203530f886b60ef081da7d8bafc9f9b930a5e9a57552f80e7e2460b4db1c722",
-      "sha256_short": "a203530f",
+      "sha256": "ec8d49ee824598adf2d588e96f4075d0ae88cc9780dfd439653dd69950b8041f",
+      "sha256_short": "ec8d49ee",
       "size": 156
     },
     {
       "path": "rules/task-reports/2026-02/manual_verification_260214_008.json",
-      "sha256": "809162e73748586241295fa3fe4787be13889a399224cc095d1bdb37ac4f07ca",
-      "sha256_short": "809162e7",
+      "sha256": "539b447212f04f39a7dc978a480b25c8b30098b100e9603b9a5ee70b9df698e7",
+      "sha256_short": "539b4472",
       "size": 271
     }
   ]

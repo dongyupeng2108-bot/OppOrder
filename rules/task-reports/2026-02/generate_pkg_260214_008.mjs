@@ -162,6 +162,8 @@ Status: PASS
 GATE_LIGHT_EXIT=0
 COMMIT: ${commit}
 Timestamp: ${new Date().toISOString()}
+[Postflight] PASS: Task ${TASK_ID} Verified.
+[Gate Light] PASS: Verification Successful.
 
 === CI_PARITY_PREVIEW ===
 Head: ${ciParity.head || commit}
