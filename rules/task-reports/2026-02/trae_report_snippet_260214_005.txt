@@ -1,26 +1,27 @@
 === TRAE_REPORT_SNIPPET ===
 
 BRANCH: feat/news-store-list-260214_005
-COMMIT: c904eaa
+COMMIT: 4925f3e
 
 Task ID: 260214_005
 Status: PASS
-Timestamp: 2026-02-13T23:57:33.279Z
+Timestamp: 2026-02-14T00:51:27.774Z
 
 DOD_EVIDENCE_HEALTHCHECK_ROOT: 260214_005_healthcheck_53122_root.txt => HTTP/1.1 200 OK
 DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260214_005_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
 
+
 === CI_PARITY_PREVIEW ===
 Base: 82fa423
-Head: c904eaa
+Head: 4925f3e
 MergeBase: 82fa423
 Source: JSON (Evidence-as-Code)
-Scope: 17 files
+Scope: 19 files
 Files (Top 3):
   - OppRadar/mock_server_53122.mjs
   - OppRadar/news_store.mjs
   - rules/LATEST.json
-  ... (14 more)
+  ... (16 more)
 =========================
 
 === GATE_LIGHT_PREVIEW ===
