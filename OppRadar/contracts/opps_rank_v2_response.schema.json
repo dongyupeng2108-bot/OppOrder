@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Opportunity Rank V2 Response",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": [
+      "opp_id",
+      "score",
+      "p_hat",
+      "p_llm",
+      "p_ci",
+      "price_q",
+      "score_v2"
+    ],
+    "properties": {
+      "opp_id": {
+        "type": "string"
+      },
+      "score": {
+        "type": "number"
+      },
+      "p_hat": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      },
+      "p_llm": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      },
+      "p_ci": {
+        "type": "object",
+        "required": ["low", "high", "method"],
+        "properties": {
+          "low": { "type": "number" },
+          "high": { "type": "number" },
+          "method": { "type": "string" }
+        }
+      },
+      "price_q": {
+        "type": "number"
+      },
+      "score_v2": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      },
+      "meta": {
+        "type": "object"
+      }
+    }
+  }
+}

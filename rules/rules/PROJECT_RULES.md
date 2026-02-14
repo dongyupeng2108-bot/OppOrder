@@ -137,9 +137,28 @@
 - **Parameters**: `run_id` (Required), `limit` (max 50, default 20)
 - **Response**: Array of Opportunity Objects (sorted by score desc)
 
+#### Opportunity Rank v2 API
+- **Endpoint**: `GET /opportunities/rank_v2`
+- **Parameters**:
+  - `run_id`: String (Required).
+  - `limit`: Number (Optional, max 50, default 20).
+  - `provider`: String (Optional, "mock"|"deepseek", default "mock").
+  - `model`: String (Optional).
+- **Response**: Array of Objects (sorted by `score_v2` desc).
+  - `opp_id`: String.
+  - `score`: Number (Original v1 score).
+  - `p_hat`: Number (Base probability, 0..1).
+  - `p_llm`: Number (LLM probability, 0..1).
+  - `p_ci`: Object (`{ low, high, method }`).
+  - `price_q`: Number (Quantized price).
+  - `score_v2`: Number (Final score, 0..1).
+  - `meta`: Object (Optional).
+- **Schema**: `OppRadar/contracts/opps_rank_v2_response.schema.json`
+
 ## DoD Markers (Gate Light)
 - **DOD_EVIDENCE_OPPS_RUNS_LIST**: `<path> => contains_run_id=true count=...`
 - **DOD_EVIDENCE_OPPS_BY_RUN**: `<path> => rows=... all_same_run_id=true`
+- **DOD_EVIDENCE_OPPS_RANK_V2**: `<path> => rows=... has_fields=p_hat,p_llm,p_ci,price_q,score_v2 sorted_by=score_v2_desc provider=... stable=true`
   - Returns array of scan objects or similar replay data.
 
 ## API Contracts (v1.0)
