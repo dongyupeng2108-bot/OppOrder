@@ -500,6 +500,7 @@ notify_260213_002.txt
 notify_260213_003.txt
 notify_260213_004.txt
 notify_260214_005.txt
+notify_append_260214_006.txt
 opps_pipeline_smoke_260209_006.txt
 opps_pipeline_smoke_260209_008.txt
 opps_pipeline_smoke_260209_009.txt
@@ -749,3 +750,17 @@ DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260214_006_healthcheck
 DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260214_006_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
 
 GATE_LIGHT_EXIT=0
+
+=== DOC_CHANGES_SUMMARY ===
+1. WORKFLOW.md: Added Preflight checks, CI Parity Probe (Base/Head/MergeBase), Two-Pass Evidence Truth, and Evidence-only update rules.
+2. PROJECT_RULES.md: Added Atomic Evidence Rule, Cross-platform text standards, Task script location, and Ports convention.
+3. PROJECT_MASTER_PLAN.md: Added Process Learnings (006/007) and marked 260214_005 as completed.
+
+=== TRAE_SETTINGS_INDEX ===
+TraeTask_ | FIX: | 讨论:
+rules/rules/WORKFLOW.md
+rules/rules/PROJECT_RULES.md
+rules/rules/PROJECT_MASTER_PLAN.md
+gate_light_ci (Two-Pass)
+No delete locks/runs; No merge origin/main; Ports 53122/53121
+

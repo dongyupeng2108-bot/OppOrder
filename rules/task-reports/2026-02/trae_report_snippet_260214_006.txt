@@ -1,31 +1,42 @@
 === TRAE_REPORT_SNIPPET ===
 
 BRANCH: docs/lessons-006-007-settings-index-260214_006
-COMMIT: f8d8b12
+COMMIT: 4797ed9
 
 === GIT_SCOPE_DIFF ===
+rules/LATEST.json
 rules/rules/PROJECT_MASTER_PLAN.md
 rules/rules/PROJECT_RULES.md
 rules/rules/TRAE_SETTINGS_INDEX.txt
 rules/rules/WORKFLOW.md
+rules/task-reports/2026-02/260214_006.json
+rules/task-reports/2026-02/260214_006_healthcheck_53122_pairs.txt
+rules/task-reports/2026-02/260214_006_healthcheck_53122_root.txt
+rules/task-reports/2026-02/append_content_260214_006.txt
+rules/task-reports/2026-02/build_snippet_260214_006.js
+rules/task-reports/2026-02/ci_parity_260214_006.json
+rules/task-reports/2026-02/deliverables_index_260214_006.json
+rules/task-reports/2026-02/dod_stdout_260214_006.txt
+rules/task-reports/2026-02/gate_light_ci_260214_006.txt
+rules/task-reports/2026-02/gate_light_preview_260214_006.txt
+rules/task-reports/2026-02/generate_evidence_260214_006.js
+rules/task-reports/2026-02/notify_260214_006.txt
+rules/task-reports/2026-02/result_260214_006.json
+rules/task-reports/2026-02/scripts/postflight_validate_envelope_260214_006.mjs
+rules/task-reports/2026-02/trae_report_snippet_260214_006.txt
+rules/task-reports/envelopes/260214_006.envelope.json
+scripts/envelope_build.mjs
 
 DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260214_006_healthcheck_53122_root.txt => HTTP/1.1 200 OK
 DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260214_006_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
 
-=== DOD_EVIDENCE_STDOUT ===
-[Docs Task] No runtime evidence required.
-[Docs Task] Verified 3 core docs updated.
-[Docs Task] Verified TRAE_SETTINGS_INDEX.txt created.
-
-===
-
 
 === CI_PARITY_PREVIEW ===
 Base: e0d6e294d9ccd64fe6ab8addcb949855b6d30e42
-Head: f8d8b124a4a069c8688d7d80a304aa0f436c3034
+Head: 4797ed966a366627b9c32919a213b112ea60e0f9
 MergeBase: 7e8279ea6e6462d6ff6433bb08924c0f0392cc5c
 Source: ci_parity_260214_006.json
-Scope: 4 files
+Scope: 22 files
 
 
 === GATE_LIGHT_PREVIEW ===
@@ -39,7 +50,7 @@ Scope: 4 files
 [Gate Light] Doc path standards verified.
 [Gate Light] Checking for legacy doc path references...
 [CheckDocPathRefs] Scanning for legacy doc path references...
-[CheckDocPathRefs] Scan completed in 18ms.
+[CheckDocPathRefs] Scan completed in 16ms.
 [CheckDocPathRefs] PASS: No legacy doc path references found.
 [Gate Light] Checking for global healthcheck artifacts...
 [Gate Light] Global Artifact Guard verified.
@@ -76,11 +87,8 @@ PASS
 [Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...
 [Gate Light] Immutable Integrate & SafeCmd Enforcement verified.
 [Gate Light] Checking Two-Pass Evidence Truth & No Auto-Merge...
-[Gate Light] Two-Pass Evidence Truth & No Auto-Merge verified.
-[Gate Light] Executing: node scripts/postflight_validate_envelope.mjs --task_id 260214_006 --result_dir rules/task-reports/2026-02 --report_dir rules/task-reports/2026-02
-[Postflight] Validating 260214_006 in rules/task-reports/2026-02...
-[Postflight] Report: rules\task-reports\2026-02\260214_006.json
-[Postflight] Envelope: rules\task-reports\envelopes\260214_006.envelope.json
-[Postflight] PASS
-[Gate Light] PASS
+
+[Gate Light] [BLOCK] EVIDENCE_TRUTH_MISMATCH
+  Snippet Preview does NOT match gate_light_preview_260214_006.txt
+  ACTION: Do NOT manually edit snippet. Use extract_gate_light_preview.mjs.
 GATE_LIGHT_EXIT=0

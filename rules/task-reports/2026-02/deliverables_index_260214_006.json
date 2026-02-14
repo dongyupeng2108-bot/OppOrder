@@ -1158,7 +1158,7 @@
     {
       "name": "260214_006.json",
       "size": 845,
-      "sha256_short": "bd59399a"
+      "sha256_short": "299d6e78"
     },
     {
       "name": "260214_006_healthcheck_53122_pairs.txt",
@@ -1247,8 +1247,8 @@
     },
     {
       "name": "ci_parity_260214_006.json",
-      "size": 438,
-      "sha256_short": "ec2d5e17"
+      "size": 1534,
+      "sha256_short": "d64c9b07"
     },
     {
       "name": "ci_parity_json_negative_260211_002.txt",
@@ -1797,8 +1797,8 @@
     },
     {
       "name": "gate_light_ci_260214_006.txt",
-      "size": 3044,
-      "sha256_short": "d20ddb6a"
+      "size": 2736,
+      "sha256_short": "0feb7f01"
     },
     {
       "name": "gate_light_gen_260211_007.log",
@@ -1832,8 +1832,8 @@
     },
     {
       "name": "gate_light_preview_260214_006.txt",
-      "size": 3070,
-      "sha256_short": "53f20eb9"
+      "size": 2780,
+      "sha256_short": "7810817b"
     },
     {
       "name": "gate_light_raw_log_260212_001.txt",
@@ -2427,8 +2427,13 @@
     },
     {
       "name": "notify_260214_006.txt",
-      "size": 21350,
-      "sha256_short": "0cdeef0c"
+      "size": 21997,
+      "sha256_short": "4eef0858"
+    },
+    {
+      "name": "notify_append_260214_006.txt",
+      "size": 616,
+      "sha256_short": "569ed2c6"
     },
     {
       "name": "opps_pipeline_smoke_260209_006.txt",
@@ -2998,7 +3003,7 @@
     {
       "name": "result_260214_006.json",
       "size": 491,
-      "sha256_short": "32cbc45c"
+      "sha256_short": "43237624"
     },
     {
       "name": "run_260206_005.log",
@@ -3607,8 +3612,8 @@
     },
     {
       "name": "trae_report_snippet_260214_006.txt",
-      "size": 3949,
-      "sha256_short": "03d30d5c"
+      "size": 4457,
+      "sha256_short": "74c45b22"
     },
     {
       "name": "ui_copy_details_260213_002.json",
