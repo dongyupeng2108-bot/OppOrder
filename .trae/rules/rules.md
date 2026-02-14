@@ -6,11 +6,11 @@
  - PROJECT_MASTER_PLAN.md 
  
  HARD INTERLOCK (must comply before any action): 
- 1) Message Header Protocol: 
+ 1) Message Header Protocol & MODE BEHAVIOR: 
     Every user message MUST start with exactly one of: 
-    - TraeTask_ 
-    - FIX: 
-    - 讨论: 
+    - TraeTask_ / FIX: -> EXECUTION ALLOWED (Plan -> Act -> Verify). 
+    - 讨论: -> READ-ONLY. STRICTLY FORBIDDEN: File edits, Shell commands, Git ops. 
+      (If user asks for changes in Discussion, reply with PLAN only and request explicit FIX: header). 
     If missing: STOP. No guessing. No commands. Output only the standard violation message. 
  
  2) PR-Only / No Auto-Merge: 

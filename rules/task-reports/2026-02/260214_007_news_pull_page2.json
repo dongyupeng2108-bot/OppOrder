@@ -1,0 +1,8 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Sat, 14 Feb 2026 08:03:15 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+{"status":"ok","provider_used":"mock","fallback":false,"cached":false,"cache_key":null,"inserted_count":0,"deduped_count":0,"fetched_count":0,"written_count":0,"latest_news_id":"0000000100","has_more":false,"items":[],"request":{"provider":"mock","topic_key":"default","query":"","timespan":"1d","maxrecords":5,"since_id":"0000000100"}}

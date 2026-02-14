@@ -1,0 +1,116 @@
+{
+  "task_id": "260214_007",
+  "generated_at": "2026-02-14T08:42:49.904Z",
+  "files": [
+    {
+      "path": "rules/task-reports/2026-02/260214_007.json",
+      "sha256": "9697c8d7130370e1ad041e2e96f2143540557a609463eb01f2adc5d5d8bf55e0",
+      "sha256_short": "9697c8d7"
+    },
+    {
+      "path": "rules/task-reports/2026-02/260214_007_healthcheck_53122_pairs.txt",
+      "sha256": "7335d6cbc1048ee03681926bc7a99f8e7887fdc2772c4281e092868b385d5e9a",
+      "sha256_short": "7335d6cb"
+    },
+    {
+      "path": "rules/task-reports/2026-02/260214_007_healthcheck_53122_root.txt",
+      "sha256": "7335d6cbc1048ee03681926bc7a99f8e7887fdc2772c4281e092868b385d5e9a",
+      "sha256_short": "7335d6cb"
+    },
+    {
+      "path": "rules/task-reports/2026-02/260214_007_manual_verification.json",
+      "sha256": "c9e1e92fd1716fe7f57de02b772bdb27fe8964e9232c444dda6c29beb59d169f",
+      "sha256_short": "c9e1e92f"
+    },
+    {
+      "path": "rules/task-reports/2026-02/260214_007_news_pull_dedup.json",
+      "sha256": "c4766069bd2e0f27c683dedf67747b547d4f0faee87b666daf8ec5ce55a9ec65",
+      "sha256_short": "c4766069"
+    },
+    {
+      "path": "rules/task-reports/2026-02/260214_007_news_pull_idem1.json",
+      "sha256": "4f532be3c82eac24052852a6af69d0cf77b72fdddb532403b8419cfa2d72050b",
+      "sha256_short": "4f532be3"
+    },
+    {
+      "path": "rules/task-reports/2026-02/260214_007_news_pull_idem2.json",
+      "sha256": "4f532be3c82eac24052852a6af69d0cf77b72fdddb532403b8419cfa2d72050b",
+      "sha256_short": "4f532be3"
+    },
+    {
+      "path": "rules/task-reports/2026-02/260214_007_news_pull_idem_post1.json",
+      "sha256": "c4766069bd2e0f27c683dedf67747b547d4f0faee87b666daf8ec5ce55a9ec65",
+      "sha256_short": "c4766069"
+    },
+    {
+      "path": "rules/task-reports/2026-02/260214_007_news_pull_idem_post2.json",
+      "sha256": "c4766069bd2e0f27c683dedf67747b547d4f0faee87b666daf8ec5ce55a9ec65",
+      "sha256_short": "c4766069"
+    },
+    {
+      "path": "rules/task-reports/2026-02/260214_007_news_pull_limit2.json",
+      "sha256": "10354e084903240e2486c50a81263937523c67440bc44d9be436cd05798903e5",
+      "sha256_short": "10354e08"
+    },
+    {
+      "path": "rules/task-reports/2026-02/260214_007_news_pull_limit20.json",
+      "sha256": "1fc63c85483ee24d402366d9b01b92599f526b869fcbd0947c87c26cd5a6a527",
+      "sha256_short": "1fc63c85"
+    },
+    {
+      "path": "rules/task-reports/2026-02/260214_007_news_pull_limit9999.json",
+      "sha256": "875546c52c747415aa78d4638afe63c75e48e52e4ea4e4be0fa8c17d1b165e7e",
+      "sha256_short": "875546c5"
+    },
+    {
+      "path": "rules/task-reports/2026-02/260214_007_news_pull_page1.json",
+      "sha256": "2531c5c84715804bf20dbcea5c22d99e8c6b7585f10fad339452e0a3f1960794",
+      "sha256_short": "2531c5c8"
+    },
+    {
+      "path": "rules/task-reports/2026-02/260214_007_news_pull_page2.json",
+      "sha256": "52fa1ea1654060d751e65e452572f3ff77f39ce6fb04830925b9d7da5984c67e",
+      "sha256_short": "52fa1ea1"
+    },
+    {
+      "path": "rules/task-reports/2026-02/260214_007_news_store_list.json",
+      "sha256": "63626338d1d6998d3610970a4dcb3e3a2dc23580ef9583a3d023f8c5703c3f54",
+      "sha256_short": "63626338"
+    },
+    {
+      "path": "rules/task-reports/2026-02/260214_007_smoke_log.txt",
+      "sha256": "415c7465e1a0df928d8f21375c5b32511b94ae4309d08d8f19c4af87ef2664cc",
+      "sha256_short": "415c7465"
+    },
+    {
+      "path": "rules/task-reports/2026-02/ci_parity_260214_007.json",
+      "sha256": "ea27b9b8efce59b963498c797c6f444a6da075307fc93edf9a2e53498eb7c5e4",
+      "sha256_short": "ea27b9b8"
+    },
+    {
+      "path": "rules/task-reports/2026-02/gate_light_ci_260214_007_final.txt",
+      "sha256": "c9fa5d4b7fde15c6545d18abd6f3a80f8625a7dbe48811d5a00daac32322643c",
+      "sha256_short": "c9fa5d4b"
+    },
+    {
+      "path": "rules/task-reports/2026-02/gate_light_ci_260214_007_temp.txt",
+      "sha256": "ab56c002a4c3dd8c21a71bdf2c26ad58dc9bb6768d107e79d7bd4abc19510f0d",
+      "sha256_short": "ab56c002"
+    },
+    {
+      "path": "rules/task-reports/2026-02/result_260214_007.json",
+      "sha256": "246185e737de01b1f16a266dd46aecea603c4dce252d5946607790c37b66825f",
+      "sha256_short": "246185e7"
+    },
+    {
+      "path": "rules/task-reports/2026-02/run_smoke_260214_007.mjs",
+      "sha256": "2d983c63f9af7184b12608c51efe0fb980bce42d2a2918d8d3d309ec68e04cf6",
+      "sha256_short": "2d983c63"
+    },
+    {
+      "path": "rules/task-reports/2026-02/spec_260214_007.md",
+      "sha256": "1d3d8a3ebf387a4fcb40b88e978826f26ed4c975ce4fdabcd8304dfaffe35880",
+      "sha256_short": "1d3d8a3e"
+    }
+  ]
+}

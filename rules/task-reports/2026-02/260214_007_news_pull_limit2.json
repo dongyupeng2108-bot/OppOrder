@@ -1,0 +1,8 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Sat, 14 Feb 2026 08:03:15 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+{"status":"ok","provider_used":"mock","fallback":false,"cached":false,"cache_key":null,"inserted_count":0,"deduped_count":2,"fetched_count":2,"written_count":0,"latest_news_id":"0000000100","has_more":true,"items":[{"id":"0000000100","provider":"mock","source":"Mock Source","url":"http://mock.com/news/0000000100","published_at":"2023-11-14T22:15:00.000Z","fetched_at":"2023-11-14T22:15:00.100Z","title":"Mock News Title 0000000100","snippet":"This is a deterministic mock news snippet for item 0000000100.","raw_hash":"fec99aefcc702e0ad5c8989dd2bf4b41","_raw":{"id":"0000000100","i":100}},{"id":"0000000099","provider":"mock","source":"Mock Source","url":"http://mock.com/news/0000000099","published_at":"2023-11-14T22:14:59.000Z","fetched_at":"2023-11-14T22:14:59.100Z","title":"Mock News Title 0000000099","snippet":"This is a deterministic mock news snippet for item 0000000099.","raw_hash":"db2b6cc86235eb358a621c4bcb72f355","_raw":{"id":"0000000099","i":99}}],"request":{"provider":"mock","topic_key":"default","query":"","timespan":"1d","maxrecords":2,"since_id":null}}
