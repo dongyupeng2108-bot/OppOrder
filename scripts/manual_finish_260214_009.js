@@ -60,6 +60,10 @@ try {
     if (!fs.existsSync(evidenceFile)) throw new Error(`Evidence file not found: ${evidenceFile}`);
     normalizeFileLF(evidenceFile); // Ensure LF
     
+    // 1.5 Run CI Parity Probe
+    console.log('1.5. Running CI Parity Probe...');
+    run('node scripts/ci_parity_probe.mjs');
+
     // 2. Healthcheck
     console.log('2. Verifying Healthcheck...');
     const hcRootPath = path.join(REPORTS_DIR, `healthcheck_root_53122_${TASK_ID}.txt`);
@@ -175,6 +179,16 @@ try {
         sha256_short: calculateFileHash(validatorScriptPath).substring(0, 8),
         size: getFileSize(validatorScriptPath)
     });
+    
+    // Add CI Parity Evidence
+    const parityFile = path.join(REPORTS_DIR, `ci_parity_${TASK_ID}.json`);
+    if (fs.existsSync(parityFile)) {
+        indexFiles.push({
+            name: `rules/task-reports/2026-02/ci_parity_${TASK_ID}.json`,
+            sha256_short: calculateFileHash(parityFile).substring(0, 8),
+            size: getFileSize(parityFile)
+        });
+    }
 
     // Write initial index for Notify to include
     const indexData = { files: indexFiles };
