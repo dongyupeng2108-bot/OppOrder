@@ -4,11 +4,11 @@
   "status": "DONE",
   "summary": "Post-005 E2E Smoke Regression Passed",
   "report_file": "260214_007_manual_verification.json",
-  "report_sha256_short": "0eec377a",
-  "created_at": "2026-02-14T09:04:47.105Z",
+  "report_sha256_short": "b1183033",
+  "created_at": "2026-02-14T09:09:03.307Z",
   "git": {
     "branch": "chore/post005-smoke-260214_007",
-    "commit": "d01f9acb42fb1bc43ba1631a2b1bee6c53bf778b"
+    "commit": "7e2ccdd62f05fecd6bb9cde128eba77a0f153963"
   },
   "metrics": {
     "service_health": "pass",

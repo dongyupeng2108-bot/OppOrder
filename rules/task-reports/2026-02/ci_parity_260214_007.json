@@ -1,8 +1,8 @@
 {
   "task_id": "260214_007",
   "base": "a99f681d627a4fc6cc345cbcc450fb539b5e8a4c",
-  "head": "d01f9acb42fb1bc43ba1631a2b1bee6c53bf778b",
-  "merge_base": "5a6c3d6b929839c11a6274323b95a5686a0011f6",
+  "head": "7e2ccdd62f05fecd6bb9cde128eba77a0f153963",
+  "merge_base": "a99f681d627a4fc6cc345cbcc450fb539b5e8a4c",
   "scope_files": [
     ".trae/rules/rules.md",
     "rules/LATEST.json",
@@ -33,9 +33,9 @@
     "rules/task-reports/2026-02/deliverables_index_260214_006.json",
     "rules/task-reports/2026-02/deliverables_index_260214_007.json",
     "rules/task-reports/2026-02/gate_light_ci_260214_006.txt",
+    "rules/task-reports/2026-02/gate_light_ci_260214_007_final_fix.txt",
     "rules/task-reports/2026-02/gate_light_preview_260214_006.txt",
     "rules/task-reports/2026-02/generate_pkg_260214_007.mjs",
-    "rules/task-reports/2026-02/manual_verification.json",
     "rules/task-reports/2026-02/notify_260214_006.txt",
     "rules/task-reports/2026-02/notify_260214_007.txt",
     "rules/task-reports/2026-02/result_260214_006.json",
@@ -47,5 +47,5 @@
     "rules/task-reports/envelopes/260214_007.envelope.json"
   ],
   "scope_count": 41,
-  "generated_at": "2026-02-14T09:04:48.256Z"
+  "generated_at": "2026-02-14T09:09:04.370Z"
 }
