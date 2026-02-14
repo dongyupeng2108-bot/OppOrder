@@ -1,0 +1,16 @@
+{
+  "task_id": "260214_008",
+  "status": "DONE",
+  "summary": "Updated PROJECT_MASTER_PLAN.md with task ledger for 7 tasks.",
+  "report_file": "rules/rules/PROJECT_MASTER_PLAN.md",
+  "report_sha256_short": "c2fe6f90",
+  "business_evidence": {
+    "plan_file": "rules/rules/PROJECT_MASTER_PLAN.md",
+    "verification_log": "rules/task-reports/2026-02/260214_008_plan_update.log"
+  },
+  "git_context": {
+    "branch": "docs/plan-update-published-tasks-only-260214_008",
+    "commit": "ffca6e5d387628bc04d0a1319971a5c716159429"
+  },
+  "timestamp": "2026-02-14T09:28:50.051Z"
+}

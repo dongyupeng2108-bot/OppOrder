@@ -1,0 +1,25 @@
+{
+  "task_id": "260214_008",
+  "files": {
+    "rules/task-reports/2026-02/result_260214_008.json": {
+      "sha256": "1e07f7c80902b238a5a522f5c17ec51c48e949a9381c3838a7760bf00131ab56",
+      "size": 573
+    },
+    "rules/task-reports/2026-02/trae_report_snippet_260214_008.txt": {
+      "sha256": "56ab18261c5a47c96ac40eee8b68dcf41bcc38fc4671c667067e8fd8ff239f43",
+      "size": 283
+    },
+    "rules/task-reports/2026-02/260214_008_plan_update.log": {
+      "sha256": "b9d228ab98714422153470d9f223a447752e66015408d2126db6e683eb1cc22c",
+      "size": 1177
+    },
+    "rules/rules/PROJECT_MASTER_PLAN.md": {
+      "sha256": "c2fe6f909a635c5c720888c1830e7ca0af57fa718dc8f16d5e753014aec8b28f",
+      "size": 7371
+    },
+    "rules/task-reports/2026-02/ci_parity_260214_008.json": {
+      "sha256": "c723b27b59e5fa8745344f368561bb4847cbd6b4990992de1c9cbabd2fb3eddb",
+      "size": 464
+    }
+  }
+}

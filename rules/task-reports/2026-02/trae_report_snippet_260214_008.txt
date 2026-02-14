@@ -1,0 +1,10 @@
+=== GATE_LIGHT_PREVIEW ===
+Task: 260214_008
+Branch: docs/plan-update-published-tasks-only-260214_008
+COMMIT: ffca6e5d387628bc04d0a1319971a5c716159429
+Timestamp: 2026-02-14T09:28:50.052Z
+
+Gate Light: GATE_LIGHT_EXIT=0
+[Postflight] PASS
+[Gate Light] PASS
+=== GATE_LIGHT_PREVIEW_END ===
