@@ -1,3 +1,4 @@
+=== GATE_LIGHT_PREVIEW ===
 [Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
 [Gate Light] Target locked via argument: 260214_009
 [Gate Light] LATEST.json consistency verified.
@@ -23,11 +24,11 @@ PASS
 [Gate Light] Checking DoD Evidence Excerpts...
 [Gate Light] DoD Evidence Excerpts verified.
 [Gate Light] Checking Deletion Audit (Locks & Runs)...
-[Gate Light] Deletion Audit verified (Lock & Run exist for Run 20260214_225125_a37625b).
+[Gate Light] Deletion Audit verified (Lock & Run exist for Run 20260214153816_1330745).
 [Gate Light] Checking No Auto-Merge (Git Forbidden Commands)...
 [Gate Light] No Auto-Merge verified.
 [Gate Light] Checking Evidence Truth & Sufficiency (Hardening Rule)...
-[Gate Light] Skipping Evidence Truth check (Generation Mode).
+[Gate Light] Evidence Truth (Two-Pass) verified.
 [Gate Light] Evidence Truth & Sufficiency verified.
 [Gate Light] Checking CI Parity Preview...
 [Gate Light] CI Parity Preview verified.
@@ -35,11 +36,12 @@ PASS
 [Gate Light] Fetching origin/main history for diff context...
 [Gate Light] Allowed legacy task_id (transition): 260214_008
 [Gate Light] NoHistoricalEvidenceTouch verified.
+[Gate Light] Snippet commit (a37625b) != HEAD (1330745). Checking for code drift...
+[Gate Light] SnippetCommitMustMatch verified (Evidence/Docs-only update detected).
 [Gate Light] SnippetCommitMustMatch verified.
 [Gate Light] Checking GATE_LIGHT_EXIT Mechanism...
 [Gate Light] GATE_LIGHT_EXIT Mechanism verified.
 [Gate Light] Checking Evidence Truth & Consistency...
-[Gate Light] Skipping strict preview content check (Integrate/Generation Mode).
 [Gate Light] Evidence Truth & Consistency verified.
 [Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...
 [Gate Light] Immutable Integrate & SafeCmd Enforcement verified.
@@ -51,6 +53,4 @@ PASS
 [Postflight] Envelope: rules\task-reports\envelopes\260214_009.envelope.json
 [Postflight] PASS
 [Gate Light] PASS
-GATE_LIGHT_EXIT=0
-
 GATE_LIGHT_EXIT=0

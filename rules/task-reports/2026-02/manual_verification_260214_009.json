@@ -1,0 +1,26 @@
+{
+  "timestamp": "2026-02-14T15:38:16.779Z",
+  "test": "GET /opportunities/rank_v2",
+  "run_id": "run_v1_7cbb9310",
+  "response_sample": [
+    {
+      "opp_id": "1771081347047_e24z2k0tl",
+      "score": 0.26,
+      "p_hat": 0.26,
+      "p_llm": 0.5516,
+      "p_ci": {
+        "low": 0.1587,
+        "high": 0.3955,
+        "method": "wilson_n50"
+      },
+      "price_q": 0.26,
+      "score_v2": 0.3967,
+      "meta": {
+        "provider_used": "mock",
+        "model_used": "default",
+        "fallback": false
+      }
+    }
+  ],
+  "status": "PASS"
+}

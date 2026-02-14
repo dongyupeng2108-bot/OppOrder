@@ -1,19 +1,19 @@
 Sending batch request with 6 jobs, concurrency: 3...
-Response received in 297ms
+Response received in 634ms
 Response Structure Valid: true
-Run ID: run_batch_5424b9e7
+Run ID: run_batch_a2cbc29c
 Concurrency Used: 3
 Results Count: 6
 Verified Fail-Soft: 1 job(s) failed as expected.
- - Job job_5_85076de1 failed: Invalid n_opps. Must be >= 1.
+ - Job job_5_c8386cbd failed: Invalid n_opps. Must be >= 1.
 Verified Isolation: 5 jobs succeeded despite failure(s).
 Sample Result: {
-  "job_id": "job_0_17ac8824",
-  "scan_id": "sc_37d10476",
+  "job_id": "job_0_c61fd7f4",
+  "scan_id": "sc_67ddbaf1",
   "ok": true,
   "status_code": 200,
   "cached": false,
-  "duration_ms": 135,
+  "duration_ms": 202,
   "error": null,
   "result_summary": {
     "opps_count": 5,

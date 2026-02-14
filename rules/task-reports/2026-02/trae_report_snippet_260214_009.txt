@@ -1,40 +1,71 @@
 === TRAE_REPORT_SNIPPET ===
 
 BRANCH: feat/opps-score-v2-260214_009
-COMMIT: a37625b
+COMMIT: 1330745
 
 === GIT_SCOPE_DIFF ===
 A	OppRadar/contracts/opps_rank_v2_response.schema.json
 M	OppRadar/mock_server_53122.mjs
+M	rules/LATEST.json
 M	rules/rules/PROJECT_RULES.md
+A	rules/task-reports/2026-02/260214_009.json
+A	rules/task-reports/2026-02/260214_009_healthcheck_53122_pairs.txt
+A	rules/task-reports/2026-02/260214_009_healthcheck_53122_root.txt
+A	rules/task-reports/2026-02/M4_PR2_concurrent_log_260214_009.txt
+A	rules/task-reports/2026-02/M5_PR1_llm_json_260214_009.txt
+A	rules/task-reports/2026-02/ci_parity_260214_009.json
+A	rules/task-reports/2026-02/deliverables_index_260214_009.json
+A	rules/task-reports/2026-02/dod_opps_rank_v2_260214_009.txt
+A	rules/task-reports/2026-02/dod_stdout_260214_009.txt
+A	rules/task-reports/2026-02/gate_light_ci_260214_009.txt
 A	rules/task-reports/2026-02/generate_evidence_260214_009.mjs
+A	rules/task-reports/2026-02/notify_260214_009.txt
+A	rules/task-reports/2026-02/opps_pipeline_smoke_260214_009.txt
+A	rules/task-reports/2026-02/opps_rank_v2_260214_009.json
+A	rules/task-reports/2026-02/opps_run_filter_smoke_260214_009.txt
+A	rules/task-reports/2026-02/opps_top_by_run_smoke_260214_009.txt
+A	rules/task-reports/2026-02/result_260214_009.json
+A	rules/task-reports/2026-02/scan_cache_smoke_260214_009.txt
+A	rules/task-reports/2026-02/scripts/postflight_validate_envelope_260214_009.mjs
+A	rules/task-reports/2026-02/trae_report_snippet_260214_009.txt
+A	rules/task-reports/envelopes/260214_009.envelope.json
+M	rules/task-reports/index/runs_index.jsonl
+A	rules/task-reports/locks/260214_009.lock.json
+A	rules/task-reports/runs/260214_009/20260214_225125_a37625b/260214_009_healthcheck_53122_pairs.txt
+A	rules/task-reports/runs/260214_009/20260214_225125_a37625b/260214_009_healthcheck_53122_root.txt
+A	rules/task-reports/runs/260214_009/20260214_225125_a37625b/ci_parity_260214_009.json
+A	rules/task-reports/runs/260214_009/20260214_225125_a37625b/deliverables_index_260214_009.json
+A	rules/task-reports/runs/260214_009/20260214_225125_a37625b/gate_light_ci_260214_009.txt
+A	rules/task-reports/runs/260214_009/20260214_225125_a37625b/notify_260214_009.txt
+A	rules/task-reports/runs/260214_009/20260214_225125_a37625b/result_260214_009.json
+A	rules/task-reports/runs/260214_009/20260214_225125_a37625b/trae_report_snippet_260214_009.txt
 M	scripts/dev_batch_mode.ps1
 
 === DOD_EVIDENCE_STDOUT ===
 DOD_EVIDENCE_HEALTHCHECK_ROOT: E:/OppRadar/rules/task-reports/2026-02/260214_009_healthcheck_53122_root.txt => HTTP/1.1 200 OK
 DOD_EVIDENCE_HEALTHCHECK_PAIRS: E:/OppRadar/rules/task-reports/2026-02/260214_009_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
-DOD_EVIDENCE_SCAN_CACHE_MISS: E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260214_009.txt => cached=false duration_ms=56
-DOD_EVIDENCE_SCAN_CACHE_HIT:  E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260214_009.txt => cached=true  duration_ms=1
-DOD_EVIDENCE_OPPS_PIPELINE_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_pipeline_smoke_260214_009.txt => run_id=run_v1_a4c21626 ok=5 failed=1
+DOD_EVIDENCE_SCAN_CACHE_MISS: E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260214_009.txt => cached=false duration_ms=139
+DOD_EVIDENCE_SCAN_CACHE_HIT:  E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260214_009.txt => cached=true  duration_ms=5
+DOD_EVIDENCE_OPPS_PIPELINE_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_pipeline_smoke_260214_009.txt => run_id=run_v1_64e51fcd ok=5 failed=1
 DOD_EVIDENCE_OPPS_PIPELINE_TOP: E:/OppRadar/rules/task-reports/2026-02/opps_pipeline_smoke_260214_009.txt => top_count=5 refs_run_id=true
 DOD_EVIDENCE_OPPS_RUNS_LIST: E:/OppRadar/rules/task-reports/2026-02/opps_run_filter_smoke_260214_009.txt => contains_run_id=true count=10
 DOD_EVIDENCE_OPPS_BY_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_run_filter_smoke_260214_009.txt => rows=2 all_same_run_id=true
 DOD_EVIDENCE_M5_PR1_LLM_JSON: E:/OppRadar/rules/task-reports/2026-02/M5_PR1_llm_json_260214_009.txt => status=ok items=0 provider=mock model=mock-model-v1
 DOD_EVIDENCE_OPPS_RANK_V2: E:/OppRadar/rules/task-reports/2026-02/opps_rank_v2_260214_009.json => rows=2 has_fields=p_hat,p_llm,p_ci,price_q,score_v2 sorted_by=score_v2_desc provider=mock stable=true
 
-DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260214_009_healthcheck_53122_root.txt => HTTP/1.1 200 OK
-DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260214_009_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/healthcheck_root_53122_260214_009.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/healthcheck_pairs_53122_260214_009.txt => HTTP/1.1 200 OK
 
 === CI_PARITY_PREVIEW ===
 Base: 1777b51
-Head: a37625b
+Head: 1330745
 MergeBase: bd70ff2
 Source: JSON (Evidence-as-Code)
-Scope: 5 files
+Scope: 36 files
 Files (Top 3):
   - OppRadar/contracts/opps_rank_v2_response.schema.json
   - OppRadar/mock_server_53122.mjs
-  - rules/rules/PROJECT_RULES.md
+  - rules/LATEST.json
   ... (truncated)
 =========================
 
@@ -64,11 +95,11 @@ PASS
 [Gate Light] Checking DoD Evidence Excerpts...
 [Gate Light] DoD Evidence Excerpts verified.
 [Gate Light] Checking Deletion Audit (Locks & Runs)...
-[Gate Light] Deletion Audit verified (Lock & Run exist for Run 20260214_225125_a37625b).
+[Gate Light] Deletion Audit verified (Lock & Run exist for Run 20260214153816_1330745).
 [Gate Light] Checking No Auto-Merge (Git Forbidden Commands)...
 [Gate Light] No Auto-Merge verified.
 [Gate Light] Checking Evidence Truth & Sufficiency (Hardening Rule)...
-[Gate Light] Skipping Evidence Truth check (Generation Mode).
+[Gate Light] Evidence Truth (Two-Pass) verified.
 [Gate Light] Evidence Truth & Sufficiency verified.
 [Gate Light] Checking CI Parity Preview...
 [Gate Light] CI Parity Preview verified.
@@ -76,11 +107,12 @@ PASS
 [Gate Light] Fetching origin/main history for diff context...
 [Gate Light] Allowed legacy task_id (transition): 260214_008
 [Gate Light] NoHistoricalEvidenceTouch verified.
+[Gate Light] Snippet commit (a37625b) != HEAD (1330745). Checking for code drift...
+[Gate Light] SnippetCommitMustMatch verified (Evidence/Docs-only update detected).
 [Gate Light] SnippetCommitMustMatch verified.
 [Gate Light] Checking GATE_LIGHT_EXIT Mechanism...
 [Gate Light] GATE_LIGHT_EXIT Mechanism verified.
 [Gate Light] Checking Evidence Truth & Consistency...
-[Gate Light] Skipping strict preview content check (Integrate/Generation Mode).
 [Gate Light] Evidence Truth & Consistency verified.
 [Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...
 [Gate Light] Immutable Integrate & SafeCmd Enforcement verified.
@@ -92,8 +124,4 @@ PASS
 [Postflight] Envelope: rules\task-reports\envelopes\260214_009.envelope.json
 [Postflight] PASS
 [Gate Light] PASS
-GATE_LIGHT_EXIT=0
-
-GATE_LIGHT_EXIT=0
-
 GATE_LIGHT_EXIT=0
