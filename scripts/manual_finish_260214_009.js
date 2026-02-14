@@ -337,6 +337,29 @@ GATE_LIGHT_EXIT=0
         fs.writeFileSync(latestFile, JSON.stringify(latestData, null, 2));
     }
 
+    // 8.6. Archive Initial Artifacts (Fix Deletion Audit)
+    console.log('8.6. Archiving Initial Artifacts to RunDir...');
+    const initialFilesToArchive = [
+        `opps_rank_v2_${TASK_ID}.json`,
+        `result_${TASK_ID}.json`,
+        `deliverables_index_${TASK_ID}.json`,
+        `notify_${TASK_ID}.txt`,
+        `ci_parity_${TASK_ID}.json`,
+        `healthcheck_root_53122_${TASK_ID}.txt`,
+        `healthcheck_pairs_53122_${TASK_ID}.txt`,
+        `manual_verification_${TASK_ID}.json`,
+        `dod_opps_rank_v2_${TASK_ID}.txt`
+    ];
+
+    initialFilesToArchive.forEach(file => {
+        const src = path.join(REPORTS_DIR, file);
+        const dest = path.join(runDir, file);
+        if (fs.existsSync(src)) {
+            fs.copyFileSync(src, dest);
+            console.log(`Archived: ${file}`);
+        }
+    });
+
     // 10. Postflight Validate
     console.log('9. Running Postflight Validation...');
     run(`node scripts/postflight_validate_envelope.mjs --task_id ${TASK_ID} --result_dir rules/task-reports/2026-02 --report_dir rules/task-reports/2026-02`);
@@ -352,6 +375,18 @@ GATE_LIGHT_EXIT=0
     // For now, assuming manual Two-Pass flow or loose check.
     // Fixing args to use '=' as required by build_trae_report_snippet.mjs
     run(`node scripts/build_trae_report_snippet.mjs --task_id=${TASK_ID} --result_dir=${REPORTS_DIR}`);
+
+    // 12. Archive Snippet to RunDir
+    console.log('12. Archiving Snippet to RunDir...');
+    const snippetFile = `trae_report_snippet_${TASK_ID}.txt`;
+    const snippetSrc = path.join(REPORTS_DIR, snippetFile);
+    const snippetDest = path.join(runDir, snippetFile);
+    if (fs.existsSync(snippetSrc)) {
+        fs.copyFileSync(snippetSrc, snippetDest);
+        console.log(`Archived: ${snippetFile}`);
+    } else {
+        console.warn(`Warning: Snippet not found: ${snippetSrc}`);
+    }
 
     console.log('\nSUCCESS: Manual Integrate Completed!');
     
