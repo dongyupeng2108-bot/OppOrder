@@ -59,9 +59,9 @@ Base: ${ciParityData.base || ciParityData.base_commit}
 Head: ${ciParityData.head || ciParityData.head_commit}
 MergeBase: ${ciParityData.merge_base}
 Source: JSON (Evidence-as-Code)
-Scope: ${ciParityData.files_count} files
-Files (Top 3):
-${(ciParityData.files_list || []).slice(0, 3).map(f => `  - ${f}`).join('\n')}
+Scope: ${ciParityData.scope_count} files
+  Files (Top 3):
+${(ciParityData.scope_files || []).slice(0, 3).map(f => `  - ${f}`).join('\n')}
   ... (truncated)
 =========================`;
 

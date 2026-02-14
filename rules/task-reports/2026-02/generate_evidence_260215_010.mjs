@@ -62,14 +62,14 @@ try {
     } catch (e) {}
 
     const ciData = {
-        task_id: TASK_ID,
-        base,
-        head,
-        merge_base: mergeBase,
-        files_count: filesList.length,
-        files_list: filesList,
-        timestamp: new Date().toISOString()
-    };
+                task_id: TASK_ID,
+                base,
+                head,
+                merge_base: mergeBase,
+                scope_count: filesList.length,
+                scope_files: filesList,
+                timestamp: new Date().toISOString()
+            };
     fs.writeFileSync(ciParityFile, JSON.stringify(ciData, null, 2));
     content += `CI_PARITY: Generated ${ciParityFile}\n`;
 } catch (e) {
