@@ -1,25 +1,53 @@
 {
   "task_id": "260214_008",
-  "files": {
-    "rules/task-reports/2026-02/result_260214_008.json": {
-      "sha256": "1e07f7c80902b238a5a522f5c17ec51c48e949a9381c3838a7760bf00131ab56",
-      "size": 573
+  "files": [
+    {
+      "path": "rules/task-reports/2026-02/result_260214_008.json",
+      "sha256": "fa6dbabc7b20b6764380570cfa16a1063afea704b816406f447d3bcb1d9df27e",
+      "sha256_short": "fa6dbabc",
+      "size": 939
     },
-    "rules/task-reports/2026-02/trae_report_snippet_260214_008.txt": {
-      "sha256": "56ab18261c5a47c96ac40eee8b68dcf41bcc38fc4671c667067e8fd8ff239f43",
-      "size": 283
+    {
+      "path": "rules/task-reports/2026-02/trae_report_snippet_260214_008.txt",
+      "sha256": "702d6d68f2b9154eabb3f9247dc09604c2733468818fbed68c9478e4ad94cdac",
+      "sha256_short": "702d6d68",
+      "size": 570
     },
-    "rules/task-reports/2026-02/260214_008_plan_update.log": {
-      "sha256": "b9d228ab98714422153470d9f223a447752e66015408d2126db6e683eb1cc22c",
+    {
+      "path": "rules/task-reports/2026-02/260214_008_plan_update.log",
+      "sha256": "0643821beffb13611a72a05d3da06fdeb4a517f94df188973eb005955e3a8419",
+      "sha256_short": "0643821b",
       "size": 1177
     },
-    "rules/rules/PROJECT_MASTER_PLAN.md": {
+    {
+      "path": "../../rules/PROJECT_MASTER_PLAN.md",
       "sha256": "c2fe6f909a635c5c720888c1830e7ca0af57fa718dc8f16d5e753014aec8b28f",
+      "sha256_short": "c2fe6f90",
       "size": 7371
     },
-    "rules/task-reports/2026-02/ci_parity_260214_008.json": {
-      "sha256": "c723b27b59e5fa8745344f368561bb4847cbd6b4990992de1c9cbabd2fb3eddb",
-      "size": 464
+    {
+      "path": "rules/task-reports/2026-02/ci_parity_260214_008.json",
+      "sha256": "e8683ff40814cf8486824c2dbf003cbb6fa5594221d0c5f7220afb52f161a724",
+      "sha256_short": "e8683ff4",
+      "size": 837
+    },
+    {
+      "path": "rules/task-reports/2026-02/260214_008_healthcheck_53122_root.txt",
+      "sha256": "32e7336466490f4d2656d02515f861137eca2fe0334af63db0fcf01e1a46025f",
+      "sha256_short": "32e73364",
+      "size": 156
+    },
+    {
+      "path": "rules/task-reports/2026-02/260214_008_healthcheck_53122_pairs.txt",
+      "sha256": "32e7336466490f4d2656d02515f861137eca2fe0334af63db0fcf01e1a46025f",
+      "sha256_short": "32e73364",
+      "size": 156
+    },
+    {
+      "path": "rules/task-reports/2026-02/manual_verification_260214_008.json",
+      "sha256": "dcbb9b8f157890f1960e91753b76564c54b4814e0bd01fc06bd3aaf3a3c64751",
+      "sha256_short": "dcbb9b8f",
+      "size": 271
     }
-  }
+  ]
 }

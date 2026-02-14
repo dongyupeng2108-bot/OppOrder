@@ -3,22 +3,52 @@ Status: DONE
 Summary: Updated PROJECT_MASTER_PLAN.md with task ledger for 7 tasks.
 Gate Light: GATE_LIGHT_EXIT=0
 
+=== DOD_EVIDENCE_HEALTHCHECK_ROOT ===
+DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260214_008_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Date: Sat, 14 Feb 2026 11:10:45 GMT
+Connection: close
+
+{"status":"ok","mock":"doc-only-task"}
+
+=== DOD_EVIDENCE_HEALTHCHECK_ROOT_END ===
+
+=== DOD_EVIDENCE_HEALTHCHECK_PAIRS ===
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260214_008_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Date: Sat, 14 Feb 2026 11:10:45 GMT
+Connection: close
+
+{"status":"ok","mock":"doc-only-task"}
+
+=== DOD_EVIDENCE_HEALTHCHECK_PAIRS_END ===
+
 === RESULT_JSON ===
 {
   "task_id": "260214_008",
   "status": "DONE",
   "summary": "Updated PROJECT_MASTER_PLAN.md with task ledger for 7 tasks.",
-  "report_file": "rules/rules/PROJECT_MASTER_PLAN.md",
+  "report_file": "../../rules/PROJECT_MASTER_PLAN.md",
   "report_sha256_short": "c2fe6f90",
   "business_evidence": {
-    "plan_file": "rules/rules/PROJECT_MASTER_PLAN.md",
-    "verification_log": "rules/task-reports/2026-02/260214_008_plan_update.log"
+    "plan_file": "../../rules/PROJECT_MASTER_PLAN.md",
+    "verification_log": "260214_008_plan_update.log",
+    "manual_verification": "manual_verification_260214_008.json"
+  },
+  "dod_evidence": {
+    "gate_light_exit": 0,
+    "healthcheck": [
+      "DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260214_008_healthcheck_53122_root.txt => HTTP/1.1 200 OK",
+      "DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260214_008_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK"
+    ]
   },
   "git_context": {
     "branch": "docs/plan-update-published-tasks-only-260214_008",
-    "commit": "ffca6e5d387628bc04d0a1319971a5c716159429"
+    "commit": "cbe1d44a5f30c91447a5a1fc0a5ceb637da6f77c"
   },
-  "timestamp": "2026-02-14T09:28:50.051Z"
+  "timestamp": "2026-02-14T11:10:45.257Z"
 }
 === RESULT_JSON_END ===
 
@@ -26,7 +56,7 @@ Gate Light: GATE_LIGHT_EXIT=0
 
 Task: 260214_008
 Action: Update PROJECT_MASTER_PLAN.md with current session task ledger.
-Timestamp: 2026-02-14T09:28:48.709Z
+Timestamp: 2026-02-14T11:10:43.793Z
 Verification:
 - Ledger Section Present: YES
 - Task IDs Covered: 260212_001, 260213_002, 260213_003, 260213_004, 260214_005, 260214_006, 260214_007
@@ -52,27 +82,55 @@ MERGED | UNKNOWN | 2454fc5 | 0 | rules/task-reports/2026-02/notify_260213_003.tx
 === INDEX ===
 {
   "task_id": "260214_008",
-  "files": {
-    "rules/task-reports/2026-02/result_260214_008.json": {
-      "sha256": "1e07f7c80902b238a5a522f5c17ec51c48e949a9381c3838a7760bf00131ab56",
-      "size": 573
+  "files": [
+    {
+      "path": "rules/task-reports/2026-02/result_260214_008.json",
+      "sha256": "fa6dbabc7b20b6764380570cfa16a1063afea704b816406f447d3bcb1d9df27e",
+      "sha256_short": "fa6dbabc",
+      "size": 939
     },
-    "rules/task-reports/2026-02/trae_report_snippet_260214_008.txt": {
-      "sha256": "56ab18261c5a47c96ac40eee8b68dcf41bcc38fc4671c667067e8fd8ff239f43",
-      "size": 283
+    {
+      "path": "rules/task-reports/2026-02/trae_report_snippet_260214_008.txt",
+      "sha256": "702d6d68f2b9154eabb3f9247dc09604c2733468818fbed68c9478e4ad94cdac",
+      "sha256_short": "702d6d68",
+      "size": 570
     },
-    "rules/task-reports/2026-02/260214_008_plan_update.log": {
-      "sha256": "b9d228ab98714422153470d9f223a447752e66015408d2126db6e683eb1cc22c",
+    {
+      "path": "rules/task-reports/2026-02/260214_008_plan_update.log",
+      "sha256": "0643821beffb13611a72a05d3da06fdeb4a517f94df188973eb005955e3a8419",
+      "sha256_short": "0643821b",
       "size": 1177
     },
-    "rules/rules/PROJECT_MASTER_PLAN.md": {
+    {
+      "path": "../../rules/PROJECT_MASTER_PLAN.md",
       "sha256": "c2fe6f909a635c5c720888c1830e7ca0af57fa718dc8f16d5e753014aec8b28f",
+      "sha256_short": "c2fe6f90",
       "size": 7371
     },
-    "rules/task-reports/2026-02/ci_parity_260214_008.json": {
-      "sha256": "c723b27b59e5fa8745344f368561bb4847cbd6b4990992de1c9cbabd2fb3eddb",
-      "size": 464
+    {
+      "path": "rules/task-reports/2026-02/ci_parity_260214_008.json",
+      "sha256": "e8683ff40814cf8486824c2dbf003cbb6fa5594221d0c5f7220afb52f161a724",
+      "sha256_short": "e8683ff4",
+      "size": 837
+    },
+    {
+      "path": "rules/task-reports/2026-02/260214_008_healthcheck_53122_root.txt",
+      "sha256": "32e7336466490f4d2656d02515f861137eca2fe0334af63db0fcf01e1a46025f",
+      "sha256_short": "32e73364",
+      "size": 156
+    },
+    {
+      "path": "rules/task-reports/2026-02/260214_008_healthcheck_53122_pairs.txt",
+      "sha256": "32e7336466490f4d2656d02515f861137eca2fe0334af63db0fcf01e1a46025f",
+      "sha256_short": "32e73364",
+      "size": 156
+    },
+    {
+      "path": "rules/task-reports/2026-02/manual_verification_260214_008.json",
+      "sha256": "dcbb9b8f157890f1960e91753b76564c54b4814e0bd01fc06bd3aaf3a3c64751",
+      "sha256_short": "dcbb9b8f",
+      "size": 271
     }
-  }
+  ]
 }
 === INDEX_END ===
