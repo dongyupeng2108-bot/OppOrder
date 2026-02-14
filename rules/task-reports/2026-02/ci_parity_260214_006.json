@@ -1,7 +1,7 @@
 {
   "task_id": "260214_006",
   "base": "e0d6e294d9ccd64fe6ab8addcb949855b6d30e42",
-  "head": "4797ed966a366627b9c32919a213b112ea60e0f9",
+  "head": "d1359fa7e698864c8f03cea965184abe4f65ce5f",
   "merge_base": "7e8279ea6e6462d6ff6433bb08924c0f0392cc5c",
   "scope_files": [
     "rules/LATEST.json",
@@ -21,12 +21,13 @@
     "rules/task-reports/2026-02/gate_light_preview_260214_006.txt",
     "rules/task-reports/2026-02/generate_evidence_260214_006.js",
     "rules/task-reports/2026-02/notify_260214_006.txt",
+    "rules/task-reports/2026-02/notify_append_260214_006.txt",
     "rules/task-reports/2026-02/result_260214_006.json",
     "rules/task-reports/2026-02/scripts/postflight_validate_envelope_260214_006.mjs",
     "rules/task-reports/2026-02/trae_report_snippet_260214_006.txt",
     "rules/task-reports/envelopes/260214_006.envelope.json",
     "scripts/envelope_build.mjs"
   ],
-  "scope_count": 22,
-  "generated_at": "2026-02-14T02:50:44.029Z"
+  "scope_count": 23,
+  "generated_at": "2026-02-14T06:23:03.814Z"
 }

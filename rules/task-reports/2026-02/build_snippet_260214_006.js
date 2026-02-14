@@ -67,6 +67,12 @@ GATE_LIGHT_EXIT=0
 fs.writeFileSync(snippetFile, draftSnippet);
 console.log('Created Draft Snippet for Pass 1.');
 
+// 3.1 Reset Preview File to match Draft Snippet
+const pendingPreview = `__PENDING__
+GATE_LIGHT_EXIT=0`;
+fs.writeFileSync(previewFile, pendingPreview);
+console.log('Reset Preview File to __PENDING__ for Pass 1.');
+
 // 4. Run Gate Light Pass 1
 console.log('Running Gate Light Pass 1...');
 let logContent = '';

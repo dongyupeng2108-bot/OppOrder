@@ -8,7 +8,7 @@
 [Gate Light] Doc path standards verified.
 [Gate Light] Checking for legacy doc path references...
 [CheckDocPathRefs] Scanning for legacy doc path references...
-[CheckDocPathRefs] Scan completed in 16ms.
+[CheckDocPathRefs] Scan completed in 25ms.
 [CheckDocPathRefs] PASS: No legacy doc path references found.
 [Gate Light] Checking for global healthcheck artifacts...
 [Gate Light] Global Artifact Guard verified.
@@ -45,7 +45,11 @@ PASS
 [Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...
 [Gate Light] Immutable Integrate & SafeCmd Enforcement verified.
 [Gate Light] Checking Two-Pass Evidence Truth & No Auto-Merge...
-
-[Gate Light] [BLOCK] EVIDENCE_TRUTH_MISMATCH
-  Snippet Preview does NOT match gate_light_preview_260214_006.txt
-  ACTION: Do NOT manually edit snippet. Use extract_gate_light_preview.mjs.
+[Gate Light] Two-Pass Evidence Truth & No Auto-Merge verified.
+[Gate Light] Executing: node scripts/postflight_validate_envelope.mjs --task_id 260214_006 --result_dir rules/task-reports/2026-02 --report_dir rules/task-reports/2026-02
+[Postflight] Validating 260214_006 in rules/task-reports/2026-02...
+[Postflight] Report: rules\task-reports\2026-02\260214_006.json
+[Postflight] Envelope: rules\task-reports\envelopes\260214_006.envelope.json
+[Postflight] PASS
+[Gate Light] PASS
+GATE_LIGHT_EXIT=0
