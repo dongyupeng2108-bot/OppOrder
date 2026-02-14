@@ -96,8 +96,17 @@
   - **Deliverables**: Standard vs Maintenance mode protocol.
 - **Task 260210_003: Duplicate Task ID Hard Guard (DONE)**
   - **Deliverables**: `pre_pr_check.mjs` fail-fast on duplicate task_id in main.
-- **Task 260210_005: Gate Light Evidence Truth (In Progress)**
+- **Task 260214_005: Gate Light Evidence Truth (DONE)**
   - **Goal**: Ensure snippet exit code matches real log exit code.
+  - **Status**: Completed via Task 260214_005 (Fixed CI Parity & Hash Consistency).
+
+### Process Learnings (006/007)
+**Lessons Learned & Standardized**:
+1.  **Evidence Atomicity**: `notify`/`result` changes must trigger `index` regeneration (See `PROJECT_RULES.md#Atomic Evidence Rule`).
+2.  **Cross-Platform Consistency**: Force LF line endings for all text evidence to match CI hashes (See `PROJECT_RULES.md#Cross-Platform Text Evidence`).
+3.  **Two-Pass Verification**: Strict separation of Generation (Pass 1) and Verification (Pass 2) (See `WORKFLOW.md#Two-Pass Evidence Truth`).
+4.  **No Auto-Merge**: Agent strictly forbidden from merging; only Human Owner merges (See `WORKFLOW.md#No Auto-Merge`).
+5.  **Evidence-Only Updates**: Permitted only with `Code Drift = 0` (See `WORKFLOW.md#Evidence-Only Update`).
 - **Task 260210_007: CI Lock PR TaskId (In Progress)**
   - **Goal**: Enforce PR task_id lock, LATEST.json consistency, and local/CI parity.
   - **Status**: PR Created.
@@ -183,6 +192,7 @@
 | Task ID | Summary | Status | Key Evidence | Impact |
 | :--- | :--- | :--- | :--- | :--- |
 | **260213_002** | Docs: Sync Chat Progress into PROJECT_MASTER_PLAN | **PASS** (EXIT=0) | `rules/task-reports/2026-02/notify_260213_002.txt` | 确保 Master Plan 与实际开发进度对齐 |
+| **260214_005** | Gate Light Evidence Truth (CI Parity & Hash Fix) | **PASS** (EXIT=0) | `rules/task-reports/2026-02/notify_260214_005.txt` | 修复了跨平台 Hash 不一致与 CI Parity 校验问题 |
 | **260212_001** | News Pull Endpoint (MinSpec/Tests) + 脚本降级搬迁 | **PASS** (EXIT=0) | `rules/task-reports/2026-02/notify_260212_001.txt` | 确立了“辅助脚本不进 scripts 目录”的最小化原则 |
 | **260211_007** | Two-Pass Evidence Truth + No Auto-Merge | **PASS** (EXIT=0) | `rules/task-reports/2026-02/notify_260211_007.txt` | 强制执行“双通道验证”与“禁止自动合并”规则 |
 | **260211_006** | Historical Evidence Retrofit + Deletion Audit + CI Parity | **PASS** (EXIT=0) | `rules/task-reports/2026-02/notify_260211_006.txt` | 确立了历史证据补齐的收敛方式与防篡改机制 |

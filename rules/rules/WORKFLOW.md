@@ -59,6 +59,11 @@ cd /mnt/e/OppRadar
 ### Two-Phase Rhythm (两段式节奏)
 To reduce repository overhead and conflicts, we adopt a two-phase workflow for each task:
 
+#### Preflight (Task Start)
+Before starting any new task, the Agent MUST perform these checks:
+1.  **Merge Status**: Ensure the *previous* task branch has been merged into `origin/main` (or explicitly abandoned). Do not start a new task on top of unmerged/stale branches.
+2.  **Duplicate Task ID**: Check `rules/task-reports/` to ensure the current `task_id` does not already exist. Re-using IDs causes "nested doll" evidence and is FORBIDDEN.
+
 1.  **Development Phase (Dev)**:
     *   **Focus**: Coding, local testing, unit tests, smoke tests.
     *   **Constraints**:
@@ -76,6 +81,21 @@ To reduce repository overhead and conflicts, we adopt a two-phase workflow for e
     *   **Command**: Use `scripts/dev_batch_mode.ps1 -Mode Integrate`.
 
 ### Gate Light Evidence Standards (CI Parity)
+
+*   **CI Parity Probe Protocols**:
+    *   **Base vs Head**: `Base` (origin/main) MUST NOT equal `Head` (current) if `scope_files > 0`.
+    *   **Scope Validity**: If `scope_files == 0` (Empty PR), `Base` equal to `Head` is allowed but triggers a warning.
+    *   **MergeBase**: Must be correctly calculated. Any deviation requires a re-run/fix of `ci_parity_probe.mjs`.
+
+*   **Two-Pass Evidence Truth**:
+    *   **Pass 1 (Generate)**: Run `gate_light_ci` to generate logs and preview.
+    *   **Pass 2 (Verify)**: Extract the preview, build the snippet, and run `gate_light_ci` again to verify.
+    *   **Constraint**: The `trae_report_snippet` content MUST be a true substring of the actual execution log. Hand-edited snippets are FORBIDDEN.
+
+*   **Evidence-Only Update (Dual-Commit Lineage)**:
+    *   **Scenario**: Fixing evidence/docs for a past task without changing code.
+    *   **Rule**: Allowed ONLY if `Code Drift = 0` (i.e., code matches the original Landing commit).
+    *   **Requirement**: Must explicitly document the "Evidence-Only" nature in the Result JSON. Gate Light will validate this via the `NoHistoricalEvidenceTouch` check (with exceptions for the specific task ID being fixed).
 
 *   **Immutable Integrate (One-Shot)**:
     *   **Lock File**: The first successful Integrate run creates `rules/task-reports/locks/<task_id>.lock.json`.
@@ -97,6 +117,7 @@ To reduce repository overhead and conflicts, we adopt a two-phase workflow for e
 *   **Deletion Audit (Task 260211_006)**:
     *   **Rule**: locks/runs is append-only; deletion is forbidden; Gate Light will fail if missing.
     *   **Mechanism**: `dev_batch_mode.ps1` appends to `rules/task-reports/index/runs_index.jsonl`. `gate_light_ci.mjs` checks index first run against filesystem.
+*   **No Auto-Merge**: The Agent MUST NOT execute `git merge` or `git push ... main` (or to any protected branch). Only the Human User (Owner) can perform the merge. The Agent's job ends at "PR Created + Gate Light PASS". Violation (detected by Gate Light in `command_audit`) triggers immediate failure (Exit 62).
 
 ## Conflict Minimization
 *   **LATEST.json**: Only update during the Integration Phase (1 modification per PR).
