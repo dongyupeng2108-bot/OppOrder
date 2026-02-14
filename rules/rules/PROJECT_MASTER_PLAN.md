@@ -125,3 +125,5 @@
 | 260214_005 | MERGED | feat/news-store-list-260214_005 | 4925f3e | 0 | rules/task-reports/2026-02/notify_260214_005.txt |
 | 260214_006 | MERGED | docs/lessons-006-007-settings-index-260214_006 | 2841ea3 | 0 | rules/task-reports/2026-02/notify_260214_006.txt |
 | 260214_007 | MERGED | chore/post005-smoke-260214_007 | 7e2ccdd62f05fecd6bb9cde128eba77a0f153963 | 0 | rules/task-reports/2026-02/notify_260214_007.txt |
+| 260214_008 | DONE | docs/plan-update-published-tasks-only-260214_008 | b346903 | 0 | rules/task-reports/2026-02/notify_260214_008.txt |
+| 260214_009 | DONE | feat/opps-score-v2-260214_009 | 3f71d52 | 0 | rules/task-reports/2026-02/notify_260214_009.txt |
