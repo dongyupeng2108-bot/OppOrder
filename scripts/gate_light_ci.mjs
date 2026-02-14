@@ -192,7 +192,7 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
              process.exit(1);
         }
         try {
-            const att = JSON.parse(fs.readFileSync(attestationFile, 'utf8'));
+            const att = JSON.parse(fs.readFileSync(attestationFile, 'utf8').replace(/^\uFEFF/, ''));
             if (att.task_id !== task_id) {
                  console.error(`[Gate Light] FAILED: Attestation task_id mismatch (${att.task_id} vs ${task_id})`);
                  process.exit(1);
