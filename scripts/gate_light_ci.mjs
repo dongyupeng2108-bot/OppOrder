@@ -8,10 +8,13 @@ try {
 // --- 0. Argument Parsing & Task ID Resolution (Task 260210_007) ---
 const args = process.argv.slice(2);
 let argTaskId = null;
+let argMode = null; // New: Mode Argument
 for (let i = 0; i < args.length; i++) {
     if (args[i] === '--task_id') {
         argTaskId = args[i + 1];
-        break;
+    }
+    if (args[i] === '--mode') {
+        argMode = args[i + 1];
     }
 }
 
@@ -152,6 +155,61 @@ if (latestJson && latestJson.task_id === task_id && latestJson.result_dir) {
 
 console.log('[Gate Light] Verifying task_id: ' + task_id);
     
+    // --- 1.5 Automation Pack V1 Hard Guards (Task 260215_010) ---
+    console.log('[Gate Light] Running Automation Pack V1 Hard Guards...');
+    
+    // 1.5.1 CheckReportBlocks (Global Hard Guard)
+    const notifyFile = path.join(result_dir, `notify_${task_id}.txt`);
+    const snippetFile = path.join(result_dir, `trae_report_snippet_${task_id}.txt`);
+    
+    const requiredBlocks = [
+        '=== DOD_EVIDENCE_STDOUT ===',
+        '=== CI_PARITY_PREVIEW ===',
+        '=== GATE_LIGHT_PREVIEW ==='
+    ];
+
+    [notifyFile, snippetFile].forEach(f => {
+        if (fs.existsSync(f)) {
+            const content = fs.readFileSync(f, 'utf8');
+            const missing = requiredBlocks.filter(b => !content.includes(b));
+            if (missing.length > 0) {
+                console.error(`[Gate Light] FAILED: Report Block Check for ${path.basename(f)}`);
+                console.error(`  Missing Blocks: ${missing.join(', ')}`);
+                console.error(`  ACTION: Use 'assemble_evidence.mjs' to regenerate reports.`);
+                process.exit(1);
+            }
+            console.log(`[Gate Light] Report Block Check Passed: ${path.basename(f)}`);
+        }
+    });
+
+    // 1.5.2 CheckPreflightAttestation (Integrate Mode Hard Guard)
+    if (argMode === 'Integrate') {
+        const attestationFile = path.join(result_dir, `preflight_attestation_${task_id}.json`);
+        if (!fs.existsSync(attestationFile)) {
+             console.error(`[Gate Light] FAILED: Preflight Attestation missing in Integrate mode.`);
+             console.error(`  File: ${attestationFile}`);
+             console.error(`  ACTION: Run 'preflight.ps1' before gate checks.`);
+             process.exit(1);
+        }
+        try {
+            const att = JSON.parse(fs.readFileSync(attestationFile, 'utf8'));
+            if (att.task_id !== task_id) {
+                 console.error(`[Gate Light] FAILED: Attestation task_id mismatch (${att.task_id} vs ${task_id})`);
+                 process.exit(1);
+            }
+            if (att.write_allowed !== true) {
+                 console.error(`[Gate Light] FAILED: Attestation 'write_allowed' is NOT true.`);
+                 console.error(`  Current Header: ${att.header_detected ? 'Valid' : 'Invalid/Missing'}`);
+                 console.error(`  ACTION: Use valid 'TraeTask_' or 'FIX:' header.`);
+                 process.exit(1);
+            }
+            console.log('[Gate Light] Preflight Attestation verified (Integrate Mode).');
+        } catch (e) {
+             console.error(`[Gate Light] FAILED: Invalid Attestation JSON: ${e.message}`);
+             process.exit(1);
+        }
+    }
+
     // --- 2. Check CI Parity JSON Evidence (Task 260211_002) ---
     // Hard Guard: Must exist, be valid JSON, match current git state, and pass anti-cheat.
     console.log('[Gate Light] Checking CI Parity JSON Evidence...');
