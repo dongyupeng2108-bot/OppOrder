@@ -104,7 +104,7 @@ function main() {
     }
 
     const duration = Date.now() - startTime;
-    console.log(`[CheckDocPathRefs] Scan completed in ${duration}ms.`);
+    // console.log(`[CheckDocPathRefs] Scan completed in ${duration}ms.`);
 
     if (failureCount > 0) {
         console.error(`[CheckDocPathRefs] FAILED: Found ${failureCount} legacy doc path references.`);

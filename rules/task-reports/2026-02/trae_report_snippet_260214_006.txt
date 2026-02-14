@@ -1,7 +1,7 @@
 === TRAE_REPORT_SNIPPET ===
 
 BRANCH: docs/lessons-006-007-settings-index-260214_006
-COMMIT: d1359fa
+COMMIT: c8e0d37
 
 === GIT_SCOPE_DIFF ===
 rules/LATEST.json
@@ -21,7 +21,6 @@ rules/task-reports/2026-02/gate_light_ci_260214_006.txt
 rules/task-reports/2026-02/gate_light_preview_260214_006.txt
 rules/task-reports/2026-02/generate_evidence_260214_006.js
 rules/task-reports/2026-02/notify_260214_006.txt
-rules/task-reports/2026-02/notify_append_260214_006.txt
 rules/task-reports/2026-02/result_260214_006.json
 rules/task-reports/2026-02/scripts/postflight_validate_envelope_260214_006.mjs
 rules/task-reports/2026-02/trae_report_snippet_260214_006.txt
@@ -34,10 +33,10 @@ DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260214_006_healthchec
 
 === CI_PARITY_PREVIEW ===
 Base: e0d6e294d9ccd64fe6ab8addcb949855b6d30e42
-Head: d1359fa7e698864c8f03cea965184abe4f65ce5f
-MergeBase: 7e8279ea6e6462d6ff6433bb08924c0f0392cc5c
+Head: c8e0d378c03f94b3f0066ebc4d6b6b93027ce2fa
+MergeBase: e0d6e294d9ccd64fe6ab8addcb949855b6d30e42
 Source: ci_parity_260214_006.json
-Scope: 23 files
+Scope: 22 files
 
 
 === GATE_LIGHT_PREVIEW ===
@@ -51,7 +50,6 @@ Scope: 23 files
 [Gate Light] Doc path standards verified.
 [Gate Light] Checking for legacy doc path references...
 [CheckDocPathRefs] Scanning for legacy doc path references...
-[CheckDocPathRefs] Scan completed in 25ms.
 [CheckDocPathRefs] PASS: No legacy doc path references found.
 [Gate Light] Checking for global healthcheck artifacts...
 [Gate Light] Global Artifact Guard verified.
