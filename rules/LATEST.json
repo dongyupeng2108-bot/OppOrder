@@ -1,5 +1,7 @@
-{
-  "task_id": "260214_008",
-  "result_dir": "rules/task-reports/2026-02",
-  "updated_at": "2026-02-14T00:00:00.000Z"
+﻿{
+    "task_id":  "260214_009",
+    "result_dir":  "rules/task-reports/2026-02",
+    "timestamp":  "2026-02-14T14:51:21.320Z",
+    "run_id":  "20260214_225125_a37625b",
+    "run_dir":  "rules/task-reports/runs/260214_009/20260214_225125_a37625b"
 }

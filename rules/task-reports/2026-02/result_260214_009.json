@@ -1,0 +1,32 @@
+{
+  "task_id": "260214_009",
+  "status": "DONE",
+  "summary": "Create Opportunity Rank v2 API (M4)",
+  "report_file": "notify_260214_009.txt",
+  "report_sha256_short": "28307354",
+  "dod_evidence": {
+    "healthcheck": [
+      "DOD_EVIDENCE_HEALTHCHECK_ROOT: E:/OppRadar/rules/task-reports/2026-02/260214_009_healthcheck_53122_root.txt => HTTP/1.1 200 OK",
+      "DOD_EVIDENCE_HEALTHCHECK_PAIRS: E:/OppRadar/rules/task-reports/2026-02/260214_009_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK"
+    ],
+    "scan_cache": [
+      "DOD_EVIDENCE_SCAN_CACHE_MISS: E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260214_009.txt => cached=false duration_ms=56",
+      "DOD_EVIDENCE_SCAN_CACHE_HIT:  E:/OppRadar/rules/task-reports/2026-02/scan_cache_smoke_260214_009.txt => cached=true  duration_ms=1"
+    ],
+    "opps_pipeline": [
+      "DOD_EVIDENCE_OPPS_PIPELINE_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_pipeline_smoke_260214_009.txt => run_id=run_v1_a4c21626 ok=5 failed=1",
+      "DOD_EVIDENCE_OPPS_PIPELINE_TOP: E:/OppRadar/rules/task-reports/2026-02/opps_pipeline_smoke_260214_009.txt => top_count=5 refs_run_id=true"
+    ],
+    "opps_run_filter": [
+      "DOD_EVIDENCE_OPPS_RUNS_LIST: E:/OppRadar/rules/task-reports/2026-02/opps_run_filter_smoke_260214_009.txt => contains_run_id=true count=10",
+      "DOD_EVIDENCE_OPPS_BY_RUN: E:/OppRadar/rules/task-reports/2026-02/opps_run_filter_smoke_260214_009.txt => rows=2 all_same_run_id=true"
+    ],
+    "llm_route": [
+      "DOD_EVIDENCE_M5_PR1_LLM_JSON: E:/OppRadar/rules/task-reports/2026-02/M5_PR1_llm_json_260214_009.txt => status=ok items=0 provider=mock model=mock-model-v1"
+    ],
+    "opps_rank_v2": [
+      "DOD_EVIDENCE_OPPS_RANK_V2: E:/OppRadar/rules/task-reports/2026-02/opps_rank_v2_260214_009.json => rows=2 has_fields=p_hat,p_llm,p_ci,price_q,score_v2 sorted_by=score_v2_desc provider=mock stable=true"
+    ],
+    "gate_light_exit": "0"
+  }
+}

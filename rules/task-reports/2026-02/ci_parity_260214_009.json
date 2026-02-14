@@ -1,0 +1,15 @@
+{
+  "task_id": "260214_009",
+  "base": "1777b51716dc1091730fc5d813263d3a83a2de0c",
+  "head": "a37625bf0e34e72bae66941ea5cc81d461b679cc",
+  "merge_base": "bd70ff28fec17b8194da3e59b866e4778708818f",
+  "scope_files": [
+    "OppRadar/contracts/opps_rank_v2_response.schema.json",
+    "OppRadar/mock_server_53122.mjs",
+    "rules/rules/PROJECT_RULES.md",
+    "rules/task-reports/2026-02/generate_evidence_260214_009.mjs",
+    "scripts/dev_batch_mode.ps1"
+  ],
+  "scope_count": 5,
+  "generated_at": "2026-02-14T14:51:22.911Z"
+}
