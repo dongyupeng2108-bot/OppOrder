@@ -62,7 +62,7 @@ try {
     
     // 1.5 Run CI Parity Probe
     console.log('1.5. Running CI Parity Probe...');
-    run('node scripts/ci_parity_probe.mjs');
+    run(`node scripts/ci_parity_probe.mjs --task_id ${TASK_ID}`);
 
     // 2. Healthcheck
     console.log('2. Verifying Healthcheck...');
