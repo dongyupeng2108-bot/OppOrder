@@ -1,0 +1,23 @@
+
+=== GATE_LIGHT_PREVIEW ===
+Task: 260214_007
+Branch: chore/post005-smoke-260214_007
+COMMIT: 7e2ccdd62f05fecd6bb9cde128eba77a0f153963
+Timestamp: 2026-02-14T09:09:03.307Z
+
+DoD Evidence:
+DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260214_007_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260214_007_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+
+Gate Light: GATE_LIGHT_EXIT=0
+[Postflight] PASS
+[Gate Light] PASS
+=== GATE_LIGHT_PREVIEW_END ===
+
+=== CI_PARITY_PREVIEW ===
+Base: a99f681d627a4fc6cc345cbcc450fb539b5e8a4c
+Head: 7e2ccdd62f05fecd6bb9cde128eba77a0f153963
+MergeBase: a99f681d627a4fc6cc345cbcc450fb539b5e8a4c
+Source: ARGUMENT
+Scope: 41 files
+=== CI_PARITY_PREVIEW_END ===

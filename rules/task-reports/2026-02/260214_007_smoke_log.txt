@@ -1,0 +1,27 @@
+[2026-02-14T09:08:51.942Z] [INFO] Starting Post-005 Smoke Regression (Task 260214_007)
+[2026-02-14T09:08:51.961Z] [INFO] === A) Service Health ===
+[2026-02-14T09:08:51.961Z] [INFO] CMD: curl.exe -s -i "http://localhost:53122/" --output "rules\task-reports\2026-02\260214_007_healthcheck_53122_root.txt"
+[2026-02-14T09:08:51.996Z] [INFO] GET / -> PASS
+[2026-02-14T09:08:51.996Z] [INFO] CMD: curl.exe -s -i "http://localhost:53122/pairs" --output "rules\task-reports\2026-02\260214_007_healthcheck_53122_pairs.txt"
+[2026-02-14T09:08:52.028Z] [INFO] GET /pairs -> PASS
+[2026-02-14T09:08:52.029Z] [INFO] === B) News Pull ===
+[2026-02-14T09:08:52.029Z] [INFO] CMD: curl.exe -s -i "http://localhost:53122/news/pull?limit=2" --output "rules\task-reports\2026-02\260214_007_news_pull_limit2.json"
+[2026-02-14T09:08:52.083Z] [INFO] Limit 2 -> PASS
+[2026-02-14T09:08:52.083Z] [INFO] CMD: curl.exe -s -i "http://localhost:53122/news/pull?limit=20" --output "rules\task-reports\2026-02\260214_007_news_pull_limit20.json"
+[2026-02-14T09:08:52.114Z] [INFO] Limit 20 -> PASS
+[2026-02-14T09:08:52.115Z] [INFO] CMD: curl.exe -s -i "http://localhost:53122/news/pull?limit=9999" --output "rules\task-reports\2026-02\260214_007_news_pull_limit9999.json"
+[2026-02-14T09:08:52.147Z] [INFO] Limit 9999 -> PASS (Clamped to 50)
+[2026-02-14T09:08:52.147Z] [INFO] --- Pagination ---
+[2026-02-14T09:08:52.147Z] [INFO] CMD: curl.exe -s -i "http://localhost:53122/news/pull?limit=5" --output "rules\task-reports\2026-02\260214_007_news_pull_page1.json"
+[2026-02-14T09:08:52.181Z] [INFO] Page 1 fetched. Latest ID: 0000000100
+[2026-02-14T09:08:52.181Z] [INFO] CMD: curl.exe -s -i "http://localhost:53122/news/pull?limit=5&since_id=0000000100" --output "rules\task-reports\2026-02\260214_007_news_pull_page2.json"
+[2026-02-14T09:08:52.211Z] [INFO] Page 2 fetched. Items: 0
+[2026-02-14T09:08:52.211Z] [INFO] Pagination -> PASS (Structure Valid)
+[2026-02-14T09:08:52.212Z] [INFO] --- Idempotency ---
+[2026-02-14T09:08:52.298Z] [INFO] Idempotency (POST Cache) -> PASS (Hash: 4bf09551, ignoring 'cached' flag)
+[2026-02-14T09:08:52.299Z] [INFO] === C) NewsStore ===
+[2026-02-14T09:08:52.299Z] [INFO] CMD: curl.exe -s -i "http://localhost:53122/news?limit=50" --output "rules\task-reports\2026-02\260214_007_news_store_list.json"
+[2026-02-14T09:08:52.330Z] [INFO] Store List -> PASS (Count: 50)
+[2026-02-14T09:08:52.331Z] [INFO] --- Dedup Check ---
+[2026-02-14T09:08:52.362Z] [INFO] Dedup -> PASS (Deduped: 5)
+[2026-02-14T09:08:52.362Z] [INFO] === SMOKE TEST COMPLETE ===

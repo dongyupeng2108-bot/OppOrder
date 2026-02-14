@@ -1,0 +1,26 @@
+{
+  "task_id": "260214_007",
+  "milestone": "M4",
+  "status": "DONE",
+  "summary": "Post-005 E2E Smoke Regression Passed",
+  "report_file": "260214_007_manual_verification.json",
+  "report_sha256_short": "b1183033",
+  "created_at": "2026-02-14T09:09:03.307Z",
+  "git": {
+    "branch": "chore/post005-smoke-260214_007",
+    "commit": "7e2ccdd62f05fecd6bb9cde128eba77a0f153963"
+  },
+  "metrics": {
+    "service_health": "pass",
+    "news_pull": "pass",
+    "news_store": "pass"
+  },
+  "dod_evidence": {
+    "healthcheck": [
+      "rules/task-reports/2026-02/260214_007_healthcheck_53122_root.txt",
+      "rules/task-reports/2026-02/260214_007_healthcheck_53122_pairs.txt"
+    ],
+    "gate_light_exit": 0
+  },
+  "notes": "Smoke regression passed. Idempotency verified via POST."
+}

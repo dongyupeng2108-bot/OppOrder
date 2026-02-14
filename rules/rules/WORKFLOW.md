@@ -83,21 +83,19 @@ Before starting any new task, the Agent MUST perform these checks:
 ### Gate Light Evidence Standards (CI Parity)
 
 *   **CI Parity Probe Protocols**:
+    *   **Anchor Stability**: The primary risk is Base/Head/MergeBase instability during the "Generate -> Commit -> Re-verify" cycle.
+    *   **Binding Rule**: Evidence must bind to the *Code State* (Base/MergeBase), not necessarily the *Evidence Commit* (Head), provided code drift is zero.
     *   **Base vs Head**: `Base` (origin/main) MUST NOT equal `Head` (current) if `scope_files > 0`.
-    *   **Scope Validity**: If `scope_files == 0` (Empty PR), `Base` equal to `Head` is allowed but triggers a warning.
     *   **MergeBase**: Must be correctly calculated. Any deviation requires a re-run/fix of `ci_parity_probe.mjs`.
-
-*   **Two-Pass Evidence Truth**:
-    *   **Pass 1 (Generate)**: Run `gate_light_ci` to generate logs and preview.
-    *   **Pass 2 (Verify)**: Extract the preview, build the snippet, and run `gate_light_ci` again to verify.
-    *   **Constraint**: The `trae_report_snippet` content MUST be a true substring of the actual execution log. Hand-edited snippets are FORBIDDEN.
 
 *   **Evidence-Only Update (Dual-Commit Lineage)**:
     *   **Scenario**: Fixing evidence/docs for a past task without changing code.
-    *   **Rule**: Allowed ONLY if `Code Drift = 0` (i.e., code matches the original Landing commit).
-    *   **Requirement**: Must explicitly document the "Evidence-Only" nature in the Result JSON. Gate Light will validate this via the `NoHistoricalEvidenceTouch` check (with exceptions for the specific task ID being fixed).
+    *   **Protocol**:
+        1.  **Code Drift = 0**: The code in the Landing Commit must match the Base Commit exactly.
+        2.  **Binding**: The Evidence refers to the Base Commit (Logic Source), while physically residing in the Landing Commit.
+        3.  **Verification**: Gate Light `NoHistoricalEvidenceTouch` check permits this ONLY if explicitly documented in Result JSON.
 
-*   **Immutable Integrate (One-Shot)**:
+*   **Two-Pass Evidence Truth**:
     *   **Lock File**: The first successful Integrate run creates `rules/task-reports/locks/<task_id>.lock.json`.
     *   **Rerun Block**: Subsequent attempts to run Integrate on the same `task_id` are BLOCKED (Exit 33).
     *   **Action**: To change code, you MUST use a new `task_id`. The old task is immutable.
