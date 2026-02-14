@@ -1,7 +1,7 @@
 {
   "task_id": "260214_009",
   "base": "1777b51716dc1091730fc5d813263d3a83a2de0c",
-  "head": "13307459f7b5d57f0208d4d31915172e18e2a204",
+  "head": "e46b3307cff998a279d14db8514072e9f92a19c4",
   "merge_base": "bd70ff28fec17b8194da3e59b866e4778708818f",
   "scope_files": [
     "OppRadar/contracts/opps_rank_v2_response.schema.json",
@@ -18,7 +18,12 @@
     "rules/task-reports/2026-02/dod_opps_rank_v2_260214_009.txt",
     "rules/task-reports/2026-02/dod_stdout_260214_009.txt",
     "rules/task-reports/2026-02/gate_light_ci_260214_009.txt",
+    "rules/task-reports/2026-02/gate_light_preview_260214_009.txt",
+    "rules/task-reports/2026-02/gate_light_raw_260214_009.txt",
     "rules/task-reports/2026-02/generate_evidence_260214_009.mjs",
+    "rules/task-reports/2026-02/healthcheck_pairs_53122_260214_009.txt",
+    "rules/task-reports/2026-02/healthcheck_root_53122_260214_009.txt",
+    "rules/task-reports/2026-02/manual_verification_260214_009.json",
     "rules/task-reports/2026-02/notify_260214_009.txt",
     "rules/task-reports/2026-02/opps_pipeline_smoke_260214_009.txt",
     "rules/task-reports/2026-02/opps_rank_v2_260214_009.json",
@@ -31,16 +36,9 @@
     "rules/task-reports/envelopes/260214_009.envelope.json",
     "rules/task-reports/index/runs_index.jsonl",
     "rules/task-reports/locks/260214_009.lock.json",
-    "rules/task-reports/runs/260214_009/20260214_225125_a37625b/260214_009_healthcheck_53122_pairs.txt",
-    "rules/task-reports/runs/260214_009/20260214_225125_a37625b/260214_009_healthcheck_53122_root.txt",
-    "rules/task-reports/runs/260214_009/20260214_225125_a37625b/ci_parity_260214_009.json",
-    "rules/task-reports/runs/260214_009/20260214_225125_a37625b/deliverables_index_260214_009.json",
-    "rules/task-reports/runs/260214_009/20260214_225125_a37625b/gate_light_ci_260214_009.txt",
-    "rules/task-reports/runs/260214_009/20260214_225125_a37625b/notify_260214_009.txt",
-    "rules/task-reports/runs/260214_009/20260214_225125_a37625b/result_260214_009.json",
-    "rules/task-reports/runs/260214_009/20260214_225125_a37625b/trae_report_snippet_260214_009.txt",
-    "scripts/dev_batch_mode.ps1"
+    "scripts/dev_batch_mode.ps1",
+    "scripts/manual_finish_260214_009.js"
   ],
-  "scope_count": 36,
-  "generated_at": "2026-02-14T15:02:31.187Z"
+  "scope_count": 34,
+  "generated_at": "2026-02-14T15:57:21.080Z"
 }

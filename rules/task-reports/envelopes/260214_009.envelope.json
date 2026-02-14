@@ -13,6 +13,7 @@
     "rules/task-reports/2026-02/healthcheck_pairs_53122_260214_009.txt",
     "rules/task-reports/2026-02/manual_verification_260214_009.json",
     "scripts/postflight_validate_envelope.mjs",
+    "rules/task-reports/2026-02/ci_parity_260214_009.json",
     "rules/task-reports/2026-02/notify_260214_009.txt"
   ],
   "forbidden_phrases_hit": [],

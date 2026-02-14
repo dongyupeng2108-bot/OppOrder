@@ -1,7 +1,7 @@
 === TRAE_REPORT_SNIPPET ===
 
 BRANCH: feat/opps-score-v2-260214_009
-COMMIT: 1330745
+COMMIT: e46b330
 
 === GIT_SCOPE_DIFF ===
 A	OppRadar/contracts/opps_rank_v2_response.schema.json
@@ -18,7 +18,12 @@ A	rules/task-reports/2026-02/deliverables_index_260214_009.json
 A	rules/task-reports/2026-02/dod_opps_rank_v2_260214_009.txt
 A	rules/task-reports/2026-02/dod_stdout_260214_009.txt
 A	rules/task-reports/2026-02/gate_light_ci_260214_009.txt
+A	rules/task-reports/2026-02/gate_light_preview_260214_009.txt
+A	rules/task-reports/2026-02/gate_light_raw_260214_009.txt
 A	rules/task-reports/2026-02/generate_evidence_260214_009.mjs
+A	rules/task-reports/2026-02/healthcheck_pairs_53122_260214_009.txt
+A	rules/task-reports/2026-02/healthcheck_root_53122_260214_009.txt
+A	rules/task-reports/2026-02/manual_verification_260214_009.json
 A	rules/task-reports/2026-02/notify_260214_009.txt
 A	rules/task-reports/2026-02/opps_pipeline_smoke_260214_009.txt
 A	rules/task-reports/2026-02/opps_rank_v2_260214_009.json
@@ -31,15 +36,8 @@ A	rules/task-reports/2026-02/trae_report_snippet_260214_009.txt
 A	rules/task-reports/envelopes/260214_009.envelope.json
 M	rules/task-reports/index/runs_index.jsonl
 A	rules/task-reports/locks/260214_009.lock.json
-A	rules/task-reports/runs/260214_009/20260214_225125_a37625b/260214_009_healthcheck_53122_pairs.txt
-A	rules/task-reports/runs/260214_009/20260214_225125_a37625b/260214_009_healthcheck_53122_root.txt
-A	rules/task-reports/runs/260214_009/20260214_225125_a37625b/ci_parity_260214_009.json
-A	rules/task-reports/runs/260214_009/20260214_225125_a37625b/deliverables_index_260214_009.json
-A	rules/task-reports/runs/260214_009/20260214_225125_a37625b/gate_light_ci_260214_009.txt
-A	rules/task-reports/runs/260214_009/20260214_225125_a37625b/notify_260214_009.txt
-A	rules/task-reports/runs/260214_009/20260214_225125_a37625b/result_260214_009.json
-A	rules/task-reports/runs/260214_009/20260214_225125_a37625b/trae_report_snippet_260214_009.txt
 M	scripts/dev_batch_mode.ps1
+A	scripts/manual_finish_260214_009.js
 
 === DOD_EVIDENCE_STDOUT ===
 DOD_EVIDENCE_HEALTHCHECK_ROOT: E:/OppRadar/rules/task-reports/2026-02/260214_009_healthcheck_53122_root.txt => HTTP/1.1 200 OK
@@ -58,10 +56,10 @@ DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/healthcheck_pairs_531
 
 === CI_PARITY_PREVIEW ===
 Base: 1777b51
-Head: 1330745
+Head: e46b330
 MergeBase: bd70ff2
 Source: JSON (Evidence-as-Code)
-Scope: 36 files
+Scope: 34 files
 Files (Top 3):
   - OppRadar/contracts/opps_rank_v2_response.schema.json
   - OppRadar/mock_server_53122.mjs
