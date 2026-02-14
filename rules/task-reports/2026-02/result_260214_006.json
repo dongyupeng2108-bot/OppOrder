@@ -3,7 +3,7 @@
   "status": "DONE",
   "summary": "No summary provided",
   "report_file": "notify_260214_006.txt",
-  "report_sha256_short": "0cdeef0c",
+  "report_sha256_short": "11a85047",
   "dod_evidence": {
     "healthcheck": [
       "DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260214_006_healthcheck_53122_root.txt => HTTP/1.1 200 OK",

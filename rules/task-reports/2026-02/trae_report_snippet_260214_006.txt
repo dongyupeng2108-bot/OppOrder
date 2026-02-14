@@ -1,7 +1,7 @@
 === TRAE_REPORT_SNIPPET ===
 
 BRANCH: docs/lessons-006-007-settings-index-260214_006
-COMMIT: c8e0d37
+COMMIT: 7b6a772
 
 === GIT_SCOPE_DIFF ===
 rules/LATEST.json
@@ -25,18 +25,26 @@ rules/task-reports/2026-02/result_260214_006.json
 rules/task-reports/2026-02/scripts/postflight_validate_envelope_260214_006.mjs
 rules/task-reports/2026-02/trae_report_snippet_260214_006.txt
 rules/task-reports/envelopes/260214_006.envelope.json
+scripts/check_doc_path_refs.mjs
 scripts/envelope_build.mjs
 
 DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260214_006_healthcheck_53122_root.txt => HTTP/1.1 200 OK
 DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260214_006_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
 
+=== DOD_EVIDENCE_STDOUT ===
+[Docs Task] No runtime evidence required.
+[Docs Task] Verified 3 core docs updated.
+[Docs Task] Verified TRAE_SETTINGS_INDEX.txt created.
+
+===
+
 
 === CI_PARITY_PREVIEW ===
 Base: e0d6e294d9ccd64fe6ab8addcb949855b6d30e42
-Head: c8e0d378c03f94b3f0066ebc4d6b6b93027ce2fa
+Head: 7b6a77234ca551f59d8935cf3c3a26f86a767953
 MergeBase: e0d6e294d9ccd64fe6ab8addcb949855b6d30e42
 Source: ci_parity_260214_006.json
-Scope: 22 files
+Scope: 23 files
 
 
 === GATE_LIGHT_PREVIEW ===

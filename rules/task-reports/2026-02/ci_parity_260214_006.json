@@ -1,7 +1,7 @@
 {
   "task_id": "260214_006",
   "base": "e0d6e294d9ccd64fe6ab8addcb949855b6d30e42",
-  "head": "c8e0d378c03f94b3f0066ebc4d6b6b93027ce2fa",
+  "head": "7b6a77234ca551f59d8935cf3c3a26f86a767953",
   "merge_base": "e0d6e294d9ccd64fe6ab8addcb949855b6d30e42",
   "scope_files": [
     "rules/LATEST.json",
@@ -25,8 +25,9 @@
     "rules/task-reports/2026-02/scripts/postflight_validate_envelope_260214_006.mjs",
     "rules/task-reports/2026-02/trae_report_snippet_260214_006.txt",
     "rules/task-reports/envelopes/260214_006.envelope.json",
+    "scripts/check_doc_path_refs.mjs",
     "scripts/envelope_build.mjs"
   ],
-  "scope_count": 22,
-  "generated_at": "2026-02-14T06:28:00.516Z"
+  "scope_count": 23,
+  "generated_at": "2026-02-14T06:34:14.427Z"
 }
