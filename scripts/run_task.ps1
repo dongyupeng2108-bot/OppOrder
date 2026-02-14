@@ -40,6 +40,24 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
+# --- Step 1.5: Healthcheck Evidence ---
+Write-Host ">>> [RunTask] Step 1.5: Healthcheck Evidence" -ForegroundColor Cyan
+$HealthRoot = "$EvidenceDir\${TaskId}_healthcheck_53122_root.txt"
+$HealthPairs = "$EvidenceDir\${TaskId}_healthcheck_53122_pairs.txt"
+
+# Use curl.exe to ensure ASCII output compatible with Gate Light
+curl.exe -s -i "http://localhost:53122/" --output "$HealthRoot"
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[RunTask] FAILED: Healthcheck Root failed. Ensure mock_server is running." -ForegroundColor Red
+    exit 1
+}
+
+curl.exe -s -i "http://localhost:53122/pairs" --output "$HealthPairs"
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[RunTask] FAILED: Healthcheck Pairs failed." -ForegroundColor Red
+    exit 1
+}
+
 # --- Step 2: Generate Evidence (Dev/Integrate) ---
 if ($GenerateScript) {
     Write-Host ">>> [RunTask] Step 2: Generate Evidence" -ForegroundColor Cyan
