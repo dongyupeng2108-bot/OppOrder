@@ -63,6 +63,14 @@ try {
     // 1.5 Run CI Parity Probe
     console.log('1.5. Running CI Parity Probe...');
     run(`node scripts/ci_parity_probe.mjs --task_id ${TASK_ID}`);
+    
+    const paritySrc = path.join(ROOT_DIR, `ci_parity_${TASK_ID}.json`);
+    const parityDest = path.join(REPORTS_DIR, `ci_parity_${TASK_ID}.json`);
+    if (fs.existsSync(paritySrc)) {
+        console.log(`Moving parity file to ${parityDest}`);
+        if (fs.existsSync(parityDest)) fs.unlinkSync(parityDest);
+        fs.renameSync(paritySrc, parityDest);
+    }
 
     // 2. Healthcheck
     console.log('2. Verifying Healthcheck...');
