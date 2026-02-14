@@ -1,0 +1,6 @@
+TraeTask_ | FIX: | 讨论:
+rules/rules/WORKFLOW.md
+rules/rules/PROJECT_RULES.md
+rules/rules/PROJECT_MASTER_PLAN.md
+gate_light_ci (Two-Pass)
+No delete locks/runs; No merge origin/main; Ports 53122/53121

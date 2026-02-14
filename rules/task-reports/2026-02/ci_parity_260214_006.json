@@ -1,0 +1,33 @@
+{
+  "task_id": "260214_006",
+  "base": "e0d6e294d9ccd64fe6ab8addcb949855b6d30e42",
+  "head": "7b6a77234ca551f59d8935cf3c3a26f86a767953",
+  "merge_base": "e0d6e294d9ccd64fe6ab8addcb949855b6d30e42",
+  "scope_files": [
+    "rules/LATEST.json",
+    "rules/rules/PROJECT_MASTER_PLAN.md",
+    "rules/rules/PROJECT_RULES.md",
+    "rules/rules/TRAE_SETTINGS_INDEX.txt",
+    "rules/rules/WORKFLOW.md",
+    "rules/task-reports/2026-02/260214_006.json",
+    "rules/task-reports/2026-02/260214_006_healthcheck_53122_pairs.txt",
+    "rules/task-reports/2026-02/260214_006_healthcheck_53122_root.txt",
+    "rules/task-reports/2026-02/append_content_260214_006.txt",
+    "rules/task-reports/2026-02/build_snippet_260214_006.js",
+    "rules/task-reports/2026-02/ci_parity_260214_006.json",
+    "rules/task-reports/2026-02/deliverables_index_260214_006.json",
+    "rules/task-reports/2026-02/dod_stdout_260214_006.txt",
+    "rules/task-reports/2026-02/gate_light_ci_260214_006.txt",
+    "rules/task-reports/2026-02/gate_light_preview_260214_006.txt",
+    "rules/task-reports/2026-02/generate_evidence_260214_006.js",
+    "rules/task-reports/2026-02/notify_260214_006.txt",
+    "rules/task-reports/2026-02/result_260214_006.json",
+    "rules/task-reports/2026-02/scripts/postflight_validate_envelope_260214_006.mjs",
+    "rules/task-reports/2026-02/trae_report_snippet_260214_006.txt",
+    "rules/task-reports/envelopes/260214_006.envelope.json",
+    "scripts/check_doc_path_refs.mjs",
+    "scripts/envelope_build.mjs"
+  ],
+  "scope_count": 23,
+  "generated_at": "2026-02-14T06:34:14.427Z"
+}

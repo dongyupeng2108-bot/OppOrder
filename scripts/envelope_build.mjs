@@ -32,9 +32,11 @@ async function main() {
     const resultDir = args.result_dir;
     const status = args.status || 'DONE';
     const summary = args.summary || 'No summary provided';
+    const gateLightExit = args.gate_light_exit; // Optional, for GATE_LIGHT_EXIT mechanism
+    const appendNotifyFile = args.append_notify; // Optional, file content to append to notify
 
     if (!taskId || !resultDir) {
-        console.error('Usage: node envelope_build.mjs --task_id <id> --result_dir <path> [--status <status>] [--summary <text>]');
+        console.error('Usage: node envelope_build.mjs --task_id <id> --result_dir <path> [--status <status>] [--summary <text>] [--gate_light_exit <code>] [--append_notify <file>]');
         process.exit(1);
     }
 
@@ -161,14 +163,34 @@ ${dodEvidencePairs}
 `;
     }
     
+    // Append GATE_LIGHT_EXIT if provided
+    if (gateLightExit !== undefined) {
+        notifyDod += `\nGATE_LIGHT_EXIT=${gateLightExit}\n`;
+    }
+    
     let notifyContent = notifyHeader + notifyLog + notifyIndex + notifyHc + notifyDod;
+
+    // Append Custom Content if provided
+    if (appendNotifyFile) {
+        const appendPath = path.resolve(resultDir, appendNotifyFile);
+        if (fs.existsSync(appendPath)) {
+             const appendData = fs.readFileSync(appendPath, 'utf8');
+             notifyContent += `\n${appendData}\n`;
+        } else {
+             console.warn(`[EnvelopeBuild] Warning: append_notify file not found: ${appendPath}`);
+        }
+    }
+
     // Normalize to LF to ensure consistent hashing across platforms (Windows/CI)
     notifyContent = notifyContent.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-    const notifyHash = calculateSha256Short(notifyContent);
+    
+    // Convert to Buffer to ensure exact byte match between Hash and Disk
+    const notifyBuf = Buffer.from(notifyContent, 'utf8');
+    const notifyHash = calculateSha256Short(notifyBuf);
 
     // Write Notify
     const notifyPath = path.join(resultDir, notifyFilename);
-    fs.writeFileSync(notifyPath, notifyContent);
+    fs.writeFileSync(notifyPath, notifyBuf);
 
     // Write Result
     const resultData = {
@@ -186,23 +208,47 @@ ${dodEvidencePairs}
                 dodEvidencePairs
             ]
         };
+        // Add gate_light_exit to dod_evidence if provided
+        if (gateLightExit !== undefined) {
+            resultData.dod_evidence.gate_light_exit = parseInt(gateLightExit, 10);
+        }
+    } else if (gateLightExit !== undefined) {
+         // Fallback if no healthcheck but gate_light_exit exists
+         resultData.dod_evidence = {
+             gate_light_exit: parseInt(gateLightExit, 10)
+         };
     }
 
     const resultPath = path.join(resultDir, resultFilename);
-    fs.writeFileSync(resultPath, JSON.stringify(resultData, null, 2));
+    const resultJsonStr = JSON.stringify(resultData, null, 2).replace(/\r\n/g, '\n');
+    fs.writeFileSync(resultPath, Buffer.from(resultJsonStr, 'utf8'));
 
- // Build Index
- const indexFiles = [];
- const addFileToIndex = (fname, fpath) => {
- if (fs.existsSync(fpath)) {
- const buf = fs.readFileSync(fpath);
- indexFiles.push({
- name: fname,
- size: buf.length,
- sha256_short: crypto.createHash('sha256').update(buf).digest('hex').substring(0, 8)
- });
- }
- };
+    // Build Index
+    const indexFiles = [];
+    const addFileToIndex = (fname, fpath) => {
+        if (fs.existsSync(fpath)) {
+            const buf = fs.readFileSync(fpath);
+            
+            // Normalize hash calculation for text files to match Postflight logic
+            let hash;
+            const ext = path.extname(fpath).toLowerCase();
+            const textExtensions = ['.txt', '.json', '.md', '.js', '.mjs', '.log', '.html', '.css', '.csv'];
+            if (textExtensions.includes(ext)) {
+                 let content = buf.toString('utf8');
+                 content = content.replace(/\r\n/g, '\n');
+                 const normBuf = Buffer.from(content, 'utf8');
+                 hash = crypto.createHash('sha256').update(normBuf).digest('hex').substring(0, 8);
+            } else {
+                 hash = crypto.createHash('sha256').update(buf).digest('hex').substring(0, 8);
+            }
+
+            indexFiles.push({
+                name: fname,
+                size: buf.length,
+                sha256_short: hash
+            });
+        }
+    };
 
  // Copy and Index Healthcheck Files (Legacy Support)
     // If we used Legacy paths (projectRoot/reports/), copy them to resultDir/reports so they are captured.
