@@ -3,20 +3,20 @@
   "files": [
     {
       "path": "rules/task-reports/2026-02/result_260214_008.json",
-      "sha256": "c9e89919ca88e173d3a2fce9af81c0832593110fea4e834315cfbff6d7777885",
-      "sha256_short": "c9e89919",
+      "sha256": "febdc871885cfc49638e583255e4983c03b7aaf250cd4c52d1c2fd63f6de9c9e",
+      "sha256_short": "febdc871",
       "size": 939
     },
     {
       "path": "rules/task-reports/2026-02/trae_report_snippet_260214_008.txt",
-      "sha256": "867172e2e45ff536193d3951cdb3b9d496c27d47660fb9462bb367ab0ad35bbf",
-      "sha256_short": "867172e2",
-      "size": 569
+      "sha256": "135d727b2ee50d744bee1fbf0ef9130570faf1d0df86e5adab93f0fdf2f0bbf2",
+      "sha256_short": "135d727b",
+      "size": 618
     },
     {
       "path": "rules/task-reports/2026-02/260214_008_plan_update.log",
-      "sha256": "7111b26cd49d00a27e9fc3fc540ca4d8b80f74be125beac916eccffb6ff99245",
-      "sha256_short": "7111b26c",
+      "sha256": "ec03f847aec67265cdf6790e65f47935308f53bea2eb8534223ddff30a066726",
+      "sha256_short": "ec03f847",
       "size": 1177
     },
     {
@@ -27,26 +27,26 @@
     },
     {
       "path": "rules/task-reports/2026-02/ci_parity_260214_008.json",
-      "sha256": "9991717bc8734e9bd05ce0af4ab75e244eb5424e873fda7866d66db5e7d74dfa",
-      "sha256_short": "9991717b",
+      "sha256": "b90128175c6db08e9609788ac299c18288d18ebc73998440b359be1a382a98ac",
+      "sha256_short": "b9012817",
       "size": 1052
     },
     {
       "path": "rules/task-reports/2026-02/260214_008_healthcheck_53122_root.txt",
-      "sha256": "aa3f4c73595c6be836a1ec12fe4b38d68dd2a0639dcfea5544a7411d9c825b41",
-      "sha256_short": "aa3f4c73",
+      "sha256": "a203530f886b60ef081da7d8bafc9f9b930a5e9a57552f80e7e2460b4db1c722",
+      "sha256_short": "a203530f",
       "size": 156
     },
     {
       "path": "rules/task-reports/2026-02/260214_008_healthcheck_53122_pairs.txt",
-      "sha256": "aa3f4c73595c6be836a1ec12fe4b38d68dd2a0639dcfea5544a7411d9c825b41",
-      "sha256_short": "aa3f4c73",
+      "sha256": "a203530f886b60ef081da7d8bafc9f9b930a5e9a57552f80e7e2460b4db1c722",
+      "sha256_short": "a203530f",
       "size": 156
     },
     {
       "path": "rules/task-reports/2026-02/manual_verification_260214_008.json",
-      "sha256": "e70cd0b9fc7d386f7f0a204b7445ea467a61f21b69a3beeb355416e3c07e0516",
-      "sha256_short": "e70cd0b9",
+      "sha256": "809162e73748586241295fa3fe4787be13889a399224cc095d1bdb37ac4f07ca",
+      "sha256_short": "809162e7",
       "size": 271
     }
   ]
