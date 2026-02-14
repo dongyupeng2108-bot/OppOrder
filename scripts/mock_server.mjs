@@ -1,11 +1,13 @@
 import http from 'http';
 import { URL } from 'url';
-import { routeOpportunities } from './llm_router.mjs';
+import { routeOpportunities } from './llm_router.mjs';
+import { NewsStore } from '../OppRadar/news_store.mjs';
 
 const PORT = 53122;
 const scanCache = new Map();
 const runs = [];
 const opportunities = [];
+const newsStore = new NewsStore();
 
 // Generate mock items ONCE (100 total, IDs 0000000001 to 0000000100)
 const mockNewsItems = [];
@@ -57,6 +59,14 @@ const server = http.createServer((req, res) => {
             return;
         }
 
+        if (pathname === '/news') {
+            const limit = parseInt(parsedUrl.searchParams.get('limit') || '50');
+            const sinceId = parsedUrl.searchParams.get('since_id');
+            const result = newsStore.list({ limit, since_id: sinceId });
+            sendJson(result);
+            return;
+        }
+
         if (pathname === '/news/pull') {
             let limit = parseInt(parsedUrl.searchParams.get('limit'));
             if (isNaN(limit) || limit <= 0) limit = 5;
@@ -64,26 +74,27 @@ const server = http.createServer((req, res) => {
 
             const sinceId = parsedUrl.searchParams.get('since_id');
             
+            // 1. Fetch from Mock Provider
             let filtered = mockNewsItems;
             if (sinceId) {
-                // Return items strictly newer than sinceId (so ID > sinceId)
-                // Since IDs are sorted desc, we take items BEFORE the one with sinceId
                 const sinceIdx = mockNewsItems.findIndex(item => item.id === sinceId);
                 if (sinceIdx !== -1) {
                     filtered = mockNewsItems.slice(0, sinceIdx);
                 } else {
-                    // If sinceId not found, maybe it's too old? Or too new?
-                    // Assuming standard pagination: newer items have larger IDs.
-                    // If sinceId is "0000000098", we want "0000000100", "0000000099".
                     filtered = mockNewsItems.filter(item => item.id > sinceId);
                 }
             }
             
-            const result = filtered.slice(0, limit);
+            const fetchedItems = filtered.slice(0, limit);
+            
+            // 2. Write to Store
+            const { inserted, deduped } = newsStore.upsertMany(fetchedItems);
             
             sendJson({
-                provider_used: 'mock',
-                items: result
+                fetched_count: fetchedItems.length,
+                written_count: inserted,
+                deduped_count: deduped,
+                items: fetchedItems
             });
             return;
         }

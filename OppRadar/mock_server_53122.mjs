@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import crypto from 'crypto';
 import { getProvider } from './llm_provider.mjs';
 import { getProvider as getNewsProvider } from './news_provider.mjs';
+import { NewsStore } from './news_store.mjs';
 import { generateCacheKey as generateNewsCacheKey, getFromCache as getFromNewsCache, setInCache as setInNewsCache } from './news_pull_cache.mjs';
 import { generateCacheKey as generateScanCacheKey, getFromCache as getFromScanCache, setInCache as setInScanCache } from './scan_cache.mjs';
 import DB from './db.mjs';
@@ -36,6 +37,7 @@ let inMemoryScans = [];
 let inMemoryOpps = [];
 let fixtureStrategies = [];
 let fixtureSnapshots = [];
+const newsStore = new NewsStore();
 let runtimeData = {
     scans: [],
     opportunities: [],
@@ -991,11 +993,27 @@ const server = http.createServer(async (req, res) => {
                     }
                 }
                 
-                let written = 0;
-                let deduped = 0;
+                // Upsert to NewsStore (Task 260214_005)
+                // Note: We bypass DB.appendNews to focus on in-memory store as per requirements.
+                // NewsStore handles dedup based on 'id'.
+                const { inserted, deduped } = newsStore.upsertMany(newsItems);
+                
+                let written = inserted;
+                let dedupedCount = deduped;
                 let latest_news_id = null;
-                const processedItems = [];
+                const processedItems = newsItems; // Return what we fetched
 
+                // Find max ID from fetched items
+                if (newsItems.length > 0) {
+                    // Assuming items have 'id'
+                    // Find max string ID
+                    latest_news_id = newsItems.reduce((max, item) => {
+                        return (!max || (item.id && item.id > max)) ? item.id : max;
+                    }, null);
+                }
+                
+                /* 
+                // Legacy DB write (Disabled for 260214_005 scope)
                 for (const item of newsItems) {
                      const itemProvider = item.provider || providerUsed;
                      // Use robust hash input
@@ -1015,22 +1033,14 @@ const server = http.createServer(async (req, res) => {
                         content_hash: content_hash,
                         provider: itemProvider
                     });
-                    if (res.inserted) written++;
-                    else deduped++;
-                    if (res.id) latest_news_id = res.id;
-                    
-                    processedItems.push({
-                        ...item,
-                        id: res.id,
-                        inserted: res.inserted
-                    });
-                }
+                } 
+                */
                 
                 const result = { 
                     status: 'ok', 
                     fetched_count: newsItems.length, 
                     written_count: written, 
-                    deduped_count: deduped, 
+                    deduped_count: dedupedCount, 
                     inserted_count: written,
                     latest_news_id,
                     has_more: newsItems.length >= limit,
@@ -1189,6 +1199,26 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    // GET /news (List from Store)
+    if (pathname === '/news' && req.method === 'GET') {
+        const query = parsedUrl.query;
+        const limit = query.limit ? parseInt(query.limit) : 50;
+        const since_id = query.since_id || null;
+
+        const result = newsStore.list({ since_id, limit });
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+            status: 'ok',
+            items: result.items,
+            count: result.count,
+            limit: result.limit,
+            since_id: result.since_id,
+            next_since_id: result.next_since_id
+        }));
+        return;
+    }
+
     // GET /news/pull (Task 260213_004: Provider Abstraction)
     if (pathname === '/news/pull') {
         const limitRaw = parsedUrl.query.limit;
@@ -1235,9 +1265,14 @@ const server = http.createServer(async (req, res) => {
             const provider = getNewsProvider(providerName);
             const items = await provider.fetchNews(topicKey, limit, { since_id: sinceId });
 
+            // 4.1 Write to NewsStore (Task 260214_005)
+            const storeResult = newsStore.upsertMany(items);
+            const insertedCount = storeResult.inserted;
+            const dedupedCount = storeResult.deduped;
+
             // 5. Build Response
             // Calculate metrics
-            const insertedCount = items.length; // Mock assumes all are "new" to the client
+            // const insertedCount = items.length; // REPLACED by storeResult
             const latestId = items.length > 0 ? items[0].id : (sinceId || null); 
             // Note: If items are returned Newest First, index 0 is latest.
 
@@ -1248,12 +1283,12 @@ const server = http.createServer(async (req, res) => {
                 cached: false,
                 cache_key: null, // No caching for this direct pull yet
                 inserted_count: insertedCount,
-                deduped_count: 0,
-                fetched_count: insertedCount,
+                deduped_count: dedupedCount,
+                fetched_count: items.length,
                 written_count: insertedCount,
                 latest_news_id: latestId,
                 has_more: items.length === limit, // Heuristic
-                items: items,
+                items: items, // Return fetched items (even if deduped in store, we return what was pulled)
                 request: {
                     provider: providerName,
                     topic_key: topicKey,

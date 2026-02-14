@@ -65,7 +65,20 @@ function fail(report, code, message, details = {}) {
 
 function calculateFileHash(filePath) {
     try {
-        const fileBuffer = fs.readFileSync(filePath);
+        let fileBuffer = fs.readFileSync(filePath);
+        
+        // Normalize line endings for text files to ensure consistent hash across OS (CI vs Windows)
+        // We treat specific extensions as text and force LF normalization before hashing.
+        const ext = path.extname(filePath).toLowerCase();
+        const textExtensions = ['.txt', '.json', '.md', '.js', '.mjs', '.log', '.html', '.css', '.csv'];
+        
+        if (textExtensions.includes(ext)) {
+            let content = fileBuffer.toString('utf8');
+            // Replace CRLF with LF
+            content = content.replace(/\r\n/g, '\n');
+            fileBuffer = Buffer.from(content, 'utf8');
+        }
+        
         const hashSum = crypto.createHash('sha256');
         hashSum.update(fileBuffer);
         return hashSum.digest('hex');

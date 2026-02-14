@@ -1,0 +1,12 @@
+{
+  "task_id": "260214_005",
+  "verification_steps": [
+    "Start mock server on port 53122",
+    "Run healthcheck on / and /pairs",
+    "Run unit/integration tests (scripts/test_news_store_260214_005.mjs)",
+    "Verify NewsStore sync logic and deduplication",
+    "Verify Gate Light compliance"
+  ],
+  "verification_result": "PASS",
+  "notes": "Automated via generate_evidence script."
+}
