@@ -1,7 +1,7 @@
 === TRAE_REPORT_SNIPPET ===
 
 BRANCH: feat/opps-score-v2-260214_009
-COMMIT: a0abc38
+COMMIT: 615c150
 
 === GIT_SCOPE_DIFF ===
 A	OppRadar/contracts/opps_rank_v2_response.schema.json
@@ -56,8 +56,8 @@ DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/healthcheck_pairs_531
 
 === CI_PARITY_PREVIEW ===
 Base: 1777b51
-Head: a0abc38
-MergeBase: bd70ff2
+Head: 615c150
+MergeBase: 1777b51
 Source: JSON (Evidence-as-Code)
 Scope: 34 files
 Files (Top 3):
