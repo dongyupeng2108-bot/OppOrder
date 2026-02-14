@@ -1,7 +1,7 @@
 {
   "task_id": "260214_009",
   "base": "1777b51716dc1091730fc5d813263d3a83a2de0c",
-  "head": "2a92af6e6dd82b371f33849c545bf642fffd04f6",
+  "head": "c643f3f3c4e612ca759b001463e347419babf0cf",
   "merge_base": "1777b51716dc1091730fc5d813263d3a83a2de0c",
   "scope_files": [
     "OppRadar/contracts/opps_rank_v2_response.schema.json",
@@ -36,9 +36,19 @@
     "rules/task-reports/envelopes/260214_009.envelope.json",
     "rules/task-reports/index/runs_index.jsonl",
     "rules/task-reports/locks/260214_009.lock.json",
+    "rules/task-reports/runs/260214_009/20260214153816_1330745/ci_parity_260214_009.json",
+    "rules/task-reports/runs/260214_009/20260214153816_1330745/deliverables_index_260214_009.json",
+    "rules/task-reports/runs/260214_009/20260214153816_1330745/dod_opps_rank_v2_260214_009.txt",
+    "rules/task-reports/runs/260214_009/20260214153816_1330745/healthcheck_pairs_53122_260214_009.txt",
+    "rules/task-reports/runs/260214_009/20260214153816_1330745/healthcheck_root_53122_260214_009.txt",
+    "rules/task-reports/runs/260214_009/20260214153816_1330745/manual_verification_260214_009.json",
+    "rules/task-reports/runs/260214_009/20260214153816_1330745/notify_260214_009.txt",
+    "rules/task-reports/runs/260214_009/20260214153816_1330745/opps_rank_v2_260214_009.json",
+    "rules/task-reports/runs/260214_009/20260214153816_1330745/result_260214_009.json",
+    "rules/task-reports/runs/260214_009/20260214153816_1330745/trae_report_snippet_260214_009.txt",
     "scripts/dev_batch_mode.ps1",
     "scripts/manual_finish_260214_009.js"
   ],
-  "scope_count": 34,
-  "generated_at": "2026-02-14T16:34:21.571Z"
+  "scope_count": 44,
+  "generated_at": "2026-02-14T16:36:32.493Z"
 }

@@ -1,7 +1,7 @@
 === TRAE_REPORT_SNIPPET ===
 
 BRANCH: feat/opps-score-v2-260214_009
-COMMIT: 2a92af6
+COMMIT: c643f3f
 
 === GIT_SCOPE_DIFF ===
 A	OppRadar/contracts/opps_rank_v2_response.schema.json
@@ -36,6 +36,16 @@ A	rules/task-reports/2026-02/trae_report_snippet_260214_009.txt
 A	rules/task-reports/envelopes/260214_009.envelope.json
 M	rules/task-reports/index/runs_index.jsonl
 A	rules/task-reports/locks/260214_009.lock.json
+A	rules/task-reports/runs/260214_009/20260214153816_1330745/ci_parity_260214_009.json
+A	rules/task-reports/runs/260214_009/20260214153816_1330745/deliverables_index_260214_009.json
+A	rules/task-reports/runs/260214_009/20260214153816_1330745/dod_opps_rank_v2_260214_009.txt
+A	rules/task-reports/runs/260214_009/20260214153816_1330745/healthcheck_pairs_53122_260214_009.txt
+A	rules/task-reports/runs/260214_009/20260214153816_1330745/healthcheck_root_53122_260214_009.txt
+A	rules/task-reports/runs/260214_009/20260214153816_1330745/manual_verification_260214_009.json
+A	rules/task-reports/runs/260214_009/20260214153816_1330745/notify_260214_009.txt
+A	rules/task-reports/runs/260214_009/20260214153816_1330745/opps_rank_v2_260214_009.json
+A	rules/task-reports/runs/260214_009/20260214153816_1330745/result_260214_009.json
+A	rules/task-reports/runs/260214_009/20260214153816_1330745/trae_report_snippet_260214_009.txt
 M	scripts/dev_batch_mode.ps1
 A	scripts/manual_finish_260214_009.js
 
@@ -56,10 +66,10 @@ DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/healthcheck_pairs_531
 
 === CI_PARITY_PREVIEW ===
 Base: 1777b51
-Head: 2a92af6
+Head: c643f3f
 MergeBase: 1777b51
 Source: JSON (Evidence-as-Code)
-Scope: 34 files
+Scope: 44 files
 Files (Top 3):
   - OppRadar/contracts/opps_rank_v2_response.schema.json
   - OppRadar/mock_server_53122.mjs

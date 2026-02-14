@@ -12,17 +12,17 @@
     },
     {
       "name": "rules/task-reports/2026-02/healthcheck_root_53122_260214_009.txt",
-      "sha256_short": "567354a3",
+      "sha256_short": "9887f3a3",
       "size": 123
     },
     {
       "name": "rules/task-reports/2026-02/healthcheck_pairs_53122_260214_009.txt",
-      "sha256_short": "567354a3",
+      "sha256_short": "9887f3a3",
       "size": 123
     },
     {
       "name": "rules/task-reports/2026-02/manual_verification_260214_009.json",
-      "sha256_short": "ed95b95f",
+      "sha256_short": "ce538f87",
       "size": 552
     },
     {
@@ -32,12 +32,12 @@
     },
     {
       "name": "rules/task-reports/2026-02/ci_parity_260214_009.json",
-      "sha256_short": "1def88b5",
-      "size": 2357
+      "sha256_short": "3fb131c0",
+      "size": 3322
     },
     {
       "name": "rules/task-reports/2026-02/notify_260214_009.txt",
-      "sha256_short": "ea837610",
+      "sha256_short": "136e0b3d",
       "size": 2551
     }
   ]
