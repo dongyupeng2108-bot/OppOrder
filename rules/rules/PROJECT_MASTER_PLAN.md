@@ -109,12 +109,19 @@
 4.  **Verifiable != Absolute Trust**: Gate Light provides **Traceability** and **Tamper-Evidence**, not mathematical proof. Do not over-promise "100% Trust".
 
 ## 本窗口任务台账 (Current Session Task Ledger)
+
+> **Status Legend**:
+> *   **MERGED**: Verified merged into `origin/main`.
+> *   **DONE**: Evidence passed (Gate Light=0) & pushed, but not necessarily merged.
+> *   **OPEN**: PR/Branch exists but not verified/passed.
+> *   **UNKNOWN**: Evidence missing or unverifiable.
+
 | Task ID | Status | Branch | Commit | Gate Light | Evidence Path |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| 260212_001 | MERGED | UNKNOWN | 7b50c1a | 0 | rules/task-reports/2026-02/notify_260212_001.txt |
-| 260213_002 | MERGED | UNKNOWN | 081a2f3 | 0 | rules/task-reports/2026-02/notify_260213_002.txt |
-| 260213_003 | MERGED | UNKNOWN | 2454fc5 | 0 | rules/task-reports/2026-02/notify_260213_003.txt |
-| 260213_004 | MERGED | UNKNOWN | 0da8bca | 0 | rules/task-reports/2026-02/notify_260213_004.txt |
-| 260214_005 | MERGED | UNKNOWN | 4925f3e | 0 | rules/task-reports/2026-02/notify_260214_005.txt |
-| 260214_006 | DONE | UNKNOWN | 2841ea3 | 0 | rules/task-reports/2026-02/notify_260214_006.txt |
-| 260214_007 | DONE | chore/post005-smoke-260214_007 | 7e2ccdd | 0 | rules/task-reports/2026-02/notify_260214_007.txt |
+| 260212_001 | MERGED | feat/news-pull-minspec-tests-260212_001 | 7b50c1a | 0 | rules/task-reports/2026-02/notify_260212_001.txt |
+| 260213_002 | MERGED | docs/plan-sync-260213_002 | 081a2f344cbc4fb3e883cf79cb3523543cc2420d | 0 | rules/task-reports/2026-02/notify_260213_002.txt |
+| 260213_003 | MERGED | feat/news-pull-pagination-260213_003-clean | 2454fc507164f2224e9487f4c8b0a4a48c78a690 | 0 | rules/task-reports/2026-02/notify_260213_003.txt |
+| 260213_004 | MERGED | feat/news-pull-provider-260213_004 | 0da8bcabc3ac13204b0bbc5dcbf46b895ac0f2e3 | 0 | rules/task-reports/2026-02/notify_260213_004.txt |
+| 260214_005 | MERGED | feat/news-store-list-260214_005 | 4925f3e | 0 | rules/task-reports/2026-02/notify_260214_005.txt |
+| 260214_006 | MERGED | docs/lessons-006-007-settings-index-260214_006 | 2841ea3 | 0 | rules/task-reports/2026-02/notify_260214_006.txt |
+| 260214_007 | MERGED | chore/post005-smoke-260214_007 | 7e2ccdd62f05fecd6bb9cde128eba77a0f153963 | 0 | rules/task-reports/2026-02/notify_260214_007.txt |
