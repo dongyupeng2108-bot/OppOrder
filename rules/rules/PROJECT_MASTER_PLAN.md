@@ -107,3 +107,14 @@
     *   **LF Only**: All text evidence MUST be LF-normalized before hashing.
     *   **No UTF-16**: Ban PowerShell default redirection; use `curl --output` or Node `fs`.
 4.  **Verifiable != Absolute Trust**: Gate Light provides **Traceability** and **Tamper-Evidence**, not mathematical proof. Do not over-promise "100% Trust".
+
+## 本窗口任务台账 (Current Session Task Ledger)
+| Task ID | Status | Branch | Commit | Gate Light | Evidence Path |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| 260212_001 | MERGED | UNKNOWN | 7b50c1a | 0 | rules/task-reports/2026-02/notify_260212_001.txt |
+| 260213_002 | MERGED | UNKNOWN | 081a2f3 | 0 | rules/task-reports/2026-02/notify_260213_002.txt |
+| 260213_003 | MERGED | UNKNOWN | 2454fc5 | 0 | rules/task-reports/2026-02/notify_260213_003.txt |
+| 260213_004 | MERGED | UNKNOWN | 0da8bca | 0 | rules/task-reports/2026-02/notify_260213_004.txt |
+| 260214_005 | MERGED | UNKNOWN | 4925f3e | 0 | rules/task-reports/2026-02/notify_260214_005.txt |
+| 260214_006 | DONE | UNKNOWN | 2841ea3 | 0 | rules/task-reports/2026-02/notify_260214_006.txt |
+| 260214_007 | DONE | chore/post005-smoke-260214_007 | 7e2ccdd | 0 | rules/task-reports/2026-02/notify_260214_007.txt |
