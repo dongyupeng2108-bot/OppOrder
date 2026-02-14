@@ -97,6 +97,34 @@
 - **Deletion Audit**: locks/runs is append-only; deletion is forbidden; Gate Light will fail if missing. All tasks (>= 260211_006) must be indexed in `rules/task-reports/index/runs_index.jsonl`.
 - **No Auto-Merge**: The Agent MUST NOT execute `git merge` or `git push ... main` (or to any protected branch). Only the Human User (Owner) can perform the merge. The Agent's job ends at "PR Created + Gate Light PASS". Violation (detected by Gate Light in `command_audit`) triggers immediate failure (Exit 62).
 
+## API Contracts & DoD Markers
+
+### GET /opportunities/rank_v2 (Opportunity Rank v2)
+- **Endpoint**: `GET /opportunities/rank_v2`
+- **Parameters**:
+  - `run_id` (Required): The scan run ID to query.
+  - `limit` (Optional): Max items to return (Default: 20, Max: 50).
+  - `provider` (Optional): LLM provider, "mock" or "deepseek" (Default: "mock").
+  - `model` (Optional): Specific model name.
+- **Response Fields** (Array of Objects):
+  - `opp_id`: Opportunity ID.
+  - `score`: Original v1 score.
+  - `p_hat`: Base probability (0..1, clamped).
+  - `p_llm`: LLM probability (0..1). Mock must be deterministic.
+  - `p_ci`: Confidence Interval `{ low, high, method }`.
+  - `price_q`: Quantized price (placeholder if no live data).
+  - `score_v2`: Final v2 score (0..1).
+  - `meta`: `{ provider_used, model_used, fallback }`.
+- **DoD Marker**: `DOD_EVIDENCE_OPPS_RANK_V2`
+  - Evidence file: `rules/task-reports/<YYYY-MM>/opps_rank_v2_<task_id>.json`
+  - Validation: Must show `rows=N`, `has_fields=...`, `sorted_by=score_v2_desc`, `stable=true`.
+
+### DoD Markers
+- `DOD_EVIDENCE_OPPS_RANK_V2`: See above.
+- `DOD_EVIDENCE_SITE_HEALTH_ROOT_53122`: `rules/task-reports/<YYYY-MM>/healthcheck_root_53122_<task_id>.txt` => status=200
+- `DOD_EVIDENCE_SITE_HEALTH_PAIRS_53122`: `rules/task-reports/<YYYY-MM>/healthcheck_pairs_53122_<task_id>.txt` => status=200
+
+
 ## M2 Interfaces (Diff & Replay)
 ### Diff API (v0)
 - **Endpoint**: `GET /diff`

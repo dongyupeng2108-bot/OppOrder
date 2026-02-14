@@ -1199,6 +1199,64 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    // POST /opportunities/llm_route (Mock for Task 260214_009)
+    if (pathname === '/opportunities/llm_route' && req.method === 'POST') {
+        let body = '';
+        req.on('data', chunk => body += chunk);
+        req.on('end', async () => {
+            try {
+                let params = {};
+                try { params = JSON.parse(body); } catch (e) {}
+                
+                const runId = params.run_id;
+                const limit = params.limit ? parseInt(params.limit) : 50;
+                const provider = params.provider || 'mock';
+                
+                if (!runId) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ status: 'error', message: 'Missing run_id' }));
+                    return;
+                }
+
+                // Mock response logic
+                // Fetch opps to return as items
+                const opps = await DB.getOpportunitiesByRun(runId, limit);
+                
+                // Deterministic mock generation
+                const items = opps.map(o => {
+                    // Generate stable hash for this opp
+                    const hash = crypto.createHash('sha256').update(o.id + 'llm_route').digest('hex');
+                    const confidence = parseInt(hash.substring(0, 2), 16) / 255;
+                    
+                    return {
+                        opp_id: o.id,
+                        llm_json: {
+                            summary: `Mock LLM analysis for ${o.id}`,
+                            confidence: parseFloat(confidence.toFixed(2)),
+                            tags: ['mock', 'stable']
+                        }
+                    };
+                });
+
+                const response = {
+                    status: 'ok',
+                    run_id: runId,
+                    provider_used: provider,
+                    model_used: 'mock-model-v1',
+                    items: items
+                };
+
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify(response));
+            } catch (e) {
+                console.error(e);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ status: 'error', message: e.message }));
+            }
+        });
+        return;
+    }
+
     // GET /opportunities/rank_v2 (Task 260214_009)
     if (pathname === '/opportunities/rank_v2') {
         const runId = parsedUrl.query.run_id;
