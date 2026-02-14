@@ -7,7 +7,7 @@ Gate Light: GATE_LIGHT_EXIT=0
 DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260214_008_healthcheck_53122_root.txt => HTTP/1.1 200 OK
 HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-Date: Sat, 14 Feb 2026 11:47:06 GMT
+Date: Sat, 14 Feb 2026 13:02:50 GMT
 Connection: close
 
 {"status":"ok","mock":"doc-only-task"}
@@ -18,7 +18,7 @@ Connection: close
 DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260214_008_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
 HTTP/1.1 200 OK
 Content-Type: application/json; charset=utf-8
-Date: Sat, 14 Feb 2026 11:47:06 GMT
+Date: Sat, 14 Feb 2026 13:02:50 GMT
 Connection: close
 
 {"status":"ok","mock":"doc-only-task"}
@@ -31,7 +31,7 @@ Connection: close
   "status": "DONE",
   "summary": "Updated PROJECT_MASTER_PLAN.md with task ledger for 7 tasks.",
   "report_file": "../../rules/PROJECT_MASTER_PLAN.md",
-  "report_sha256_short": "c2fe6f90",
+  "report_sha256_short": "66a1a563",
   "business_evidence": {
     "plan_file": "../../rules/PROJECT_MASTER_PLAN.md",
     "verification_log": "260214_008_plan_update.log",
@@ -46,9 +46,9 @@ Connection: close
   },
   "git_context": {
     "branch": "docs/plan-update-published-tasks-only-260214_008",
-    "commit": "82657ba0d00947819b299e9f8b8389dd56d4d4c3"
+    "commit": "843eabec1445cf1acc0f57fa36c91b52b6ea1ac9"
   },
-  "timestamp": "2026-02-14T11:47:06.328Z"
+  "timestamp": "2026-02-14T13:02:50.887Z"
 }
 === RESULT_JSON_END ===
 
@@ -56,7 +56,7 @@ Connection: close
 
 Task: 260214_008
 Action: Update PROJECT_MASTER_PLAN.md with current session task ledger.
-Timestamp: 2026-02-14T11:47:04.769Z
+Timestamp: 2026-02-14T13:02:49.171Z
 Verification:
 - Ledger Section Present: YES
 - Task IDs Covered: 260212_001, 260213_002, 260213_003, 260213_004, 260214_005, 260214_006, 260214_007
@@ -64,17 +64,17 @@ Verification:
 
 Content Snippet:
 
-| Task ID | Status | Branch | Commit | Gate Light | Evidence Path |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| 260212_001 | MERGED | UNKNOWN |
+
+> **Status Legend**:
+> *   **MERGED**: Verified merged into `origin/main`.
+> *   **DONE**: Evidence passed (Gate Light=0) & pushed, but not 
 === LOG_HEAD_END ===
 
 === LOG_TAIL ===
-MERGED | UNKNOWN | 2454fc5 | 0 | rules/task-reports/2026-02/notify_260213_003.txt |
-| 260213_004 | MERGED | UNKNOWN | 0da8bca | 0 | rules/task-reports/2026-02/notify_260213_004.txt |
-| 260214_005 | MERGED | UNKNOWN | 4925f3e | 0 | rules/task-reports/2026-02/notify_260214_005.txt |
-| 260214_006 | DONE | UNKNOWN | 2841ea3 | 0 | rules/task-reports/2026-02/notify_260214_006.txt |
-| 260214_007 | DONE | chore/post005-smoke-260214_007 | 7e2ccdd | 0 | rules/task-reports/2026-02/notify_260214_007.txt |
+bbc5dcbf46b895ac0f2e3 | 0 | rules/task-reports/2026-02/notify_260213_004.txt |
+| 260214_005 | MERGED | feat/news-store-list-260214_005 | 4925f3e | 0 | rules/task-reports/2026-02/notify_260214_005.txt |
+| 260214_006 | MERGED | docs/lessons-006-007-settings-index-260214_006 | 2841ea3 | 0 | rules/task-reports/2026-02/notify_260214_006.txt |
+| 260214_007 | MERGED | chore/post005-smoke-260214_007 | 7e2ccdd62f05fecd6bb9cde128eba77a0f153963 | 0 | rules/task-reports/2026-02/notify_260214_007.txt |
 
 
 === LOG_TAIL_END ===
@@ -85,50 +85,50 @@ MERGED | UNKNOWN | 2454fc5 | 0 | rules/task-reports/2026-02/notify_260213_003.tx
   "files": [
     {
       "path": "rules/task-reports/2026-02/result_260214_008.json",
-      "sha256": "70874691f49a262027fdb6048186425838357925fc132b4240cec907e22f3fc1",
-      "sha256_short": "70874691",
+      "sha256": "2869a99f8acb7ea33a5fe6c4fdcef14b1a893bafd804f5ec28919ed6bfe12be4",
+      "sha256_short": "2869a99f",
       "size": 939
     },
     {
       "path": "rules/task-reports/2026-02/trae_report_snippet_260214_008.txt",
-      "sha256": "1743934d4e9f412205d6d88eb9361e9d79f6ef3a21e098d2a81bf7361fa987c0",
-      "sha256_short": "1743934d",
+      "sha256": "215d74eb927c1e3882e478375dff7bdc51b5f1019506c2e3e5389f2be9baf72e",
+      "sha256_short": "215d74eb",
       "size": 707
     },
     {
       "path": "rules/task-reports/2026-02/260214_008_plan_update.log",
-      "sha256": "d472506b679cba2529d5aa550e7ce5f66867682be1dff42bcb99da4c1e743d88",
-      "sha256_short": "d472506b",
-      "size": 1177
+      "sha256": "d6614e540aa64cb805a40665ca24c8bd9630b6d6dd91acfc863927ee6ac04eae",
+      "sha256_short": "d6614e54",
+      "size": 1777
     },
     {
       "path": "../../rules/PROJECT_MASTER_PLAN.md",
-      "sha256": "c2fe6f909a635c5c720888c1830e7ca0af57fa718dc8f16d5e753014aec8b28f",
-      "sha256_short": "c2fe6f90",
-      "size": 7371
+      "sha256": "66a1a5630cb9b8eb0ed336d986b34f33b3a1f4701fe9e66de1d0ab41f02f9e00",
+      "sha256_short": "66a1a563",
+      "size": 8082
     },
     {
       "path": "rules/task-reports/2026-02/ci_parity_260214_008.json",
-      "sha256": "654cd8f8de58cc95103f701311aafabbc1eb467878e776716a0308cb634e5c8a",
-      "sha256_short": "654cd8f8",
-      "size": 1052
+      "sha256": "5dd5dac74aef600ee346579f1e3af6cf4ecdc1fa4e0559fc1fca862c442f91f8",
+      "sha256_short": "5dd5dac7",
+      "size": 1113
     },
     {
       "path": "rules/task-reports/2026-02/260214_008_healthcheck_53122_root.txt",
-      "sha256": "ec8d49ee824598adf2d588e96f4075d0ae88cc9780dfd439653dd69950b8041f",
-      "sha256_short": "ec8d49ee",
+      "sha256": "6c642bc1713c124e913a74ca2b4a464d641602922b4392c3d4c9a82088418dad",
+      "sha256_short": "6c642bc1",
       "size": 156
     },
     {
       "path": "rules/task-reports/2026-02/260214_008_healthcheck_53122_pairs.txt",
-      "sha256": "ec8d49ee824598adf2d588e96f4075d0ae88cc9780dfd439653dd69950b8041f",
-      "sha256_short": "ec8d49ee",
+      "sha256": "6c642bc1713c124e913a74ca2b4a464d641602922b4392c3d4c9a82088418dad",
+      "sha256_short": "6c642bc1",
       "size": 156
     },
     {
       "path": "rules/task-reports/2026-02/manual_verification_260214_008.json",
-      "sha256": "539b447212f04f39a7dc978a480b25c8b30098b100e9603b9a5ee70b9df698e7",
-      "sha256_short": "539b4472",
+      "sha256": "4c1357b50aa50c67f8818d6c9fa85eb9d4478673996da56d1d19c3ac2dd6f013",
+      "sha256_short": "4c1357b5",
       "size": 271
     }
   ]

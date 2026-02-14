@@ -1,20 +1,24 @@
 {
   "task_id": "260214_008",
   "base": "32c94d82df8c009b7e514f522cc8317a0cfe8e1f",
-  "head": "cbe1d44a5f30c91447a5a1fc0a5ceb637da6f77c",
-  "merge_base": "4e86b082c25bf86361dbc7d4046875a50acd5dbb",
+  "head": "843eabec1445cf1acc0f57fa36c91b52b6ea1ac9",
+  "merge_base": "32c94d82df8c009b7e514f522cc8317a0cfe8e1f",
   "scope_files": [
     "rules/LATEST.json",
     "rules/rules/PROJECT_MASTER_PLAN.md",
+    "rules/task-reports/2026-02/260214_008_healthcheck_53122_pairs.txt",
+    "rules/task-reports/2026-02/260214_008_healthcheck_53122_root.txt",
+    "rules/task-reports/2026-02/260214_008_plan_update.log",
     "rules/task-reports/2026-02/ci_parity_260214_008.json",
     "rules/task-reports/2026-02/deliverables_index_260214_008.json",
     "rules/task-reports/2026-02/generate_pkg_260214_008.mjs",
+    "rules/task-reports/2026-02/manual_verification_260214_008.json",
     "rules/task-reports/2026-02/notify_260214_008.txt",
     "rules/task-reports/2026-02/result_260214_008.json",
     "rules/task-reports/2026-02/trae_report_snippet_260214_008.txt",
     "rules/task-reports/envelopes/260214_008.envelope.json",
     "scripts/gather_task_status_260214_008.mjs"
   ],
-  "scope_count": 10,
-  "generated_at": "2026-02-14T11:10:45.248Z"
+  "scope_count": 14,
+  "generated_at": "2026-02-14T13:02:50.875Z"
 }

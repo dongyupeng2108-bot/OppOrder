@@ -2,17 +2,17 @@
 Task ID: 260214_008
 Status: PASS
 GATE_LIGHT_EXIT=0
-COMMIT: 82657ba0d00947819b299e9f8b8389dd56d4d4c3
-Timestamp: 2026-02-14T11:47:06.328Z
+COMMIT: 843eabec1445cf1acc0f57fa36c91b52b6ea1ac9
+Timestamp: 2026-02-14T13:02:50.888Z
 [Postflight] PASS: Task 260214_008 Verified.
 [Gate Light] PASS: Verification Successful.
 
 === CI_PARITY_PREVIEW ===
-Head: 82657ba0d00947819b299e9f8b8389dd56d4d4c3
+Head: 843eabec1445cf1acc0f57fa36c91b52b6ea1ac9
 Base: 32c94d82df8c009b7e514f522cc8317a0cfe8e1f
-MergeBase: 4e86b082c25bf86361dbc7d4046875a50acd5dbb
+MergeBase: 32c94d82df8c009b7e514f522cc8317a0cfe8e1f
 Source: docs/plan-update-published-tasks-only-260214_008
-Scope: 13 files
+Scope: 14 files
 
 [DoD Evidence]
 DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260214_008_healthcheck_53122_root.txt
