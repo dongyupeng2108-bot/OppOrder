@@ -232,9 +232,28 @@ GATE_LIGHT_EXIT=0
     console.log('8. Immutable Setup...');
     if (!fs.existsSync(LOCKS_DIR)) fs.mkdirSync(LOCKS_DIR, { recursive: true });
     
-    const timestamp = new Date().toISOString();
-    const shortHash = getGitShortHash();
-    const runId = `${new Date().toISOString().replace(/[-:T.]/g, '').slice(0, 14)}_${shortHash}`; // YYYYMMDDHHMMSS_hash
+    const latestFile = path.join(ROOT_DIR, 'rules', 'LATEST.json');
+    let runId;
+    let timestamp;
+    let reuseRun = false;
+
+    if (fs.existsSync(latestFile)) {
+        try {
+            const currentLatest = JSON.parse(fs.readFileSync(latestFile, 'utf8'));
+            if (currentLatest.task_id === TASK_ID && currentLatest.run_id) {
+                runId = currentLatest.run_id;
+                timestamp = currentLatest.timestamp_utc || new Date().toISOString();
+                reuseRun = true;
+                console.log(`Reusing existing run_id from LATEST.json: ${runId}`);
+            }
+        } catch (e) {}
+    }
+
+    if (!runId) {
+        timestamp = new Date().toISOString();
+        const shortHash = getGitShortHash();
+        runId = `${new Date().toISOString().replace(/[-:T.]/g, '').slice(0, 14)}_${shortHash}`; // YYYYMMDDHHMMSS_hash
+    }
     
     const lockFile = path.join(LOCKS_DIR, `${TASK_ID}.lock.json`);
     const lockData = {
@@ -243,7 +262,9 @@ GATE_LIGHT_EXIT=0
         timestamp: timestamp,
         status: "LOCKED"
     };
-    fs.writeFileSync(lockFile, JSON.stringify(lockData, null, 2));
+    if (!fs.existsSync(lockFile)) {
+        fs.writeFileSync(lockFile, JSON.stringify(lockData, null, 2));
+    }
     
     const runDir = path.join(RUNS_BASE_DIR, TASK_ID, runId);
     if (!fs.existsSync(runDir)) fs.mkdirSync(runDir, { recursive: true });
@@ -251,21 +272,29 @@ GATE_LIGHT_EXIT=0
     // Update Global Runs Index
     if (!fs.existsSync(GLOBAL_INDEX_DIR)) fs.mkdirSync(GLOBAL_INDEX_DIR, { recursive: true });
     const globalIndexFile = path.join(GLOBAL_INDEX_DIR, 'runs_index.jsonl');
-    const globalIndexEntry = {
-        task_id: TASK_ID,
-        run_id: runId,
-        timestamp_utc: timestamp,
-        lock_path: `rules/task-reports/locks/${TASK_ID}.lock.json`,
-        run_dir: `rules/task-reports/runs/${TASK_ID}/${runId}`,
-        head: getGitHash(),
-        base: "origin/main",
-        merge_base: "unknown"
-    };
-    fs.appendFileSync(globalIndexFile, JSON.stringify(globalIndexEntry) + '\n');
+    // Check if entry exists to avoid duplicate
+    let indexExists = false;
+    if (fs.existsSync(globalIndexFile)) {
+        const lines = fs.readFileSync(globalIndexFile, 'utf8').split('\n');
+        indexExists = lines.some(line => line.includes(`"run_id":"${runId}"`));
+    }
+
+    if (!indexExists) {
+        const globalIndexEntry = {
+            task_id: TASK_ID,
+            run_id: runId,
+            timestamp_utc: timestamp,
+            lock_path: `rules/task-reports/locks/${TASK_ID}.lock.json`,
+            run_dir: `rules/task-reports/runs/${TASK_ID}/${runId}`,
+            head: getGitHash(),
+            base: "origin/main",
+            merge_base: "unknown"
+        };
+        fs.appendFileSync(globalIndexFile, JSON.stringify(globalIndexEntry) + '\n');
+    }
 
     // Update LATEST.json (Required for Gate Light)
     console.log('8.5. Updating LATEST.json...');
-    const latestFile = path.join(ROOT_DIR, 'rules', 'LATEST.json');
     const latestData = {
         task_id: TASK_ID,
         run_id: runId,
@@ -273,7 +302,18 @@ GATE_LIGHT_EXIT=0
         result_dir: "rules/task-reports/2026-02",
         status: "DONE"
     };
-    fs.writeFileSync(latestFile, JSON.stringify(latestData, null, 2));
+    // Only write if changed or new (to avoid git timestamp update if content same)
+    let writeLatest = true;
+    if (fs.existsSync(latestFile)) {
+        const content = fs.readFileSync(latestFile, 'utf8');
+        if (content === JSON.stringify(latestData, null, 2)) {
+            writeLatest = false;
+            console.log('LATEST.json matches current run, skipping write.');
+        }
+    }
+    if (writeLatest) {
+        fs.writeFileSync(latestFile, JSON.stringify(latestData, null, 2));
+    }
 
     // 10. Postflight Validate
     console.log('9. Running Postflight Validation...');
