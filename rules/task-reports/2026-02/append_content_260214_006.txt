@@ -1,0 +1,13 @@
+
+=== DOD_EVIDENCE_STDOUT ===
+[Docs Task] No runtime evidence required.
+[Docs Task] Verified 3 core docs updated.
+[Docs Task] Verified TRAE_SETTINGS_INDEX.txt created.
+
+=== TRAE_SETTINGS_INDEX_PREVIEW ===
+TraeTask_ | FIX: | 讨论:
+rules/rules/WORKFLOW.md | rules/rules/PROJECT_RULES.md
+rules/rules/PROJECT_MASTER_PLAN.md | rules/rules/TRAE_SETTINGS_INDEX.txt
+Must Run: node scripts/gate_light_ci.mjs (Two-Pass)
+FORBIDDEN: Delete locks/runs | Merge origin/main
+Ports: 53122 (OppRadar) | 53121 (ArbWeb)

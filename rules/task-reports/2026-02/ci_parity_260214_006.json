@@ -1,0 +1,14 @@
+{
+  "task_id": "260214_006",
+  "base": "e0d6e294d9ccd64fe6ab8addcb949855b6d30e42",
+  "head": "f8d8b124a4a069c8688d7d80a304aa0f436c3034",
+  "merge_base": "7e8279ea6e6462d6ff6433bb08924c0f0392cc5c",
+  "scope_files": [
+    "rules/rules/PROJECT_MASTER_PLAN.md",
+    "rules/rules/PROJECT_RULES.md",
+    "rules/rules/TRAE_SETTINGS_INDEX.txt",
+    "rules/rules/WORKFLOW.md"
+  ],
+  "scope_count": 4,
+  "generated_at": "2026-02-14T02:00:23.666Z"
+}
