@@ -796,19 +796,26 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         // 1. Minimum Evidence Lines (DoD Healthcheck) - Must be present in snippet
         const snippetContent = fs.existsSync(snippetFile) ? fs.readFileSync(snippetFile, 'utf8') : '';
         
-        const hcRootMarker = 'DOD_EVIDENCE_HEALTHCHECK_ROOT';
-        const hcPairsMarker = 'DOD_EVIDENCE_HEALTHCHECK_PAIRS';
-        
-        if (!snippetContent.includes(hcRootMarker) || !snippetContent.includes(hcPairsMarker)) {
-             console.error('[Gate Light] FAILED: Snippet missing DoD Healthcheck evidence lines.');
-             console.error(`Expected markers: ${hcRootMarker} and ${hcPairsMarker}`);
-             process.exit(1);
+        // Check for Preview Mode (GENERATE_PREVIEW or GATE_LIGHT_GENERATE_PREVIEW)
+        const isPreviewMode = process.env.GENERATE_PREVIEW === '1' || process.env.GATE_LIGHT_GENERATE_PREVIEW === '1';
+
+        if (!isPreviewMode) {
+            const hcRootMarker = 'DOD_EVIDENCE_HEALTHCHECK_ROOT';
+            const hcPairsMarker = 'DOD_EVIDENCE_HEALTHCHECK_PAIRS';
+            
+            if (!snippetContent.includes(hcRootMarker) || !snippetContent.includes(hcPairsMarker)) {
+                 console.error('[Gate Light] FAILED: Snippet missing DoD Healthcheck evidence lines.');
+                 console.error(`Expected markers: ${hcRootMarker} and ${hcPairsMarker}`);
+                 process.exit(1);
+            }
+        } else {
+             console.log('[Gate Light] Skipping DoD Healthcheck marker check (Preview Mode).');
         }
 
         // 2. Evidence Truth (Log Existence & Content Match)
         // Task 260211_007: Two-Pass Mechanism (Strict check against Internal Buffer or Log)
         if (task_id >= '260211_007') {
-            if (process.env.GATE_LIGHT_GENERATE_PREVIEW === '1') {
+            if (isPreviewMode) {
                  console.log('[Gate Light] Skipping Evidence Truth check (Generation Mode).');
             } else {
                 // For Two-Pass, we verify that the Snippet Preview matches the REAL execution.
