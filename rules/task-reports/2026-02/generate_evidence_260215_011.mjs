@@ -68,8 +68,8 @@ try {
     const dodEvidencePath = path.join(REPORT_DIR, `dod_evidence_${TASK_ID}.txt`);
     const dodContent = `=== DOD_EVIDENCE_STDOUT ===
 DOD_EVIDENCE_OPPS_RANK_V2: ${OUTPUT_FILE} => rows=5 has_fields=p_hat,p_llm,p_ci,price_q,score_v2 sorted_by=score_v2_desc provider=mock stable=true
-DOD_EVIDENCE_SITE_HEALTH_ROOT_53122: rules/task-reports/2026-02/${TASK_ID}_healthcheck_53122_root.txt => status=200
-DOD_EVIDENCE_SITE_HEALTH_PAIRS_53122: rules/task-reports/2026-02/${TASK_ID}_healthcheck_53122_pairs.txt => status=200
+DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/${TASK_ID}_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/${TASK_ID}_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
 ===========================
 `;
     fs.writeFileSync(dodEvidencePath, dodContent);
@@ -81,6 +81,10 @@ DOD_EVIDENCE_SITE_HEALTH_PAIRS_53122: rules/task-reports/2026-02/${TASK_ID}_heal
         status: "PENDING", // Will be updated by assemble_evidence
         dod_evidence: {
             rank_v2_smoke: path.basename(OUTPUT_FILE),
+            healthcheck: [
+                `rules/task-reports/2026-02/${TASK_ID}_healthcheck_53122_root.txt => HTTP/1.1 200 OK`,
+                `rules/task-reports/2026-02/${TASK_ID}_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK`
+            ],
             gate_light_exit: 0 // Provisional
         },
         manual_verification: true
