@@ -1,11 +1,11 @@
-Run ID: batch_2915d940
+Run ID: batch_ec555e5b
 Duration: 65ms
 OK Count: 2 (Expected: 2)
 Failed Count: 1 (Expected: 1)
 Jobs Count: 3
 Job 1: topic_smoke_ok_1
   Status: ok
-  Duration: 31ms
+  Duration: 32ms
 Job 2: topic_smoke_fail
   Status: failed
   Duration: 0ms
@@ -13,4 +13,4 @@ Job 2: topic_smoke_fail
   Error Message: Simulated failure for testing
 Job 3: topic_smoke_ok_2
   Status: ok
-  Duration: 34ms
+  Duration: 33ms

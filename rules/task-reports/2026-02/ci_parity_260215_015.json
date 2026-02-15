@@ -1,13 +1,25 @@
 {
   "task_id": "260215_015",
   "base": "76a40b1f8f895885e913257706daf3498a7a4b5b",
-  "head": "b18e1998721458d72dd2f4541d10f3f20781a0c7",
+  "head": "07ffdc13ed4119057bf58bdbdc38f51af74564a5",
   "merge_base": "76a40b1f8f895885e913257706daf3498a7a4b5b",
-  "scope_count": 3,
+  "scope_count": 15,
   "scope_files": [
     "OppRadar/mock_server_53122.mjs",
+    "rules/LATEST.json",
+    "rules/task-reports/2026-02/260215_015_healthcheck_53122_pairs.txt",
+    "rules/task-reports/2026-02/260215_015_healthcheck_53122_root.txt",
+    "rules/task-reports/2026-02/ci_parity_260215_015.json",
+    "rules/task-reports/2026-02/deliverables_index_260215_015.json",
+    "rules/task-reports/2026-02/dod_evidence_260215_015.txt",
     "rules/task-reports/2026-02/generate_evidence_260215_015.mjs",
-    "rules/task-reports/2026-02/preflight_attestation_260215_015.json"
+    "rules/task-reports/2026-02/git_meta_260215_015.json",
+    "rules/task-reports/2026-02/manual_verification_260215_015.json",
+    "rules/task-reports/2026-02/notify_260215_015.txt",
+    "rules/task-reports/2026-02/preflight_attestation_260215_015.json",
+    "rules/task-reports/2026-02/result_260215_015.json",
+    "rules/task-reports/2026-02/scan_observability_smoke_260215_015.txt",
+    "rules/task-reports/2026-02/trae_report_snippet_260215_015.txt"
   ],
-  "timestamp": "2026-02-15T13:51:28.611Z"
+  "timestamp": "2026-02-15T13:52:05.224Z"
 }
