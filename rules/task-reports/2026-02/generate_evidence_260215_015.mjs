@@ -172,10 +172,14 @@ async function main() {
     const healthRoot = join(REPORT_DIR, `${TASK_ID}_healthcheck_53122_root.txt`);
     const healthPairs = join(REPORT_DIR, `${TASK_ID}_healthcheck_53122_pairs.txt`);
     
+    const healthcheckLines = [];
+
     if (fs.existsSync(healthRoot)) {
         const data = fs.readFileSync(healthRoot, 'utf8');
         if (/HTTP\/\d\.\d\s+200/.test(data)) {
-            docEvidenceContent += `DOD_EVIDENCE_HEALTHCHECK_ROOT: ${TASK_ID}_healthcheck_53122_root.txt => HTTP/1.1 200 OK\n`;
+            const line = `DOD_EVIDENCE_HEALTHCHECK_ROOT: ${TASK_ID}_healthcheck_53122_root.txt => HTTP/1.1 200 OK`;
+            docEvidenceContent += line + '\n';
+            healthcheckLines.push(line);
         } else {
             docEvidenceContent += `DOD_EVIDENCE_HEALTHCHECK_ROOT: FAILED\n`;
             healthPassed = false;
@@ -190,7 +194,9 @@ async function main() {
     if (fs.existsSync(healthPairs)) {
         const data = fs.readFileSync(healthPairs, 'utf8');
         if (/HTTP\/\d\.\d\s+200/.test(data)) {
-            docEvidenceContent += `DOD_EVIDENCE_HEALTHCHECK_PAIRS: ${TASK_ID}_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK\n`;
+            const line = `DOD_EVIDENCE_HEALTHCHECK_PAIRS: ${TASK_ID}_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK`;
+            docEvidenceContent += line + '\n';
+            healthcheckLines.push(line);
         } else {
             docEvidenceContent += `DOD_EVIDENCE_HEALTHCHECK_PAIRS: FAILED\n`;
             healthPassed = false;
@@ -266,7 +272,7 @@ async function main() {
             dod_evidence: {
                 gate_light_exit: smokePassed ? 0 : 1,
                 smoke_test: smokePassed ? "PASSED" : "FAILED",
-                healthcheck: healthPassed ? "PASSED" : "FAILED"
+                healthcheck: healthcheckLines
             }
         };
         

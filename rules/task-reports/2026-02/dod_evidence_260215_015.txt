@@ -1,13 +1,13 @@
 === DOD_EVIDENCE_STDOUT ===
 === SMOKE TEST OUTPUT ===
-Run ID: batch_ec555e5b
-Duration: 65ms
+Run ID: batch_a52de24b
+Duration: 67ms
 OK Count: 2 (Expected: 2)
 Failed Count: 1 (Expected: 1)
 Jobs Count: 3
 Job 1: topic_smoke_ok_1
   Status: ok
-  Duration: 32ms
+  Duration: 33ms
 Job 2: topic_smoke_fail
   Status: failed
   Duration: 0ms
@@ -15,7 +15,7 @@ Job 2: topic_smoke_fail
   Error Message: Simulated failure for testing
 Job 3: topic_smoke_ok_2
   Status: ok
-  Duration: 33ms
+  Duration: 34ms
 === END SMOKE ===
 DOD_EVIDENCE_SMOKE_TEST: PASSED
 DOD_EVIDENCE_HEALTHCHECK_ROOT: 260215_015_healthcheck_53122_root.txt => HTTP/1.1 200 OK
