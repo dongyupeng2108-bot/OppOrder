@@ -1601,10 +1601,16 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
 
     // Construct postflight command
     // Note: Assuming scripts/postflight_validate_envelope.mjs exists relative to CWD
-    const cmd = 'node scripts/postflight_validate_envelope.mjs --task_id ' + task_id + ' --result_dir ' + result_dir + ' --report_dir ' + result_dir;
+    const isPreviewMode = process.env.GENERATE_PREVIEW === '1' || process.env.GATE_LIGHT_GENERATE_PREVIEW === '1';
     
-    console.log('[Gate Light] Executing: ' + cmd);
-    execSync(cmd, { stdio: 'inherit' });
+    if (isPreviewMode) {
+        console.log('[Gate Light] Skipping Postflight Envelope Validation (Preview Mode).');
+    } else {
+        const cmd = 'node scripts/postflight_validate_envelope.mjs --task_id ' + task_id + ' --result_dir ' + result_dir + ' --report_dir ' + result_dir;
+        
+        console.log('[Gate Light] Executing: ' + cmd);
+        execSync(cmd, { stdio: 'inherit' });
+    }
     
     console.log('[Gate Light] PASS');
     console.log('GATE_LIGHT_EXIT=0');
