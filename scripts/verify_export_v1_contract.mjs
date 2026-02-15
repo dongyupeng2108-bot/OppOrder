@@ -118,29 +118,61 @@ async function main() {
             await new Promise(r => setTimeout(r, 2000));
         }
 
-        // 3. Generate Run (Create Assets)
-        const runId = 'verify_export_v1';
-        // Need to use a fresh run_id if it exists? 
-        // Mock server implementation throws error if run_id exists.
-        // We should try to use a unique run_id or handle the error gracefully (if it exists, we can just export it).
-        // Let's use a timestamp to ensure uniqueness, or handle the 500 error if it says "collision".
-        // Actually, for verification stability, we might want a fixed ID. 
-        // But if I run this script multiple times, it will fail on the second time due to collision.
-        // Better: Use a random suffix or timestamp.
-        const uniqueRunId = `verify_export_v1_${Date.now()}`;
-        
-        const generateUrl = `http://localhost:${PORT}/opportunities/rank_v2?provider=mock&limit=3&run_id=${uniqueRunId}`;
-        console.log(`Generating Run assets: ${generateUrl}...`);
-        const genRes = await fetchUrl(generateUrl);
-        
-        if (genRes.statusCode !== 200) {
-            console.error(`Generation Failed: ${genRes.statusCode} - ${genRes.data}`);
+    // 2. Generate a run_id via POST /scans/run (which persists assets)
+    // We must use POST /scans/run with persist=true to ensure data is written to disk
+    const generateUrl = `http://localhost:${PORT}/scans/run`;
+    console.log(`Generating Run assets via ${generateUrl}...`);
+    
+    const genBody = JSON.stringify({
+        n_opps: 3,
+        persist: true,
+        mode: 'fast',
+        provider: 'mock',
+        seed: 12345 // Deterministic seed
+    });
+    
+    // Use inline request since fetchUrl is GET-only
+    const genRes = await new Promise((resolve, reject) => {
+        const req = http.request(generateUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(genBody)
+            }
+        }, (res) => {
+            let data = '';
+            res.on('data', chunk => data += chunk);
+            res.on('end', () => resolve({ statusCode: res.statusCode, data }));
+        });
+        req.on('error', reject);
+        req.write(genBody);
+        req.end();
+    });
+    
+    if (genRes.statusCode !== 200) {
+        console.error(`Generation Failed: ${genRes.statusCode} - ${genRes.data}`);
+        process.exit(1);
+    }
+    
+    let runId;
+    try {
+        const genJson = JSON.parse(genRes.data);
+        // Structure is { scan: { scan_id: "..." }, ... }
+        if (genJson.scan && genJson.scan.scan_id) {
+            runId = genJson.scan.scan_id;
+        } else {
+            console.error('Generation response missing scan.scan_id:', genRes.data);
             process.exit(1);
         }
-        console.log('Run assets generated.');
+    } catch (e) {
+        console.error('Failed to parse generation response:', e);
+        process.exit(1);
+    }
+    
+    console.log(`Run assets generated. Run ID: ${runId}`);
 
-        // 4. Call Export API
-        const exportUrl = `http://localhost:${PORT}/opportunities/runs/export_v1?run_id=${uniqueRunId}`;
+    // 3. Call Export V1 API
+    const exportUrl = `http://localhost:${PORT}/opportunities/runs/export_v1?run_id=${runId}`;
         console.log(`Fetching Export: ${exportUrl}...`);
         const { statusCode, data } = await fetchUrl(exportUrl);
         
