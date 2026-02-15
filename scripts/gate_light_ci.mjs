@@ -263,6 +263,7 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                 const normalized = file.replace(/\\/g, '/');
                 return !normalized.startsWith('rules/task-reports/') && 
                        !normalized.startsWith('rules/rules/') &&
+                       !normalized.startsWith('rules/reports/') &&
                        normalized !== 'rules/LATEST.json';
             });
             
