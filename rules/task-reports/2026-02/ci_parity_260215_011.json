@@ -1,0 +1,17 @@
+{
+  "task_id": "260215_011",
+  "base": "3c919fae0737977d737d51146d081a128d4b8efe",
+  "head": "635f9545ea7c4921e646758a276550596d548267",
+  "merge_base": "3c919fae0737977d737d51146d081a128d4b8efe",
+  "scope_files": [
+    "OppRadar/fixtures/rank_v2_fixture.json",
+    "OppRadar/mock_server_53122.mjs",
+    "rules/LATEST.json",
+    "rules/rules/PROJECT_RULES.md",
+    "rules/task-reports/2026-02/generate_evidence_260215_011.mjs",
+    "scripts/gate_light_ci.mjs",
+    "scripts/verify_rank_v2_contract.mjs"
+  ],
+  "scope_count": 7,
+  "generated_at": "2026-02-15T05:14:57.118Z"
+}

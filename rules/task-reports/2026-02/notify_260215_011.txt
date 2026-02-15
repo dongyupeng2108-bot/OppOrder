@@ -1,0 +1,141 @@
+Trae Task Report
+Task ID: 260215_011
+Date: 2026-02-15T05:14:59.451Z
+Branch: feat/rank-v2-contract-deterministic-mock-260215_011
+Commit: 635f9545ea7c4921e646758a276550596d548267
+
+
+=== RESULT_JSON ===
+(See result_260215_011.json)
+
+=== LOG_HEAD ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260215_011
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] Verifying task_id: 260215_011
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Checking CI Parity JSON Evidence...
+[Gate Light] CI Parity JSON Evidence verified.
+[Gate Light] Checking doc path standards...
+[Gate Light] Doc path standards verified.
+[Gate Light] Checking for legacy doc path references...
+[CheckDocPathRefs] Scanning for legacy doc path references...
+[CheckDocPathRefs] PASS: No legacy doc path references found.
+[Gate Light] Checking for global healthcheck artifacts...
+[Gate Light] Global Artifact Guard verified.
+[Gate Light] Checking News Pull API Contract...
+[Contract Check] Loading schema from: E:\OppRadar\OppRadar\contracts\news_pull_response.schema.json
+[Contract Check] Validating Success Sample...
+PASS
+[Contract Check] Validating Error Sample...
+PASS
+...
+
+=== LOG_TAIL ===
+...
+[Gate Light] No Auto-Merge verified.
+[Gate Light] Checking Evidence Truth & Sufficiency (Hardening Rule)...
+[Gate Light] Skipping DoD Healthcheck marker check (Preview Mode).
+[Gate Light] Skipping Evidence Truth check (Generation Mode).
+[Gate Light] Evidence Truth & Sufficiency verified.
+[Gate Light] Checking CI Parity Preview...
+[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
+[Gate Light] Fetching origin/main history for diff context...
+[Gate Light] Allowed legacy task_id (transition): 260215_010
+[Gate Light] NoHistoricalEvidenceTouch verified.
+[Gate Light] Skipping SnippetCommitMustMatch check (Preview Mode).
+[Gate Light] Skipping GATE_LIGHT_EXIT Mechanism check (Preview Mode).
+[Gate Light] Skipping Evidence Truth & Consistency check (Preview Mode).
+[Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...
+[Gate Light] Immutable Integrate & SafeCmd Enforcement verified.
+[Gate Light] Checking Two-Pass Evidence Truth & No Auto-Merge...
+[Gate Light] Two-Pass Evidence Truth & No Auto-Merge verified.
+[Gate Light] Skipping Postflight Envelope Validation (Preview Mode).
+[Gate Light] PASS
+GATE_LIGHT_EXIT=0
+
+=== INDEX ===
+(See deliverables_index_260215_011.json)
+
+=== DOD_EVIDENCE_STDOUT ===
+DOD_EVIDENCE_OPPS_RANK_V2: E:\OppRadar\rules\task-reports\2026-02\rank_v2_contract_smoke_260215_011.txt => rows=5 has_fields=p_hat,p_llm,p_ci,price_q,score_v2 sorted_by=score_v2_desc provider=mock stable=true
+DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260215_011_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260215_011_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+===========================
+
+=== CI_PARITY_PREVIEW ===
+Base: 3c919fae0737977d737d51146d081a128d4b8efe
+Head: 635f9545ea7c4921e646758a276550596d548267
+MergeBase: 3c919fae0737977d737d51146d081a128d4b8efe
+Source: JSON (Evidence-as-Code)
+Scope: 7 files
+Files (Top 3):
+  - OppRadar/fixtures/rank_v2_fixture.json
+  - OppRadar/mock_server_53122.mjs
+  - rules/LATEST.json
+...
+=========================
+
+=== GATE_LIGHT_PREVIEW ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260215_011
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] Verifying task_id: 260215_011
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Checking CI Parity JSON Evidence...
+[Gate Light] CI Parity JSON Evidence verified.
+[Gate Light] Checking doc path standards...
+[Gate Light] Doc path standards verified.
+[Gate Light] Checking for legacy doc path references...
+[CheckDocPathRefs] Scanning for legacy doc path references...
+[CheckDocPathRefs] PASS: No legacy doc path references found.
+[Gate Light] Checking for global healthcheck artifacts...
+[Gate Light] Global Artifact Guard verified.
+[Gate Light] Checking News Pull API Contract...
+[Contract Check] Loading schema from: E:\OppRadar\OppRadar\contracts\news_pull_response.schema.json
+[Contract Check] Validating Success Sample...
+PASS
+[Contract Check] Validating Error Sample...
+PASS
+[Contract Check] All samples validated against schema.
+[Gate Light] Checking Rank V2 API Contract...
+=== Rank V2 Contract Verification ===
+Schema loaded.
+Server already running.
+Fetching http://localhost:53122/opportunities/rank_v2?provider=mock&limit=5&run_id=verify_rank_v2...
+Received 0 items.
+Validating against schema...
+Schema Validation PASSED.
+Response Hash: 4f53cda1
+::set-output name=rank_v2_hash::4f53cda1
+VERIFICATION_SUCCESS
+[Gate Light] Checking healthcheck evidence...
+[Gate Light] Healthcheck evidence verified (Path + Content).
+[Gate Light] Skipping DoD Evidence Excerpt Check (Preview Mode).
+[Gate Light] Checking Deletion Audit (Locks & Runs)...
+[Gate Light] Deletion Audit: No lock/index yet (Assuming Pre-Integrate or First Run in progress).
+[Gate Light] Checking No Auto-Merge (Git Forbidden Commands)...
+[Gate Light] No Auto-Merge verified.
+[Gate Light] Checking Evidence Truth & Sufficiency (Hardening Rule)...
+[Gate Light] Skipping DoD Healthcheck marker check (Preview Mode).
+[Gate Light] Skipping Evidence Truth check (Generation Mode).
+[Gate Light] Evidence Truth & Sufficiency verified.
+[Gate Light] Checking CI Parity Preview...
+[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
+[Gate Light] Fetching origin/main history for diff context...
+[Gate Light] Allowed legacy task_id (transition): 260215_010
+[Gate Light] NoHistoricalEvidenceTouch verified.
+[Gate Light] Skipping SnippetCommitMustMatch check (Preview Mode).
+[Gate Light] Skipping GATE_LIGHT_EXIT Mechanism check (Preview Mode).
+[Gate Light] Skipping Evidence Truth & Consistency check (Preview Mode).
+[Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...
+[Gate Light] Immutable Integrate & SafeCmd Enforcement verified.
+[Gate Light] Checking Two-Pass Evidence Truth & No Auto-Merge...
+[Gate Light] Two-Pass Evidence Truth & No Auto-Merge verified.
+[Gate Light] Skipping Postflight Envelope Validation (Preview Mode).
+[Gate Light] PASS
+GATE_LIGHT_EXIT=0
+==========================
+
+GATE_LIGHT_EXIT=0
+[Generated by scripts/assemble_evidence.mjs]

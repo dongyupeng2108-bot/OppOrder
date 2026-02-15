@@ -1,0 +1,18 @@
+=== Rank V2 Contract Smoke Test ===
+Date: 2026-02-15T05:14:55.581Z
+
+--- 1. Raw Curl Response ---
+[]
+
+--- 2. Verification Log ---
+=== Rank V2 Contract Verification ===
+Schema loaded.
+Server already running.
+Fetching http://localhost:53122/opportunities/rank_v2?provider=mock&limit=5&run_id=verify_rank_v2...
+Received 0 items.
+Validating against schema...
+Schema Validation PASSED.
+Response Hash: 4f53cda1
+::set-output name=rank_v2_hash::4f53cda1
+VERIFICATION_SUCCESS
+
