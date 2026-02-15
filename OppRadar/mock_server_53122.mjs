@@ -857,6 +857,43 @@ const server = http.createServer(async (req, res) => {
 
     // 3. API Routes (Custom Logic)
 
+    // GET /opportunities/runs/export_v1?run_id=...
+    if (pathname === '/opportunities/runs/export_v1') {
+        const runId = parsedUrl.query.run_id;
+        if (!runId) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Missing run_id parameter' }));
+            return;
+        }
+
+        const runDir = path.join(OPPS_RUNS_DIR, runId);
+        if (!fs.existsSync(runDir)) {
+            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Run ID not found' }));
+            return;
+        }
+
+        try {
+            const meta = JSON.parse(fs.readFileSync(path.join(runDir, 'meta.json'), 'utf8'));
+            const scanInput = JSON.parse(fs.readFileSync(path.join(runDir, 'scan_input.json'), 'utf8'));
+            const rankV2 = JSON.parse(fs.readFileSync(path.join(runDir, 'rank_v2.json'), 'utf8'));
+            
+            const response = {
+                meta,
+                scan_input: scanInput,
+                rank_v2: rankV2
+            };
+
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(response, null, 2));
+        } catch (e) {
+            console.error('Export error:', e);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal Server Error', details: e.message }));
+        }
+        return;
+    }
+
     // GET /export/llm_analyze.json?scan=<id>
     if (pathname === '/export/llm_analyze.json') {
         const scanId = parsedUrl.query.scan;
