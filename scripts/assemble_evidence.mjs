@@ -118,6 +118,20 @@ if (!dodBlock.includes('=== DOD_EVIDENCE_STDOUT ===')) {
     dodBlock = `=== DOD_EVIDENCE_STDOUT ===\n${dodEvidence}\n===========================`;
 }
 
+// Add Healthcheck Evidence to DoD Block (Required by Gate Light)
+const hcRoot = resolvePath(`${taskId}_healthcheck_53122_root.txt`);
+const hcPairs = resolvePath(`${taskId}_healthcheck_53122_pairs.txt`);
+
+if (fs.existsSync(hcRoot)) {
+    // Read only first line or check content
+    const content = fs.readFileSync(hcRoot, 'utf8').split('\n')[0].trim();
+    dodBlock += `\n\nDOD_EVIDENCE_HEALTHCHECK_ROOT: ${taskId}_healthcheck_53122_root.txt => ${content}`;
+}
+if (fs.existsSync(hcPairs)) {
+    const content = fs.readFileSync(hcPairs, 'utf8').split('\n')[0].trim();
+    dodBlock += `\nDOD_EVIDENCE_HEALTHCHECK_PAIRS: ${taskId}_healthcheck_53122_pairs.txt => ${content}`;
+}
+
 // Log Head/Tail
 const logLines = gateLightLog.split('\n');
 const logHead = logLines.slice(0, 20).join('\n');
