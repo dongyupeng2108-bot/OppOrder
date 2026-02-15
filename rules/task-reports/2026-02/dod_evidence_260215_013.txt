@@ -1,0 +1,8 @@
+=== DOD_EVIDENCE_STDOUT ===
+EXIST: rules/rules/PROJECT_MASTER_PLAN.md
+EXIST: rules/rules/PROJECT_RULES.md
+EXIST: rules/rules/WORKFLOW.md
+[Evidence] Docs validation passed.
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260215_013_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260215_013_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+GATE_LIGHT_EXIT=0

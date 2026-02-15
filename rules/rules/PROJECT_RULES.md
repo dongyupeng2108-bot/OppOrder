@@ -7,6 +7,10 @@
 - **Remote repo**: `OppOrder` (Opportunity Order / 机会订单) - Repository name.
 - **Note**: Inconsistency between Repo Name and Project Name is ALLOWED but must be documented. Future external references use Opportunity Radar.
 
+### Milestone Naming
+- **M***: Business/Product Milestones (e.g., M1, M4) - Focus on user value and features.
+- **P***: Process/Governance Milestones (e.g., P0, P1) - Focus on workflow, quality, and compliance.
+
 ## Terminology
 - **Strategy**: Trading logic definition.
 - **Snapshot**: Point-in-time data capture.

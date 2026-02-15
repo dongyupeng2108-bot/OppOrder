@@ -49,14 +49,48 @@
 - **Status**: DONE.
 - **Deliverables**: Enhanced JSON export, CSV export for analysis.
 
-## Roadmap (路线图)
-**Phase Guidelines (阶段路线提示)**:
-- 前期用商用模型跑通闭环与数据标准化；后期可切换本地/自训模型
-- 关键资产：可验证数据集（事件→特征→概率→结果）与评测体系
+## Roadmap (路线图) - Dual Track (M Business / P Governance)
 
-把剩余工作拆成 里程碑 → PR（最小可验收单元），后续开发按此推进。
+### Phase 1: Foundation & Standardization (Current)
+**Goal**: 跑通全链路，实现数据/策略/验证的标准化与可信度。
+**Status**: In Progress.
 
-### Milestone M4: Scanning Engineering & Data Enrichment
+#### P-Series (Process & Governance)
+*   **P0: Governance Baseline (Replaces M_Hardening)**
+    *   **Goal**: 建立双轨制规划，固化工作流协议，消除验证漂移。
+    *   **Deliverables**: Dual-track Plan, Contract Version Guard, CI Parity Evidence.
+    *   **Mapping**: Covers scope of former `M_Hardening`.
+
+#### M-Series (Business & Product)
+*   **M0: Bootstrap (DONE)**
+    *   **Deliverables**: Infrastructure, Gate Light, Evidence Envelope.
+*   **M1: Core Data & Strategy (DONE)**
+    *   **Deliverables**: Data ingestion, Strategy definition, Backtest engine.
+*   **M2: Live Trading & Validation (DONE)**
+    *   **Deliverables**: Diff API/UI, Replay API/UI, Fail-fast evidence.
+*   **M3: Export & Analytics (DONE)**
+    *   **Deliverables**: Enhanced JSON export, CSV export.
+*   **M4: Scanning Engineering & Data Enrichment (In Progress)**
+    *   **Goal**: 提升扫描能力、效率与数据丰富度。
+    *   **PR 0-5**: See detailed breakdown below.
+
+### Phase 2: Scale & Automation (Next)
+**Goal**: 提升扫描规模，引入自动化流水线与高级治理。
+
+### Phase 3: Intelligence & Ecosystem (Future)
+**Goal**: 本地模型训练，生态扩展。
+
+### Milestone Mapping (Old -> New)
+| Old Milestone | New Milestone | Scope |
+| :--- | :--- | :--- |
+| M_Hardening | P0 | Governance, Workflow, CI Parity |
+
+### Opportunity Validity Mechanism (Placeholder)
+*   **Target Phase**: Phase 1
+*   **Goal**: Ensure opportunities are valid and tradeable.
+*   **DoD**: (Pending Definition)
+
+### Milestone M4 Details (Preserved)
 **目标**: 提升扫描能力、效率与数据丰富度（News, Cache, Concurrent）。
 - **PR 0: M4: News & Timeline Integration (DONE - 260208)**
   - **Status**: Completed via Task 017/018.
