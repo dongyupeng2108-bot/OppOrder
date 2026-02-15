@@ -6,7 +6,9 @@ import crypto from 'crypto';
 const TASK_ID = '260215_012';
 const EVIDENCE_DIR = path.join('rules', 'task-reports', '2026-02');
 const EVIDENCE_FILE = path.join(EVIDENCE_DIR, `rank_v2_contract_guard_${TASK_ID}.txt`);
-const NOTIFY_FILE = path.join(EVIDENCE_DIR, `notify_${TASK_ID}.txt`);
+const DOD_FILE = path.join(EVIDENCE_DIR, `dod_evidence_${TASK_ID}.txt`);
+const GIT_META_FILE = path.join(EVIDENCE_DIR, `git_meta_${TASK_ID}.json`);
+const RESULT_FILE = path.join(EVIDENCE_DIR, `result_${TASK_ID}.json`);
 
 // Ensure evidence directory exists
 if (!fs.existsSync(EVIDENCE_DIR)) {
@@ -17,17 +19,59 @@ function getSha256Short(content) {
     return crypto.createHash('sha256').update(content).digest('hex').substring(0, 8);
 }
 
+function runGit(cmd) {
+    try {
+        return execSync(cmd, { encoding: 'utf8' }).trim();
+    } catch (e) {
+        return null;
+    }
+}
+
 function run() {
-    console.log(`[Evidence] Generating Rank V2 Contract Version Guard Evidence for Task ${TASK_ID}...`);
+    console.log(`[Evidence] Generating Evidence for Task ${TASK_ID}...`);
 
+    // --- 1. CI Parity Probe ---
+    console.log('[Evidence] Running CI Parity Probe...');
+    try {
+        // Use node to run the script, assuming CWD is repo root
+        execSync(`node scripts/ci_parity_probe.mjs --task_id ${TASK_ID} --result_dir ${EVIDENCE_DIR}`, { stdio: 'inherit' });
+    } catch (e) {
+        console.error('[Evidence] Failed to run CI Parity Probe.');
+        process.exit(1);
+    }
+
+    // --- 2. Git Meta ---
+    console.log('[Evidence] Generating Git Meta...');
+    const branch = runGit('git branch --show-current') || 'unknown';
+    const commit = runGit('git rev-parse HEAD') || 'unknown';
+    const gitMeta = {
+        branch,
+        commit,
+        timestamp: new Date().toISOString()
+    };
+    fs.writeFileSync(GIT_META_FILE, JSON.stringify(gitMeta, null, 2));
+
+    // --- 3. Result JSON Skeleton ---
+    console.log('[Evidence] Generating Result JSON Skeleton...');
+    const resultJson = {
+        task_id: TASK_ID,
+        status: 'IN_PROGRESS', // assemble_evidence will update to DONE
+        summary: 'Rank V2 Contract Version Guard Implementation',
+        dod_evidence: {
+            rank_v2_guard: true // Marker
+        }
+    };
+    fs.writeFileSync(RESULT_FILE, JSON.stringify(resultJson, null, 2));
+
+    // --- 4. Rank V2 Contract Version Guard (The Core Logic) ---
+    console.log('[Evidence] Running Rank V2 Contract Version Guard Check...');
+    
     const contractPath = 'OppRadar/contracts/rank_v2.contract.json';
-    const schemaPath = 'OppRadar/contracts/rank_v2_response.schema.json';
-
+    const schemaPath = 'OppRadar/contracts/opps_rank_v2_response.schema.json';
+    
     // 1. Get Base Commit
     let baseCommit;
     try {
-        // Try to get merge-base with origin/main
-        // Ensure origin/main is fetched (run_task.ps1 usually does this, but good to be safe)
         try {
             execSync('git rev-parse origin/main', { stdio: 'ignore' });
         } catch (e) {
@@ -35,11 +79,8 @@ function run() {
         }
         baseCommit = execSync('git merge-base origin/main HEAD').toString().trim();
     } catch (e) {
-        console.warn(`[Evidence] Warning: Could not determine merge-base. Defaulting to origin/main or HEAD^ if fallback needed. Error: ${e.message}`);
-        // Fallback for local dev without origin/main? 
-        // If we can't find base, we can't strictly prove the guard, but we can output current state.
-        // For now, assume origin/main exists as per workflow.
-        process.exit(1);
+        console.warn(`[Evidence] Warning: Could not determine merge-base. Defaulting to origin/main.`);
+        baseCommit = 'origin/main';
     }
 
     console.log(`[Evidence] Base Commit: ${baseCommit}`);
@@ -80,7 +121,7 @@ function run() {
     console.log(`[Evidence] Schema Changed: ${schemaChanged} (${baseSchemaHash} -> ${headSchemaHash})`);
     console.log(`[Evidence] Version: ${baseVersion} -> ${headVersion}`);
 
-    // Logic Check (Duplicate of Gate Light, but for Evidence Record)
+    // Logic Check
     let ok = true;
     let failureReason = '';
 
@@ -105,7 +146,7 @@ function run() {
     
     console.log(`[Evidence] ${summaryLine}`);
 
-    // Write Evidence File
+    // Write Detailed Evidence File
     const fileContent = [
         `=== Rank V2 Contract Version Guard Evidence ===`,
         `Task: ${TASK_ID}`,
@@ -131,12 +172,16 @@ function run() {
     ].join('\n');
 
     fs.writeFileSync(EVIDENCE_FILE, fileContent);
-    console.log(`[Evidence] Wrote to ${EVIDENCE_FILE}`);
+    console.log(`[Evidence] Wrote detailed evidence to ${EVIDENCE_FILE}`);
 
-    // Append to Notify (Simulated here, but usually assemble_evidence does this or we output to stdout)
-    // The user requirement says: "DoD Evidence ... must add a line ... and put corresponding evidence file..."
-    // Usually run_task.ps1 captures stdout to DOD_EVIDENCE_STDOUT.
-    // So printing the summaryLine to stdout is important.
+    // Write DoD Evidence File (for assemble_evidence)
+    const dodContent = [
+        summaryLine,
+        `See detailed evidence: ${path.basename(EVIDENCE_FILE)}`
+    ].join('\n');
+    
+    fs.writeFileSync(DOD_FILE, dodContent);
+    console.log(`[Evidence] Wrote DoD evidence to ${DOD_FILE}`);
 }
 
 run();

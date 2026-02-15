@@ -1432,7 +1432,7 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
     console.log('[Gate Light] Checking Rank V2 Contract Version Guard...');
     try {
         const contractPath = 'OppRadar/contracts/rank_v2.contract.json';
-        const schemaPath = 'OppRadar/contracts/rank_v2_response.schema.json';
+        const schemaPath = 'OppRadar/contracts/opps_rank_v2_response.schema.json';
 
         if (fs.existsSync(contractPath) && fs.existsSync(schemaPath)) {
             // 1. Determine Base Commit
