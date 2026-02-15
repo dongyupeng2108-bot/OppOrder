@@ -439,7 +439,10 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
 
     // --- DoD Evidence Excerpt Check (Task 260208_030) ---
     // Only enforce for tasks >= 260208_030
-    if (task_id >= '260208_030') {
+    // Skip if in PREVIEW mode (files not assembled yet)
+    if (process.env.GENERATE_PREVIEW === '1') {
+        console.log('[Gate Light] Skipping DoD Evidence Excerpt Check (Preview Mode).');
+    } else if (task_id >= '260208_030') {
         console.log('[Gate Light] Checking DoD Evidence Excerpts...');
         
         // Fix: result_dir is not defined in this scope. It's defined in check_global_artifact_guard.
