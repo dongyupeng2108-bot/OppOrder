@@ -2074,7 +2074,7 @@ const server = http.createServer(async (req, res) => {
             };
 
             // Helper for processing a single topic
-            const processTopic = async (topicItem) => {
+            const processTopic = async (topicItem, index) => {
                 const topicKey = typeof topicItem === 'string' ? topicItem : topicItem.topic_key;
                 const topicParams = typeof topicItem === 'object' ? topicItem : {};
                 
@@ -2088,33 +2088,72 @@ const server = http.createServer(async (req, res) => {
                     dedup_window_sec: (topicParams.dedup_window_sec !== undefined && topicParams.dedup_window_sec !== null) ? topicParams.dedup_window_sec : dedup_window_sec,
                     dedup_mode: topicParams.dedup_mode || dedup_mode,
                     cache_ttl_sec: (topicParams.cache_ttl_sec !== undefined && topicParams.cache_ttl_sec !== null) ? topicParams.cache_ttl_sec : cache_ttl_sec,
-                    persist: persist
+                    persist: persist,
+                    simulate_error: topicParams.simulate_error, // Failure injection
+                    source: topicParams.source
                 };
+
+                const t0 = Date.now();
+                
+                // Failure Injection (Dev/Mock only)
+                if (runParams.simulate_error === true || runParams.source === '__FAIL__') {
+                     return {
+                        topic_key: topicKey,
+                        status: 'failed',
+                        error_code: 'MOCK_INJECTED_FAILURE',
+                        error_message: 'Simulated failure for testing',
+                        duration_ms: 0,
+                        cache: 'na',
+                        scan_id: null,
+                        opps_count: 0,
+                        metrics: null,
+                        stage_logs: []
+                     };
+                }
 
                 try {
                     const result = await runScanCore(runParams);
                     const isSkipped = result.skipped === true;
+                    const durationMs = Date.now() - t0;
                     
+                    // Extract cache status (cached is from scan_cache logic)
+                    // If result.cached is undefined, it's likely a miss or not cached logic
+                    let cacheStatus = 'miss';
+                    if (result.cached === true) cacheStatus = 'hit';
+                    else if (result.cached === false) cacheStatus = 'miss';
+                    else cacheStatus = 'na';
+
                     return {
                         topic_key: topicKey,
-                        topic_status: isSkipped ? 'SKIPPED' : 'OK',
-                        scan_id: result.scan?.scan_id || result.scan_id, // handle skipped structure
+                        status: isSkipped ? 'skipped' : 'ok',
+                        error_code: null,
+                        error_message: null,
+                        duration_ms: durationMs,
+                        cache: cacheStatus,
+                        
+                        // Legacy/Extra fields
+                        topic_status: isSkipped ? 'SKIPPED' : 'OK', // Backward compat
+                        scan_id: result.scan?.scan_id || result.scan_id, 
                         opps_count: result.scan?.n_opps_actual || result.opportunities?.length || 0,
-                        duration_ms: result.metrics?.total_ms || result.scan?.duration_ms || 0,
                         metrics: result.metrics,
-                        stage_logs: result.stage_logs,
-                        error: null
+                        stage_logs: result.stage_logs
                     };
                 } catch (err) {
                     console.error(`Batch topic failed [${topicKey}]:`, err);
                     return {
                         topic_key: topicKey,
+                        status: 'failed',
+                        error_code: 'INTERNAL_ERROR',
+                        error_message: err.message,
+                        duration_ms: Date.now() - t0,
+                        cache: 'na',
+                        
+                        // Legacy/Extra fields
                         topic_status: 'FAILED',
                         scan_id: null,
-                        duration_ms: 0,
+                        opps_count: 0,
                         metrics: null,
-                        stage_logs: [],
-                        error: err.message
+                        stage_logs: []
                     };
                 }
             };
@@ -2123,27 +2162,49 @@ const server = http.createServer(async (req, res) => {
             // Chunking strategy
             for (let i = 0; i < topics.length; i += concurrency) {
                 const chunk = topics.slice(i, i + concurrency);
-                const chunkResults = await Promise.all(chunk.map(processTopic));
+                const chunkResults = await Promise.all(chunk.map((item, idx) => processTopic(item, i + idx)));
                 results.push(...chunkResults);
             }
 
             // Summarize
             const endAt = new Date().toISOString();
-            summaryMetrics.end_ts = endAt;
-            summaryMetrics.total_duration_ms = new Date(endAt).getTime() - new Date(startedAt).getTime();
+            const totalDurationMs = new Date(endAt).getTime() - new Date(startedAt).getTime();
             
+            let successCount = 0;
+            let failedCount = 0;
+            let skippedCount = 0;
+
             results.forEach(r => {
-                if (r.topic_status === 'OK') summaryMetrics.success_count++;
-                else if (r.topic_status === 'FAILED') summaryMetrics.failed_count++;
-                else if (r.topic_status === 'SKIPPED') summaryMetrics.skipped_count++;
+                if (r.status === 'ok') successCount++;
+                else if (r.status === 'failed') failedCount++;
+                else if (r.status === 'skipped') skippedCount++;
             });
 
             const batchResult = {
                 batch_id: batchId,
+                run_id: batchId, // Alias for observability requirement
                 started_at: startedAt,
+                finished_at: endAt,
+                duration_ms: totalDurationMs,
+                ok_count: successCount,
+                failed_count: failedCount,
+                skipped_count: skippedCount,
+                
                 params: { topics, concurrency, persist, n_opps, seed, mode, dedup_window_sec },
-                results: results,
-                summary_metrics: summaryMetrics
+                jobs: results, // Primary results array
+                results: results, // Backward compat
+                
+                // Legacy summary metrics (kept for compat)
+                summary_metrics: {
+                    batch_id: batchId,
+                    total_topics: topics.length,
+                    success_count: successCount,
+                    failed_count: failedCount,
+                    skipped_count: skippedCount,
+                    total_duration_ms: totalDurationMs,
+                    start_ts: startedAt,
+                    end_ts: endAt
+                }
             };
 
             // Store in memory
