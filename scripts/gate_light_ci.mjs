@@ -398,6 +398,15 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         process.exit(1);
     }
 
+    // --- Export V1 API Contract Check (Task 260215_016) ---
+    console.log('[Gate Light] Checking Export V1 API Contract...');
+    try {
+        execSync('node scripts/verify_export_v1_contract.mjs', { stdio: 'inherit' });
+    } catch (e) {
+        console.error('[Gate Light] Export V1 Contract Check FAILED.');
+        process.exit(1);
+    }
+
     // --- Strict Healthcheck Validation (Task 260208_023) ---
     console.log('[Gate Light] Checking healthcheck evidence...');
 
