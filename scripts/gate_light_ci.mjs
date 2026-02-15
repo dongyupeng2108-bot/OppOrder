@@ -1203,7 +1203,8 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
              console.log('[Gate Light] Skipping SnippetCommitMustMatch check (Preview Mode).');
         } else if (fs.existsSync(snippetFile)) {
              const snippetContent = fs.readFileSync(snippetFile, 'utf8');
-             const commitMatch = snippetContent.match(/COMMIT:\s*(\w+)/);
+             // Support both 'COMMIT:' and 'Commit:' (Case Insensitive)
+             const commitMatch = snippetContent.match(/COMMIT:\s*(\w+)/i);
              
              if (!commitMatch) {
                  console.error(`[Gate Light] FAILED: SnippetCommitMustMatch - Could not find 'COMMIT:' in snippet.`);
