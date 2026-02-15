@@ -9,6 +9,7 @@ import { getProvider as getNewsProvider } from './news_provider.mjs';
 import { NewsStore } from './news_store.mjs';
 import { generateCacheKey as generateNewsCacheKey, getFromCache as getFromNewsCache, setInCache as setInNewsCache } from './news_pull_cache.mjs';
 import { generateCacheKey as generateScanCacheKey, getFromCache as getFromScanCache, setInCache as setInScanCache } from './scan_cache.mjs';
+import { appendToLedger, queryLedger } from './ledger/opps_ledger_v0.mjs';
 import DB from './db.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -1222,6 +1223,17 @@ const server = http.createServer(async (req, res) => {
                 
                 // Scan Cache Set
                 setInScanCache(cacheKey, result);
+
+                // --- Task 260215_017 Ledger Write ---
+                try {
+                    const runId = result.to_scan_id || (result.scan ? result.scan.scan_id : null);
+                    if (runId && result.opportunities) {
+                        appendToLedger(runId, result.opportunities);
+                    }
+                } catch (ledgerErr) {
+                    console.error('Ledger write failed:', ledgerErr);
+                }
+                // ------------------------------------
                 
                 res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({
@@ -1246,6 +1258,26 @@ const server = http.createServer(async (req, res) => {
             res.end(JSON.stringify({ error: 'Internal Server Error', details: err.message }));
             return;
         }
+    }
+
+    // GET /opportunities/ledger/query_v0 (Task 260215_017)
+    if (pathname === '/opportunities/ledger/query_v0') {
+        try {
+            const params = parsedUrl.query;
+            const result = queryLedger(params);
+            
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(result));
+        } catch (e) {
+            if (e.message.includes('Limit exceeds')) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: e.message }));
+            } else {
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: e.message }));
+            }
+        }
+        return;
     }
 
     // GET /opportunities/top
