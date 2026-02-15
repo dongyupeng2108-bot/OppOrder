@@ -1,8 +1,8 @@
 Trae Task Report
 Task ID: 260215_012
-Date: 2026-02-15T11:12:34.432Z
+Date: 2026-02-15T11:26:07.423Z
 Branch: feat/rank-v2-contract-version-guard-260215_012
-Commit: c76ddb593a30a01ff159a4a6689b7991db46a0ba
+Commit: 3b59ed7eac7da26ffccaef528d74fd91d3c1a99b
 
 
 === RESULT_JSON ===
@@ -33,6 +33,7 @@ PASS
 
 === LOG_TAIL ===
 ...
+[Gate Light] Checking CI Parity Preview...
 [Gate Light] CI Parity Preview verified.
 [Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
 [Gate Light] Fetching origin/main history for diff context...
@@ -43,8 +44,7 @@ PASS
 [Gate Light] Skipping Evidence Truth & Consistency check (Preview Mode).
 [Gate Light] Checking Rank V2 Contract Version Guard...
 [Gate Light] Base Commit: 3c919fae0737977d737d51146d081a128d4b8efe
-[Gate Light] Schema Changed (3bd83a08 -> 91d7f255). Checking Version Increment...
-[Gate Light] Version: 0 -> 1
+[Gate Light] Schema Unchanged (3bd83a08). Version check skipped.
 [Gate Light] Rank V2 Contract Version Guard PASS
 [Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...
 [Gate Light] Immutable Integrate & SafeCmd Enforcement verified.
@@ -58,7 +58,7 @@ GATE_LIGHT_EXIT=0
 (See deliverables_index_260215_012.json)
 
 === DOD_EVIDENCE_STDOUT ===
-DOD_EVIDENCE_RANK_V2_CONTRACT_VERSION_GUARD: OppRadar/contracts/rank_v2.contract.json => ok=true base_version=0.0 head_version=1.0 schema_changed=true
+DOD_EVIDENCE_RANK_V2_CONTRACT_VERSION_GUARD: OppRadar/contracts/rank_v2.contract.json => ok=false reason="Hash Mismatch (Contract: 3bd83a08, Actual: 91d7f255);" base_version=0.0 head_version=1.0 schema_changed=true
 See detailed evidence: rank_v2_contract_guard_260215_012.txt
 DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260215_012_healthcheck_53122_root.txt => HTTP/1.1 200 OK
 DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260215_012_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
@@ -66,10 +66,10 @@ DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260215_012_healthchec
 
 === CI_PARITY_PREVIEW ===
 Base: 3c919fae0737977d737d51146d081a128d4b8efe
-Head: c76ddb593a30a01ff159a4a6689b7991db46a0ba
+Head: 3b59ed7eac7da26ffccaef528d74fd91d3c1a99b
 MergeBase: 3c919fae0737977d737d51146d081a128d4b8efe
 Source: JSON (Evidence-as-Code)
-Scope: 39 files
+Scope: 41 files
 Files (Top 3):
   - OppRadar/contracts/rank_v2.contract.json
   - OppRadar/db.mjs
@@ -134,8 +134,7 @@ VERIFICATION_SUCCESS
 [Gate Light] Skipping Evidence Truth & Consistency check (Preview Mode).
 [Gate Light] Checking Rank V2 Contract Version Guard...
 [Gate Light] Base Commit: 3c919fae0737977d737d51146d081a128d4b8efe
-[Gate Light] Schema Changed (3bd83a08 -> 91d7f255). Checking Version Increment...
-[Gate Light] Version: 0 -> 1
+[Gate Light] Schema Unchanged (3bd83a08). Version check skipped.
 [Gate Light] Rank V2 Contract Version Guard PASS
 [Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...
 [Gate Light] Immutable Integrate & SafeCmd Enforcement verified.
