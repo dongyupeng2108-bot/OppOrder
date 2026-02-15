@@ -110,7 +110,7 @@ if ($Mode -eq "Integrate") {
     Write-Host ">>> [RunTask] Step 6: Postflight (Integrate)" -ForegroundColor Cyan
     $PostflightScript = "$RepoRoot\scripts\postflight_validate_envelope.mjs"
     if (Test-Path $PostflightScript) {
-        node $PostflightScript --task_id $TaskId
+        node $PostflightScript --task_id $TaskId --result_dir "$EvidenceDir"
         if ($LASTEXITCODE -ne 0) {
             Write-Host "[RunTask] FAILED: Postflight validation failed." -ForegroundColor Red
             exit 1
