@@ -1,5 +1,16 @@
-=== DOD_EVIDENCE_STDOUT ===
-DOD_EVIDENCE_OPPS_RANK_V2: E:\OppRadar\rules\task-reports\2026-02\rank_v2_contract_smoke_260215_011.txt => rows=5 has_fields=p_hat,p_llm,p_ci,price_q,score_v2 sorted_by=score_v2_desc provider=mock stable=true
+=== DoD Evidence: Rank V2 Contract ===
+=== Rank V2 Contract Verification ===
+Schema loaded.
+Server already running.
+Fetching http://localhost:53122/opportunities/rank_v2?provider=mock&limit=5&run_id=verify_rank_v2...
+Received 3 items.
+Validating against schema...
+Schema Validation PASSED.
+Response Hash: ff3d7b77
+::set-output name=rank_v2_hash::ff3d7b77
+VERIFICATION_SUCCESS
+
+
+=== Healthcheck Reference ===
 DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260215_011_healthcheck_53122_root.txt => HTTP/1.1 200 OK
 DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260215_011_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
-===========================

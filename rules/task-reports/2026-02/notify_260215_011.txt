@@ -1,8 +1,8 @@
 Trae Task Report
 Task ID: 260215_011
-Date: 2026-02-15T05:14:59.451Z
+Date: 2026-02-15T08:34:45.982Z
 Branch: feat/rank-v2-contract-deterministic-mock-260215_011
-Commit: 635f9545ea7c4921e646758a276550596d548267
+Commit: 00e4ea1b7761151d00c4f40cd85f4a9ba5128831
 
 
 === RESULT_JSON ===
@@ -14,6 +14,8 @@ Commit: 635f9545ea7c4921e646758a276550596d548267
 [Gate Light] LATEST.json consistency verified.
 [Gate Light] Verifying task_id: 260215_011
 [Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Report Block Check Passed: notify_260215_011.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260215_011.txt
 [Gate Light] Checking CI Parity JSON Evidence...
 [Gate Light] CI Parity JSON Evidence verified.
 [Gate Light] Checking doc path standards...
@@ -27,18 +29,16 @@ Commit: 635f9545ea7c4921e646758a276550596d548267
 [Contract Check] Loading schema from: E:\OppRadar\OppRadar\contracts\news_pull_response.schema.json
 [Contract Check] Validating Success Sample...
 PASS
-[Contract Check] Validating Error Sample...
-PASS
 ...
 
 === LOG_TAIL ===
 ...
-[Gate Light] No Auto-Merge verified.
 [Gate Light] Checking Evidence Truth & Sufficiency (Hardening Rule)...
 [Gate Light] Skipping DoD Healthcheck marker check (Preview Mode).
 [Gate Light] Skipping Evidence Truth check (Generation Mode).
 [Gate Light] Evidence Truth & Sufficiency verified.
 [Gate Light] Checking CI Parity Preview...
+[Gate Light] CI Parity Preview verified.
 [Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
 [Gate Light] Fetching origin/main history for diff context...
 [Gate Light] Allowed legacy task_id (transition): 260215_010
@@ -58,21 +58,34 @@ GATE_LIGHT_EXIT=0
 (See deliverables_index_260215_011.json)
 
 === DOD_EVIDENCE_STDOUT ===
-DOD_EVIDENCE_OPPS_RANK_V2: E:\OppRadar\rules\task-reports\2026-02\rank_v2_contract_smoke_260215_011.txt => rows=5 has_fields=p_hat,p_llm,p_ci,price_q,score_v2 sorted_by=score_v2_desc provider=mock stable=true
+=== DoD Evidence: Rank V2 Contract ===
+=== Rank V2 Contract Verification ===
+Schema loaded.
+Server already running.
+Fetching http://localhost:53122/opportunities/rank_v2?provider=mock&limit=5&run_id=verify_rank_v2...
+Received 3 items.
+Validating against schema...
+Schema Validation PASSED.
+Response Hash: ff3d7b77
+::set-output name=rank_v2_hash::ff3d7b77
+VERIFICATION_SUCCESS
+
+
+=== Healthcheck Reference ===
 DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260215_011_healthcheck_53122_root.txt => HTTP/1.1 200 OK
 DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260215_011_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
 ===========================
 
 === CI_PARITY_PREVIEW ===
 Base: 3c919fae0737977d737d51146d081a128d4b8efe
-Head: 635f9545ea7c4921e646758a276550596d548267
+Head: 00e4ea1b7761151d00c4f40cd85f4a9ba5128831
 MergeBase: 3c919fae0737977d737d51146d081a128d4b8efe
 Source: JSON (Evidence-as-Code)
-Scope: 7 files
+Scope: 23 files
 Files (Top 3):
-  - OppRadar/fixtures/rank_v2_fixture.json
+  - OppRadar/db.mjs
   - OppRadar/mock_server_53122.mjs
-  - rules/LATEST.json
+  - data/fixtures/rank_v2_fixture.json
 ...
 =========================
 
@@ -82,6 +95,8 @@ Files (Top 3):
 [Gate Light] LATEST.json consistency verified.
 [Gate Light] Verifying task_id: 260215_011
 [Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Report Block Check Passed: notify_260215_011.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260215_011.txt
 [Gate Light] Checking CI Parity JSON Evidence...
 [Gate Light] CI Parity JSON Evidence verified.
 [Gate Light] Checking doc path standards...
@@ -103,11 +118,11 @@ PASS
 Schema loaded.
 Server already running.
 Fetching http://localhost:53122/opportunities/rank_v2?provider=mock&limit=5&run_id=verify_rank_v2...
-Received 0 items.
+Received 3 items.
 Validating against schema...
 Schema Validation PASSED.
-Response Hash: 4f53cda1
-::set-output name=rank_v2_hash::4f53cda1
+Response Hash: ff3d7b77
+::set-output name=rank_v2_hash::ff3d7b77
 VERIFICATION_SUCCESS
 [Gate Light] Checking healthcheck evidence...
 [Gate Light] Healthcheck evidence verified (Path + Content).
@@ -121,6 +136,7 @@ VERIFICATION_SUCCESS
 [Gate Light] Skipping Evidence Truth check (Generation Mode).
 [Gate Light] Evidence Truth & Sufficiency verified.
 [Gate Light] Checking CI Parity Preview...
+[Gate Light] CI Parity Preview verified.
 [Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
 [Gate Light] Fetching origin/main history for diff context...
 [Gate Light] Allowed legacy task_id (transition): 260215_010
