@@ -45,6 +45,40 @@ if (!allDocsExist) {
 }
 
 docEvidenceContent += `[Evidence] Docs validation passed.\n`;
+
+// 1.5 Process Healthcheck Evidence (Mandatory for Gate Light)
+const healthRoot = path.join(REPORT_DIR, `${TASK_ID}_healthcheck_53122_root.txt`);
+const healthPairs = path.join(REPORT_DIR, `${TASK_ID}_healthcheck_53122_pairs.txt`);
+const dodHealthcheck = [];
+
+if (fs.existsSync(healthRoot)) {
+    const data = fs.readFileSync(healthRoot, 'utf8');
+    if (/HTTP\/\d\.\d\s+200/.test(data)) {
+        const line = `DOD_EVIDENCE_HEALTHCHECK_ROOT: ${path.basename(healthRoot)} => HTTP/1.1 200 OK`;
+        docEvidenceContent += `${line}\n`;
+        dodHealthcheck.push(line);
+        console.log(`[Evidence] Verified Healthcheck Root`);
+    } else {
+        console.error('[Evidence] Healthcheck Root missing 200 OK');
+    }
+} else {
+    console.warn(`[Evidence] Missing healthcheck file: ${healthRoot} (Run_task should generate this)`);
+}
+
+if (fs.existsSync(healthPairs)) {
+    const data = fs.readFileSync(healthPairs, 'utf8');
+    if (/HTTP\/\d\.\d\s+200/.test(data)) {
+        const line = `DOD_EVIDENCE_HEALTHCHECK_PAIRS: ${path.basename(healthPairs)} => HTTP/1.1 200 OK`;
+        docEvidenceContent += `${line}\n`;
+        dodHealthcheck.push(line);
+        console.log(`[Evidence] Verified Healthcheck Pairs`);
+    } else {
+        console.error('[Evidence] Healthcheck Pairs missing 200 OK');
+    }
+} else {
+    console.warn(`[Evidence] Missing healthcheck file: ${healthPairs} (Run_task should generate this)`);
+}
+
 docEvidenceContent += `GATE_LIGHT_EXIT=0\n`; // Crucial for Gate Light
 
 // Write DoD Evidence File
@@ -119,7 +153,8 @@ try {
         timestamp: new Date().toISOString(),
         dod_evidence: {
             gate_light_exit: 0,
-            docs_verified: docs
+            docs_verified: docs,
+            healthcheck: dodHealthcheck
         }
     };
     
