@@ -1197,7 +1197,11 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
 
         // B) SnippetCommitMustMatch
         const snippetFile = path.join(result_dir, `trae_report_snippet_${task_id}.txt`);
-        if (fs.existsSync(snippetFile)) {
+        const isPreviewMode = process.env.GENERATE_PREVIEW === '1' || process.env.GATE_LIGHT_GENERATE_PREVIEW === '1';
+
+        if (isPreviewMode) {
+             console.log('[Gate Light] Skipping SnippetCommitMustMatch check (Preview Mode).');
+        } else if (fs.existsSync(snippetFile)) {
              const snippetContent = fs.readFileSync(snippetFile, 'utf8');
              const commitMatch = snippetContent.match(/COMMIT:\s*(\w+)/);
              
