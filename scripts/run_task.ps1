@@ -14,8 +14,8 @@ $ErrorActionPreference = "Stop"
 $RepoRoot = "E:\OppRadar"
 
 # --- Helper: Find Evidence Directory & Generator ---
-# Try to find generate script
-$GenerateScript = Get-ChildItem -Path "$RepoRoot\rules\task-reports" -Recurse -Filter "generate_evidence_$TaskId.mjs" | Select-Object -First 1
+# Try to find generate script (js or mjs)
+$GenerateScript = Get-ChildItem -Path "$RepoRoot\rules\task-reports" -Recurse | Where-Object { $_.Name -match "^generate_evidence_$TaskId\.(js|mjs)$" } | Select-Object -First 1
 
 $EvidenceDir = ""
 if ($GenerateScript) {
