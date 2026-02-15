@@ -1467,7 +1467,7 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
             const headContract = JSON.parse(headContractStr);
             const baseContract = baseContractStr ? JSON.parse(baseContractStr) : null;
 
-            const getHash = (content) => crypto.createHash('sha256').update(content).digest('hex').substring(0, 8);
+            const getHash = (content) => crypto.createHash('sha256').update(content.replace(/\r\n/g, '\n')).digest('hex').substring(0, 8);
             
             const headSchemaHash = getHash(headSchemaStr);
             const baseSchemaHash = baseSchemaStr ? getHash(baseSchemaStr) : '00000000';
