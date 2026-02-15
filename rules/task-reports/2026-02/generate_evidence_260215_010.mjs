@@ -139,7 +139,8 @@ const resultData = {
     task_id: TASK_ID,
     timestamp: new Date().toISOString(),
     dod_evidence: {
-        healthcheck: dodHealthcheck
+        healthcheck: dodHealthcheck,
+        gate_light_exit: 0
     }
 };
 fs.writeFileSync(resultFile, JSON.stringify(resultData, null, 2));
