@@ -1,0 +1,33 @@
+{
+  "task_id": "260214_009",
+  "timestamp": "2026-02-14T16:36:34.785Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260214_009",
+      "status": "DONE",
+      "summary": "M4: Opps Rank v2 API (Deterministic Mock) + Evidence",
+      "report_file": "opps_rank_v2_260214_009.json",
+      "report_sha256_short": "1b274e28",
+      "dod_evidence": {
+        "opps_rank_v2": [
+          "DOD_EVIDENCE_OPPS_RANK_V2: E:/OppRadar/rules/task-reports/2026-02/opps_rank_v2_260214_009.json => rows=2 has_fields=p_hat,p_llm,p_ci,price_q,score_v2 sorted_by=score_v2_desc provider=mock stable=true"
+        ],
+        "healthcheck": [
+          "DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/healthcheck_root_53122_260214_009.txt => HTTP/1.1 200 OK",
+          "DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/healthcheck_pairs_53122_260214_009.txt => HTTP/1.1 200 OK"
+        ],
+        "gate_light_exit": 0
+      }
+    }
+  }
+}

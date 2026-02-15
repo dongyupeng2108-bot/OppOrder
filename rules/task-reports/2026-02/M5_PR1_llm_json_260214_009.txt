@@ -1,0 +1,8 @@
+{
+  "status": "ok",
+  "run_id": "mock_run_1771081349266",
+  "provider_used": "mock",
+  "model_used": "mock-model-v1",
+  "items": []
+}
+DOD_EVIDENCE_M5_PR1_LLM_JSON: rules/task-reports/2026-02/M5_PR1_llm_json_260214_009.txt => status=ok items=0 provider=mock model=mock-model-v1

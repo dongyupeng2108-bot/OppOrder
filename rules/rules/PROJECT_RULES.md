@@ -89,6 +89,15 @@
   - `OppRadar`: 53122 (Fixed).
   - `arb-validate-web`: 53121 (Fixed reference).
 
+## Automation Pack V1 Standards
+- **Two-Pass Verification**:
+  - **Pass 1 (Preview)**: Runs `gate_light_ci.mjs` in Preview Mode (`GENERATE_PREVIEW=1`). Skips strict evidence checks to allow log generation.
+  - **Pass 2 (Verify)**: Runs `gate_light_ci.mjs` in Verify Mode. Enforces all Hard Guards.
+- **Preview Mode**:
+  - Activated via `GENERATE_PREVIEW=1` or `GATE_LIGHT_GENERATE_PREVIEW=1`.
+  - **Behavior**: Skips `CheckEvidenceTruth`, `CheckDoDHealthcheck`, `CheckPostflight` to prevent "chicken-and-egg" errors during evidence assembly.
+  - **Output**: Generates `gate_light_preview_<task_id>.log` for inclusion in the final evidence package.
+
 ## Gate Light Hardening Rules
 - **Immutable Integrate**: Once a task passes Integrate, it is LOCKED via `rules/task-reports/locks/<task_id>.lock.json`. Reruns are blocked (Exit 33). Any new changes require a NEW `task_id`.
 - **SafeCmd**: Chained shell commands (`;`, `&&`, `||`) are prohibited in `command_audit` logs to prevent high-risk execution bypass. Use `scripts/safe_commit.ps1` or `scripts/safe_push.ps1` instead.
@@ -96,6 +105,34 @@
 - **Clean-State Integration**: The Integrate phase (`dev_batch_mode -Mode Integrate`) strictly enforces a clean git working directory. Uncommitted changes to code files (anything other than `rules/task-reports/**`, `rules/rules/**`, `rules/LATEST.json`) will trigger a hard block (`exit 31`).
 - **Deletion Audit**: locks/runs is append-only; deletion is forbidden; Gate Light will fail if missing. All tasks (>= 260211_006) must be indexed in `rules/task-reports/index/runs_index.jsonl`.
 - **No Auto-Merge**: The Agent MUST NOT execute `git merge` or `git push ... main` (or to any protected branch). Only the Human User (Owner) can perform the merge. The Agent's job ends at "PR Created + Gate Light PASS". Violation (detected by Gate Light in `command_audit`) triggers immediate failure (Exit 62).
+
+## API Contracts & DoD Markers
+
+### GET /opportunities/rank_v2 (Opportunity Rank v2)
+- **Endpoint**: `GET /opportunities/rank_v2`
+- **Parameters**:
+  - `run_id` (Required): The scan run ID to query.
+  - `limit` (Optional): Max items to return (Default: 20, Max: 50).
+  - `provider` (Optional): LLM provider, "mock" or "deepseek" (Default: "mock").
+  - `model` (Optional): Specific model name.
+- **Response Fields** (Array of Objects):
+  - `opp_id`: Opportunity ID.
+  - `score`: Original v1 score.
+  - `p_hat`: Base probability (0..1, clamped).
+  - `p_llm`: LLM probability (0..1). Mock must be deterministic.
+  - `p_ci`: Confidence Interval `{ low, high, method }`.
+  - `price_q`: Quantized price (placeholder if no live data).
+  - `score_v2`: Final v2 score (0..1).
+  - `meta`: `{ provider_used, model_used, fallback }`.
+- **DoD Marker**: `DOD_EVIDENCE_OPPS_RANK_V2`
+  - Evidence file: `rules/task-reports/<YYYY-MM>/opps_rank_v2_<task_id>.json`
+  - Validation: Must show `rows=N`, `has_fields=...`, `sorted_by=score_v2_desc`, `stable=true`.
+
+### DoD Markers
+- `DOD_EVIDENCE_OPPS_RANK_V2`: See above.
+- `DOD_EVIDENCE_SITE_HEALTH_ROOT_53122`: `rules/task-reports/<YYYY-MM>/healthcheck_root_53122_<task_id>.txt` => status=200
+- `DOD_EVIDENCE_SITE_HEALTH_PAIRS_53122`: `rules/task-reports/<YYYY-MM>/healthcheck_pairs_53122_<task_id>.txt` => status=200
+
 
 ## M2 Interfaces (Diff & Replay)
 ### Diff API (v0)
@@ -137,9 +174,28 @@
 - **Parameters**: `run_id` (Required), `limit` (max 50, default 20)
 - **Response**: Array of Opportunity Objects (sorted by score desc)
 
+#### Opportunity Rank v2 API
+- **Endpoint**: `GET /opportunities/rank_v2`
+- **Parameters**:
+  - `run_id`: String (Required).
+  - `limit`: Number (Optional, max 50, default 20).
+  - `provider`: String (Optional, "mock"|"deepseek", default "mock").
+  - `model`: String (Optional).
+- **Response**: Array of Objects (sorted by `score_v2` desc).
+  - `opp_id`: String.
+  - `score`: Number (Original v1 score).
+  - `p_hat`: Number (Base probability, 0..1).
+  - `p_llm`: Number (LLM probability, 0..1).
+  - `p_ci`: Object (`{ low, high, method }`).
+  - `price_q`: Number (Quantized price).
+  - `score_v2`: Number (Final score, 0..1).
+  - `meta`: Object (Optional).
+- **Schema**: `OppRadar/contracts/opps_rank_v2_response.schema.json`
+
 ## DoD Markers (Gate Light)
 - **DOD_EVIDENCE_OPPS_RUNS_LIST**: `<path> => contains_run_id=true count=...`
 - **DOD_EVIDENCE_OPPS_BY_RUN**: `<path> => rows=... all_same_run_id=true`
+- **DOD_EVIDENCE_OPPS_RANK_V2**: `<path> => rows=... has_fields=p_hat,p_llm,p_ci,price_q,score_v2 sorted_by=score_v2_desc provider=... stable=true`
   - Returns array of scan objects or similar replay data.
 
 ## API Contracts (v1.0)

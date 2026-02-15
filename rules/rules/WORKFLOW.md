@@ -82,6 +82,26 @@ Before starting any new task, the Agent MUST perform these checks:
 
 ### Gate Light Evidence Standards (CI Parity)
 
+*   **Automation Pack V1 Workflow (Standard for M4+)**:
+    The `scripts/run_task.ps1` pipeline automates the Two-Phase Rhythm.
+
+    *   **Development (Dev Mode)**:
+        *   **Command**: `scripts/run_task.ps1 -TaskId <id> -Mode Dev -Header <header>`
+        *   **Actions**:
+            *   **Preflight**: Checks port 53122, git status.
+            *   **Pass 1**: Runs Gate Light in **Preview Mode** to verify code logic without enforcing evidence existence.
+            *   **Skip**: Does NOT generate permanent evidence or git commits.
+
+    *   **Integration (Integrate Mode)**:
+        *   **Command**: `scripts/run_task.ps1 -TaskId <id> -Mode Integrate -Header <header>`
+        *   **Prerequisites**: Clean git working directory (committed code).
+        *   **Actions**:
+            *   **Preflight**: Generates `preflight_attestation.json`.
+            *   **Pass 1 (Preview)**: Generates `gate_light_preview.log`.
+            *   **Assemble**: Builds V3.9 Envelope (`notify`, `snippet`, `index`, `result`) binding code + preview.
+            *   **Pass 2 (Verify)**: Runs Gate Light in **Verify Mode** (Strict Hard Guards).
+            *   **Postflight**: Validates V3.9 Envelope compliance.
+
 *   **CI Parity Probe Protocols**:
     *   **Anchor Stability**: The primary risk is Base/Head/MergeBase instability during the "Generate -> Commit -> Re-verify" cycle.
     *   **Binding Rule**: Evidence must bind to the *Code State* (Base/MergeBase), not necessarily the *Evidence Commit* (Head), provided code drift is zero.
