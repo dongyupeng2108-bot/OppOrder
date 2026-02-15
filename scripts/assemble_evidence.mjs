@@ -67,6 +67,8 @@ const gitMeta = readJson(inputs.gitMeta);
 // const attestation = readJson(inputs.attestation);
 let resultData = readJson(inputs.resultJson);
 
+const openPrPath = resolvePath(`open_pr_guard_${taskId}.json`);
+
 // --- 3. Prepare Extra Artifacts (for Envelope Compliance) ---
 // Create manual_verification.json if missing (to satisfy business evidence check)
 const manualVerifyPath = resolvePath(`manual_verification_${taskId}.json`);
@@ -91,6 +93,19 @@ ${(ciParityData.scope_files || []).slice(0, 3).map(f => `  - ${f}`).join('\n')}
 ...
 =========================`;
 
+// Open PR Guard Block
+let openPrBlock = '';
+if (fs.existsSync(openPrPath)) {
+    const openPrData = readJson(openPrPath);
+    const blocking = openPrData.blocking_prs || [];
+    const blockingSlice = blocking.slice(0, 3).map(p => `  - #${p.number} ${p.title}`).join('\n');
+    openPrBlock = `=== OPEN_PR_GUARD ===
+Status: ${openPrData.open_prs_blocking_count === 0 ? 'PASS' : 'FAIL'}
+Blocking PRs: ${openPrData.open_prs_blocking_count}
+${blocking.length > 0 ? blockingSlice + (blocking.length > 3 ? '\n  ...' : '') : '(None)'}
+=====================`;
+}
+
 // Gate Light Block
 let gateLightBlock = gateLightLog;
 if (!gateLightBlock.includes('=== GATE_LIGHT_PREVIEW ===')) {
@@ -101,6 +116,20 @@ if (!gateLightBlock.includes('=== GATE_LIGHT_PREVIEW ===')) {
 let dodBlock = dodEvidence;
 if (!dodBlock.includes('=== DOD_EVIDENCE_STDOUT ===')) {
     dodBlock = `=== DOD_EVIDENCE_STDOUT ===\n${dodEvidence}\n===========================`;
+}
+
+// Add Healthcheck Evidence to DoD Block (Required by Gate Light)
+const hcRoot = resolvePath(`${taskId}_healthcheck_53122_root.txt`);
+const hcPairs = resolvePath(`${taskId}_healthcheck_53122_pairs.txt`);
+
+if (fs.existsSync(hcRoot)) {
+    // Read only first line or check content
+    const content = fs.readFileSync(hcRoot, 'utf8').split('\n')[0].trim();
+    dodBlock += `\n\nDOD_EVIDENCE_HEALTHCHECK_ROOT: ${taskId}_healthcheck_53122_root.txt => ${content}`;
+}
+if (fs.existsSync(hcPairs)) {
+    const content = fs.readFileSync(hcPairs, 'utf8').split('\n')[0].trim();
+    dodBlock += `\nDOD_EVIDENCE_HEALTHCHECK_PAIRS: ${taskId}_healthcheck_53122_pairs.txt => ${content}`;
 }
 
 // Log Head/Tail
@@ -139,6 +168,8 @@ ${dodBlock}
 
 ${ciParityBlock}
 
+${openPrBlock}
+
 ${gateLightBlock}
 
 GATE_LIGHT_EXIT=0
@@ -163,6 +194,18 @@ resultData.report_sha256_short = notifyHashShort;
 if (!resultData.dod_evidence) resultData.dod_evidence = {};
 resultData.dod_evidence.gate_light_exit = 0;
 
+// Add healthcheck to result JSON if missing (Required by Gate Light)
+if (!resultData.dod_evidence.healthcheck) {
+    const hcRootRel = `${taskId}_healthcheck_53122_root.txt`;
+    const hcPairsRel = `${taskId}_healthcheck_53122_pairs.txt`;
+    if (fs.existsSync(resolvePath(hcRootRel)) && fs.existsSync(resolvePath(hcPairsRel))) {
+        resultData.dod_evidence.healthcheck = [
+            `rules/task-reports/${new Date().toISOString().slice(0, 7)}/${hcRootRel}`,
+            `rules/task-reports/${new Date().toISOString().slice(0, 7)}/${hcPairsRel}`
+        ];
+    }
+}
+
 const resultPath = inputs.resultJson; // Overwrite existing
 fs.writeFileSync(resultPath, JSON.stringify(resultData, null, 2));
 console.log(`[Assembler] Updated result JSON: ${resultPath}`);
@@ -179,11 +222,13 @@ const filesToIndex = [
     manualVerifyPath
 ];
 
+if (fs.existsSync(openPrPath)) filesToIndex.push(openPrPath);
+
 // Add healthcheck files if they exist
-const hcRoot = resolvePath(`${taskId}_healthcheck_53122_root.txt`);
-if (fs.existsSync(hcRoot)) filesToIndex.push(hcRoot);
-const hcPairs = resolvePath(`${taskId}_healthcheck_53122_pairs.txt`);
-if (fs.existsSync(hcPairs)) filesToIndex.push(hcPairs);
+const hcRootIndex = resolvePath(`${taskId}_healthcheck_53122_root.txt`);
+if (fs.existsSync(hcRootIndex)) filesToIndex.push(hcRootIndex);
+const hcPairsIndex = resolvePath(`${taskId}_healthcheck_53122_pairs.txt`);
+if (fs.existsSync(hcPairsIndex)) filesToIndex.push(hcPairsIndex);
 // Also legacy names?
 const legacyHcRoot = resolvePath('reports/healthcheck_root.txt');
 if (fs.existsSync(legacyHcRoot)) filesToIndex.push(legacyHcRoot);

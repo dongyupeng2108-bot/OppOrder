@@ -1,0 +1,10 @@
+﻿{
+    "branch":  "feat/p1-open-pr-guard-260216_001",
+    "timestamp":  "2026-02-16 02:13:27 UTC",
+    "header_detected":  true,
+    "task_id":  "260216_001",
+    "input_hash_short":  "88228f80",
+    "mode":  "Integrate",
+    "write_allowed":  true,
+    "commit":  "7c29441"
+}

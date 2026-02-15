@@ -14,8 +14,8 @@ $ErrorActionPreference = "Stop"
 $RepoRoot = "E:\OppRadar"
 
 # --- Helper: Find Evidence Directory & Generator ---
-# Try to find generate script
-$GenerateScript = Get-ChildItem -Path "$RepoRoot\rules\task-reports" -Recurse -Filter "generate_evidence_$TaskId.mjs" | Select-Object -First 1
+# Try to find generate script (js or mjs)
+$GenerateScript = Get-ChildItem -Path "$RepoRoot\rules\task-reports" -Recurse | Where-Object { $_.Name -match "^generate_evidence_$TaskId\.(js|mjs)$" } | Select-Object -First 1
 
 $EvidenceDir = ""
 if ($GenerateScript) {
@@ -39,6 +39,19 @@ if ($LASTEXITCODE -ne 0) {
     Write-Host "[RunTask] FAILED: Preflight checks failed." -ForegroundColor Red
     exit 1
 }
+
+# --- Step 1.2: Open PR Guard ---
+Write-Host ">>> [RunTask] Step 1.2: Open PR Guard" -ForegroundColor Cyan
+$OpenPRGuardOutput = "$EvidenceDir\open_pr_guard_$TaskId.json"
+node "$RepoRoot\scripts\open_pr_guard.mjs" --task_id $TaskId --output "$OpenPRGuardOutput"
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[RunTask] FAILED: Open PR Guard blocked execution." -ForegroundColor Red
+    if (Test-Path $OpenPRGuardOutput) {
+        Get-Content $OpenPRGuardOutput | Write-Host
+    }
+    exit 1
+}
+Write-Host "    Open PR Guard PASS. Output: $OpenPRGuardOutput" -ForegroundColor Gray
 
 # --- Step 1.5: Healthcheck Evidence ---
 Write-Host ">>> [RunTask] Step 1.5: Healthcheck Evidence" -ForegroundColor Cyan

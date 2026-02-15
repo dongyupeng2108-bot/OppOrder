@@ -1,0 +1,10 @@
+=== SMOKE TEST OUTPUT ===
+Running Smoke Test for Open PR Guard...
+Case 1 (Empty) PASSED
+Case 2 (Related) PASSED
+Case 3 (Unrelated) PASSED
+ALL SMOKE TESTS PASSED
+
+=========================
+Status: PASS
+Timestamp: 2026-02-15T18:13:29.144Z
