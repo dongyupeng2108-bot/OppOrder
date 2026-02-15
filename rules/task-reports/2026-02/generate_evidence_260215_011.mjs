@@ -47,11 +47,19 @@ fs.writeFileSync(path.join(REPORT_DIR, `git_meta_${TASK_ID}.json`), JSON.stringi
 
 // 4. Create DoD Evidence File (Composite)
 console.log('Creating DoD Evidence...');
+const hcRootPath = path.join(REPORT_DIR, `${TASK_ID}_healthcheck_53122_root.txt`);
+const hcPairsPath = path.join(REPORT_DIR, `${TASK_ID}_healthcheck_53122_pairs.txt`);
+let hcRootLine = 'N/A';
+let hcPairsLine = 'N/A';
+if (fs.existsSync(hcRootPath)) hcRootLine = fs.readFileSync(hcRootPath, 'utf8').split('\n')[0].trim();
+if (fs.existsSync(hcPairsPath)) hcPairsLine = fs.readFileSync(hcPairsPath, 'utf8').split('\n')[0].trim();
+
 const dodContent = `=== DoD Evidence: Rank V2 Contract ===
 ${rankV2Log}
 
 === Healthcheck Reference ===
-See healthcheck_53122_root.txt and healthcheck_53122_pairs.txt
+DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/${TASK_ID}_healthcheck_53122_root.txt => ${hcRootLine}
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/${TASK_ID}_healthcheck_53122_pairs.txt => ${hcPairsLine}
 `;
 fs.writeFileSync(path.join(REPORT_DIR, `dod_evidence_${TASK_ID}.txt`), dodContent);
 
