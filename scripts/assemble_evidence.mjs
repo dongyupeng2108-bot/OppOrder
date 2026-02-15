@@ -213,10 +213,10 @@ const filesToIndex = [
 if (fs.existsSync(openPrPath)) filesToIndex.push(openPrPath);
 
 // Add healthcheck files if they exist
-const hcRoot = resolvePath(`${taskId}_healthcheck_53122_root.txt`);
-if (fs.existsSync(hcRoot)) filesToIndex.push(hcRoot);
-const hcPairs = resolvePath(`${taskId}_healthcheck_53122_pairs.txt`);
-if (fs.existsSync(hcPairs)) filesToIndex.push(hcPairs);
+const hcRootIndex = resolvePath(`${taskId}_healthcheck_53122_root.txt`);
+if (fs.existsSync(hcRootIndex)) filesToIndex.push(hcRootIndex);
+const hcPairsIndex = resolvePath(`${taskId}_healthcheck_53122_pairs.txt`);
+if (fs.existsSync(hcPairsIndex)) filesToIndex.push(hcPairsIndex);
 // Also legacy names?
 const legacyHcRoot = resolvePath('reports/healthcheck_root.txt');
 if (fs.existsSync(legacyHcRoot)) filesToIndex.push(legacyHcRoot);
