@@ -194,6 +194,18 @@ resultData.report_sha256_short = notifyHashShort;
 if (!resultData.dod_evidence) resultData.dod_evidence = {};
 resultData.dod_evidence.gate_light_exit = 0;
 
+// Add healthcheck to result JSON if missing (Required by Gate Light)
+if (!resultData.dod_evidence.healthcheck) {
+    const hcRootRel = `${taskId}_healthcheck_53122_root.txt`;
+    const hcPairsRel = `${taskId}_healthcheck_53122_pairs.txt`;
+    if (fs.existsSync(resolvePath(hcRootRel)) && fs.existsSync(resolvePath(hcPairsRel))) {
+        resultData.dod_evidence.healthcheck = [
+            `rules/task-reports/${new Date().toISOString().slice(0, 7)}/${hcRootRel}`,
+            `rules/task-reports/${new Date().toISOString().slice(0, 7)}/${hcPairsRel}`
+        ];
+    }
+}
+
 const resultPath = inputs.resultJson; // Overwrite existing
 fs.writeFileSync(resultPath, JSON.stringify(resultData, null, 2));
 console.log(`[Assembler] Updated result JSON: ${resultPath}`);
