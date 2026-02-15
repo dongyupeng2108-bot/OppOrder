@@ -81,8 +81,8 @@ async function main() {
         // 2. Generate Healthchecks (Task Requirement)
         // Use curl for strict compliance
         try {
-            execSync(`curl.exe -v http://localhost:${PORT}/ --output "${HEALTH_ROOT}" 2>&1`);
-            execSync(`curl.exe -v http://localhost:${PORT}/pairs --output "${HEALTH_PAIRS}" 2>&1`);
+            execSync(`curl.exe -i -s http://localhost:${PORT}/ --output "${HEALTH_ROOT}"`);
+            execSync(`curl.exe -i -s http://localhost:${PORT}/pairs --output "${HEALTH_PAIRS}"`);
         } catch (e) {
             console.error('Curl failed, using fallback manual write');
         }
