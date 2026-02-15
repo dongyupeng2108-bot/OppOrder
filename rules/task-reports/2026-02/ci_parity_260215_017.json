@@ -1,0 +1,17 @@
+{
+  "task_id": "260215_017",
+  "base": "d86f1f72c4aabb549745f0db5891de790a0c3e60",
+  "head": "97a7ced1d584e74d775dec11e9b1e80ca1ec0842",
+  "merge_base": "d86f1f72c4aabb549745f0db5891de790a0c3e60",
+  "scope_count": 7,
+  "scope_files": [
+    "OppRadar/contracts/opps_ledger_query_v0.schema.json",
+    "OppRadar/ledger/opps_ledger_v0.mjs",
+    "OppRadar/mock_server_53122.mjs",
+    "rules/LATEST.json",
+    "rules/task-reports/2026-02/generate_evidence_260215_017.mjs",
+    "scripts/gate_light_ci.mjs",
+    "scripts/verify_ledger_v0_contract.mjs"
+  ],
+  "timestamp": "2026-02-15T17:05:02.366Z"
+}

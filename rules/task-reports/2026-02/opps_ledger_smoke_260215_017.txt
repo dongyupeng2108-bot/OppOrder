@@ -1,0 +1,16 @@
+=== Opps Ledger Smoke Test ===
+Date: 2026-02-15T17:05:01.118Z
+Initial Ledger Estimate: 0
+Running Scan 1...
+Scan 1 completed. RunID: sc_a2bcada3, Opps: 3
+Running Scan 2...
+Scan 2 completed. RunID: sc_b731ff05, Opps: 2
+Final Ledger Estimate: 5
+Growth: 5 (Expected >= 5)
+PASS: Ledger growth verified.
+Querying Ledger for Run 1 (sc_a2bcada3)...
+Run 1 Items: 3
+Sample Item Keys: id, opportunity_id, run_id, ts, source, opp_id, topic_key, strategy_id, snapshot_id, tradeable_state, tradeable_reason, created_at, score, score_baseline, score_components, llm_provider, llm_model, llm_summary, llm_confidence, llm_tags, llm_latency_ms, llm_error, llm_input_prompt, llm_json, _ledger_ts
+PASS: Item schema check (opportunity_id, run_id, ts present).
+Testing Limit Enforcement (limit=51)...
+PASS: Limit 51 rejected with 400: Limit exceeds maximum allowed (50)

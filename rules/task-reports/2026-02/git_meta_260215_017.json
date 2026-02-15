@@ -1,0 +1,13 @@
+{
+  "branch": "feat/m4-pr4-opportunity-ledger-260215_017",
+  "commit": "97a7ced",
+  "scope_diff": [
+    "OppRadar/contracts/opps_ledger_query_v0.schema.json",
+    "OppRadar/ledger/opps_ledger_v0.mjs",
+    "OppRadar/mock_server_53122.mjs",
+    "rules/LATEST.json",
+    "rules/task-reports/2026-02/generate_evidence_260215_017.mjs",
+    "scripts/gate_light_ci.mjs",
+    "scripts/verify_ledger_v0_contract.mjs"
+  ]
+}

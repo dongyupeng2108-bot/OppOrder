@@ -1,0 +1,179 @@
+Trae Task Report
+Task ID: 260215_017
+Date: 2026-02-15T17:05:19.729Z
+Branch: feat/m4-pr4-opportunity-ledger-260215_017
+Commit: 97a7ced
+
+
+=== RESULT_JSON ===
+(See result_260215_017.json)
+
+=== LOG_HEAD ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260215_017
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] Verifying task_id: 260215_017
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Report Block Check Passed: notify_260215_017.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260215_017.txt
+[Gate Light] Preflight Attestation verified (Integrate Mode).
+[Gate Light] Checking CI Parity JSON Evidence...
+[Gate Light] CI Parity JSON Evidence verified.
+[Gate Light] Checking doc path standards...
+[Gate Light] Doc path standards verified.
+[Gate Light] Checking for legacy doc path references...
+[CheckDocPathRefs] Scanning for legacy doc path references...
+[CheckDocPathRefs] PASS: No legacy doc path references found.
+[Gate Light] Checking for global healthcheck artifacts...
+[Gate Light] Global Artifact Guard verified.
+[Gate Light] Checking News Pull API Contract...
+[Contract Check] Loading schema from: E:\OppRadar\OppRadar\contracts\news_pull_response.schema.json
+[Contract Check] Validating Success Sample...
+...
+
+=== LOG_TAIL ===
+...
+[Gate Light] Evidence Truth & Consistency verified.
+[Gate Light] Checking Rank V2 Contract Version Guard...
+[Gate Light] Base Commit: d86f1f72c4aabb549745f0db5891de790a0c3e60
+[Gate Light] Schema Unchanged (3bd83a08). Version check skipped.
+[Gate Light] Rank V2 Contract Version Guard PASS
+[Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...
+[Gate Light] Immutable Integrate & SafeCmd Enforcement verified.
+[Gate Light] Checking Two-Pass Evidence Truth & No Auto-Merge...
+[Gate Light] Two-Pass Evidence Truth & No Auto-Merge verified.
+[Gate Light] Executing: node scripts/postflight_validate_envelope.mjs --task_id 260215_017 --result_dir rules\task-reports\2026-02 --report_dir rules\task-reports\2026-02
+[Postflight] Validating 260215_017 in rules\task-reports\2026-02...
+[Postflight] Report: rules\task-reports\2026-02\260215_017.json
+[Postflight] Envelope: rules\task-reports\envelopes\260215_017.envelope.json
+[Postflight] PASS
+[Gate Light] PASS
+GATE_LIGHT_EXIT=0
+[Postflight] Validating 260215_017 in E:\OppRadar\rules\task-reports\2026-02...
+[Postflight] Report: E:\OppRadar\rules\reports\postflight\260215_017.json
+[Postflight] Envelope: E:\OppRadar\rules\reports\envelopes\260215_017.envelope.json
+[Postflight] PASS
+
+=== INDEX ===
+(See deliverables_index_260215_017.json)
+
+=== DOD_EVIDENCE_STDOUT ===
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260215_017_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260215_017_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_SMOKE_TEST: opps_ledger_smoke_260215_017.txt => Generated
+===========================
+
+=== CI_PARITY_PREVIEW ===
+Base: d86f1f72c4aabb549745f0db5891de790a0c3e60
+Head: 97a7ced1d584e74d775dec11e9b1e80ca1ec0842
+MergeBase: d86f1f72c4aabb549745f0db5891de790a0c3e60
+Source: JSON (Evidence-as-Code)
+Scope: 7 files
+Files (Top 3):
+  - OppRadar/contracts/opps_ledger_query_v0.schema.json
+  - OppRadar/ledger/opps_ledger_v0.mjs
+  - OppRadar/mock_server_53122.mjs
+...
+=========================
+
+=== GATE_LIGHT_PREVIEW ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260215_017
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] Verifying task_id: 260215_017
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Report Block Check Passed: notify_260215_017.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260215_017.txt
+[Gate Light] Preflight Attestation verified (Integrate Mode).
+[Gate Light] Checking CI Parity JSON Evidence...
+[Gate Light] CI Parity JSON Evidence verified.
+[Gate Light] Checking doc path standards...
+[Gate Light] Doc path standards verified.
+[Gate Light] Checking for legacy doc path references...
+[CheckDocPathRefs] Scanning for legacy doc path references...
+[CheckDocPathRefs] PASS: No legacy doc path references found.
+[Gate Light] Checking for global healthcheck artifacts...
+[Gate Light] Global Artifact Guard verified.
+[Gate Light] Checking News Pull API Contract...
+[Contract Check] Loading schema from: E:\OppRadar\OppRadar\contracts\news_pull_response.schema.json
+[Contract Check] Validating Success Sample...
+PASS
+[Contract Check] Validating Error Sample...
+PASS
+[Contract Check] All samples validated against schema.
+[Gate Light] Checking Rank V2 API Contract...
+=== Rank V2 Contract Verification ===
+Schema loaded.
+Server already running.
+Fetching http://localhost:53122/opportunities/rank_v2?provider=mock&limit=5&run_id=verify_rank_v2...
+Received 3 items.
+Validating against schema...
+Schema Validation PASSED.
+Response Hash: ff3d7b77
+::set-output name=rank_v2_hash::ff3d7b77
+VERIFICATION_SUCCESS
+[Gate Light] Checking Export V1 API Contract...
+=== Export V1 Contract Verification ===
+Schema loaded.
+Server already running.
+Generating Run assets via http://localhost:53122/scans/run...
+Run assets generated. Run ID: sc_31159cb7
+Fetching Export: http://localhost:53122/opportunities/runs/export_v1?run_id=sc_31159cb7...
+Received Export JSON.
+Validating against schema...
+Export Schema Validation PASSED.
+Export Hash: ca4086f4
+::set-output name=export_v1_hash::ca4086f4
+EXPORT_CONTRACT_VERIFICATION_SUCCESS
+[Gate Light] Checking Ledger V0 API Contract...
+=== Ledger V0 Contract Verification ===
+Schema loaded.
+Server already running.
+Fetching /opportunities/ledger/query_v0?limit=1...
+Validating against schema...
+Validation PASSED.
+[Gate Light] Checking healthcheck evidence...
+[Gate Light] Healthcheck evidence verified (Path + Content).
+[Gate Light] Checking DoD Evidence Excerpts...
+[Gate Light] DoD Evidence Excerpts verified.
+[Gate Light] Checking Deletion Audit (Locks & Runs)...
+[Gate Light] Deletion Audit: No lock/index yet (Assuming Pre-Integrate or First Run in progress).
+[Gate Light] Checking No Auto-Merge (Git Forbidden Commands)...
+[Gate Light] No Auto-Merge verified.
+[Gate Light] Checking Evidence Truth & Sufficiency (Hardening Rule)...
+[Gate Light] Evidence Truth (Two-Pass) verified.
+[Gate Light] Evidence Truth & Sufficiency verified.
+[Gate Light] Checking CI Parity Preview...
+[Gate Light] CI Parity Preview verified.
+[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
+[Gate Light] Fetching origin/main history for diff context...
+[Gate Light] Allowed legacy task_id (transition): 260215_016
+[Gate Light] NoHistoricalEvidenceTouch verified.
+[Gate Light] SnippetCommitMustMatch verified.
+[Gate Light] Checking GATE_LIGHT_EXIT Mechanism...
+[Gate Light] GATE_LIGHT_EXIT Mechanism verified.
+[Gate Light] Checking Evidence Truth & Consistency...
+[Gate Light] Evidence Truth & Consistency verified.
+[Gate Light] Checking Rank V2 Contract Version Guard...
+[Gate Light] Base Commit: d86f1f72c4aabb549745f0db5891de790a0c3e60
+[Gate Light] Schema Unchanged (3bd83a08). Version check skipped.
+[Gate Light] Rank V2 Contract Version Guard PASS
+[Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...
+[Gate Light] Immutable Integrate & SafeCmd Enforcement verified.
+[Gate Light] Checking Two-Pass Evidence Truth & No Auto-Merge...
+[Gate Light] Two-Pass Evidence Truth & No Auto-Merge verified.
+[Gate Light] Executing: node scripts/postflight_validate_envelope.mjs --task_id 260215_017 --result_dir rules\task-reports\2026-02 --report_dir rules\task-reports\2026-02
+[Postflight] Validating 260215_017 in rules\task-reports\2026-02...
+[Postflight] Report: rules\task-reports\2026-02\260215_017.json
+[Postflight] Envelope: rules\task-reports\envelopes\260215_017.envelope.json
+[Postflight] PASS
+[Gate Light] PASS
+GATE_LIGHT_EXIT=0
+[Postflight] Validating 260215_017 in E:\OppRadar\rules\task-reports\2026-02...
+[Postflight] Report: E:\OppRadar\rules\reports\postflight\260215_017.json
+[Postflight] Envelope: E:\OppRadar\rules\reports\envelopes\260215_017.envelope.json
+[Postflight] PASS
+==========================
+
+GATE_LIGHT_EXIT=0
+[Generated by scripts/assemble_evidence.mjs]

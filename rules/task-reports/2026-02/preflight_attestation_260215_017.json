@@ -1,0 +1,10 @@
+﻿{
+    "branch":  "feat/m4-pr4-opportunity-ledger-260215_017",
+    "timestamp":  "2026-02-16 01:05:00 UTC",
+    "header_detected":  true,
+    "task_id":  "260215_017",
+    "input_hash_short":  "40c5a21",
+    "mode":  "Integrate",
+    "write_allowed":  true,
+    "commit":  "97a7ced"
+}

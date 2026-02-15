@@ -1,0 +1,16 @@
+{
+  "task_id": "260215_017",
+  "timestamp": "2026-02-15T17:05:02.429Z",
+  "dod_evidence": {
+    "healthcheck": [
+      "DOD_EVIDENCE_HEALTHCHECK_ROOT: 260215_017_healthcheck_53122_root.txt => HTTP/1.1 200 OK",
+      "DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260215_017_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK"
+    ],
+    "smoke_test": "opps_ledger_smoke_260215_017.txt",
+    "gate_light_exit": 0
+  },
+  "status": "DONE",
+  "summary": "Automation Pack V1 Validation for Task 260215_017",
+  "report_file": "notify_260215_017.txt",
+  "report_sha256_short": "f52ee85b"
+}
