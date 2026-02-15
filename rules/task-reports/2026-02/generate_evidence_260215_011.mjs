@@ -80,11 +80,12 @@ const resultJson = {
         mock_mode: "deterministic",
         gate_light_exit: 0
     },
-    // Add healthcheck array as expected by DoD Evidence Excerpt check
-    healthcheck: [
-        `rules/task-reports/2026-02/${TASK_ID}_healthcheck_53122_root.txt`,
-        `rules/task-reports/2026-02/${TASK_ID}_healthcheck_53122_pairs.txt`
-    ]
+    dod_evidence: {
+        healthcheck: [
+            `rules/task-reports/2026-02/${TASK_ID}_healthcheck_53122_root.txt`,
+            `rules/task-reports/2026-02/${TASK_ID}_healthcheck_53122_pairs.txt`
+        ]
+    }
 };
 fs.writeFileSync(path.join(REPORT_DIR, `result_${TASK_ID}.json`), JSON.stringify(resultJson, null, 2));
 
