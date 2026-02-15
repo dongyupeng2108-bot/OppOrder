@@ -1,8 +1,8 @@
 Trae Task Report
 Task ID: 260215_012
-Date: 2026-02-15T11:26:07.423Z
+Date: 2026-02-15T11:28:49.027Z
 Branch: feat/rank-v2-contract-version-guard-260215_012
-Commit: 3b59ed7eac7da26ffccaef528d74fd91d3c1a99b
+Commit: ba2379381f3ba80f8f5fcf52cfd4b805c71ea8e2
 
 
 === RESULT_JSON ===
@@ -58,7 +58,7 @@ GATE_LIGHT_EXIT=0
 (See deliverables_index_260215_012.json)
 
 === DOD_EVIDENCE_STDOUT ===
-DOD_EVIDENCE_RANK_V2_CONTRACT_VERSION_GUARD: OppRadar/contracts/rank_v2.contract.json => ok=false reason="Hash Mismatch (Contract: 3bd83a08, Actual: 91d7f255);" base_version=0.0 head_version=1.0 schema_changed=true
+DOD_EVIDENCE_RANK_V2_CONTRACT_VERSION_GUARD: OppRadar/contracts/rank_v2.contract.json => ok=true base_version=0.0 head_version=1.0 schema_changed=false
 See detailed evidence: rank_v2_contract_guard_260215_012.txt
 DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/260215_012_healthcheck_53122_root.txt => HTTP/1.1 200 OK
 DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260215_012_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
@@ -66,7 +66,7 @@ DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/260215_012_healthchec
 
 === CI_PARITY_PREVIEW ===
 Base: 3c919fae0737977d737d51146d081a128d4b8efe
-Head: 3b59ed7eac7da26ffccaef528d74fd91d3c1a99b
+Head: ba2379381f3ba80f8f5fcf52cfd4b805c71ea8e2
 MergeBase: 3c919fae0737977d737d51146d081a128d4b8efe
 Source: JSON (Evidence-as-Code)
 Scope: 41 files

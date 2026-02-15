@@ -1,6 +1,6 @@
 === Rank V2 Contract Version Guard Evidence ===
 Task: 260215_012
-Date: 2026-02-15T11:26:04.888Z
+Date: 2026-02-15T11:28:46.416Z
 Base Commit: 3c919fae0737977d737d51146d081a128d4b8efe
 Head Commit: HEAD
 
@@ -8,14 +8,14 @@ Head Commit: HEAD
 Schema Path: OppRadar/contracts/opps_rank_v2_response.schema.json
 Contract Path: OppRadar/contracts/rank_v2.contract.json
 Base Schema Hash: 3bd83a08
-Head Schema Hash: 91d7f255
-Schema Changed: true
+Head Schema Hash: 3bd83a08
+Schema Changed: false
 Base Version: 0.0
 Head Version: 1.0
 
 --- Verification ---
-Status: FAIL
-Reason: Hash Mismatch (Contract: 3bd83a08, Actual: 91d7f255); 
+Status: PASS
+Reason: None
 
 --- Summary Line ---
-DOD_EVIDENCE_RANK_V2_CONTRACT_VERSION_GUARD: OppRadar/contracts/rank_v2.contract.json => ok=false reason="Hash Mismatch (Contract: 3bd83a08, Actual: 91d7f255);" base_version=0.0 head_version=1.0 schema_changed=true
+DOD_EVIDENCE_RANK_V2_CONTRACT_VERSION_GUARD: OppRadar/contracts/rank_v2.contract.json => ok=true base_version=0.0 head_version=1.0 schema_changed=false
