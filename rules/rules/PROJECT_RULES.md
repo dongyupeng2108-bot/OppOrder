@@ -89,6 +89,15 @@
   - `OppRadar`: 53122 (Fixed).
   - `arb-validate-web`: 53121 (Fixed reference).
 
+## Automation Pack V1 Standards
+- **Two-Pass Verification**:
+  - **Pass 1 (Preview)**: Runs `gate_light_ci.mjs` in Preview Mode (`GENERATE_PREVIEW=1`). Skips strict evidence checks to allow log generation.
+  - **Pass 2 (Verify)**: Runs `gate_light_ci.mjs` in Verify Mode. Enforces all Hard Guards.
+- **Preview Mode**:
+  - Activated via `GENERATE_PREVIEW=1` or `GATE_LIGHT_GENERATE_PREVIEW=1`.
+  - **Behavior**: Skips `CheckEvidenceTruth`, `CheckDoDHealthcheck`, `CheckPostflight` to prevent "chicken-and-egg" errors during evidence assembly.
+  - **Output**: Generates `gate_light_preview_<task_id>.log` for inclusion in the final evidence package.
+
 ## Gate Light Hardening Rules
 - **Immutable Integrate**: Once a task passes Integrate, it is LOCKED via `rules/task-reports/locks/<task_id>.lock.json`. Reruns are blocked (Exit 33). Any new changes require a NEW `task_id`.
 - **SafeCmd**: Chained shell commands (`;`, `&&`, `||`) are prohibited in `command_audit` logs to prevent high-risk execution bypass. Use `scripts/safe_commit.ps1` or `scripts/safe_push.ps1` instead.
