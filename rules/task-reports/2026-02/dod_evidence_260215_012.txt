@@ -1,0 +1,2 @@
+DOD_EVIDENCE_RANK_V2_CONTRACT_VERSION_GUARD: OppRadar/contracts/rank_v2.contract.json => ok=true base_version=0.0 head_version=1.0 schema_changed=true
+See detailed evidence: rank_v2_contract_guard_260215_012.txt
