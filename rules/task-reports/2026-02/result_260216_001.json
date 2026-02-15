@@ -1,0 +1,17 @@
+{
+  "task_id": "260216_001",
+  "status": "DONE",
+  "generated_at": "2026-02-15T18:13:30.744Z",
+  "dod_evidence": {
+    "smoke_tests": "PASS",
+    "stdout_path": "rules/task-reports/2026-02/dod_evidence_260216_001.txt",
+    "gate_light_exit": 0,
+    "healthcheck": [
+      "rules/task-reports/2026-02/260216_001_healthcheck_53122_root.txt",
+      "rules/task-reports/2026-02/260216_001_healthcheck_53122_pairs.txt"
+    ]
+  },
+  "summary": "Automation Pack V1 Validation for Task 260216_001",
+  "report_file": "notify_260216_001.txt",
+  "report_sha256_short": "1c8bdab9"
+}

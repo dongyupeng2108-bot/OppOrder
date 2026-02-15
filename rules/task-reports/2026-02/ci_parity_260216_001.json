@@ -1,0 +1,17 @@
+{
+  "task_id": "260216_001",
+  "base": "03d072833d9a2b45830bea8d9248412d84afcd85",
+  "head": "7c29441c6ad39a49a432cf5509d0c759bac5cd9c",
+  "merge_base": "03d072833d9a2b45830bea8d9248412d84afcd85",
+  "scope_files": [
+    "rules/LATEST.json",
+    "rules/task-reports/2026-02/generate_evidence_260216_001.mjs",
+    "scripts/assemble_evidence.mjs",
+    "scripts/gate_light_ci.mjs",
+    "scripts/open_pr_guard.mjs",
+    "scripts/run_task.ps1",
+    "scripts/smoke_open_pr_guard.mjs"
+  ],
+  "scope_count": 7,
+  "generated_at": "2026-02-15T18:13:30.736Z"
+}
