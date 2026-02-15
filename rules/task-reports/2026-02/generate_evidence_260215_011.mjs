@@ -44,7 +44,7 @@ try {
     
     // 4.1. CI Parity
     console.log('Generating CI Parity JSON...');
-    execSync(`node scripts/ci_parity_probe.mjs --task_id=${TASK_ID}`, { cwd: REPO_ROOT, stdio: 'inherit' });
+    execSync(`node scripts/ci_parity_probe.mjs --task_id=${TASK_ID} --result_dir="${REPORT_DIR}"`, { cwd: REPO_ROOT, stdio: 'inherit' });
 
     // 4.2. Git Meta
     // Usually get_git_meta.mjs or similar. If not, we construct it manually.
