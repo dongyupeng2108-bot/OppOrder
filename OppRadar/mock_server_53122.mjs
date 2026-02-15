@@ -19,6 +19,7 @@ const UI_DIR = path.join(__dirname, '../ui');
 const FIXTURES_DIR = path.join(__dirname, '../data/fixtures');
 const RUNTIME_DIR = path.join(__dirname, '../data/runtime');
 const RUNTIME_STORE = path.join(RUNTIME_DIR, 'store.json');
+const OPPS_RUNS_DIR = path.join(__dirname, '../data/opps_runs');
 
 // Initialize LLM Provider
 const llmProvider = getProvider(process.env.LLM_PROVIDER || 'mock');
@@ -385,6 +386,7 @@ async function runScanCore(params) {
     
     if (persist) {
         try {
+            // A. Legacy Runtime Persistence
             if (!fs.existsSync(RUNTIME_DIR)) fs.mkdirSync(RUNTIME_DIR, { recursive: true });
 
             // Write scan
@@ -406,6 +408,77 @@ async function runScanCore(params) {
             const tempStorePath = storePath + '.tmp';
             fs.writeFileSync(tempStorePath, JSON.stringify(storeData, null, 2));
             fs.renameSync(tempStorePath, storePath); // Atomic write
+
+            // B. Task 260215_016: Run Asset Persistence (Append-Only)
+            if (!fs.existsSync(OPPS_RUNS_DIR)) fs.mkdirSync(OPPS_RUNS_DIR, { recursive: true });
+            const runDir = path.join(OPPS_RUNS_DIR, scanId);
+            if (fs.existsSync(runDir)) {
+                 throw new Error(`Run ID collision: ${scanId} already exists. Cannot overwrite.`);
+            }
+            fs.mkdirSync(runDir);
+
+            // 1. Generate Rank V2 (Inline Logic)
+            const ranked = newOpps.map(o => {
+                const p_hat = Math.max(0, Math.min(1, o.score_baseline || o.score || 0)); 
+                
+                // Deterministic p_llm
+                const hash = crypto.createHash('sha256').update(o.opp_id).digest('hex');
+                const intVal = parseInt(hash.substring(0, 8), 16);
+                const p_llm = parseFloat((intVal / 0xFFFFFFFF).toFixed(4));
+                
+                // Wilson Score
+                const n = 50; const z = 1.96; const p = p_hat;
+                const factor = 1 / (1 + (z*z)/n);
+                const center = p + (z*z)/(2*n);
+                const error = z * Math.sqrt((p*(1-p))/n + (z*z)/(4*n*n));
+                const p_ci = {
+                    low: parseFloat(Math.max(0, factor * (center - error)).toFixed(4)),
+                    high: parseFloat(Math.min(1, factor * (center + error)).toFixed(4)),
+                    method: 'wilson_n50'
+                };
+                
+                const raw_v2 = (0.45 * p_hat) + (0.55 * p_llm) - (0.10 * (p_ci.high - p_ci.low));
+                const score_v2 = parseFloat(Math.max(0, Math.min(1, raw_v2)).toFixed(4));
+                
+                return {
+                    opp_id: o.opp_id,
+                    score: p_hat,
+                    score_v2: score_v2,
+                    p_hat: parseFloat(p_hat.toFixed(4)),
+                    p_llm: p_llm,
+                    p_ci: p_ci,
+                    price_q: parseFloat(p_hat.toFixed(2)),
+                    meta: { provider_used: 'mock', model_used: 'default', fallback: false }
+                };
+            }).sort((a, b) => b.score_v2 - a.score_v2);
+
+            // 2. Prepare Objects
+            const scanInput = {
+                limit: n_opps_actual,
+                provider: 'mock', // Default
+                topic_key: topic_key,
+                seed: seed,
+                mode: mode
+            };
+            
+            const inputsHash = crypto.createHash('sha256').update(JSON.stringify(scanInput)).digest('hex');
+            const outputsHash = crypto.createHash('sha256').update(JSON.stringify(ranked)).digest('hex');
+            
+            const meta = {
+                run_id: scanId,
+                created_at: new Date().toISOString(),
+                inputs_hash: inputsHash,
+                outputs_hash: outputsHash,
+                items_count: ranked.length,
+                schema_version: 'v1'
+            };
+
+            // 3. Write Files
+            fs.writeFileSync(path.join(runDir, 'meta.json'), JSON.stringify(meta, null, 2));
+            fs.writeFileSync(path.join(runDir, 'scan_input.json'), JSON.stringify(scanInput, null, 2));
+            fs.writeFileSync(path.join(runDir, 'scan_raw.json'), JSON.stringify(scan, null, 2));
+            fs.writeFileSync(path.join(runDir, 'rank_v2.json'), JSON.stringify(ranked, null, 2));
+
         } catch (err) {
             console.error("Persist error:", err);
             persistWarnings.push(err.message);
@@ -783,6 +856,43 @@ const server = http.createServer(async (req, res) => {
     }
 
     // 3. API Routes (Custom Logic)
+
+    // GET /opportunities/runs/export_v1?run_id=...
+    if (pathname === '/opportunities/runs/export_v1') {
+        const runId = parsedUrl.query.run_id;
+        if (!runId) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Missing run_id parameter' }));
+            return;
+        }
+
+        const runDir = path.join(OPPS_RUNS_DIR, runId);
+        if (!fs.existsSync(runDir)) {
+            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Run ID not found' }));
+            return;
+        }
+
+        try {
+            const meta = JSON.parse(fs.readFileSync(path.join(runDir, 'meta.json'), 'utf8'));
+            const scanInput = JSON.parse(fs.readFileSync(path.join(runDir, 'scan_input.json'), 'utf8'));
+            const rankV2 = JSON.parse(fs.readFileSync(path.join(runDir, 'rank_v2.json'), 'utf8'));
+            
+            const response = {
+                meta,
+                scan_input: scanInput,
+                rank_v2: rankV2
+            };
+
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(response, null, 2));
+        } catch (e) {
+            console.error('Export error:', e);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal Server Error', details: e.message }));
+        }
+        return;
+    }
 
     // GET /export/llm_analyze.json?scan=<id>
     if (pathname === '/export/llm_analyze.json') {
@@ -1507,6 +1617,42 @@ const server = http.createServer(async (req, res) => {
                 message: e.message,
                 request: { limit, since_id: sinceId }
             }));
+        }
+        return;
+    }
+
+    // GET /opportunities/runs/export_v1 (Task 260215_016)
+    if (pathname === '/opportunities/runs/export_v1') {
+        const runId = parsedUrl.query.run_id;
+        if (!runId) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Missing run_id parameter' }));
+            return;
+        }
+
+        const runDir = path.join(OPPS_RUNS_DIR, runId);
+        if (!fs.existsSync(runDir)) {
+            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Run ID not found' }));
+            return;
+        }
+
+        try {
+            const meta = JSON.parse(fs.readFileSync(path.join(runDir, 'meta.json'), 'utf8'));
+            const scanInput = JSON.parse(fs.readFileSync(path.join(runDir, 'scan_input.json'), 'utf8'));
+            const rankV2 = JSON.parse(fs.readFileSync(path.join(runDir, 'rank_v2.json'), 'utf8'));
+            
+            const response = {
+                meta: meta,
+                scan_input: scanInput,
+                rank_v2: rankV2
+            };
+
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(response));
+        } catch (e) {
+             res.writeHead(500, { 'Content-Type': 'application/json' });
+             res.end(JSON.stringify({ error: 'Failed to read run assets', details: e.message }));
         }
         return;
     }

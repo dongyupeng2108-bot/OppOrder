@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "meta": {
+      "type": "object",
+      "properties": {
+        "run_id": { "type": "string" },
+        "created_at": { "type": "string" },
+        "inputs_hash": { "type": "string" },
+        "outputs_hash": { "type": "string" },
+        "items_count": { "type": "integer" }
+      },
+      "required": ["run_id", "created_at", "items_count"]
+    },
+    "scan_input": {
+      "type": "object",
+      "properties": {
+        "limit": { "type": "integer" },
+        "provider": { "type": "string" }
+      },
+      "required": ["limit"]
+    },
+    "rank_v2": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "opp_id": { "type": "string" },
+          "score": { "type": "number" },
+          "score_v2": { "type": "number" },
+          "p_hat": { "type": "number" },
+          "p_llm": { "type": "number" },
+          "p_ci": {
+            "type": "object",
+            "properties": {
+              "low": { "type": "number" },
+              "high": { "type": "number" },
+              "method": { "type": "string" }
+            },
+            "required": ["low", "high"]
+          },
+          "meta": {
+            "type": "object",
+            "properties": {
+              "provider_used": { "type": "string" },
+              "model_used": { "type": "string" }
+            }
+          }
+        },
+        "required": ["opp_id", "score_v2", "p_hat", "p_llm", "p_ci"]
+      }
+    }
+  },
+  "required": ["meta", "scan_input", "rank_v2"]
+}

@@ -99,25 +99,44 @@ if ($LASTEXITCODE -ne 0) {
 
 # --- Step 5: Pass 2 - Gate Light Verify ---
 Write-Host ">>> [RunTask] Step 5: Pass 2 - Gate Light Verify" -ForegroundColor Cyan
-node "$RepoRoot\scripts\gate_light_ci.mjs" --task_id $TaskId --mode $Mode
+$VerifyLog = "$EvidenceDir\gate_light_verify_$TaskId.log"
+# Use cmd /c to ensure redirection works and capture both stdout and stderr
+cmd /c "node ""$RepoRoot\scripts\gate_light_ci.mjs"" --task_id $TaskId --mode $Mode > ""$VerifyLog"" 2>&1"
 if ($LASTEXITCODE -ne 0) {
-    Write-Host "[RunTask] FAILED: Gate Light Verify failed." -ForegroundColor Red
+    Write-Host "[RunTask] FAILED: Gate Light Verify failed. See $VerifyLog" -ForegroundColor Red
+    Get-Content $VerifyLog | Select-Object -Last 20
     exit 1
 }
+Write-Host "    Verify Log: $VerifyLog" -ForegroundColor Gray
 
 # --- Step 6: Postflight (Integrate Only) ---
 if ($Mode -eq "Integrate") {
     Write-Host ">>> [RunTask] Step 6: Postflight (Integrate)" -ForegroundColor Cyan
     $PostflightScript = "$RepoRoot\scripts\postflight_validate_envelope.mjs"
     if (Test-Path $PostflightScript) {
-        node $PostflightScript --task_id $TaskId --result_dir "$EvidenceDir"
+        # Append Postflight output to Verify Log
+        cmd /c "node $PostflightScript --task_id $TaskId --result_dir ""$EvidenceDir"" >> ""$VerifyLog"" 2>&1"
         if ($LASTEXITCODE -ne 0) {
-            Write-Host "[RunTask] FAILED: Postflight validation failed." -ForegroundColor Red
+            Write-Host "[RunTask] FAILED: Postflight validation failed. See $VerifyLog" -ForegroundColor Red
+            Get-Content $VerifyLog | Select-Object -Last 20
             exit 1
         }
     } else {
         Write-Host "    Warning: Postflight script not found." -ForegroundColor Yellow
     }
+
+    # --- Step 7: Update Evidence with Verify Logs (Integrate Only) ---
+    Write-Host ">>> [RunTask] Step 7: Update Evidence with Verify Logs" -ForegroundColor Cyan
+    # Overwrite Preview Log with Verify Log so assemble_evidence picks it up
+    Copy-Item -Path $VerifyLog -Destination "$EvidenceDir\gate_light_preview_$TaskId.log" -Force
+    
+    # Re-run Assemble Evidence to update notify and index
+    node "$RepoRoot\scripts\assemble_evidence.mjs" --task_id=$TaskId --evidence_dir="$EvidenceDir"
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "[RunTask] FAILED: Assemble Evidence update failed." -ForegroundColor Red
+        exit 1
+    }
+    Write-Host "    Updated notify and index with Verify logs." -ForegroundColor Gray
 }
 
 Write-Host ">>> [RunTask] SUCCESS: Task $TaskId ($Mode) Completed." -ForegroundColor Green
