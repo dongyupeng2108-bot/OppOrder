@@ -67,6 +67,8 @@ const gitMeta = readJson(inputs.gitMeta);
 // const attestation = readJson(inputs.attestation);
 let resultData = readJson(inputs.resultJson);
 
+const openPrPath = resolvePath(`open_pr_guard_${taskId}.json`);
+
 // --- 3. Prepare Extra Artifacts (for Envelope Compliance) ---
 // Create manual_verification.json if missing (to satisfy business evidence check)
 const manualVerifyPath = resolvePath(`manual_verification_${taskId}.json`);
@@ -90,6 +92,19 @@ Files (Top 3):
 ${(ciParityData.scope_files || []).slice(0, 3).map(f => `  - ${f}`).join('\n')}
 ...
 =========================`;
+
+// Open PR Guard Block
+let openPrBlock = '';
+if (fs.existsSync(openPrPath)) {
+    const openPrData = readJson(openPrPath);
+    const blocking = openPrData.blocking_prs || [];
+    const blockingSlice = blocking.slice(0, 3).map(p => `  - #${p.number} ${p.title}`).join('\n');
+    openPrBlock = `=== OPEN_PR_GUARD ===
+Status: ${openPrData.open_prs_blocking_count === 0 ? 'PASS' : 'FAIL'}
+Blocking PRs: ${openPrData.open_prs_blocking_count}
+${blocking.length > 0 ? blockingSlice + (blocking.length > 3 ? '\n  ...' : '') : '(None)'}
+=====================`;
+}
 
 // Gate Light Block
 let gateLightBlock = gateLightLog;
@@ -139,6 +154,8 @@ ${dodBlock}
 
 ${ciParityBlock}
 
+${openPrBlock}
+
 ${gateLightBlock}
 
 GATE_LIGHT_EXIT=0
@@ -178,6 +195,8 @@ const filesToIndex = [
     notifyPath,
     manualVerifyPath
 ];
+
+if (fs.existsSync(openPrPath)) filesToIndex.push(openPrPath);
 
 // Add healthcheck files if they exist
 const hcRoot = resolvePath(`${taskId}_healthcheck_53122_root.txt`);

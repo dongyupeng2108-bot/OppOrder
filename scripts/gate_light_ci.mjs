@@ -211,6 +211,34 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         }
     }
 
+    // --- 1.6 Open PR Guard Check (Verify Mode Only) ---
+    if (argMode === 'Integrate') { // Verify logic applies to Integrate mode
+        console.log('[Gate Light] Checking Open PR Guard Evidence...');
+        const openPrFile = path.join(result_dir, `open_pr_guard_${task_id}.json`);
+        
+        if (!fs.existsSync(openPrFile)) {
+            console.error(`[Gate Light] FAILED: Open PR Guard evidence missing: ${openPrFile}`);
+            process.exit(1);
+        }
+        
+        try {
+            const openPrData = JSON.parse(fs.readFileSync(openPrFile, 'utf8'));
+            
+            // Check blocking count
+            if (openPrData.open_prs_blocking_count !== 0) {
+                console.error(`[Gate Light] FAILED: Open PR Guard blocked execution.`);
+                console.error(`  Blocking PRs Count: ${openPrData.open_prs_blocking_count}`);
+                console.error(`  ACTION: Close unrelated open PRs before running Integrate.`);
+                process.exit(1);
+            }
+            
+            console.log('[Gate Light] Open PR Guard verified (blocking_count=0).');
+        } catch (e) {
+            console.error(`[Gate Light] FAILED: Invalid Open PR Guard JSON: ${e.message}`);
+            process.exit(1);
+        }
+    }
+
     // --- 2. Check CI Parity JSON Evidence (Task 260211_002) ---
     // Hard Guard: Must exist, be valid JSON, match current git state, and pass anti-cheat.
     console.log('[Gate Light] Checking CI Parity JSON Evidence...');

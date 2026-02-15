@@ -40,6 +40,19 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
+# --- Step 1.2: Open PR Guard ---
+Write-Host ">>> [RunTask] Step 1.2: Open PR Guard" -ForegroundColor Cyan
+$OpenPRGuardOutput = "$EvidenceDir\open_pr_guard_$TaskId.json"
+node "$RepoRoot\scripts\open_pr_guard.mjs" --task_id $TaskId --output "$OpenPRGuardOutput"
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "[RunTask] FAILED: Open PR Guard blocked execution." -ForegroundColor Red
+    if (Test-Path $OpenPRGuardOutput) {
+        Get-Content $OpenPRGuardOutput | Write-Host
+    }
+    exit 1
+}
+Write-Host "    Open PR Guard PASS. Output: $OpenPRGuardOutput" -ForegroundColor Gray
+
 # --- Step 1.5: Healthcheck Evidence ---
 Write-Host ">>> [RunTask] Step 1.5: Healthcheck Evidence" -ForegroundColor Cyan
 $HealthRoot = "$EvidenceDir\${TaskId}_healthcheck_53122_root.txt"
