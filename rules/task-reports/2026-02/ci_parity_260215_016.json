@@ -1,0 +1,17 @@
+{
+  "task_id": "260215_016",
+  "base": "c5af97a5c73d69f3cbf205221c9e2dccc7f63e6f",
+  "head": "4990e3a83d1e05e65109d43d493f6bf30096e4ff",
+  "merge_base": "c5af97a5c73d69f3cbf205221c9e2dccc7f63e6f",
+  "scope_count": 7,
+  "scope_files": [
+    ".gitignore",
+    "OppRadar/contracts/opps_run_export_v1.schema.json",
+    "OppRadar/mock_server_53122.mjs",
+    "rules/LATEST.json",
+    "rules/task-reports/2026-02/generate_evidence_260215_016.mjs",
+    "scripts/gate_light_ci.mjs",
+    "scripts/verify_export_v1_contract.mjs"
+  ],
+  "timestamp": "2026-02-15T15:24:15.377Z"
+}
