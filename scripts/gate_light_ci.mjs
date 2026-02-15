@@ -387,6 +387,15 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         process.exit(1);
     }
 
+    // --- Rank V2 API Contract Check (Task 260215_011) ---
+    console.log('[Gate Light] Checking Rank V2 API Contract...');
+    try {
+        execSync('node scripts/verify_rank_v2_contract.mjs', { stdio: 'inherit' });
+    } catch (e) {
+        console.error('[Gate Light] Rank V2 Contract Check FAILED.');
+        process.exit(1);
+    }
+
     // --- Strict Healthcheck Validation (Task 260208_023) ---
     console.log('[Gate Light] Checking healthcheck evidence...');
 

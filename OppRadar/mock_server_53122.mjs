@@ -1278,6 +1278,24 @@ const server = http.createServer(async (req, res) => {
         }
 
         try {
+            // FIXTURE MODE CHECK (Task 260215_011)
+            if (provider === 'mock') {
+                const fixturePath = path.join(FIXTURES_DIR, 'rank_v2_fixture.json');
+                if (fs.existsSync(fixturePath)) {
+                    try {
+                        const fixtureData = JSON.parse(fs.readFileSync(fixturePath, 'utf8'));
+                        // Respect limit
+                        const result = fixtureData.slice(0, limit);
+                        res.writeHead(200, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify(result));
+                        return;
+                    } catch (e) {
+                        console.error("Error reading rank_v2 fixture:", e);
+                        // Fallback to dynamic generation if fixture fails
+                    }
+                }
+            }
+
             // 1. Fetch Opportunities
             const opps = await DB.getOpportunitiesByRun(runId, limit);
 
