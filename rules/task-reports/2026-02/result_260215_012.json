@@ -1,0 +1,15 @@
+{
+  "task_id": "260215_012",
+  "status": "DONE",
+  "summary": "Automation Pack V1 Validation for Task 260215_012",
+  "dod_evidence": {
+    "rank_v2_guard": true,
+    "healthcheck": [
+      "260215_012_healthcheck_53122_root.txt",
+      "260215_012_healthcheck_53122_pairs.txt"
+    ],
+    "gate_light_exit": 0
+  },
+  "report_file": "notify_260215_012.txt",
+  "report_sha256_short": "9d85204d"
+}

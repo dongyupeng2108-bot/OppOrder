@@ -1,0 +1,6 @@
+{
+  "contract_id": "rank_v2",
+  "contract_version": "1.0",
+  "schema_path": "OppRadar/contracts/opps_rank_v2_response.schema.json",
+  "schema_sha256_short": "3bd83a08"
+}

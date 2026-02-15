@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
+import crypto from 'crypto';
 
 const LATEST_JSON_PATH = path.join('rules', 'LATEST.json');
 
@@ -1425,6 +1426,83 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
             
             console.log('[Gate Light] Evidence Truth & Consistency verified.');
         }
+    }
+
+    // --- RankV2 Contract Version Guard (Task 260215_012) ---
+    console.log('[Gate Light] Checking Rank V2 Contract Version Guard...');
+    try {
+        const contractPath = 'OppRadar/contracts/rank_v2.contract.json';
+        const schemaPath = 'OppRadar/contracts/opps_rank_v2_response.schema.json';
+
+        if (fs.existsSync(contractPath) && fs.existsSync(schemaPath)) {
+            // 1. Determine Base Commit
+            let baseCommit;
+            try {
+                try {
+                    execSync('git rev-parse origin/main', { stdio: 'ignore' });
+                } catch (e) {
+                    execSync('git fetch origin main', { stdio: 'ignore' });
+                }
+                baseCommit = execSync('git merge-base origin/main HEAD').toString().trim();
+            } catch (e) {
+                console.warn(`[Gate Light] Warning: Could not determine merge-base. Defaulting to origin/main.`);
+                baseCommit = 'origin/main';
+            }
+            console.log(`[Gate Light] Base Commit: ${baseCommit}`);
+
+            // 2. Read Files
+            const getFileContent = (commit, filePath) => {
+                try {
+                    return execSync(`git show ${commit}:${filePath}`, { stdio: ['pipe', 'pipe', 'ignore'] }).toString();
+                } catch (e) {
+                    return null;
+                }
+            };
+
+            const headContractStr = fs.readFileSync(contractPath, 'utf8');
+            const headSchemaStr = fs.readFileSync(schemaPath, 'utf8');
+            const baseContractStr = getFileContent(baseCommit, contractPath);
+            const baseSchemaStr = getFileContent(baseCommit, schemaPath);
+
+            const headContract = JSON.parse(headContractStr);
+            const baseContract = baseContractStr ? JSON.parse(baseContractStr) : null;
+
+            const getHash = (content) => crypto.createHash('sha256').update(content.replace(/\r\n/g, '\n')).digest('hex').substring(0, 8);
+            
+            const headSchemaHash = getHash(headSchemaStr);
+            const baseSchemaHash = baseSchemaStr ? getHash(baseSchemaStr) : '00000000';
+            
+            const schemaChanged = headSchemaHash !== baseSchemaHash;
+
+            // 3. Validation Rules
+            if (headContract.schema_sha256_short !== headSchemaHash) {
+                console.error(`[Gate Light] FAILED: Rank V2 Contract 'schema_sha256_short' (${headContract.schema_sha256_short}) mismatch. Actual: ${headSchemaHash}`);
+                process.exit(1);
+            }
+
+            if (schemaChanged) {
+                const headVer = parseFloat(headContract.contract_version);
+                const baseVer = baseContract ? parseFloat(baseContract.contract_version) : 0.0;
+                
+                console.log(`[Gate Light] Schema Changed (${baseSchemaHash} -> ${headSchemaHash}). Checking Version Increment...`);
+                console.log(`[Gate Light] Version: ${baseVer} -> ${headVer}`);
+
+                if (headVer <= baseVer) {
+                     console.error(`[Gate Light] FAILED: Rank V2 Schema changed but contract_version did not increment.`);
+                     process.exit(1);
+                }
+            } else {
+                console.log(`[Gate Light] Schema Unchanged (${headSchemaHash}). Version check skipped.`);
+            }
+            
+            console.log('[Gate Light] Rank V2 Contract Version Guard PASS');
+
+        } else {
+            console.log('[Gate Light] Rank V2 Contract/Schema not found. Skipping Guard.');
+        }
+    } catch (e) {
+        console.error(`[Gate Light] Rank V2 Contract Guard Error: ${e.message}`);
+        process.exit(1);
     }
 
     // --- M5 PR1 LLM Router Contract Check (Task 260211_004) ---
