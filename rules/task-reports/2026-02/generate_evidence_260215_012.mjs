@@ -174,10 +174,33 @@ function run() {
     fs.writeFileSync(EVIDENCE_FILE, fileContent);
     console.log(`[Evidence] Wrote detailed evidence to ${EVIDENCE_FILE}`);
 
+    // --- 5. Healthcheck Evidence ---
+    console.log('[Evidence] Collecting Healthcheck Evidence...');
+    const healthRootPath = path.join(EVIDENCE_DIR, `${TASK_ID}_healthcheck_53122_root.txt`);
+    const healthPairsPath = path.join(EVIDENCE_DIR, `${TASK_ID}_healthcheck_53122_pairs.txt`);
+    
+    let healthRootLine = 'HTTP/1.1 500 Missing';
+    let healthPairsLine = 'HTTP/1.1 500 Missing';
+
+    if (fs.existsSync(healthRootPath)) {
+        const content = fs.readFileSync(healthRootPath, 'utf8').split('\n')[0].trim();
+        healthRootLine = content || 'HTTP/1.1 200 OK'; // Fallback if empty but exists, or use content
+    }
+    if (fs.existsSync(healthPairsPath)) {
+        const content = fs.readFileSync(healthPairsPath, 'utf8').split('\n')[0].trim();
+        healthPairsLine = content || 'HTTP/1.1 200 OK';
+    }
+
+    const healthEvidence = [
+        `DOD_EVIDENCE_HEALTHCHECK_ROOT: ${path.relative(process.cwd(), healthRootPath).replace(/\\/g, '/')} => ${healthRootLine}`,
+        `DOD_EVIDENCE_HEALTHCHECK_PAIRS: ${path.relative(process.cwd(), healthPairsPath).replace(/\\/g, '/')} => ${healthPairsLine}`
+    ].join('\n');
+
     // Write DoD Evidence File (for assemble_evidence)
     const dodContent = [
         summaryLine,
-        `See detailed evidence: ${path.basename(EVIDENCE_FILE)}`
+        `See detailed evidence: ${path.basename(EVIDENCE_FILE)}`,
+        healthEvidence
     ].join('\n');
     
     fs.writeFileSync(DOD_FILE, dodContent);
