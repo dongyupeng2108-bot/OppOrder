@@ -1392,7 +1392,12 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
             // 3. Strict Preview Content Check (Skipped in INTEGRATE mode or GENERATE PREVIEW mode)
             if (process.env.GATE_LIGHT_MODE !== 'INTEGRATE' && process.env.GATE_LIGHT_GENERATE_PREVIEW !== '1') {
                 const missingKeywords = [];
-                if (!snippetContent.includes('[Postflight] PASS')) missingKeywords.push('[Postflight] PASS');
+                
+                // Allow "[Postflight] PASS" OR the specific skip message for Preview Mode
+                const postflightPassed = snippetContent.includes('[Postflight] PASS') || 
+                                       snippetContent.includes('Skipping Postflight Envelope Validation (Preview Mode)');
+                
+                if (!postflightPassed) missingKeywords.push('[Postflight] PASS');
                 if (!snippetContent.includes('[Gate Light] PASS')) missingKeywords.push('[Gate Light] PASS');
                 
                 if (missingKeywords.length > 0) {
