@@ -1,0 +1,10 @@
+﻿{
+    "branch":  "feat/m4-pr3-scan-observability-260215_015",
+    "timestamp":  "2026-02-15 22:00:15 UTC",
+    "header_detected":  true,
+    "task_id":  "260215_015",
+    "input_hash_short":  "a18610ba",
+    "mode":  "Integrate",
+    "write_allowed":  true,
+    "commit":  "f3cb140"
+}
