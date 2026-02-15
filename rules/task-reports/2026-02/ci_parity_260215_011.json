@@ -1,13 +1,15 @@
 {
   "task_id": "260215_011",
   "base": "3c919fae0737977d737d51146d081a128d4b8efe",
-  "head": "00e4ea1b7761151d00c4f40cd85f4a9ba5128831",
+  "head": "0ea4707b23a73b74a0bd4b24f7dd5d4a32ede0aa",
   "merge_base": "3c919fae0737977d737d51146d081a128d4b8efe",
   "scope_files": [
     "OppRadar/db.mjs",
     "OppRadar/mock_server_53122.mjs",
     "data/fixtures/rank_v2_fixture.json",
     "rules/LATEST.json",
+    "rules/reports/envelopes/260215_011.envelope.json",
+    "rules/reports/postflight/260215_011.json",
     "rules/rules/PROJECT_RULES.md",
     "rules/task-reports/2026-02/260215_011.json",
     "rules/task-reports/2026-02/260215_011_healthcheck_53122_pairs.txt",
@@ -28,6 +30,6 @@
     "scripts/gate_light_ci.mjs",
     "scripts/verify_rank_v2_contract.mjs"
   ],
-  "scope_count": 23,
-  "generated_at": "2026-02-15T08:34:34.834Z"
+  "scope_count": 25,
+  "generated_at": "2026-02-15T08:45:47.546Z"
 }

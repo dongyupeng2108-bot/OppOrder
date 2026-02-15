@@ -1,11 +1,11 @@
 {
   "task_id": "260215_011",
-  "generated_at": "2026-02-15T08:34:45.986Z",
+  "generated_at": "2026-02-15T08:45:49.905Z",
   "files": [
     {
       "name": "ci_parity_260215_011.json",
-      "size": 1531,
-      "sha256_short": "419e9d97"
+      "size": 1635,
+      "sha256_short": "2a17a490"
     },
     {
       "name": "gate_light_preview_260215_011.log",
@@ -20,22 +20,22 @@
     {
       "name": "git_meta_260215_011.json",
       "size": 229,
-      "sha256_short": "c3ffe6db"
+      "sha256_short": "1e4bf86a"
     },
     {
       "name": "preflight_attestation_260215_011.json",
       "size": 307,
-      "sha256_short": "1dd66757"
+      "sha256_short": "dbb9689b"
     },
     {
       "name": "result_260215_011.json",
       "size": 1158,
-      "sha256_short": "c61042eb"
+      "sha256_short": "bd33f420"
     },
     {
       "name": "notify_260215_011.txt",
       "size": 6921,
-      "sha256_short": "ffc2165d"
+      "sha256_short": "3d767736"
     },
     {
       "name": "manual_verification_260215_011.json",
@@ -45,12 +45,12 @@
     {
       "name": "260215_011_healthcheck_53122_root.txt",
       "size": 159,
-      "sha256_short": "6eba7dbf"
+      "sha256_short": "062afdb3"
     },
     {
       "name": "260215_011_healthcheck_53122_pairs.txt",
       "size": 159,
-      "sha256_short": "6eba7dbf"
+      "sha256_short": "062afdb3"
     },
     {
       "name": "reports/healthcheck_root.txt",
