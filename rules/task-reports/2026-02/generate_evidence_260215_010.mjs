@@ -101,5 +101,49 @@ try {
     console.error('Failed to generate Git Meta:', e);
 }
 
+// 5. Process Healthcheck Evidence & Generate Result JSON
+const healthRoot = path.join(REPORT_DIR, `${TASK_ID}_healthcheck_53122_root.txt`);
+const healthPairs = path.join(REPORT_DIR, `${TASK_ID}_healthcheck_53122_pairs.txt`);
+const resultFile = path.join(REPORT_DIR, `result_${TASK_ID}.json`);
+
+const dodHealthcheck = [];
+
+if (fs.existsSync(healthRoot)) {
+    const data = fs.readFileSync(healthRoot, 'utf8');
+    if (/HTTP\/\d\.\d\s+200/.test(data)) {
+        const line = `DOD_EVIDENCE_HEALTHCHECK_ROOT: ${path.basename(healthRoot)} => HTTP/1.1 200 OK`;
+        content += `${line}\n`;
+        dodHealthcheck.push(line);
+    } else {
+        console.error('Healthcheck Root missing 200 OK');
+    }
+} else {
+    console.error(`Missing healthcheck file: ${healthRoot}`);
+}
+
+if (fs.existsSync(healthPairs)) {
+    const data = fs.readFileSync(healthPairs, 'utf8');
+    if (/HTTP\/\d\.\d\s+200/.test(data)) {
+        const line = `DOD_EVIDENCE_HEALTHCHECK_PAIRS: ${path.basename(healthPairs)} => HTTP/1.1 200 OK`;
+        content += `${line}\n`;
+        dodHealthcheck.push(line);
+    } else {
+        console.error('Healthcheck Pairs missing 200 OK');
+    }
+} else {
+    console.error(`Missing healthcheck file: ${healthPairs}`);
+}
+
+// Write Result JSON
+const resultData = {
+    task_id: TASK_ID,
+    timestamp: new Date().toISOString(),
+    dod_evidence: {
+        healthcheck: dodHealthcheck
+    }
+};
+fs.writeFileSync(resultFile, JSON.stringify(resultData, null, 2));
+console.log(`Result JSON written to ${resultFile}`);
+
 fs.writeFileSync(evidenceFile, content, 'utf8');
 console.log(`DoD Evidence written to ${evidenceFile}`);
