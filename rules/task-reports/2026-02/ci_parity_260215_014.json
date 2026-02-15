@@ -1,0 +1,17 @@
+{
+  "task_id": "260215_014",
+  "base": "db4519d510b6dc9bf6e69e50363440452f9f9ac6",
+  "head": "fa6b6f1cc9db682ef794bfd5a0473091ec966b4e",
+  "merge_base": "db4519d510b6dc9bf6e69e50363440452f9f9ac6",
+  "scope_count": 7,
+  "scope_files": [
+    "OppRadar/scan_cache.mjs",
+    "rules/LATEST.json",
+    "rules/task-reports/2026-02/260215_014_healthcheck_53122_pairs.txt",
+    "rules/task-reports/2026-02/260215_014_healthcheck_53122_root.txt",
+    "rules/task-reports/2026-02/generate_evidence_260215_014.mjs",
+    "rules/task-reports/2026-02/preflight_attestation_260215_014.json",
+    "rules/task-reports/2026-02/scan_cache_smoke_260215_014.txt"
+  ],
+  "timestamp": "2026-02-15T13:12:49.712Z"
+}

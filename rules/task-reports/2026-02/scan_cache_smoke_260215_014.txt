@@ -1,0 +1,19 @@
+Scan 1 (MISS):
+  Status: 200
+  Cached: false
+  Cache Key: 654fba0b6f7b5936b1e595600ac61abdb5e6f311fab25b74db41d80388d5d80b
+  Duration: 59ms
+  Scan ID: undefined
+
+Scan 2 (HIT):
+  Status: 200
+  Cached: true
+  Cache Key: 654fba0b6f7b5936b1e595600ac61abdb5e6f311fab25b74db41d80388d5d80b
+  Duration: 1ms
+  Cached From Scan ID: sc_abb6b98f
+
+Comparison:
+  Scan 1 Duration: 59ms
+  Scan 2 Duration: 1ms
+  Result: HIT is faster by 58ms
+  Cache Keys Match: YES

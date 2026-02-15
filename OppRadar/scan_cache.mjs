@@ -14,10 +14,11 @@ export function generateCacheKey(params) {
     
     // 2. Create normalized object
     const normalized = {};
+    // Denoise: remove timestamp, run_id, and other transient fields that shouldn't affect cache key
+    const ignoredKeys = new Set(['run_id', 'timestamp', '_', 't', 'force_refresh']);
+    
     for (const key of sortedKeys) {
-        // Ensure values are stringified consistently if needed, 
-        // but simple assignment is usually enough if types are consistent.
-        // We'll trust JSON.stringify to handle types, but strict equality of params is desired.
+        if (ignoredKeys.has(key)) continue;
         normalized[key] = params[key];
     }
     
