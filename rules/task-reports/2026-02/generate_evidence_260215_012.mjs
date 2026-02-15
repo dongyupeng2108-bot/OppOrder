@@ -16,7 +16,7 @@ if (!fs.existsSync(EVIDENCE_DIR)) {
 }
 
 function getSha256Short(content) {
-    return crypto.createHash('sha256').update(content).digest('hex').substring(0, 8);
+    return crypto.createHash('sha256').update(content.replace(/\r\n/g, '\n')).digest('hex').substring(0, 8);
 }
 
 function runGit(cmd) {
