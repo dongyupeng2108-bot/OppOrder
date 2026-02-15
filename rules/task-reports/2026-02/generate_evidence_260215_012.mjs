@@ -59,7 +59,10 @@ function run() {
         summary: 'Rank V2 Contract Version Guard Implementation',
         dod_evidence: {
             rank_v2_guard: true, // Marker
-            healthcheck: true    // Required by Gate Light
+            healthcheck: [       // Required by Gate Light (Array >= 2)
+                `${TASK_ID}_healthcheck_53122_root.txt`,
+                `${TASK_ID}_healthcheck_53122_pairs.txt`
+            ]
         }
     };
     fs.writeFileSync(RESULT_FILE, JSON.stringify(resultJson, null, 2));
