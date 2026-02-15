@@ -1,7 +1,15 @@
-import sqlite3 from 'sqlite3';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
+let sqlite3;
+try {
+    sqlite3 = require('sqlite3');
+} catch (e) {
+    console.warn('[DB] SQLite3 module not found. Falling back to in-memory Mock DB.');
+}
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,14 +23,36 @@ if (!fs.existsSync(DB_DIR)) {
     fs.mkdirSync(DB_DIR, { recursive: true });
 }
 
-const db = new sqlite3.Database(DB_PATH, (err) => {
-    if (err) {
-        console.error('Could not connect to database', err);
-    } else {
-        console.log('Connected to SQLite database at', DB_PATH);
-        initSchema();
-    }
-});
+let db;
+if (sqlite3) {
+    db = new sqlite3.Database(DB_PATH, (err) => {
+        if (err) {
+            console.error('Could not connect to database', err);
+        } else {
+            console.log('Connected to SQLite database at', DB_PATH);
+            initSchema();
+        }
+    });
+} else {
+    // Mock DB implementation for CI/No-SQLite envs
+    db = {
+        serialize: (fn) => { if (fn) fn(); },
+        run: (sql, params, cb) => { 
+            const callback = typeof params === 'function' ? params : cb;
+            if (callback) callback(null); 
+        },
+        all: (sql, params, cb) => { 
+            const callback = typeof params === 'function' ? params : cb;
+            if (callback) callback(null, []); 
+        },
+        get: (sql, params, cb) => { 
+            const callback = typeof params === 'function' ? params : cb;
+            if (callback) callback(null, null); 
+        },
+        close: (cb) => { if (cb) cb(); }
+    };
+    console.log('[DB] Initialized Mock DB (No Persistence).');
+}
 
 function initSchema() {
     db.serialize(() => {

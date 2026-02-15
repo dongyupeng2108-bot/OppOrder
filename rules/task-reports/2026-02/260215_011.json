@@ -1,0 +1,58 @@
+{
+  "task_id": "260215_011",
+  "timestamp": "2026-02-15T09:15:22.405Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260215_011",
+      "status": "DONE",
+      "timestamp": "2026-02-15T09:15:17.772Z",
+      "items": [
+        {
+          "type": "code",
+          "path": "OppRadar/mock_server_53122.mjs",
+          "description": "Updated to support fixture mode"
+        },
+        {
+          "type": "code",
+          "path": "OppRadar/contracts/rank_v2_response.schema.json",
+          "description": "New schema"
+        },
+        {
+          "type": "data",
+          "path": "data/fixtures/rank_v2_fixture.json",
+          "description": "Deterministic fixture"
+        },
+        {
+          "type": "evidence",
+          "path": "rules/task-reports/2026-02/rank_v2_contract_smoke_260215_011.txt",
+          "description": "Verification Log"
+        }
+      ],
+      "metrics": {
+        "rank_v2_schema_valid": true,
+        "mock_mode": "deterministic",
+        "gate_light_exit": 0
+      },
+      "dod_evidence": {
+        "healthcheck": [
+          "rules/task-reports/2026-02/260215_011_healthcheck_53122_root.txt",
+          "rules/task-reports/2026-02/260215_011_healthcheck_53122_pairs.txt"
+        ],
+        "gate_light_exit": 0
+      },
+      "summary": "Automation Pack V1 Validation for Task 260215_011",
+      "report_file": "notify_260215_011.txt",
+      "report_sha256_short": "a2a3da6d"
+    }
+  }
+}

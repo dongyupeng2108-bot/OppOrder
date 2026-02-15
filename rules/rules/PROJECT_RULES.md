@@ -201,6 +201,9 @@
 ## API Contracts (v1.0)
 ### News Pull API (`POST /news/pull`)
 - **Schema**: `OppRadar/contracts/news_pull_response.schema.json`
+
+### Opportunity Rank V2 API (`POST /opps/rank_v2`)
+- **Schema**: `OppRadar/contracts/opps_rank_v2_response.schema.json`
 - **Success Response (200 OK)**:
   - `status`: "ok"
   - `provider_used`: "local" | "gdelt"

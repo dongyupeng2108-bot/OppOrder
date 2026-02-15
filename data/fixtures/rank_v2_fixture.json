@@ -1,0 +1,53 @@
+[
+  {
+    "opp_id": "op_mock001",
+    "score": 85.5,
+    "p_hat": 0.8,
+    "p_llm": 0.9,
+    "p_ci": {
+      "low": 0.75,
+      "high": 0.95,
+      "method": "wilson"
+    },
+    "price_q": 150.25,
+    "score_v2": 0.88,
+    "meta": {
+      "provider_used": "mock",
+      "model_used": "deterministic-v1"
+    }
+  },
+  {
+    "opp_id": "op_mock002",
+    "score": 72.0,
+    "p_hat": 0.6,
+    "p_llm": 0.5,
+    "p_ci": {
+      "low": 0.45,
+      "high": 0.65,
+      "method": "wilson"
+    },
+    "price_q": 148.50,
+    "score_v2": 0.58,
+    "meta": {
+      "provider_used": "mock",
+      "model_used": "deterministic-v1"
+    }
+  },
+  {
+    "opp_id": "op_mock003",
+    "score": 91.0,
+    "p_hat": 0.9,
+    "p_llm": 0.95,
+    "p_ci": {
+      "low": 0.85,
+      "high": 0.98,
+      "method": "wilson"
+    },
+    "price_q": 152.00,
+    "score_v2": 0.93,
+    "meta": {
+      "provider_used": "mock",
+      "model_used": "deterministic-v1"
+    }
+  }
+]

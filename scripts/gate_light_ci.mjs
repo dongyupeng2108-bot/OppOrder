@@ -263,6 +263,7 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                 const normalized = file.replace(/\\/g, '/');
                 return !normalized.startsWith('rules/task-reports/') && 
                        !normalized.startsWith('rules/rules/') &&
+                       !normalized.startsWith('rules/reports/') &&
                        normalized !== 'rules/LATEST.json';
             });
             
@@ -384,6 +385,15 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         execSync('node scripts/check_news_pull_contract.mjs', { stdio: 'inherit' });
     } catch (e) {
         console.error('[Gate Light] News Pull Contract Check FAILED.');
+        process.exit(1);
+    }
+
+    // --- Rank V2 API Contract Check (Task 260215_011) ---
+    console.log('[Gate Light] Checking Rank V2 API Contract...');
+    try {
+        execSync('node scripts/verify_rank_v2_contract.mjs', { stdio: 'inherit' });
+    } catch (e) {
+        console.error('[Gate Light] Rank V2 Contract Check FAILED.');
         process.exit(1);
     }
 
@@ -1233,10 +1243,11 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                      
                      const hasCodeChanges = diffFiles.some(file => {
                          const normalized = file.replace(/\\/g, '/');
-                         // Whitelist: rules/task-reports/ (Evidence), rules/rules/ (Docs), rules/LATEST.json
-                         return !normalized.startsWith('rules/task-reports/') && 
-                                !normalized.startsWith('rules/rules/') &&
-                                normalized !== 'rules/LATEST.json';
+                         // Whitelist: rules/task-reports/ (Evidence), rules/rules/ (Docs), rules/LATEST.json, rules/reports/ (Postflight)
+                        return !normalized.startsWith('rules/task-reports/') && 
+                               !normalized.startsWith('rules/rules/') &&
+                               !normalized.startsWith('rules/reports/') &&
+                               normalized !== 'rules/LATEST.json';
                      });
                      
                      if (hasCodeChanges) {
@@ -1246,10 +1257,13 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                          } else {
                              console.error(`[Gate Light] FAILED: SnippetCommitMustMatch - Codebase has changed between snippet commit and HEAD.`);
                              console.error(`Changed code files:`);
-                             diffFiles.filter(f => {
-                                const n = f.replace(/\\/g, '/');
-                                return !n.startsWith('rules/task-reports/') && !n.startsWith('rules/rules/');
-                             }).forEach(f => console.error(`  - ${f}`));
+                            diffFiles.filter(f => {
+                               const n = f.replace(/\\/g, '/');
+                               return !n.startsWith('rules/task-reports/') && 
+                                      !n.startsWith('rules/rules/') && 
+                                      !n.startsWith('rules/reports/') &&
+                                      n !== 'rules/LATEST.json';
+                            }).forEach(f => console.error(`  - ${f}`));
                              console.error(`Fix Suggestion: Re-run Integrate/Build Snippet to align with latest code.`);
                              process.exit(1);
                          }
