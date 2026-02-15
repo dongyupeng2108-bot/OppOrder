@@ -407,6 +407,15 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         process.exit(1);
     }
 
+    // --- Ledger V0 Contract Check (Task 260215_017) ---
+    console.log('[Gate Light] Checking Ledger V0 API Contract...');
+    try {
+        execSync('node scripts/verify_ledger_v0_contract.mjs', { stdio: 'inherit' });
+    } catch (e) {
+        console.error('[Gate Light] Ledger V0 Contract Check FAILED.');
+        process.exit(1);
+    }
+
     // --- Strict Healthcheck Validation (Task 260208_023) ---
     console.log('[Gate Light] Checking healthcheck evidence...');
 

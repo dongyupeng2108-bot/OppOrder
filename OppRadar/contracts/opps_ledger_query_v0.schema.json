@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "run_id": { "type": "string" },
+          "ts": { "type": "string" },
+          "source": { "type": "string" },
+          "opportunity_id": { "type": "string" },
+          "rank_v2": { "type": ["number", "null"] }
+        },
+        "required": ["run_id", "ts", "source", "opportunity_id"]
+      }
+    },
+    "total_estimate": { "type": "number" },
+    "next_cursor": { "type": ["string", "null"] }
+  },
+  "required": ["items", "total_estimate"]
+}
