@@ -1,0 +1,13 @@
+{
+  "task_id": "260215_015",
+  "base": "76a40b1f8f895885e913257706daf3498a7a4b5b",
+  "head": "b18e1998721458d72dd2f4541d10f3f20781a0c7",
+  "merge_base": "76a40b1f8f895885e913257706daf3498a7a4b5b",
+  "scope_count": 3,
+  "scope_files": [
+    "OppRadar/mock_server_53122.mjs",
+    "rules/task-reports/2026-02/generate_evidence_260215_015.mjs",
+    "rules/task-reports/2026-02/preflight_attestation_260215_015.json"
+  ],
+  "timestamp": "2026-02-15T13:51:28.611Z"
+}

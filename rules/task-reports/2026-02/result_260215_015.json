@@ -1,0 +1,12 @@
+{
+  "task_id": "260215_015",
+  "status": "DONE",
+  "summary": "Automation Pack V1 Validation for Task 260215_015",
+  "timestamp": "2026-02-15T13:51:28.676Z",
+  "dod_evidence": {
+    "gate_light_exit": 0,
+    "smoke_test": "PASSED"
+  },
+  "report_file": "notify_260215_015.txt",
+  "report_sha256_short": "acab0206"
+}
