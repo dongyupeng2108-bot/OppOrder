@@ -1,15 +1,30 @@
 {
   "task_id": "260215_013",
-  "base": "473039a5d37d5f8704d456e7ece52daeddbefe8c",
-  "head": "ce0bc7989074df74a774a2ee73628cc00af704ef",
-  "merge_base": "473039a5d37d5f8704d456e7ece52daeddbefe8c",
-  "scope_count": 5,
+  "base": "001e3c8968e018c9c27ffeafdd739e440632628b",
+  "head": "9c217abfd4b2e86bcbae1af590bd7e37c373016b",
+  "merge_base": "001e3c8968e018c9c27ffeafdd739e440632628b",
+  "scope_count": 20,
   "scope_files": [
     "rules/LATEST.json",
+    "rules/reports/envelopes/260215_013.envelope.json",
+    "rules/reports/postflight/260215_013.json",
     "rules/rules/PROJECT_MASTER_PLAN.md",
     "rules/rules/PROJECT_RULES.md",
     "rules/rules/WORKFLOW.md",
-    "rules/task-reports/2026-02/generate_evidence_260215_013.mjs"
+    "rules/task-reports/2026-02/260215_013.json",
+    "rules/task-reports/2026-02/260215_013_healthcheck_53122_pairs.txt",
+    "rules/task-reports/2026-02/260215_013_healthcheck_53122_root.txt",
+    "rules/task-reports/2026-02/ci_parity_260215_013.json",
+    "rules/task-reports/2026-02/deliverables_index_260215_013.json",
+    "rules/task-reports/2026-02/dod_evidence_260215_013.txt",
+    "rules/task-reports/2026-02/generate_evidence_260215_013.mjs",
+    "rules/task-reports/2026-02/git_meta_260215_013.json",
+    "rules/task-reports/2026-02/manual_verification_260215_013.json",
+    "rules/task-reports/2026-02/notify_260215_013.txt",
+    "rules/task-reports/2026-02/preflight_attestation_260215_013.json",
+    "rules/task-reports/2026-02/result_260215_013.json",
+    "rules/task-reports/2026-02/trae_report_snippet_260215_013.txt",
+    "rules/task-reports/envelopes/260215_013.envelope.json"
   ],
-  "timestamp": "2026-02-15T12:01:22.659Z"
+  "timestamp": "2026-02-15T12:17:49.257Z"
 }
