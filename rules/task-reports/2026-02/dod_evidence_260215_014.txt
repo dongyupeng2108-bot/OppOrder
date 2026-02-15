@@ -1,3 +1,5 @@
+=== DOD_EVIDENCE_STDOUT ===
+=== SMOKE TEST OUTPUT ===
 Scan 1 (MISS):
   Status: 200
   Cached: false
@@ -17,3 +19,8 @@ Comparison:
   Scan 2 Duration: 1ms
   Result: HIT is faster by 58ms
   Cache Keys Match: YES
+=== END SMOKE ===
+DOD_EVIDENCE_SMOKE_TEST: PASSED
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260215_014_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260215_014_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+GATE_LIGHT_EXIT=0
