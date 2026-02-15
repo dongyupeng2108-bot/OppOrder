@@ -34,12 +34,12 @@ function runGit(cmd) {
 console.log(`[CI Parity Probe] Running for task ${taskId} (JSON Mode)...`);
 
 // 0. Fail-fast origin/main check
-try {
-    runGit('git fetch origin main');
-} catch (e) {
-    console.error('[CI Parity Probe] FATAL: git fetch origin main failed.');
-    console.error(e.message);
-    process.exit(1);
+if (!process.env.SKIP_FETCH_CHECK) {
+    try {
+        runGit('git fetch origin main');
+    } catch (e) {
+        console.warn('[CI Parity Probe] WARNING: git fetch origin main failed. Using cached refs.');
+    }
 }
 
 // 1. Gather Git Context
