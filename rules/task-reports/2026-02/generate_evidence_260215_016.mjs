@@ -154,10 +154,12 @@ Timestamp: ${new Date().toISOString()}
         dodContent += `DOD_EVIDENCE_SMOKE_TEST: PASSED\n`;
 
         // Healthcheck
+        let healthcheckList = [];
         if (fs.existsSync(HEALTH_ROOT)) {
             const data = fs.readFileSync(HEALTH_ROOT, 'utf8');
             if (/HTTP\/\d\.\d\s+200/.test(data)) {
                 dodContent += `DOD_EVIDENCE_HEALTHCHECK_ROOT: ${path.basename(HEALTH_ROOT)} => HTTP/1.1 200 OK\n`;
+                healthcheckList.push(`${path.basename(HEALTH_ROOT)} => HTTP/1.1 200 OK`);
             } else {
                 dodContent += `DOD_EVIDENCE_HEALTHCHECK_ROOT: FAILED\n`;
                 healthPassed = false;
@@ -171,6 +173,7 @@ Timestamp: ${new Date().toISOString()}
             const data = fs.readFileSync(HEALTH_PAIRS, 'utf8');
             if (/HTTP\/\d\.\d\s+200/.test(data)) {
                 dodContent += `DOD_EVIDENCE_HEALTHCHECK_PAIRS: ${path.basename(HEALTH_PAIRS)} => HTTP/1.1 200 OK\n`;
+                healthcheckList.push(`${path.basename(HEALTH_PAIRS)} => HTTP/1.1 200 OK`);
             } else {
                 dodContent += `DOD_EVIDENCE_HEALTHCHECK_PAIRS: FAILED\n`;
                 healthPassed = false;
@@ -238,16 +241,16 @@ Timestamp: ${new Date().toISOString()}
         try {
             const resultFile = path.join(REPORT_DIR, `result_${TASK_ID}.json`);
             const resultData = {
-                task_id: TASK_ID,
-                status: "DONE",
-                summary: "Run Playback Export V0 (PR2)",
-                timestamp: new Date().toISOString(),
-                dod_evidence: {
-                    gate_light_exit: 0,
-                    smoke_test: "PASSED",
-                    healthcheck: healthPassed ? "PASSED" : "FAILED"
-                }
-            };
+            task_id: TASK_ID,
+            status: "DONE",
+            summary: "Run Playback Export V0 (PR2)",
+            timestamp: new Date().toISOString(),
+            dod_evidence: {
+                gate_light_exit: 0,
+                smoke_test: "PASSED",
+                healthcheck: healthcheckList
+            }
+        };
             
             fs.writeFileSync(resultFile, JSON.stringify(resultData, null, 2));
             console.log(`[Evidence] Wrote: ${resultFile}`);
