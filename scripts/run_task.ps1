@@ -113,7 +113,7 @@ $Env:GENERATE_PREVIEW = "1"
 
 # Use cmd /c to avoid PowerShell UTF-16 encoding issues
 $GateScript = "$RepoRoot\scripts\gate_light_ci.mjs"
-$CmdLine = "node ""$GateScript"" --task_id $TaskId > ""$PreviewLog"" 2>&1"
+$CmdLine = "node ""$GateScript"" --task_id $TaskId --result_dir ""$EvidenceDir"" > ""$PreviewLog"" 2>&1"
 cmd /c $CmdLine
 
 $Env:GENERATE_PREVIEW = $null
@@ -137,7 +137,7 @@ if ($LASTEXITCODE -ne 0) {
 Write-Host ">>> [RunTask] Step 5: Pass 2 - Gate Light Verify" -ForegroundColor Cyan
 $VerifyLog = "$EvidenceDir\gate_light_verify_$TaskId.log"
 # Use cmd /c to ensure redirection works and capture both stdout and stderr
-cmd /c "node ""$RepoRoot\scripts\gate_light_ci.mjs"" --task_id $TaskId --mode $Mode > ""$VerifyLog"" 2>&1"
+cmd /c "node ""$RepoRoot\scripts\gate_light_ci.mjs"" --task_id $TaskId --mode $Mode --result_dir ""$EvidenceDir"" > ""$VerifyLog"" 2>&1"
 if ($LASTEXITCODE -ne 0) {
     Write-Host "[RunTask] FAILED: Gate Light Verify failed. See $VerifyLog" -ForegroundColor Red
     Get-Content $VerifyLog | Select-Object -Last 20

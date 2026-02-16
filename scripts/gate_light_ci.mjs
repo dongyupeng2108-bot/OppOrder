@@ -10,12 +10,16 @@ try {
 const args = process.argv.slice(2);
 let argTaskId = null;
 let argMode = null; // New: Mode Argument
+let argResultDir = null; // New: Result Dir Argument
 for (let i = 0; i < args.length; i++) {
     if (args[i] === '--task_id') {
         argTaskId = args[i + 1];
     }
     if (args[i] === '--mode') {
         argMode = args[i + 1];
+    }
+    if (args[i] === '--result_dir') {
+        argResultDir = args[i + 1];
     }
 }
 
@@ -139,7 +143,9 @@ if (detectionSource === 'ARGUMENT' || detectionSource === 'BRANCH_NAME' || detec
 
 // Resolve result_dir
 let result_dir;
-if (latestJson && latestJson.task_id === task_id && latestJson.result_dir) {
+if (argResultDir) {
+    result_dir = argResultDir;
+} else if (latestJson && latestJson.task_id === task_id && latestJson.result_dir) {
     result_dir = latestJson.result_dir;
 } else {
     // Derive from task_id date
