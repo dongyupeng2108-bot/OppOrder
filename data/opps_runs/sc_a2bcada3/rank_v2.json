@@ -1,0 +1,56 @@
+[
+  {
+    "opp_id": "op_e8710eff",
+    "score": 1,
+    "score_v2": 0.9244,
+    "p_hat": 1,
+    "p_llm": 0.8756,
+    "p_ci": {
+      "low": 0.9286,
+      "high": 1,
+      "method": "wilson_n50"
+    },
+    "price_q": 1,
+    "meta": {
+      "provider_used": "mock",
+      "model_used": "default",
+      "fallback": false
+    }
+  },
+  {
+    "opp_id": "op_4dba41ab",
+    "score": 1,
+    "score_v2": 0.8174,
+    "p_hat": 1,
+    "p_llm": 0.6809,
+    "p_ci": {
+      "low": 0.9286,
+      "high": 1,
+      "method": "wilson_n50"
+    },
+    "price_q": 1,
+    "meta": {
+      "provider_used": "mock",
+      "model_used": "default",
+      "fallback": false
+    }
+  },
+  {
+    "opp_id": "op_56eb2804",
+    "score": 1,
+    "score_v2": 0.5589,
+    "p_hat": 1,
+    "p_llm": 0.211,
+    "p_ci": {
+      "low": 0.9286,
+      "high": 1,
+      "method": "wilson_n50"
+    },
+    "price_q": 1,
+    "meta": {
+      "provider_used": "mock",
+      "model_used": "default",
+      "fallback": false
+    }
+  }
+]

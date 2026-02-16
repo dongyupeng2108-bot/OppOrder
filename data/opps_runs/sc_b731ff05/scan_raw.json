@@ -1,0 +1,87 @@
+{
+  "scan_id": "sc_b731ff05",
+  "timestamp": "2026-02-15T17:05:01.174Z",
+  "duration_ms": 9,
+  "n_opps_requested": 2,
+  "n_opps_actual": 2,
+  "seed": 1771175102172,
+  "mode": "fast",
+  "topic_key": "default_topic",
+  "opp_ids": [
+    "op_6f38732f",
+    "op_10985f7a"
+  ],
+  "stage_logs": [
+    {
+      "stage_id": "load_context",
+      "start_ts": "2026-02-15T17:05:01.174Z",
+      "end_ts": "2026-02-15T17:05:01.174Z",
+      "dur_ms": 0,
+      "input_summary": {},
+      "output_summary": {
+        "from_scan_id": "sc_a2bcada3"
+      },
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "stage_id": "gen_opps",
+      "start_ts": "2026-02-15T17:05:01.174Z",
+      "end_ts": "2026-02-15T17:05:01.174Z",
+      "dur_ms": 0,
+      "input_summary": {
+        "n_opps": 2,
+        "seed": 1771175102172
+      },
+      "output_summary": {
+        "generated": 2
+      },
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "stage_id": "score_baseline",
+      "start_ts": "2026-02-15T17:05:01.174Z",
+      "end_ts": "2026-02-15T17:05:01.174Z",
+      "dur_ms": 0,
+      "input_summary": {},
+      "output_summary": {
+        "scored": 2
+      },
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "stage_id": "llm_analyze",
+      "start_ts": "2026-02-15T17:05:01.178Z",
+      "end_ts": "2026-02-15T17:05:01.183Z",
+      "dur_ms": 5,
+      "input_summary": {
+        "provider": "mock"
+      },
+      "output_summary": {
+        "processed": 2,
+        "analyzed_count": 2,
+        "fallback_count": 0,
+        "errors": 0,
+        "provider": "mock",
+        "model": "unknown"
+      },
+      "warnings": [],
+      "errors": []
+    }
+  ],
+  "metrics": {
+    "stage_ms": {},
+    "persist_enabled": true,
+    "truncated": false,
+    "n_opps_requested": 2,
+    "n_opps_actual": 2,
+    "seed": 1771175102172,
+    "mode": "fast",
+    "topic_key": "default_topic",
+    "dedup_skipped_count": 0,
+    "cache_hit_count": 0,
+    "cache_miss_count": 2
+  }
+}

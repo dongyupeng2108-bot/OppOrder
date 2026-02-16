@@ -1,0 +1,7 @@
+{
+  "limit": 3,
+  "provider": "mock",
+  "topic_key": "default_topic",
+  "seed": 1771175101120,
+  "mode": "fast"
+}

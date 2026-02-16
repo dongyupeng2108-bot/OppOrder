@@ -132,7 +132,7 @@ Write-Host "    Preview Log: $PreviewLog" -ForegroundColor Gray
 
 # --- Step 4: Assemble Evidence ---
 Write-Host ">>> [RunTask] Step 4: Assemble Evidence" -ForegroundColor Cyan
-node "$RepoRoot\scripts\assemble_evidence.mjs" --task_id=$TaskId --evidence_dir="$EvidenceDir" --mode=$Mode
+node "$RepoRoot\scripts\assemble_evidence.mjs" --task_id=$TaskId --evidence_dir="$EvidenceDir" --mode=$Mode --phase=assemble
 if ($LASTEXITCODE -ne 0) {
     Write-Host "[RunTask] FAILED: Assemble Evidence failed." -ForegroundColor Red
     exit 1
@@ -172,12 +172,21 @@ if ($Mode -eq "Integrate") {
     Copy-Item -Path $VerifyLog -Destination "$EvidenceDir\gate_light_preview_$TaskId.log" -Force
     
     # Re-run Assemble Evidence to update notify and index
-    node "$RepoRoot\scripts\assemble_evidence.mjs" --task_id=$TaskId --evidence_dir="$EvidenceDir" --mode=$Mode
+    node "$RepoRoot\scripts\assemble_evidence.mjs" --task_id=$TaskId --evidence_dir="$EvidenceDir" --mode=$Mode --phase=assemble
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[RunTask] FAILED: Assemble Evidence update failed." -ForegroundColor Red
         exit 1
     }
     Write-Host "    Updated notify and index with Verify logs." -ForegroundColor Gray
+
+    # --- Step 8: Archive & Lock (Integrate Only) ---
+    Write-Host ">>> [RunTask] Step 8: Archive & Lock" -ForegroundColor Cyan
+    node "$RepoRoot\scripts\assemble_evidence.mjs" --task_id=$TaskId --evidence_dir="$EvidenceDir" --mode=$Mode --phase=archive
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "[RunTask] FAILED: Archive & Lock failed." -ForegroundColor Red
+        exit 1
+    }
+    Write-Host "    Archived evidence and locked task." -ForegroundColor Gray
 }
 
 Write-Host ">>> [RunTask] SUCCESS: Task $TaskId ($Mode) Completed." -ForegroundColor Green

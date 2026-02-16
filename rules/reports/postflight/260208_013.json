@@ -1,0 +1,23 @@
+{
+  "task_id": "260208_013",
+  "timestamp": "2026-02-08T02:46:21.774Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260208_013",
+      "status": "DONE",
+      "summary": "DeepSeek Integration (Fail-Soft + Schema Unified) Completed",
+      "report_file": "notify_260208_013.txt",
+      "report_sha256_short": "af2a434d"
+    }
+  }
+}

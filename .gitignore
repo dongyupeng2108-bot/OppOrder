@@ -1,18 +1,16 @@
-node_modules/
-.DS_Store
-*.log
-.env
-.vscode/
-dist/
-coverage/
-OppRadar/data/
-data/runtime/
 # Evidence Artifacts (Runtime) - STRICT ISOLATION
 reports/healthcheck_*.txt
 rules/task-reports/**
 !rules/task-reports/runs/
 !rules/task-reports/locks/
 !rules/task-reports/index/
-rules/reports/**
-data/opps_runs/
-data/opps_ledger/**
+
+# Node modules
+node_modules/
+
+# Logs
+*.log
+
+# Data
+OppRadar/data/
+data/runtime/

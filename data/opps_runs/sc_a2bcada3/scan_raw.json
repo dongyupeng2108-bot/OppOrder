@@ -1,0 +1,88 @@
+{
+  "scan_id": "sc_a2bcada3",
+  "timestamp": "2026-02-15T17:05:01.123Z",
+  "duration_ms": 19,
+  "n_opps_requested": 3,
+  "n_opps_actual": 3,
+  "seed": 1771175101120,
+  "mode": "fast",
+  "topic_key": "default_topic",
+  "opp_ids": [
+    "op_56eb2804",
+    "op_4dba41ab",
+    "op_e8710eff"
+  ],
+  "stage_logs": [
+    {
+      "stage_id": "load_context",
+      "start_ts": "2026-02-15T17:05:01.122Z",
+      "end_ts": "2026-02-15T17:05:01.122Z",
+      "dur_ms": 0,
+      "input_summary": {},
+      "output_summary": {
+        "from_scan_id": "sc_8a3e9d56"
+      },
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "stage_id": "gen_opps",
+      "start_ts": "2026-02-15T17:05:01.123Z",
+      "end_ts": "2026-02-15T17:05:01.123Z",
+      "dur_ms": 0,
+      "input_summary": {
+        "n_opps": 3,
+        "seed": 1771175101120
+      },
+      "output_summary": {
+        "generated": 3
+      },
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "stage_id": "score_baseline",
+      "start_ts": "2026-02-15T17:05:01.123Z",
+      "end_ts": "2026-02-15T17:05:01.123Z",
+      "dur_ms": 0,
+      "input_summary": {},
+      "output_summary": {
+        "scored": 3
+      },
+      "warnings": [],
+      "errors": []
+    },
+    {
+      "stage_id": "llm_analyze",
+      "start_ts": "2026-02-15T17:05:01.132Z",
+      "end_ts": "2026-02-15T17:05:01.141Z",
+      "dur_ms": 9,
+      "input_summary": {
+        "provider": "mock"
+      },
+      "output_summary": {
+        "processed": 3,
+        "analyzed_count": 3,
+        "fallback_count": 0,
+        "errors": 0,
+        "provider": "mock",
+        "model": "unknown"
+      },
+      "warnings": [],
+      "errors": []
+    }
+  ],
+  "metrics": {
+    "stage_ms": {},
+    "persist_enabled": true,
+    "truncated": false,
+    "n_opps_requested": 3,
+    "n_opps_actual": 3,
+    "seed": 1771175101120,
+    "mode": "fast",
+    "topic_key": "default_topic",
+    "dedup_skipped_count": 0,
+    "cache_hit_count": 0,
+    "cache_miss_count": 3
+  }
+}

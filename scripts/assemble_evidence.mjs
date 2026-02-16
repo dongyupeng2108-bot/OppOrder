@@ -12,9 +12,10 @@ const ARGS = process.argv.slice(2);
 const taskId = ARGS.find(arg => arg.startsWith('--task_id='))?.split('=')[1];
 const evidenceDir = ARGS.find(arg => arg.startsWith('--evidence_dir='))?.split('=')[1] || `rules/task-reports/${new Date().toISOString().slice(0, 7)}`;
 const mode = ARGS.find(arg => arg.startsWith('--mode='))?.split('=')[1];
+const phase = ARGS.find(arg => arg.startsWith('--phase='))?.split('=')[1] || 'assemble';
 
 if (!taskId) {
-    console.error('Usage: node scripts/assemble_evidence.mjs --task_id=<id> [--evidence_dir=<path>]');
+    console.error('Usage: node scripts/assemble_evidence.mjs --task_id=<id> [--evidence_dir=<path>] [--phase=assemble|archive]');
     process.exit(1);
 }
 
@@ -281,7 +282,7 @@ console.log(`[Assembler] Wrote snippet: ${snippetPath}`);
 console.log(`[Assembler] SUCCESS: Assembled evidence for Task ${taskId}.`);
 
 // --- 9. Archive & Lock (Integrate Mode Only) ---
-if (mode === 'Integrate') {
+if (mode === 'Integrate' && phase === 'archive') {
     const verifyLogPath = resolvePath(`gate_light_verify_${taskId}.log`);
     // Check if Verify Log exists (Step 7 indicator)
     if (fs.existsSync(verifyLogPath)) {

@@ -1,0 +1,38 @@
+[
+  {
+    "opp_id": "op_10985f7a",
+    "score": 1,
+    "score_v2": 0.5941,
+    "p_hat": 1,
+    "p_llm": 0.2749,
+    "p_ci": {
+      "low": 0.9286,
+      "high": 1,
+      "method": "wilson_n50"
+    },
+    "price_q": 1,
+    "meta": {
+      "provider_used": "mock",
+      "model_used": "default",
+      "fallback": false
+    }
+  },
+  {
+    "opp_id": "op_6f38732f",
+    "score": 1,
+    "score_v2": 0.593,
+    "p_hat": 1,
+    "p_llm": 0.273,
+    "p_ci": {
+      "low": 0.9286,
+      "high": 1,
+      "method": "wilson_n50"
+    },
+    "price_q": 1,
+    "meta": {
+      "provider_used": "mock",
+      "model_used": "default",
+      "fallback": false
+    }
+  }
+]
