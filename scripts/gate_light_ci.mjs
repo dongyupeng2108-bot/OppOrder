@@ -143,20 +143,38 @@ if (detectionSource === 'ARGUMENT' || detectionSource === 'BRANCH_NAME' || detec
 
 // Resolve result_dir
 let result_dir;
-if (argResultDir) {
-    result_dir = argResultDir;
-} else if (latestJson && latestJson.task_id === task_id && latestJson.result_dir) {
-    result_dir = latestJson.result_dir;
-} else {
-    // Derive from task_id date
-    const match = task_id.match(/^(\d{2})(\d{2})\d{2}_/);
-    if (match) {
-         const year = '20' + match[1];
-         const month = match[2];
-         result_dir = path.join('rules', 'task-reports', `${year}-${month}`);
+
+// Option A: Lock file lookup (Priority 1 - CI/Archived State)
+const lockFile = path.join('rules', 'task-reports', 'locks', `${task_id}.lock.json`);
+if (fs.existsSync(lockFile)) {
+    try {
+        const lockData = JSON.parse(fs.readFileSync(lockFile, 'utf8'));
+        if (lockData.run_dir) {
+            result_dir = lockData.run_dir;
+            console.log(`[Gate Light] Using run_dir from lock file: ${result_dir}`);
+        }
+    } catch (e) {
+        console.warn(`[Gate Light] Failed to read lock file: ${e.message}`);
+    }
+}
+
+// Fallback: Argument or LATEST.json (Priority 2 - Local/Runtime State)
+if (!result_dir) {
+    if (argResultDir) {
+        result_dir = argResultDir;
+    } else if (latestJson && latestJson.task_id === task_id && latestJson.result_dir) {
+        result_dir = latestJson.result_dir;
     } else {
-         console.error(`[Gate Light] FAILED: Cannot derive result_dir from task_id ${task_id}`);
-         process.exit(1);
+        // Derive from task_id date
+        const match = task_id.match(/^(\d{2})(\d{2})\d{2}_/);
+        if (match) {
+             const year = '20' + match[1];
+             const month = match[2];
+             result_dir = path.join('rules', 'task-reports', `${year}-${month}`);
+        } else {
+             console.error(`[Gate Light] FAILED: Cannot derive result_dir from task_id ${task_id}`);
+             process.exit(1);
+        }
     }
 }
 
