@@ -22,20 +22,24 @@
 #>
 
 param (
-    [string]$Mode = "EnforceClean"
+    [string]$Mode = "EnforceClean",
+    [string[]]$PathSpec = @()
 )
 
 $ErrorActionPreference = "Stop"
 
 # --- Configuration ---
 $RepoRoot = (git rev-parse --show-toplevel).Trim()
-$RuntimePaths = @(
+$DefaultRuntimePaths = @(
     "rules/task-reports",
     "rules/reports",
     "data/opps_ledger",
     "rules/task-reports/locks",
     "rules/task-reports/runs"
 )
+
+# Use user-provided PathSpec or default
+$TargetPaths = if ($PathSpec.Count -gt 0) { $PathSpec } else { $DefaultRuntimePaths }
 
 # --- Helper Functions ---
 
@@ -129,7 +133,7 @@ if ($Mode -eq "Heal") {
         git reset --hard HEAD | Out-Null
     }
     # Clean runtime paths
-    $cleaned = Clean-RuntimePaths -Paths $RuntimePaths
+    $cleaned = Clean-RuntimePaths -Paths $TargetPaths
     $Result.cleaned_paths = $cleaned
 } elseif ($Mode -eq "EnforceClean") {
     # EnforceClean Mode: Fail if tracked changes exist
@@ -140,7 +144,7 @@ if ($Mode -eq "Heal") {
         exit 1
     }
     # Clean runtime paths (Safe clean)
-    $cleaned = Clean-RuntimePaths -Paths $RuntimePaths
+    $cleaned = Clean-RuntimePaths -Paths $TargetPaths
     $Result.cleaned_paths = $cleaned
 } else {
     $Result.result = "FAIL"
