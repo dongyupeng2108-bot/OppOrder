@@ -29,8 +29,37 @@ if ($GenerateScript) {
     }
 }
 
+# --- Start Transcript (Log Everything) ---
+$LogFile = "$EvidenceDir\run_$TaskId.log"
+Start-Transcript -Path $LogFile -Force
+
+try {
+
 Write-Host ">>> [RunTask] TaskId: $TaskId | Mode: $Mode | Header: $Header" -ForegroundColor Cyan
 Write-Host ">>> [RunTask] Evidence Dir: $EvidenceDir" -ForegroundColor Gray
+
+# --- Step 0: Workspace Healer ---
+Write-Host ">>> [RunTask] Step 0: Workspace Healer" -ForegroundColor Cyan
+$HealerEvidence = "$EvidenceDir\workspace_healer_$TaskId.json"
+# Capture stdout to file, ensure ASCII
+$HealerCmd = "powershell -ExecutionPolicy Bypass -File ""$RepoRoot\scripts\reset_workspace.ps1"" -Mode EnforceClean"
+# Execute and capture output
+try {
+    $HealerJson = Invoke-Expression $HealerCmd
+    $HealerJson | Out-File -FilePath $HealerEvidence -Encoding ascii
+    
+    # Check if result is PASS (simple string check or parse)
+    # Since we want fail-fast, we check exit code of the script first
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "[RunTask] FAILED: Workspace Healer failed." -ForegroundColor Red
+        if (Test-Path $HealerEvidence) { Get-Content $HealerEvidence | Write-Host }
+        exit 1
+    }
+} catch {
+    Write-Host "[RunTask] FAILED: Workspace Healer execution error: $_" -ForegroundColor Red
+    exit 1
+}
+Write-Host "    Workspace Healer PASS. Output: $HealerEvidence" -ForegroundColor Gray
 
 # --- Step 1: Preflight ---
 Write-Host ">>> [RunTask] Step 1: Preflight" -ForegroundColor Cyan
@@ -74,6 +103,11 @@ if ($LASTEXITCODE -ne 0) {
 # --- Step 2: Generate Evidence (Dev/Integrate) ---
 if ($GenerateScript) {
     Write-Host ">>> [RunTask] Step 2: Generate Evidence" -ForegroundColor Cyan
+    
+    # Cleanup previous run logs to prevent stale reads
+    if (Test-Path "$EvidenceDir\gate_light_preview_$TaskId.log") { Remove-Item "$EvidenceDir\gate_light_preview_$TaskId.log" }
+    if (Test-Path "$EvidenceDir\gate_light_verify_$TaskId.log") { Remove-Item "$EvidenceDir\gate_light_verify_$TaskId.log" }
+
     node $GenerateScript.FullName
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[RunTask] FAILED: Evidence Generation failed." -ForegroundColor Red
@@ -90,7 +124,7 @@ $Env:GENERATE_PREVIEW = "1"
 
 # Use cmd /c to avoid PowerShell UTF-16 encoding issues
 $GateScript = "$RepoRoot\scripts\gate_light_ci.mjs"
-$CmdLine = "node ""$GateScript"" --task_id $TaskId > ""$PreviewLog"" 2>&1"
+$CmdLine = "node ""$GateScript"" --task_id $TaskId --result_dir ""$EvidenceDir"" > ""$PreviewLog"" 2>&1"
 cmd /c $CmdLine
 
 $Env:GENERATE_PREVIEW = $null
@@ -104,7 +138,7 @@ Write-Host "    Preview Log: $PreviewLog" -ForegroundColor Gray
 
 # --- Step 4: Assemble Evidence ---
 Write-Host ">>> [RunTask] Step 4: Assemble Evidence" -ForegroundColor Cyan
-node "$RepoRoot\scripts\assemble_evidence.mjs" --task_id=$TaskId --evidence_dir="$EvidenceDir"
+node "$RepoRoot\scripts\assemble_evidence.mjs" --task_id=$TaskId --evidence_dir="$EvidenceDir" --mode=$Mode --phase=assemble
 if ($LASTEXITCODE -ne 0) {
     Write-Host "[RunTask] FAILED: Assemble Evidence failed." -ForegroundColor Red
     exit 1
@@ -114,7 +148,7 @@ if ($LASTEXITCODE -ne 0) {
 Write-Host ">>> [RunTask] Step 5: Pass 2 - Gate Light Verify" -ForegroundColor Cyan
 $VerifyLog = "$EvidenceDir\gate_light_verify_$TaskId.log"
 # Use cmd /c to ensure redirection works and capture both stdout and stderr
-cmd /c "node ""$RepoRoot\scripts\gate_light_ci.mjs"" --task_id $TaskId --mode $Mode > ""$VerifyLog"" 2>&1"
+cmd /c "node ""$RepoRoot\scripts\gate_light_ci.mjs"" --task_id $TaskId --mode $Mode --result_dir ""$EvidenceDir"" > ""$VerifyLog"" 2>&1"
 if ($LASTEXITCODE -ne 0) {
     Write-Host "[RunTask] FAILED: Gate Light Verify failed. See $VerifyLog" -ForegroundColor Red
     Get-Content $VerifyLog | Select-Object -Last 20
@@ -144,12 +178,32 @@ if ($Mode -eq "Integrate") {
     Copy-Item -Path $VerifyLog -Destination "$EvidenceDir\gate_light_preview_$TaskId.log" -Force
     
     # Re-run Assemble Evidence to update notify and index
-    node "$RepoRoot\scripts\assemble_evidence.mjs" --task_id=$TaskId --evidence_dir="$EvidenceDir"
+    node "$RepoRoot\scripts\assemble_evidence.mjs" --task_id=$TaskId --evidence_dir="$EvidenceDir" --mode=$Mode --phase=assemble
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[RunTask] FAILED: Assemble Evidence update failed." -ForegroundColor Red
         exit 1
     }
     Write-Host "    Updated notify and index with Verify logs." -ForegroundColor Gray
+
+    # --- Step 8: Archive & Lock (Integrate Only) ---
+    Write-Host ">>> [RunTask] Step 8: Archive & Lock" -ForegroundColor Cyan
+    
+    # Stop Transcript before Archive to ensure log is complete and hashable
+    Stop-Transcript
+
+    node "$RepoRoot\scripts\assemble_evidence.mjs" --task_id=$TaskId --evidence_dir="$EvidenceDir" --mode=$Mode --phase=archive
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "[RunTask] FAILED: Archive & Lock failed." -ForegroundColor Red
+        exit 1
+    }
+    Write-Host "    Archived evidence and locked task." -ForegroundColor Gray
 }
 
 Write-Host ">>> [RunTask] SUCCESS: Task $TaskId ($Mode) Completed." -ForegroundColor Green
+} catch {
+    Write-Host "[RunTask] FAILED: Script execution error: $_" -ForegroundColor Red
+    exit 1
+} finally {
+    # Ensure transcript is stopped if still running
+    try { Stop-Transcript -ErrorAction SilentlyContinue } catch {}
+}

@@ -1,8 +1,24 @@
-node_modules/
-data/runtime/
-OppRadar/data/runtime/
-*.log
-.DS_Store
+# Evidence Artifacts (Runtime) - STRICT ISOLATION
 reports/healthcheck_*.txt
-rules/task-reports/**/reports/healthcheck_*.txt
+rules/task-reports/**
+!rules/task-reports/runs/
+!rules/task-reports/runs/**
+!rules/task-reports/locks/
+!rules/task-reports/locks/**
+!rules/task-reports/index/
+!rules/task-reports/index/**
+!rules/task-reports/**/generate_evidence_*.mjs
+
+# Legacy/Other Runtime Reports
+rules/reports/**
+
+# Node modules
+node_modules/
+
+# Logs
+*.log
+
+# Data
+OppRadar/data/
+data/runtime/
 data/opps_runs/

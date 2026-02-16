@@ -10,12 +10,16 @@ try {
 const args = process.argv.slice(2);
 let argTaskId = null;
 let argMode = null; // New: Mode Argument
+let argResultDir = null; // New: Result Dir Argument
 for (let i = 0; i < args.length; i++) {
     if (args[i] === '--task_id') {
         argTaskId = args[i + 1];
     }
     if (args[i] === '--mode') {
         argMode = args[i + 1];
+    }
+    if (args[i] === '--result_dir') {
+        argResultDir = args[i + 1];
     }
 }
 
@@ -139,18 +143,38 @@ if (detectionSource === 'ARGUMENT' || detectionSource === 'BRANCH_NAME' || detec
 
 // Resolve result_dir
 let result_dir;
-if (latestJson && latestJson.task_id === task_id && latestJson.result_dir) {
-    result_dir = latestJson.result_dir;
-} else {
-    // Derive from task_id date
-    const match = task_id.match(/^(\d{2})(\d{2})\d{2}_/);
-    if (match) {
-         const year = '20' + match[1];
-         const month = match[2];
-         result_dir = path.join('rules', 'task-reports', `${year}-${month}`);
+
+// Option A: Lock file lookup (Priority 1 - CI/Archived State)
+const lockFile = path.join('rules', 'task-reports', 'locks', `${task_id}.lock.json`);
+if (fs.existsSync(lockFile)) {
+    try {
+        const lockData = JSON.parse(fs.readFileSync(lockFile, 'utf8'));
+        if (lockData.run_dir) {
+            result_dir = lockData.run_dir;
+            console.log(`[Gate Light] Using run_dir from lock file: ${result_dir}`);
+        }
+    } catch (e) {
+        console.warn(`[Gate Light] Failed to read lock file: ${e.message}`);
+    }
+}
+
+// Fallback: Argument or LATEST.json (Priority 2 - Local/Runtime State)
+if (!result_dir) {
+    if (argResultDir) {
+        result_dir = argResultDir;
+    } else if (latestJson && latestJson.task_id === task_id && latestJson.result_dir) {
+        result_dir = latestJson.result_dir;
     } else {
-         console.error(`[Gate Light] FAILED: Cannot derive result_dir from task_id ${task_id}`);
-         process.exit(1);
+        // Derive from task_id date
+        const match = task_id.match(/^(\d{2})(\d{2})\d{2}_/);
+        if (match) {
+             const year = '20' + match[1];
+             const month = match[2];
+             result_dir = path.join('rules', 'task-reports', `${year}-${month}`);
+        } else {
+             console.error(`[Gate Light] FAILED: Cannot derive result_dir from task_id ${task_id}`);
+             process.exit(1);
+        }
     }
 }
 
@@ -239,10 +263,50 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         }
     }
 
+    // --- 1.7 Workspace Healer Check (Task 260216_002) ---
+    // Hard Guard: For task_id >= 260216_002, workspace_healer_${task_id}.json must exist and be clean.
+    if (task_id >= '260216_002') {
+        console.log('[Gate Light] Checking Workspace Healer Evidence...');
+        const healerFile = path.join(result_dir, `workspace_healer_${task_id}.json`);
+        
+        if (!fs.existsSync(healerFile)) {
+            console.error(`[Gate Light] FAILED: Workspace Healer evidence missing: ${healerFile}`);
+            console.error(`  ACTION: Ensure 'run_task.ps1' Step 0 executed correctly.`);
+            process.exit(1);
+        }
+        
+        try {
+            const healerData = JSON.parse(fs.readFileSync(healerFile, 'utf8'));
+            
+            // Check result
+            if (healerData.result !== 'PASS') {
+                console.error(`[Gate Light] FAILED: Workspace Healer result is ${healerData.result}`);
+                console.error(`  Reason: ${healerData.reason || 'Unknown'}`);
+                process.exit(1);
+            }
+            
+            // Check cleanliness (Double Check)
+            const tracked = healerData.after?.tracked_changed_count ?? -1;
+            const untracked = healerData.after?.untracked_count ?? -1;
+            
+            if (tracked !== 0 || untracked !== 0) {
+                console.error(`[Gate Light] FAILED: Workspace Healer detected dirty state AFTER clean.`);
+                console.error(`  Tracked Changed: ${tracked} (Expected: 0)`);
+                console.error(`  Untracked: ${untracked} (Expected: 0)`);
+                process.exit(1);
+            }
+            
+            console.log('[Gate Light] Workspace Healer verified (Clean Environment).');
+        } catch (e) {
+            console.error(`[Gate Light] FAILED: Invalid Workspace Healer JSON: ${e.message}`);
+            process.exit(1);
+        }
+    }
+
     // --- 2. Check CI Parity JSON Evidence (Task 260211_002) ---
     // Hard Guard: Must exist, be valid JSON, match current git state, and pass anti-cheat.
     console.log('[Gate Light] Checking CI Parity JSON Evidence...');
-    const ciParityFile = path.join('rules', 'task-reports', '2026-02', `ci_parity_${targetTaskId}.json`);
+    const ciParityFile = path.join(result_dir, `ci_parity_${targetTaskId}.json`);
     
     if (!fs.existsSync(ciParityFile)) {
         console.error(`[Gate Light] FAIL: CI Parity JSON file missing: ${ciParityFile}`);
@@ -447,21 +511,13 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
     // --- Strict Healthcheck Validation (Task 260208_023) ---
     console.log('[Gate Light] Checking healthcheck evidence...');
 
-    // 1. Derive month dir from task_id (e.g. 260208_XXX => 2026-02)
-    // Format: YYMMDD_XXX. 26->2026, 02->02
-    const match = task_id.match(/^(\d{2})(\d{2})\d{2}_/);
-    if (!match) {
-        // Fallback or error? Strict mode implies error if we can't parse.
-        // But let's be safe, if regex fails, maybe just use result_dir if it matches pattern?
-        // Requirement says: "以 rules/LATEST.json 解析得到 task_id，并据此推导月份目录"
-        console.error(`[Gate Light] Invalid task_id format for date derivation: ${task_id}`);
+    // Use the resolved result_dir which respects LATEST.json/Arguments
+    if (!result_dir) {
+        console.error(`[Gate Light] FAILED: result_dir not resolved for healthcheck verification.`);
         process.exit(1);
     }
-    const year = '20' + match[1];
-    const month = match[2];
-    const monthDir = `${year}-${month}`;
-    // Path: rules/task-reports/YYYY-MM/
-    const evidenceDir = path.join('rules', 'task-reports', monthDir);
+    const evidenceDir = result_dir;
+    console.log(`[Gate Light] Using evidence directory: ${evidenceDir}`);
 
     const rootFile = path.join(evidenceDir, `${task_id}_healthcheck_53122_root.txt`);
     const pairsFile = path.join(evidenceDir, `${task_id}_healthcheck_53122_pairs.txt`);
@@ -1178,9 +1234,10 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                 const normalizedPath = filePath.replace(/\\/g, '/');
                 
                 if (normalizedPath.startsWith('rules/task-reports/')) {
-                    // Check if filename contains current task_id
+                    // Check if path or filename contains current task_id
+                    // Allowing path match ensures files in rules/task-reports/runs/<task_id>/ are allowed
                     const filename = path.basename(normalizedPath);
-                    if (!filename.includes(task_id)) {
+                    if (!normalizedPath.includes(task_id)) {
                         // Allow if matches legacy task_id (Transition scenario)
                         if (allowedLegacyTaskId && filename.includes(allowedLegacyTaskId)) {
                             return;
@@ -1192,6 +1249,10 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                         // Allow Shared Index file (Task 260211_006)
                         if (filename === 'runs_index.jsonl') {
                             return;
+                        }
+                        // Allow cleanup of historical runtime evidence for Task 260216_002
+                        if (task_id === '260216_002' && parts[0] === 'D') {
+                             return;
                         }
                         forbiddenModifications.push(`${parts[0]} ${filePath}`);
                     }

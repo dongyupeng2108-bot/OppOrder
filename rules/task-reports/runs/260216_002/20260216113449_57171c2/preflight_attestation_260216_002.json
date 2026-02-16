@@ -1,0 +1,10 @@
+﻿{
+    "branch":  "feat/p1-workspace-healer-260216_002",
+    "timestamp":  "2026-02-16 20:51:58 UTC",
+    "header_detected":  true,
+    "task_id":  "260216_002",
+    "input_hash_short":  "88228f80",
+    "mode":  "Dev",
+    "write_allowed":  true,
+    "commit":  "ca174ce"
+}

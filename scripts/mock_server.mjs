@@ -1,5 +1,6 @@
 import http from 'http';
 import { URL } from 'url';
+import crypto from 'crypto';
 import { routeOpportunities } from './llm_router.mjs';
 import { NewsStore } from '../OppRadar/news_store.mjs';
 
@@ -113,6 +114,35 @@ const server = http.createServer((req, res) => {
             return;
         }
 
+        if (pathname === '/opportunities/rank_v2') {
+            const limit = parseInt(parsedUrl.searchParams.get('limit') || '5');
+            const runId = parsedUrl.searchParams.get('run_id');
+            
+            // Mock response matching schema
+            const results = [];
+            for (let i = 0; i < limit; i++) {
+                results.push({
+                    opp_id: `mock_opp_${i}`,
+                    score: Math.floor(Math.random() * 100),
+                    p_hat: Math.random(),
+                    p_llm: Math.random(),
+                    p_ci: {
+                        low: 0.4,
+                        high: 0.6,
+                        method: 'wilson'
+                    },
+                    price_q: 123.45,
+                    score_v2: Math.random(),
+                    meta: {
+                        provider: 'mock',
+                        run_id: runId
+                    }
+                });
+            }
+            sendJson(results);
+            return;
+        }
+
         if (pathname === '/opportunities/runs') {
             sendJson(runs);
             return;
@@ -122,6 +152,54 @@ const server = http.createServer((req, res) => {
             const runId = parsedUrl.searchParams.get('run_id');
             const filtered = opportunities.filter(o => o.build_run_id === runId || (o.refs && o.refs.run_id === runId));
             sendJson(filtered);
+            return;
+        }
+
+        if (pathname === '/opportunities/runs/export_v1') {
+            const runId = parsedUrl.searchParams.get('run_id');
+            sendJson({
+                meta: {
+                    run_id: runId || 'mock_run',
+                    created_at: new Date().toISOString(),
+                    items_count: 5
+                },
+                scan_input: {
+                    limit: 5,
+                    provider: 'mock'
+                },
+                rank_v2: Array.from({ length: 5 }, (_, i) => ({
+                    opp_id: `mock_opp_${i}`,
+                    score_v2: Math.random(),
+                    p_hat: Math.random(),
+                    p_llm: Math.random(),
+                    p_ci: {
+                        low: 0.4,
+                        high: 0.6
+                    }
+                }))
+            });
+            return;
+        }
+
+        if (pathname === '/opportunities/ledger/query_v0') {
+            const limit = parseInt(parsedUrl.searchParams.get('limit') || '10');
+            
+            const items = [];
+            for (let i = 0; i < limit; i++) {
+                items.push({
+                    run_id: `mock_run_${Date.now()}_${i}`,
+                    ts: new Date().toISOString(),
+                    source: 'mock_server',
+                    opportunity_id: `mock_opp_${i}`,
+                    rank_v2: Math.random()
+                });
+            }
+            
+            sendJson({
+                items: items,
+                total_estimate: 100,
+                next_cursor: 'mock_cursor_123'
+            });
             return;
         }
     }
@@ -135,7 +213,10 @@ const server = http.createServer((req, res) => {
                 
                 sendJson({
                     cached: cached,
-                    cache_key: crypto.createHash('md5').update(key).digest('hex') // Simulate hash
+                    cache_key: crypto.createHash('md5').update(key).digest('hex'),
+                    scan: {
+                        scan_id: `scan_${crypto.randomBytes(8).toString('hex')}`
+                    }
                 });
             });
             return;
@@ -239,8 +320,6 @@ const server = http.createServer((req, res) => {
     res.writeHead(404);
     res.end('Not Found');
 });
-
-import crypto from 'crypto';
 
 server.listen(PORT, () => {
     console.log(`Mock server running on port ${PORT}`);
