@@ -113,6 +113,35 @@ const server = http.createServer((req, res) => {
             return;
         }
 
+        if (pathname === '/opportunities/rank_v2') {
+            const limit = parseInt(parsedUrl.searchParams.get('limit') || '5');
+            const runId = parsedUrl.searchParams.get('run_id');
+            
+            // Mock response matching schema
+            const results = [];
+            for (let i = 0; i < limit; i++) {
+                results.push({
+                    opp_id: `mock_opp_${i}`,
+                    score: Math.floor(Math.random() * 100),
+                    p_hat: Math.random(),
+                    p_llm: Math.random(),
+                    p_ci: {
+                        low: 0.4,
+                        high: 0.6,
+                        method: 'wilson'
+                    },
+                    price_q: 123.45,
+                    score_v2: Math.random(),
+                    meta: {
+                        provider: 'mock',
+                        run_id: runId
+                    }
+                });
+            }
+            sendJson(results);
+            return;
+        }
+
         if (pathname === '/opportunities/runs') {
             sendJson(runs);
             return;
