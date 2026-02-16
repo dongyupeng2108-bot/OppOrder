@@ -66,6 +66,7 @@ Before starting any new task, the Agent MUST perform these checks:
 
 1.  **Development Phase (Dev)**:
     *   **Focus**: Coding, local testing, unit tests, smoke tests.
+    *   **Allowed Scope**: Code (`src/`, `scripts/`), Contracts (`contracts/`), Docs (`rules/rules/`).
     *   **Constraints**:
         *   **NO** evidence generation (`envelope_build.mjs`).
         *   **NO** `LATEST.json` updates.
@@ -74,6 +75,7 @@ Before starting any new task, the Agent MUST perform these checks:
 
 2.  **Integration Phase (Integrate)**:
     *   **Focus**: Final validation, evidence generation, PR creation.
+    *   **Allowed Scope**: Evidence (`rules/task-reports/`), Docs (`rules/rules/`), Metadata (`rules/LATEST.json`). NO Business Code changes.
     *   **Constraints**:
         *   Run **ONCE** at the end of the task.
         *   **Clean State**: MUST NOT run with uncommitted code changes (only evidence/docs allowed).

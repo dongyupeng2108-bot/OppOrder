@@ -294,6 +294,17 @@
 - **Failure Example**: Deleting an old lock to "fix" a failed rerun.
 - **Fix**: Do NOT delete. Create a new `task_id` (e.g., `_005` -> `_006`) and start fresh.
 
+### Tracked vs Untracked Directory Boundaries
+- **Tracked (Git Controlled)**:
+    - Code: `src/`, `scripts/`, `contracts/`, `rules/rules/`.
+    - Metadata: `rules/task-reports/locks/`, `rules/task-reports/index/`, `rules/task-reports/envelopes/`, `rules/LATEST.json`.
+    - Archived Evidence: `rules/task-reports/runs/`.
+- **Untracked (Local/Ephemeral)**:
+    - Runtime Evidence: `rules/task-reports/<YYYY-MM>/` (Must be `.gitignored`).
+    - Node Modules: `node_modules/`.
+    - User Data: `data/` (except specific fixtures).
+- **Rule**: NEVER force add files from Untracked directories (especially `rules/task-reports/<YYYY-MM>/`) to git.
+
 ### Integrate Rerun Guard (Hard Rule)
 - **Rule**: Once `scripts/run_task.ps1` (Integrate Mode) completes successfully and generates a lock file, subsequent runs for the same `task_id` are **BLOCKED** with Exit Code 33.
 - **Reason**: To preserve the integrity of the evidence chain. Re-running would overwrite the evidence linked to a specific git commit.
