@@ -1,5 +1,6 @@
 {
   "task_id": "260216_002",
-  "timestamp": "2026-02-16T00:00:00.000Z",
-  "note": "Manual update for bootstrap"
+  "result_dir": "rules/task-reports/runs/260216_002/20260216043218_ec3fd27",
+  "timestamp": "2026-02-16T04:32:18.304Z",
+  "note": "Updated to point to committed archive evidence for CI verification"
 }

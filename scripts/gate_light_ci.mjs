@@ -282,7 +282,7 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
     // --- 2. Check CI Parity JSON Evidence (Task 260211_002) ---
     // Hard Guard: Must exist, be valid JSON, match current git state, and pass anti-cheat.
     console.log('[Gate Light] Checking CI Parity JSON Evidence...');
-    const ciParityFile = path.join('rules', 'task-reports', '2026-02', `ci_parity_${targetTaskId}.json`);
+    const ciParityFile = path.join(result_dir, `ci_parity_${targetTaskId}.json`);
     
     if (!fs.existsSync(ciParityFile)) {
         console.error(`[Gate Light] FAIL: CI Parity JSON file missing: ${ciParityFile}`);
