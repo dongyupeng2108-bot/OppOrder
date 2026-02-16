@@ -1,0 +1,16 @@
+{
+  "task_id": "260216_004",
+  "base": "8ae50b6ccab1e3b7ce0e15ba4527fe06fa26d48c",
+  "head": "038d32cbbb37443c108a7a5947edfd69cd605d1b",
+  "merge_base": "8ae50b6ccab1e3b7ce0e15ba4527fe06fa26d48c",
+  "scope_files": [
+    "rules/LATEST.json",
+    "rules/task-reports/2026-02/generate_evidence_260216_004.js",
+    "scripts/ensure_server_53122.ps1",
+    "scripts/run_task.ps1",
+    "scripts/verify_contracts_early.mjs"
+  ],
+  "scope_count": 5,
+  "ci_parity": true,
+  "generated_at": "2026-02-16T16:10:04.987Z"
+}
