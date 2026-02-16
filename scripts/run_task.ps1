@@ -200,3 +200,10 @@ if ($Mode -eq "Integrate") {
 }
 
 Write-Host ">>> [RunTask] SUCCESS: Task $TaskId ($Mode) Completed." -ForegroundColor Green
+} catch {
+    Write-Host "[RunTask] FAILED: Script execution error: $_" -ForegroundColor Red
+    exit 1
+} finally {
+    # Ensure transcript is stopped if still running
+    try { Stop-Transcript -ErrorAction SilentlyContinue } catch {}
+}
