@@ -1,72 +1,69 @@
-import fs from 'fs';
-import path from 'path';
-import { parseArgs } from 'util';
+const fs = require('fs');
+const path = require('path');
 
-// --- Parse Arguments ---
-const { values } = parseArgs({
-    args: process.argv.slice(2),
-    options: {
-        task_id: { type: 'string' },
-        dir: { type: 'string' },
-    },
-});
+const ARGS = process.argv.slice(2);
+const taskId = ARGS.find(arg => arg.startsWith('--task_id='))?.split('=')[1];
+const targetDir = ARGS.find(arg => arg.startsWith('--dir='))?.split('=')[1];
 
-const taskId = values.task_id;
-const evidenceDir = values.dir;
-
-if (!taskId || !evidenceDir) {
-    console.error('Usage: node evidence_smoke_test.mjs --task_id <task_id> --dir <evidence_dir>');
+if (!taskId || !targetDir) {
+    console.error('Usage: node scripts/evidence_smoke_test.mjs --task_id=<id> --dir=<evidence_dir>');
     process.exit(1);
 }
 
-// --- Manifest Path ---
-const manifestPath = path.join(evidenceDir, `evidence_manifest_${taskId}.json`);
+const resolvePath = (filename) => path.resolve(targetDir, filename);
+const manifestPath = resolvePath(`evidence_manifest_${taskId}.json`);
 
+console.log(`[SmokeTest] Running Evidence Smoke Test for Task ${taskId} in ${targetDir}...`);
+
+// 1. Check Manifest Existence
 if (!fs.existsSync(manifestPath)) {
-    console.error(`[Evidence Smoke Test] FAIL: Manifest not found: ${manifestPath}`);
+    console.error(`[SmokeTest] FAIL: Manifest not found: ${manifestPath}`);
     process.exit(1);
 }
 
-// --- Read Manifest ---
+// 2. Validate Manifest Schema & Content
 let manifest;
 try {
     manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
 } catch (e) {
-    console.error(`[Evidence Smoke Test] FAIL: Invalid JSON in manifest: ${e.message}`);
+    console.error(`[SmokeTest] FAIL: Manifest JSON parse error: ${e.message}`);
     process.exit(1);
 }
 
-// --- Validate Schema ---
-const requiredFields = ['task_id', 'mode', 'required_files'];
+const requiredFields = ['task_id', 'mode', 'generated_at', 'required_files'];
 const missingFields = requiredFields.filter(f => !manifest[f]);
-
 if (missingFields.length > 0) {
-    console.error(`[Evidence Smoke Test] FAIL: Manifest missing fields: ${missingFields.join(', ')}`);
+    console.error(`[SmokeTest] FAIL: Manifest missing fields: ${missingFields.join(', ')}`);
     process.exit(1);
 }
 
 if (manifest.task_id !== taskId) {
-    console.error(`[Evidence Smoke Test] FAIL: Manifest task_id mismatch: ${manifest.task_id} != ${taskId}`);
+    console.error(`[SmokeTest] FAIL: Manifest task_id mismatch. Expected ${taskId}, got ${manifest.task_id}`);
     process.exit(1);
 }
 
-if (!Array.isArray(manifest.required_files)) {
-    console.error(`[Evidence Smoke Test] FAIL: required_files must be an array`);
-    process.exit(1);
-}
-
-// --- Validate Required Files Existence ---
+// 3. Check Required Files Existence
 const requiredFiles = manifest.required_files;
-const missingFiles = [];
+if (!Array.isArray(requiredFiles) || requiredFiles.length === 0) {
+    console.error(`[SmokeTest] FAIL: Manifest required_files is empty or invalid.`);
+    process.exit(1);
+}
 
-for (const file of requiredFiles) {
-    const filePath = path.join(evidenceDir, file);
+const missingFiles = [];
+requiredFiles.forEach(file => {
+    const filePath = resolvePath(file);
     if (!fs.existsSync(filePath)) {
         missingFiles.push(file);
     }
+});
+
+if (missingFiles.length > 0) {
+    console.error(`[SmokeTest] FAIL: Missing required files listed in manifest:`);
+    missingFiles.forEach(f => console.error(`  - ${f}`));
+    process.exit(1);
 }
 
-// --- Validate Specific Mandatory Files (Hard Requirement) ---
+// 4. Mandatory Files Check (Hardcoded safety net)
 const mandatoryFiles = [
     `run_${taskId}.log`,
     `notify_${taskId}.txt`,
@@ -74,20 +71,12 @@ const mandatoryFiles = [
     `deliverables_index_${taskId}.json`,
     `workspace_healer_${taskId}.json`
 ];
-// If preflight_attestation exists, include it? Or hard check?
-// User said: "Mandatory: ... preflight_attestation ... gate_light_verify (if exists) ... healthcheck ..."
-// Let's enforce run_log specifically as per DoD.
 
 const missingMandatory = mandatoryFiles.filter(f => !requiredFiles.includes(f));
 if (missingMandatory.length > 0) {
-    console.error(`[Evidence Smoke Test] FAIL: Manifest required_files missing mandatory items: ${missingMandatory.join(', ')}`);
+    console.error(`[SmokeTest] FAIL: Manifest required_files missing mandatory items: ${missingMandatory.join(', ')}`);
     process.exit(1);
 }
 
-if (missingFiles.length > 0) {
-    console.error(`[Evidence Smoke Test] FAIL: Missing required files in directory: ${missingFiles.join(', ')}`);
-    process.exit(1);
-}
-
-console.log(`[Evidence Smoke Test] PASS: Manifest valid, all ${requiredFiles.length} required files exist.`);
+console.log(`[SmokeTest] PASS: All ${requiredFiles.length} required files exist and manifest is valid.`);
 process.exit(0);
