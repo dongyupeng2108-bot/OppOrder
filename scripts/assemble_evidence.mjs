@@ -107,6 +107,18 @@ ${blocking.length > 0 ? blockingSlice + (blocking.length > 3 ? '\n  ...' : '') :
 =====================`;
 }
 
+// Workspace Healer Block
+let healerBlock = '';
+if (fs.existsSync(inputs.workspaceHealer)) {
+    const healerData = readJson(inputs.workspaceHealer);
+    healerBlock = `=== WORKSPACE_HEALER ===
+Result: ${healerData.result || 'UNKNOWN'}
+Mode: ${healerData.mode}
+Tracked Changed: ${healerData.after?.tracked_changed_count ?? '?'}
+Untracked: ${healerData.after?.untracked_count ?? '?'}
+========================`;
+}
+
 // Gate Light Block
 let gateLightBlock = gateLightLog;
 if (!gateLightBlock.includes('=== GATE_LIGHT_PREVIEW ===')) {
