@@ -285,6 +285,13 @@ if (mode === 'Integrate') {
     const verifyLogPath = resolvePath(`gate_light_verify_${taskId}.log`);
     // Check if Verify Log exists (Step 7 indicator)
     if (fs.existsSync(verifyLogPath)) {
+        // --- Verify Check: Must contain GATE_LIGHT_EXIT=0 ---
+        const verifyContent = fs.readFileSync(verifyLogPath, 'utf8');
+        if (!verifyContent.includes('GATE_LIGHT_EXIT=0')) {
+            console.log(`[Assembler] Verify Log found but GATE_LIGHT_EXIT=0 is missing. Skipping Archive & Lock.`);
+            return;
+        }
+
         const repoRoot = path.resolve(evidenceDir, '../../..'); // E:\OppRadar
         const lockPath = path.join(repoRoot, 'rules/task-reports/locks', `${taskId}.lock.json`);
 
