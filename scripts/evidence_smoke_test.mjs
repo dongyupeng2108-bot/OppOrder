@@ -1,5 +1,5 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 const ARGS = process.argv.slice(2);
 const taskId = ARGS.find(arg => arg.startsWith('--task_id='))?.split('=')[1];
