@@ -81,8 +81,9 @@ const hcPairsPath = path.join(evidenceDir, `${taskId}_healthcheck_53122_pairs.tx
 try {
     console.log('[Generate] Attempting to fetch healthcheck from localhost:53122...');
     // Use curl.exe to avoid PowerShell alias issues
-    execSync(`curl.exe -s -o "${hcRootPath}" http://localhost:53122/`);
-    execSync(`curl.exe -s -o "${hcPairsPath}" http://localhost:53122/pairs`);
+    // Must use -i to include HTTP headers for Gate Light validation
+    execSync(`curl.exe -s -i -o "${hcRootPath}" http://localhost:53122/`);
+    execSync(`curl.exe -s -i -o "${hcPairsPath}" http://localhost:53122/pairs`);
     console.log('[Generate] Healthcheck files fetched from server.');
 } catch (e) {
     console.log('[Generate] Failed to fetch from server (likely not running). Generating dummy healthchecks for Dev mode.');
