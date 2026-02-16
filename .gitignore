@@ -4,7 +4,7 @@ OppRadar/data/runtime/
 *.log
 .DS_Store
 reports/healthcheck_*.txt
-rules/task-reports/20*
+rules/task-reports/**
 !rules/task-reports/index/
 !rules/task-reports/locks/
 !rules/task-reports/runs/
