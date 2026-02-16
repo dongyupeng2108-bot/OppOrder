@@ -97,6 +97,11 @@ if ($LASTEXITCODE -ne 0) {
 # --- Step 2: Generate Evidence (Dev/Integrate) ---
 if ($GenerateScript) {
     Write-Host ">>> [RunTask] Step 2: Generate Evidence" -ForegroundColor Cyan
+    
+    # Cleanup previous run logs to prevent stale reads
+    if (Test-Path "$EvidenceDir\gate_light_preview_$TaskId.log") { Remove-Item "$EvidenceDir\gate_light_preview_$TaskId.log" }
+    if (Test-Path "$EvidenceDir\gate_light_verify_$TaskId.log") { Remove-Item "$EvidenceDir\gate_light_verify_$TaskId.log" }
+
     node $GenerateScript.FullName
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[RunTask] FAILED: Evidence Generation failed." -ForegroundColor Red
