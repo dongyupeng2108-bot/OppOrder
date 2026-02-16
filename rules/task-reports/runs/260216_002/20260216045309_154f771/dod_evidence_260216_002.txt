@@ -1,9 +1,0 @@
-=== DOD_EVIDENCE_STDOUT ===
-[Static Smoke Test]
-[Smoke] Checking scripts/reset_workspace.ps1...
-[Smoke] PASS: Static checks passed.
-
-[Dynamic Verification]
-Verified manually via 'reset_workspace.ps1 -Mode EnforceClean' with dirty state.
-See workspace_healer_260216_002.json for runtime execution evidence.
-===========================
