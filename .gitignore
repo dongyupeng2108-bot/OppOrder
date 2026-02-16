@@ -4,6 +4,7 @@ rules/task-reports/**
 !rules/task-reports/runs/
 !rules/task-reports/locks/
 !rules/task-reports/index/
+!rules/task-reports/**/generate_evidence_*.mjs
 
 # Legacy/Other Runtime Reports
 rules/reports/**
