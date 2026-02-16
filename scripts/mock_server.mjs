@@ -1,5 +1,6 @@
 import http from 'http';
 import { URL } from 'url';
+import crypto from 'crypto';
 import { routeOpportunities } from './llm_router.mjs';
 import { NewsStore } from '../OppRadar/news_store.mjs';
 
@@ -164,7 +165,10 @@ const server = http.createServer((req, res) => {
                 
                 sendJson({
                     cached: cached,
-                    cache_key: crypto.createHash('md5').update(key).digest('hex') // Simulate hash
+                    cache_key: crypto.createHash('md5').update(key).digest('hex'),
+                    scan: {
+                        scan_id: `scan_${crypto.randomBytes(8).toString('hex')}`
+                    }
                 });
             });
             return;
