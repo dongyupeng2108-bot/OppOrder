@@ -191,6 +191,16 @@ if ($Mode -eq "Integrate") {
     # Stop Transcript before Archive to ensure log is complete and hashable
     Stop-Transcript
 
+    # --- Step 8.1: Evidence Smoke Test (Archive Precheck) ---
+    Write-Host ">>> [RunTask] Step 8.1: Evidence Smoke Test" -ForegroundColor Cyan
+    node "$RepoRoot\scripts\evidence_smoke_test.mjs" --task_id $TaskId --dir "$EvidenceDir"
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "[RunTask] FAILED: Evidence Smoke Test failed. Aborting Archive." -ForegroundColor Red
+        exit 1
+    }
+    Write-Host "    Evidence Smoke Test PASS." -ForegroundColor Gray
+
+    # --- Step 8.2: Execute Archive ---
     node "$RepoRoot\scripts\assemble_evidence.mjs" --task_id=$TaskId --evidence_dir="$EvidenceDir" --mode=$Mode --phase=archive
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[RunTask] FAILED: Archive & Lock failed." -ForegroundColor Red
