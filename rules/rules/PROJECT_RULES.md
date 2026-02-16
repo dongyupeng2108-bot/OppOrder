@@ -307,3 +307,15 @@
     *   **Prohibited**: Chained commands (`;`, `&&`, `||`) in `TraeTask` commands.
     *   **Enforcement**: Gate Light scans evidence (`trae_report_snippet`, `dod_stdout`, `command_audit`) and fails if chains are detected.
     *   **Recommended**: Use `scripts/safe_commit.ps1` and `scripts/safe_push.ps1`.
+
+### Automated Plan Status (Engineering System Rule)
+- **Rule**: Manual updates to the "Task Ledger" / "System Snapshot" in `PROJECT_MASTER_PLAN.md` are PROHIBITED.
+- **Mechanism**: The status (MERGED/OPEN/DONE) MUST be derived from the "Single Source of Truth" (GitHub PR Status + Lock Files).
+- **Action**: Run `node scripts/sync_plan_status.js` to synchronize the plan with the engineering reality before generating reports or syncing context.
+- **Reason**: To eliminate "Split-Brain" states where documentation contradicts the CI/Git reality.
+
+### Engineering System Snapshot Protocol
+- **Rule**: `PROJECT_MASTER_PLAN.md` is a **System Mirror**, NOT a Workflow Driver.
+- **Constraint**: Manual status edits are **STRICTLY FORBIDDEN**.
+- **Principle**: Engineering state must be **derived**, never declared.
+- **Enforcement**: `sync_plan_status.js` is the ONLY allowed writer for the Snapshot sections.
