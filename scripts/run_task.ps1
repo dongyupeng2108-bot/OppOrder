@@ -32,6 +32,29 @@ if ($GenerateScript) {
 Write-Host ">>> [RunTask] TaskId: $TaskId | Mode: $Mode | Header: $Header" -ForegroundColor Cyan
 Write-Host ">>> [RunTask] Evidence Dir: $EvidenceDir" -ForegroundColor Gray
 
+# --- Step 0: Workspace Healer ---
+Write-Host ">>> [RunTask] Step 0: Workspace Healer" -ForegroundColor Cyan
+$HealerEvidence = "$EvidenceDir\workspace_healer_$TaskId.json"
+# Capture stdout to file, ensure ASCII
+$HealerCmd = "powershell -ExecutionPolicy Bypass -File ""$RepoRoot\scripts\reset_workspace.ps1"" -Mode EnforceClean"
+# Execute and capture output
+try {
+    $HealerJson = Invoke-Expression $HealerCmd
+    $HealerJson | Out-File -FilePath $HealerEvidence -Encoding ascii
+    
+    # Check if result is PASS (simple string check or parse)
+    # Since we want fail-fast, we check exit code of the script first
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "[RunTask] FAILED: Workspace Healer failed." -ForegroundColor Red
+        if (Test-Path $HealerEvidence) { Get-Content $HealerEvidence | Write-Host }
+        exit 1
+    }
+} catch {
+    Write-Host "[RunTask] FAILED: Workspace Healer execution error: $_" -ForegroundColor Red
+    exit 1
+}
+Write-Host "    Workspace Healer PASS. Output: $HealerEvidence" -ForegroundColor Gray
+
 # --- Step 1: Preflight ---
 Write-Host ">>> [RunTask] Step 1: Preflight" -ForegroundColor Cyan
 & "$RepoRoot\scripts\preflight.ps1" -TaskId $TaskId -Mode $Mode -Header $Header

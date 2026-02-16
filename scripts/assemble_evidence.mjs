@@ -26,6 +26,7 @@ const inputs = {
     dodEvidence: resolvePath(`dod_evidence_${taskId}.txt`),
     gitMeta: resolvePath(`git_meta_${taskId}.json`),
     attestation: resolvePath(`preflight_attestation_${taskId}.json`),
+    workspaceHealer: resolvePath(`workspace_healer_${taskId}.json`),
     resultJson: resolvePath(`result_${taskId}.json`)
 };
 
@@ -168,6 +169,8 @@ ${dodBlock}
 
 ${ciParityBlock}
 
+${healerBlock}
+
 ${openPrBlock}
 
 ${gateLightBlock}
@@ -217,6 +220,7 @@ const filesToIndex = [
     inputs.dodEvidence,
     inputs.gitMeta,
     inputs.attestation,
+    inputs.workspaceHealer,
     resultPath,
     notifyPath,
     manualVerifyPath

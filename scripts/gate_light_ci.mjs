@@ -239,6 +239,46 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         }
     }
 
+    // --- 1.7 Workspace Healer Check (Task 260216_002) ---
+    // Hard Guard: For task_id >= 260216_002, workspace_healer_${task_id}.json must exist and be clean.
+    if (task_id >= '260216_002') {
+        console.log('[Gate Light] Checking Workspace Healer Evidence...');
+        const healerFile = path.join(result_dir, `workspace_healer_${task_id}.json`);
+        
+        if (!fs.existsSync(healerFile)) {
+            console.error(`[Gate Light] FAILED: Workspace Healer evidence missing: ${healerFile}`);
+            console.error(`  ACTION: Ensure 'run_task.ps1' Step 0 executed correctly.`);
+            process.exit(1);
+        }
+        
+        try {
+            const healerData = JSON.parse(fs.readFileSync(healerFile, 'utf8'));
+            
+            // Check result
+            if (healerData.result !== 'PASS') {
+                console.error(`[Gate Light] FAILED: Workspace Healer result is ${healerData.result}`);
+                console.error(`  Reason: ${healerData.reason || 'Unknown'}`);
+                process.exit(1);
+            }
+            
+            // Check cleanliness (Double Check)
+            const tracked = healerData.after?.tracked_changed_count ?? -1;
+            const untracked = healerData.after?.untracked_count ?? -1;
+            
+            if (tracked !== 0 || untracked !== 0) {
+                console.error(`[Gate Light] FAILED: Workspace Healer detected dirty state AFTER clean.`);
+                console.error(`  Tracked Changed: ${tracked} (Expected: 0)`);
+                console.error(`  Untracked: ${untracked} (Expected: 0)`);
+                process.exit(1);
+            }
+            
+            console.log('[Gate Light] Workspace Healer verified (Clean Environment).');
+        } catch (e) {
+            console.error(`[Gate Light] FAILED: Invalid Workspace Healer JSON: ${e.message}`);
+            process.exit(1);
+        }
+    }
+
     // --- 2. Check CI Parity JSON Evidence (Task 260211_002) ---
     // Hard Guard: Must exist, be valid JSON, match current git state, and pass anti-cheat.
     console.log('[Gate Light] Checking CI Parity JSON Evidence...');
