@@ -493,21 +493,13 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
     // --- Strict Healthcheck Validation (Task 260208_023) ---
     console.log('[Gate Light] Checking healthcheck evidence...');
 
-    // 1. Derive month dir from task_id (e.g. 260208_XXX => 2026-02)
-    // Format: YYMMDD_XXX. 26->2026, 02->02
-    const match = task_id.match(/^(\d{2})(\d{2})\d{2}_/);
-    if (!match) {
-        // Fallback or error? Strict mode implies error if we can't parse.
-        // But let's be safe, if regex fails, maybe just use result_dir if it matches pattern?
-        // Requirement says: "以 rules/LATEST.json 解析得到 task_id，并据此推导月份目录"
-        console.error(`[Gate Light] Invalid task_id format for date derivation: ${task_id}`);
+    // Use the resolved result_dir which respects LATEST.json/Arguments
+    if (!result_dir) {
+        console.error(`[Gate Light] FAILED: result_dir not resolved for healthcheck verification.`);
         process.exit(1);
     }
-    const year = '20' + match[1];
-    const month = match[2];
-    const monthDir = `${year}-${month}`;
-    // Path: rules/task-reports/YYYY-MM/
-    const evidenceDir = path.join('rules', 'task-reports', monthDir);
+    const evidenceDir = result_dir;
+    console.log(`[Gate Light] Using evidence directory: ${evidenceDir}`);
 
     const rootFile = path.join(evidenceDir, `${task_id}_healthcheck_53122_root.txt`);
     const pairsFile = path.join(evidenceDir, `${task_id}_healthcheck_53122_pairs.txt`);
