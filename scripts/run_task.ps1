@@ -29,6 +29,12 @@ if ($GenerateScript) {
     }
 }
 
+# --- Start Transcript (Log Everything) ---
+$LogFile = "$EvidenceDir\run_$TaskId.log"
+Start-Transcript -Path $LogFile -Force
+
+try {
+
 Write-Host ">>> [RunTask] TaskId: $TaskId | Mode: $Mode | Header: $Header" -ForegroundColor Cyan
 Write-Host ">>> [RunTask] Evidence Dir: $EvidenceDir" -ForegroundColor Gray
 
@@ -181,6 +187,10 @@ if ($Mode -eq "Integrate") {
 
     # --- Step 8: Archive & Lock (Integrate Only) ---
     Write-Host ">>> [RunTask] Step 8: Archive & Lock" -ForegroundColor Cyan
+    
+    # Stop Transcript before Archive to ensure log is complete and hashable
+    Stop-Transcript
+
     node "$RepoRoot\scripts\assemble_evidence.mjs" --task_id=$TaskId --evidence_dir="$EvidenceDir" --mode=$Mode --phase=archive
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[RunTask] FAILED: Archive & Lock failed." -ForegroundColor Red

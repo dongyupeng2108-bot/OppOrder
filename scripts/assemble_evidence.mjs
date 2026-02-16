@@ -29,7 +29,8 @@ const inputs = {
     gitMeta: resolvePath(`git_meta_${taskId}.json`),
     attestation: resolvePath(`preflight_attestation_${taskId}.json`),
     workspaceHealer: resolvePath(`workspace_healer_${taskId}.json`),
-    resultJson: resolvePath(`result_${taskId}.json`)
+    resultJson: resolvePath(`result_${taskId}.json`),
+    runLog: resolvePath(`run_${taskId}.log`)
 };
 
 // --- 2. Read & Validate Inputs ---
@@ -236,6 +237,7 @@ const filesToIndex = [
     inputs.attestation,
     inputs.workspaceHealer,
     resultPath,
+    inputs.runLog,
     notifyPath,
     manualVerifyPath
 ];
