@@ -69,7 +69,9 @@ const mandatoryFiles = [
     `notify_${taskId}.txt`,
     `result_${taskId}.json`,
     `deliverables_index_${taskId}.json`,
-    `workspace_healer_${taskId}.json`
+    `workspace_healer_${taskId}.json`,
+    `${taskId}_healthcheck_53122_root.txt`,
+    `${taskId}_healthcheck_53122_pairs.txt`
 ];
 
 const missingMandatory = mandatoryFiles.filter(f => !requiredFiles.includes(f));
