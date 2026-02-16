@@ -273,8 +273,6 @@ const server = http.createServer((req, res) => {
     res.end('Not Found');
 });
 
-import crypto from 'crypto';
-
 server.listen(PORT, () => {
     console.log(`Mock server running on port ${PORT}`);
 });
