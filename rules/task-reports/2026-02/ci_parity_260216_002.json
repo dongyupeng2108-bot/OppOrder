@@ -1,0 +1,19 @@
+{
+  "task_id": "260216_002",
+  "base": "84b5961be1ca698b358dd2a66d4fb2c32e19a2d1",
+  "head": "9baca54253b521cebab3abf682f9eb64868d0923",
+  "merge_base": "24b175a247e425970442677bc9b6a93487d5f701",
+  "scope_files": [
+    "rules/LATEST.json",
+    "rules/task-reports/2026-02/generate_evidence_260216_002.mjs",
+    "scripts/assemble_evidence.mjs",
+    "scripts/gate_light_ci.mjs",
+    "scripts/mock_server.mjs",
+    "scripts/preflight.ps1",
+    "scripts/reset_workspace.ps1",
+    "scripts/run_task.ps1",
+    "scripts/smoke_workspace_healer_static.mjs"
+  ],
+  "scope_count": 9,
+  "generated_at": "2026-02-16T02:16:00.828Z"
+}
