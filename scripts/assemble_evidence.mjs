@@ -347,8 +347,9 @@ if (mode === 'Integrate' && phase === 'archive') {
                 task_id: taskId,
                 locked_at: new Date().toISOString(),
                 run_id: runTimestamp,
+                run_dir: `rules/task-reports/runs/${taskId}/${runTimestamp}`,
                 reason: "Immutable Integrate",
-                mode: "Integrate"
+                mode: mode
             };
             
             fs.writeFileSync(lockPath, JSON.stringify(lockData, null, 2));
