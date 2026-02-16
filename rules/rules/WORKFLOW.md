@@ -97,10 +97,23 @@ Before starting any new task, the Agent MUST perform these checks:
         *   **Prerequisites**: Clean git working directory (committed code).
         *   **Actions**:
             *   **Preflight**: Generates `preflight_attestation.json`.
+            *   **Contract First**: Runs `verify_contracts_early` BEFORE any business logic to fail fast on schema violations.
             *   **Pass 1 (Preview)**: Generates `gate_light_preview.log`.
             *   **Assemble**: Builds V3.9 Envelope (`notify`, `snippet`, `index`, `result`) binding code + preview.
             *   **Pass 2 (Verify)**: Runs Gate Light in **Verify Mode** (Strict Hard Guards).
             *   **Postflight**: Validates V3.9 Envelope compliance.
+            *   **Lock & Archive**: Generates `locks/<task_id>.lock.json` and archives evidence to `runs/<task_id>/<run_id>/`.
+
+    *   **Port 53122 Service Policy**:
+        *   **Unique Entry**: All tasks MUST use `ensure_server_53122` to manage the server.
+        *   **Port**: 53122 is the ONLY allowed port for OppRadar services.
+        *   **Behavior**: The script auto-kills stale processes on 53122 before starting a new instance.
+
+    *   **Evidence Path Standards**:
+        *   **Runtime (Ephemeral)**: `rules/task-reports/<YYYY-MM>/` (Must be `.gitignored`).
+        *   **Archived (Permanent)**: `rules/task-reports/runs/<task_id>/<run_id>/` (Tracked in git).
+        *   **Metadata (Tracked)**: `rules/task-reports/locks/` and `rules/task-reports/index/` and `rules/task-reports/envelopes/`.
+        *   **Gate Light Logic**: Gate Light locates evidence via the `run_dir` field in `locks/<task_id>.lock.json`.
 
 *   **CI Parity Probe Protocols**:
     *   **Anchor Stability**: The primary risk is Base/Head/MergeBase instability during the "Generate -> Commit -> Re-verify" cycle.

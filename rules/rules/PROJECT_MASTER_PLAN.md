@@ -60,6 +60,15 @@
     *   **Goal**: 建立双轨制规划，固化工作流协议，消除验证漂移。
     *   **Deliverables**: Dual-track Plan, Contract Version Guard, CI Parity Evidence.
     *   **Mapping**: Covers scope of former `M_Hardening`.
+*   **P1: Workspace Healer (DONE)**
+    *   **Deliverables**: `reset_workspace.ps1`, Preflight Cleanliness Check.
+*   **P2: Evidence Engine v1 (DONE)**
+    *   **Deliverables**: Archive Completeness, Pre-lock Validation, Git Ignore Fixes.
+*   **P3: Tooling Decouple (DONE)**
+    *   **Deliverables**: `run_task.ps1` State Machine (Dev/Integrate), Immutable Integrate Guard, Unified Server Policy.
+*   **P4: Documentation Convergence (In Progress)**
+    *   **Goal**: 收口 P1-P3 的“硬规则”，形成可执行的 WORKFLOW/RULES。
+    *   **Deliverables**: Updated WORKFLOW.md, PROJECT_RULES.md, PROJECT_MASTER_PLAN.md.
 
 #### M-Series (Business & Product)
 *   **M0: Bootstrap (DONE)**
@@ -142,6 +151,11 @@
     *   **No UTF-16**: Ban PowerShell default redirection; use `curl --output` or Node `fs`.
 4.  **Verifiable != Absolute Trust**: Gate Light provides **Traceability** and **Tamper-Evidence**, not mathematical proof. Do not over-promise "100% Trust".
 
+## 回归业务开发条件 (Return to Business Logic Criteria)
+- [ ] **Governance Debt Cleared**: P-Series tasks (P0-P4) fully DONE and merged.
+- [ ] **Workflow Stability**: 连续 3 次业务 PR 无需“Fix”即可一次性通过 Gate Light。
+- [ ] **Documentation Sync**: WORKFLOW.md 和 PROJECT_RULES.md 包含所有已知硬规则。
+
 ## 本窗口任务台账 (Current Session Task Ledger)
 
 > **Status Legend**:
@@ -150,14 +164,20 @@
 > *   **OPEN**: PR/Branch exists but not verified/passed.
 > *   **UNKNOWN**: Evidence missing or unverifiable.
 
-| Task ID | Status | Branch | Commit | Gate Light | Evidence Path |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| 260212_001 | MERGED | feat/news-pull-minspec-tests-260212_001 | 7b50c1a | 0 | rules/task-reports/2026-02/notify_260212_001.txt |
-| 260213_002 | MERGED | docs/plan-sync-260213_002 | 081a2f344cbc4fb3e883cf79cb3523543cc2420d | 0 | rules/task-reports/2026-02/notify_260213_002.txt |
-| 260213_003 | MERGED | feat/news-pull-pagination-260213_003-clean | 2454fc507164f2224e9487f4c8b0a4a48c78a690 | 0 | rules/task-reports/2026-02/notify_260213_003.txt |
-| 260213_004 | MERGED | feat/news-pull-provider-260213_004 | 0da8bcabc3ac13204b0bbc5dcbf46b895ac0f2e3 | 0 | rules/task-reports/2026-02/notify_260213_004.txt |
-| 260214_005 | MERGED | feat/news-store-list-260214_005 | 4925f3e | 0 | rules/task-reports/2026-02/notify_260214_005.txt |
-| 260214_006 | MERGED | docs/lessons-006-007-settings-index-260214_006 | 2841ea3 | 0 | rules/task-reports/2026-02/notify_260214_006.txt |
-| 260214_007 | MERGED | chore/post005-smoke-260214_007 | 7e2ccdd62f05fecd6bb9cde128eba77a0f153963 | 0 | rules/task-reports/2026-02/notify_260214_007.txt |
-| 260214_008 | DONE | docs/plan-update-published-tasks-only-260214_008 | b346903 | 0 | rules/task-reports/2026-02/notify_260214_008.txt |
-| 260214_009 | DONE | feat/opps-score-v2-260214_009 | 3f71d52 | 0 | rules/task-reports/2026-02/notify_260214_009.txt |
+| Task ID | Status | Branch | PR # | Commit | Gate Light | Key Conclusion |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 260216_001 | MERGED | feat/p1-open-pr-guard-260216_001 | #97 | (via GH) | 0 | Open PR Guard Implemented |
+| 260216_002 | MERGED | feat/p1-workspace-healer-260216_002 | #98 | (via GH) | 0 | Workspace Healer Enforced |
+| 260216_003 | MERGED | feat/p2-evidence-engine-v1-260216_003 | #99 | (via GH) | 0 | Evidence Archive V1 |
+| 260216_004 | MERGED | feat/p3-tooling-decouple-260216_004 | #100 | (via GH) | 0 | Tooling Decouple (Dev/Integrate) |
+| 260216_005 | In Progress | feat/p4-doc-convergence-260216_005 | - | - | - | Documentation Convergence |
+
+| 260212_001 | MERGED | feat/news-pull-minspec-tests-260212_001 | - | 7b50c1a | 0 | - |
+| 260213_002 | MERGED | docs/plan-sync-260213_002 | - | 081a2f3 | 0 | - |
+| 260213_003 | MERGED | feat/news-pull-pagination-260213_003-clean | - | 2454fc5 | 0 | - |
+| 260213_004 | MERGED | feat/news-pull-provider-260213_004 | - | 0da8bca | 0 | - |
+| 260214_005 | MERGED | feat/news-store-list-260214_005 | - | 4925f3e | 0 | - |
+| 260214_006 | MERGED | docs/lessons-006-007-settings-index-260214_006 | - | 2841ea3 | 0 | - |
+| 260214_007 | MERGED | chore/post005-smoke-260214_007 | - | 7e2ccdd | 0 | - |
+| 260214_008 | DONE | docs/plan-update-published-tasks-only-260214_008 | - | b346903 | 0 | - |
+| 260214_009 | DONE | feat/opps-score-v2-260214_009 | - | 3f71d52 | 0 | - |
