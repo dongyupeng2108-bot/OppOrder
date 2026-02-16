@@ -5,6 +5,9 @@ rules/task-reports/**
 !rules/task-reports/locks/
 !rules/task-reports/index/
 
+# Legacy/Other Runtime Reports
+rules/reports/**
+
 # Node modules
 node_modules/
 
@@ -14,3 +17,4 @@ node_modules/
 # Data
 OppRadar/data/
 data/runtime/
+data/opps_runs/
