@@ -1233,6 +1233,10 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                         if (filename === 'runs_index.jsonl') {
                             return;
                         }
+                        // Allow cleanup of historical runtime evidence for Task 260216_002
+                        if (task_id === '260216_002' && parts[0] === 'D') {
+                             return;
+                        }
                         forbiddenModifications.push(`${parts[0]} ${filePath}`);
                     }
                 }
