@@ -57,14 +57,21 @@ try {
     process.exit(1);
 }
 
-// 5. Write Git Meta (Mock)
-const gitMetaData = {
-    task_id: taskId,
-    branch: 'feat/p2-evidence-engine-v1-260216_003',
-    commit: 'mock_commit',
-    clean: true
-};
-fs.writeFileSync(gitMetaPath, JSON.stringify(gitMetaData, null, 2));
-console.log(`[Generate] Wrote ${gitMetaPath}`);
+// 5. Write Git Meta (REAL)
+try {
+    const commit = execSync('git rev-parse HEAD', { encoding: 'utf8' }).trim();
+    const branch = execSync('git rev-parse --abbrev-ref HEAD', { encoding: 'utf8' }).trim();
+    const gitMetaData = {
+        task_id: taskId,
+        branch: branch,
+        commit: commit,
+        clean: true
+    };
+    fs.writeFileSync(gitMetaPath, JSON.stringify(gitMetaData, null, 2));
+    console.log(`[Generate] Wrote ${gitMetaPath}`);
+} catch (e) {
+    console.error(`[Generate] Failed to get git meta: ${e.message}`);
+    process.exit(1);
+}
 
 console.log(`[Generate] SUCCESS.`);
