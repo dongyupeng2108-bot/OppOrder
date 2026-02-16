@@ -154,6 +154,32 @@ const server = http.createServer((req, res) => {
             sendJson(filtered);
             return;
         }
+
+        if (pathname === '/opportunities/runs/export_v1') {
+            const runId = parsedUrl.searchParams.get('run_id');
+            sendJson({
+                meta: {
+                    run_id: runId || 'mock_run',
+                    created_at: new Date().toISOString(),
+                    items_count: 5
+                },
+                scan_input: {
+                    limit: 5,
+                    provider: 'mock'
+                },
+                rank_v2: Array.from({ length: 5 }, (_, i) => ({
+                    opp_id: `mock_opp_${i}`,
+                    score_v2: Math.random(),
+                    p_hat: Math.random(),
+                    p_llm: Math.random(),
+                    p_ci: {
+                        low: 0.4,
+                        high: 0.6
+                    }
+                }))
+            });
+            return;
+        }
     }
 
     if (req.method === 'POST') {
