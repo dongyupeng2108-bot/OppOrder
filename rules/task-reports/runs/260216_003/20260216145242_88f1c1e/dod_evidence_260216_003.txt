@@ -1,5 +1,0 @@
-=== DOD_EVIDENCE_STDOUT ===
-[Evidence Engine v1] Dummy Evidence Generation
-Task: 260216_003
-Status: PASS
-===========================
