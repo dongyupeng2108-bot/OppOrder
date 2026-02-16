@@ -419,7 +419,7 @@ async function validate(resultDir, taskId, report) {
             console.log(`[Postflight] Running Evidence Smoke Test for ${taskId}...`);
             const smokeTestScript = path.join(__dirname, 'evidence_smoke_test.mjs');
             // resultDir is where the artifacts are (e.g., rules/task-reports/runs/...)
-            execSync(`node "${smokeTestScript}" --task_id ${taskId} --dir "${resultDir}"`, { stdio: 'inherit' });
+            execSync(`node "${smokeTestScript}" --task_id=${taskId} --dir="${resultDir}"`, { stdio: 'inherit' });
             report.checks.smoke_test = "PASS";
         } catch (e) {
             fail(report, 'POSTFLIGHT_SMOKE_TEST_FAILED', `Evidence Smoke Test Failed. See logs above.`);
