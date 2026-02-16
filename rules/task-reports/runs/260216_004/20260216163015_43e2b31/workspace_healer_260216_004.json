@@ -1,0 +1,28 @@
+{
+    "mode":  "EnforceClean",
+    "branch":  "feat/p3-tooling-decouple-260216_004",
+    "cleaned_paths":  [
+                          "rules/task-reports",
+                          "rules/reports",
+                          "rules/task-reports/locks",
+                          "rules/task-reports/runs"
+                      ],
+    "after":  {
+                  "untracked_count":  0,
+                  "tracked_changed_count":  0,
+                  "sample_paths":  {
+
+                                   }
+              },
+    "head_commit":  "43e2b31b76651b0b0379fd22f33f5a4b62dfb131",
+    "before":  {
+                   "untracked_count":  0,
+                   "tracked_changed_count":  0,
+                   "sample_paths":  {
+
+                                    }
+               },
+    "repo_root":  "E:/OppRadar",
+    "reason":  null,
+    "result":  "PASS"
+}
