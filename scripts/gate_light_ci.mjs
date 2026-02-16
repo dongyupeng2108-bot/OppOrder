@@ -1218,9 +1218,10 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                 const normalizedPath = filePath.replace(/\\/g, '/');
                 
                 if (normalizedPath.startsWith('rules/task-reports/')) {
-                    // Check if filename contains current task_id
+                    // Check if path or filename contains current task_id
+                    // Allowing path match ensures files in rules/task-reports/runs/<task_id>/ are allowed
                     const filename = path.basename(normalizedPath);
-                    if (!filename.includes(task_id)) {
+                    if (!normalizedPath.includes(task_id)) {
                         // Allow if matches legacy task_id (Transition scenario)
                         if (allowedLegacyTaskId && filename.includes(allowedLegacyTaskId)) {
                             return;

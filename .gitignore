@@ -10,11 +10,6 @@ data/runtime/
 # Evidence Artifacts (Runtime) - STRICT ISOLATION
 reports/healthcheck_*.txt
 rules/task-reports/**
-!rules/task-reports/index/
-!rules/task-reports/index/**
-!rules/task-reports/locks/
-!rules/task-reports/locks/**
-# rules/task-reports/runs/ is intentionally ignored to prevent dirty workspace loops
 rules/reports/**
 data/opps_runs/
 data/opps_ledger/**
