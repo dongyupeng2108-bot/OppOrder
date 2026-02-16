@@ -49,7 +49,8 @@ console.log(`[Generate] Wrote ${notifyPath}`);
 try {
     console.log('[Generate] Running ci_parity_probe.mjs...');
     const probeScript = path.join(repoRoot, 'scripts', 'ci_parity_probe.mjs');
-    execSync(`node "${probeScript}" --task_id ${taskId} --output "${ciParityPath}"`, { stdio: 'inherit' });
+    // ci_parity_probe takes --result_dir, not --output
+    execSync(`node "${probeScript}" --task_id ${taskId} --result_dir "${evidenceDir}"`, { stdio: 'inherit' });
     console.log(`[Generate] Wrote ${ciParityPath}`);
 } catch (e) {
     console.error(`[Generate] Failed to run ci_parity_probe.mjs: ${e.message}`);
