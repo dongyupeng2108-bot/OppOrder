@@ -13,6 +13,18 @@ param (
 $ErrorActionPreference = "Stop"
 $RepoRoot = "E:\OppRadar"
 
+# --- 1. Immutable Integrate Guard (Fail-fast) ---
+# Must be the very first check before anything else.
+if ($Mode -eq "Integrate") {
+    $LockFile = "$RepoRoot\rules\task-reports\locks\$TaskId.lock.json"
+    if (Test-Path $LockFile) {
+        Write-Error "[RunTask] FAILED: Immutable Integrate Guard Triggered."
+        Write-Error "    Lock file already exists: $LockFile"
+        Write-Error "    You MUST use a new task_id. Modification of locked tasks is FORBIDDEN."
+        exit 1
+    }
+}
+
 # --- Helper: Find Evidence Directory & Generator ---
 # Try to find generate script (js or mjs)
 $GenerateScript = Get-ChildItem -Path "$RepoRoot\rules\task-reports" -Recurse | Where-Object { $_.Name -match "^generate_evidence_$TaskId\.(js|mjs)$" } | Select-Object -First 1
@@ -38,28 +50,22 @@ try {
 Write-Host ">>> [RunTask] TaskId: $TaskId | Mode: $Mode | Header: $Header" -ForegroundColor Cyan
 Write-Host ">>> [RunTask] Evidence Dir: $EvidenceDir" -ForegroundColor Gray
 
-# --- Step 0: Workspace Healer ---
-Write-Host ">>> [RunTask] Step 0: Workspace Healer" -ForegroundColor Cyan
-$HealerEvidence = "$EvidenceDir\workspace_healer_$TaskId.json"
-# Capture stdout to file, ensure ASCII
-$HealerCmd = "powershell -ExecutionPolicy Bypass -File ""$RepoRoot\scripts\reset_workspace.ps1"" -Mode EnforceClean"
-# Execute and capture output
-try {
-    $HealerJson = Invoke-Expression $HealerCmd
-    $HealerJson | Out-File -FilePath $HealerEvidence -Encoding ascii
-    
-    # Check if result is PASS (simple string check or parse)
-    # Since we want fail-fast, we check exit code of the script first
+# --- State Skeleton ---
+Write-Host "[State] INITIALIZING..." -ForegroundColor Cyan
+
+# --- Step 0: Unified Service Policy ---
+Write-Host ">>> [RunTask] Step 0: Service Policy (ensure_server_53122)" -ForegroundColor Cyan
+$ServiceScript = "$RepoRoot\scripts\ensure_server_53122.ps1"
+if (Test-Path $ServiceScript) {
+    # Call the service script
+    & $ServiceScript
     if ($LASTEXITCODE -ne 0) {
-        Write-Host "[RunTask] FAILED: Workspace Healer failed." -ForegroundColor Red
-        if (Test-Path $HealerEvidence) { Get-Content $HealerEvidence | Write-Host }
+        Write-Host "[RunTask] FAILED: Service Policy check failed." -ForegroundColor Red
         exit 1
     }
-} catch {
-    Write-Host "[RunTask] FAILED: Workspace Healer execution error: $_" -ForegroundColor Red
-    exit 1
+} else {
+    Write-Host "[RunTask] Warning: Service Policy script not found ($ServiceScript)." -ForegroundColor Yellow
 }
-Write-Host "    Workspace Healer PASS. Output: $HealerEvidence" -ForegroundColor Gray
 
 # --- Step 1: Preflight ---
 Write-Host ">>> [RunTask] Step 1: Preflight" -ForegroundColor Cyan
@@ -82,6 +88,44 @@ if ($LASTEXITCODE -ne 0) {
 }
 Write-Host "    Open PR Guard PASS. Output: $OpenPRGuardOutput" -ForegroundColor Gray
 
+# --- Step 1.3: Contract Verification First (Contract First) ---
+# Must run before any evidence generation.
+Write-Host ">>> [RunTask] Step 1.3: Contract Verification First" -ForegroundColor Cyan
+$ContractScript = "$RepoRoot\scripts\verify_contracts_early.mjs"
+if (Test-Path $ContractScript) {
+    node $ContractScript
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "[RunTask] FAILED: Contract Verification failed." -ForegroundColor Red
+        exit 1
+    }
+} else {
+    Write-Host "[RunTask] Warning: Contract Verification script not found ($ContractScript)." -ForegroundColor Yellow
+}
+
+# --- Step 1.4: Workspace Healer ---
+# (Moved after contracts/preflight to ensure clean slate right before heavy lifting)
+Write-Host ">>> [RunTask] Step 1.4: Workspace Healer" -ForegroundColor Cyan
+$HealerEvidence = "$EvidenceDir\workspace_healer_$TaskId.json"
+# Capture stdout to file, ensure ASCII
+$HealerCmd = "powershell -ExecutionPolicy Bypass -File ""$RepoRoot\scripts\reset_workspace.ps1"" -Mode EnforceClean"
+# Execute and capture output
+try {
+    $HealerJson = Invoke-Expression $HealerCmd
+    $HealerJson | Out-File -FilePath $HealerEvidence -Encoding ascii
+    
+    # Check if result is PASS (simple string check or parse)
+    # Since we want fail-fast, we check exit code of the script first
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "[RunTask] FAILED: Workspace Healer failed." -ForegroundColor Red
+        if (Test-Path $HealerEvidence) { Get-Content $HealerEvidence | Write-Host }
+        exit 1
+    }
+} catch {
+    Write-Host "[RunTask] FAILED: Workspace Healer execution error: $_" -ForegroundColor Red
+    exit 1
+}
+Write-Host "    Workspace Healer PASS. Output: $HealerEvidence" -ForegroundColor Gray
+
 # --- Step 1.5: Healthcheck Evidence ---
 Write-Host ">>> [RunTask] Step 1.5: Healthcheck Evidence" -ForegroundColor Cyan
 $HealthRoot = "$EvidenceDir\${TaskId}_healthcheck_53122_root.txt"
@@ -101,6 +145,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 # --- Step 2: Generate Evidence (Dev/Integrate) ---
+Write-Host "[State] GENERATING EVIDENCE..." -ForegroundColor Cyan
 if ($GenerateScript) {
     Write-Host ">>> [RunTask] Step 2: Generate Evidence" -ForegroundColor Cyan
     
@@ -118,6 +163,7 @@ if ($GenerateScript) {
 }
 
 # --- Step 3: Pass 1 - Gate Light Preview ---
+Write-Host "[State] VERIFYING (Pass 1)..." -ForegroundColor Cyan
 Write-Host ">>> [RunTask] Step 3: Pass 1 - Gate Light Preview" -ForegroundColor Cyan
 $PreviewLog = "$EvidenceDir\gate_light_preview_$TaskId.log"
 $Env:GENERATE_PREVIEW = "1"
@@ -145,6 +191,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 # --- Step 5: Pass 2 - Gate Light Verify ---
+Write-Host "[State] VERIFYING (Pass 2)..." -ForegroundColor Cyan
 Write-Host ">>> [RunTask] Step 5: Pass 2 - Gate Light Verify" -ForegroundColor Cyan
 $VerifyLog = "$EvidenceDir\gate_light_verify_$TaskId.log"
 # Use cmd /c to ensure redirection works and capture both stdout and stderr
@@ -158,6 +205,7 @@ Write-Host "    Verify Log: $VerifyLog" -ForegroundColor Gray
 
 # --- Step 6: Postflight (Integrate Only) ---
 if ($Mode -eq "Integrate") {
+    Write-Host "[State] POSTFLIGHT..." -ForegroundColor Cyan
     Write-Host ">>> [RunTask] Step 6: Postflight (Integrate)" -ForegroundColor Cyan
     $PostflightScript = "$RepoRoot\scripts\postflight_validate_envelope.mjs"
     if (Test-Path $PostflightScript) {
@@ -186,6 +234,7 @@ if ($Mode -eq "Integrate") {
     Write-Host "    Updated notify and index with Verify logs." -ForegroundColor Gray
 
     # --- Step 8: Archive & Lock (Integrate Only) ---
+    Write-Host "[State] ARCHIVING..." -ForegroundColor Cyan
     Write-Host ">>> [RunTask] Step 8: Archive & Lock" -ForegroundColor Cyan
     
     # --- Step 8.1: Evidence Smoke Test (Archive Precheck) ---
