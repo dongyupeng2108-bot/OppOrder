@@ -11,6 +11,7 @@ import crypto from 'crypto';
 const ARGS = process.argv.slice(2);
 const taskId = ARGS.find(arg => arg.startsWith('--task_id='))?.split('=')[1];
 const evidenceDir = ARGS.find(arg => arg.startsWith('--evidence_dir='))?.split('=')[1] || `rules/task-reports/${new Date().toISOString().slice(0, 7)}`;
+const mode = ARGS.find(arg => arg.startsWith('--mode='))?.split('=')[1];
 
 if (!taskId) {
     console.error('Usage: node scripts/assemble_evidence.mjs --task_id=<id> [--evidence_dir=<path>]');
@@ -278,3 +279,70 @@ fs.writeFileSync(snippetPath, notifyContent);
 console.log(`[Assembler] Wrote snippet: ${snippetPath}`);
 
 console.log(`[Assembler] SUCCESS: Assembled evidence for Task ${taskId}.`);
+
+// --- 9. Archive & Lock (Integrate Mode Only) ---
+if (mode === 'Integrate') {
+    const verifyLogPath = resolvePath(`gate_light_verify_${taskId}.log`);
+    // Check if Verify Log exists (Step 7 indicator)
+    if (fs.existsSync(verifyLogPath)) {
+        const repoRoot = path.resolve(evidenceDir, '../../..'); // E:\OppRadar
+        const lockPath = path.join(repoRoot, 'rules/task-reports/locks', `${taskId}.lock.json`);
+
+        if (fs.existsSync(lockPath)) {
+            console.log(`[Assembler] Task ${taskId} is already locked. Skipping Archive.`);
+        } else {
+            console.log(`[Assembler] Integrate Mode & Verify Log found. Archiving & Locking...`);
+            
+            // 9.1. Prepare Run ID
+            const shortSha = gitMeta.commit ? gitMeta.commit.substring(0, 7) : 'unknown';
+            const runTimestamp = new Date().toISOString().replace(/[-:T.]/g, '').slice(0, 14) + '_' + shortSha;
+            const runsBaseDir = path.join(repoRoot, 'rules/task-reports/runs', taskId);
+            const runDir = path.join(runsBaseDir, runTimestamp);
+            
+            if (!fs.existsSync(runDir)) {
+                fs.mkdirSync(runDir, { recursive: true });
+            }
+            
+            // 9.2. Copy Files
+            const filesToCopy = [...filesToIndex, indexPath, snippetPath, verifyLogPath];
+            filesToCopy.forEach(src => {
+                if (fs.existsSync(src)) {
+                    const dest = path.join(runDir, path.basename(src));
+                    fs.copyFileSync(src, dest);
+                }
+            });
+            console.log(`[Assembler] Archived evidence to: ${runDir}`);
+
+            // 9.3. Update Runs Index
+            const indexFile = path.join(repoRoot, 'rules/task-reports/index/runs_index.jsonl');
+            const indexEntry = {
+                task_id: taskId,
+                run_id: runTimestamp,
+                timestamp_utc: new Date().toISOString(),
+                lock_path: `rules/task-reports/locks/${taskId}.lock.json`,
+                run_dir: `rules/task-reports/runs/${taskId}/${runTimestamp}`,
+                head: gitMeta.commit,
+                base: ciParityData.base || "origin/main",
+                merge_base: ciParityData.merge_base || "unknown"
+            };
+            
+            fs.appendFileSync(indexFile, JSON.stringify(indexEntry) + '\n');
+            console.log(`[Assembler] Updated runs index: ${indexFile}`);
+
+            // 9.4. Create Lock File (Last)
+            const locksDir = path.dirname(lockPath);
+            if (!fs.existsSync(locksDir)) fs.mkdirSync(locksDir, { recursive: true });
+            
+            const lockData = {
+                task_id: taskId,
+                locked_at: new Date().toISOString(),
+                run_id: runTimestamp,
+                reason: "Immutable Integrate",
+                mode: "Integrate"
+            };
+            
+            fs.writeFileSync(lockPath, JSON.stringify(lockData, null, 2));
+            console.log(`[Assembler] Created lock file: ${lockPath}`);
+        }
+    }
+}

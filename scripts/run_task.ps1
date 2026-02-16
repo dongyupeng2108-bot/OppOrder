@@ -127,7 +127,7 @@ Write-Host "    Preview Log: $PreviewLog" -ForegroundColor Gray
 
 # --- Step 4: Assemble Evidence ---
 Write-Host ">>> [RunTask] Step 4: Assemble Evidence" -ForegroundColor Cyan
-node "$RepoRoot\scripts\assemble_evidence.mjs" --task_id=$TaskId --evidence_dir="$EvidenceDir"
+node "$RepoRoot\scripts\assemble_evidence.mjs" --task_id=$TaskId --evidence_dir="$EvidenceDir" --mode=$Mode
 if ($LASTEXITCODE -ne 0) {
     Write-Host "[RunTask] FAILED: Assemble Evidence failed." -ForegroundColor Red
     exit 1
@@ -167,7 +167,7 @@ if ($Mode -eq "Integrate") {
     Copy-Item -Path $VerifyLog -Destination "$EvidenceDir\gate_light_preview_$TaskId.log" -Force
     
     # Re-run Assemble Evidence to update notify and index
-    node "$RepoRoot\scripts\assemble_evidence.mjs" --task_id=$TaskId --evidence_dir="$EvidenceDir"
+    node "$RepoRoot\scripts\assemble_evidence.mjs" --task_id=$TaskId --evidence_dir="$EvidenceDir" --mode=$Mode
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[RunTask] FAILED: Assemble Evidence update failed." -ForegroundColor Red
         exit 1
