@@ -1,0 +1,34 @@
+{
+  "task_id": "260214_007",
+  "milestone": "260214",
+  "status": "DONE",
+  "healthcheck": {
+    "root": 0,
+    "pairs": 0
+  },
+  "index_files": [
+    "rules/task-reports/2026-02/260214_007.json",
+    "rules/task-reports/2026-02/260214_007_healthcheck_53122_pairs.txt",
+    "rules/task-reports/2026-02/260214_007_healthcheck_53122_root.txt",
+    "rules/task-reports/2026-02/260214_007_manual_verification.json",
+    "rules/task-reports/2026-02/260214_007_news_pull_dedup.json",
+    "rules/task-reports/2026-02/260214_007_news_pull_idem1.json",
+    "rules/task-reports/2026-02/260214_007_news_pull_idem2.json",
+    "rules/task-reports/2026-02/260214_007_news_pull_idem_post1.json",
+    "rules/task-reports/2026-02/260214_007_news_pull_idem_post2.json",
+    "rules/task-reports/2026-02/260214_007_news_pull_limit2.json",
+    "rules/task-reports/2026-02/260214_007_news_pull_limit20.json",
+    "rules/task-reports/2026-02/260214_007_news_pull_limit9999.json",
+    "rules/task-reports/2026-02/260214_007_news_pull_page1.json",
+    "rules/task-reports/2026-02/260214_007_news_pull_page2.json",
+    "rules/task-reports/2026-02/260214_007_news_store_list.json",
+    "rules/task-reports/2026-02/260214_007_smoke_log.txt",
+    "rules/task-reports/2026-02/ci_parity_260214_007.json",
+    "rules/task-reports/2026-02/gate_light_ci_260214_007_final_fix.txt",
+    "rules/task-reports/2026-02/result_260214_007.json",
+    "rules/task-reports/2026-02/run_smoke_260214_007.mjs",
+    "rules/task-reports/2026-02/spec_260214_007.md"
+  ],
+  "forbidden_phrases_hit": [],
+  "report_file": "260214_007_manual_verification.json"
+}

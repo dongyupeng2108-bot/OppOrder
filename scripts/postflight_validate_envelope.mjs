@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import crypto from 'crypto';
+import { execSync } from 'child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -411,6 +412,21 @@ async function runSelfTest(outputFile) {
 
 // --- Validation Logic (Extracted for reuse) ---
 async function validate(resultDir, taskId, report) {
+    // 0. Smoke Test (Task 260216_003)
+    // Enforce manifest and required files check via evidence_smoke_test.mjs
+    if (taskId >= '260216_003') {
+        try {
+            console.log(`[Postflight] Running Evidence Smoke Test for ${taskId}...`);
+            const smokeTestScript = path.join(__dirname, 'evidence_smoke_test.mjs');
+            // resultDir is where the artifacts are (e.g., rules/task-reports/runs/...)
+            execSync(`node "${smokeTestScript}" --task_id=${taskId} --dir="${resultDir}"`, { stdio: 'inherit' });
+            report.checks.smoke_test = "PASS";
+        } catch (e) {
+            fail(report, 'POSTFLIGHT_SMOKE_TEST_FAILED', `Evidence Smoke Test Failed. See logs above.`);
+            return;
+        }
+    }
+
     // 1. Artifact Existence
     const requiredFiles = ['result', 'run', 'deliverables_index', 'notify'];
     // Optional for legacy, mandatory for >= 260210_006
