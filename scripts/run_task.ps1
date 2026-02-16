@@ -190,7 +190,7 @@ if ($Mode -eq "Integrate") {
     
     # --- Step 8.1: Evidence Smoke Test (Archive Precheck) ---
     Write-Host ">>> [RunTask] Step 8.1: Evidence Smoke Test" -ForegroundColor Cyan
-    node "$RepoRoot\scripts\evidence_smoke_test.mjs" --task_id $TaskId --dir "$EvidenceDir"
+    node "$RepoRoot\scripts\evidence_smoke_test.mjs" --task_id=$TaskId --dir="$EvidenceDir"
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[RunTask] FAILED: Evidence Smoke Test failed. Aborting Archive." -ForegroundColor Red
         exit 1
