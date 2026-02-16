@@ -60,6 +60,12 @@
     *   **Goal**: 建立双轨制规划，固化工作流协议，消除验证漂移。
     *   **Deliverables**: Dual-track Plan, Contract Version Guard, CI Parity Evidence.
     *   **Mapping**: Covers scope of former `M_Hardening`.
+*   **P1: Workspace Healer (DONE)**
+    *   **Deliverables**: `reset_workspace.ps1`, Preflight Cleanliness Check.
+*   **P2: Evidence Engine v1 (DONE)**
+    *   **Deliverables**: Archive Completeness, Pre-lock Validation, Git Ignore Fixes.
+*   **P3: Tooling Decouple (DONE)**
+    *   **Deliverables**: `run_task.ps1` State Machine (Dev/Integrate), Immutable Integrate Guard, Unified Server Policy.
 
 #### M-Series (Business & Product)
 *   **M0: Bootstrap (DONE)**
@@ -161,3 +167,6 @@
 | 260214_007 | MERGED | chore/post005-smoke-260214_007 | 7e2ccdd62f05fecd6bb9cde128eba77a0f153963 | 0 | rules/task-reports/2026-02/notify_260214_007.txt |
 | 260214_008 | DONE | docs/plan-update-published-tasks-only-260214_008 | b346903 | 0 | rules/task-reports/2026-02/notify_260214_008.txt |
 | 260214_009 | DONE | feat/opps-score-v2-260214_009 | 3f71d52 | 0 | rules/task-reports/2026-02/notify_260214_009.txt |
+| 260216_002 | DONE | feat/p1-workspace-healer-260216_002 | ca174ce | 0 | rules/task-reports/2026-02/notify_260216_002.txt |
+| 260216_003 | DONE | feat/p2-evidence-engine-v1-260216_003 | 264e57d | 0 | rules/task-reports/2026-02/notify_260216_003.txt |
+| 260216_004 | DONE | feat/p3-tooling-decouple-260216_004 | 911879d | 0 | rules/task-reports/2026-02/notify_260216_004.txt |
