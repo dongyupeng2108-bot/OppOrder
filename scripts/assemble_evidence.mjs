@@ -289,7 +289,7 @@ if (mode === 'Integrate') {
         const verifyContent = fs.readFileSync(verifyLogPath, 'utf8');
         if (!verifyContent.includes('GATE_LIGHT_EXIT=0')) {
             console.log(`[Assembler] Verify Log found but GATE_LIGHT_EXIT=0 is missing. Skipping Archive & Lock.`);
-            return;
+            process.exit(0);
         }
 
         const repoRoot = path.resolve(evidenceDir, '../../..'); // E:\OppRadar
