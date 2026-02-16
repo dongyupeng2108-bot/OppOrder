@@ -1,16 +1,16 @@
 {
   "task_id": "260216_002",
-  "generated_at": "2026-02-16T11:34:49.829Z",
+  "generated_at": "2026-02-16T12:52:10.016Z",
   "files": [
     {
       "name": "ci_parity_260216_002.json",
-      "size": 67848,
-      "sha256_short": "360cd5af"
+      "size": 68750,
+      "sha256_short": "4e239326"
     },
     {
       "name": "gate_light_preview_260216_002.log",
-      "size": 5345,
-      "sha256_short": "b1390632"
+      "size": 4690,
+      "sha256_short": "94606369"
     },
     {
       "name": "dod_evidence_260216_002.txt",
@@ -20,32 +20,32 @@
     {
       "name": "git_meta_260216_002.json",
       "size": 182,
-      "sha256_short": "911e33a8"
+      "sha256_short": "3afc21c0"
     },
     {
       "name": "preflight_attestation_260216_002.json",
-      "size": 292,
-      "sha256_short": "8fee107e"
+      "size": 286,
+      "sha256_short": "d6abd657"
     },
     {
       "name": "workspace_healer_260216_002.json",
       "size": 899,
-      "sha256_short": "37bdd751"
+      "sha256_short": "85aa3db9"
     },
     {
       "name": "result_260216_002.json",
       "size": 453,
-      "sha256_short": "846a6be3"
+      "sha256_short": "22a8f7cb"
     },
     {
       "name": "run_260216_002.log",
-      "size": 2961,
-      "sha256_short": "c1b8ac7a"
+      "size": 2418,
+      "sha256_short": "0b7a83ab"
     },
     {
       "name": "notify_260216_002.txt",
-      "size": 9255,
-      "sha256_short": "ec10858d"
+      "size": 8636,
+      "sha256_short": "f068241d"
     },
     {
       "name": "manual_verification_260216_002.json",
@@ -55,17 +55,17 @@
     {
       "name": "open_pr_guard_260216_002.json",
       "size": 154,
-      "sha256_short": "8ae41385"
+      "sha256_short": "f50408a3"
     },
     {
       "name": "260216_002_healthcheck_53122_root.txt",
       "size": 173,
-      "sha256_short": "588f1a26"
+      "sha256_short": "be5ea1fc"
     },
     {
       "name": "260216_002_healthcheck_53122_pairs.txt",
       "size": 178,
-      "sha256_short": "1c131276"
+      "sha256_short": "b6de7f83"
     }
   ]
 }
