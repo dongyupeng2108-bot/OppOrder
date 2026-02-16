@@ -1,0 +1,18 @@
+{
+  "task_id": "260214_005",
+  "milestone": "260214",
+  "status": "DONE",
+  "healthcheck": {
+    "root": 0,
+    "pairs": 0
+  },
+  "index_files": [
+    "notify_260214_005.txt",
+    "result_260214_005.json",
+    "260214_005_healthcheck_53122_root.txt",
+    "260214_005_healthcheck_53122_pairs.txt",
+    "manual_verification_260214_005.json"
+  ],
+  "forbidden_phrases_hit": [],
+  "report_file": "notify_260214_005.txt"
+}

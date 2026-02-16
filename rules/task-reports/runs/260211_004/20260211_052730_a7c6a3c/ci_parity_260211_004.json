@@ -1,0 +1,17 @@
+{
+  "task_id": "260211_004",
+  "base": "273f057c09b6de72c9c2b6f33245fc15a3016bdf",
+  "head": "a7c6a3c55ed063fca0106c572fbc01a766e7f9eb",
+  "merge_base": "273f057c09b6de72c9c2b6f33245fc15a3016bdf",
+  "scope_files": [
+    "contracts/llm_route_response.schema.json",
+    "rules/rules/PROJECT_MASTER_PLAN.md",
+    "rules/rules/PROJECT_RULES.md",
+    "scripts/gate_light_ci.mjs",
+    "scripts/llm_router.mjs",
+    "scripts/mock_server.mjs",
+    "scripts/smoke_llm_route.mjs"
+  ],
+  "scope_count": 7,
+  "generated_at": "2026-02-10T21:27:26.663Z"
+}

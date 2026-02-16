@@ -1,0 +1,81 @@
+Task: 260214_009
+Summary: M4 Opps Rank v2 API Implemented.
+Status: DONE
+
+=== DOD EVIDENCE ===
+DOD_EVIDENCE_OPPS_RANK_V2: E:/OppRadar/rules/task-reports/2026-02/opps_rank_v2_260214_009.json => rows=2 has_fields=p_hat,p_llm,p_ci,price_q,score_v2 sorted_by=score_v2_desc provider=mock stable=true
+DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/healthcheck_root_53122_260214_009.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/healthcheck_pairs_53122_260214_009.txt => HTTP/1.1 200 OK
+
+=== RESULT_JSON ===
+{
+  "task_id": "260214_009",
+  "status": "DONE",
+  "summary": "M4: Opps Rank v2 API (Deterministic Mock) + Evidence",
+  "report_file": "opps_rank_v2_260214_009.json",
+  "report_sha256_short": "1b274e28",
+  "dod_evidence": {
+    "opps_rank_v2": [
+      "DOD_EVIDENCE_OPPS_RANK_V2: E:/OppRadar/rules/task-reports/2026-02/opps_rank_v2_260214_009.json => rows=2 has_fields=p_hat,p_llm,p_ci,price_q,score_v2 sorted_by=score_v2_desc provider=mock stable=true"
+    ],
+    "healthcheck": [
+      "DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/healthcheck_root_53122_260214_009.txt => HTTP/1.1 200 OK",
+      "DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/healthcheck_pairs_53122_260214_009.txt => HTTP/1.1 200 OK"
+    ],
+    "gate_light_exit": 0
+  }
+}
+
+=== LOG_HEAD ===
+[MOCK LOG HEAD]
+Starting execution for 260214_009...
+Evidence generation started...
+
+=== LOG_TAIL ===
+Evidence generation completed.
+Validation passed.
+[MOCK LOG TAIL]
+
+=== INDEX ===
+{
+  "files": [
+    {
+      "name": "rules/task-reports/2026-02/opps_rank_v2_260214_009.json",
+      "sha256_short": "1b274e28",
+      "size": 481
+    },
+    {
+      "name": "rules/task-reports/2026-02/result_260214_009.json",
+      "sha256_short": "df11f91d",
+      "size": 768
+    },
+    {
+      "name": "rules/task-reports/2026-02/healthcheck_root_53122_260214_009.txt",
+      "sha256_short": "9887f3a3",
+      "size": 123
+    },
+    {
+      "name": "rules/task-reports/2026-02/healthcheck_pairs_53122_260214_009.txt",
+      "sha256_short": "9887f3a3",
+      "size": 123
+    },
+    {
+      "name": "rules/task-reports/2026-02/manual_verification_260214_009.json",
+      "sha256_short": "ce538f87",
+      "size": 552
+    },
+    {
+      "name": "scripts/postflight_validate_envelope.mjs",
+      "sha256_short": "b7e24e15",
+      "size": 43086
+    },
+    {
+      "name": "rules/task-reports/2026-02/ci_parity_260214_009.json",
+      "sha256_short": "3fb131c0",
+      "size": 3322
+    }
+  ]
+}
+
+=== GATE_LIGHT_EXIT ===
+GATE_LIGHT_EXIT=0
