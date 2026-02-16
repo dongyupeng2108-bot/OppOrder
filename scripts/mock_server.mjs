@@ -180,6 +180,28 @@ const server = http.createServer((req, res) => {
             });
             return;
         }
+
+        if (pathname === '/opportunities/ledger/query_v0') {
+            const limit = parseInt(parsedUrl.searchParams.get('limit') || '10');
+            
+            const items = [];
+            for (let i = 0; i < limit; i++) {
+                items.push({
+                    run_id: `mock_run_${Date.now()}_${i}`,
+                    ts: new Date().toISOString(),
+                    source: 'mock_server',
+                    opportunity_id: `mock_opp_${i}`,
+                    rank_v2: Math.random()
+                });
+            }
+            
+            sendJson({
+                items: items,
+                total_estimate: 100,
+                next_cursor: 'mock_cursor_123'
+            });
+            return;
+        }
     }
 
     if (req.method === 'POST') {
