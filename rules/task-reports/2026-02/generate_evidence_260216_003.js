@@ -1,8 +1,10 @@
+const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
 const taskId = '260216_003';
 const evidenceDir = __dirname; // rules/task-reports/2026-02
+const repoRoot = path.resolve(evidenceDir, '../../..');
 
 const resultPath = path.join(evidenceDir, `result_${taskId}.json`);
 const dodPath = path.join(evidenceDir, `dod_evidence_${taskId}.txt`);
@@ -19,7 +21,6 @@ const resultData = {
     dod_evidence: {
         gate_light_exit: 0
     },
-    // Add lineage for dual commit protocol if needed, but this is a fresh task
     lineage: {
         base_commit: 'HEAD',
         landing_commit: 'HEAD',
@@ -44,15 +45,16 @@ TRAE_REPORT_SNIPPET: (See below)
 fs.writeFileSync(notifyPath, notifyContent.trim());
 console.log(`[Generate] Wrote ${notifyPath}`);
 
-// 4. Write CI Parity (Mock)
-const ciParityData = {
-    task_id: taskId,
-    merge_base: 'mock_merge_base',
-    ci_merge_base: 'mock_merge_base',
-    match: true
-};
-fs.writeFileSync(ciParityPath, JSON.stringify(ciParityData, null, 2));
-console.log(`[Generate] Wrote ${ciParityPath}`);
+// 4. Generate CI Parity (REAL)
+try {
+    console.log('[Generate] Running ci_parity_probe.mjs...');
+    const probeScript = path.join(repoRoot, 'scripts', 'ci_parity_probe.mjs');
+    execSync(`node "${probeScript}" --task_id ${taskId} --output "${ciParityPath}"`, { stdio: 'inherit' });
+    console.log(`[Generate] Wrote ${ciParityPath}`);
+} catch (e) {
+    console.error(`[Generate] Failed to run ci_parity_probe.mjs: ${e.message}`);
+    process.exit(1);
+}
 
 // 5. Write Git Meta (Mock)
 const gitMetaData = {
