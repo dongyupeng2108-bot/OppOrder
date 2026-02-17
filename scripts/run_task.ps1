@@ -7,11 +7,70 @@ param (
     [string]$Mode,
 
     [Parameter(Mandatory=$true)]
-    [string]$Header
+    [string]$Header,
+
+    [switch]$NonInteractive = $true
 )
 
 $ErrorActionPreference = "Stop"
+if ($NonInteractive) {
+    $ProgressPreference = 'SilentlyContinue'
+}
+
 $RepoRoot = "E:\OppRadar"
+
+# --- 0. Fail Budget & Immutable Integrate Guard ---
+$YearMonth = Get-Date -Format "yyyy-MM"
+$BudgetFile = "$RepoRoot\rules\task-reports\$YearMonth\.budget_$TaskId.json"
+if (-not (Test-Path "$RepoRoot\rules\task-reports\$YearMonth")) {
+    New-Item -ItemType Directory -Path "$RepoRoot\rules\task-reports\$YearMonth" -Force | Out-Null
+}
+
+# Load Budget
+$Budget = @{ Dev = 0; Integrate = 0 }
+if (Test-Path $BudgetFile) {
+    try {
+        $Budget = Get-Content $BudgetFile -Raw | ConvertFrom-Json -AsHashtable
+    } catch {
+        Write-Warning "Failed to load budget file. Resetting."
+    }
+}
+
+# Increment & Check
+if ($Mode -eq "Dev") {
+    $Budget.Dev++
+    if ($Budget.Dev -gt 2) {
+        Write-Error "[RunTask] FAILED: Dev Fail Budget Exceeded ($($Budget.Dev)/2)."
+        Write-Error "    You have exhausted your 2 allowed Dev attempts for Task $TaskId."
+        Write-Error "    Action: Fix your code/logic and use a NEW Task ID."
+        $Budget | ConvertTo-Json | Set-Content $BudgetFile
+        exit 1
+    }
+} elseif ($Mode -eq "Integrate") {
+    $Budget.Integrate++
+    if ($Budget.Integrate -gt 1) {
+        Write-Error "[RunTask] FAILED: Integrate Fail Budget Exceeded ($($Budget.Integrate)/1)."
+        Write-Error "    Integrate mode is strictly One-Shot."
+        Write-Error "    Action: Use a NEW Task ID."
+        $Budget | ConvertTo-Json | Set-Content $BudgetFile
+        exit 1
+    }
+}
+
+# Save Budget
+$Budget | ConvertTo-Json | Set-Content $BudgetFile
+
+# --- Helper: Check Interactive Failure ---
+function Check-Interactive-Failure {
+    param($LogFile)
+    if ($LogFile -and (Test-Path $LogFile)) {
+        $Content = Get-Content $LogFile -Tail 20 | Out-String
+        if ($Content -match "Please provide value" -or $Content -match "Select an option" -or $Content -match "Press any key" -or $Content -match "INTERACTIVE_PROMPT_DETECTED") {
+            Write-Error "INTERACTIVE_PROMPT_DETECTED"
+            exit 1
+        }
+    }
+}
 
 # --- 1. Immutable Integrate Guard (Fail-fast) ---
 # Must be the very first check before anything else.
@@ -57,10 +116,11 @@ Write-Host "[State] INITIALIZING..." -ForegroundColor Cyan
 Write-Host ">>> [RunTask] Step 0: Service Policy (ensure_server_53122)" -ForegroundColor Cyan
 $ServiceScript = "$RepoRoot\scripts\ensure_server_53122.ps1"
 if (Test-Path $ServiceScript) {
-    # Call the service script
+    # Call the service script (no pipe to avoid binding errors)
     & $ServiceScript
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[RunTask] FAILED: Service Policy check failed." -ForegroundColor Red
+        Check-Interactive-Failure "$EvidenceDir\run_$TaskId.log" # Check main log
         exit 1
     }
 } else {
@@ -72,18 +132,20 @@ Write-Host ">>> [RunTask] Step 1: Preflight" -ForegroundColor Cyan
 & "$RepoRoot\scripts\preflight.ps1" -TaskId $TaskId -Mode $Mode -Header $Header
 if ($LASTEXITCODE -ne 0) {
     Write-Host "[RunTask] FAILED: Preflight checks failed." -ForegroundColor Red
+    Check-Interactive-Failure "$EvidenceDir\run_$TaskId.log"
     exit 1
 }
 
 # --- Step 1.2: Open PR Guard ---
 Write-Host ">>> [RunTask] Step 1.2: Open PR Guard" -ForegroundColor Cyan
 $OpenPRGuardOutput = "$EvidenceDir\open_pr_guard_$TaskId.json"
-node "$RepoRoot\scripts\open_pr_guard.mjs" --task_id $TaskId --mode $Mode --output "$OpenPRGuardOutput"
+$null | node "$RepoRoot\scripts\open_pr_guard.mjs" --task_id $TaskId --mode $Mode --output "$OpenPRGuardOutput"
 if ($LASTEXITCODE -ne 0) {
     Write-Host "[RunTask] FAILED: Open PR Guard blocked execution." -ForegroundColor Red
     if (Test-Path $OpenPRGuardOutput) {
         Get-Content $OpenPRGuardOutput | Write-Host
     }
+    Check-Interactive-Failure "$EvidenceDir\run_$TaskId.log"
     exit 1
 }
 Write-Host "    Open PR Guard PASS. Output: $OpenPRGuardOutput" -ForegroundColor Gray
@@ -93,9 +155,10 @@ Write-Host "    Open PR Guard PASS. Output: $OpenPRGuardOutput" -ForegroundColor
 Write-Host ">>> [RunTask] Step 1.3: Contract Verification First" -ForegroundColor Cyan
 $ContractScript = "$RepoRoot\scripts\verify_contracts_early.mjs"
 if (Test-Path $ContractScript) {
-    node $ContractScript
+    $null | node $ContractScript
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[RunTask] FAILED: Contract Verification failed." -ForegroundColor Red
+        Check-Interactive-Failure "$EvidenceDir\run_$TaskId.log"
         exit 1
     }
 } else {
@@ -107,7 +170,7 @@ if (Test-Path $ContractScript) {
 Write-Host ">>> [RunTask] Step 1.4: Workspace Healer" -ForegroundColor Cyan
 $HealerEvidence = "$EvidenceDir\workspace_healer_$TaskId.json"
 # Capture stdout to file, ensure ASCII
-$HealerCmd = "powershell -ExecutionPolicy Bypass -File ""$RepoRoot\scripts\reset_workspace.ps1"" -Mode EnforceClean"
+$HealerCmd = "powershell -NonInteractive -ExecutionPolicy Bypass -File ""$RepoRoot\scripts\reset_workspace.ps1"" -Mode EnforceClean"
 # Execute and capture output
 try {
     $HealerJson = Invoke-Expression $HealerCmd
@@ -118,6 +181,7 @@ try {
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[RunTask] FAILED: Workspace Healer failed." -ForegroundColor Red
         if (Test-Path $HealerEvidence) { Get-Content $HealerEvidence | Write-Host }
+        Check-Interactive-Failure "$EvidenceDir\run_$TaskId.log"
         exit 1
     }
 } catch {
@@ -156,6 +220,7 @@ if ($GenerateScript) {
     node $GenerateScript.FullName
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[RunTask] FAILED: Evidence Generation failed." -ForegroundColor Red
+        Check-Interactive-Failure "$EvidenceDir\run_$TaskId.log"
         exit 1
     }
 } else {
@@ -170,7 +235,8 @@ $Env:GENERATE_PREVIEW = "1"
 
 # Use cmd /c to avoid PowerShell UTF-16 encoding issues
 $GateScript = "$RepoRoot\scripts\gate_light_ci.mjs"
-$CmdLine = "node ""$GateScript"" --task_id $TaskId --result_dir ""$EvidenceDir"" > ""$PreviewLog"" 2>&1"
+# Pipe NUL to ensure non-interactive
+$CmdLine = "node ""$GateScript"" --task_id $TaskId --result_dir ""$EvidenceDir"" < NUL > ""$PreviewLog"" 2>&1"
 cmd /c $CmdLine
 
 $Env:GENERATE_PREVIEW = $null
@@ -180,13 +246,16 @@ if (-not (Test-Path $PreviewLog)) {
     Write-Host "[RunTask] FAILED: Preview log not created." -ForegroundColor Red
     exit 1
 }
+Check-Interactive-Failure $PreviewLog
+
 Write-Host "    Preview Log: $PreviewLog" -ForegroundColor Gray
 
 # --- Step 4: Assemble Evidence ---
 Write-Host ">>> [RunTask] Step 4: Assemble Evidence" -ForegroundColor Cyan
-node "$RepoRoot\scripts\assemble_evidence.mjs" --task_id=$TaskId --evidence_dir="$EvidenceDir" --mode=$Mode --phase=assemble
+$null | node "$RepoRoot\scripts\assemble_evidence.mjs" --task_id=$TaskId --evidence_dir="$EvidenceDir" --mode=$Mode --phase=assemble
 if ($LASTEXITCODE -ne 0) {
     Write-Host "[RunTask] FAILED: Assemble Evidence failed." -ForegroundColor Red
+    Check-Interactive-Failure "$EvidenceDir\run_$TaskId.log"
     exit 1
 }
 
@@ -195,10 +264,11 @@ Write-Host "[State] VERIFYING (Pass 2)..." -ForegroundColor Cyan
 Write-Host ">>> [RunTask] Step 5: Pass 2 - Gate Light Verify" -ForegroundColor Cyan
 $VerifyLog = "$EvidenceDir\gate_light_verify_$TaskId.log"
 # Use cmd /c to ensure redirection works and capture both stdout and stderr
-cmd /c "node ""$RepoRoot\scripts\gate_light_ci.mjs"" --task_id $TaskId --mode $Mode --result_dir ""$EvidenceDir"" > ""$VerifyLog"" 2>&1"
+cmd /c "node ""$RepoRoot\scripts\gate_light_ci.mjs"" --task_id $TaskId --mode $Mode --result_dir ""$EvidenceDir"" < NUL > ""$VerifyLog"" 2>&1"
 if ($LASTEXITCODE -ne 0) {
     Write-Host "[RunTask] FAILED: Gate Light Verify failed. See $VerifyLog" -ForegroundColor Red
     Get-Content $VerifyLog | Select-Object -Last 20
+    Check-Interactive-Failure $VerifyLog
     exit 1
 }
 Write-Host "    Verify Log: $VerifyLog" -ForegroundColor Gray
@@ -210,10 +280,11 @@ if ($Mode -eq "Integrate") {
     $PostflightScript = "$RepoRoot\scripts\postflight_validate_envelope.mjs"
     if (Test-Path $PostflightScript) {
         # Append Postflight output to Verify Log
-        cmd /c "node $PostflightScript --task_id $TaskId --result_dir ""$EvidenceDir"" >> ""$VerifyLog"" 2>&1"
+        cmd /c "node $PostflightScript --task_id $TaskId --result_dir ""$EvidenceDir"" < NUL >> ""$VerifyLog"" 2>&1"
         if ($LASTEXITCODE -ne 0) {
             Write-Host "[RunTask] FAILED: Postflight validation failed. See $VerifyLog" -ForegroundColor Red
             Get-Content $VerifyLog | Select-Object -Last 20
+            Check-Interactive-Failure $VerifyLog
             exit 1
         }
     } else {
@@ -226,9 +297,10 @@ if ($Mode -eq "Integrate") {
     Copy-Item -Path $VerifyLog -Destination "$EvidenceDir\gate_light_preview_$TaskId.log" -Force
     
     # Re-run Assemble Evidence to update notify and index
-    node "$RepoRoot\scripts\assemble_evidence.mjs" --task_id=$TaskId --evidence_dir="$EvidenceDir" --mode=$Mode --phase=assemble
+    $null | node "$RepoRoot\scripts\assemble_evidence.mjs" --task_id=$TaskId --evidence_dir="$EvidenceDir" --mode=$Mode --phase=assemble
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[RunTask] FAILED: Assemble Evidence update failed." -ForegroundColor Red
+        Check-Interactive-Failure "$EvidenceDir\run_$TaskId.log"
         exit 1
     }
     Write-Host "    Updated notify and index with Verify logs." -ForegroundColor Gray
@@ -239,9 +311,10 @@ if ($Mode -eq "Integrate") {
     
     # --- Step 8.1: Evidence Smoke Test (Archive Precheck) ---
     Write-Host ">>> [RunTask] Step 8.1: Evidence Smoke Test" -ForegroundColor Cyan
-    node "$RepoRoot\scripts\evidence_smoke_test.mjs" --task_id=$TaskId --dir="$EvidenceDir"
+    $null | node "$RepoRoot\scripts\evidence_smoke_test.mjs" --task_id=$TaskId --dir="$EvidenceDir"
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[RunTask] FAILED: Evidence Smoke Test failed. Aborting Archive." -ForegroundColor Red
+        Check-Interactive-Failure "$EvidenceDir\run_$TaskId.log"
         exit 1
     }
     Write-Host "    Evidence Smoke Test PASS." -ForegroundColor Gray
@@ -250,9 +323,10 @@ if ($Mode -eq "Integrate") {
     Stop-Transcript
 
     # --- Step 8.2: Execute Archive ---
-    node "$RepoRoot\scripts\assemble_evidence.mjs" --task_id=$TaskId --evidence_dir="$EvidenceDir" --mode=$Mode --phase=archive
+    $null | node "$RepoRoot\scripts\assemble_evidence.mjs" --task_id=$TaskId --evidence_dir="$EvidenceDir" --mode=$Mode --phase=archive
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[RunTask] FAILED: Archive & Lock failed." -ForegroundColor Red
+        Check-Interactive-Failure "$EvidenceDir\run_$TaskId.log" # Main log is closed but we can check it
         exit 1
     }
     Write-Host "    Archived evidence and locked task." -ForegroundColor Gray

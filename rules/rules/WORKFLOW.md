@@ -135,3 +135,9 @@ To ignore a specific blocking PR (e.g., PR #103), you must explicitly declare it
 ### 3. Task Template Immutability
 - **Rule**: The standard Task Template structure (as defined in `scripts/scaffold_task.js` or equivalent) is **IMMUTABLE** within a normal feature task.
 - **Change Protocol**: Any change to the Task Template must be performed in a dedicated "Workflow Upgrade" task, explicitly titled as such.
+
+## Hard Rule — Task Release Gate (One-at-a-time) 
+未收到上一任务的正式回报且其中明确写出“DoD 达成/未达成”结论之前，禁止发布任何新的 TraeTask_* 任务。 
+违反该规则的任务视为无效，必须撤回并在上一任务闭环后重新发布。 
+
+除非显式发布 Workflow 升级任务，否则任务模板结构不可改变
