@@ -6,6 +6,11 @@ const PLAN_FILE = path.join(__dirname, '../rules/rules/PROJECT_MASTER_PLAN.md');
 const LOCKS_DIR = path.join(__dirname, '../rules/task-reports/locks');
 const RUNS_DIR = path.join(__dirname, '../rules/task-reports/runs');
 
+// 0. Manual Overrides (Abandoned Tasks)
+const ABANDONED_TASKS = [
+    '260216_009 = ABANDONED (Immutable Integrate violation, Superseded by 260216_010)'
+];
+
 // 1. System Identity
 const SYSTEM_IDENTITY = `## 1. System Identity
 *   **System Type**: Engineering-Centric System (Fact-Driven, CI-Authoritative)
@@ -135,6 +140,12 @@ function getEvidenceIndex() {
     return list;
 }
 
+// Helper: Get Abandoned Tasks
+function getAbandonedTasks() {
+    if (ABANDONED_TASKS.length === 0) return "*   *No abandoned tasks.*";
+    return ABANDONED_TASKS.map(t => `*   ${t}`).join('\n');
+}
+
 // Helper: Architecture Version
 function getArchVersion() {
     return `*   **Governance Version**: v3.9 (Gate Light)
@@ -164,10 +175,13 @@ ${getPRSnapshot()}
 ## 4. Gate / Lock Snapshot (Auto-Generated)
 ${getLockSnapshot()}
 
-## 5. Evidence Index
+## 5. Abandoned Tasks (Manual Override)
+${getAbandonedTasks()}
+
+## 6. Evidence Index
 ${getEvidenceIndex()}
 
-## 6. Architecture Version
+## 7. Architecture Version
 ${getArchVersion()}
 `;
 

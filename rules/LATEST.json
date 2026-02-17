@@ -1,4 +1,6 @@
 {
-  "task_id": "260216_009_WorkflowReleaseGate_FailBudget_NonInteractive",
-  "updated_at": "2026-02-17T00:00:00.000Z"
+  "task_id": "260216_010",
+  "description": "Fail Budget + Non-Interactive Guards (Supersedes 009)",
+  "author": "TraeAI",
+  "status": "pending_merge"
 }
