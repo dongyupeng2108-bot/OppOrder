@@ -28,13 +28,14 @@ try {
 # 2. Start Server
 Write-Host "[Service Policy] Starting $ServerScript..."
 $LogFile = "$RuntimeDir/mock_server_53122.log"
+$ErrFile = "$RuntimeDir/mock_server_53122.err"
 
 # Start process in background
 # Use Start-Process to detach slightly, but we need it to persist.
 # -NoNewWindow might bind it to current console which is okay for local dev but we want it to survive if possible?
 # Actually, for run_task.ps1, if we close the terminal, the server dies. That's usually fine for "ensure".
 # But user said "pid/temp files ... untracked".
-$Process = Start-Process -FilePath "node" -ArgumentList "$ServerScript" -RedirectStandardOutput $LogFile -RedirectStandardError $LogFile -PassThru -NoNewWindow
+$Process = Start-Process -FilePath "node" -ArgumentList "$ServerScript" -RedirectStandardOutput $LogFile -RedirectStandardError $ErrFile -PassThru -WindowStyle Hidden
 
 if ($Process.Id) {
     Write-Host "[Service Policy] Server Process Started (PID: $($Process.Id)). Logs: $LogFile"

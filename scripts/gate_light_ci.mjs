@@ -117,6 +117,12 @@ if (!targetTaskId) {
     console.log(`[Gate Light] Target defaulting to LATEST.json: ${targetTaskId}`);
 }
 
+// Auto-Promote Short ID (from Branch) to Full ID (from LATEST.json)
+if (targetTaskId && latestJson && latestJson.task_id && latestJson.task_id.startsWith(targetTaskId + '_')) {
+    console.log(`[Gate Light] Auto-Promoting Task ID from '${targetTaskId}' to '${latestJson.task_id}'`);
+    targetTaskId = latestJson.task_id;
+}
+
 const task_id = targetTaskId;
 
 // --- 1. Consistency Hard Rule (LATEST Consistency) ---

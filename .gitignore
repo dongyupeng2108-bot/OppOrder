@@ -16,6 +16,8 @@ node_modules/
 
 # Logs
 *.log
+runtime/
+runtime
 !rules/task-reports/runs/**/*.log
 
 # Data

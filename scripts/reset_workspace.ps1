@@ -92,13 +92,15 @@ function Clean-RuntimePaths {
         
         if (Test-Path $absPath) {
              # We execute git clean on the specific path relative to root
-             # git clean -fd -- path/to/dir
-             try {
-                 git clean -fd -- $path | Out-Null
-                 $cleaned += $path
-             } catch {
-                 Write-Warning "Failed to clean $path : $_"
-             }
+                 # git clean -fd -- path/to/dir
+                 # Exclude critical evidence files that might be generated before Healer runs
+                 # (e.g., preflight_attestation, workspace_healer itself if redirected)
+                 try {
+                     git clean -fd -e "*preflight_attestation*" -e "*workspace_healer*" -e "**/preflight_attestation_*.json" -e "**/workspace_healer_*.json" -- $path | Out-Null
+                     $cleaned += $path
+                 } catch {
+                     Write-Warning "Failed to clean $path : $_"
+                 }
         }
     }
     return $cleaned

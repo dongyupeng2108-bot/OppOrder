@@ -1,0 +1,8 @@
+{
+  "checked_at": "2026-02-17T14:35:06.245Z",
+  "task_id": "260216_009_WorkflowReleaseGate_FailBudget_NonInteractive",
+  "run_mode": "Integrate",
+  "open_prs_raw_count": 0,
+  "open_prs_blocking_count": 0,
+  "blocking_prs": []
+}

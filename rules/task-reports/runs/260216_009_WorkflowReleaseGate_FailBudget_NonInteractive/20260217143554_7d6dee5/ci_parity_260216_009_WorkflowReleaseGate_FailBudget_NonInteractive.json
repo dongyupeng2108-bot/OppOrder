@@ -1,0 +1,20 @@
+{
+  "task_id": "260216_009_WorkflowReleaseGate_FailBudget_NonInteractive",
+  "base": "2daea872fd1d2eac68ac40d2d2d11cf85910fcee",
+  "head": "7d6dee56f1755107b9c7c73df26c5931c7e25d5c",
+  "merge_base": "2daea872fd1d2eac68ac40d2d2d11cf85910fcee",
+  "scope_files": [
+    ".gitignore",
+    "rules/LATEST.json",
+    "rules/rules/WORKFLOW.md",
+    "rules/task-reports/2026-02/generate_evidence_260216_009_TEST_INTERACTIVE.js",
+    "rules/task-reports/2026-02/generate_evidence_260216_009_WorkflowReleaseGate_FailBudget_NonInteractive.js",
+    "scripts/ensure_server_53122.ps1",
+    "scripts/preflight.ps1",
+    "scripts/run_task.ps1",
+    "scripts/test_fail_budget.ps1"
+  ],
+  "scope_count": 9,
+  "parity_status": "PASS",
+  "timestamp": "2026-02-17T14:35:35.345Z"
+}
