@@ -219,7 +219,9 @@ if ($GenerateScript) {
     if (Test-Path "$EvidenceDir\gate_light_preview_$TaskId.log") { Remove-Item "$EvidenceDir\gate_light_preview_$TaskId.log" }
     if (Test-Path "$EvidenceDir\gate_light_verify_$TaskId.log") { Remove-Item "$EvidenceDir\gate_light_verify_$TaskId.log" }
 
-    node $GenerateScript.FullName
+    # Pipe NUL to ensure non-interactive execution and fail fast on prompts
+    # Use cmd /c < NUL to guarantee EOF on stdin
+    cmd /c "node ""$GenerateScript"" < NUL"
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[RunTask] FAILED: Evidence Generation failed." -ForegroundColor Red
         Check-Interactive-Failure "$EvidenceDir\run_$TaskId.log"
