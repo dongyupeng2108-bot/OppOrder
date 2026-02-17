@@ -36,8 +36,8 @@ function Run-Task {
 
 # Ensure clean state for tests
 Write-Host "Cleaning up previous budget files..."
-Get-ChildItem "rules/task-reports/*/.budget_*TEST_*.json" | ForEach-Object { Remove-Item $_.FullName -Force -ErrorAction SilentlyContinue }
-Get-ChildItem "rules/task-reports/*/fail_budget_*TEST_*.json" | ForEach-Object { Remove-Item $_.FullName -Force -ErrorAction SilentlyContinue }
+Get-ChildItem "rules/task-reports/*/.budget_*.json" | ForEach-Object { Remove-Item $_.FullName -Force -ErrorAction SilentlyContinue }
+Get-ChildItem "rules/task-reports/*/fail_budget_*.json" | ForEach-Object { Remove-Item $_.FullName -Force -ErrorAction SilentlyContinue }
 
 # Test 1: Dev Budget (Limit 2)
 Write-Host "--- Test 1: Dev Budget ---"

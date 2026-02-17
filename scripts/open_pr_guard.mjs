@@ -85,23 +85,6 @@ function main() {
         process.exit(1);
     }
     
-    // --- BYPASS LOGIC FOR TEST TASKS ---
-    if (taskId.includes('_TEST_') || taskId.startsWith('TEST_')) {
-        console.log(`[OpenPRGuard] SKIP: Test Task ID '${taskId}' detected. Bypassing Open PR Guard.`);
-        if (output) {
-             const result = {
-                checked_at: new Date().toISOString(),
-                task_id: taskId,
-                run_mode: mode || 'Integrate',
-                open_prs_raw_count: 0,
-                open_prs_blocking_count: 0,
-                blocking_prs: []
-            };
-            fs.writeFileSync(output, JSON.stringify(result, null, 2));
-        }
-        process.exit(0);
-    }
-
     // Default mode to Integrate if not specified, to be safe? Or Dev?
     // Requirement implies fail-fast. If mode not provided, assume strictest?
     // But existing calls might not provide it yet? 
