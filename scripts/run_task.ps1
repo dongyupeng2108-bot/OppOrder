@@ -204,6 +204,11 @@ if ($TaskId -match "TEST") {
     Write-Host "    Workspace Healer PASS. Output: $HealerEvidence" -ForegroundColor Gray
 }
 
+# DEBUG: Check if attestation exists (should not yet)
+if (Test-Path "$EvidenceDir\preflight_attestation_$TaskId.json") {
+    Write-Host "[DEBUG] Attestation exists BEFORE Preflight (unexpected)" -ForegroundColor Magenta
+}
+
 # --- Step 1: Preflight ---
 Write-Host ">>> [RunTask] Step 1: Preflight" -ForegroundColor Cyan
 $PreflightCmd = "powershell -NonInteractive -ExecutionPolicy Bypass -File ""$RepoRoot\scripts\preflight.ps1"" -TaskId $TaskId -Mode $Mode -Header ""$Header"""
@@ -247,6 +252,14 @@ Invoke-Step -Name "CI Parity Probe" -CmdLine $ParityCmd -LogFile "$EvidenceDir\r
 
 # --- Step 2: Generate Evidence (Dev/Integrate) ---
 Write-Host "[State] GENERATING EVIDENCE..." -ForegroundColor Cyan
+
+# DEBUG: Check if attestation exists BEFORE Evidence Generation
+if (-not (Test-Path "$EvidenceDir\preflight_attestation_$TaskId.json")) {
+    Write-Host "[DEBUG] Attestation MISSING BEFORE Evidence Generation!" -ForegroundColor Magenta
+} else {
+    Write-Host "[DEBUG] Attestation exists BEFORE Evidence Generation." -ForegroundColor Magenta
+}
+
 if ($GenerateScript) {
     Write-Host ">>> [RunTask] Step 2: Generate Evidence" -ForegroundColor Cyan
     
@@ -258,6 +271,13 @@ if ($GenerateScript) {
     Invoke-Step -Name "Generate Evidence" -CmdLine $GenCmd -LogFile "$EvidenceDir\run_$TaskId.log"
 } else {
     Write-Host ">>> [RunTask] Step 2: Skip Generation (Script not found)" -ForegroundColor Yellow
+}
+
+# DEBUG: Check if attestation exists AFTER Evidence Generation
+if (-not (Test-Path "$EvidenceDir\preflight_attestation_$TaskId.json")) {
+    Write-Host "[DEBUG] Attestation MISSING AFTER Evidence Generation!" -ForegroundColor Magenta
+} else {
+    Write-Host "[DEBUG] Attestation exists AFTER Evidence Generation." -ForegroundColor Magenta
 }
 
 # --- Step 3: Pass 1 - Gate Light Preview ---
