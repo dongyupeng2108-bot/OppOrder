@@ -1,7 +1,7 @@
 # OppRadar Engineering System Snapshot
 > **Note**: This file is an **auto-generated system snapshot**. 
 > **Do NOT edit manually.** All status fields are derived from the Engineering System (Git/GitHub/CI/Locks).
-> **Last Synced**: 2026-02-16 23:04:26 UTC
+> **Last Synced**: 2026-02-17 10:24:52 UTC
 
 ## 1. System Identity
 *   **System Type**: Engineering-Centric System (Fact-Driven, CI-Authoritative)
@@ -26,6 +26,7 @@
 *   `origin/feat/p1-workspace-healer-260216_002`
 *   `origin/feat/p2-evidence-engine-v1-260216_003`
 *   `origin/feat/p4-doc-convergence-260216_005`
+*   `origin/feat/p5-plan-snapshot-refactor-260216_006`
 *   `origin/feat/rank-v2-contract-deterministic-mock-260215_011`
 *   `origin/feat/rank-v2-contract-version-guard-260215_012`
 *   `origin/main`
@@ -33,7 +34,8 @@
 ## 3. PR State Snapshot (Auto-Generated)
 | PR # | State | Branch | Title | Merged At |
 | :--- | :--- | :--- | :--- | :--- |
-| [102](https://github.com/dongyupeng2108-bot/OppOrder/pull/102) | **OPEN** | `feat/p4-doc-convergence-260216_005` | feat: Task 260216_005 Documentation Convergence | - |
+| [103](https://github.com/dongyupeng2108-bot/OppOrder/pull/103) | **OPEN** | `feat/p5-plan-snapshot-refactor-260216_006` | feat: Engineering System Snapshot (Task 260216_006) | - |
+| [102](https://github.com/dongyupeng2108-bot/OppOrder/pull/102) | **MERGED** | `feat/p4-doc-convergence-260216_005` | feat: Task 260216_005 Documentation Convergence | 2026-02-17 |
 | [101](https://github.com/dongyupeng2108-bot/OppOrder/pull/101) | **CLOSED** | `feat/p3-tooling-decouple-260216_004` | docs: update PROJECT_MASTER_PLAN.md for P1-P3 tasks | - |
 | [100](https://github.com/dongyupeng2108-bot/OppOrder/pull/100) | **MERGED** | `feat/p3-tooling-decouple-260216_004` | Feat/p3 tooling decouple 260216 004 | 2026-02-16 |
 | [99](https://github.com/dongyupeng2108-bot/OppOrder/pull/99) | **MERGED** | `feat/p2-evidence-engine-v1-260216_003` | feat: Evidence Engine v1 (Task 260216_003) | 2026-02-16 |
@@ -82,7 +84,6 @@
 | [56](https://github.com/dongyupeng2108-bot/OppOrder/pull/56) | **MERGED** | `chore/ignore-global-healthcheck-260208_029` | chore: ignore global healthcheck artifacts + gate-light guard (Task 260208_029) | 2026-02-08 |
 | [55](https://github.com/dongyupeng2108-bot/OppOrder/pull/55) | **MERGED** | `feat/news-pull-contract-260208_028` | feat(news-pull): enforce versioned response/error contracts (Task 260208_028) | 2026-02-08 |
 | [54](https://github.com/dongyupeng2108-bot/OppOrder/pull/54) | **MERGED** | `feat/news-pull-params-cache-260208_027` | feat: enhance /news/pull with params cache and fail-soft (Task 260208… | 2026-02-08 |
-| [53](https://github.com/dongyupeng2108-bot/OppOrder/pull/53) | **MERGED** | `chore/migrate-docpath-refs-260208_026` | chore: migrate doc path refs & add gate-light check (Task 260208_026) | 2026-02-08 |
 
 
 ## 4. Gate / Lock Snapshot (Auto-Generated)
@@ -93,6 +94,7 @@
 | `260216_002` | [Link](file:///rules/task-reports/locks/260216_002.lock.json) | 2026-02-16T11:34:49.840Z | `20260216113449_57171c2` |
 | `260216_003` | [Link](file:///rules/task-reports/locks/260216_003.lock.json) | 2026-02-16T15:29:50.334Z | `20260216152950_264e57d` |
 | `260216_004` | [Link](file:///rules/task-reports/locks/260216_004.lock.json) | 2026-02-16T16:30:15.846Z | `20260216163015_43e2b31` |
+| `260216_005` | [Link](file:///rules/task-reports/locks/260216_005.lock.json) | 2026-02-16T17:30:33.751Z | `20260216173033_f094e68` |
 
 
 ## 5. Evidence Index
@@ -111,9 +113,11 @@
     *   `20260216152950_264e57d` (Archived)
 *   **260216_004**
     *   `20260216163015_43e2b31` (Archived)
+*   **260216_005**
+    *   `20260216173033_f094e68` (Archived)
 
 
 ## 6. Architecture Version
 *   **Governance Version**: v3.9 (Gate Light)
 *   **Snapshot Engine**: sync_plan_status.js v1.0
-*   **Last Full Sync**: 2026-02-16T23:04:27.098Z
+*   **Last Full Sync**: 2026-02-17T10:24:53.603Z
