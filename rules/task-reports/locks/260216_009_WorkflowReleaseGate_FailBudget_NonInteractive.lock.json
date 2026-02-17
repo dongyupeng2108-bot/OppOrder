@@ -1,8 +1,0 @@
-{
-  "task_id": "260216_009_WorkflowReleaseGate_FailBudget_NonInteractive",
-  "locked_at": "2026-02-17T14:35:54.060Z",
-  "run_id": "20260217143554_7d6dee5",
-  "run_dir": "rules/task-reports/runs/260216_009_WorkflowReleaseGate_FailBudget_NonInteractive/20260217143554_7d6dee5",
-  "reason": "Immutable Integrate",
-  "mode": "Integrate"
-}
