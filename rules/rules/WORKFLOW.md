@@ -98,263 +98,40 @@ Before starting any new task, the Agent MUST perform these checks:
         *   **Command**: `scripts/run_task.ps1 -TaskId <id> -Mode Integrate -Header <header>`
         *   **Prerequisites**: Clean git working directory (committed code).
         *   **Actions**:
-            *   **Preflight**: Generates `preflight_attestation.json`.
-            *   **Contract First**: Runs `verify_contracts_early` BEFORE any business logic to fail fast on schema violations.
-            *   **Pass 1 (Preview)**: Generates `gate_light_preview.log`.
-            *   **Assemble**: Builds V3.9 Envelope (`notify`, `snippet`, `index`, `result`) binding code + preview.
-            *   **Pass 2 (Verify)**: Runs Gate Light in **Verify Mode** (Strict Hard Guards).
-            *   **Postflight**: Validates V3.9 Envelope compliance.
-            *   **Lock & Archive**: Generates `locks/<task_id>.lock.json` and archives evidence to `runs/<task_id>/<run_id>/`.
+            *   **Preflight**: Enforces strict "One Task at a Time".
+            *   **Pass 1**: Generates all evidence files (Result, Notify, Logs).
+            *   **Pass 2**: Verifies evidence with Gate Light (Verify Mode).
+            *   **Archive**: Moves evidence to `runs/<task_id>/` and creates Lock File.
 
-    *   **Port 53122 Service Policy**:
-        *   **Unique Entry**: All tasks MUST use `ensure_server_53122` to manage the server.
-        *   **Port**: 53122 is the ONLY allowed port for OppRadar services.
-        *   **Behavior**: The script auto-kills stale processes on 53122 before starting a new instance.
+## Open PR Guard Protocols (One Task at a Time)
 
-    *   **Evidence Path Standards**:
-        *   **Runtime (Ephemeral)**: `rules/task-reports/<YYYY-MM>/` (Must be `.gitignored`).
-        *   **Archived (Permanent)**: `rules/task-reports/runs/<task_id>/<run_id>/` (Tracked in git).
-        *   **Metadata (Tracked)**: `rules/task-reports/locks/` and `rules/task-reports/index/` and `rules/task-reports/envelopes/`.
-        *   **Gate Light Logic**: Gate Light locates evidence via the `run_dir` field in `locks/<task_id>.lock.json`.
+To maintain a linear, conflict-free history, we enforce a strict "One Task at a Time" policy.
 
-*   **CI Parity Probe Protocols**:
-    *   **Anchor Stability**: The primary risk is Base/Head/MergeBase instability during the "Generate -> Commit -> Re-verify" cycle.
-    *   **Binding Rule**: Evidence must bind to the *Code State* (Base/MergeBase), not necessarily the *Evidence Commit* (Head), provided code drift is zero.
-    *   **Base vs Head**: `Base` (origin/main) MUST NOT equal `Head` (current) if `scope_files > 0`.
-    *   **MergeBase**: Must be correctly calculated. Any deviation requires a re-run/fix of `ci_parity_probe.mjs`.
+### 1. The Rule
+- **Blocking Condition**: If ANY open PR exists in the repository (excluding the current task's PR), the task execution is BLOCKED.
+- **Resolution**: You must Merge or Close the blocking PRs before starting a new task.
 
-*   **Evidence-Only Update (Dual-Commit Lineage)**:
-    *   **Scenario**: Fixing evidence/docs for a past task without changing code.
-    *   **Protocol**:
-        1.  **Code Drift = 0**: The code in the Landing Commit must match the Base Commit exactly.
-        2.  **Binding**: The Evidence refers to the Base Commit (Logic Source), while physically residing in the Landing Commit.
-        3.  **Verification**: Gate Light `NoHistoricalEvidenceTouch` check permits this ONLY if explicitly documented in Result JSON.
+### 2. Exceptions & Overrides
+In rare cases (e.g., superseding an abandoned task), you may bypass the guard using **Precise Exemptions**.
 
-*   **Two-Pass Evidence Truth**:
-    *   **Lock File**: The first successful Integrate run creates `rules/task-reports/locks/<task_id>.lock.json`.
-    *   **Rerun Block**: Subsequent attempts to run Integrate on the same `task_id` are BLOCKED (Exit 33).
-    *   **Action**: To change code, you MUST use a new `task_id`. The old task is immutable.
-*   **Append-Only Archive**:
-    *   Evidence is archived to `rules/task-reports/runs/<task_id>/<run_id>/`.
-    *   This is an append-only operation; history is preserved (though LATEST.json points to the newest).
-*   **SafeCmd Enforcement**:
-    *   **Forbidden**: Chained commands (e.g., `git add . ; git commit ...`) are strictly prohibited in `command_audit` files.
-    *   **Detection**: Gate Light scans `command_audit`, `dod_stdout`, and `trae_report_snippet` for prohibited operators (` ; `, ` && `, ` || `).
-    *   **Solution**: Use atomic script calls (`safe_commit.ps1`, `safe_push.ps1`) or separate tool calls.
-*   **Evidence-as-Code (JSON)**: CI Parity Evidence MUST be a structured JSON file (`rules/task-reports/.../ci_parity_<task_id>.json`) containing `task_id`, `base`, `head`, `merge_base`, `scope_files`, `scope_count`, and `generated_at`. Text-based evidence is DEPRECATED.
-*   **Gate Light Recalculation**: Gate Light CI (`gate_light_ci.mjs`) MUST independently recalculate git state (`base`, `head`, `merge_base`, `scope_files`) and validate it against the provided JSON evidence byte-for-byte.
-*   **Anti-Cheat**:
-    *   If `head != base`, `scope_count` MUST be > 0.
-    *   If `head == base`, `scope_count` MUST be 0 (Empty PR warning/fail).
-    *   `merge_base` MUST match calculated value.
-*   **Deletion Audit (Task 260211_006)**:
-    *   **Rule**: locks/runs is append-only; deletion is forbidden; Gate Light will fail if missing.
-    *   **Mechanism**: `dev_batch_mode.ps1` appends to `rules/task-reports/index/runs_index.jsonl`. `gate_light_ci.mjs` checks index first run against filesystem.
-*   **No Auto-Merge**: The Agent MUST NOT execute `git merge` or `git push ... main` (or to any protected branch). Only the Human User (Owner) can perform the merge. The Agent's job ends at "PR Created + Gate Light PASS". Violation (detected by Gate Light in `command_audit`) triggers immediate failure (Exit 62).
+#### A. Global Mock (Dev Only)
+- **Env Var**: `OPEN_PR_GUARD_MOCK_JSON`
+- **Scope**: **Strictly Limited to Dev Mode**.
+- **Behavior**: Forces the guard to use a static JSON list of PRs instead of querying GitHub.
+- **Prohibition**: FAILS IMMEDIATELY if used in `Integrate` mode or CI.
 
-## Conflict Minimization
-*   **LATEST.json**: Only update during the Integration Phase (1 modification per PR).
-*   **Task Reports**: Only write to `rules/task-reports/**` during the Integration Phase.
-*   **Repo Operation Budget**: Limit git operations to ≤ 8 steps per task.
-*   **Fail-Fast**:
-    *   If a conflict, lock file, or abnormal state occurs -> **STOP IMMEDIATELY**.
-    *   Do not attempt complex interactive recovery.
-    *   Preferred recovery: Discard branch -> New branch -> Re-apply changes.
+#### B. Precise Ignore & Supersede (Integrate/CI Allowed)
+To ignore a specific blocking PR (e.g., PR #103), you must explicitly declare it AND the task it supersedes.
 
-### Avoid Trae High-Risk Confirmation
-*   **No Chained Commands**: Do NOT use `;` or `&&` to chain multiple high-risk commands (e.g., `git add . ; git commit ... ; git push ...`) in a single line. This triggers Trae's "High Risk" confirmation dialog.
-*   **Solution**:
-    *   Execute commands step-by-step in separate tool calls.
-    *   OR encapsulate them in a script (like `dev_batch_mode.ps1`) and run the script.
+- **Env Vars**:
+  - `OPEN_PR_GUARD_IGNORE_PR_NUMBERS="103,105"` (Comma-separated PR numbers)
+  - `OPEN_PR_GUARD_SUPERSEDE_TASK_IDS="260216_006"` (Comma-separated Task IDs)
+- **Logic**:
+  1. The Guard fetches **REAL** open PRs from GitHub.
+  2. It checks if the ignored PR #103 corresponds to a task in `SUPERSEDE_TASK_IDS` (e.g., title contains "260216_006").
+  3. If matched, PR #103 is removed from the blocking list.
+  4. **Self-Check**: The current task ID must NOT equal the superseded task ID.
 
-## PR Creation Standards (Agent/Dev)
-### Anti-Duplicate & Noise Control (Hard Guard)
-1. **Mandatory Pre-Check**: Before starting any task execution (especially Integrate phase), MUST run `pre_pr_check`:
-   ```powershell
-   node scripts/pre_pr_check.mjs --task_id <task_id>
-   ```
-2. **Duplicate Detection & Rejection**:
-   - The script checks `origin/main` for existing `task_id` (files or LATEST.json occupation).
-   - If found, it outputs a 3-line REJECT block:
-     ```text
-     REJECT_DUPLICATE_TASK_ID: <task_id>
-     REJECT_REASON: task_id already exists in origin/main
-     EXECUTION_ABORTED=1
-     ```
-   - Exits with **Code 21**.
-3. **Integrate Phase Interception**:
-   - `scripts/dev_batch_mode.ps1` (Integrate mode) MUST run this check as the **FIRST STEP** (step 0).
-   - If check fails (Exit Code 21), the script MUST abort immediately with **0 side effects** (no files written).
-   - **Action**: Agent MUST abort immediately. Do NOT generate evidence. Do NOT create PR.
-
-
-3. **Fail-Fast Logic**:
-   - If `git diff --name-only origin/main...HEAD` shows only `rules/task-reports/**` changes AND the task_id exists in `origin/main`, the PR is considered "Duplicate Noise". Abort.
-
-### Task ID Lifecycle
-- **Definition**: A `task_id` is considered **"Published"** once it appears in a TraeTask message.
-- **Rule**: **"Published = Reserved, Never Reuse"**.
-  - Once a `task_id` is published, it is permanently consumed.
-  - Even for "Docs-only" or "Fix" tasks, if the original task was merged or even just attempted and abandoned with artifacts left behind, you MUST use a **NEW** `task_id` for the next attempt.
-- **Conflict Handling**:
-  - If you encounter a `task_id` conflict (e.g., folder exists in `rules/task-reports/`), **IMMEDIATELY STOP**.
-  - **Action**: Switch to a new `task_id`.
-  - **History**: Do NOT overwrite old evidence. Keep it as history.
-
-### PR Hygiene
-- **Prohibited**:
-  - **Duplicate PRs**: Do not open a second PR for the same `task_id` if one was already merged.
-  - **Duplicate Task ID PRs**: Do not open a PR with a `task_id` that already exists in `main`.
-- **Mandatory Pre-PR Check**:
-  - You **MUST** run `node scripts/pre_pr_check.mjs --task_id <task_id>` before creating a PR.
-  - If it fails (Exit Code 21), you are violating the "No Reuse" rule. **STOP** and get a new ID.
-
-## 合并职责说明 (Merge Responsibility)
-**PR 合并需要老板手工执行**。Trae 严禁自动合并 PR。
-
-### 最小合并步骤清单 (Minimal Merge Checklist)
-1. **进入 PR 页面**: 打开 GitHub PR 链接。
-2. **确认 Gate Light**: 检查 "Checks" 部分，确认 `gate-light` 工作流显示为 ✅ Pass。这是必需检查项。
-3. **Merge**: 点击 "Merge pull request" -> "Confirm merge"。
-4. **删除分支 (可选)**: 确认合并后，可点击 "Delete branch" 清理远程分支。
-5. **本地同步**: 在本地终端执行：
-   ```bash
-   git checkout main
-   git pull --rebase origin main
-   ```
-   *注意：必须使用 `--rebase` 以保持提交历史整洁。*
-
-### 冲突处理 (Conflict Handling)
-若遇到合并冲突，请按以下原则处理：
-
-#### `rules/LATEST.json` 冲突
-- **原则**: **保留最新**。
-- **操作**: 选取 `task_id` 最大的版本，并确保文件内容是合法的 JSON 格式。
-- **说明**: 此文件仅用于记录最新任务状态，不影响历史功能。
-
-#### 其他文件冲突
-- **原则**: 仔细比对，确保不丢失关键业务逻辑或文档更新。
-- **操作**: 手工解决冲突 -> 提交 -> 等待 CI 通过 -> 合并。
-
-## 消息头驱动的双模式协议 (Message Header Protocol)
-
-为避免标准任务（Standard Task）与临时修复/讨论（Maintenance/Discussion）的上下文混淆，本项目强制实行**消息头驱动**的沟通协议。
-
-### 1. 合法消息头 (Valid Headers)
-所有下发指令必须以以下三种消息头之一开头，否则**默认拒绝**。
-
-*   **`TraeTask_`**: 标准任务模式。
-    *   **定义**: 完整的增量开发/文档任务，必须包含 `task_id`、`milestone`、`branch` 等元数据。
-    *   **行为**: 严格执行 WORKFLOW 全闭环（Plan -> Code -> Verify -> Notify）。
-    *   **产出**: 必须生成完整的证据包（Report/Log/Notify/Snippet），必须更新 `PROJECT_MASTER_PLAN.md`。
-    *   **约束**: 遇到 Gate Light 红灯必须停下，**不得**自行切换模式或“为了过而过”。
-
-*   **`FIX:`**: 维护/热修复模式。
-    *   **定义**: 针对特定错误（如 CI 失败、证据缺失、Hash 漂移）的外科手术式修复。
-    *   **行为**: 仅修复指定问题，**禁止**扩大需求、**禁止**重构。**默认禁止**更新 Master Plan，只有当 FIX 的目标就是修复文档/规划时才允许，并且必须在 FIX 指令里显式声明。
-    *   **产出**: 修复后必须提供“可复制的事实块”（如 grep 输出、Gate Light 关键行 + `GATE_LIGHT_EXIT=0`）。
-    *   **约束**: 修复完成后**立即交回控制权**，不得自动尝试完成原来的父任务。
-
-*   **`讨论:`**: 纯讨论模式。
-    *   **定义**: 咨询、澄清、复盘或纯文本交流。
-    *   **行为**: 只讨论，**不执行**任何命令（除了只读命令如 `ls`, `cat`），**不产出**任何文件改动或 PR。
-    *   **约束**: 禁止在讨论中悄悄执行代码修改。
-
-### 2. 默认拒绝规则 (Default Reject Policy)
-若用户的指令未带上述合法消息头（例如直接发 "把这个改了" 或 "继续"）：
-*   **Action**: Agent 必须**拒绝执行**。
-*   **Response**: 仅回复：“消息头不明确：请用 `TraeTask_` / `FIX:` / `讨论:` 开头下发。”
-*   **禁止**: 禁止执行任何命令，禁止修改任何文件，禁止产出任何证据。
-
-### 3. 模式切换规则 (Mode Switching)
-*   **不得自行切换**: Agent 不得在未收到明确指令的情况下，从 `FIX` 模式跳回 `TraeTask` 模式，反之亦然。
-*   **异常处理**: 若 `TraeTask` 执行中遇到 Gate Light 失败：
-    1.  **停止**当前任务流程。
-    2.  **报告**错误详情。
-    3.  **请求**用户以 `FIX:` 消息头下发修复指令。
-
-### 3.2 PR Task Lock & LATEST Consistency
-**(CI 校验对象锁定与 LATEST 一致性)**
-
-*   **PR 校验锁定**: 
-    *   PR 门禁必须校验“本 PR 的 `task_id`”（优先从分支名解析，其次从 git diff 变更证据中提取），不得仅依赖 `rules/LATEST.json`。
-    *   若 PR 无法解析出唯一 `task_id`（0 个或多个候选），CI 必须 **FAIL-fast** 并输出 `PR_TASK_ID_DETECT_FAILED=1`。
-
-*   **LATEST 一致性硬规则**: 
-    *   当 PR 解析出 `pr_task_id` 时，`rules/LATEST.json.task_id` 必须严格等于 `pr_task_id`。
-    *   **Mismatch 必红灯**: 若不一致，门禁 FAIL 并输出 `LATEST_OUT_OF_SYNC=1`。这意味着 `LATEST.json` 过期，必须在 PR 中一并更新，而不是绕过。
-
-*   **环境对齐**: 
-    *   **本地 Integrate**: `dev_batch_mode.ps1` 必须通过 `--task_id <id>` 显式传参给 `gate_light_ci.mjs`，确保本地验证对象与 PR 一致。
-    *   **CI**: `gate_light_ci.mjs` 自动执行 PR 锁定逻辑。
-
-### 3.3 CI Parity & Acceptance Standard
-**(CI 一致性与验收口径)**
-
-1.  **Single Source of Truth (以 CI Checks 为准)**:
-    *   本地 Gate Light 通过仅作为开发阶段的参考。
-    *   **最终验收标准**必须是 GitHub Actions 的 `gate-light` 工作流全绿 (Pass)。
-    *   若本地 Pass 但 CI Fail，视为**未完成**。必须以 CI 报错为准进行修复。
-
-2.  **Parity Probe (一致性探针)**:
-    *   验收证据必须包含 `=== CI_PARITY_PREVIEW ===` 证据，该探针必须展示 `origin/main` 基准、`merge-base`、`task_id` 解析来源等信息，证明本地运行上下文与 CI 环境一致。
-
-3.  **Fail-Fast Hard Guard**:
-    *   任何阶段（Pre-check, Integrate, CI）检测到 `task_id` 冲突、LATEST 不一致、或对象漂移，必须立即**Fail-fast**（退出码非 0），严禁尝试自动纠错。
-
-### 4. Merge-Ready (可合并) 通知硬规则 (Hard Rule)
-仅当满足以下所有条件时，Agent 才允许发送“PASS / 可合并”通知：
-
-1.  **Gate Light 真实绿灯**: `scripts/gate_light_ci.mjs` 执行结果必须为 PASS，且退出码为 0。
-2.  **回报最低证据要求 (Evidence Minimum)**:
-    -   **三件套齐备**: `notify_<id>.txt`, `result_<id>.json`, `trae_report_snippet_<id>.txt` 必须同时存在。
-    -   **Snippet 字段强制**: `trae_report_snippet` 必须包含以下字段：
-        -   `BRANCH`, `COMMIT`, `GIT_SCOPE_DIFF`
-        -   `=== DOD_EVIDENCE_STDOUT ===`
-        -   `=== GATE_LIGHT_PREVIEW ===` (必须是真实日志子串)
-        -   `GATE_LIGHT_EXIT=0` (必须显式存在且为 0)
-3.  **禁止口头 PASS**: 任何未附带上述证据的“PASS”或基于“我运行了脚本没报错”的陈述均视为无效。
-4.  **串行执行原则**: 在当前任务未生成完整证据包并回报之前，禁止接受或开始下一个 `TraeTask`（除非是 `FIX:` 模式）。
-
-**违规后果**: 违反此规则提交的 PR 将被视为无效交付，必须回滚重做。
-
-**示例回报格式**:
-...
-=== TRAE_REPORT_SNIPPET ===
-...
-=== GATE_LIGHT_PREVIEW ===
-[Gate Light] PASS
-GATE_LIGHT_EXIT=0
-
-### 5. Immutable Integrate & SafeCmd (Task 260211_003)
-
-*   **Immutable Integrate (一次性集成)**:
-    *   同一 `task_id` 的 Integrate 阶段只允许成功一次。
-    *   **Lock Mechanism**: 首次 Integrate 成功后会生成 `rules/task-reports/locks/<task_id>.lock.json`。
-    *   **Rerun Block**: 若锁文件存在，后续 Integrate 将被硬阻断（`EXIT=33`），防止历史证据被覆盖。若需修改代码，必须申请新的 `task_id`。
-    *   **Run Archive**: 每次成功 Integrate 会将关键证据归档至 `rules/task-reports/runs/<task_id>/<run_id>/`（Append-only）。
-
-*   **SafeCmd (安全命令机制)**:
-    *   **禁止链式命令**: 严禁在 `TraeTask` 中使用 `;`, `&&`, `||` 连接多个命令（如 `git add . && git commit`）。Gate Light 会扫描证据并拦截此类行为。
-    *   **推荐工具**:
-        *   `scripts/safe_commit.ps1 -Message "..."`: 安全的原子化提交（Add + Check + Commit）。
-        *   `scripts/safe_push.ps1`: 安全的单分支推送。
-
-### 6. Two-Pass Evidence Truth & No Auto-Merge (Task 260211_007)
-
-*   **Two-Pass Evidence Truth (两段式证据真值)**:
-    *   **Goal**: Ensure `trae_report_snippet`'s preview block is an exact, unedited substring of the real Gate Light execution log.
-    *   **Mechanism**:
-        1.  **Pass 1**: Run `gate_light_ci.mjs` (Log Output).
-        2.  **Extract**: Run `extract_gate_light_preview.mjs` to extract `rules/task-reports/.../gate_light_preview_<task_id>.txt`.
-        3.  **Inject**: `build_trae_report_snippet.mjs` reads the preview file and injects it into the snippet.
-        4.  **Pass 2 (Verification)**: Run `gate_light_ci.mjs` again. It compares the Snippet's preview block vs the Preview File.
-    *   **Enforcement**:
-        *   **Exit 61**: `build_trae_report_snippet` fails if `gate_light_preview_<task_id>.txt` is missing.
-        *   **Exit 63**: `gate_light_ci` fails if Snippet Preview != Preview File Content.
-
-*   **No Auto-Merge (禁止自动合并)**:
-    *   **Hard Rule**: The Agent MUST NOT execute `git merge` or `git push ... main` (or to any protected branch).
-    *   **Gate Light Check**: Scans `command_audit` logs for forbidden commands.
-    *   **Exit 62**: If `git merge` or `push main` is detected, Gate Light FAILS immediately.
-    *   **Responsibility**: Only the Human User (Owner) can perform the merge. The Agent's job ends at "PR Created + Gate Light PASS".
+### 3. Task Template Immutability
+- **Rule**: The standard Task Template structure (as defined in `scripts/scaffold_task.js` or equivalent) is **IMMUTABLE** within a normal feature task.
+- **Change Protocol**: Any change to the Task Template must be performed in a dedicated "Workflow Upgrade" task, explicitly titled as such.
