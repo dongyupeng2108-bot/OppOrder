@@ -209,6 +209,16 @@ Before starting any new task, the Agent MUST perform these checks:
   - You **MUST** run `node scripts/pre_pr_check.mjs --task_id <task_id>` before creating a PR.
   - If it fails (Exit Code 21), you are violating the "No Reuse" rule. **STOP** and get a new ID.
 
+### Open PR Guard (Precise Supersede)
+- **Goal**: Enforce "One Task at a Time" while allowing safe supersedes of abandoned/stale PRs.
+- **Mock Restriction**: `OPEN_PR_GUARD_MOCK_JSON` is strictly **DEV-ONLY**. Usage in Integrate/CI triggers immediate failure.
+- **Precise Ignore**:
+  - To ignore a blocking PR, you must use `OPEN_PR_GUARD_IGNORE_PR_NUMBERS="123,124"`.
+  - **Supersede Binding**: Ignoring a PR requires explicit declaration of the *superseded task ID* via `OPEN_PR_GUARD_SUPERSEDE_TASK_IDS="task_id_1,task_id_2"`.
+  - **Validation**: The Guard verifies that the ignored PR actually corresponds to one of the superseded task IDs.
+- **Workflow Integrity**:
+  - **Rule**: Unless explicitly running a "Workflow Upgrade Task", the structure of Task Templates (run_task.ps1 outputs) MUST NOT be changed.
+
 ## 合并职责说明 (Merge Responsibility)
 **PR 合并需要老板手工执行**。Trae 严禁自动合并 PR。
 

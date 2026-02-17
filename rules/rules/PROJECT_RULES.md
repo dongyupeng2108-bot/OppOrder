@@ -298,6 +298,12 @@
 - **Failure Example**: `Snippet COMMIT (abc1234) does not match HEAD (def5678)` with code changes.
 - **Fix**: Re-run the Integrate phase (or just the snippet builder) to regenerate the snippet with the current HEAD.
 
+### Open PR Guard Hard Rules (Task 260216_008)
+- **No Global Mock in Integrate**: `OPEN_PR_GUARD_MOCK_JSON` is strictly prohibited in Integrate/CI modes. Violation = Immediate Fail.
+- **Supersede Binding**: `OPEN_PR_GUARD_IGNORE_PR_NUMBERS` must be paired with `OPEN_PR_GUARD_SUPERSEDE_TASK_IDS`.
+  - The ignored PR's title/head must contain a task ID present in the superseded list.
+  - This prevents "Blanket Ignore" abuse.
+
 ## Immutable Integrate & SafeCmd (Task 260211_003)
 *   **Immutable Integrate (One-shot)**:
     *   **Lock**: The Integrate phase creates `rules/task-reports/locks/<task_id>.lock.json` on success.

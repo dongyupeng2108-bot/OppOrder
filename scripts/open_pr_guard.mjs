@@ -16,6 +16,8 @@ import path from 'path';
 
 const ARGS = process.argv.slice(2);
 const TASK_ID_FLAG = '--task_id';
+const MODE_FLAG = '--mode';
+const OUTPUT_FLAG = '--output';
 
 function parseArgs() {
     const args = {};
@@ -23,19 +25,33 @@ function parseArgs() {
         if (ARGS[i] === TASK_ID_FLAG) {
             args.taskId = ARGS[i + 1];
             i++;
+        } else if (ARGS[i] === MODE_FLAG) {
+            args.mode = ARGS[i + 1];
+            i++;
+        } else if (ARGS[i] === OUTPUT_FLAG) {
+            args.output = ARGS[i + 1];
+            i++;
         }
     }
     return args;
 }
 
-function getOpenPRs() {
+function getOpenPRs(mode) {
     const mockPath = process.env.OPEN_PR_GUARD_MOCK_JSON;
+    
+    // Strict Mock Restriction: Only allowed in Dev mode
     if (mockPath) {
+        if (mode !== 'Dev') {
+            console.error(`[OpenPRGuard] FAILED: OPEN_PR_GUARD_MOCK_JSON is strictly prohibited in ${mode} mode.`);
+            process.exit(1);
+        }
+
         if (!fs.existsSync(mockPath)) {
             console.error(`[OpenPRGuard] Mock file not found: ${mockPath}`);
             process.exit(1);
         }
         try {
+            console.log(`[OpenPRGuard] Using Mock PR list from: ${mockPath} (Dev Mode Only)`);
             const content = fs.readFileSync(mockPath, 'utf8');
             return JSON.parse(content);
         } catch (err) {
@@ -50,38 +66,76 @@ function getOpenPRs() {
         const stdout = execSync(cmd, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
         return JSON.parse(stdout);
     } catch (err) {
-        // If gh fails (e.g. auth, network), we treat it as blocking or risk?
-        // Requirement says "risk point: gh unavailable". 
-        // For fail-fast, if we can't verify, we should probably fail safe (block) or warn.
-        // User said "Guard 失败时：必须 fail-fast 退出". 
-        // We will throw and let main catch it.
         console.error(`[OpenPRGuard] Failed to fetch PR list: ${err.message}`);
         process.exit(1);
     }
 }
 
+function extractTaskId(text) {
+    // Look for pattern like 260216_006
+    const match = text.match(/(\d{6}_\d{3})/);
+    return match ? match[1] : null;
+}
+
 function main() {
-    const { taskId } = parseArgs();
+    const { taskId, mode, output } = parseArgs();
+    
     if (!taskId) {
-        console.error(`[OpenPRGuard] Usage: node scripts/open_pr_guard.mjs --task_id <id>`);
+        console.error(`[OpenPRGuard] Usage: node scripts/open_pr_guard.mjs --task_id <id> [--mode <Dev|Integrate>] [--output <file>]`);
         process.exit(1);
     }
-
-    console.log(`[OpenPRGuard] Checking open PRs for Task ID: ${taskId}...`);
-
-    const openPRs = getOpenPRs();
     
+    // Default mode to Integrate if not specified, to be safe? Or Dev?
+    // Requirement implies fail-fast. If mode not provided, assume strictest?
+    // But existing calls might not provide it yet? 
+    // run_task.ps1 provides it.
+    const runMode = mode || 'Integrate';
+
+    console.log(`[OpenPRGuard] Checking open PRs for Task ID: ${taskId} (Mode: ${runMode})...`);
+
+    const openPRs = getOpenPRs(runMode);
+    
+    // Parse Ignore/Supersede configs
+    const ignorePRsEnv = process.env.OPEN_PR_GUARD_IGNORE_PR_NUMBERS || '';
+    const ignorePRs = new Set(ignorePRsEnv.split(',').map(s => s.trim()).filter(s => s).map(Number));
+    
+    const supersedeTasksEnv = process.env.OPEN_PR_GUARD_SUPERSEDE_TASK_IDS || '';
+    const supersedeTasks = new Set(supersedeTasksEnv.split(',').map(s => s.trim()).filter(s => s));
+
     // Filter logic
-    // Allowed: headRefName contains taskId OR title contains taskId
     const blockingPRs = [];
     
     for (const pr of openPRs) {
         const head = pr.headRefName || '';
         const title = pr.title || '';
+        const prNum = pr.number;
         
-        const isRelated = head.includes(taskId) || title.includes(taskId);
-        
-        if (!isRelated) {
+        // 1. Check if it's the current task itself (Always Allowed)
+        const isSelf = head.includes(taskId) || title.includes(taskId);
+        if (isSelf) continue;
+
+        // 2. Check Exemption (Ignore + Supersede)
+        let exempted = false;
+        if (ignorePRs.has(prNum)) {
+            // Must validate supersede
+            const prTaskId = extractTaskId(head) || extractTaskId(title);
+            
+            if (prTaskId) {
+                // Condition: 
+                // 1. Task ID in whitelist
+                // 2. Current Task ID != Pr Task ID (Self-check handled above, but good to be explicit)
+                if (supersedeTasks.has(prTaskId) && prTaskId !== taskId) {
+                    exempted = true;
+                    console.log(`[OpenPRGuard] Exempting PR #${prNum} (Task ${prTaskId}) due to Explicit Supersede.`);
+                } else {
+                    console.warn(`[OpenPRGuard] Warning: PR #${prNum} is in IGNORE list but Task ID '${prTaskId}' is NOT in SUPERSEDE list (or matches current). Treated as BLOCKING.`);
+                }
+            } else {
+                console.warn(`[OpenPRGuard] Warning: PR #${prNum} is in IGNORE list but could not extract Task ID. Treated as BLOCKING.`);
+            }
+        }
+
+        if (!exempted) {
             blockingPRs.push(pr);
         }
     }
@@ -89,6 +143,7 @@ function main() {
     const result = {
         checked_at: new Date().toISOString(),
         task_id: taskId,
+        run_mode: runMode,
         open_prs_raw_count: openPRs.length,
         open_prs_blocking_count: blockingPRs.length,
         blocking_prs: blockingPRs.map(p => ({
@@ -98,58 +153,22 @@ function main() {
             url: p.url
         }))
     };
-
-    // Output JSON to stdout (or file? Requirement says "write to result_dir")
-    // Requirement 2: "run_task.ps1 ... output JSON written to result_dir"
-    // This script itself should probably just output result JSON to stdout or return it?
-    // Requirement 1 says: "Output OPEN_PR_GUARD_PASS, and generate structured JSON"
-    // Requirement 2 says: "Preflight ... saves output JSON to result_dir"
-    // Let's print JSON to stdout so run_task can capture it, or just write it if we know where.
-    // Usually scripts here print logs to stdout.
-    // Let's print the BLOCK info to stderr/stdout and exit 1 if blocking.
-    // If pass, print OPEN_PR_GUARD_PASS.
-    // Also we need to generate the JSON file. 
-    // Maybe we accept an output path arg? Or run_task handles it?
-    // "run_task.ps1 ... 将 open_pr_guard 输出 JSON 写入 result_dir"
-    // It's better if this script writes the file if provided an output path, OR run_task captures stdout.
-    // Given run_task.ps1 structure, it's easier if this script writes the file.
-    // But the prompt doesn't explicitly ask for an output path argument.
-    // "Input: --task_id <id>"
-    // "Behavior: ... generate structured JSON"
-    // Let's default to printing JSON to stdout if no other instruction, but run_task in PS is tricky to capture pure JSON if logs are mixed.
-    // Let's add an optional --output <path> argument.
     
-    // Check for --output arg
-    let outputPath = null;
-    for (let i = 0; i < ARGS.length; i++) {
-        if (ARGS[i] === '--output') {
-            outputPath = ARGS[i + 1];
-            i++;
-        }
+    if (output) {
+        fs.writeFileSync(output, JSON.stringify(result, null, 2));
     }
 
     if (blockingPRs.length > 0) {
-        console.error(`[OpenPRGuard] BLOCK: Found ${blockingPRs.length} unrelated open PRs.`);
-        blockingPRs.forEach(pr => {
-            console.error(` - #${pr.number} "${pr.title}" (${pr.headRefName}) ${pr.url}`);
+        console.error(`[OpenPRGuard] BLOCKING: Found ${blockingPRs.length} unrelated open PRs violating 'One Task at a Time'.`);
+        blockingPRs.forEach(p => {
+            console.error(`  - PR #${p.number}: ${p.title} (${p.headRefName})`);
         });
-        
-        // Even on failure, we might want to write the JSON record?
-        // "Guard 失败时：必须 fail-fast 退出；不得继续写入/改动 LATEST.json ... 与后续证据文件"
-        // But maybe we want the evidence of *why* it failed?
-        // Requirement 2: "Guard 失败时：必须 fail-fast 退出"
-        // Let's write the JSON if output path is provided, so we can see it.
-        if (outputPath) {
-            fs.writeFileSync(outputPath, JSON.stringify(result, null, 2), 'utf8');
-        }
-        
+        console.error(`[OpenPRGuard] Fix: Merge or Close blocking PRs before starting Task ${taskId}.`);
+        console.error(`[OpenPRGuard] For Supersede: Set OPEN_PR_GUARD_IGNORE_PR_NUMBERS=${blockingPRs.map(p=>p.number).join(',')} AND OPEN_PR_GUARD_SUPERSEDE_TASK_IDS=<task_id>`);
         process.exit(1);
-    } else {
-        console.log('OPEN_PR_GUARD_PASS');
-        if (outputPath) {
-            fs.writeFileSync(outputPath, JSON.stringify(result, null, 2), 'utf8');
-        }
     }
+
+    console.log(`[OpenPRGuard] PASS: No blocking PRs found.`);
 }
 
 main();
