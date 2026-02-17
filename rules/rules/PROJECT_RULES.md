@@ -285,42 +285,11 @@
 *   **CI Parity Probe**: 必须生成 `=== CI_PARITY_PREVIEW ===` 证据，显式展示 Git Context (Origin/Main, HEAD, MergeBase) 和 Task Detection Source。
 *   **Ambiguity Fail-fast**: 若 PR 无法解析唯一 `task_id`（0 个或多个候选），必须 FAIL-fast 并输出固定提示块 `PR_TASK_ID_DETECT_FAILED=1`，要求修正分支命名或证据变更范围。
 
-### NoHistoricalEvidenceTouch (Hard Rule)
-- **Rule**: Modifications to historical `rules/task-reports/runs/**` or `rules/task-reports/locks/**` files are strictly PROHIBITED.
+### NoHistoricalEvidenceTouch
+- **Rule**: Modifications to `rules/task-reports/**` files that do NOT contain the current `task_id` in their filename are strictly PROHIBITED.
 - **Goal**: Prevent accidental modification of historical evidence or cross-talk between tasks.
-- **Scope**:
-    - **Locks**: `rules/task-reports/locks/<task_id>.lock.json` is IMMUTABLE once created.
-    - **Runs**: `rules/task-reports/runs/<task_id>/<run_id>/` is IMMUTABLE once archived.
-- **Failure Example**: Deleting an old lock to "fix" a failed rerun.
-- **Fix**: Do NOT delete. Create a new `task_id` (e.g., `_005` -> `_006`) and start fresh.
-
-### Tracked vs Untracked Directory Boundaries
-- **Tracked (Git Controlled)**:
-    - Code: `src/`, `scripts/`, `contracts/`, `rules/rules/`.
-    - Metadata: `rules/task-reports/locks/`, `rules/task-reports/index/`, `rules/task-reports/envelopes/`, `rules/LATEST.json`.
-    - Archived Evidence: `rules/task-reports/runs/`.
-- **Untracked (Local/Ephemeral)**:
-    - Runtime Evidence: `rules/task-reports/<YYYY-MM>/` (Must be `.gitignored`).
-    - Node Modules: `node_modules/`.
-    - User Data: `data/` (except specific fixtures).
-- **Rule**: NEVER force add files from Untracked directories (especially `rules/task-reports/<YYYY-MM>/`) to git.
-
-### Integrate Rerun Guard (Hard Rule)
-- **Rule**: Once `scripts/run_task.ps1` (Integrate Mode) completes successfully and generates a lock file, subsequent runs for the same `task_id` are **BLOCKED** with Exit Code 33.
-- **Reason**: To preserve the integrity of the evidence chain. Re-running would overwrite the evidence linked to a specific git commit.
-- **Action**: If you need to change code or re-verify, you MUST use a new `task_id`.
-
-### PowerShell Syntax Standards
-- **Rule**: Avoid using `&&` (AND operator) in PowerShell commands, as it is only supported in PowerShell 7+ and breaks in Windows PowerShell 5.1.
-- **Standard**:
-    - Use separate lines for sequential commands.
-    - Use `;` if they must be on one line (but `safe_commit` prefers separate tool calls).
-    - Example (Bad): `git add . && git commit -m "fix"`
-    - Example (Good):
-      ```powershell
-      git add .
-      git commit -m "fix"
-      ```
+- **Failure Example**: Modifying `rules/task-reports/2026-02/opps_pipeline_smoke_260209_008.txt` while working on task `260209_009`.
+- **Fix**: Revert the file using `git restore --source=origin/main -- <path>`. If the data is new, save it to a new file containing the current `task_id`.
 
 ### SnippetCommitMustMatch
 - **Rule**: The `COMMIT:` field in `trae_report_snippet_<task_id>.txt` must match `git rev-parse --short HEAD`.
@@ -338,3 +307,15 @@
     *   **Prohibited**: Chained commands (`;`, `&&`, `||`) in `TraeTask` commands.
     *   **Enforcement**: Gate Light scans evidence (`trae_report_snippet`, `dod_stdout`, `command_audit`) and fails if chains are detected.
     *   **Recommended**: Use `scripts/safe_commit.ps1` and `scripts/safe_push.ps1`.
+
+### Automated Plan Status (Engineering System Rule)
+- **Rule**: Manual updates to the "Task Ledger" / "System Snapshot" in `PROJECT_MASTER_PLAN.md` are PROHIBITED.
+- **Mechanism**: The status (MERGED/OPEN/DONE) MUST be derived from the "Single Source of Truth" (GitHub PR Status + Lock Files).
+- **Action**: Run `node scripts/sync_plan_status.js` to synchronize the plan with the engineering reality before generating reports or syncing context.
+- **Reason**: To eliminate "Split-Brain" states where documentation contradicts the CI/Git reality.
+
+### Engineering System Snapshot Protocol
+- **Rule**: `PROJECT_MASTER_PLAN.md` is a **System Mirror**, NOT a Workflow Driver.
+- **Constraint**: Manual status edits are **STRICTLY FORBIDDEN**.
+- **Principle**: Engineering state must be **derived**, never declared.
+- **Enforcement**: `sync_plan_status.js` is the ONLY allowed writer for the Snapshot sections.
