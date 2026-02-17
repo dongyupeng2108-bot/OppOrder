@@ -9,10 +9,16 @@ import crypto from 'crypto';
  */
 
 const ARGS = process.argv.slice(2);
-const taskId = ARGS.find(arg => arg.startsWith('--task_id='))?.split('=')[1];
-const evidenceDir = ARGS.find(arg => arg.startsWith('--evidence_dir='))?.split('=')[1] || `rules/task-reports/${new Date().toISOString().slice(0, 7)}`;
-const mode = ARGS.find(arg => arg.startsWith('--mode='))?.split('=')[1];
-const phase = ARGS.find(arg => arg.startsWith('--phase='))?.split('=')[1] || 'assemble';
+
+// --- 2) Parameter Normalization (Fix for dirty inputs) ---
+const norm = (v) => (v ?? '').toString().trim()
+  .replace(/^"(.*)"$/, '$1')
+  .replace(/^'(.*)'$/, '$1');
+
+const taskId = norm(ARGS.find(arg => arg.startsWith('--task_id='))?.split('=')[1]);
+const evidenceDir = norm(ARGS.find(arg => arg.startsWith('--evidence_dir='))?.split('=')[1]) || `rules/task-reports/${new Date().toISOString().slice(0, 7)}`;
+const mode = norm(ARGS.find(arg => arg.startsWith('--mode='))?.split('=')[1]);
+const phase = norm(ARGS.find(arg => arg.startsWith('--phase='))?.split('=')[1]) || 'assemble';
 
 if (!taskId) {
     console.error('Usage: node scripts/assemble_evidence.mjs --task_id=<id> [--evidence_dir=<path>] [--phase=assemble|archive]');
@@ -21,7 +27,7 @@ if (!taskId) {
 
 const resolvePath = (filename) => path.resolve(evidenceDir, filename);
 
-// --- 1. Define Inputs (Single Sources of Truth) ---
+// --- 3) Define Inputs (Single Sources of Truth) ---
 const inputs = {
     ciParity: resolvePath(`ci_parity_${taskId}.json`),
     gateLightLog: resolvePath(`gate_light_preview_${taskId}.log`),
@@ -33,8 +39,10 @@ const inputs = {
     runLog: resolvePath(`run_${taskId}.log`)
 };
 
-// --- 2. Read & Validate Inputs ---
+// --- 4) Debug & Validate Inputs ---
 console.log(`[Assembler] Reading inputs for Task ${taskId} from ${evidenceDir}...`);
+console.log(`[Assembler] DEBUG taskId=${JSON.stringify(taskId)} evidenceDir=${JSON.stringify(evidenceDir)}`);
+console.log(`[Assembler] DEBUG attestationPath=${JSON.stringify(inputs.attestation)}`);
 
 const missingInputs = Object.entries(inputs).filter(([key, path]) => !fs.existsSync(path));
 if (missingInputs.length > 0) {

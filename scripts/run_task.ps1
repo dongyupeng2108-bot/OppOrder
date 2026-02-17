@@ -15,6 +15,11 @@ param (
     [int]$StepTimeoutSeconds = 120
 )
 
+# --- Parameter Normalization ---
+$TaskId = $TaskId.Trim()
+$Mode = $Mode.Trim()
+$Header = $Header.Trim()
+
 $ErrorActionPreference = "Stop"
 if ($NonInteractive) {
     $ProgressPreference = 'SilentlyContinue'
@@ -164,6 +169,7 @@ if ($GenerateScript) {
         New-Item -ItemType Directory -Path $EvidenceDir | Out-Null
     }
 }
+$EvidenceDir = $EvidenceDir.Trim()
 
 # --- Start Transcript (Log Everything) ---
 $LogFile = "$EvidenceDir\run_$TaskId.log"
