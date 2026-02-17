@@ -96,7 +96,7 @@ function Clean-RuntimePaths {
                  # Exclude critical evidence files that might be generated before Healer runs
                  # (e.g., preflight_attestation, workspace_healer itself if redirected)
                  try {
-                     git clean -fd -e "**/preflight_attestation_*.json" -e "**/workspace_healer_*.json" -- $path | Out-Null
+                     git clean -fd -e "*preflight_attestation*" -e "*workspace_healer*" -e "**/preflight_attestation_*.json" -e "**/workspace_healer_*.json" -- $path | Out-Null
                      $cleaned += $path
                  } catch {
                      Write-Warning "Failed to clean $path : $_"
