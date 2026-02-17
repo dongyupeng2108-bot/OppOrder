@@ -1,0 +1,10 @@
+﻿{
+    "branch":  "feat/p5-plan-snapshot-refactor-260216_007",
+    "timestamp":  "2026-02-17 18:28:08 UTC",
+    "header_detected":  true,
+    "task_id":  "260216_007",
+    "input_hash_short":  "88228f80",
+    "mode":  "Integrate",
+    "write_allowed":  true,
+    "commit":  "b78c623"
+}
