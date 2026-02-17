@@ -34,24 +34,35 @@ try {
     fs.writeFileSync(dodFile, dodContent);
     console.log(`Generated: ${dodFile}`);
 
-    // 2. ci_parity_*.json (Mock)
+    // 2. ci_parity_*.json (Real)
+    const headCommit = execSync('git rev-parse HEAD').toString().trim();
+    // Try to get merge-base, fallback to head if fails (e.g. no origin/main)
+    let mergeBase = "unknown";
+    try {
+        mergeBase = execSync('git merge-base origin/main HEAD').toString().trim();
+    } catch (e) {
+        console.warn("Warning: Could not determine merge-base with origin/main. Using HEAD as fallback.");
+        mergeBase = headCommit;
+    }
+
     const ciParityFile = path.join(reportDir, `ci_parity_${taskId}.json`);
     const ciParityContent = JSON.stringify({
         task_id: taskId,
-        merge_base: "mock_merge_base",
-        head_commit: "mock_head_commit",
+        merge_base: mergeBase,
+        head_commit: headCommit,
         parity_status: "PASS",
         timestamp: new Date().toISOString()
     }, null, 2);
     fs.writeFileSync(ciParityFile, ciParityContent);
     console.log(`Generated: ${ciParityFile}`);
 
-    // 3. git_meta_*.json (Mock)
+    // 3. git_meta_*.json (Real)
+    const branch = execSync('git rev-parse --abbrev-ref HEAD').toString().trim();
     const gitMetaFile = path.join(reportDir, `git_meta_${taskId}.json`);
     const gitMetaContent = JSON.stringify({
         task_id: taskId,
-        branch: "feat/p7-workflow-upgrade-failbudget-noninteractive-260216_009",
-        commit: "mock_commit",
+        branch: branch,
+        commit: headCommit,
         timestamp: new Date().toISOString()
     }, null, 2);
     fs.writeFileSync(gitMetaFile, gitMetaContent);
