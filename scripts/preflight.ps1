@@ -102,6 +102,8 @@ if ($FilteredStatus) {
 $CurrentBranch = git branch --show-current
 Write-Host "[Preflight] Git Status: Clean | Branch: $CurrentBranch"
 
+Write-Host "[Preflight] Git Status: Clean | Branch: $CurrentBranch"
+
 # --- 4. Task ID Collision Check ---
 if (-not (Test-Path $EvidenceDir)) {
     New-Item -ItemType Directory -Path $EvidenceDir -Force | Out-Null

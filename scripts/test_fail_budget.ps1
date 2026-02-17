@@ -1,9 +1,13 @@
 $ErrorActionPreference = "Continue"
 
+$Global:RunCounter = 0
 function Run-Task {
     param($TaskId, $Mode, $Header, $ExpectedError)
-    $Log = "rules/task-reports/test_$TaskId.log"
-    Write-Host "Running Task $TaskId ($Mode)..."
+    $Global:RunCounter++
+    $Log = "rules/task-reports/test_${TaskId}_${Global:RunCounter}.log"
+    if (Test-Path $Log) { Remove-Item $Log -Force -ErrorAction SilentlyContinue }
+    
+    Write-Host "Running Task $TaskId ($Mode) [Run $Global:RunCounter]..."
     
     # Using specific command invocation to capture output correctly
     $Cmd = "powershell -ExecutionPolicy Bypass -File scripts/run_task.ps1 -TaskId $TaskId -Mode $Mode -Header `"$Header`""
@@ -14,7 +18,8 @@ function Run-Task {
             Write-Host "TEST PASS: Found '$ExpectedError'" -ForegroundColor Green
         } else {
             Write-Host "TEST FAIL: Did not find '$ExpectedError'" -ForegroundColor Red
-            Get-Content $Log | Select-Object -Last 20
+            Write-Host "LOG CONTENT ($Log):"
+            Get-Content $Log
         }
     }
 }
@@ -26,6 +31,13 @@ function Run-Task {
 # For now, assume clean run.
 
 # Test 1: Dev Budget (Limit 2)
+# Clean up previous budget files to ensure fresh start
+Write-Host "Cleaning up previous budget files..."
+Get-ChildItem "rules/task-reports/*/.budget_*.json" | ForEach-Object { Write-Host "Deleting $($_.Name)..."; Remove-Item $_.FullName -Force -ErrorAction SilentlyContinue }
+Get-ChildItem "rules/task-reports/*/fail_budget_*.json" | ForEach-Object { Write-Host "Deleting $($_.Name)..."; Remove-Item $_.FullName -Force -ErrorAction SilentlyContinue }
+
+if (Test-Path "rules/task-reports/*/.budget_*.json") { Write-Host "WARNING: .budget files still exist!" }
+
 Write-Host "--- Test 1: Dev Budget ---"
 Run-Task -TaskId "260216_009_TEST_DEV" -Mode "Dev" -Header "TraeTask_"
 Run-Task -TaskId "260216_009_TEST_DEV" -Mode "Dev" -Header "TraeTask_"

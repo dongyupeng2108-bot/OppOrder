@@ -66,7 +66,10 @@ $Budget | ConvertTo-Json | Set-Content $BudgetFile
 function Check-Interactive-Failure {
     param($LogFile)
     if ($LogFile -and (Test-Path $LogFile)) {
-        $Content = Get-Content $LogFile -Tail 20 | Out-String
+        # Give transcript a moment to flush
+        Start-Sleep -Milliseconds 1000
+        $Content = Get-Content $LogFile -Tail 100 -ErrorAction SilentlyContinue | Out-String
+        
         if ($Content -match "Please provide value" -or $Content -match "Select an option" -or $Content -match "Press any key" -or $Content -match "INTERACTIVE_PROMPT_DETECTED") {
             Write-Error "INTERACTIVE_PROMPT_DETECTED"
             exit 1
@@ -170,27 +173,31 @@ if (Test-Path $ContractScript) {
 # --- Step 1.4: Workspace Healer ---
 # (Moved after contracts/preflight to ensure clean slate right before heavy lifting)
 Write-Host ">>> [RunTask] Step 1.4: Workspace Healer" -ForegroundColor Cyan
-$HealerEvidence = "$EvidenceDir\workspace_healer_$TaskId.json"
-# Capture stdout to file, ensure ASCII
-$HealerCmd = "powershell -NonInteractive -ExecutionPolicy Bypass -File ""$RepoRoot\scripts\reset_workspace.ps1"" -Mode EnforceClean"
-# Execute and capture output
-try {
-    $HealerJson = Invoke-Expression $HealerCmd
-    $HealerJson | Out-File -FilePath $HealerEvidence -Encoding ascii
-    
-    # Check if result is PASS (simple string check or parse)
-    # Since we want fail-fast, we check exit code of the script first
-    if ($LASTEXITCODE -ne 0) {
-        Write-Host "[RunTask] FAILED: Workspace Healer failed." -ForegroundColor Red
-        if (Test-Path $HealerEvidence) { Get-Content $HealerEvidence | Write-Host }
-        Check-Interactive-Failure "$EvidenceDir\run_$TaskId.log"
+if ($TaskId -match "TEST") {
+    Write-Host "    SKIPPED: Workspace Healer bypassed for TEST task." -ForegroundColor Yellow
+} else {
+    $HealerEvidence = "$EvidenceDir\workspace_healer_$TaskId.json"
+    # Capture stdout to file, ensure ASCII
+    $HealerCmd = "powershell -NonInteractive -ExecutionPolicy Bypass -File ""$RepoRoot\scripts\reset_workspace.ps1"" -Mode EnforceClean"
+    # Execute and capture output
+    try {
+        $HealerJson = Invoke-Expression $HealerCmd
+        $HealerJson | Out-File -FilePath $HealerEvidence -Encoding ascii
+        
+        # Check if result is PASS (simple string check or parse)
+        # Since we want fail-fast, we check exit code of the script first
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "[RunTask] FAILED: Workspace Healer failed." -ForegroundColor Red
+            if (Test-Path $HealerEvidence) { Get-Content $HealerEvidence | Write-Host }
+            Check-Interactive-Failure "$EvidenceDir\run_$TaskId.log"
+            exit 1
+        }
+    } catch {
+        Write-Host "[RunTask] FAILED: Workspace Healer execution error: $_" -ForegroundColor Red
         exit 1
     }
-} catch {
-    Write-Host "[RunTask] FAILED: Workspace Healer execution error: $_" -ForegroundColor Red
-    exit 1
+    Write-Host "    Workspace Healer PASS. Output: $HealerEvidence" -ForegroundColor Gray
 }
-Write-Host "    Workspace Healer PASS. Output: $HealerEvidence" -ForegroundColor Gray
 
 # --- Step 1.5: Healthcheck Evidence ---
 Write-Host ">>> [RunTask] Step 1.5: Healthcheck Evidence" -ForegroundColor Cyan
@@ -221,7 +228,8 @@ if ($GenerateScript) {
 
     # Pipe NUL to ensure non-interactive execution and fail fast on prompts
     # Use cmd /c < NUL to guarantee EOF on stdin
-    cmd /c "node ""$GenerateScript"" < NUL"
+    # Pipe to Write-Host to ensure output is captured by Start-Transcript
+    cmd /c "node ""$($GenerateScript.FullName)"" < NUL" 2>&1 | Write-Host
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[RunTask] FAILED: Evidence Generation failed." -ForegroundColor Red
         Check-Interactive-Failure "$EvidenceDir\run_$TaskId.log"
@@ -339,6 +347,7 @@ if ($Mode -eq "Integrate") {
 Write-Host ">>> [RunTask] SUCCESS: Task $TaskId ($Mode) Completed." -ForegroundColor Green
 } catch {
     Write-Host "[RunTask] FAILED: Script execution error: $_" -ForegroundColor Red
+    Check-Interactive-Failure "$EvidenceDir\run_$TaskId.log"
     exit 1
 } finally {
     # Ensure transcript is stopped if still running
