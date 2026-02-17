@@ -1,0 +1,6 @@
+{
+  "task_id": "260216_009_WorkflowReleaseGate_FailBudget_NonInteractive",
+  "branch": "feat/p7-workflow-upgrade-failbudget-noninteractive-260216_009",
+  "commit": "24205a668689e2332660debe82e53f2127669f14",
+  "timestamp": "2026-02-17T15:13:10.160Z"
+}

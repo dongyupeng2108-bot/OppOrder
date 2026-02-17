@@ -1,0 +1,16 @@
+{
+  "task_id": "260216_009_WorkflowReleaseGate_FailBudget_NonInteractive",
+  "status": "DONE",
+  "exit_code": 0,
+  "timestamp": "2026-02-17T15:13:10.161Z",
+  "summary": "Automation Pack V1 Validation for Task 260216_009_WorkflowReleaseGate_FailBudget_NonInteractive",
+  "report_file": "notify_260216_009_WorkflowReleaseGate_FailBudget_NonInteractive.txt",
+  "report_sha256_short": "197f7326",
+  "dod_evidence": {
+    "gate_light_exit": 0,
+    "healthcheck": [
+      "rules/task-reports/2026-02/260216_009_WorkflowReleaseGate_FailBudget_NonInteractive_healthcheck_53122_root.txt",
+      "rules/task-reports/2026-02/260216_009_WorkflowReleaseGate_FailBudget_NonInteractive_healthcheck_53122_pairs.txt"
+    ]
+  }
+}
