@@ -188,6 +188,22 @@ if (Test-Path $ServiceScript) {
     Write-Host "[RunTask] Warning: Service Policy script not found ($ServiceScript)." -ForegroundColor Yellow
 }
 
+# --- Step 0.5: Workspace Healer ---
+# (Moved before preflight to ensure clean slate and prevent deletion of attestation)
+Write-Host ">>> [RunTask] Step 0.5: Workspace Healer" -ForegroundColor Cyan
+if ($TaskId -match "TEST") {
+    Write-Host "    SKIPPED: Workspace Healer bypassed for TEST task." -ForegroundColor Yellow
+} else {
+    $HealerEvidence = "$EvidenceDir\workspace_healer_$TaskId.json"
+    # Capture stdout to file, ensure ASCII
+    $HealerCmd = "powershell -NonInteractive -ExecutionPolicy Bypass -File ""$RepoRoot\scripts\reset_workspace.ps1"" -Mode EnforceClean > ""$HealerEvidence"" 2>&1"
+    
+    Invoke-Step -Name "Workspace Healer" -CmdLine $HealerCmd -LogFile "$EvidenceDir\run_$TaskId.log" -OnFailure {
+        if (Test-Path $HealerEvidence) { Get-Content $HealerEvidence | Write-Host }
+    }
+    Write-Host "    Workspace Healer PASS. Output: $HealerEvidence" -ForegroundColor Gray
+}
+
 # --- Step 1: Preflight ---
 Write-Host ">>> [RunTask] Step 1: Preflight" -ForegroundColor Cyan
 $PreflightCmd = "powershell -NonInteractive -ExecutionPolicy Bypass -File ""$RepoRoot\scripts\preflight.ps1"" -TaskId $TaskId -Mode $Mode -Header ""$Header"""
@@ -213,22 +229,6 @@ if (Test-Path $ContractScript) {
     Invoke-Step -Name "Contract Verification" -CmdLine $ContractCmd -LogFile "$EvidenceDir\run_$TaskId.log"
 } else {
     Write-Host "[RunTask] Warning: Contract Verification script not found ($ContractScript)." -ForegroundColor Yellow
-}
-
-# --- Step 1.4: Workspace Healer ---
-# (Moved after contracts/preflight to ensure clean slate right before heavy lifting)
-Write-Host ">>> [RunTask] Step 1.4: Workspace Healer" -ForegroundColor Cyan
-if ($TaskId -match "TEST") {
-    Write-Host "    SKIPPED: Workspace Healer bypassed for TEST task." -ForegroundColor Yellow
-} else {
-    $HealerEvidence = "$EvidenceDir\workspace_healer_$TaskId.json"
-    # Capture stdout to file, ensure ASCII
-    $HealerCmd = "powershell -NonInteractive -ExecutionPolicy Bypass -File ""$RepoRoot\scripts\reset_workspace.ps1"" -Mode EnforceClean > ""$HealerEvidence"" 2>&1"
-    
-    Invoke-Step -Name "Workspace Healer" -CmdLine $HealerCmd -LogFile "$EvidenceDir\run_$TaskId.log" -OnFailure {
-        if (Test-Path $HealerEvidence) { Get-Content $HealerEvidence | Write-Host }
-    }
-    Write-Host "    Workspace Healer PASS. Output: $HealerEvidence" -ForegroundColor Gray
 }
 
 # --- Step 1.5: Healthcheck Evidence ---
