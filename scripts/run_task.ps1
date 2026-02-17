@@ -30,7 +30,9 @@ if (-not (Test-Path "$RepoRoot\rules\task-reports\$YearMonth")) {
 $Budget = @{ Dev = 0; Integrate = 0 }
 if (Test-Path $BudgetFile) {
     try {
-        $Budget = Get-Content $BudgetFile -Raw | ConvertFrom-Json -AsHashtable
+        $Json = Get-Content $BudgetFile -Raw | ConvertFrom-Json
+        $Budget.Dev = $Json.Dev
+        $Budget.Integrate = $Json.Integrate
     } catch {
         Write-Warning "Failed to load budget file. Resetting."
     }
