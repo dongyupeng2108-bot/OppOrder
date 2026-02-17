@@ -308,7 +308,7 @@ Write-Host "    Preview Log: $PreviewLog" -ForegroundColor Gray
 
 # --- Step 4: Assemble Evidence ---
 Write-Host ">>> [RunTask] Step 4: Assemble Evidence" -ForegroundColor Cyan
-$AssembleCmd = "node ""$RepoRoot\scripts\assemble_evidence.mjs"" --task_id=$TaskId --evidence_dir=""$EvidenceDir"" --mode=$Mode --phase=assemble < NUL"
+$AssembleCmd = "node ""$RepoRoot\scripts\assemble_evidence.mjs"" --task_id=$TaskId --evidence_dir=$EvidenceDir --mode=$Mode --phase=assemble < NUL"
 Invoke-Step -Name "Assemble Evidence" -CmdLine $AssembleCmd -LogFile "$EvidenceDir\run_$TaskId.log"
 
 # --- Step 5: Pass 2 - Gate Light Verify ---
@@ -342,7 +342,7 @@ if ($Mode -eq "Integrate") {
     Copy-Item -Path $VerifyLog -Destination "$EvidenceDir\gate_light_preview_$TaskId.log" -Force
     
     # Re-run Assemble Evidence to update notify and index
-    $UpdateCmd = "node ""$RepoRoot\scripts\assemble_evidence.mjs"" --task_id=$TaskId --evidence_dir=""$EvidenceDir"" --mode=$Mode --phase=assemble < NUL"
+    $UpdateCmd = "node ""$RepoRoot\scripts\assemble_evidence.mjs"" --task_id=$TaskId --evidence_dir=$EvidenceDir --mode=$Mode --phase=assemble < NUL"
     Invoke-Step -Name "Update Evidence" -CmdLine $UpdateCmd -LogFile "$EvidenceDir\run_$TaskId.log"
     Write-Host "    Updated notify and index with Verify logs." -ForegroundColor Gray
 
@@ -360,7 +360,7 @@ if ($Mode -eq "Integrate") {
     Stop-Transcript
 
     # --- Step 8.2: Execute Archive ---
-    $ArchiveCmd = "node ""$RepoRoot\scripts\assemble_evidence.mjs"" --task_id=$TaskId --evidence_dir=""$EvidenceDir"" --mode=$Mode --phase=archive < NUL"
+    $ArchiveCmd = "node ""$RepoRoot\scripts\assemble_evidence.mjs"" --task_id=$TaskId --evidence_dir=$EvidenceDir --mode=$Mode --phase=archive < NUL"
     Invoke-Step -Name "Archive & Lock" -CmdLine $ArchiveCmd -LogFile "$EvidenceDir\run_$TaskId.log"
     Write-Host "    Archived evidence and locked task." -ForegroundColor Gray
 }

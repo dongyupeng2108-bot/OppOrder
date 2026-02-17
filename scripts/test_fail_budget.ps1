@@ -78,19 +78,23 @@ try {
 }
 
 # Cleanup Artifacts
-Write-Host "Cleaning up test artifacts... (SKIPPED for Debug)"
-# $CleanupPaths = @(
-#     "rules/task-reports/*TEST*",
-#     "rules/task-reports/2026-02/*TEST*",
-#     "rules/task-reports/.budget_*TEST*.json",
-#     "rules/task-reports/2026-02/.budget_*TEST*.json"
-# )
-# foreach ($Path in $CleanupPaths) {
-#     if (Test-Path $Path) {
-#         Write-Host "DEBUG: Deleting $Path" -ForegroundColor Magenta
-#         Remove-Item $Path -Recurse -Force -ErrorAction SilentlyContinue
-#     }
-# }
+Write-Host "Cleaning up test artifacts..."
+$CleanupPaths = @(
+    "rules/task-reports/*_TEST_*",
+    "rules/task-reports/2026-02/*_TEST_*",
+    "rules/task-reports/*TEST_TIMEOUT*",
+    "rules/task-reports/2026-02/*TEST_TIMEOUT*",
+    "rules/task-reports/.budget_*_TEST_*.json",
+    "rules/task-reports/2026-02/.budget_*_TEST_*.json",
+    "rules/task-reports/.budget_*TEST_TIMEOUT*.json",
+    "rules/task-reports/2026-02/.budget_*TEST_TIMEOUT*.json"
+)
+foreach ($Path in $CleanupPaths) {
+    if (Test-Path $Path) {
+        Write-Host "DEBUG: Deleting $Path" -ForegroundColor Magenta
+        Remove-Item $Path -Recurse -Force -ErrorAction SilentlyContinue
+    }
+}
 
 if ($Global:TestFailed) {
     Write-Host "Tests FAILED!" -ForegroundColor Red
