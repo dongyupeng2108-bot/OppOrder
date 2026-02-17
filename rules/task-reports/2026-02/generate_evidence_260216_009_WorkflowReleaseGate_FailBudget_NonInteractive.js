@@ -35,21 +35,35 @@ try {
     console.log(`Generated: ${dodFile}`);
 
     // 2. ci_parity_*.json (Real)
-    const headCommit = execSync('git rev-parse HEAD').toString().trim();
-    // Try to get merge-base, fallback to head if fails (e.g. no origin/main)
+    const head = execSync('git rev-parse HEAD').toString().trim();
+    const base = execSync('git rev-parse origin/main').toString().trim();
     let mergeBase = "unknown";
     try {
         mergeBase = execSync('git merge-base origin/main HEAD').toString().trim();
     } catch (e) {
         console.warn("Warning: Could not determine merge-base with origin/main. Using HEAD as fallback.");
-        mergeBase = headCommit;
+        mergeBase = head;
+    }
+    
+    // Get scope files (diff between merge-base and head)
+    // Note: using merge-base...HEAD (triple dot logic for diff) or just merge-base..HEAD
+    // gate_light_ci.mjs uses origin/main...HEAD (triple dot)
+    let scopeFiles = [];
+    try {
+        const diffOutput = execSync('git diff --name-only origin/main...HEAD').toString().trim();
+        scopeFiles = diffOutput ? diffOutput.split('\n').filter(Boolean) : [];
+    } catch (e) {
+        console.warn("Warning: git diff failed. Scope empty.");
     }
 
     const ciParityFile = path.join(reportDir, `ci_parity_${taskId}.json`);
     const ciParityContent = JSON.stringify({
         task_id: taskId,
+        base: base,
+        head: head,
         merge_base: mergeBase,
-        head_commit: headCommit,
+        scope_files: scopeFiles,
+        scope_count: scopeFiles.length,
         parity_status: "PASS",
         timestamp: new Date().toISOString()
     }, null, 2);
@@ -62,7 +76,7 @@ try {
     const gitMetaContent = JSON.stringify({
         task_id: taskId,
         branch: branch,
-        commit: headCommit,
+        commit: head,
         timestamp: new Date().toISOString()
     }, null, 2);
     fs.writeFileSync(gitMetaFile, gitMetaContent);
