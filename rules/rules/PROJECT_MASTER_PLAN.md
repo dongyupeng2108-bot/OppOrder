@@ -1,7 +1,7 @@
 # OppRadar Engineering System Snapshot
 > **Note**: This file is an **auto-generated system snapshot**. 
 > **Do NOT edit manually.** All status fields are derived from the Engineering System (Git/GitHub/CI/Locks).
-> **Last Synced**: 2026-02-17 16:54:46 UTC
+> **Last Synced**: 2026-02-17 17:01:36 UTC
 
 ## 1. System Identity
 *   **System Type**: Engineering-Centric System (Fact-Driven, CI-Authoritative)
@@ -29,6 +29,7 @@
 *   `origin/feat/p5-plan-snapshot-refactor-260216_006`
 *   `origin/feat/p5-plan-snapshot-refactor-260216_007`
 *   `origin/feat/p6-open-pr-guard-supersede-260216_008`
+*   `origin/feat/p7-failbudget-noninteractive-260216_010`
 *   `origin/feat/p7-workflow-upgrade-failbudget-noninteractive-260216_009`
 *   `origin/feat/rank-v2-contract-deterministic-mock-260215_011`
 *   `origin/feat/rank-v2-contract-version-guard-260215_012`
@@ -37,6 +38,7 @@
 ## 3. PR State Snapshot (Auto-Generated)
 | PR # | State | Branch | Title | Merged At |
 | :--- | :--- | :--- | :--- | :--- |
+| [107](https://github.com/dongyupeng2108-bot/OppOrder/pull/107) | **OPEN** | `feat/p7-failbudget-noninteractive-260216_010` | feat: Task 260216_010 Fail Budget & Non-Interactive Guards (Supersedes 009) | - |
 | [106](https://github.com/dongyupeng2108-bot/OppOrder/pull/106) | **CLOSED** | `feat/p7-workflow-upgrade-failbudget-noninteractive-260216_009` | Feat/p7 workflow upgrade failbudget noninteractive 260216 009 | - |
 | [105](https://github.com/dongyupeng2108-bot/OppOrder/pull/105) | **MERGED** | `feat/p6-open-pr-guard-supersede-260216_008` | feat: Task 260216_008 Open PR Guard & Supersede | 2026-02-17 |
 | [104](https://github.com/dongyupeng2108-bot/OppOrder/pull/104) | **MERGED** | `feat/p5-plan-snapshot-refactor-260216_007` | feat: Task 260216_007 Plan Snapshot Rebuild | 2026-02-17 |
@@ -86,7 +88,6 @@
 | [60](https://github.com/dongyupeng2108-bot/OppOrder/pull/60) | **MERGED** | `feat/scan-cache-v0-260209_002` | feat: scan cache v0 and dod automation (260209_002) | 2026-02-08 |
 | [59](https://github.com/dongyupeng2108-bot/OppOrder/pull/59) | **MERGED** | `feat/opportunity-score-v0-260209_001` | feat: opportunities panel + scoring + export (Task 260209_001) | 2026-02-08 |
 | [58](https://github.com/dongyupeng2108-bot/OppOrder/pull/58) | **MERGED** | `feat/dod-stdout-260208_031` | feat(260208_031): implement DoD evidence stdout print and notify appe… | 2026-02-08 |
-| [57](https://github.com/dongyupeng2108-bot/OppOrder/pull/57) | **MERGED** | `feat/dod-excerpt-autofill-260208_030` | feat: implement DoD evidence excerpt autofill and gate enforcement (T… | 2026-02-08 |
 
 
 ## 4. Gate / Lock Snapshot (Auto-Generated)
@@ -139,4 +140,4 @@
 ## 7. Architecture Version
 *   **Governance Version**: v3.9 (Gate Light)
 *   **Snapshot Engine**: sync_plan_status.js v1.0
-*   **Last Full Sync**: 2026-02-17T16:54:47.617Z
+*   **Last Full Sync**: 2026-02-17T17:01:37.204Z
