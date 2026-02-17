@@ -86,7 +86,10 @@ $CleanupPaths = @(
     "rules/task-reports/2026-02/.budget_*TEST*.json"
 )
 foreach ($Path in $CleanupPaths) {
-    if (Test-Path $Path) { Remove-Item $Path -Recurse -Force -ErrorAction SilentlyContinue }
+    if (Test-Path $Path) {
+        Write-Host "DEBUG: Deleting $Path" -ForegroundColor Magenta
+        Remove-Item $Path -Recurse -Force -ErrorAction SilentlyContinue
+    }
 }
 
 if ($Global:TestFailed) {
