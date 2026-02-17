@@ -6,7 +6,7 @@
   "details": "Fail Budget and Non-Interactive mechanisms implemented and verified.",
   "summary": "Automation Pack V1 Validation for Task 260216_010",
   "report_file": "notify_260216_010.txt",
-  "report_sha256_short": "1e37709e",
+  "report_sha256_short": "7cfb091a",
   "dod_evidence": {
     "gate_light_exit": 0,
     "healthcheck": [
