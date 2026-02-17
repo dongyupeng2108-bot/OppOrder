@@ -1,0 +1,10 @@
+﻿{
+    "branch":  "feat/p6-open-pr-guard-supersede-260216_008",
+    "timestamp":  "2026-02-17 21:03:32 UTC",
+    "header_detected":  true,
+    "task_id":  "260216_008",
+    "input_hash_short":  "88228f80",
+    "mode":  "Integrate",
+    "write_allowed":  true,
+    "commit":  "a0de70a"
+}

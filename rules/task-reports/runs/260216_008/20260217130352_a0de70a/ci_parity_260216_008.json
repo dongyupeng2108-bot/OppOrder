@@ -1,0 +1,15 @@
+{
+  "task_id": "260216_008",
+  "base": "06ac442f5d456bae7cfa2099c6f272b7c03064d6",
+  "head": "a0de70aa0ff11d73646c5f61069f1cf8ca49753e",
+  "merge_base": "06ac442f5d456bae7cfa2099c6f272b7c03064d6",
+  "scope_files": [
+    "rules/LATEST.json",
+    "rules/rules/PROJECT_RULES.md",
+    "rules/rules/WORKFLOW.md",
+    "scripts/open_pr_guard.mjs",
+    "scripts/run_task.ps1"
+  ],
+  "scope_count": 5,
+  "generated_at": "2026-02-17T13:03:36.659Z"
+}
