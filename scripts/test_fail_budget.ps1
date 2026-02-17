@@ -79,22 +79,33 @@ try {
 
 # Cleanup Artifacts
 Write-Host "Cleaning up test artifacts..."
-$CleanupPaths = @(
-    "rules/task-reports/*_TEST_*",
-    "rules/task-reports/2026-02/*_TEST_*",
-    "rules/task-reports/*TEST_TIMEOUT*",
-    "rules/task-reports/2026-02/*TEST_TIMEOUT*",
-    "rules/task-reports/.budget_*_TEST_*.json",
-    "rules/task-reports/2026-02/.budget_*_TEST_*.json",
-    "rules/task-reports/.budget_*TEST_TIMEOUT*.json",
-    "rules/task-reports/2026-02/.budget_*TEST_TIMEOUT*.json"
-)
-foreach ($Path in $CleanupPaths) {
-    if (Test-Path $Path) {
-        Write-Host "DEBUG: Deleting $Path" -ForegroundColor Magenta
-        Remove-Item $Path -Recurse -Force -ErrorAction SilentlyContinue
+
+# Dynamic month detection
+$CurrentMonth = Get-Date -Format "yyyy-MM"
+$ReportDirs = @("rules/task-reports", "rules/task-reports/$CurrentMonth")
+
+foreach ($Dir in $ReportDirs) {
+    if (Test-Path $Dir) {
+        # Clean Test Logs
+        Get-ChildItem -Path $Dir -Filter "test_*.log" | Where-Object { $_.Name -match "_TEST_" -or $_.Name -match "TEST_" } | ForEach-Object {
+            Write-Host "DEBUG: Deleting $($_.FullName)" -ForegroundColor Magenta
+            Remove-Item $_.FullName -Force -ErrorAction SilentlyContinue
+        }
+
+        # Clean Task Artifacts (files/folders matching TEST patterns)
+        Get-ChildItem -Path $Dir | Where-Object { $_.Name -match "_TEST_" -or $_.Name -match "^TEST_" } | ForEach-Object {
+            Write-Host "DEBUG: Deleting $($_.FullName)" -ForegroundColor Magenta
+            Remove-Item $_.FullName -Recurse -Force -ErrorAction SilentlyContinue
+        }
+
+        # Clean Hidden Budget Files
+        Get-ChildItem -Path $Dir -Filter ".budget_*.json" -Force | Where-Object { $_.Name -match "_TEST_" -or $_.Name -match "TEST_" } | ForEach-Object {
+             Write-Host "DEBUG: Deleting budget file $($_.FullName)" -ForegroundColor Magenta
+             Remove-Item $_.FullName -Force -ErrorAction SilentlyContinue
+        }
     }
 }
+
 
 if ($Global:TestFailed) {
     Write-Host "Tests FAILED!" -ForegroundColor Red
