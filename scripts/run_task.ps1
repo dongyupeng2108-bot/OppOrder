@@ -336,7 +336,7 @@ Invoke-Step -Name "Error Digest (Pass 1)" -Cmd $DigestCmd
 # --- Step 3.6: Append Error Stats (Pass 1) ---
 if ($Mode -eq "Integrate") {
     Write-Host ">>> [RunTask] Step 3.6: Append Error Stats (Pass 1)" -ForegroundColor Cyan
-    $AppendCmd = @("node", "$RepoRoot\scripts\error_stats_append.mjs", "--task_id", $TaskId, "--run_id", $RunId, "--commit", $Commit, "--mode", $Mode, "--input_file", "$EvidenceDir\errors_$TaskId.jsonl")
+    $AppendCmd = @("node", "$RepoRoot\scripts\error_stats_append.mjs", "--task_id", $TaskId, "--run_id", $RunId, "--commit", $Commit, "--mode", $Mode, "--source_errors", "$EvidenceDir\errors_$TaskId.jsonl")
     Invoke-Step -Name "Append Error Stats" -Cmd $AppendCmd
 
     # --- Step 3.7: Three-Strike Governance ---
