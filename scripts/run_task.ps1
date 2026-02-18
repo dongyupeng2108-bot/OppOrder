@@ -233,7 +233,7 @@ Invoke-Step -Name "Healthcheck Pairs" -Cmd @("curl.exe", "-s", "-i", "http://loc
 # --- Step 1.6: CI Parity Probe ---
 Write-Host ">>> [RunTask] Step 1.6: CI Parity Probe" -ForegroundColor Cyan
 $ParityScript = "$RepoRoot\scripts\ci_parity_probe.mjs"
-$ParityCmd = @("node", $ParityScript, "--task_id", $TaskId, "--result_dir", $EvidenceDir)
+$ParityCmd = @("node", $ParityScript, "--task_id", $TaskId, "--result_dir", $EvidenceDir, "--mode", $Mode)
 Invoke-Step -Name "CI Parity Probe" -Cmd $ParityCmd
 
 # --- Step 2 & 3: Evidence Generation & Pass 1 (with Retry Logic) ---
@@ -342,6 +342,39 @@ if ($Mode -eq "Integrate") {
 Write-Host ">>> [RunTask] SUCCESS: Task $TaskId ($Mode) Completed." -ForegroundColor Green
 } catch {
     Write-Host "[RunTask] FAILED: Script execution error: $_" -ForegroundColor Red
+    
+    # --- Error Governance Integration ---
+    try {
+        Stop-Transcript -ErrorAction SilentlyContinue
+        
+        $GovScript = "$RepoRoot\scripts\error_governance.mjs"
+        if (Test-Path $GovScript) {
+            $ErrorClass = "UNKNOWN"
+            
+            # Scan Log for ERROR_CLASS
+            if (Test-Path $LogFile) {
+                $LogContent = Get-Content $LogFile -Raw -ErrorAction SilentlyContinue
+                if ($LogContent -match "ERROR_CLASS=(\w+)") {
+                    $ErrorClass = $Matches[1]
+                }
+            }
+            
+            # Step Name? $_ might contain "Step 'X' failed"
+            $StepName = "Unknown"
+            if ("$_" -match "Step '([^']+)'") {
+                $StepName = $Matches[1]
+            }
+            
+            # Invoke Governance Script
+            $GovArgs = @($GovScript, "--task_id", $TaskId, "--mode", $Mode, "--step", $StepName, "--error_class", $ErrorClass, "--evidence_dir", $EvidenceDir, "--log_file", $LogFile)
+            # Use Start-Process to avoid recursion issues if node fails? No, just run it.
+            # Use simple invocation, ignore output/error to prevent infinite loop
+            $Process = Start-Process -FilePath "node" -ArgumentList $GovArgs -NoNewWindow -PassThru -Wait
+        }
+    } catch {
+        Write-Warning "Failed to execute Error Governance: $_"
+    }
+    
     exit 1
 } finally {
     try { Stop-Transcript -ErrorAction SilentlyContinue } catch {}

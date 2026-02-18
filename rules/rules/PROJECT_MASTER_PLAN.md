@@ -1,7 +1,7 @@
 # OppRadar Engineering System Snapshot
 > **Note**: This file is an **auto-generated system snapshot**. 
 > **Do NOT edit manually.** All status fields are derived from the Engineering System (Git/GitHub/CI/Locks).
-> **Last Synced**: 2026-02-17 16:54:46 UTC
+> **Last Synced**: 2026-02-18 03:04:08 UTC
 
 ## 1. System Identity
 *   **System Type**: Engineering-Centric System (Fact-Driven, CI-Authoritative)
@@ -29,7 +29,10 @@
 *   `origin/feat/p5-plan-snapshot-refactor-260216_006`
 *   `origin/feat/p5-plan-snapshot-refactor-260216_007`
 *   `origin/feat/p6-open-pr-guard-supersede-260216_008`
+*   `origin/feat/p7-failbudget-noninteractive-260216_010`
 *   `origin/feat/p7-workflow-upgrade-failbudget-noninteractive-260216_009`
+*   `origin/feat/p8-enforce-ps-native-260218_012`
+*   `origin/feat/p8-openprguard-test-bypass-260218_011`
 *   `origin/feat/rank-v2-contract-deterministic-mock-260215_011`
 *   `origin/feat/rank-v2-contract-version-guard-260215_012`
 *   `origin/main`
@@ -37,6 +40,9 @@
 ## 3. PR State Snapshot (Auto-Generated)
 | PR # | State | Branch | Title | Merged At |
 | :--- | :--- | :--- | :--- | :--- |
+| [109](https://github.com/dongyupeng2108-bot/OppOrder/pull/109) | **MERGED** | `feat/p8-enforce-ps-native-260218_012` | Feat/p8 enforce ps native 260218 012 | 2026-02-18 |
+| [108](https://github.com/dongyupeng2108-bot/OppOrder/pull/108) | **MERGED** | `feat/p8-openprguard-test-bypass-260218_011` | feat: open pr guard bypass for test tasks (260218_011) | 2026-02-17 |
+| [107](https://github.com/dongyupeng2108-bot/OppOrder/pull/107) | **MERGED** | `feat/p7-failbudget-noninteractive-260216_010` | feat: Task 260216_010 Fail Budget & Non-Interactive Guards (Supersedes 009) | 2026-02-17 |
 | [106](https://github.com/dongyupeng2108-bot/OppOrder/pull/106) | **CLOSED** | `feat/p7-workflow-upgrade-failbudget-noninteractive-260216_009` | Feat/p7 workflow upgrade failbudget noninteractive 260216 009 | - |
 | [105](https://github.com/dongyupeng2108-bot/OppOrder/pull/105) | **MERGED** | `feat/p6-open-pr-guard-supersede-260216_008` | feat: Task 260216_008 Open PR Guard & Supersede | 2026-02-17 |
 | [104](https://github.com/dongyupeng2108-bot/OppOrder/pull/104) | **MERGED** | `feat/p5-plan-snapshot-refactor-260216_007` | feat: Task 260216_007 Plan Snapshot Rebuild | 2026-02-17 |
@@ -84,9 +90,6 @@
 | [62](https://github.com/dongyupeng2108-bot/OppOrder/pull/62) | **MERGED** | `task/260209_004_concurrent_batch` | feat: implement concurrent batch scan (Task 260209_004) | 2026-02-09 |
 | [61](https://github.com/dongyupeng2108-bot/OppOrder/pull/61) | **MERGED** | `feat/dod-stdout-mech-260209_003` | feat: mechanize DoD evidence stdout + gate enforcement (Task 260209_003) | 2026-02-09 |
 | [60](https://github.com/dongyupeng2108-bot/OppOrder/pull/60) | **MERGED** | `feat/scan-cache-v0-260209_002` | feat: scan cache v0 and dod automation (260209_002) | 2026-02-08 |
-| [59](https://github.com/dongyupeng2108-bot/OppOrder/pull/59) | **MERGED** | `feat/opportunity-score-v0-260209_001` | feat: opportunities panel + scoring + export (Task 260209_001) | 2026-02-08 |
-| [58](https://github.com/dongyupeng2108-bot/OppOrder/pull/58) | **MERGED** | `feat/dod-stdout-260208_031` | feat(260208_031): implement DoD evidence stdout print and notify appe… | 2026-02-08 |
-| [57](https://github.com/dongyupeng2108-bot/OppOrder/pull/57) | **MERGED** | `feat/dod-excerpt-autofill-260208_030` | feat: implement DoD evidence excerpt autofill and gate enforcement (T… | 2026-02-08 |
 
 
 ## 4. Gate / Lock Snapshot (Auto-Generated)
@@ -102,6 +105,8 @@
 | `260216_008` | [Link](file:///rules/task-reports/locks/260216_008.lock.json) | 2026-02-17T13:03:52.796Z | `20260217130352_a0de70a` |
 | `260216_009_WorkflowReleaseGate_FailBudget_NonInteractive` | [Link](file:///rules/task-reports/locks/260216_009_WorkflowReleaseGate_FailBudget_NonInteractive.lock.json) | 2026-02-17T15:13:29.133Z | `20260217151329_24205a6` |
 | `260216_010` | [Link](file:///rules/task-reports/locks/260216_010.lock.json) | 2026-02-17T16:54:37.932Z | `20260217165437_1eee2f5` |
+| `260218_011` | [Link](file:///rules/task-reports/locks/260218_011.lock.json) | 2026-02-17T18:09:21.461Z | `20260217180921_5c9d423` |
+| `260218_012` | [Link](file:///rules/task-reports/locks/260218_012.lock.json) | 2026-02-18T02:31:26.299Z | `20260218023126_6395338` |
 
 
 ## 5. Abandoned Tasks (Manual Override)
@@ -134,9 +139,13 @@
     *   `20260217151329_24205a6` (Archived)
 *   **260216_010**
     *   `20260217165437_1eee2f5` (Archived)
+*   **260218_011**
+    *   `20260217180921_5c9d423` (Archived)
+*   **260218_012**
+    *   `20260218023126_6395338` (Archived)
 
 
 ## 7. Architecture Version
 *   **Governance Version**: v3.9 (Gate Light)
 *   **Snapshot Engine**: sync_plan_status.js v1.0
-*   **Last Full Sync**: 2026-02-17T16:54:47.617Z
+*   **Last Full Sync**: 2026-02-18T03:04:09.741Z

@@ -142,6 +142,11 @@ if ($Mode -eq "Heal") {
     if ($StatusBefore.Tracked.Count -gt 0) {
         $Result.result = "FAIL"
         $Result.reason = "Tracked changes detected. Please commit, stash, or run with -Mode Heal."
+        
+        # Explicitly output to stderr for FAIL_ROOT_CAUSE_BLOCK capture
+        [Console]::Error.WriteLine("ERROR_CLASS=WORKSPACE_DIRTY_TRACKED")
+        [Console]::Error.WriteLine("ROOT_CAUSE_HINT=Workspace has uncommitted tracked changes. Run with -Mode Heal or commit changes.")
+        
         $Result | ConvertTo-Json -Depth 5
         exit 1
     }

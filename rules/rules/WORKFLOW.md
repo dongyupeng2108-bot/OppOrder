@@ -103,7 +103,18 @@ Before starting any new task, the Agent MUST perform these checks:
             *   **Pass 2**: Verifies evidence with Gate Light (Verify Mode).
             *   **Archive**: Moves evidence to `runs/<task_id>/` and creates Lock File.
 
-## Open PR Guard Protocols (One Task at a Time)
+## 1.8 Error Governance & Three-Strike Rule (Hard Mechanism)
+
+The system automatically tracks task failures and enforces governance on recurring errors.
+
+*   **Error Taxonomy**: All failures MUST be classified using the [ERROR_TAXONOMY.md](rules/ERROR_TAXONOMY.md) enumeration.
+*   **Three-Strike Trigger**:
+    *   Any `ERROR_CLASS` occurring ≥3 times within the last 50 error records triggers a **Governance Backlog Item**.
+    *   Generated at: `rules/task-reports/governance-backlog/GOV_<date>_<ERROR_CLASS>.md`.
+    *   Action: Review generated backlog item, analyze root cause, and implement mechanism fix.
+*   **Data Source**: `rules/task-reports/index/error_stats.jsonl`.
+
+## 2. Dev Workflow (Iterative)
 
 To maintain a linear, conflict-free history, we enforce a strict "One Task at a Time" policy.
 
