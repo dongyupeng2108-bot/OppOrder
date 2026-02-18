@@ -324,10 +324,26 @@ if (-not (PreAssemblePrecheck -EvidenceDir $EvidenceDir -TaskId $TaskId -Mode $M
 # --- Step 3.5: Error Digest (Pass 1) ---
 Write-Host ">>> [RunTask] Step 3.5: Error Digest (Pass 1)" -ForegroundColor Cyan
 $Commit = git rev-parse HEAD
+$ShortSha = $Commit.Substring(0, 7)
+$RunId = (Get-Date).ToString("yyyyMMddHHmmss") + "_" + $ShortSha
+Write-Host ">>> [RunTask] Generated Run ID: $RunId" -ForegroundColor Cyan
+
 $DigestCmd = @("node", "$RepoRoot\scripts\error_digest.mjs", "--task_id", $TaskId, "--mode", $Mode, "--commit", $Commit, "--out_dir", $EvidenceDir)
 if (Test-Path "$EvidenceDir\gate_light_preview_$TaskId.log") { $DigestCmd += "--source_logs=$EvidenceDir\gate_light_preview_$TaskId.log" }
 if (Test-Path "$EvidenceDir\command_audit_$TaskId.jsonl") { $DigestCmd += "--source_logs=$EvidenceDir\command_audit_$TaskId.jsonl" }
 Invoke-Step -Name "Error Digest (Pass 1)" -Cmd $DigestCmd
+
+# --- Step 3.6: Append Error Stats (Pass 1) ---
+if ($Mode -eq "Integrate") {
+    Write-Host ">>> [RunTask] Step 3.6: Append Error Stats (Pass 1)" -ForegroundColor Cyan
+    $AppendCmd = @("node", "$RepoRoot\scripts\error_stats_append.mjs", "--task_id", $TaskId, "--run_id", $RunId, "--commit", $Commit, "--mode", $Mode, "--input_file", "$EvidenceDir\errors_$TaskId.jsonl")
+    Invoke-Step -Name "Append Error Stats" -Cmd $AppendCmd
+
+    # --- Step 3.7: Three-Strike Governance ---
+    Write-Host ">>> [RunTask] Step 3.7: Three-Strike Governance" -ForegroundColor Cyan
+    $ThreeStrikeCmd = @("node", "$RepoRoot\scripts\error_three_strike.mjs", "--run_id", $RunId)
+    Invoke-Step -Name "Three-Strike Governance" -Cmd $ThreeStrikeCmd
+}
 
 # --- Step 4: Assemble Evidence ---
 Write-Host ">>> [RunTask] Step 4: Assemble Evidence" -ForegroundColor Cyan
@@ -338,7 +354,7 @@ Invoke-Step -Name "Assemble Evidence" -Cmd $AssembleCmd
 Write-Host "[State] VERIFYING (Pass 2)..." -ForegroundColor Cyan
 Write-Host ">>> [RunTask] Step 5: Pass 2 - Gate Light Verify" -ForegroundColor Cyan
 $VerifyLog = "$EvidenceDir\gate_light_verify_$TaskId.log"
-$Pass2Cmd = @("node", "$RepoRoot\scripts\gate_light_ci.mjs", "--task_id", $TaskId, "--mode", $Mode, "--result_dir", $EvidenceDir)
+$Pass2Cmd = @("node", "$RepoRoot\scripts\gate_light_ci.mjs", "--task_id", $TaskId, "--mode", $Mode, "--result_dir", $EvidenceDir, "--run_id", $RunId)
 Invoke-Step -Name "Pass 2 - Gate Light Verify" -Cmd $Pass2Cmd -RedirectTo $VerifyLog
 
 Write-Host "    Verify Log: $VerifyLog" -ForegroundColor Gray
@@ -385,7 +401,7 @@ if ($Mode -eq "Integrate") {
     Stop-Transcript
 
     # --- Step 8.2: Execute Archive ---
-    $ArchiveCmd = @("node", "$RepoRoot\scripts\assemble_evidence.mjs", "--task_id=$TaskId", "--evidence_dir=$EvidenceDir", "--mode=$Mode", "--phase=archive")
+    $ArchiveCmd = @("node", "$RepoRoot\scripts\assemble_evidence.mjs", "--task_id=$TaskId", "--evidence_dir=$EvidenceDir", "--mode=$Mode", "--phase=archive", "--run_id=$RunId")
     Invoke-Step -Name "Archive & Lock" -Cmd $ArchiveCmd
     Write-Host "    Archived evidence and locked task." -ForegroundColor Gray
 }

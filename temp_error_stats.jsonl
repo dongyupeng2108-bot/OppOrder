@@ -1,0 +1,3 @@
+{"task_id":"T1","run_id":"R1","commit":"abcdef1234567890","message":"Error 1","error_class":"TEST_ERROR","severity":"HIGH","timestamp":"2023-01-01T00:00:00Z"}
+{"task_id":"T1","run_id":"R1","commit":"abcdef1234567890","message":"Error 2","error_class":"TEST_ERROR","severity":"HIGH","timestamp":"2023-01-01T00:00:01Z"}
+{"task_id":"T1","run_id":"R1","commit":"abcdef1234567890","message":"Error 3","error_class":"TEST_ERROR","severity":"HIGH","timestamp":"2023-01-01T00:00:02Z"}

@@ -289,6 +289,9 @@
 
 ### NoHistoricalEvidenceTouch
 - **Rule**: Modifications to `rules/task-reports/**` files that do NOT contain the current `task_id` in their filename are strictly PROHIBITED.
+- **Exceptions**:
+  - `rules/task-reports/index/**`: Allowed (Must be Append-Only).
+  - `rules/task-reports/governance-backlog/**`: Allowed (New files only; existing files are immutable unless filename contains current `task_id`).
 - **Goal**: Prevent accidental modification of historical evidence or cross-talk between tasks.
 - **Failure Example**: Modifying `rules/task-reports/2026-02/opps_pipeline_smoke_260209_008.txt` while working on task `260209_009`.
 - **Fix**: Revert the file using `git restore --source=origin/main -- <path>`. If the data is new, save it to a new file containing the current `task_id`.

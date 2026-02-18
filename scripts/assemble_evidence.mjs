@@ -19,6 +19,7 @@ const taskId = norm(ARGS.find(arg => arg.startsWith('--task_id='))?.split('=')[1
 const evidenceDir = norm(ARGS.find(arg => arg.startsWith('--evidence_dir='))?.split('=')[1]) || `rules/task-reports/${new Date().toISOString().slice(0, 7)}`;
 const mode = norm(ARGS.find(arg => arg.startsWith('--mode='))?.split('=')[1]);
 const phase = norm(ARGS.find(arg => arg.startsWith('--phase='))?.split('=')[1]) || 'assemble';
+const runIdArg = norm(ARGS.find(arg => arg.startsWith('--run_id='))?.split('=')[1]);
 
 if (!taskId) {
     console.error('Usage: node scripts/assemble_evidence.mjs --task_id=<id> [--evidence_dir=<path>] [--phase=assemble|archive]');
@@ -390,7 +391,7 @@ if (mode === 'Integrate' && phase === 'archive') {
             
             // 9.1. Prepare Run ID
             const shortSha = gitMeta.commit ? gitMeta.commit.substring(0, 7) : 'unknown';
-            const runTimestamp = new Date().toISOString().replace(/[-:T.]/g, '').slice(0, 14) + '_' + shortSha;
+            const runTimestamp = runIdArg || (new Date().toISOString().replace(/[-:T.]/g, '').slice(0, 14) + '_' + shortSha);
             const runsBaseDir = path.join(repoRoot, 'rules/task-reports/runs', taskId);
             const runDir = path.join(runsBaseDir, runTimestamp);
             

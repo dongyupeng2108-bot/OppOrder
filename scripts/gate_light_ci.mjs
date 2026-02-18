@@ -11,6 +11,7 @@ const args = process.argv.slice(2);
 let argTaskId = null;
 let argMode = null; // New: Mode Argument
 let argResultDir = null; // New: Result Dir Argument
+let argRunId = null; // New: Run ID Argument
 for (let i = 0; i < args.length; i++) {
     if (args[i] === '--task_id') {
         argTaskId = args[i + 1];
@@ -20,6 +21,9 @@ for (let i = 0; i < args.length; i++) {
     }
     if (args[i] === '--result_dir') {
         argResultDir = args[i + 1];
+    }
+    if (args[i] === '--run_id') {
+        argRunId = args[i + 1];
     }
 }
 
@@ -1449,8 +1453,8 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                         if (filename.includes('260211_001') || filename.includes('260211_002')) {
                             return;
                         }
-                        // Allow Shared Index file (Task 260211_006)
-                        if (filename === 'runs_index.jsonl') {
+                        // Allow Shared Index file (Task 260211_006 & 260218_018)
+                        if (filename === 'runs_index.jsonl' || filename === 'error_stats.jsonl') {
                             return;
                         }
                         // Allow cleanup of historical runtime evidence for Task 260216_002
@@ -2007,6 +2011,83 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         }
         
         console.log('[Gate Light] Two-Pass Evidence Truth & No Auto-Merge verified.');
+    }
+
+    // --- Error Stats Index & Three-Strike Governance Check (Task 260218_018) ---
+    // Only enforced in Integrate mode because Dev mode does not write to the index.
+    if (task_id >= '260218_018' && argRunId && argMode === 'Integrate') {
+        console.log('[Gate Light] Checking Error Stats Index & Three-Strike Governance...');
+        const errorStatsPath = path.join('rules', 'task-reports', 'index', 'error_stats.jsonl');
+        
+        // 1. Check Index Existence
+        if (!fs.existsSync(errorStatsPath)) {
+            console.error('[Gate Light] FAILED: Global Error Stats Index missing.');
+            console.error(`  Expected: ${errorStatsPath}`);
+            console.log('FAIL_ROOT_CAUSE_BLOCK');
+            console.log('ERROR_CLASS=ERROR_STATS_INDEX_MISSING');
+            console.log('ROOT_CAUSE_HINT=Global error_stats.jsonl must exist and be appended to.');
+            process.exit(1);
+        }
+
+        // 2. Check Record Existence (task_id + run_id)
+        const statsContent = fs.readFileSync(errorStatsPath, 'utf8');
+        const statsLines = statsContent.split('\n').filter(Boolean);
+        const hasRecord = statsLines.some(line => {
+            try {
+                const rec = JSON.parse(line);
+                return rec.task_id === task_id && rec.run_id === argRunId;
+            } catch (e) { return false; }
+        });
+
+        if (!hasRecord) {
+            console.error(`[Gate Light] FAILED: No error record found for Task ${task_id} Run ${argRunId} in index.`);
+            console.log('FAIL_ROOT_CAUSE_BLOCK');
+            console.log('ERROR_CLASS=ERROR_STATS_RECORD_MISSING');
+            console.log('ROOT_CAUSE_HINT=error_stats_append.mjs failed to append record to index.');
+            process.exit(1);
+        }
+        console.log('[Gate Light] Error Stats Index verified (found records for task_id/run_id).');
+
+        // 3. Three-Strike Recalculation
+        // Read last 50 lines
+        const last50 = statsLines.slice(-50);
+        const errorCounts = {};
+        
+        last50.forEach(line => {
+            try {
+                const rec = JSON.parse(line);
+                if (rec.error_class && rec.error_class !== 'NO_ERROR') {
+                    errorCounts[rec.error_class] = (errorCounts[rec.error_class] || 0) + 1;
+                }
+            } catch (e) {}
+        });
+
+        const governanceBacklogDir = path.join('rules', 'task-reports', 'governance-backlog');
+        let threeStrikeFail = false;
+
+        Object.entries(errorCounts).forEach(([cls, count]) => {
+            if (count >= 3) {
+                // Check if GOV file exists
+                let hasGov = false;
+                if (fs.existsSync(governanceBacklogDir)) {
+                    const files = fs.readdirSync(governanceBacklogDir);
+                    hasGov = files.some(f => f.includes(`GOV_`) && f.includes(cls));
+                }
+
+                if (!hasGov) {
+                    console.error(`[Gate Light] FAILED: Three-Strike Governance Triggered for ${cls} (${count} times) but GOV file missing.`);
+                    threeStrikeFail = true;
+                    console.log('FAIL_ROOT_CAUSE_BLOCK');
+                    console.log(`ERROR_CLASS=THREE_STRIKE_GOVERNANCE_MISSING_${cls}`);
+                    console.log(`ROOT_CAUSE_HINT=Error class ${cls} recurred >=3 times. scripts/error_three_strike.mjs must generate a GOV file.`);
+                }
+            }
+        });
+
+        if (threeStrikeFail) {
+            process.exit(1);
+        }
+        console.log('[Gate Light] Three-Strike recalculation verified.');
     }
 
     // Construct postflight command
