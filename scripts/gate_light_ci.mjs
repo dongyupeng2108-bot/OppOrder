@@ -612,7 +612,8 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                     f.startsWith('rules/task-reports/') || 
                     f === 'rules/LATEST.json' ||
                     f === 'scripts/gate_light_ci.mjs' ||
-                    f === 'scripts/finalize_pr.ps1'
+                    f === 'scripts/finalize_pr.ps1' ||
+                    f === 'scripts/assemble_evidence.mjs'
                 );
                  
                 if (!allowed) {
