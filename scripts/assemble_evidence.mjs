@@ -85,6 +85,24 @@ let resultData = readJson(inputs.resultJson);
 
 const openPrPath = resolvePath(`open_pr_guard_${taskId}.json`);
 
+// --- AutoPR Evidence (TraeTask_260219_001) ---
+const autoPrPath = resolvePath(`auto_pr_${taskId}.json`);
+let autoPrBlock = '';
+if (fs.existsSync(autoPrPath)) {
+    try {
+        const autoPrData = readJson(autoPrPath);
+        autoPrBlock = `\n=== AUTO_PR ===
+PR: ${autoPrData.pr_url}
+Attempt: ${autoPrData.attempt} (Max: ${autoPrData.autofix_max + 1})
+State: ${autoPrData.final_state}
+Checks: ${autoPrData.checks_summary ? JSON.stringify(autoPrData.checks_summary) : 'N/A'}
+Branch: ${autoPrData.branch}
+================`;
+    } catch (e) {
+        autoPrBlock = `\n=== AUTO_PR ===\nError reading evidence: ${e.message}\n================`;
+    }
+}
+
 // --- 3. Prepare Extra Artifacts (for Envelope Compliance) ---
 // Create manual_verification.json if missing (to satisfy business evidence check)
 const manualVerifyPath = resolvePath(`manual_verification_${taskId}.json`);
@@ -256,6 +274,8 @@ ${healerBlock}
 
 ${openPrBlock}
 
+${autoPrBlock}
+
 ${gateLightBlock}
 
 ${errorStatsBlock}
@@ -324,6 +344,7 @@ if (fs.existsSync(inputs.dodEvidence)) requiredFilesList.push(path.basename(inpu
 if (fs.existsSync(inputs.gitMeta)) requiredFilesList.push(path.basename(inputs.gitMeta));
 if (fs.existsSync(inputs.attestation)) requiredFilesList.push(path.basename(inputs.attestation));
 if (fs.existsSync(openPrPath)) requiredFilesList.push(path.basename(openPrPath));
+if (fs.existsSync(autoPrPath)) requiredFilesList.push(path.basename(autoPrPath));
 if (fs.existsSync(manualVerifyPath)) requiredFilesList.push(path.basename(manualVerifyPath));
 
 // Add healthchecks if present

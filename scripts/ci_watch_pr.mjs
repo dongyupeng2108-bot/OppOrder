@@ -6,25 +6,52 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Argument parsing
 const args = process.argv.slice(2);
-const taskIdArgIndex = args.indexOf('--task_id');
-const taskId = taskIdArgIndex !== -1 ? args[taskIdArgIndex + 1] : null;
+const getArg = (name) => {
+    const index = args.indexOf(name);
+    return index !== -1 && index + 1 < args.length ? args[index + 1] : null;
+};
+
+const taskId = getArg('--task_id');
+const attempt = getArg('--attempt') || '1';
+const maxAttempts = getArg('--max_attempts') || '1';
 
 if (!taskId) {
-    console.error('Usage: node ci_watch_pr.mjs --task_id <TASK_ID>');
+    console.error('Usage: node ci_watch_pr.mjs --task_id <TASK_ID> [--attempt <N>] [--max_attempts <M>]');
     process.exit(1);
 }
 
-// Ensure run directory exists for logs
 const repoRoot = path.join(__dirname, '..');
-const runDir = path.join(repoRoot, 'rules', 'task-reports', 'runs', taskId, 'autopr');
+const evidenceFile = path.join(repoRoot, 'rules', 'task-reports', `auto_pr_${taskId}.json`);
 
-// Ensure parent dir exists
-if (!fs.existsSync(path.dirname(runDir))) {
-    // Just a placeholder check
+console.log(`[CI Watch] Task: ${taskId} (Attempt ${attempt}/${maxAttempts})`);
+
+// Helper to write evidence
+function writeEvidence(prInfo, state, checksSummary) {
+    const evidence = {
+        task_id: taskId,
+        branch: '', 
+        pr_url: prInfo ? prInfo.url : 'unknown',
+        attempt: parseInt(attempt),
+        autofix_max: parseInt(maxAttempts) - 1,
+        final_state: state,
+        timestamp: new Date().toISOString(),
+        checks_summary: checksSummary || {}
+    };
+    
+    try {
+        const branch = execSync('git branch --show-current', { encoding: 'utf8' }).trim();
+        evidence.branch = branch;
+    } catch (e) {
+        evidence.branch = 'unknown';
+    }
+
+    fs.writeFileSync(evidenceFile, JSON.stringify(evidence, null, 2));
+    console.log(`[CI Watch] Evidence written to: ${evidenceFile}`);
 }
 
-console.log(`[CI Watch] Task: ${taskId}`);
+let prInfo = null;
 
 try {
     // 1. Git Push
@@ -33,11 +60,12 @@ try {
 
     // 2. Check/Create PR
     console.log('[CI Watch] Checking for existing PR...');
-    let prInfo;
+    
     try {
         const prJson = execSync('gh pr view --json number,url,state', { encoding: 'utf8' });
         prInfo = JSON.parse(prJson);
         console.log(`[CI Watch] Found PR #${prInfo.number}: ${prInfo.url}`);
+        
         if (prInfo.state === 'CLOSED' || prInfo.state === 'MERGED') {
              console.log('[CI Watch] PR is closed/merged. Reopening...');
              execSync(`gh pr reopen ${prInfo.number}`, { stdio: 'inherit' });
@@ -51,6 +79,7 @@ try {
             console.log(`[CI Watch] Created PR #${prInfo.number}: ${prInfo.url}`);
         } catch (createErr) {
             console.error(`[CI Watch] Failed to create PR: ${createErr.message}`);
+            writeEvidence(null, 'INFRA_FAIL', { error: createErr.message });
             process.exit(1);
         }
     }
@@ -62,43 +91,62 @@ try {
     console.log('[CI Watch] Waiting for CI checks...');
     
     while (Date.now() - startTime < timeoutMs) {
+        let checks = [];
         try {
             // Fetch checks
-            const checksJson = execSync(`gh pr checks ${prInfo.number} --json name,state,link,startedAt,completedAt`, { encoding: 'utf8' });
-            const checks = JSON.parse(checksJson);
-            
-            if (checks.length === 0) {
-                console.log('[CI Watch] No checks reported yet. Waiting...');
-            } else {
-                const pending = checks.filter(c => c.state === 'PENDING' || c.state === 'IN_PROGRESS' || c.state === 'QUEUED');
-                const failed = checks.filter(c => c.state === 'FAILURE' || c.state === 'ERROR' || c.state === 'TIMED_OUT' || c.state === 'CANCELLED');
-                const success = checks.filter(c => c.state === 'SUCCESS');
-
-                console.log(`[CI Watch] Status: ${success.length} Pass, ${failed.length} Fail, ${pending.length} Pending`);
-
-                if (failed.length > 0) {
-                    console.error('[CI Watch] CI FAILED.');
-                    failed.forEach(f => console.error(`  - ${f.name}: ${f.state} (${f.link})`));
-                    process.exit(2); // CI Failure
-                }
-
-                if (pending.length === 0 && checks.length > 0) {
-                    console.log('[CI Watch] CI PASSED.');
-                    process.exit(0); // Success
-                }
-            }
+            // Note: 'url' in gh pr checks output gives the details link
+            const checksJson = execSync(`gh pr checks ${prInfo.number} --json name,state,url,startedAt,completedAt`, { encoding: 'utf8' });
+            checks = JSON.parse(checksJson);
         } catch (e) {
-            console.log(`[CI Watch] Polling error (retrying): ${e.message}`);
+            console.log(`[CI Watch] Error fetching checks (retrying): ${e.message}`);
+            // Don't exit, just retry loop
+        }
+            
+        if (checks.length === 0) {
+            console.log('[CI Watch] No checks reported yet. Waiting...');
+        } else {
+            const pending = checks.filter(c => c.state === 'PENDING' || c.state === 'IN_PROGRESS' || c.state === 'QUEUED');
+            const failed = checks.filter(c => c.state === 'FAILURE' || c.state === 'ERROR' || c.state === 'TIMED_OUT' || c.state === 'CANCELLED');
+            const success = checks.filter(c => c.state === 'SUCCESS');
+
+            console.log(`[CI Watch] Status: ${success.length} Pass, ${failed.length} Fail, ${pending.length} Pending`);
+
+            const summary = {
+                total: checks.length,
+                success: success.length,
+                failed: failed.length,
+                pending: pending.length,
+                details: failed.length > 0 ? failed.map(f => `${f.name}: ${f.state}`) : ['All Passed']
+            };
+
+            if (failed.length > 0) {
+                console.error('[CI Watch] CI FAILED.');
+                failed.forEach(f => console.error(`  - ${f.name}: ${f.state} (${f.url})`));
+                writeEvidence(prInfo, 'FAIL', summary);
+                process.exit(2); // CI Failure
+            }
+
+            if (pending.length === 0 && checks.length > 0) {
+                console.log('[CI Watch] CI PASSED.');
+                writeEvidence(prInfo, 'PASS', summary);
+                process.exit(0); // Success
+            }
         }
 
         // Wait 15s
-        execSync('powershell -c Start-Sleep -Seconds 15');
+        try {
+            execSync('powershell -c Start-Sleep -Seconds 15');
+        } catch (e) {
+            // ignore
+        }
     }
 
     console.error('[CI Watch] TIMEOUT waiting for CI.');
+    writeEvidence(prInfo, 'TIMEOUT', { error: 'Timeout waiting for CI checks' });
     process.exit(1); // Infra/Timeout Error
 
 } catch (err) {
-    console.error(`[CI Watch] Infrastructure Error: ${err.message}`);
+    console.error(`[CI Watch] Unexpected Error: ${err.message}`);
+    writeEvidence(prInfo, 'INFRA_FAIL', { error: err.message });
     process.exit(1);
 }

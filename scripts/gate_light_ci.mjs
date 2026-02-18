@@ -424,6 +424,36 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         }
     }
 
+    // --- 1.8 AutoPR Evidence Check (Task 260219_001) ---
+    if (task_id >= '260219_001' && argMode === 'Integrate') {
+        console.log('[Gate Light] Checking AutoPR Evidence...');
+        const autoPrFile = path.join(result_dir, `auto_pr_${task_id}.json`);
+        
+        if (!fs.existsSync(autoPrFile)) {
+            console.error(`[Gate Light] FAILED: AutoPR evidence missing: ${autoPrFile}`);
+            console.error(`  ACTION: Ensure 'run_task.ps1' Step 9 (AutoPR Loop) executed. AutoPR is MANDATORY for Integrate mode.`);
+            process.exit(1);
+        }
+        
+        try {
+            const autoPrData = JSON.parse(fs.readFileSync(autoPrFile, 'utf8'));
+            
+            const requiredFields = ['pr_url', 'attempt', 'final_state'];
+            const missingFields = requiredFields.filter(f => !autoPrData[f]);
+            
+            if (missingFields.length > 0) {
+                console.error(`[Gate Light] FAILED: AutoPR evidence missing required fields: ${missingFields.join(', ')}`);
+                process.exit(1);
+            }
+            
+            console.log(`[Gate Light] AutoPR verified (State: ${autoPrData.final_state}, Attempt: ${autoPrData.attempt}).`);
+            
+        } catch (e) {
+            console.error(`[Gate Light] FAILED: Invalid AutoPR JSON: ${e.message}`);
+            process.exit(1);
+        }
+    }
+
     // --- 2. Check CI Parity JSON Evidence (Task 260211_002) ---
     // Hard Guard: Must exist, be valid JSON, match current git state, and pass anti-cheat.
     console.log('[Gate Light] Checking CI Parity JSON Evidence...');

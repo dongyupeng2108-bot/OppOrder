@@ -32,6 +32,18 @@ if ([string]::IsNullOrWhiteSpace($Header)) {
     $Header = $Header.Trim()
 }
 
+# --- Integrate Defaults (TraeTask_260219_001) ---
+if ($Mode -eq "Integrate") {
+    if (-not $PSBoundParameters.ContainsKey("AutoPR")) {
+        $AutoPR = $true
+        Write-Host "[RunTask] Integrate Default: AutoPR enabled." -ForegroundColor Cyan
+    }
+    if (-not $PSBoundParameters.ContainsKey("AutoFixMax")) {
+        $AutoFixMax = 1
+        Write-Host "[RunTask] Integrate Default: AutoFixMax set to 1." -ForegroundColor Cyan
+    }
+}
+
 $ErrorActionPreference = "Stop"
 if ($NonInteractive) {
     $ProgressPreference = 'SilentlyContinue'
@@ -428,16 +440,21 @@ if ($Mode -eq "Integrate") {
         $LoopActive = $true
         
         while ($LoopActive) {
-            Write-Host "[AutoPR] Loop Iteration $($CurrentFixCount + 1)..." -ForegroundColor Cyan
+            $CurrentAttempt = $CurrentFixCount + 1
+            Write-Host "[AutoPR] Loop Iteration $CurrentAttempt (Max Fixes: $AutoFixMax)..." -ForegroundColor Cyan
             
-            # 1. Run CI Watch
+            # 1. Run CI Watch (Pass attempt info for evidence generation)
             Write-Host ">>> [AutoPR] Running CI Watch..." -ForegroundColor Cyan
-            $WatchProcess = Start-Process -FilePath "node" -ArgumentList "$WatchScript", "--task_id", "$TaskId" -NoNewWindow -PassThru -Wait
+            $WatchArgs = @("$WatchScript", "--task_id", "$TaskId", "--attempt", "$CurrentAttempt", "--max_attempts", "$($AutoFixMax + 1)")
+            $WatchProcess = Start-Process -FilePath "node" -ArgumentList $WatchArgs -NoNewWindow -PassThru -Wait
             $ExitCode = $WatchProcess.ExitCode
             
             if ($ExitCode -eq 0) {
                 Write-Host "[AutoPR] CI Passed!" -ForegroundColor Green
                 $LoopActive = $false
+            } elseif ($ExitCode -eq 1) {
+                Write-Error "[AutoPR] CI Watch failed with Infra/Critical Error (Exit Code 1)."
+                exit 1
             } elseif ($ExitCode -eq 2) {
                 Write-Host "[AutoPR] CI Failed (Exit Code 2)." -ForegroundColor Red
                 
@@ -454,22 +471,15 @@ if ($Mode -eq "Integrate") {
                          exit 1
                     }
                     
-                    # 3. Commit
-                    git add .
-                    # Check if changes exist
-                    $Status = git status --porcelain
-                    if ($Status) {
-                        git commit -m "fix: auto-fix applied by ci_autofix_pack (Attempt $CurrentFixCount)"
-                        Write-Host "[AutoPR] AutoFix applied and committed." -ForegroundColor Green
-                    } else {
-                        Write-Host "[AutoPR] AutoFix made no changes." -ForegroundColor Yellow
-                    }
+                    # Note: ci_autofix_pack.mjs handles git add/commit/push internally to ensure atomicity.
+                    # We do not commit here to avoid conflicts or empty commits.
+                    
                 } else {
-                    Write-Error "[AutoPR] CI Failed and AutoFix limit reached."
+                    Write-Error "[AutoPR] AutoFix limit reached ($AutoFixMax). CI still failing."
                     exit 1
                 }
             } else {
-                Write-Error "[AutoPR] CI Watch failed with Infrastructure Error (Exit Code $ExitCode)."
+                Write-Error "[AutoPR] Unknown Exit Code from CI Watch: $ExitCode"
                 exit 1
             }
         }
