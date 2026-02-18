@@ -285,14 +285,62 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         try {
             const openPrData = JSON.parse(fs.readFileSync(openPrFile, 'utf8'));
             
-            // Check blocking count
+            // Check blocking count in evidence
             if (openPrData.open_prs_blocking_count !== 0) {
-                console.error(`[Gate Light] FAILED: Open PR Guard blocked execution.`);
+                console.error(`[Gate Light] FAILED: Open PR Guard blocked execution (Evidence).`);
                 console.error(`  Blocking PRs Count: ${openPrData.open_prs_blocking_count}`);
                 console.error(`  ACTION: Close unrelated open PRs before running Integrate.`);
+                console.log('FAIL_ROOT_CAUSE_BLOCK');
+                console.log('ERROR_CLASS=OPEN_PR_GUARD_BLOCKED');
+                console.log('ROOT_CAUSE_HINT=Open PR Guard blocked execution due to existing Open PRs.');
                 process.exit(1);
             }
             
+            // --- CI Recalculation (Anti-Cheat) ---
+            console.log('[Gate Light] Recalculating Open PR Guard status...');
+            const probeScript = path.join(process.cwd(), 'scripts', 'open_pr_guard_probe.mjs');
+            
+            // Construct arguments from evidence
+            const ignoreArgs = (openPrData.ignored_pr_numbers || []).join(',');
+            const supersedeArgs = (openPrData.supersede_task_ids || []).join(',');
+            
+            // Run probe
+            const probeCmd = `node ${probeScript} --task_id ${task_id} --mode Integrate --ignore_pr_numbers "${ignoreArgs}" --supersede_task_ids "${supersedeArgs}"`;
+            
+            try {
+                // Run probe (expecting exit code 0 for PASS)
+                const probeOutput = execSync(probeCmd, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
+                const probeData = JSON.parse(probeOutput);
+                
+                if (probeData.decision !== 'PASS') {
+                     // Should be caught by catch block if exit code 1, but check here just in case
+                     throw new Error('Probe returned non-PASS with exit code 0');
+                }
+                console.log('[Gate Light] Open PR Guard Recalculation verified (PASS).');
+                
+            } catch (e) {
+                console.error(`[Gate Light] FAILED: Open PR Guard Recalculation Blocked/Failed.`);
+                if (e.stdout) {
+                     try {
+                        const probeData = JSON.parse(e.stdout.toString());
+                        if (probeData.blocking_prs && probeData.blocking_prs.length > 0) {
+                             console.error(`  Blocking PRs:`);
+                             probeData.blocking_prs.forEach(p => console.error(`    - #${p.number} ${p.title}`));
+                             console.log('FAIL_ROOT_CAUSE_BLOCK');
+                             console.log('ERROR_CLASS=OPEN_PR_GUARD_BLOCKED');
+                             console.log('ROOT_CAUSE_HINT=Open PR Guard blocked execution (Live Check).');
+                        } else {
+                             console.error(`  Error: ${probeData.error || 'Unknown system error'}`);
+                        }
+                     } catch (jsonErr) {
+                         console.error(`  Raw Output: ${e.stdout.toString()}`);
+                     }
+                } else {
+                     console.error(`  Error Message: ${e.message}`);
+                }
+                process.exit(1);
+            }
+
             console.log('[Gate Light] Open PR Guard verified (blocking_count=0).');
         } catch (e) {
             console.error(`[Gate Light] FAILED: Invalid Open PR Guard JSON: ${e.message}`);

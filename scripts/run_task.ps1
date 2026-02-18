@@ -226,12 +226,14 @@ if ($Header -match "^(TraeTask_|FIX:)") {
     Write-Host "    Updated rules/LATEST.json to $TaskId" -ForegroundColor Gray
 }
 
-# --- Step 1.2: Open PR Guard ---
-Write-Host ">>> [RunTask] Step 1.2: Open PR Guard" -ForegroundColor Cyan
-$OpenPRGuardOutput = "$EvidenceDir\open_pr_guard_$TaskId.json"
-$OpenPRGuardCmd = @("node", "$RepoRoot\scripts\open_pr_guard.mjs", "--task_id", $TaskId, "--mode", $Mode, "--output", $OpenPRGuardOutput)
-Invoke-Step -Name "Open PR Guard" -Cmd $OpenPRGuardCmd
-Write-Host "    Open PR Guard PASS. Output: $OpenPRGuardOutput" -ForegroundColor Gray
+# --- Step 1.2: Open PR Guard (Integrate Only) ---
+if ($Mode -eq "Integrate") {
+    Write-Host ">>> [RunTask] Step 1.2: Open PR Guard" -ForegroundColor Cyan
+    $OpenPRGuardOutput = "$EvidenceDir\open_pr_guard_$TaskId.json"
+    $OpenPRGuardCmd = @("node", "$RepoRoot\scripts\open_pr_guard_probe.mjs", "--task_id", $TaskId, "--mode", $Mode, "--output", $OpenPRGuardOutput)
+    Invoke-Step -Name "Open PR Guard" -Cmd $OpenPRGuardCmd
+    Write-Host "    Open PR Guard PASS. Output: $OpenPRGuardOutput" -ForegroundColor Gray
+}
 
 # --- Step 1.3: Contract Verification First ---
 Write-Host ">>> [RunTask] Step 1.3: Contract Verification First" -ForegroundColor Cyan
