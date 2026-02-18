@@ -321,6 +321,14 @@ if (-not (PreAssemblePrecheck -EvidenceDir $EvidenceDir -TaskId $TaskId -Mode $M
     }
 }
 
+# --- Step 3.5: Error Digest (Pass 1) ---
+Write-Host ">>> [RunTask] Step 3.5: Error Digest (Pass 1)" -ForegroundColor Cyan
+$Commit = git rev-parse HEAD
+$DigestCmd = @("node", "$RepoRoot\scripts\error_digest.mjs", "--task_id", $TaskId, "--mode", $Mode, "--commit", $Commit, "--out_dir", $EvidenceDir)
+if (Test-Path "$EvidenceDir\gate_light_preview_$TaskId.log") { $DigestCmd += "--source_logs=$EvidenceDir\gate_light_preview_$TaskId.log" }
+if (Test-Path "$EvidenceDir\command_audit_$TaskId.jsonl") { $DigestCmd += "--source_logs=$EvidenceDir\command_audit_$TaskId.jsonl" }
+Invoke-Step -Name "Error Digest (Pass 1)" -Cmd $DigestCmd
+
 # --- Step 4: Assemble Evidence ---
 Write-Host ">>> [RunTask] Step 4: Assemble Evidence" -ForegroundColor Cyan
 $AssembleCmd = @("node", "$RepoRoot\scripts\assemble_evidence.mjs", "--task_id=$TaskId", "--evidence_dir=$EvidenceDir", "--mode=$Mode", "--phase=assemble")
@@ -346,6 +354,13 @@ if ($Mode -eq "Integrate") {
     } else {
         Write-Host "    Warning: Postflight script not found." -ForegroundColor Yellow
     }
+
+    # --- Step 6.5: Error Digest (Pass 2) ---
+    Write-Host ">>> [RunTask] Step 6.5: Error Digest (Pass 2)" -ForegroundColor Cyan
+    $DigestCmd2 = @("node", "$RepoRoot\scripts\error_digest.mjs", "--task_id", $TaskId, "--mode", $Mode, "--commit", $Commit, "--out_dir", $EvidenceDir)
+    if (Test-Path "$EvidenceDir\gate_light_verify_$TaskId.log") { $DigestCmd2 += "--source_logs=$EvidenceDir\gate_light_verify_$TaskId.log" }
+    if (Test-Path "$EvidenceDir\command_audit_$TaskId.jsonl") { $DigestCmd2 += "--source_logs=$EvidenceDir\command_audit_$TaskId.jsonl" }
+    Invoke-Step -Name "Error Digest (Pass 2)" -Cmd $DigestCmd2
 
     # --- Step 7: Update Evidence with Verify Logs (Integrate Only) ---
     Write-Host ">>> [RunTask] Step 7: Update Evidence with Verify Logs" -ForegroundColor Cyan
