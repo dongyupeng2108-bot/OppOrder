@@ -159,6 +159,7 @@ $InputHashShort = $Header.GetHashCode().ToString("x")
 $Attestation = @{
     task_id = $TaskId
     mode = $Mode
+    header = $CleanHeader
     header_detected = $HeaderDetected
     write_allowed = $WriteAllowed
     branch = $CurrentBranch

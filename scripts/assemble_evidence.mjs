@@ -207,8 +207,20 @@ const logTail = logLines.slice(-20).join('\n');
 // --- 5. Assemble Notify Content (Preliminary) ---
 // We need to write notify first to get its hash.
 
+// Extract Header from Attestation (Task 260218_019)
+let taskHeader = 'Unknown';
+if (fs.existsSync(inputs.attestation)) {
+    try {
+        const att = JSON.parse(fs.readFileSync(inputs.attestation, 'utf8'));
+        taskHeader = att.header || 'Unknown';
+    } catch (e) {
+        console.warn(`[Assembler] Warning: Failed to parse attestation: ${e.message}`);
+    }
+}
+
 const header = `Trae Task Report
 Task ID: ${taskId}
+Header: ${taskHeader}
 Date: ${new Date().toISOString()}
 Branch: ${gitMeta.branch}
 Commit: ${gitMeta.commit}
