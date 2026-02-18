@@ -82,6 +82,7 @@ const dodEvidence = readText(inputs.dodEvidence);
 const gitMeta = readJson(inputs.gitMeta);
 // const attestation = readJson(inputs.attestation);
 let resultData = readJson(inputs.resultJson);
+const resolvedMode = mode || resultData.mode || 'Integrate';
 
 const openPrPath = resolvePath(`open_pr_guard_${taskId}.json`);
 
@@ -299,6 +300,7 @@ resultData.status = 'DONE';
 resultData.summary = `Automation Pack V1 Validation for Task ${taskId}`;
 resultData.report_file = path.basename(notifyPath);
 resultData.report_sha256_short = notifyHashShort;
+resultData.mode = resolvedMode;
 
 // Ensure gate_light_exit is present (redundant check but safe)
 if (!resultData.dod_evidence) resultData.dod_evidence = {};
@@ -358,7 +360,7 @@ if (fs.existsSync(resolvePath(verifyLogManifest))) requiredFilesList.push(verify
 
 const manifestData = {
     task_id: taskId,
-    mode: mode,
+    mode: resolvedMode,
     generated_at: new Date().toISOString(),
     evidence_dir: evidenceDir,
     required_files: requiredFilesList
@@ -426,7 +428,7 @@ let snippetContent = notifyContent;
 
 // Ensure [Postflight] PASS
 if (!snippetContent.includes('[Postflight] PASS')) {
-    if (mode === 'Integrate') {
+    if (resolvedMode === 'Integrate') {
          snippetContent += `\n[Postflight] PASS`;
     } else {
          snippetContent += `\n[Postflight] Skipping Postflight Envelope Validation (Preview Mode)`;
