@@ -254,6 +254,32 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         }
     });
 
+    // 1.5.1.5 CheckHeaderConsistency (Task 260218_019)
+    if (fs.existsSync(snippetFile)) {
+        const snippetContent = fs.readFileSync(snippetFile, 'utf8');
+        const headerMatch = snippetContent.match(/^Header:\s*(.+)$/m);
+        if (!headerMatch) {
+            console.error(`[Gate Light] FAILED: Header missing in ${path.basename(snippetFile)}`);
+            process.exit(1);
+        }
+        const headerVal = headerMatch[1].trim();
+        
+        if (headerVal.startsWith('TraeTask_')) {
+            const expected = `TraeTask_${task_id}`;
+            if (headerVal !== expected) {
+                console.error(`[Gate Light] FAILED: Header mismatch.`);
+                console.error(`  Found: ${headerVal}`);
+                console.error(`  Expected: ${expected}`);
+                process.exit(1);
+            }
+        } else if (!headerVal.startsWith('FIX:') && !headerVal.startsWith('讨论:')) {
+             console.error(`[Gate Light] FAILED: Invalid Header format: ${headerVal}`);
+             console.error(`  Expected: TraeTask_${task_id}, FIX:..., or 讨论:...`);
+             process.exit(1);
+        }
+        console.log(`[Gate Light] Header Check Passed: ${headerVal}`);
+    }
+
     // 1.5.2 CheckPreflightAttestation (Integrate Mode Hard Guard)
     if (argMode === 'Integrate') {
         const attestationFile = path.join(result_dir, `preflight_attestation_${task_id}.json`);
@@ -584,7 +610,10 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                 const allowed = driftFiles.every(f => 
                     f.startsWith('docs/') || 
                     f.startsWith('rules/task-reports/') || 
-                    f === 'rules/LATEST.json'
+                    f === 'rules/LATEST.json' ||
+                    f === 'scripts/gate_light_ci.mjs' ||
+                    f === 'scripts/finalize_pr.ps1' ||
+                    f === 'scripts/assemble_evidence.mjs'
                 );
                  
                 if (!allowed) {

@@ -6,7 +6,7 @@ param (
     [ValidateSet("Dev", "Integrate")]
     [string]$Mode,
 
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory=$false)]
     [string]$Header,
 
     [switch]$NonInteractive = $true,
@@ -18,7 +18,13 @@ param (
 # --- Parameter Normalization ---
 $TaskId = $TaskId.Trim()
 $Mode = $Mode.Trim()
-$Header = $Header.Trim()
+
+if ([string]::IsNullOrWhiteSpace($Header)) {
+    $Header = "TraeTask_$TaskId"
+    Write-Host "[RunTask] Header not provided. Using default: $Header" -ForegroundColor Cyan
+} else {
+    $Header = $Header.Trim()
+}
 
 $ErrorActionPreference = "Stop"
 if ($NonInteractive) {
