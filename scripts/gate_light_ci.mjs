@@ -532,66 +532,71 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
     console.log('[Gate Light] CI Parity JSON Evidence verified.');
 
     // --- 2.5 Error Digest Validation (M-G1) ---
-    console.log('[Gate Light] Checking Error Digest Evidence...');
-    const errorsJsonl = path.join(result_dir, `errors_${targetTaskId}.jsonl`);
-    const errorsSummary = path.join(result_dir, `errors_summary_${targetTaskId}.txt`);
+    // SKIP in Preview Mode (Chicken-and-Egg: Digest is generated AFTER Preview)
+    if (process.env.GENERATE_PREVIEW !== '1') {
+        console.log('[Gate Light] Checking Error Digest Evidence...');
+        const errorsJsonl = path.join(result_dir, `errors_${targetTaskId}.jsonl`);
+        const errorsSummary = path.join(result_dir, `errors_summary_${targetTaskId}.txt`);
 
-    if (!fs.existsSync(errorsJsonl)) {
-        console.error(`[Gate Light] FAIL: Error Log (JSONL) missing: ${errorsJsonl}`);
-        process.exit(1);
-    }
-    if (!fs.existsSync(errorsSummary)) {
-        console.error(`[Gate Light] FAIL: Error Summary missing: ${errorsSummary}`);
-        process.exit(1);
-    }
-
-    // Check Summary Content Consistency
-    const summaryContent = fs.readFileSync(errorsSummary, 'utf8');
-    if (!summaryContent.includes(`TASK_ID: ${targetTaskId}`)) {
-        console.error(`[Gate Light] FAIL: Error Summary TASK_ID mismatch.`);
-        console.error(`  Expected: TASK_ID: ${targetTaskId}`);
-        process.exit(1);
-    }
-
-    // Check Commit Consistency (SnippetCommitMustMatch logic)
-    const commitMatch = summaryContent.match(/COMMIT: ([a-f0-9]+)/);
-    if (!commitMatch) {
-         console.error(`[Gate Light] FAIL: Error Summary missing COMMIT field.`);
-         process.exit(1);
-    }
-    const summaryCommit = commitMatch[1];
-    
-    try {
-        const currentHead = execSync('git rev-parse HEAD', { encoding: 'utf8' }).trim();
-        
-        if (summaryCommit !== 'unknown' && summaryCommit !== currentHead) {
-            console.log(`[Gate Light] Error Summary Commit (${summaryCommit}) != HEAD (${currentHead}). Checking for allowed drift...`);
-            
-            const drift = execSync(`git diff --name-only ${summaryCommit} ${currentHead}`, { encoding: 'utf8' }).trim();
-            const driftFiles = drift.split('\n').filter(Boolean);
-            const allowed = driftFiles.every(f => 
-                f.startsWith('docs/') || 
-                f.startsWith('rules/task-reports/') || 
-                f === 'rules/LATEST.json'
-            );
-             
-            if (!allowed) {
-                console.error(`[Gate Light] FAIL: Error Summary Commit Drift detected in non-evidence files.`);
-                console.error(`  Summary Commit: ${summaryCommit}`);
-                console.error(`  HEAD: ${currentHead}`);
-                console.error(`  Drift Files:`);
-                driftFiles.forEach(f => console.error(`    - ${f}`));
-                process.exit(1);
-            }
-            console.log(`[Gate Light] Drift allowed (Evidence/Docs only).`);
+        if (!fs.existsSync(errorsJsonl)) {
+            console.error(`[Gate Light] FAIL: Error Log (JSONL) missing: ${errorsJsonl}`);
+            process.exit(1);
         }
-    } catch (e) {
-         console.warn(`[Gate Light] Warning: Failed to check commit drift: ${e.message}`);
-         // If git fails, fail safe
-         console.error(`[Gate Light] FAIL: Could not verify commit drift.`);
-         process.exit(1);
+        if (!fs.existsSync(errorsSummary)) {
+            console.error(`[Gate Light] FAIL: Error Summary missing: ${errorsSummary}`);
+            process.exit(1);
+        }
+
+        // Check Summary Content Consistency
+        const summaryContent = fs.readFileSync(errorsSummary, 'utf8');
+        if (!summaryContent.includes(`TASK_ID: ${targetTaskId}`)) {
+            console.error(`[Gate Light] FAIL: Error Summary TASK_ID mismatch.`);
+            console.error(`  Expected: TASK_ID: ${targetTaskId}`);
+            process.exit(1);
+        }
+
+        // Check Commit Consistency (SnippetCommitMustMatch logic)
+        const commitMatch = summaryContent.match(/COMMIT: ([a-f0-9]+)/);
+        if (!commitMatch) {
+             console.error(`[Gate Light] FAIL: Error Summary missing COMMIT field.`);
+             process.exit(1);
+        }
+        const summaryCommit = commitMatch[1];
+        
+        try {
+            const currentHead = execSync('git rev-parse HEAD', { encoding: 'utf8' }).trim();
+            
+            if (summaryCommit !== 'unknown' && summaryCommit !== currentHead) {
+                console.log(`[Gate Light] Error Summary Commit (${summaryCommit}) != HEAD (${currentHead}). Checking for allowed drift...`);
+                
+                const drift = execSync(`git diff --name-only ${summaryCommit} ${currentHead}`, { encoding: 'utf8' }).trim();
+                const driftFiles = drift.split('\n').filter(Boolean);
+                const allowed = driftFiles.every(f => 
+                    f.startsWith('docs/') || 
+                    f.startsWith('rules/task-reports/') || 
+                    f === 'rules/LATEST.json'
+                );
+                 
+                if (!allowed) {
+                    console.error(`[Gate Light] FAIL: Error Summary Commit Drift detected in non-evidence files.`);
+                    console.error(`  Summary Commit: ${summaryCommit}`);
+                    console.error(`  HEAD: ${currentHead}`);
+                    console.error(`  Drift Files:`);
+                    driftFiles.forEach(f => console.error(`    - ${f}`));
+                    process.exit(1);
+                }
+                console.log(`[Gate Light] Drift allowed (Evidence/Docs only).`);
+            }
+        } catch (e) {
+             console.warn(`[Gate Light] Warning: Failed to check commit drift: ${e.message}`);
+             // If git fails, fail safe
+             console.error(`[Gate Light] FAIL: Could not verify commit drift.`);
+             process.exit(1);
+        }
+        console.log('[Gate Light] Error Digest Evidence Verified.');
+    } else {
+        console.log('[Gate Light] Skipping Error Digest Validation (Preview Mode).');
     }
-    console.log('[Gate Light] Error Digest Evidence Verified.');
 
     // --- Doc Path Standards Check (Task 260208_025) ---
     console.log('[Gate Light] Checking doc path standards...');
