@@ -27,6 +27,7 @@ if (!taskId) {
 }
 
 const resolvePath = (filename) => path.resolve(evidenceDir, filename);
+const repoRoot = path.resolve(evidenceDir, '../../..');
 
 // --- 3) Define Inputs (Single Sources of Truth) ---
 const inputs = {
@@ -135,8 +136,41 @@ Untracked: ${healerData.after?.untracked_count ?? '?'}
 
 // Gate Light Block
 let gateLightBlock = gateLightLog;
-if (!gateLightBlock.includes('=== GATE_LIGHT_PREVIEW ===')) {
-    gateLightBlock = `=== GATE_LIGHT_PREVIEW ===\n${gateLightLog}\n==========================`;
+if (gateLightBlock.includes('GATE_LIGHT_EXIT=0')) {
+    // It is a Verify log (even if named preview)
+    if (!gateLightBlock.includes('=== GATE_LIGHT_VERIFY ===')) {
+        gateLightBlock = `=== GATE_LIGHT_VERIFY ===\n${gateLightLog}\n=========================`;
+    }
+} else {
+    if (!gateLightBlock.includes('=== GATE_LIGHT_PREVIEW ===')) {
+        gateLightBlock = `=== GATE_LIGHT_PREVIEW ===\n${gateLightLog}\n==========================`;
+    }
+}
+
+// Error Stats Index Block
+let errorStatsBlock = '';
+const errorStatsPath = path.resolve(repoRoot, 'rules/task-reports/index/error_stats.jsonl');
+if (fs.existsSync(errorStatsPath)) {
+    try {
+        const statsContent = fs.readFileSync(errorStatsPath, 'utf8');
+        const lines = statsContent.split('\n').filter(l => l.trim());
+        // Find the LAST line matching taskId (and runId if available)
+        // We reverse to find the latest
+        const match = lines.reverse().find(line => {
+            try {
+                const json = JSON.parse(line);
+                if (json.task_id !== taskId) return false;
+                if (runIdArg && json.run_id && json.run_id !== runIdArg) return false;
+                return true;
+            } catch (e) { return false; }
+        });
+        
+        if (match) {
+            errorStatsBlock = `=== ERROR_STATS_INDEX ===\n${match}\n=========================`;
+        }
+    } catch (e) {
+        console.warn(`[Assembler] Warning: Failed to read error_stats.jsonl: ${e.message}`);
+    }
 }
 
 // Error Summary Block
@@ -206,6 +240,8 @@ ${healerBlock}
 ${openPrBlock}
 
 ${gateLightBlock}
+
+${errorStatsBlock}
 
 ${errorSummaryBlock}
 
