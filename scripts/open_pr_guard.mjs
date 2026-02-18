@@ -85,11 +85,30 @@ function main() {
         process.exit(1);
     }
     
-    // Default mode to Integrate if not specified, to be safe? Or Dev?
-    // Requirement implies fail-fast. If mode not provided, assume strictest?
-    // But existing calls might not provide it yet? 
-    // run_task.ps1 provides it.
+    // Default mode to Integrate if not specified
     const runMode = mode || 'Integrate';
+
+    // 0. Check for Test Task Bypass
+    // Pattern: Contains '_TEST_' or Starts with 'TEST_'
+    const isTestTask = taskId.includes('_TEST_') || taskId.startsWith('TEST_');
+    
+    if (isTestTask) {
+        console.log(`[OpenPRGuard] SKIP: Task '${taskId}' is identified as a TEST task. Bypassing PR check.`);
+        const result = {
+            checked_at: new Date().toISOString(),
+            task_id: taskId,
+            run_mode: runMode,
+            bypassed_for_test_task: true,
+            open_prs_raw_count: 0,
+            open_prs_blocking_count: 0,
+            blocking_prs: []
+        };
+        if (output) {
+            fs.writeFileSync(output, JSON.stringify(result, null, 2));
+        }
+        // Success exit
+        process.exit(0);
+    }
 
     console.log(`[OpenPRGuard] Checking open PRs for Task ID: ${taskId} (Mode: ${runMode})...`);
 

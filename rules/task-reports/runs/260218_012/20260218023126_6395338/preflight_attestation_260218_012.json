@@ -1,0 +1,10 @@
+﻿{
+    "branch":  "feat/p8-enforce-ps-native-260218_012",
+    "timestamp":  "2026-02-18 10:31:05 UTC",
+    "header_detected":  true,
+    "task_id":  "260218_012",
+    "input_hash_short":  "88228f80",
+    "mode":  "Integrate",
+    "write_allowed":  true,
+    "commit":  "6395338"
+}
