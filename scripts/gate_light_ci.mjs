@@ -230,17 +230,23 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
     
     const requiredBlocks = [
         '=== DOD_EVIDENCE_STDOUT ===',
-        '=== CI_PARITY_PREVIEW ===',
-        '=== GATE_LIGHT_PREVIEW ==='
+        '=== CI_PARITY_PREVIEW ==='
+        // '=== GATE_LIGHT_PREVIEW ===' // Updated to allow PREVIEW or VERIFY below
     ];
 
     [notifyFile, snippetFile].forEach(f => {
         if (fs.existsSync(f)) {
             const content = fs.readFileSync(f, 'utf8');
             const missing = requiredBlocks.filter(b => !content.includes(b));
-            if (missing.length > 0) {
+            
+            // Special check for Gate Light Block (Preview OR Verify)
+            const hasGateBlock = content.includes('=== GATE_LIGHT_PREVIEW ===') || 
+                               content.includes('=== GATE_LIGHT_VERIFY ===');
+            
+            if (missing.length > 0 || !hasGateBlock) {
                 console.error(`[Gate Light] FAILED: Report Block Check for ${path.basename(f)}`);
-                console.error(`  Missing Blocks: ${missing.join(', ')}`);
+                if (missing.length > 0) console.error(`  Missing Blocks: ${missing.join(', ')}`);
+                if (!hasGateBlock) console.error(`  Missing Blocks: === GATE_LIGHT_PREVIEW === OR === GATE_LIGHT_VERIFY ===`);
                 console.error(`  ACTION: Use 'assemble_evidence.mjs' to regenerate reports.`);
                 process.exit(1);
             }
@@ -1143,9 +1149,9 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                 // we should check if we can rely on the Preview being "stable".
                 
                 // Check if Snippet contains the Preview Block
-                const previewMatch = snippetContent.match(/=== GATE_LIGHT_PREVIEW ===([\s\S]*?)GATE_LIGHT_EXIT=/);
+                const previewMatch = snippetContent.match(/=== GATE_LIGHT_(?:PREVIEW|VERIFY) ===([\s\S]*?)GATE_LIGHT_EXIT=/);
                 if (!previewMatch) {
-                    console.error('[Gate Light] FAILED: Snippet missing === GATE_LIGHT_PREVIEW === block.');
+                    console.error('[Gate Light] FAILED: Snippet missing === GATE_LIGHT_PREVIEW/VERIFY === block.');
                     process.exit(61);
                 }
                 
@@ -1162,13 +1168,13 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                     // Normalize File Content: Extract content between header and footer (exclusive of footer tag)
                     // This matches how we extract from the Snippet (regex stops at GATE_LIGHT_EXIT=)
                     let normFile = '';
-                    const fileMatch = rawPreview.match(/=== GATE_LIGHT_PREVIEW ===([\s\S]*?)GATE_LIGHT_EXIT=/);
+                    const fileMatch = rawPreview.match(/=== GATE_LIGHT_(?:PREVIEW|VERIFY) ===([\s\S]*?)GATE_LIGHT_EXIT=/);
                     
                     if (fileMatch) {
                         normFile = fileMatch[1].trim().replace(/\r\n/g, '\n');
                     } else {
                         // Fallback if file doesn't have the footer (shouldn't happen with extract script)
-                        const rawInner = rawPreview.replace('=== GATE_LIGHT_PREVIEW ===', '').trim();
+                        let rawInner = rawPreview.replace('=== GATE_LIGHT_PREVIEW ===', '').replace('=== GATE_LIGHT_VERIFY ===', '').trim();
                         normFile = rawInner.replace(/\r\n/g, '\n');
                     }
                     
