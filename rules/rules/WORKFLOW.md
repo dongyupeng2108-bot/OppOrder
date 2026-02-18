@@ -96,8 +96,16 @@ Before starting any new task, the Agent MUST perform these checks:
 
     *   **Integration (Integrate Mode)**:
         *   **Command**: `scripts/run_task.ps1 -TaskId <id> -Mode Integrate -Header <header>`
+        *   **Defaults (Task >= 260219_001)**:
+            *   `AutoPR`: **ON** (Enabled by default unless `-AutoPR:$false` is passed).
+            *   `AutoFixMax`: **1** (Attempts 1 automatic fix loop unless `-AutoFixMax <N>` is passed).
         *   **Prerequisites**: Clean git working directory (committed code).
         *   **Actions**:
+            *   **Preflight**: Checks port 53122, git status.
+            *   **Evidence**: Generates full evidence set (including `auto_pr_*.json`).
+            *   **AutoPR Loop**: Automatically creates PR, watches checks, and applies deterministic fixes (CI Parity, LATEST.json sync) up to `AutoFixMax` times.
+            *   **Fail-Fast**: Exits immediately on Infra Error or when AutoFix limit is reached.
+            *   **Gate Light**: Validates evidence existence and quality.
             *   **Preflight**: Enforces strict "One Task at a Time".
             *   **Pass 1**: Generates all evidence files (Result, Notify, Logs).
             *   **Pass 2**: Verifies evidence with Gate Light (Verify Mode).

@@ -16,6 +16,11 @@ This document defines the standard `ERROR_CLASS` values used in `scripts/run_tas
 | **UNKNOWN** | Unclassified error. |
 | **EVIDENCE_WORM_BYPASS** | **[NEW]** Attempt to modify or delete existing `rules/task-reports/runs/` or `rules/task-reports/locks/` files in PR diff or local workspace. |
 | **OPEN_PR_GUARD_BLOCKED** | **[NEW]** Open PR Guard blocked execution due to existing Open PRs that are not superseded or ignored. |
+| **AUTO_PR_CI_FAIL** | **[NEW]** AutoPR loop detected CI failure (GitHub Actions checks failed). |
+| **AUTO_PR_INFRA_FAIL** | **[NEW]** AutoPR loop failed due to infrastructure issues (git push failed, gh cli error). |
+| **AUTO_PR_TIMEOUT** | **[NEW]** AutoPR loop timed out waiting for CI checks. |
+| **AUTO_PR_EVIDENCE_MISSING** | **[NEW]** Gate Light failed because `auto_pr_*.json` is missing or invalid. |
+| **AUTO_FIX_MAX_EXCEEDED** | **[NEW]** AutoPR loop exceeded maximum AutoFix attempts without success. |
 
 ## Usage
 When an error occurs, the automation script MUST output a `FAIL_ROOT_CAUSE_BLOCK` containing:

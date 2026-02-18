@@ -82,8 +82,27 @@ const dodEvidence = readText(inputs.dodEvidence);
 const gitMeta = readJson(inputs.gitMeta);
 // const attestation = readJson(inputs.attestation);
 let resultData = readJson(inputs.resultJson);
+const resolvedMode = mode || resultData.mode || 'Integrate';
 
 const openPrPath = resolvePath(`open_pr_guard_${taskId}.json`);
+
+// --- AutoPR Evidence (TraeTask_260219_001) ---
+const autoPrPath = resolvePath(`auto_pr_${taskId}.json`);
+let autoPrBlock = '';
+if (fs.existsSync(autoPrPath)) {
+    try {
+        const autoPrData = readJson(autoPrPath);
+        autoPrBlock = `\n=== AUTO_PR ===
+PR: ${autoPrData.pr_url}
+Attempt: ${autoPrData.attempt} (Max: ${autoPrData.autofix_max + 1})
+State: ${autoPrData.final_state}
+Checks: ${autoPrData.checks_summary ? JSON.stringify(autoPrData.checks_summary) : 'N/A'}
+Branch: ${autoPrData.branch}
+================`;
+    } catch (e) {
+        autoPrBlock = `\n=== AUTO_PR ===\nError reading evidence: ${e.message}\n================`;
+    }
+}
 
 // --- 3. Prepare Extra Artifacts (for Envelope Compliance) ---
 // Create manual_verification.json if missing (to satisfy business evidence check)
@@ -256,6 +275,8 @@ ${healerBlock}
 
 ${openPrBlock}
 
+${autoPrBlock}
+
 ${gateLightBlock}
 
 ${errorStatsBlock}
@@ -279,6 +300,7 @@ resultData.status = 'DONE';
 resultData.summary = `Automation Pack V1 Validation for Task ${taskId}`;
 resultData.report_file = path.basename(notifyPath);
 resultData.report_sha256_short = notifyHashShort;
+resultData.mode = resolvedMode;
 
 // Ensure gate_light_exit is present (redundant check but safe)
 if (!resultData.dod_evidence) resultData.dod_evidence = {};
@@ -324,6 +346,7 @@ if (fs.existsSync(inputs.dodEvidence)) requiredFilesList.push(path.basename(inpu
 if (fs.existsSync(inputs.gitMeta)) requiredFilesList.push(path.basename(inputs.gitMeta));
 if (fs.existsSync(inputs.attestation)) requiredFilesList.push(path.basename(inputs.attestation));
 if (fs.existsSync(openPrPath)) requiredFilesList.push(path.basename(openPrPath));
+if (fs.existsSync(autoPrPath)) requiredFilesList.push(path.basename(autoPrPath));
 if (fs.existsSync(manualVerifyPath)) requiredFilesList.push(path.basename(manualVerifyPath));
 
 // Add healthchecks if present
@@ -337,7 +360,7 @@ if (fs.existsSync(resolvePath(verifyLogManifest))) requiredFilesList.push(verify
 
 const manifestData = {
     task_id: taskId,
-    mode: mode,
+    mode: resolvedMode,
     generated_at: new Date().toISOString(),
     evidence_dir: evidenceDir,
     required_files: requiredFilesList
@@ -405,7 +428,7 @@ let snippetContent = notifyContent;
 
 // Ensure [Postflight] PASS
 if (!snippetContent.includes('[Postflight] PASS')) {
-    if (mode === 'Integrate') {
+    if (resolvedMode === 'Integrate') {
          snippetContent += `\n[Postflight] PASS`;
     } else {
          snippetContent += `\n[Postflight] Skipping Postflight Envelope Validation (Preview Mode)`;
