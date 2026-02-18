@@ -1,0 +1,15 @@
+{
+  "task_id": "260218_019",
+  "is_shallow_repo": true,
+  "base": "658d26fc0337d13a2567be99631b9534a0c470e3",
+  "head": "80ea9d217f43e7f1fb5366702acc2a1b727825aa",
+  "merge_base": "a8eb0182d56fde16a97df34420484eeeddf12def",
+  "scope_files": [
+    "scripts/assemble_evidence.mjs",
+    "scripts/gate_light_ci.mjs",
+    "scripts/preflight.ps1",
+    "scripts/run_task.ps1"
+  ],
+  "scope_count": 4,
+  "generated_at": "2026-02-18T12:13:48.975Z"
+}
