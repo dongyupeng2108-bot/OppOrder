@@ -1,4 +1,5 @@
 $ErrorActionPreference = "Stop"
+$null = $null
 
 Write-Host "Running Safe Push..."
 $CurrentBranch = git rev-parse --abbrev-ref HEAD
