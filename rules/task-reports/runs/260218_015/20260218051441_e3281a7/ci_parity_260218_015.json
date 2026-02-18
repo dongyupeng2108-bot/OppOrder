@@ -1,0 +1,15 @@
+{
+  "task_id": "260218_015",
+  "is_shallow_repo": true,
+  "base": "a7fa23d04f789856c85a622de7309a376e4ca9a7",
+  "head": "e3281a754455b6fdd8e0707ce61649477a4e5244",
+  "merge_base": "a7fa23d04f789856c85a622de7309a376e4ca9a7",
+  "scope_files": [
+    "rules/rules/ERROR_TAXONOMY.md",
+    "rules/task-reports/governance-backlog/GOV_20260218_EVIDENCE_WORM_BYPASS.md",
+    "scripts/gate_light_ci.mjs",
+    "scripts/run_task.ps1"
+  ],
+  "scope_count": 4,
+  "generated_at": "2026-02-18T05:14:16.003Z"
+}
