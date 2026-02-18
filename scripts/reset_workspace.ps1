@@ -54,6 +54,11 @@ function Get-GitStatus {
         $code = $line.Substring(0, 2)
         $path = $line.Substring(3).Trim()
         
+        # Exception: error_stats.jsonl is a runtime log that is tracked but should not block execution
+        if ($path -eq "rules/task-reports/index/error_stats.jsonl") {
+            continue
+        }
+
         if ($code -eq "??") {
             $untracked += $path
         } else {
