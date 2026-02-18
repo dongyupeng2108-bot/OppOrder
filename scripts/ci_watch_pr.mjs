@@ -34,9 +34,13 @@ try {
             console.log(`[CI Watch] Found existing PR #${prInfo.number}: ${prInfo.url}`);
         } else {
             console.log('[CI Watch] No PR found. Creating new PR...');
-            const createJson = execSync(`gh pr create --fill --json number,url,headRefName,baseRefName,state`, { encoding: 'utf8' });
-            prInfo = JSON.parse(createJson);
-            console.log(`[CI Watch] Created PR #${prInfo.number}: ${prInfo.url}`);
+            // gh pr create outputs the URL on stdout, but does not support --json flag directly in all versions
+            const createUrl = execSync(`gh pr create --fill`, { encoding: 'utf8' }).trim();
+            console.log(`[CI Watch] PR Created: ${createUrl}`);
+            
+            // Fetch the full JSON details
+            const prInfoJson = execSync(`gh pr view "${createUrl}" --json number,url,headRefName,baseRefName,state`, { encoding: 'utf8' });
+            prInfo = JSON.parse(prInfoJson);
         }
     } catch (e) {
         console.error(`[CI Watch] Failed to find/create PR: ${e.message}`);
