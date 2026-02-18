@@ -1,11 +1,11 @@
 {
   "task_id": "260219_001",
-  "generated_at": "2026-02-18T19:17:42.423Z",
+  "generated_at": "2026-02-18T19:39:51.321Z",
   "files": [
     {
       "name": "ci_parity_260219_001.json",
       "size": 1968,
-      "sha256_short": "e311b22a"
+      "sha256_short": "2a5f340f"
     },
     {
       "name": "gate_light_preview_260219_001.log",
@@ -35,7 +35,7 @@
     {
       "name": "result_260219_001.json",
       "size": 461,
-      "sha256_short": "aa1cc314"
+      "sha256_short": "5137af96"
     },
     {
       "name": "run_260219_001.log",
@@ -55,7 +55,7 @@
     {
       "name": "notify_260219_001.txt",
       "size": 1732,
-      "sha256_short": "e2937b0b"
+      "sha256_short": "1e36b6c0"
     },
     {
       "name": "manual_verification_260219_001.json",
@@ -65,7 +65,7 @@
     {
       "name": "evidence_manifest_260219_001.json",
       "size": 795,
-      "sha256_short": "94a2f025"
+      "sha256_short": "1ed88cc1"
     },
     {
       "name": "open_pr_guard_260219_001.json",
