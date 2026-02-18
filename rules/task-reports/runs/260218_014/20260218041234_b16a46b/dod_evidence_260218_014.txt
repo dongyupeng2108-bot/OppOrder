@@ -1,5 +1,0 @@
-Task 260218_014 Evidence:
-1. Verified fetch-depth: 0 in .github/workflows/gate-light.yml.
-2. Verified unshallow logic in scripts/gate_light_ci.mjs.
-3. Verified is_shallow_repo detection in scripts/ci_parity_probe.mjs.
-4. CI Parity Probe executed successfully.
