@@ -1719,8 +1719,8 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
             
             // 2. Snippet Structure & Content
             const snippetContent = fs.readFileSync(snippetFile, 'utf8');
-            if (!snippetContent.includes('=== GATE_LIGHT_PREVIEW ===')) {
-                 console.error(`[Gate Light] FAILED: Snippet missing '=== GATE_LIGHT_PREVIEW ===' marker.`);
+            if (!snippetContent.includes('=== GATE_LIGHT_PREVIEW ===') && !snippetContent.includes('=== GATE_LIGHT_VERIFY ===')) {
+                 console.error(`[Gate Light] FAILED: Snippet missing '=== GATE_LIGHT_PREVIEW ===' or '=== GATE_LIGHT_VERIFY ===' marker.`);
                  process.exit(1);
             }
             
