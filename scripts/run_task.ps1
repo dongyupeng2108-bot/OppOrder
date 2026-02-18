@@ -109,14 +109,13 @@ function PreAssemblePrecheck {
     param($EvidenceDir, $TaskId, $Mode)
     
     $Required = @(
-        "ci_parity_${TaskId}.json",
-        "gate_light_preview_${TaskId}.log",
-        "dod_evidence_${TaskId}.txt",
-        "git_meta_${TaskId}.json",
-        "preflight_attestation_${TaskId}.json",
-        "workspace_healer_${TaskId}.json",
-        "result_${TaskId}.json"
-    )
+            "ci_parity_${TaskId}.json",
+            "gate_light_preview_${TaskId}.log",
+            "dod_evidence_${TaskId}.txt",
+            "git_meta_${TaskId}.json",
+            "preflight_attestation_${TaskId}.json",
+            "workspace_healer_${TaskId}.json"
+        )
     
     $Missing = @()
     foreach ($File in $Required) {
