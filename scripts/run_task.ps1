@@ -114,7 +114,8 @@ function PreAssemblePrecheck {
             "dod_evidence_${TaskId}.txt",
             "git_meta_${TaskId}.json",
             "preflight_attestation_${TaskId}.json",
-            "workspace_healer_${TaskId}.json"
+            "workspace_healer_${TaskId}.json",
+            "result_${TaskId}.json"
         )
     
     $Missing = @()
