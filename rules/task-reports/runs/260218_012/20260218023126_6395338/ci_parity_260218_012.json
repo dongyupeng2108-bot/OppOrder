@@ -1,0 +1,16 @@
+{
+  "task_id": "260218_012",
+  "base": "bc0949e7410f7948cc469f0fe356e4cec20a637a",
+  "head": "6395338f9be5ca75279a5a58973acb7ac2cd995b",
+  "merge_base": "f8cfbd868116fac61b1aec12b3914dc61c02d141",
+  "scope_files": [
+    ".gitignore",
+    "scripts/gate_light_ci.mjs",
+    "scripts/ps/Invoke-Step.ps1",
+    "scripts/run_task.ps1",
+    "scripts/scan_ps_cmd_syntax.mjs",
+    "scripts/test_fail_budget.ps1"
+  ],
+  "scope_count": 6,
+  "generated_at": "2026-02-18T02:31:08.085Z"
+}
