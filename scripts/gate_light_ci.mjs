@@ -605,8 +605,29 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
             if (summaryCommit !== 'unknown' && summaryCommit !== currentHead) {
                 console.log(`[Gate Light] Error Summary Commit (${summaryCommit}) != HEAD (${currentHead}). Checking for allowed drift...`);
                 
-                const drift = execSync(`git diff --name-only ${summaryCommit} ${currentHead}`, { encoding: 'utf8' }).trim();
-                const driftFiles = drift.split('\n').filter(Boolean);
+                let driftFiles = [];
+                let isFallback = false;
+
+                try {
+                    // Check if summaryCommit exists
+                    execSync(`git cat-file -e ${summaryCommit}`, { stdio: 'ignore' });
+                    // Exists: Normal Diff
+                    const drift = execSync(`git diff --name-only ${summaryCommit} ${currentHead}`, { encoding: 'utf8' }).trim();
+                    driftFiles = drift.split('\n').filter(Boolean);
+                } catch (e) {
+                    // Missing: Fallback
+                    console.warn(`[Gate Light] Warning: Reference commit ${summaryCommit} not found (likely rebase/force-push). Falling back to PR Diff...`);
+                    try {
+                        execSync('git fetch origin main', { stdio: 'ignore' });
+                        const fallbackDrift = execSync('git diff --name-only origin/main...HEAD', { encoding: 'utf8' }).trim();
+                        driftFiles = fallbackDrift.split('\n').filter(Boolean);
+                        isFallback = true;
+                    } catch (fe) {
+                         console.error(`[Gate Light] FAIL: Fallback diff failed: ${fe.message}`);
+                         process.exit(1);
+                    }
+                }
+
                 const allowed = driftFiles.every(f => 
                     f.startsWith('docs/') || 
                     f.startsWith('rules/task-reports/') || 
@@ -617,12 +638,22 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                 );
                  
                 if (!allowed) {
-                    console.error(`[Gate Light] FAIL: Error Summary Commit Drift detected in non-evidence files.`);
-                    console.error(`  Summary Commit: ${summaryCommit}`);
-                    console.error(`  HEAD: ${currentHead}`);
+                    if (isFallback) {
+                        console.error(`[Gate Light] FAIL: COMMIT_DRIFT_REF_MISSING (Fallback Check Failed).`);
+                        console.error(`  Reference Commit: ${summaryCommit} (Missing)`);
+                        console.error(`  ROOT_CAUSE_HINT: You force-pushed or rebased, invalidating the evidence commit hash. Code changes detected.`);
+                    } else {
+                        console.error(`[Gate Light] FAIL: Error Summary Commit Drift detected in non-evidence files.`);
+                        console.error(`  Summary Commit: ${summaryCommit}`);
+                        console.error(`  HEAD: ${currentHead}`);
+                    }
                     console.error(`  Drift Files:`);
                     driftFiles.forEach(f => console.error(`    - ${f}`));
                     process.exit(1);
+                }
+
+                if (isFallback) {
+                    console.log(`[Gate Light] Fallback Check PASS (WARN_COMMIT_REF_MISSING_FALLBACK=1).`);
                 }
                 console.log(`[Gate Light] Drift allowed (Evidence/Docs only).`);
             }

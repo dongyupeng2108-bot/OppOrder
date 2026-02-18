@@ -16,6 +16,8 @@ This document defines the standard `ERROR_CLASS` values used in `scripts/run_tas
 | **UNKNOWN** | Unclassified error. |
 | **EVIDENCE_WORM_BYPASS** | **[NEW]** Attempt to modify or delete existing `rules/task-reports/runs/` or `rules/task-reports/locks/` files in PR diff or local workspace. |
 | **OPEN_PR_GUARD_BLOCKED** | **[NEW]** Open PR Guard blocked execution due to existing Open PRs that are not superseded or ignored. |
+| **COMMIT_DRIFT_REF_MISSING** | **[NEW]** Reference commit for drift check is missing (e.g., due to rebase/force-push) and fallback check detected code changes. |
+| **CI_AUTOFIX_FAILED** | **[NEW]** AutoFix mechanism failed to resolve CI issues after maximum retries. |
 
 ## Usage
 When an error occurs, the automation script MUST output a `FAIL_ROOT_CAUSE_BLOCK` containing:

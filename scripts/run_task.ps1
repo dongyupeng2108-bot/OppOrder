@@ -12,7 +12,12 @@ param (
     [switch]$NonInteractive = $true,
 
     [Parameter(Mandatory=$false)]
-    [int]$StepTimeoutSeconds = 120
+    [int]$StepTimeoutSeconds = 120,
+
+    [switch]$AutoPR,
+
+    [Parameter(Mandatory=$false)]
+    [int]$AutoFixMax = 2
 )
 
 # --- Parameter Normalization ---
@@ -410,6 +415,57 @@ if ($Mode -eq "Integrate") {
     $ArchiveCmd = @("node", "$RepoRoot\scripts\assemble_evidence.mjs", "--task_id=$TaskId", "--evidence_dir=$EvidenceDir", "--mode=$Mode", "--phase=archive", "--run_id=$RunId")
     Invoke-Step -Name "Archive & Lock" -Cmd $ArchiveCmd
     Write-Host "    Archived evidence and locked task." -ForegroundColor Gray
+
+    # --- Step 9: AutoPR & CI Loop (Optional) ---
+    if ($AutoPR) {
+        Write-Host ">>> [RunTask] Step 9: AutoPR & CI Loop" -ForegroundColor Cyan
+        
+        # 1. Commit & Push
+        Write-Host "[AutoPR] Committing Evidence..." -ForegroundColor Cyan
+        git add rules/task-reports/ 2>$null
+        git commit -m "chore(evidence): finalize task $TaskId" 2>$null
+        
+        Write-Host "[AutoPR] Pushing to origin..." -ForegroundColor Cyan
+        git push origin HEAD 2>$null
+        
+        if ($LASTEXITCODE -ne 0) {
+            Write-Warning "[AutoPR] Push failed. Attempting to continue (maybe already pushed?)"
+        }
+
+        # 2. Watch Loop
+        $RetryCount = 0
+        $MaxRetries = $AutoFixMax
+        
+        while ($true) {
+            Write-Host "[AutoPR] Watching PR Checks (Attempt $($RetryCount + 1))..." -ForegroundColor Cyan
+            node "$RepoRoot\scripts\ci_watch_pr.mjs" --task_id $TaskId --run_dir $EvidenceDir
+            
+            if ($LASTEXITCODE -eq 0) {
+                Write-Host "[AutoPR] SUCCESS: CI Checks Passed! PR is Green." -ForegroundColor Green
+                break
+            }
+            
+            # If failed, check if we can retry
+            if ($RetryCount -lt $MaxRetries) {
+                Write-Host "[AutoPR] CI Failed. Attempting AutoFix ($($RetryCount + 1)/$MaxRetries)..." -ForegroundColor Yellow
+                
+                # AutoFix
+                node "$RepoRoot\scripts\ci_autofix_pack.mjs" --task_id $TaskId --run_dir $EvidenceDir --mode $Mode
+                
+                if ($LASTEXITCODE -eq 0) {
+                    Write-Host "[AutoPR] AutoFix Applied. Retrying Watch..." -ForegroundColor Cyan
+                    $RetryCount++
+                    continue
+                } else {
+                    Write-Error "[AutoPR] AutoFix Failed."
+                    exit 1
+                }
+            } else {
+                Write-Error "[AutoPR] CI Failed and AutoFix limit reached."
+                exit 1
+            }
+        }
+    }
 }
 
 Write-Host ">>> [RunTask] SUCCESS: Task $TaskId ($Mode) Completed." -ForegroundColor Green
