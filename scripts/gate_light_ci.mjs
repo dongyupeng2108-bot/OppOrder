@@ -312,6 +312,43 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
     // --- 2. Check CI Parity JSON Evidence (Task 260211_002) ---
     // Hard Guard: Must exist, be valid JSON, match current git state, and pass anti-cheat.
     console.log('[Gate Light] Checking CI Parity JSON Evidence...');
+
+    // --- DEBUG: Shallow Clone Diagnosis & Fix (Task 260218_014) ---
+    try {
+        const isShallow = execSync('git rev-parse --is-shallow-repository', { encoding: 'utf8' }).trim();
+        const currentHead = execSync('git rev-parse HEAD', { encoding: 'utf8' }).trim();
+        console.log(`[Gate Light] DEBUG: is_shallow_repository=${isShallow}`);
+        console.log(`[Gate Light] DEBUG: HEAD=${currentHead}`);
+        
+        try {
+            const mb = execSync('git merge-base origin/main HEAD', { encoding: 'utf8' }).trim();
+            console.log(`[Gate Light] DEBUG: git merge-base origin/main HEAD=${mb}`);
+        } catch (e) {
+            console.log(`[Gate Light] DEBUG: git merge-base failed: ${e.message}`);
+        }
+
+        if (isShallow === 'true') {
+            console.log('[Gate Light] DETECTED SHALLOW CLONE. Attempting to unshallow (Fix Strategy A)...');
+            try {
+                // Try to unshallow. This might fail if the remote doesn't support it or other git issues,
+                // but it's the standard fix.
+                execSync('git fetch --prune --unshallow origin', { stdio: 'inherit' });
+                console.log('[Gate Light] Unshallow command executed.');
+            } catch (e) {
+                console.warn('[Gate Light] WARNING: git fetch --unshallow failed: ' + e.message);
+                console.warn('[Gate Light] Retrying with standard fetch...');
+            }
+            // Always fetch main again after unshallow attempt to ensure graph connectivity
+            execSync('git fetch origin main --prune', { stdio: 'inherit' });
+        } else {
+             // Even if not shallow, ensure we have the latest main and pruned refs
+             execSync('git fetch origin main --prune', { stdio: 'inherit' });
+        }
+    } catch (e) {
+        console.warn(`[Gate Light] WARNING: Shallow diagnosis/fix failed: ${e.message}`);
+    }
+    // -------------------------------------------------------------
+
     const ciParityFile = path.join(result_dir, `ci_parity_${targetTaskId}.json`);
     
     if (!fs.existsSync(ciParityFile)) {

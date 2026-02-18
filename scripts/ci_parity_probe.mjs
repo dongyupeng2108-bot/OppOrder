@@ -36,9 +36,10 @@ console.log(`[CI Parity Probe] Running for task ${taskId} (JSON Mode)...`);
 // 0. Fail-fast origin/main check
 if (!process.env.SKIP_FETCH_CHECK) {
     try {
-        runGit('git fetch origin main');
+        // Ensure we have the latest refs and pruned deleted branches
+        runGit('git fetch origin main --prune');
     } catch (e) {
-        console.warn('[CI Parity Probe] WARNING: git fetch origin main failed. Using cached refs.');
+        console.warn('[CI Parity Probe] WARNING: git fetch origin main --prune failed. Using cached refs.');
     }
 }
 
@@ -49,6 +50,14 @@ try {
 } catch (e) {
     console.error('[CI Parity Probe] FATAL: origin/main not found after fetch.');
     process.exit(1);
+}
+
+// Check Shallow Status
+let isShallow = false;
+try {
+    isShallow = runGit('git rev-parse --is-shallow-repository') === 'true';
+} catch (e) {
+    console.warn('[CI Parity Probe] WARNING: Could not determine shallow status.');
 }
 
 const head = runGit('git rev-parse HEAD');
@@ -67,6 +76,7 @@ const scopeCount = scopeFiles.length;
 // 2. Build JSON Content
 const evidence = {
     task_id: taskId,
+    is_shallow_repo: isShallow,
     base: originMain,
     head: head,
     merge_base: mergeBase,
