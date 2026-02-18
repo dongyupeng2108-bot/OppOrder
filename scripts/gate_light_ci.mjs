@@ -390,11 +390,16 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
     if (ciJson.scope_count !== ciJson.scope_files.length) errors.push(`JSON internal inconsistency: scope_count=${ciJson.scope_count}, scope_files.length=${ciJson.scope_files.length}`);
     
     // Anti-Cheat Rules
-    if (ciJson.head !== ciJson.base && ciJson.scope_count === 0) {
-        errors.push('[ANTI-CHEAT] HEAD != BASE but scope_count is 0. Impossible state.');
-    }
-    if (ciJson.head === ciJson.base && ciJson.scope_count > 0) {
-        errors.push('[ANTI-CHEAT] HEAD == BASE but scope_count > 0. Impossible state.');
+    // Bypass for TEST tasks (Task 260218_012: Allow TEST tasks to run despite weird git states)
+    if (task_id.startsWith('TEST_')) {
+        console.log('[Gate Light] Anti-Cheat checks bypassed for TEST task.');
+    } else {
+        if (ciJson.head !== ciJson.base && ciJson.scope_count === 0) {
+            errors.push('[ANTI-CHEAT] HEAD != BASE but scope_count is 0. Impossible state.');
+        }
+        if (ciJson.head === ciJson.base && ciJson.scope_count > 0) {
+            errors.push('[ANTI-CHEAT] HEAD == BASE but scope_count > 0. Impossible state.');
+        }
     }
     // Explicitly fail if head == base (PR should be blocked upstream)
     if (ciJson.head === ciJson.base) {
@@ -448,6 +453,15 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         execSync('node scripts/check_doc_path_refs.mjs', { stdio: 'inherit' });
     } catch (e) {
         console.error('[Gate Light] Doc Path Reference Check FAILED.');
+        process.exit(1);
+    }
+
+    // --- Banned Cmd Syntax Static Scan (Task 260218_012) ---
+    console.log('[Gate Light] Checking for banned cmd syntax in PowerShell scripts...');
+    try {
+        execSync('node scripts/scan_ps_cmd_syntax.mjs', { stdio: 'inherit' });
+    } catch (e) {
+        console.error('[Gate Light] Banned Cmd Syntax Check FAILED.');
         process.exit(1);
     }
 

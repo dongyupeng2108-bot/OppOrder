@@ -29,3 +29,5 @@ reports/
 
 # Runtime envelopes
 rules/task-reports/envelopes/
+
+*.log.*
