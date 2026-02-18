@@ -11,6 +11,7 @@ const args = process.argv.slice(2);
 let argTaskId = null;
 let argMode = null; // New: Mode Argument
 let argResultDir = null; // New: Result Dir Argument
+let argRunId = null; // New: Run ID Argument
 for (let i = 0; i < args.length; i++) {
     if (args[i] === '--task_id') {
         argTaskId = args[i + 1];
@@ -20,6 +21,9 @@ for (let i = 0; i < args.length; i++) {
     }
     if (args[i] === '--result_dir') {
         argResultDir = args[i + 1];
+    }
+    if (args[i] === '--run_id') {
+        argRunId = args[i + 1];
     }
 }
 
@@ -226,17 +230,23 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
     
     const requiredBlocks = [
         '=== DOD_EVIDENCE_STDOUT ===',
-        '=== CI_PARITY_PREVIEW ===',
-        '=== GATE_LIGHT_PREVIEW ==='
+        '=== CI_PARITY_PREVIEW ==='
+        // '=== GATE_LIGHT_PREVIEW ===' // Updated to allow PREVIEW or VERIFY below
     ];
 
     [notifyFile, snippetFile].forEach(f => {
         if (fs.existsSync(f)) {
             const content = fs.readFileSync(f, 'utf8');
             const missing = requiredBlocks.filter(b => !content.includes(b));
-            if (missing.length > 0) {
+            
+            // Special check for Gate Light Block (Preview OR Verify)
+            const hasGateBlock = content.includes('=== GATE_LIGHT_PREVIEW ===') || 
+                               content.includes('=== GATE_LIGHT_VERIFY ===');
+            
+            if (missing.length > 0 || !hasGateBlock) {
                 console.error(`[Gate Light] FAILED: Report Block Check for ${path.basename(f)}`);
-                console.error(`  Missing Blocks: ${missing.join(', ')}`);
+                if (missing.length > 0) console.error(`  Missing Blocks: ${missing.join(', ')}`);
+                if (!hasGateBlock) console.error(`  Missing Blocks: === GATE_LIGHT_PREVIEW === OR === GATE_LIGHT_VERIFY ===`);
                 console.error(`  ACTION: Use 'assemble_evidence.mjs' to regenerate reports.`);
                 process.exit(1);
             }
@@ -1139,9 +1149,9 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                 // we should check if we can rely on the Preview being "stable".
                 
                 // Check if Snippet contains the Preview Block
-                const previewMatch = snippetContent.match(/=== GATE_LIGHT_PREVIEW ===([\s\S]*?)GATE_LIGHT_EXIT=/);
+                const previewMatch = snippetContent.match(/=== GATE_LIGHT_(?:PREVIEW|VERIFY) ===([\s\S]*?)GATE_LIGHT_EXIT=/);
                 if (!previewMatch) {
-                    console.error('[Gate Light] FAILED: Snippet missing === GATE_LIGHT_PREVIEW === block.');
+                    console.error('[Gate Light] FAILED: Snippet missing === GATE_LIGHT_PREVIEW/VERIFY === block.');
                     process.exit(61);
                 }
                 
@@ -1158,13 +1168,13 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                     // Normalize File Content: Extract content between header and footer (exclusive of footer tag)
                     // This matches how we extract from the Snippet (regex stops at GATE_LIGHT_EXIT=)
                     let normFile = '';
-                    const fileMatch = rawPreview.match(/=== GATE_LIGHT_PREVIEW ===([\s\S]*?)GATE_LIGHT_EXIT=/);
+                    const fileMatch = rawPreview.match(/=== GATE_LIGHT_(?:PREVIEW|VERIFY) ===([\s\S]*?)GATE_LIGHT_EXIT=/);
                     
                     if (fileMatch) {
                         normFile = fileMatch[1].trim().replace(/\r\n/g, '\n');
                     } else {
                         // Fallback if file doesn't have the footer (shouldn't happen with extract script)
-                        const rawInner = rawPreview.replace('=== GATE_LIGHT_PREVIEW ===', '').trim();
+                        let rawInner = rawPreview.replace('=== GATE_LIGHT_PREVIEW ===', '').replace('=== GATE_LIGHT_VERIFY ===', '').trim();
                         normFile = rawInner.replace(/\r\n/g, '\n');
                     }
                     
@@ -1449,8 +1459,8 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                         if (filename.includes('260211_001') || filename.includes('260211_002')) {
                             return;
                         }
-                        // Allow Shared Index file (Task 260211_006)
-                        if (filename === 'runs_index.jsonl') {
+                        // Allow Shared Index file (Task 260211_006 & 260218_018)
+                        if (filename === 'runs_index.jsonl' || filename === 'error_stats.jsonl') {
                             return;
                         }
                         // Allow cleanup of historical runtime evidence for Task 260216_002
@@ -1709,8 +1719,8 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
             
             // 2. Snippet Structure & Content
             const snippetContent = fs.readFileSync(snippetFile, 'utf8');
-            if (!snippetContent.includes('=== GATE_LIGHT_PREVIEW ===')) {
-                 console.error(`[Gate Light] FAILED: Snippet missing '=== GATE_LIGHT_PREVIEW ===' marker.`);
+            if (!snippetContent.includes('=== GATE_LIGHT_PREVIEW ===') && !snippetContent.includes('=== GATE_LIGHT_VERIFY ===')) {
+                 console.error(`[Gate Light] FAILED: Snippet missing '=== GATE_LIGHT_PREVIEW ===' or '=== GATE_LIGHT_VERIFY ===' marker.`);
                  process.exit(1);
             }
             
@@ -2007,6 +2017,83 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         }
         
         console.log('[Gate Light] Two-Pass Evidence Truth & No Auto-Merge verified.');
+    }
+
+    // --- Error Stats Index & Three-Strike Governance Check (Task 260218_018) ---
+    // Only enforced in Integrate mode because Dev mode does not write to the index.
+    if (task_id >= '260218_018' && argRunId && argMode === 'Integrate') {
+        console.log('[Gate Light] Checking Error Stats Index & Three-Strike Governance...');
+        const errorStatsPath = path.join('rules', 'task-reports', 'index', 'error_stats.jsonl');
+        
+        // 1. Check Index Existence
+        if (!fs.existsSync(errorStatsPath)) {
+            console.error('[Gate Light] FAILED: Global Error Stats Index missing.');
+            console.error(`  Expected: ${errorStatsPath}`);
+            console.log('FAIL_ROOT_CAUSE_BLOCK');
+            console.log('ERROR_CLASS=ERROR_STATS_INDEX_MISSING');
+            console.log('ROOT_CAUSE_HINT=Global error_stats.jsonl must exist and be appended to.');
+            process.exit(1);
+        }
+
+        // 2. Check Record Existence (task_id + run_id)
+        const statsContent = fs.readFileSync(errorStatsPath, 'utf8');
+        const statsLines = statsContent.split('\n').filter(Boolean);
+        const hasRecord = statsLines.some(line => {
+            try {
+                const rec = JSON.parse(line);
+                return rec.task_id === task_id && rec.run_id === argRunId;
+            } catch (e) { return false; }
+        });
+
+        if (!hasRecord) {
+            console.error(`[Gate Light] FAILED: No error record found for Task ${task_id} Run ${argRunId} in index.`);
+            console.log('FAIL_ROOT_CAUSE_BLOCK');
+            console.log('ERROR_CLASS=ERROR_STATS_RECORD_MISSING');
+            console.log('ROOT_CAUSE_HINT=error_stats_append.mjs failed to append record to index.');
+            process.exit(1);
+        }
+        console.log('[Gate Light] Error Stats Index verified (found records for task_id/run_id).');
+
+        // 3. Three-Strike Recalculation
+        // Read last 50 lines
+        const last50 = statsLines.slice(-50);
+        const errorCounts = {};
+        
+        last50.forEach(line => {
+            try {
+                const rec = JSON.parse(line);
+                if (rec.error_class && rec.error_class !== 'NO_ERROR') {
+                    errorCounts[rec.error_class] = (errorCounts[rec.error_class] || 0) + 1;
+                }
+            } catch (e) {}
+        });
+
+        const governanceBacklogDir = path.join('rules', 'task-reports', 'governance-backlog');
+        let threeStrikeFail = false;
+
+        Object.entries(errorCounts).forEach(([cls, count]) => {
+            if (count >= 3) {
+                // Check if GOV file exists
+                let hasGov = false;
+                if (fs.existsSync(governanceBacklogDir)) {
+                    const files = fs.readdirSync(governanceBacklogDir);
+                    hasGov = files.some(f => f.includes(`GOV_`) && f.includes(cls));
+                }
+
+                if (!hasGov) {
+                    console.error(`[Gate Light] FAILED: Three-Strike Governance Triggered for ${cls} (${count} times) but GOV file missing.`);
+                    threeStrikeFail = true;
+                    console.log('FAIL_ROOT_CAUSE_BLOCK');
+                    console.log(`ERROR_CLASS=THREE_STRIKE_GOVERNANCE_MISSING_${cls}`);
+                    console.log(`ROOT_CAUSE_HINT=Error class ${cls} recurred >=3 times. scripts/error_three_strike.mjs must generate a GOV file.`);
+                }
+            }
+        });
+
+        if (threeStrikeFail) {
+            process.exit(1);
+        }
+        console.log('[Gate Light] Three-Strike recalculation verified.');
     }
 
     // Construct postflight command

@@ -19,6 +19,7 @@ const taskId = norm(ARGS.find(arg => arg.startsWith('--task_id='))?.split('=')[1
 const evidenceDir = norm(ARGS.find(arg => arg.startsWith('--evidence_dir='))?.split('=')[1]) || `rules/task-reports/${new Date().toISOString().slice(0, 7)}`;
 const mode = norm(ARGS.find(arg => arg.startsWith('--mode='))?.split('=')[1]);
 const phase = norm(ARGS.find(arg => arg.startsWith('--phase='))?.split('=')[1]) || 'assemble';
+const runIdArg = norm(ARGS.find(arg => arg.startsWith('--run_id='))?.split('=')[1]);
 
 if (!taskId) {
     console.error('Usage: node scripts/assemble_evidence.mjs --task_id=<id> [--evidence_dir=<path>] [--phase=assemble|archive]');
@@ -26,6 +27,7 @@ if (!taskId) {
 }
 
 const resolvePath = (filename) => path.resolve(evidenceDir, filename);
+const repoRoot = path.resolve(evidenceDir, '../../..');
 
 // --- 3) Define Inputs (Single Sources of Truth) ---
 const inputs = {
@@ -134,8 +136,41 @@ Untracked: ${healerData.after?.untracked_count ?? '?'}
 
 // Gate Light Block
 let gateLightBlock = gateLightLog;
-if (!gateLightBlock.includes('=== GATE_LIGHT_PREVIEW ===')) {
-    gateLightBlock = `=== GATE_LIGHT_PREVIEW ===\n${gateLightLog}\n==========================`;
+if (gateLightBlock.includes('GATE_LIGHT_EXIT=0')) {
+    // It is a Verify log (even if named preview)
+    if (!gateLightBlock.includes('=== GATE_LIGHT_VERIFY ===')) {
+        gateLightBlock = `=== GATE_LIGHT_VERIFY ===\n${gateLightLog}\n=========================`;
+    }
+} else {
+    if (!gateLightBlock.includes('=== GATE_LIGHT_PREVIEW ===')) {
+        gateLightBlock = `=== GATE_LIGHT_PREVIEW ===\n${gateLightLog}\n==========================`;
+    }
+}
+
+// Error Stats Index Block
+let errorStatsBlock = '';
+const errorStatsPath = path.resolve(repoRoot, 'rules/task-reports/index/error_stats.jsonl');
+if (fs.existsSync(errorStatsPath)) {
+    try {
+        const statsContent = fs.readFileSync(errorStatsPath, 'utf8');
+        const lines = statsContent.split('\n').filter(l => l.trim());
+        // Find the LAST line matching taskId (and runId if available)
+        // We reverse to find the latest
+        const match = lines.reverse().find(line => {
+            try {
+                const json = JSON.parse(line);
+                if (json.task_id !== taskId) return false;
+                if (runIdArg && json.run_id && json.run_id !== runIdArg) return false;
+                return true;
+            } catch (e) { return false; }
+        });
+        
+        if (match) {
+            errorStatsBlock = `=== ERROR_STATS_INDEX ===\n${match}\n=========================`;
+        }
+    } catch (e) {
+        console.warn(`[Assembler] Warning: Failed to read error_stats.jsonl: ${e.message}`);
+    }
 }
 
 // Error Summary Block
@@ -205,6 +240,8 @@ ${healerBlock}
 ${openPrBlock}
 
 ${gateLightBlock}
+
+${errorStatsBlock}
 
 ${errorSummaryBlock}
 
@@ -390,7 +427,7 @@ if (mode === 'Integrate' && phase === 'archive') {
             
             // 9.1. Prepare Run ID
             const shortSha = gitMeta.commit ? gitMeta.commit.substring(0, 7) : 'unknown';
-            const runTimestamp = new Date().toISOString().replace(/[-:T.]/g, '').slice(0, 14) + '_' + shortSha;
+            const runTimestamp = runIdArg || (new Date().toISOString().replace(/[-:T.]/g, '').slice(0, 14) + '_' + shortSha);
             const runsBaseDir = path.join(repoRoot, 'rules/task-reports/runs', taskId);
             const runDir = path.join(runsBaseDir, runTimestamp);
             
