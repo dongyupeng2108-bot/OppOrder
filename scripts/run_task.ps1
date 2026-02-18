@@ -422,11 +422,13 @@ if ($Mode -eq "Integrate") {
         
         # 1. Commit & Push
         Write-Host "[AutoPR] Committing Evidence..." -ForegroundColor Cyan
-        git add rules/task-reports/ 2>$null
-        git commit -m "chore(evidence): finalize task $TaskId" 2>$null
+        
+        # Use cmd /c to avoid PowerShell treating git stderr (warnings) as terminating errors
+        cmd /c "git add rules/task-reports/ 2>NUL"
+        cmd /c "git commit -m ""chore(evidence): finalize task $TaskId"" 2>NUL"
         
         Write-Host "[AutoPR] Pushing to origin..." -ForegroundColor Cyan
-        git push origin HEAD 2>$null
+        cmd /c "git push origin HEAD 2>NUL"
         
         if ($LASTEXITCODE -ne 0) {
             Write-Warning "[AutoPR] Push failed. Attempting to continue (maybe already pushed?)"
