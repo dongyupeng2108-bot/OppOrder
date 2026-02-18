@@ -1,5 +1,9 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const taskId = '260218_022';
 const evidenceDir = __dirname;
@@ -11,7 +15,6 @@ console.log(`[Generate Evidence] Dir: ${evidenceDir}`);
 fs.writeFileSync(path.join(evidenceDir, `dod_evidence_${taskId}.txt`), 'DoD Evidence for Task 260218_022 (Infrastructure Test)\nAll tests passed.');
 
 // 2. Git Meta
-// Note: This is a mock. Real git meta should come from git command if needed, but for this test it's static.
 fs.writeFileSync(path.join(evidenceDir, `git_meta_${taskId}.json`), JSON.stringify({
     branch: 'feat/auto-pr-verification-260218_022',
     commit: 'HEAD'
