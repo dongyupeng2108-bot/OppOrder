@@ -7,16 +7,46 @@ import path from 'path';
  */
 
 const ARGS = process.argv.slice(2);
+
+let taskId = null;
+let mode = null;
+let commit = 'unknown';
+let outDir = `rules/task-reports/${new Date().toISOString().slice(0, 7)}`;
+let isSelfTest = false;
+const sourceLogs = [];
+
+for (let i = 0; i < ARGS.length; i++) {
+    const arg = ARGS[i];
+    if (arg === '--task_id') {
+        taskId = ARGS[++i];
+    } else if (arg.startsWith('--task_id=')) {
+        taskId = arg.split('=')[1];
+    } else if (arg === '--mode') {
+        mode = ARGS[++i];
+    } else if (arg.startsWith('--mode=')) {
+        mode = arg.split('=')[1];
+    } else if (arg === '--commit') {
+        commit = ARGS[++i];
+    } else if (arg.startsWith('--commit=')) {
+        commit = arg.split('=')[1];
+    } else if (arg === '--out_dir') {
+        outDir = ARGS[++i];
+    } else if (arg.startsWith('--out_dir=')) {
+        outDir = arg.split('=')[1];
+    } else if (arg === '--selftest') {
+        isSelfTest = true;
+    } else if (arg.startsWith('--source_logs=')) {
+        sourceLogs.push(arg.split('=')[1]);
+    } else if (arg === '--source_logs') {
+        sourceLogs.push(ARGS[++i]);
+    }
+}
+
 const norm = (v) => (v ?? '').toString().trim().replace(/^"(.*)"$/, '$1').replace(/^'(.*)'$/, '$1');
-
-const taskId = norm(ARGS.find(arg => arg.startsWith('--task_id='))?.split('=')[1]);
-const mode = norm(ARGS.find(arg => arg.startsWith('--mode='))?.split('=')[1]);
-const commit = norm(ARGS.find(arg => arg.startsWith('--commit='))?.split('=')[1]) || 'unknown';
-const outDir = norm(ARGS.find(arg => arg.startsWith('--out_dir='))?.split('=')[1]) || `rules/task-reports/${new Date().toISOString().slice(0, 7)}`;
-const isSelfTest = ARGS.includes('--selftest');
-
-// Source logs
-const sourceLogs = ARGS.filter(arg => arg.startsWith('--source_logs=')).map(arg => norm(arg.split('=')[1]));
+taskId = norm(taskId);
+mode = norm(mode);
+commit = norm(commit);
+outDir = norm(outDir);
 
 if (!taskId && !isSelfTest) {
     console.error('Usage: node scripts/error_digest.mjs --task_id=<id> --mode=<mode> [--commit=<hash>] [--out_dir=<path>] [--source_logs=<path>...] [--selftest]');
