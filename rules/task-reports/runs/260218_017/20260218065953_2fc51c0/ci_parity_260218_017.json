@@ -1,0 +1,17 @@
+{
+  "task_id": "260218_017",
+  "is_shallow_repo": true,
+  "base": "ba334df2ab363bd9ea345ed623c3999c29bf109a",
+  "head": "2fc51c0271db80bd39658887d8d801eba4f0f755",
+  "merge_base": "ba334df2ab363bd9ea345ed623c3999c29bf109a",
+  "scope_files": [
+    "rules/LATEST.json",
+    "rules/rules/ERROR_TRIAGE_POLICY.md",
+    "scripts/assemble_evidence.mjs",
+    "scripts/error_digest.mjs",
+    "scripts/gate_light_ci.mjs",
+    "scripts/run_task.ps1"
+  ],
+  "scope_count": 6,
+  "generated_at": "2026-02-18T06:59:27.048Z"
+}
