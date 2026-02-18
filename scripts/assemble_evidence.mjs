@@ -17,28 +17,9 @@ const norm = (v) => (v ?? '').toString().trim()
 
 const taskId = norm(ARGS.find(arg => arg.startsWith('--task_id='))?.split('=')[1]);
 const evidenceDir = norm(ARGS.find(arg => arg.startsWith('--evidence_dir='))?.split('=')[1]) || `rules/task-reports/${new Date().toISOString().slice(0, 7)}`;
-let mode = norm(ARGS.find(arg => arg.startsWith('--mode='))?.split('=')[1]);
+const mode = norm(ARGS.find(arg => arg.startsWith('--mode='))?.split('=')[1]);
 const phase = norm(ARGS.find(arg => arg.startsWith('--phase='))?.split('=')[1]) || 'assemble';
 const runIdArg = norm(ARGS.find(arg => arg.startsWith('--run_id='))?.split('=')[1]);
-
-// Try to read mode from lock file if not provided
-if (!mode && taskId) {
-    try {
-        // evidenceDir is usually rules/task-reports/runs/<taskId>/<runId>
-        // lock file is rules/task-reports/locks/<taskId>.lock.json
-        // So we need to go up 3 levels from evidenceDir to task-reports, then into locks
-        const lockPath = path.resolve(evidenceDir, `../../../locks/${taskId}.lock.json`);
-        if (fs.existsSync(lockPath)) {
-            const lockData = JSON.parse(fs.readFileSync(lockPath, 'utf8'));
-            if (lockData.mode) {
-                mode = lockData.mode;
-                console.log(`[Assembler] Auto-detected mode from lock file: ${mode}`);
-            }
-        }
-    } catch (e) {
-        console.warn(`[Assembler] Warning: Failed to read lock file for mode detection: ${e.message}`);
-    }
-}
 
 if (!taskId) {
     console.error('Usage: node scripts/assemble_evidence.mjs --task_id=<id> [--evidence_dir=<path>] [--phase=assemble|archive]');
