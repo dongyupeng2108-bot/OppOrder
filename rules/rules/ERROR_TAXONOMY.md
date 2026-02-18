@@ -15,6 +15,7 @@ This document defines the standard `ERROR_CLASS` values used in `scripts/run_tas
 | **STEP_TIMEOUT** | A step in `run_task.ps1` exceeded its timeout limit. |
 | **UNKNOWN** | Unclassified error. |
 | **EVIDENCE_WORM_BYPASS** | **[NEW]** Attempt to modify or delete existing `rules/task-reports/runs/` or `rules/task-reports/locks/` files in PR diff or local workspace. |
+| **OPEN_PR_GUARD_BLOCKED** | **[NEW]** Open PR Guard blocked execution due to existing Open PRs that are not superseded or ignored. |
 
 ## Usage
 When an error occurs, the automation script MUST output a `FAIL_ROOT_CAUSE_BLOCK` containing:
