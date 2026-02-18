@@ -210,10 +210,15 @@ const logTail = logLines.slice(-20).join('\n');
 // Extract Header from Attestation (Task 260218_019)
 let taskHeader = 'Unknown';
 if (fs.existsSync(inputs.attestation)) {
-    try {
-        const att = JSON.parse(fs.readFileSync(inputs.attestation, 'utf8'));
-        taskHeader = att.header || 'Unknown';
-    } catch (e) {
+            try {
+                let attContent = fs.readFileSync(inputs.attestation, 'utf8');
+                // Strip BOM if present
+                if (attContent.charCodeAt(0) === 0xFEFF) {
+                    attContent = attContent.slice(1);
+                }
+                const att = JSON.parse(attContent);
+                taskHeader = att.header || 'Unknown';
+            } catch (e) {
         console.warn(`[Assembler] Warning: Failed to parse attestation: ${e.message}`);
     }
 }
