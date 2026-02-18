@@ -2,7 +2,7 @@
   "task_id": "260218_019",
   "is_shallow_repo": false,
   "base": "658d26fc0337d13a2567be99631b9534a0c470e3",
-  "head": "8b212b16b884868a85c2684825a2511f86faae4d",
+  "head": "9273cd6c5e2acf8cf8a28f2699c872c8548e9f77",
   "merge_base": "a8eb0182d56fde16a97df34420484eeeddf12def",
   "scope_files": [
     "rules/LATEST.json",
@@ -29,10 +29,11 @@
     "rules/task-reports/runs/260218_019/20260218201401_80ea9d2/trae_report_snippet_260218_019.txt",
     "rules/task-reports/runs/260218_019/20260218201401_80ea9d2/workspace_healer_260218_019.json",
     "scripts/assemble_evidence.mjs",
+    "scripts/finalize_pr.ps1",
     "scripts/gate_light_ci.mjs",
     "scripts/preflight.ps1",
     "scripts/run_task.ps1"
   ],
-  "scope_count": 27,
-  "generated_at": "2026-02-18T12:56:35.193Z"
+  "scope_count": 28,
+  "generated_at": "2026-02-18T13:24:07.471Z"
 }
