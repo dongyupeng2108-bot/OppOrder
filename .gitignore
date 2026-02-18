@@ -29,3 +29,6 @@ reports/
 
 # Runtime envelopes
 rules/task-reports/envelopes/
+
+rules/task-reports/*.log.err
+rules/task-reports/*.log.out
