@@ -66,6 +66,37 @@ else {
                 execSync('git fetch origin main', { stdio: 'ignore' });
             }
 
+            // --- WORM DEFENSE: Check for Evidence Tampering (Strategy A) ---
+            console.log('[Gate Light] Checking for Evidence WORM Violations...');
+            const wormDiff = execSync('git diff --name-status origin/main...HEAD', { encoding: 'utf8' });
+            const wormLines = wormDiff.split('\n').filter(Boolean);
+            const wormViolations = [];
+            
+            for (const line of wormLines) {
+                const parts = line.split('\t');
+                const status = parts[0][0]; // First char of status (M, D, A, etc.)
+                const file = parts[1];
+
+                if (file.startsWith('rules/task-reports/runs/') || file.startsWith('rules/task-reports/locks/')) {
+                    if (status === 'D' || status === 'M') {
+                        wormViolations.push(`${status} ${file}`);
+                    }
+                }
+            }
+
+            if (wormViolations.length > 0) {
+                console.error('[Gate Light] FAILED: EVIDENCE_WORM_BYPASS Detected.');
+                console.error('Violations (Delete/Modify of WORM evidence is FORBIDDEN):');
+                wormViolations.forEach(v => console.error(`  - ${v}`));
+                
+                console.log('\nFAIL_ROOT_CAUSE_BLOCK');
+                console.log('ERROR_CLASS=EVIDENCE_WORM_BYPASS');
+                console.log('ROOT_CAUSE_HINT=Attempt to delete or modify immutable evidence (runs/locks) in PR diff.');
+                process.exit(1);
+            }
+            console.log('[Gate Light] WORM Check Passed.');
+            // ---------------------------------------------------------------
+
             const diffOutput = execSync('git diff --name-only origin/main...HEAD', { encoding: 'utf8' });
             const files = diffOutput.split('\n').map(l => l.trim()).filter(Boolean);
             
