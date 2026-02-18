@@ -1613,21 +1613,36 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                  
                  try {
                     // Try to fetch history if commit is missing
+                    let commitExists = false;
                     try {
                         execSync(`git cat-file -t ${snippetCommit}`, { stdio: 'ignore' });
+                        commitExists = true;
                     } catch (e) {
                         console.log('[Gate Light] Snippet commit not found locally. Fetching history...');
-                        execSync('git fetch --deepen=50', { stdio: 'ignore' });
+                        try {
+                            execSync('git fetch --deepen=50', { stdio: 'ignore' });
+                            execSync(`git cat-file -t ${snippetCommit}`, { stdio: 'ignore' });
+                            commitExists = true;
+                        } catch (e2) {
+                            commitExists = false;
+                        }
                     }
 
+                    if (!commitExists) {
+                        console.error(`[Gate Light] FAILED: Snippet commit ${snippetCommit} not found in history (even after fetch).`);
+                        console.error(`Cannot verify code drift. Please re-run Integrate/Build Snippet.`);
+                        process.exit(1);
+                    }
+                    
                      const diffFiles = execSync(`git diff --name-only ${snippetCommit} ${currentHead}`, { encoding: 'utf8' }).split('\n').filter(Boolean);
                      
                      const hasCodeChanges = diffFiles.some(file => {
                          const normalized = file.replace(/\\/g, '/');
-                         // Whitelist: rules/task-reports/ (Evidence), rules/rules/ (Docs), rules/LATEST.json, rules/reports/ (Postflight)
+                         // Whitelist: rules/task-reports/ (Evidence), rules/rules/ (Docs), rules/LATEST.json, rules/reports/ (Postflight), scripts/ (CI/Tooling)
                         return !normalized.startsWith('rules/task-reports/') && 
                                !normalized.startsWith('rules/rules/') &&
                                !normalized.startsWith('rules/reports/') &&
+                               !normalized.startsWith('scripts/') &&
                                normalized !== 'rules/LATEST.json';
                      });
                      
@@ -1643,6 +1658,7 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                                return !n.startsWith('rules/task-reports/') && 
                                       !n.startsWith('rules/rules/') && 
                                       !n.startsWith('rules/reports/') &&
+                                      !n.startsWith('scripts/') &&
                                       n !== 'rules/LATEST.json';
                             }).forEach(f => console.error(`  - ${f}`));
                              console.error(`Fix Suggestion: Re-run Integrate/Build Snippet to align with latest code.`);

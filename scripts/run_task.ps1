@@ -439,13 +439,17 @@ if ($Mode -eq "Integrate") {
         while ($true) {
             Write-Host "[AutoPR] Watching PR Checks (Attempt $($RetryCount + 1))..." -ForegroundColor Cyan
             node "$RepoRoot\scripts\ci_watch_pr.mjs" --task_id $TaskId --run_dir $EvidenceDir
+            $WatchExitCode = $LASTEXITCODE
             
-            if ($LASTEXITCODE -eq 0) {
+            if ($WatchExitCode -eq 0) {
                 Write-Host "[AutoPR] SUCCESS: CI Checks Passed! PR is Green." -ForegroundColor Green
                 break
+            } elseif ($WatchExitCode -eq 1) {
+                Write-Error "[AutoPR] Watch Script Failed (Infrastructure Error). Aborting."
+                exit 1
             }
             
-            # If failed, check if we can retry
+            # If failed with code 2, check if we can retry
             if ($RetryCount -lt $MaxRetries) {
                 Write-Host "[AutoPR] CI Failed. Attempting AutoFix ($($RetryCount + 1)/$MaxRetries)..." -ForegroundColor Yellow
                 

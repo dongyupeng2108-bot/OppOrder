@@ -95,7 +95,7 @@ try {
             console.warn(`[CI Watch] Failed to list runs: ${re.message}`);
         }
 
-        process.exit(1); // Fail the script so caller knows CI failed
+        process.exit(2); // Fail with code 2 (CI Failed) so caller knows to retry/autofix
     } else {
         console.log('[CI Watch] SUCCESS: All checks passed.');
         process.exit(0);
