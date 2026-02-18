@@ -25,9 +25,7 @@ if (!taskId) {
 
 function runGit(cmd) {
     try {
-        const res = execSync(cmd, { encoding: 'utf8' }).trim();
-        console.log(`[CI Parity Probe] DEBUG: cmd='${cmd}' res='${res}'`);
-        return res;
+        return execSync(cmd, { encoding: 'utf8' }).trim();
     } catch (e) {
         throw new Error(`Git command failed: ${cmd}\n${e.message}`);
     }
