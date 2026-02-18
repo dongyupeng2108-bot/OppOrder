@@ -3,22 +3,54 @@ $ErrorActionPreference = "Continue"
 $Global:RunCounter = 0
 $Global:TestFailed = $false
 
+# --- Backup LATEST.json ---
+$LatestFile = "rules/LATEST.json"
+$LatestBackup = "rules/LATEST.json.bak"
+if (Test-Path $LatestFile) {
+    Copy-Item $LatestFile $LatestBackup -Force
+}
+
+function Update-LatestJson {
+    param($TaskId)
+    if (Test-Path $LatestFile) {
+        $Json = Get-Content $LatestFile -Raw | ConvertFrom-Json
+        $Json.task_id = $TaskId
+        $Json | ConvertTo-Json -Depth 4 | Set-Content $LatestFile
+    }
+}
+
 function Run-Task {
     param($TaskId, $Mode, $Header, $ExpectedError, $StepTimeoutSeconds)
+    
+    # Sync LATEST.json to avoid Gate Light consistency failure
+    Update-LatestJson -TaskId $TaskId
+
     $Global:RunCounter++
     $Log = "rules/task-reports/test_${TaskId}_${Global:RunCounter}.log"
     if (Test-Path $Log) { Remove-Item $Log -Force -ErrorAction SilentlyContinue }
     
     Write-Host "Running Task $TaskId ($Mode) [Run $Global:RunCounter]..."
     
-    # Construct command
-    $Cmd = "powershell -ExecutionPolicy Bypass -File scripts/run_task.ps1 -TaskId $TaskId -Mode $Mode -Header `"$Header`""
+    # Construct args
+    $ArgsList = @("-ExecutionPolicy", "Bypass", "-File", "scripts/run_task.ps1", "-TaskId", $TaskId, "-Mode", $Mode, "-Header", $Header)
     if ($StepTimeoutSeconds) {
-        $Cmd += " -StepTimeoutSeconds $StepTimeoutSeconds"
+        $ArgsList += "-StepTimeoutSeconds"
+        $ArgsList += "$StepTimeoutSeconds"
     }
     
     # Capture output
-    cmd /c "$Cmd > $Log 2>&1"
+    $OutFile = "$Log.out"
+    $ErrFile = "$Log.err"
+    $Process = Start-Process -FilePath "powershell" -ArgumentList $ArgsList -RedirectStandardOutput $OutFile -RedirectStandardError $ErrFile -PassThru -NoNewWindow -Wait
+    
+    # Merge output
+    $Content = ""
+    if (Test-Path $OutFile) { $Content += (Get-Content $OutFile -Raw) + "`n" }
+    if (Test-Path $ErrFile) { $Content += (Get-Content $ErrFile -Raw) }
+    Set-Content -Path $Log -Value $Content
+    
+    if (Test-Path $OutFile) { Remove-Item $OutFile -Force }
+    if (Test-Path $ErrFile) { Remove-Item $ErrFile -Force }
     
     if ($ExpectedError) {
         if (Select-String -Path $Log -Pattern $ExpectedError) {
@@ -106,11 +138,20 @@ foreach ($Dir in $ReportDirs) {
     }
 }
 
-
 if ($Global:TestFailed) {
+    # Restore LATEST.json
+    if (Test-Path $LatestBackup) {
+        Copy-Item $LatestBackup $LatestFile -Force
+        Remove-Item $LatestBackup -Force
+    }
     Write-Host "Tests FAILED!" -ForegroundColor Red
     exit 1
 } else {
+    # Restore LATEST.json
+    if (Test-Path $LatestBackup) {
+        Copy-Item $LatestBackup $LatestFile -Force
+        Remove-Item $LatestBackup -Force
+    }
     Write-Host "All Tests Passed." -ForegroundColor Green
     exit 0
 }

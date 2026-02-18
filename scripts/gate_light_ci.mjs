@@ -451,6 +451,15 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         process.exit(1);
     }
 
+    // --- Banned Cmd Syntax Static Scan (Task 260218_012) ---
+    console.log('[Gate Light] Checking for banned cmd syntax in PowerShell scripts...');
+    try {
+        execSync('node scripts/scan_ps_cmd_syntax.mjs', { stdio: 'inherit' });
+    } catch (e) {
+        console.error('[Gate Light] Banned Cmd Syntax Check FAILED.');
+        process.exit(1);
+    }
+
     // --- Global Artifact Guard (Task 260208_029) ---
     console.log('[Gate Light] Checking for global healthcheck artifacts...');
     try {
