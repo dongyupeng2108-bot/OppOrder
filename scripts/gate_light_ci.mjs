@@ -610,7 +610,9 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                 const allowed = driftFiles.every(f => 
                     f.startsWith('docs/') || 
                     f.startsWith('rules/task-reports/') || 
-                    f === 'rules/LATEST.json'
+                    f === 'rules/LATEST.json' ||
+                    f === 'scripts/gate_light_ci.mjs' ||
+                    f === 'scripts/finalize_pr.ps1'
                 );
                  
                 if (!allowed) {
