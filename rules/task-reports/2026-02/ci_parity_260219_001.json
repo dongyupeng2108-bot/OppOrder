@@ -1,0 +1,19 @@
+{
+  "task_id": "260219_001",
+  "is_shallow_repo": true,
+  "base": "d4226394da37ec42c4992473b37b8680a6eadb41",
+  "head": "e3b65779776acefb2e0bc7a2569db6a400169924",
+  "merge_base": "07316126a558df551e6602c495509a13c34c17ea",
+  "scope_files": [
+    "rules/LATEST.json",
+    "rules/rules/ERROR_TAXONOMY.md",
+    "rules/rules/WORKFLOW.md",
+    "scripts/assemble_evidence.mjs",
+    "scripts/ci_autofix_pack.mjs",
+    "scripts/ci_watch_pr.mjs",
+    "scripts/gate_light_ci.mjs",
+    "scripts/run_task.ps1"
+  ],
+  "scope_count": 8,
+  "generated_at": "2026-02-18T18:25:43.719Z"
+}

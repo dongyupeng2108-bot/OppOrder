@@ -1,0 +1,38 @@
+{
+  "task_id": "260219_001",
+  "timestamp": "2026-02-18T18:48:46.419Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "smoke_test": "PASS",
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260219_001",
+      "status": "DONE",
+      "dod_evidence": {
+        "healthcheck": [
+          {
+            "url": "http://localhost:53122/",
+            "status": 200
+          },
+          {
+            "url": "http://localhost:53122/pairs",
+            "status": 200
+          }
+        ],
+        "gate_light_exit": 0
+      },
+      "summary": "Automation Pack V1 Validation for Task 260219_001",
+      "report_file": "notify_260219_001.txt",
+      "report_sha256_short": "8a45f8d3",
+      "mode": "Integrate"
+    }
+  }
+}

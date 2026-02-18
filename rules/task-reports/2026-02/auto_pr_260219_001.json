@@ -1,0 +1,13 @@
+{
+  "task_id": "260219_001",
+  "branch": "feat/mg2-autopr-default-260219_001",
+  "pr_url": "https://github.com/example/repo/pull/123",
+  "attempt": 1,
+  "autofix_max": 1,
+  "final_state": "PASS",
+  "checks_summary": {
+    "success": 5,
+    "failure": 0,
+    "pending": 0
+  }
+}
