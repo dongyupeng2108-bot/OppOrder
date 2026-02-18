@@ -2,6 +2,7 @@ $ErrorActionPreference = "Continue"
 
 $Global:RunCounter = 0
 $Global:TestFailed = $false
+$SessionId = [Guid]::NewGuid().ToString().Substring(0, 8)
 
 # --- Backup LATEST.json ---
 $LatestFile = "rules/LATEST.json"
@@ -13,21 +14,23 @@ if (Test-Path $LatestFile) {
 function Update-LatestJson {
     param($TaskId)
     if (Test-Path $LatestFile) {
-        $Json = Get-Content $LatestFile -Raw | ConvertFrom-Json
-        $Json.task_id = $TaskId
-        $Json | ConvertTo-Json -Depth 4 | Set-Content $LatestFile
+        try {
+            $Json = Get-Content $LatestFile -Raw | ConvertFrom-Json
+            $Json.task_id = $TaskId
+            $Json | ConvertTo-Json -Depth 4 | Set-Content $LatestFile
+        } catch {}
     }
 }
 
 function Run-Task {
     param($TaskId, $Mode, $Header, $ExpectedError, $StepTimeoutSeconds)
     
-    # Sync LATEST.json to avoid Gate Light consistency failure
+    # Sync LATEST.json
     Update-LatestJson -TaskId $TaskId
 
     $Global:RunCounter++
-    $Log = "rules/task-reports/test_${TaskId}_${Global:RunCounter}.log"
-    if (Test-Path $Log) { Remove-Item $Log -Force -ErrorAction SilentlyContinue }
+    # C2. Unique log filename
+    $Log = "rules/task-reports/test_${TaskId}_${SessionId}_${Global:RunCounter}.log"
     
     Write-Host "Running Task $TaskId ($Mode) [Run $Global:RunCounter]..."
     
@@ -41,6 +44,7 @@ function Run-Task {
     # Capture output
     $OutFile = "$Log.out"
     $ErrFile = "$Log.err"
+    
     $Process = Start-Process -FilePath "powershell" -ArgumentList $ArgsList -RedirectStandardOutput $OutFile -RedirectStandardError $ErrFile -PassThru -NoNewWindow -Wait
     
     # Merge output
@@ -49,18 +53,18 @@ function Run-Task {
     if (Test-Path $ErrFile) { $Content += (Get-Content $ErrFile -Raw) }
     Set-Content -Path $Log -Value $Content
     
-    if (Test-Path $OutFile) { Remove-Item $OutFile -Force }
-    if (Test-Path $ErrFile) { Remove-Item $ErrFile -Force }
+    if (Test-Path $OutFile) { Remove-Item $OutFile -Force -ErrorAction SilentlyContinue }
+    if (Test-Path $ErrFile) { Remove-Item $ErrFile -Force -ErrorAction SilentlyContinue }
     
     if ($ExpectedError) {
+        # C1. Detect TIMED OUT
         if (Select-String -Path $Log -Pattern $ExpectedError) {
-            # Obfuscate output to avoid triggering parent process detector
             $SafeError = $ExpectedError -replace "INTERACTIVE_PROMPT_DETECTED", "INTERACTIVE_PROMPT_FOUND"
             Write-Host "TEST PASS: Found '$SafeError'" -ForegroundColor Green
         } else {
             Write-Host "TEST FAIL: Did not find '$ExpectedError'" -ForegroundColor Red
             Write-Host "LOG CONTENT ($Log):"
-            Get-Content $Log
+            Get-Content $Log | Select-Object -Last 20
             $Global:TestFailed = $true
         }
     }
@@ -86,9 +90,7 @@ Run-Task -TaskId "260216_009_TEST_INT" -Mode "Integrate" -Header "TraeTask_" -Ex
 Write-Host "--- Test 3: Interactive ---"
 $InteractiveTask = "260216_009_TEST_INTERACTIVE"
 $InteractiveScript = "rules/task-reports/generate_evidence_$InteractiveTask.js"
-# Create a script that simulates a prompt
 Set-Content -Path $InteractiveScript -Value "console.log('Please provide value: ');"
-
 try {
     Run-Task -TaskId $InteractiveTask -Mode "Dev" -Header "TraeTask_" -ExpectedError "INTERACTIVE_PROMPT_DETECTED"
 } finally {
@@ -99,20 +101,17 @@ try {
 Write-Host "--- Test 4: Timeout ---"
 $TimeoutTask = "TEST_TIMEOUT"
 $GenScript = "rules/task-reports/generate_evidence_$TimeoutTask.js"
-# Create a script that sleeps for 10s
+# Sleep for 10s
 Set-Content -Path $GenScript -Value "console.log('Sleeping...'); setTimeout(() => { console.log('Done'); }, 10000);"
-
 try {
     # Run with 3s timeout
     Run-Task -TaskId $TimeoutTask -Mode "Dev" -Header "TraeTask_" -StepTimeoutSeconds 3 -ExpectedError "TIMED OUT"
 } finally {
-    if (Test-Path $GenScript) { Remove-Item $GenScript }
+    if (Test-Path $GenScript) { Remove-Item $GenScript -Force -ErrorAction SilentlyContinue }
 }
 
 # Cleanup Artifacts
 Write-Host "Cleaning up test artifacts..."
-
-# Dynamic month detection
 $CurrentMonth = Get-Date -Format "yyyy-MM"
 $ReportDirs = @("rules/task-reports", "rules/task-reports/$CurrentMonth")
 
@@ -120,38 +119,31 @@ foreach ($Dir in $ReportDirs) {
     if (Test-Path $Dir) {
         # Clean Test Logs
         Get-ChildItem -Path $Dir -Filter "test_*.log" | Where-Object { $_.Name -match "_TEST_" -or $_.Name -match "TEST_" } | ForEach-Object {
-            Write-Host "DEBUG: Deleting $($_.FullName)" -ForegroundColor Magenta
             Remove-Item $_.FullName -Force -ErrorAction SilentlyContinue
         }
 
-        # Clean Task Artifacts (files/folders matching TEST patterns)
+        # Clean Task Artifacts
         Get-ChildItem -Path $Dir | Where-Object { $_.Name -match "_TEST_" -or $_.Name -match "^TEST_" } | ForEach-Object {
-            Write-Host "DEBUG: Deleting $($_.FullName)" -ForegroundColor Magenta
             Remove-Item $_.FullName -Recurse -Force -ErrorAction SilentlyContinue
         }
 
         # Clean Hidden Budget Files
         Get-ChildItem -Path $Dir -Filter ".budget_*.json" -Force | Where-Object { $_.Name -match "_TEST_" -or $_.Name -match "TEST_" } | ForEach-Object {
-             Write-Host "DEBUG: Deleting budget file $($_.FullName)" -ForegroundColor Magenta
              Remove-Item $_.FullName -Force -ErrorAction SilentlyContinue
         }
     }
 }
 
+# Restore LATEST.json
+if (Test-Path $LatestBackup) {
+    Copy-Item $LatestBackup $LatestFile -Force
+    Remove-Item $LatestBackup -Force
+}
+
 if ($Global:TestFailed) {
-    # Restore LATEST.json
-    if (Test-Path $LatestBackup) {
-        Copy-Item $LatestBackup $LatestFile -Force
-        Remove-Item $LatestBackup -Force
-    }
     Write-Host "Tests FAILED!" -ForegroundColor Red
     exit 1
 } else {
-    # Restore LATEST.json
-    if (Test-Path $LatestBackup) {
-        Copy-Item $LatestBackup $LatestFile -Force
-        Remove-Item $LatestBackup -Force
-    }
     Write-Host "All Tests Passed." -ForegroundColor Green
     exit 0
 }

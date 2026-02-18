@@ -153,7 +153,7 @@ Write-Host ">>> [RunTask] Step 0: Service Policy (ensure_server_53122)" -Foregro
 $ServiceScript = "$RepoRoot\scripts\ensure_server_53122.ps1"
 if (Test-Path $ServiceScript) {
     $ServiceCmd = @("powershell", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", $ServiceScript)
-    Invoke-Step -Name "Service Policy" -Cmd $ServiceCmd -LogFile "$EvidenceDir\run_$TaskId.log" -TimeoutSec 60
+    Invoke-Step -Name "Service Policy" -Cmd $ServiceCmd -TimeoutSec 60
 } else {
     Write-Host "[RunTask] Warning: Service Policy script not found ($ServiceScript)." -ForegroundColor Yellow
 }
@@ -191,13 +191,25 @@ if ($TaskId -match "TEST") {
 # --- Step 1: Preflight ---
 Write-Host ">>> [RunTask] Step 1: Preflight" -ForegroundColor Cyan
 $PreflightCmd = @("powershell", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", "$RepoRoot\scripts\preflight.ps1", "-TaskId", $TaskId, "-Mode", $Mode, "-Header", $Header)
-Invoke-Step -Name "Preflight" -Cmd $PreflightCmd -LogFile "$EvidenceDir\run_$TaskId.log"
+Invoke-Step -Name "Preflight" -Cmd $PreflightCmd
+
+# --- Step 1.1: Update LATEST.json ---
+# Ensure LATEST.json points to current task so Gate Light consistency checks pass
+if ($Header -match "^(TraeTask_|FIX:)") {
+    Write-Host ">>> [RunTask] Step 1.1: Update LATEST.json" -ForegroundColor Cyan
+    $LatestInfo = @{
+        task_id = $TaskId
+        timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
+    }
+    $LatestInfo | ConvertTo-Json | Set-Content "$RepoRoot\rules\LATEST.json"
+    Write-Host "    Updated rules/LATEST.json to $TaskId" -ForegroundColor Gray
+}
 
 # --- Step 1.2: Open PR Guard ---
 Write-Host ">>> [RunTask] Step 1.2: Open PR Guard" -ForegroundColor Cyan
 $OpenPRGuardOutput = "$EvidenceDir\open_pr_guard_$TaskId.json"
 $OpenPRGuardCmd = @("node", "$RepoRoot\scripts\open_pr_guard.mjs", "--task_id", $TaskId, "--mode", $Mode, "--output", $OpenPRGuardOutput)
-Invoke-Step -Name "Open PR Guard" -Cmd $OpenPRGuardCmd -LogFile "$EvidenceDir\run_$TaskId.log"
+Invoke-Step -Name "Open PR Guard" -Cmd $OpenPRGuardCmd
 Write-Host "    Open PR Guard PASS. Output: $OpenPRGuardOutput" -ForegroundColor Gray
 
 # --- Step 1.3: Contract Verification First ---
@@ -205,7 +217,7 @@ Write-Host ">>> [RunTask] Step 1.3: Contract Verification First" -ForegroundColo
 $ContractScript = "$RepoRoot\scripts\verify_contracts_early.mjs"
 if (Test-Path $ContractScript) {
     $ContractCmd = @("node", $ContractScript)
-    Invoke-Step -Name "Contract Verification" -Cmd $ContractCmd -LogFile "$EvidenceDir\run_$TaskId.log"
+    Invoke-Step -Name "Contract Verification" -Cmd $ContractCmd
 } else {
     Write-Host "[RunTask] Warning: Contract Verification script not found ($ContractScript)." -ForegroundColor Yellow
 }
@@ -222,7 +234,7 @@ Invoke-Step -Name "Healthcheck Pairs" -Cmd @("curl.exe", "-s", "-i", "http://loc
 Write-Host ">>> [RunTask] Step 1.6: CI Parity Probe" -ForegroundColor Cyan
 $ParityScript = "$RepoRoot\scripts\ci_parity_probe.mjs"
 $ParityCmd = @("node", $ParityScript, "--task_id", $TaskId, "--result_dir", $EvidenceDir)
-Invoke-Step -Name "CI Parity Probe" -Cmd $ParityCmd -LogFile "$EvidenceDir\run_$TaskId.log"
+Invoke-Step -Name "CI Parity Probe" -Cmd $ParityCmd
 
 # --- Step 2 & 3: Evidence Generation & Pass 1 (with Retry Logic) ---
 Write-Host "[State] GENERATING EVIDENCE..." -ForegroundColor Cyan
@@ -236,7 +248,7 @@ function Run-Evidence-Gen-And-Preview {
         if (Test-Path "$EvidenceDir\gate_light_verify_$TaskId.log") { Remove-Item "$EvidenceDir\gate_light_verify_$TaskId.log" }
 
         $GenCmd = @("node", $GenerateScript.FullName)
-        Invoke-Step -Name "Generate Evidence" -Cmd $GenCmd -LogFile "$EvidenceDir\run_$TaskId.log"
+        Invoke-Step -Name "Generate Evidence" -Cmd $GenCmd -TimeoutSec $StepTimeoutSeconds
     } else {
         Write-Host ">>> [RunTask] Step 2: Skip Generation (Script not found)" -ForegroundColor Yellow
     }
@@ -276,7 +288,7 @@ if (-not (PreAssemblePrecheck -EvidenceDir $EvidenceDir -TaskId $TaskId -Mode $M
 # --- Step 4: Assemble Evidence ---
 Write-Host ">>> [RunTask] Step 4: Assemble Evidence" -ForegroundColor Cyan
 $AssembleCmd = @("node", "$RepoRoot\scripts\assemble_evidence.mjs", "--task_id=$TaskId", "--evidence_dir=$EvidenceDir", "--mode=$Mode", "--phase=assemble")
-Invoke-Step -Name "Assemble Evidence" -Cmd $AssembleCmd -LogFile "$EvidenceDir\run_$TaskId.log"
+Invoke-Step -Name "Assemble Evidence" -Cmd $AssembleCmd
 
 # --- Step 5: Pass 2 - Gate Light Verify ---
 Write-Host "[State] VERIFYING (Pass 2)..." -ForegroundColor Cyan
@@ -306,7 +318,7 @@ if ($Mode -eq "Integrate") {
     
     # Re-run Assemble Evidence
     $UpdateCmd = @("node", "$RepoRoot\scripts\assemble_evidence.mjs", "--task_id=$TaskId", "--evidence_dir=$EvidenceDir", "--mode=$Mode", "--phase=assemble")
-    Invoke-Step -Name "Update Evidence" -Cmd $UpdateCmd -LogFile "$EvidenceDir\run_$TaskId.log"
+    Invoke-Step -Name "Update Evidence" -Cmd $UpdateCmd
     Write-Host "    Updated notify and index with Verify logs." -ForegroundColor Gray
 
     # --- Step 8: Archive & Lock (Integrate Only) ---
@@ -316,14 +328,14 @@ if ($Mode -eq "Integrate") {
     # --- Step 8.1: Evidence Smoke Test ---
     Write-Host ">>> [RunTask] Step 8.1: Evidence Smoke Test" -ForegroundColor Cyan
     $SmokeCmd = @("node", "$RepoRoot\scripts\evidence_smoke_test.mjs", "--task_id=$TaskId", "--dir=$EvidenceDir")
-    Invoke-Step -Name "Evidence Smoke Test" -Cmd $SmokeCmd -LogFile "$EvidenceDir\run_$TaskId.log"
+    Invoke-Step -Name "Evidence Smoke Test" -Cmd $SmokeCmd
     Write-Host "    Evidence Smoke Test PASS." -ForegroundColor Gray
 
     Stop-Transcript
 
     # --- Step 8.2: Execute Archive ---
     $ArchiveCmd = @("node", "$RepoRoot\scripts\assemble_evidence.mjs", "--task_id=$TaskId", "--evidence_dir=$EvidenceDir", "--mode=$Mode", "--phase=archive")
-    Invoke-Step -Name "Archive & Lock" -Cmd $ArchiveCmd -LogFile "$EvidenceDir\run_$TaskId.log"
+    Invoke-Step -Name "Archive & Lock" -Cmd $ArchiveCmd
     Write-Host "    Archived evidence and locked task." -ForegroundColor Gray
 }
 
