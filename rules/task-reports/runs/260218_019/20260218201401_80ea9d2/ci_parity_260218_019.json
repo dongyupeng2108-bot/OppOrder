@@ -1,14 +1,15 @@
 {
   "task_id": "260218_019",
-  "is_shallow_repo": false,
+  "is_shallow_repo": true,
   "base": "658d26fc0337d13a2567be99631b9534a0c470e3",
-  "head": "9273cd6c5e2acf8cf8a28f2699c872c8548e9f77",
-  "merge_base": "a8eb0182d56fde16a97df34420484eeeddf12def",
+  "head": "3dc65d36db15f22d506ec537a3721934f9150c7d",
+  "merge_base": "658d26fc0337d13a2567be99631b9534a0c470e3",
   "scope_files": [
     "rules/LATEST.json",
     "rules/task-reports/index/error_stats.jsonl",
     "rules/task-reports/index/runs_index.jsonl",
     "rules/task-reports/locks/260218_019.lock.json",
+    "rules/task-reports/runs/260218_019/20260218201401_80ea9d2/260218_019.json",
     "rules/task-reports/runs/260218_019/20260218201401_80ea9d2/260218_019_healthcheck_53122_pairs.txt",
     "rules/task-reports/runs/260218_019/20260218201401_80ea9d2/260218_019_healthcheck_53122_root.txt",
     "rules/task-reports/runs/260218_019/20260218201401_80ea9d2/ci_parity_260218_019.json",
@@ -28,12 +29,13 @@
     "rules/task-reports/runs/260218_019/20260218201401_80ea9d2/run_260218_019.log",
     "rules/task-reports/runs/260218_019/20260218201401_80ea9d2/trae_report_snippet_260218_019.txt",
     "rules/task-reports/runs/260218_019/20260218201401_80ea9d2/workspace_healer_260218_019.json",
+    "rules/task-reports/runs/260218_019/envelopes/260218_019.envelope.json",
     "scripts/assemble_evidence.mjs",
     "scripts/finalize_pr.ps1",
     "scripts/gate_light_ci.mjs",
     "scripts/preflight.ps1",
     "scripts/run_task.ps1"
   ],
-  "scope_count": 28,
-  "generated_at": "2026-02-18T13:24:07.471Z"
+  "scope_count": 30,
+  "generated_at": "2026-02-18T13:30:13.803Z"
 }
