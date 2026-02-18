@@ -18,6 +18,8 @@ This document defines the standard `ERROR_CLASS` values used in `scripts/run_tas
 | **OPEN_PR_GUARD_BLOCKED** | **[NEW]** Open PR Guard blocked execution due to existing Open PRs that are not superseded or ignored. |
 | **COMMIT_DRIFT_REF_MISSING** | **[NEW]** Reference commit for drift check is missing (e.g., due to rebase/force-push) and fallback check detected code changes. |
 | **CI_AUTOFIX_FAILED** | **[NEW]** AutoFix mechanism failed to resolve CI issues after maximum retries. |
+| **SnippetCommitMustMatch_BAD_OBJECT** | **[NEW]** Snippet commit hash not found in local repository (bad object) even after fetch attempt. |
+| **CI_WATCH_FAIL** | **[NEW]** CI Watch script failed due to infrastructure error or persistent check failures. |
 
 ## Usage
 When an error occurs, the automation script MUST output a `FAIL_ROOT_CAUSE_BLOCK` containing:
