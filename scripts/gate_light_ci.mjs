@@ -1827,6 +1827,8 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         const runsDir = path.join('rules', 'task-reports', 'runs', task_id);
         if (fs.existsSync(runsDir)) {
             const runDirs = fs.readdirSync(runsDir).filter(name => {
+                // Exclude metadata directories
+                if (name === 'envelopes' || name === 'locks') return false;
                 const fullPath = path.join(runsDir, name);
                 return fs.statSync(fullPath).isDirectory();
             });

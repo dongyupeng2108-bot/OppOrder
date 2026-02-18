@@ -41,7 +41,6 @@ try {
     // Filter out draft PRs if necessary? Usually blocking applies to all Open PRs.
     const ghOutput = execSync('gh pr list --state open --json number,title,headRefName,url,state,isDraft', { encoding: 'utf8' });
     const prs = JSON.parse(ghOutput);
-
     // Current PR check (try to find PR for current task_id to exclude it)
     // We assume the current task's PR might be open.
     // Logic: Exclude PR if headRefName contains taskId OR title contains taskId
