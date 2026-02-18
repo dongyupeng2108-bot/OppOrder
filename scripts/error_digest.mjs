@@ -178,9 +178,26 @@ if (isSelfTest) {
 // Let's just write them out.
 
 // Write JSONL
-const jsonlContent = errors.map(e => JSON.stringify(e)).join('\n');
-fs.writeFileSync(errorsJsonlPath, jsonlContent);
-console.log(`[ErrorDigest] Wrote ${errors.length} errors to ${errorsJsonlPath}`);
+if (errors.length === 0) {
+    const noErrorEntry = {
+        task_id: taskId,
+        mode: mode,
+        step: 'Digest',
+        error_class: 'NO_ERROR',
+        exit_code: 0,
+        command: 'check_errors',
+        ts: new Date().toISOString(),
+        stdout_tail: 'No errors found.',
+        stderr_tail: '',
+        is_test: false
+    };
+    fs.writeFileSync(errorsJsonlPath, JSON.stringify(noErrorEntry) + '\n');
+    console.log(`[ErrorDigest] Wrote NO_ERROR record to ${errorsJsonlPath}`);
+} else {
+    const jsonlContent = errors.map(e => JSON.stringify(e)).join('\n');
+    fs.writeFileSync(errorsJsonlPath, jsonlContent);
+    console.log(`[ErrorDigest] Wrote ${errors.length} errors to ${errorsJsonlPath}`);
+}
 
 // Generate Summary
 const errorCounts = {};
