@@ -1,7 +1,7 @@
 Trae Task Report
 Task ID: 260218_019
 Header: TraeTask_260218_019
-Date: 2026-02-18T12:14:16.845Z
+Date: 2026-02-18T13:01:08.355Z
 Branch: feat/p1-run-task-header-default-260218_019
 Commit: HEAD
 
@@ -70,14 +70,14 @@ DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260218_019_healthcheck_53122_pairs.txt => HTTP/1
 
 === CI_PARITY_PREVIEW ===
 Base: 658d26fc0337d13a2567be99631b9534a0c470e3
-Head: 80ea9d217f43e7f1fb5366702acc2a1b727825aa
+Head: 8b212b16b884868a85c2684825a2511f86faae4d
 MergeBase: a8eb0182d56fde16a97df34420484eeeddf12def
 Source: JSON (Evidence-as-Code)
-Scope: 4 files
+Scope: 27 files
 Files (Top 3):
-  - scripts/assemble_evidence.mjs
-  - scripts/gate_light_ci.mjs
-  - scripts/preflight.ps1
+  - rules/LATEST.json
+  - rules/task-reports/index/error_stats.jsonl
+  - rules/task-reports/index/runs_index.jsonl
 ...
 =========================
 
@@ -226,9 +226,7 @@ From https://github.com/dongyupeng2108-bot/OppOrder
 [Postflight] PASS
 =========================
 
-=== ERROR_STATS_INDEX ===
-{"task_id":"260218_019","run_id":"20260218201401_80ea9d2","commit":"80ea9d217f43e7f1fb5366702acc2a1b727825aa","ts":"2026-02-18T12:14:01.831Z","mode":"Integrate","error_class":"NO_ERROR","severity":"INFO","message":"No errors found.","hint":""}
-=========================
+
 
 === ERROR_SUMMARY ===
 TASK_ID: 260218_019

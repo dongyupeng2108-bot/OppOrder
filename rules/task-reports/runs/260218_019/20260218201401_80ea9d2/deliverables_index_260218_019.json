@@ -1,25 +1,25 @@
 {
   "task_id": "260218_019",
-  "generated_at": "2026-02-18T12:14:16.853Z",
+  "generated_at": "2026-02-18T13:01:08.368Z",
   "files": [
     {
       "name": "ci_parity_260218_019.json",
-      "size": 440,
-      "sha256_short": "0ce8e86a"
+      "size": 2436,
+      "sha256_short": "43bec485"
     },
     {
       "name": "gate_light_preview_260218_019.log",
-      "size": 6899,
+      "size": 7029,
       "sha256_short": "cd2a47c4"
     },
     {
       "name": "dod_evidence_260218_019.txt",
-      "size": 153,
+      "size": 158,
       "sha256_short": "61c40ff5"
     },
     {
       "name": "git_meta_260218_019.json",
-      "size": 80,
+      "size": 83,
       "sha256_short": "d757b339"
     },
     {
@@ -29,47 +29,47 @@
     },
     {
       "name": "workspace_healer_260218_019.json",
-      "size": 954,
+      "size": 955,
       "sha256_short": "47853396"
     },
     {
       "name": "result_260218_019.json",
       "size": 420,
-      "sha256_short": "d8aa0eb2"
+      "sha256_short": "b6709cd8"
     },
     {
       "name": "run_260218_019.log",
-      "size": 22152,
+      "size": 22429,
       "sha256_short": "3d5ef248"
     },
     {
       "name": "errors_260218_019.jsonl",
-      "size": 222,
-      "sha256_short": "b51d701d"
+      "size": 223,
+      "sha256_short": "9e714c5e"
     },
     {
       "name": "errors_summary_260218_019.txt",
-      "size": 146,
+      "size": 156,
       "sha256_short": "3c6ac793"
     },
     {
       "name": "notify_260218_019.txt",
-      "size": 11197,
-      "sha256_short": "f7cd2fab"
+      "size": 11108,
+      "sha256_short": "44d942bb"
     },
     {
       "name": "manual_verification_260218_019.json",
-      "size": 99,
+      "size": 103,
       "sha256_short": "9696ce51"
     },
     {
       "name": "evidence_manifest_260218_019.json",
-      "size": 820,
-      "sha256_short": "a40a4fe9"
+      "size": 835,
+      "sha256_short": "ecea6ff0"
     },
     {
       "name": "open_pr_guard_260218_019.json",
-      "size": 237,
+      "size": 247,
       "sha256_short": "bf3f49ab"
     },
     {
