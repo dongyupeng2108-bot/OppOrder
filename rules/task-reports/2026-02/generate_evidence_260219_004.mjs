@@ -53,8 +53,18 @@ const result = readJson(resultPath);
 setProp(result, 'task_id', taskId);
 setProp(result, 'branch', branch);
 setProp(result, 'commit', commit);
+setProp(result, 'base', base);
+setProp(result, 'mergeBase', mergeBase);
+setProp(result, 'generatedAt', generatedAt);
 setProp(result, 'status', 'IN_PROGRESS');
 setProp(result, 'summary', 'MG3 Step0 precheck evidence regeneration');
 setProp(result, 'report_file', `notify_${taskId}.txt`);
 setProp(result, 'updatedAt', generatedAt);
 fs.writeFileSync(resultPath, JSON.stringify(result, null, 2));
+
+const expectedPaths = [dodPath, gitMetaPath, resultPath];
+const missingPaths = expectedPaths.filter((p) => !fs.existsSync(p));
+if (missingPaths.length > 0) {
+    missingPaths.forEach((p) => console.error(`Missing file: ${path.resolve(p)}`));
+    process.exit(1);
+}
