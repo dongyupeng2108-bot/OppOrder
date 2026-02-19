@@ -1,0 +1,7 @@
+# 全局兜底（可选）：任何文件改动都默认需要 owner
+* @DONGYUPENG-owner
+
+# 你明确要“权力结构代码化”的关键目录
+/scripts/ @DONGYUPENG-owner
+/rules/rules/ @DONGYUPENG-owner
+/.github/workflows/ @DONGYUPENG-owner
