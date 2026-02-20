@@ -21,29 +21,42 @@ jobs:
           
       - name: Generate Workspace Healer Evidence
         run: |
-          TASK_REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
-          TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}' | head -n 1 || true)
-          if [ -z "$TASK_ID" ]; then
+          TASK_REF="${GITHUB_HEAD_REF}"
+          if [ -z "$TASK_REF" ]; then
+            TASK_REF="${GITHUB_REF_NAME}"
+          fi
+          PR_TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}' | head -n 1 || true)
+          echo "GITHUB_HEAD_REF=${GITHUB_HEAD_REF}"
+          echo "GITHUB_REF_NAME=${GITHUB_REF_NAME}"
+          echo "PR_TASK_ID=${PR_TASK_ID}"
+          if [ -z "$PR_TASK_ID" ]; then
             echo "No task_id detected."
             exit 0
           fi
-          YEAR="20${TASK_ID:0:2}"
-          MONTH="${TASK_ID:2:2}"
+          YEAR="20${PR_TASK_ID:0:2}"
+          MONTH="${PR_TASK_ID:2:2}"
           EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
-          EVIDENCE_FILE="${EVIDENCE_DIR}/workspace_healer_${TASK_ID}.json"
+          EVIDENCE_FILE="${EVIDENCE_DIR}/workspace_healer_${PR_TASK_ID}.json"
           mkdir -p "$EVIDENCE_DIR"
-          echo "TASK_ID=${TASK_ID}"
+          echo "TASK_ID=${PR_TASK_ID}"
           echo "EVIDENCE_FILE=${EVIDENCE_FILE}"
+          echo "WORKSPACE_HEALER_BEFORE:"
+          ls -la "$EVIDENCE_DIR" | grep workspace_healer_ || true
           pwsh -NonInteractive -ExecutionPolicy Bypass -File scripts/reset_workspace.ps1 -Mode EnforceClean | tee "$EVIDENCE_FILE"
+          echo "WORKSPACE_HEALER_AFTER:"
+          ls -la "$EVIDENCE_DIR" | grep workspace_healer_ || true
 
       - name: Verify Workspace Healer Evidence
         run: |
-          TASK_REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
-          TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}' | head -n 1 || true)
-          YEAR="20${TASK_ID:0:2}"
-          MONTH="${TASK_ID:2:2}"
+          TASK_REF="${GITHUB_HEAD_REF}"
+          if [ -z "$TASK_REF" ]; then
+            TASK_REF="${GITHUB_REF_NAME}"
+          fi
+          PR_TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}' | head -n 1 || true)
+          YEAR="20${PR_TASK_ID:0:2}"
+          MONTH="${PR_TASK_ID:2:2}"
           EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
-          EVIDENCE_FILE="${EVIDENCE_DIR}/workspace_healer_${TASK_ID}.json"
+          EVIDENCE_FILE="${EVIDENCE_DIR}/workspace_healer_${PR_TASK_ID}.json"
           ls -la "$EVIDENCE_DIR"
           if [ ! -f "$EVIDENCE_FILE" ]; then
             echo "Missing workspace healer evidence: $EVIDENCE_FILE"
