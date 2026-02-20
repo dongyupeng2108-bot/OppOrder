@@ -1,6 +1,6 @@
 {
   "task_id": "260219_004",
-  "generated_at": "2026-02-20T12:04:01.530Z",
+  "generated_at": "2026-02-20T12:27:24.318Z",
   "files": [
     {
       "name": "ci_parity_260219_004.json",
@@ -15,12 +15,12 @@
     {
       "name": "dod_evidence_260219_004.txt",
       "size": 281,
-      "sha256_short": "81202885"
+      "sha256_short": "b93eac16"
     },
     {
       "name": "git_meta_260219_004.json",
       "size": 310,
-      "sha256_short": "d2999806"
+      "sha256_short": "353dcab4"
     },
     {
       "name": "preflight_attestation_260219_004.json",
@@ -35,7 +35,7 @@
     {
       "name": "result_260219_004.json",
       "size": 768,
-      "sha256_short": "1b5cf877"
+      "sha256_short": "b8f62863"
     },
     {
       "name": "run_260219_004.log",
@@ -55,7 +55,7 @@
     {
       "name": "notify_260219_004.txt",
       "size": 8781,
-      "sha256_short": "37917cb6"
+      "sha256_short": "60aa793c"
     },
     {
       "name": "manual_verification_260219_004.json",
@@ -65,7 +65,7 @@
     {
       "name": "evidence_manifest_260219_004.json",
       "size": 764,
-      "sha256_short": "2edac894"
+      "sha256_short": "725a02d1"
     },
     {
       "name": "open_pr_guard_260219_004.json",
