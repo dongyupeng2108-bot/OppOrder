@@ -1,0 +1,11 @@
+{
+    "mode":  "Integrate",
+    "branch":  "feat/mg3-codeowners-260219_004_fix",
+    "write_allowed":  true,
+    "input_hash_short":  "a2ed89",
+    "header":  "TraeTask_260219_004",
+    "commit":  "555c59e",
+    "task_id":  "260219_004",
+    "header_detected":  true,
+    "timestamp":  "2026-02-19 20:24:18 UTC"
+}

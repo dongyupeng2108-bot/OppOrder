@@ -374,6 +374,56 @@ Write-Host ">>> [RunTask] Step 4: Assemble Evidence" -ForegroundColor Cyan
 $AssembleCmd = @("node", "$RepoRoot\scripts\assemble_evidence.mjs", "--task_id=$TaskId", "--evidence_dir=$EvidenceDir", "--mode=$Mode", "--phase=assemble")
 Invoke-Step -Name "Assemble Evidence" -Cmd $AssembleCmd
 
+# --- Step 9: AutoPR (Optional) ---
+if ($Mode -eq "Integrate" -and $AutoPR) {
+    Write-Host ">>> [RunTask] Step 9: AutoPR Loop" -ForegroundColor Cyan
+    
+    $WatchScript = "$RepoRoot\scripts\ci_watch_pr.mjs"
+    $FixScript = "$RepoRoot\scripts\ci_autofix_pack.mjs"
+    
+    $CurrentFixCount = 0
+    $LoopActive = $true
+    
+    while ($LoopActive) {
+        $CurrentAttempt = $CurrentFixCount + 1
+        Write-Host "[AutoPR] Loop Iteration $CurrentAttempt (Max Fixes: $AutoFixMax)..." -ForegroundColor Cyan
+        
+        Write-Host ">>> [AutoPR] Running CI Watch..." -ForegroundColor Cyan
+        $WatchArgs = @("$WatchScript", "--task_id", "$TaskId", "--attempt", "$CurrentAttempt", "--max_attempts", "$($AutoFixMax + 1)", "--result_dir", "$EvidenceDir")
+        $WatchProcess = Start-Process -FilePath "node" -ArgumentList $WatchArgs -NoNewWindow -PassThru -Wait
+        $ExitCode = $WatchProcess.ExitCode
+        
+        if ($ExitCode -eq 0) {
+            Write-Host "[AutoPR] CI Passed!" -ForegroundColor Green
+            $LoopActive = $false
+        } elseif ($ExitCode -eq 1) {
+            Write-Error "[AutoPR] CI Watch failed with Infra/Critical Error (Exit Code 1)."
+            exit 1
+        } elseif ($ExitCode -eq 2) {
+            Write-Host "[AutoPR] CI Failed (Exit Code 2)." -ForegroundColor Red
+            
+            if ($CurrentFixCount -lt $AutoFixMax) {
+                $CurrentFixCount++
+                Write-Host "[AutoPR] Attempting AutoFix ($CurrentFixCount/$AutoFixMax)..." -ForegroundColor Yellow
+                
+                Write-Host ">>> [AutoPR] Running AutoFix..." -ForegroundColor Cyan
+                $FixProcess = Start-Process -FilePath "node" -ArgumentList "$FixScript", "--task_id", "$TaskId" -NoNewWindow -PassThru -Wait
+                
+                if ($FixProcess.ExitCode -ne 0) {
+                    Write-Error "[AutoPR] AutoFix failed with exit code $($FixProcess.ExitCode)."
+                    exit 1
+                }
+            } else {
+                Write-Error "[AutoPR] AutoFix limit reached ($AutoFixMax). CI still failing."
+                exit 1
+            }
+        } else {
+            Write-Error "[AutoPR] Unknown Exit Code from CI Watch: $ExitCode"
+            exit 1
+        }
+    }
+}
+
 # --- Step 5: Pass 2 - Gate Light Verify ---
 Write-Host "[State] VERIFYING (Pass 2)..." -ForegroundColor Cyan
 Write-Host ">>> [RunTask] Step 5: Pass 2 - Gate Light Verify" -ForegroundColor Cyan
@@ -429,61 +479,6 @@ if ($Mode -eq "Integrate") {
     Invoke-Step -Name "Archive & Lock" -Cmd $ArchiveCmd
     Write-Host "    Archived evidence and locked task." -ForegroundColor Gray
 
-    # --- Step 9: AutoPR (Optional) ---
-    if ($AutoPR) {
-        Write-Host ">>> [RunTask] Step 9: AutoPR Loop" -ForegroundColor Cyan
-        
-        $WatchScript = "$RepoRoot\scripts\ci_watch_pr.mjs"
-        $FixScript = "$RepoRoot\scripts\ci_autofix_pack.mjs"
-        
-        $CurrentFixCount = 0
-        $LoopActive = $true
-        
-        while ($LoopActive) {
-            $CurrentAttempt = $CurrentFixCount + 1
-            Write-Host "[AutoPR] Loop Iteration $CurrentAttempt (Max Fixes: $AutoFixMax)..." -ForegroundColor Cyan
-            
-            # 1. Run CI Watch (Pass attempt info for evidence generation)
-            Write-Host ">>> [AutoPR] Running CI Watch..." -ForegroundColor Cyan
-            $WatchArgs = @("$WatchScript", "--task_id", "$TaskId", "--attempt", "$CurrentAttempt", "--max_attempts", "$($AutoFixMax + 1)")
-            $WatchProcess = Start-Process -FilePath "node" -ArgumentList $WatchArgs -NoNewWindow -PassThru -Wait
-            $ExitCode = $WatchProcess.ExitCode
-            
-            if ($ExitCode -eq 0) {
-                Write-Host "[AutoPR] CI Passed!" -ForegroundColor Green
-                $LoopActive = $false
-            } elseif ($ExitCode -eq 1) {
-                Write-Error "[AutoPR] CI Watch failed with Infra/Critical Error (Exit Code 1)."
-                exit 1
-            } elseif ($ExitCode -eq 2) {
-                Write-Host "[AutoPR] CI Failed (Exit Code 2)." -ForegroundColor Red
-                
-                if ($CurrentFixCount -lt $AutoFixMax) {
-                    $CurrentFixCount++
-                    Write-Host "[AutoPR] Attempting AutoFix ($CurrentFixCount/$AutoFixMax)..." -ForegroundColor Yellow
-                    
-                    # 2. Run AutoFix
-                    Write-Host ">>> [AutoPR] Running AutoFix..." -ForegroundColor Cyan
-                    $FixProcess = Start-Process -FilePath "node" -ArgumentList "$FixScript", "--task_id", "$TaskId" -NoNewWindow -PassThru -Wait
-                    
-                    if ($FixProcess.ExitCode -ne 0) {
-                         Write-Error "[AutoPR] AutoFix failed with exit code $($FixProcess.ExitCode)."
-                         exit 1
-                    }
-                    
-                    # Note: ci_autofix_pack.mjs handles git add/commit/push internally to ensure atomicity.
-                    # We do not commit here to avoid conflicts or empty commits.
-                    
-                } else {
-                    Write-Error "[AutoPR] AutoFix limit reached ($AutoFixMax). CI still failing."
-                    exit 1
-                }
-            } else {
-                Write-Error "[AutoPR] Unknown Exit Code from CI Watch: $ExitCode"
-                exit 1
-            }
-        }
-    }
 }
 
 Write-Host ">>> [RunTask] SUCCESS: Task $TaskId ($Mode) Completed." -ForegroundColor Green

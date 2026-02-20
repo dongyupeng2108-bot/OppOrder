@@ -1,0 +1,14 @@
+来源: scripts/gate_light_ci.mjs DoD Evidence Excerpt Check
+适用: task_id >= 260208_030 且非 Preview
+目录口径: rules/task-reports/YYYY-MM (YYYY=20 + task_id[0:2], MM=task_id[2:4])
+文件名:
+notify: notify_<task_id>.txt
+result: result_<task_id>.json
+存在性:
+notify 与 result 必须同时存在，否则失败
+notify 内容校验:
+DOD_EVIDENCE_HEALTHCHECK_ROOT: <path> => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: <path> => HTTP/1.1 200 OK
+结果 JSON 校验:
+resultData.dod_evidence.healthcheck 必须存在
+resultData.dod_evidence.healthcheck 必须为数组且长度 >= 2

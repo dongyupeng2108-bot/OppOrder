@@ -16,6 +16,7 @@ const getArg = (name) => {
 const taskId = getArg('--task_id');
 const attempt = getArg('--attempt') || '1';
 const maxAttempts = getArg('--max_attempts') || '1';
+const resultDir = getArg('--result_dir');
 
 if (!taskId) {
     console.error('Usage: node ci_watch_pr.mjs --task_id <TASK_ID> [--attempt <N>] [--max_attempts <M>]');
@@ -23,21 +24,27 @@ if (!taskId) {
 }
 
 const repoRoot = path.join(__dirname, '..');
-const evidenceFile = path.join(repoRoot, 'rules', 'task-reports', `auto_pr_${taskId}.json`);
+const evidenceDir = resultDir || path.join(repoRoot, 'rules', 'task-reports', '2026-02');
+const evidenceFile = path.join(evidenceDir, `auto_pr_${taskId}.json`);
 
 console.log(`[CI Watch] Task: ${taskId} (Attempt ${attempt}/${maxAttempts})`);
 
 // Helper to write evidence
-function writeEvidence(prInfo, state, checksSummary) {
+function writeEvidence(prInfo, state, checksSummary, errorMessage) {
     const evidence = {
         task_id: taskId,
         branch: '', 
+        pr_number: prInfo ? prInfo.number : null,
         pr_url: prInfo ? prInfo.url : 'unknown',
+        head: prInfo ? prInfo.headRefName : null,
+        base: prInfo ? prInfo.baseRefName : null,
         attempt: parseInt(attempt),
         autofix_max: parseInt(maxAttempts) - 1,
+        status: prInfo ? prInfo.state : null,
         final_state: state,
         timestamp: new Date().toISOString(),
-        checks_summary: checksSummary || {}
+        checks_summary: checksSummary || {},
+        error: errorMessage || null
     };
     
     try {
@@ -62,7 +69,7 @@ try {
     console.log('[CI Watch] Checking for existing PR...');
     
     try {
-        const prJson = execSync('gh pr view --json number,url,state', { encoding: 'utf8' });
+        const prJson = execSync('gh pr view --json number,url,state,headRefName,baseRefName', { encoding: 'utf8' });
         prInfo = JSON.parse(prJson);
         console.log(`[CI Watch] Found PR #${prInfo.number}: ${prInfo.url}`);
         
@@ -74,12 +81,12 @@ try {
         console.log('[CI Watch] No PR found. Creating new PR...');
         try {
             execSync(`gh pr create --fill --title "TraeTask_${taskId}: AutoPR" --body "Automated PR for Task ${taskId}"`, { stdio: 'inherit' });
-            const prJson = execSync('gh pr view --json number,url,state', { encoding: 'utf8' });
+            const prJson = execSync('gh pr view --json number,url,state,headRefName,baseRefName', { encoding: 'utf8' });
             prInfo = JSON.parse(prJson);
             console.log(`[CI Watch] Created PR #${prInfo.number}: ${prInfo.url}`);
         } catch (createErr) {
             console.error(`[CI Watch] Failed to create PR: ${createErr.message}`);
-            writeEvidence(null, 'INFRA_FAIL', { error: createErr.message });
+            writeEvidence(null, 'INFRA_FAIL', { error: createErr.message }, createErr.message);
             process.exit(1);
         }
     }
@@ -95,7 +102,7 @@ try {
         try {
             // Fetch checks
             // Note: 'url' in gh pr checks output gives the details link
-            const checksJson = execSync(`gh pr checks ${prInfo.number} --json name,state,url,startedAt,completedAt`, { encoding: 'utf8' });
+            const checksJson = execSync(`gh pr checks ${prInfo.number} --json name,state,link,startedAt,completedAt`, { encoding: 'utf8' });
             checks = JSON.parse(checksJson);
         } catch (e) {
             console.log(`[CI Watch] Error fetching checks (retrying): ${e.message}`);
@@ -121,7 +128,7 @@ try {
 
             if (failed.length > 0) {
                 console.error('[CI Watch] CI FAILED.');
-                failed.forEach(f => console.error(`  - ${f.name}: ${f.state} (${f.url})`));
+                failed.forEach(f => console.error(`  - ${f.name}: ${f.state} (${f.link})`));
                 writeEvidence(prInfo, 'FAIL', summary);
                 process.exit(2); // CI Failure
             }
@@ -142,11 +149,11 @@ try {
     }
 
     console.error('[CI Watch] TIMEOUT waiting for CI.');
-    writeEvidence(prInfo, 'TIMEOUT', { error: 'Timeout waiting for CI checks' });
+    writeEvidence(prInfo, 'TIMEOUT', { error: 'Timeout waiting for CI checks' }, 'Timeout waiting for CI checks');
     process.exit(1); // Infra/Timeout Error
 
 } catch (err) {
     console.error(`[CI Watch] Unexpected Error: ${err.message}`);
-    writeEvidence(prInfo, 'INFRA_FAIL', { error: err.message });
+    writeEvidence(prInfo, 'INFRA_FAIL', { error: err.message }, err.message);
     process.exit(1);
 }
