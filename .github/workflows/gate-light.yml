@@ -210,10 +210,11 @@ jobs:
             }
           };
           fs.writeFileSync(result, JSON.stringify(resultData, null, 2));
-NODE
+          NODE
 
       - name: Run Gate Light CI
         run: |
           git fetch origin main
           node scripts/gate_light_ci.mjs
+
 
