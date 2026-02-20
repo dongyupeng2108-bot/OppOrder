@@ -96,6 +96,11 @@ Before starting any new task, the Agent MUST perform these checks:
 9. Source of Truth（事实来源）：工程状态以 GitHub Actions CI + 锁文件为准；文档必须明确 writer/verifier 边界与例外处理口径。 
 10. Change Containment（变更收敛）：治理改动优先“新增自检/摘要/工具入口”，避免在多个位置同时修改规则与实现导致漂移。 
 
+### Fix-Front 排查顺序（Front-of-Queue）
+- 只修当前最前失败点；一次修复=一次最小提交；禁止并行混修。 
+- 修复后必须本地重建相关证据并触发 CI 复验。 
+- 该规则适用于 Integrate（集成）修复回环场景。 
+
 ### Gate Light Evidence Standards (CI Parity)
 
 *   **Automation Pack V1 Workflow (Standard for M4+)**:
