@@ -1,0 +1,6 @@
+Task: 260221_002k (Evidence Contract table and Troubleshooting Playbook docs update)
+Branch: feat/mg3-codeowners-260219_004_fix
+HEAD: 39b872c5ba91d9d1826df1e29bdaa728e1514e7c
+Base(origin/main): 512b2b3e0310d496f9467fc31152576e124e556c
+MergeBase: 0234e7e62beae3b980460ba487629ff3e08e2959
+GeneratedAt: 2026-02-20T22:19:42.427Z
