@@ -198,6 +198,8 @@ jobs:
           } else {
             paritySummary = `${parityRelative} (missing)`;
           }
+          const healthcheckRoot = `${dir}/${taskId}_healthcheck_53122_root.txt`;
+          const healthcheckPairs = `${dir}/${taskId}_healthcheck_53122_pairs.txt`;
           const notifyContent = [
             '=== HEADER ===',
             `task_id: ${taskId}`,
@@ -206,6 +208,8 @@ jobs:
             '',
             '=== DOD_EVIDENCE_STDOUT ===',
             `CI generated; healthcheck files: ${taskId}_healthcheck_53122_root.txt, ${taskId}_healthcheck_53122_pairs.txt`,
+            `DOD_EVIDENCE_HEALTHCHECK_ROOT: ${healthcheckRoot}`,
+            `DOD_EVIDENCE_HEALTHCHECK_PAIRS: ${healthcheckPairs}`,
             '',
             '=== CI_PARITY_PREVIEW ===',
             paritySummary,
