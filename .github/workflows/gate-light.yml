@@ -80,7 +80,8 @@ jobs:
           YEAR="20${TASK_ID:0:2}"
           MONTH="${TASK_ID:2:2}"
           EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
-          node scripts/error_digest.mjs --task_id "$TASK_ID" --mode CI --out_dir "$EVIDENCE_DIR"
+          COMMIT=$(git rev-parse HEAD)
+          node scripts/error_digest.mjs --task_id "$TASK_ID" --mode CI --commit "$COMMIT" --out_dir "$EVIDENCE_DIR"
 
       - name: Verify Error Digest Evidence
         run: |
