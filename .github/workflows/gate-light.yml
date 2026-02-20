@@ -19,6 +19,34 @@ jobs:
         with:
           node-version: '18'
           
+      - name: Generate Workspace Healer Evidence
+        run: |
+          TASK_REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
+          TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}' | head -n 1 || true)
+          if [ -z "$TASK_ID" ]; then
+            echo "No task_id detected."
+            exit 0
+          fi
+          YEAR="20${TASK_ID:0:2}"
+          MONTH="${TASK_ID:2:2}"
+          EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
+          EVIDENCE_FILE="${EVIDENCE_DIR}/workspace_healer_${TASK_ID}.json"
+          mkdir -p "$EVIDENCE_DIR"
+          echo "TASK_ID=${TASK_ID}"
+          echo "EVIDENCE_FILE=${EVIDENCE_FILE}"
+          pwsh -NonInteractive -ExecutionPolicy Bypass -Command "$content = & 'scripts/reset_workspace.ps1' -Mode EnforceClean; $content | Set-Content -Path $env:EVIDENCE_FILE -Encoding UTF8; $content"
+
+      - name: Verify Workspace Healer Evidence
+        run: |
+          TASK_REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
+          TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}' | head -n 1 || true)
+          YEAR="20${TASK_ID:0:2}"
+          MONTH="${TASK_ID:2:2}"
+          EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
+          EVIDENCE_FILE="${EVIDENCE_DIR}/workspace_healer_${TASK_ID}.json"
+          ls -la "$EVIDENCE_DIR"
+          test -f "$EVIDENCE_FILE"
+
       - name: Run Gate Light CI
         run: |
           git fetch origin main
