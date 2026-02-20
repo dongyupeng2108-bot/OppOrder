@@ -1,7 +1,7 @@
 Trae Task Report
 Task ID: 260219_004
 Header: TraeTask_260219_004
-Date: 2026-02-20T12:27:24.310Z
+Date: 2026-02-20T12:50:22.741Z
 Branch: feat/mg3-codeowners-260219_004_fix
 Commit: 70e75724b9816d0d953d90f665234ab25d341c63
 
@@ -34,6 +34,7 @@ Commit: 70e75724b9816d0d953d90f665234ab25d341c63
 
 === LOG_TAIL ===
 ...
+[Gate Light] Allowed legacy task_id (transition): 260219_001
 [Gate Light] NoHistoricalEvidenceTouch verified.
 [Gate Light] Skipping SnippetCommitMustMatch check (Preview Mode).
 [Gate Light] Skipping GATE_LIGHT_EXIT Mechanism check (Preview Mode).
@@ -48,7 +49,6 @@ Commit: 70e75724b9816d0d953d90f665234ab25d341c63
 [Gate Light] Two-Pass Evidence Truth & No Auto-Merge verified.
 [Gate Light] Skipping Postflight Envelope Validation (Preview Mode).
 [Gate Light] PASS
-GATE_LIGHT_EXIT=0
 
 From https://github.com/dongyupeng2108-bot/OppOrder
  - [deleted]         (none)     -> origin/feat/mg2-autopr-default-260219_001
@@ -96,7 +96,7 @@ Blocking PRs: 0
 
 
 
-=== GATE_LIGHT_VERIFY ===
+=== GATE_LIGHT_PREVIEW ===
 [Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
 [Gate Light] Target locked via argument: 260219_004
 [Gate Light] LATEST.json consistency verified.
@@ -191,13 +191,12 @@ Validation PASSED.
 [Gate Light] Two-Pass Evidence Truth & No Auto-Merge verified.
 [Gate Light] Skipping Postflight Envelope Validation (Preview Mode).
 [Gate Light] PASS
-GATE_LIGHT_EXIT=0
 
 From https://github.com/dongyupeng2108-bot/OppOrder
  - [deleted]         (none)     -> origin/feat/mg2-autopr-default-260219_001
 From https://github.com/dongyupeng2108-bot/OppOrder
  * branch            main       -> FETCH_HEAD
-=========================
+==========================
 
 
 

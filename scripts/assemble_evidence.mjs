@@ -77,7 +77,11 @@ const calcHash = (filePath) => {
 };
 
 const ciParityData = readJson(inputs.ciParity);
-const gateLightLog = readText(inputs.gateLightLog);
+const stripGateLightExitLines = (text) => text
+    .split('\n')
+    .filter(line => !/^GATE_LIGHT_EXIT=\d+/.test(line.trim()))
+    .join('\n');
+const gateLightLog = stripGateLightExitLines(readText(inputs.gateLightLog));
 const dodEvidence = readText(inputs.dodEvidence);
 const gitMeta = readJson(inputs.gitMeta);
 // const attestation = readJson(inputs.attestation);
