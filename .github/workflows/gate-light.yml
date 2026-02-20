@@ -34,7 +34,7 @@ jobs:
           mkdir -p "$EVIDENCE_DIR"
           echo "TASK_ID=${TASK_ID}"
           echo "EVIDENCE_FILE=${EVIDENCE_FILE}"
-          pwsh -NonInteractive -ExecutionPolicy Bypass -Command "$content = & 'scripts/reset_workspace.ps1' -Mode EnforceClean; $content | Set-Content -Path $env:EVIDENCE_FILE -Encoding UTF8; $content"
+          pwsh -NonInteractive -ExecutionPolicy Bypass -Command '$content = & "scripts/reset_workspace.ps1" -Mode EnforceClean; $content | Set-Content -Path $env:EVIDENCE_FILE -Encoding UTF8; $content'
 
       - name: Verify Workspace Healer Evidence
         run: |
