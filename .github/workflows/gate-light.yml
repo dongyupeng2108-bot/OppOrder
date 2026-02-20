@@ -50,6 +50,29 @@ jobs:
             exit 1
           fi
 
+      - name: Generate CI Parity Evidence
+        run: |
+          TASK_REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
+          TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}' | head -n 1 || true)
+          YEAR="20${TASK_ID:0:2}"
+          MONTH="${TASK_ID:2:2}"
+          EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
+          node scripts/ci_parity_probe.mjs --task_id "$TASK_ID" --result_dir "$EVIDENCE_DIR"
+
+      - name: Verify CI Parity Evidence
+        run: |
+          TASK_REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
+          TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}' | head -n 1 || true)
+          YEAR="20${TASK_ID:0:2}"
+          MONTH="${TASK_ID:2:2}"
+          EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
+          EVIDENCE_FILE="${EVIDENCE_DIR}/ci_parity_${TASK_ID}.json"
+          ls -la "$EVIDENCE_DIR"
+          if [ ! -f "$EVIDENCE_FILE" ]; then
+            echo "Missing CI parity evidence: $EVIDENCE_FILE"
+            exit 1
+          fi
+
       - name: Run Gate Light CI
         run: |
           git fetch origin main
