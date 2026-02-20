@@ -28,8 +28,19 @@ param (
 
 $ErrorActionPreference = "Stop"
 
+function Safe-Trim {
+    param ([string]$Value)
+    if ($null -eq $Value) { return "" }
+    return $Value.Trim()
+}
+
 # --- Configuration ---
-$RepoRoot = (git rev-parse --show-toplevel).Trim()
+$RepoRoot = Safe-Trim (git rev-parse --show-toplevel)
+$BranchName = Safe-Trim (git branch --show-current)
+if (-not $BranchName) {
+    $BranchName = Safe-Trim (git rev-parse --abbrev-ref HEAD)
+}
+$HeadCommit = Safe-Trim (git rev-parse HEAD)
 $DefaultRuntimePaths = @(
     "rules/task-reports",
     "rules/reports",
@@ -111,8 +122,8 @@ function Clean-RuntimePaths {
 $Result = @{
     mode = $Mode
     repo_root = $RepoRoot
-    branch = (git branch --show-current).Trim()
-    head_commit = (git rev-parse HEAD).Trim()
+    branch = $BranchName
+    head_commit = $HeadCommit
     before = $null
     after = $null
     result = "PENDING"
