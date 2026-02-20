@@ -73,6 +73,29 @@ jobs:
             exit 1
           fi
 
+      - name: Generate Error Digest Evidence
+        run: |
+          TASK_REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
+          TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}' | head -n 1 || true)
+          YEAR="20${TASK_ID:0:2}"
+          MONTH="${TASK_ID:2:2}"
+          EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
+          node scripts/error_digest.mjs --task_id "$TASK_ID" --mode CI --out_dir "$EVIDENCE_DIR"
+
+      - name: Verify Error Digest Evidence
+        run: |
+          TASK_REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
+          TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}' | head -n 1 || true)
+          YEAR="20${TASK_ID:0:2}"
+          MONTH="${TASK_ID:2:2}"
+          EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
+          EVIDENCE_FILE="${EVIDENCE_DIR}/errors_${TASK_ID}.jsonl"
+          ls -la "$EVIDENCE_DIR"
+          if [ ! -f "$EVIDENCE_FILE" ]; then
+            echo "Missing error digest evidence: $EVIDENCE_FILE"
+            exit 1
+          fi
+
       - name: Run Gate Light CI
         run: |
           git fetch origin main
