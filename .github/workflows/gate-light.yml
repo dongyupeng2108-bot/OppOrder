@@ -204,6 +204,10 @@ jobs:
           MONTH="${PR_TASK_ID:2:2}"
           EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
           mkdir -p "$EVIDENCE_DIR"
+          if [ -f "$EVIDENCE_DIR/notify_${PR_TASK_ID}.txt" ] && [ -f "$EVIDENCE_DIR/result_${PR_TASK_ID}.json" ]; then
+            echo "Notify/Result already exist. Skip CI placeholder generation."
+            exit 0
+          fi
           PR_TASK_ID="$PR_TASK_ID" EVIDENCE_DIR="$EVIDENCE_DIR" node <<'NODE'
           const fs = require('fs');
           const path = require('path');
