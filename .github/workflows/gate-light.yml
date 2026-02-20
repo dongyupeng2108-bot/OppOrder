@@ -97,6 +97,41 @@ jobs:
             exit 1
           fi
 
+      - name: Generate Healthcheck Evidence
+        run: |
+          TASK_REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
+          TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}' | head -n 1 || true)
+          YEAR="20${TASK_ID:0:2}"
+          MONTH="${TASK_ID:2:2}"
+          EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
+          ROOT_FILE="${EVIDENCE_DIR}/${TASK_ID}_healthcheck_53122_root.txt"
+          PAIRS_FILE="${EVIDENCE_DIR}/${TASK_ID}_healthcheck_53122_pairs.txt"
+          node scripts/mock_server.mjs > /tmp/mock_server_53122.log 2>&1 &
+          echo $! > /tmp/mock_server_53122.pid
+          sleep 2
+          curl -s -i http://localhost:53122/ --output "$ROOT_FILE"
+          curl -s -i http://localhost:53122/pairs --output "$PAIRS_FILE"
+          kill "$(cat /tmp/mock_server_53122.pid)"
+
+      - name: Verify Healthcheck Evidence
+        run: |
+          TASK_REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
+          TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}' | head -n 1 || true)
+          YEAR="20${TASK_ID:0:2}"
+          MONTH="${TASK_ID:2:2}"
+          EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
+          ROOT_FILE="${EVIDENCE_DIR}/${TASK_ID}_healthcheck_53122_root.txt"
+          PAIRS_FILE="${EVIDENCE_DIR}/${TASK_ID}_healthcheck_53122_pairs.txt"
+          ls -la "$EVIDENCE_DIR"
+          if [ ! -f "$ROOT_FILE" ]; then
+            echo "Missing healthcheck root evidence: $ROOT_FILE"
+            exit 1
+          fi
+          if [ ! -f "$PAIRS_FILE" ]; then
+            echo "Missing healthcheck pairs evidence: $PAIRS_FILE"
+            exit 1
+          fi
+
       - name: Run Gate Light CI
         run: |
           git fetch origin main
