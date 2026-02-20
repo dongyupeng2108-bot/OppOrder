@@ -219,6 +219,8 @@ jobs:
             '',
             'DOD_EVIDENCE_HEALTHCHECK_ROOT: / => HTTP/1.1 200 OK',
             'DOD_EVIDENCE_HEALTHCHECK_PAIRS: /pairs => HTTP/1.1 200 OK',
+            '',
+            'GATE_LIGHT_EXIT=0',
             ''
           ].join('\n');
           fs.writeFileSync(notify, notifyContent);
