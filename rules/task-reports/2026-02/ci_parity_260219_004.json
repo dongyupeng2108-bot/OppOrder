@@ -1,0 +1,12 @@
+{
+  "task_id": "260219_004",
+  "is_shallow_repo": true,
+  "base": "e90d60f8113a94ef29ebce09594e49b1921f0e27",
+  "head": "555c59e797b4257191725d0b6297d2f7f914fcd5",
+  "merge_base": "e90d60f8113a94ef29ebce09594e49b1921f0e27",
+  "scope_files": [
+    ".github/CODEOWNERS"
+  ],
+  "scope_count": 1,
+  "generated_at": "2026-02-19T12:24:22.106Z"
+}
