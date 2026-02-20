@@ -37,15 +37,42 @@ jobs:
           MONTH="${PR_TASK_ID:2:2}"
           EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
           EVIDENCE_FILE="${EVIDENCE_DIR}/workspace_healer_${PR_TASK_ID}.json"
+          TMP_EVIDENCE_FILE="/tmp/workspace_healer_${PR_TASK_ID}.json"
           mkdir -p "$EVIDENCE_DIR"
           echo "TASK_ID=${PR_TASK_ID}"
           echo "EVIDENCE_FILE=${EVIDENCE_FILE}"
+          echo "WORKSPACE_HEALER_TMP=${TMP_EVIDENCE_FILE}" >> "$GITHUB_ENV"
           echo "WORKSPACE_HEALER_BEFORE:"
           ls -la "$EVIDENCE_DIR" | grep workspace_healer_ || true
           pwsh -NonInteractive -ExecutionPolicy Bypass -File scripts/reset_workspace.ps1 -Mode Heal > /tmp/workspace_healer_heal.json
-          pwsh -NonInteractive -ExecutionPolicy Bypass -File scripts/reset_workspace.ps1 -Mode EnforceClean | tee "$EVIDENCE_FILE"
+          pwsh -NonInteractive -ExecutionPolicy Bypass -File scripts/reset_workspace.ps1 -Mode EnforceClean > "$TMP_EVIDENCE_FILE"
           echo "WORKSPACE_HEALER_AFTER:"
           ls -la "$EVIDENCE_DIR" | grep workspace_healer_ || true
+
+      - name: Workspace Healer Debug Snapshot
+        run: |
+          git status --porcelain
+          git diff --name-only
+          git diff --stat
+          ls -la rules/task-reports/2026-02 | head
+          if [ -n "$WORKSPACE_HEALER_TMP" ]; then
+            cat "$WORKSPACE_HEALER_TMP" | head -n 120
+          fi
+
+      - name: Persist Workspace Healer Evidence
+        run: |
+          TASK_REF="${GITHUB_HEAD_REF}"
+          if [ -z "$TASK_REF" ]; then
+            TASK_REF="${GITHUB_REF_NAME}"
+          fi
+          PR_TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}' | head -n 1 || true)
+          YEAR="20${PR_TASK_ID:0:2}"
+          MONTH="${PR_TASK_ID:2:2}"
+          EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
+          EVIDENCE_FILE="${EVIDENCE_DIR}/workspace_healer_${PR_TASK_ID}.json"
+          if [ -n "$WORKSPACE_HEALER_TMP" ] && [ -f "$WORKSPACE_HEALER_TMP" ]; then
+            cat "$WORKSPACE_HEALER_TMP" > "$EVIDENCE_FILE"
+          fi
 
       - name: Verify Workspace Healer Evidence
         run: |
@@ -63,14 +90,6 @@ jobs:
             echo "Missing workspace healer evidence: $EVIDENCE_FILE"
             exit 1
           fi
-
-      - name: Workspace Healer Debug Snapshot
-        run: |
-          git status --porcelain
-          git diff --name-only
-          git diff --stat
-          ls -la rules/task-reports/2026-02 | head
-          cat rules/task-reports/2026-02/workspace_healer_260219_004.json | head -n 120
 
       - name: Generate CI Parity Evidence
         run: |
