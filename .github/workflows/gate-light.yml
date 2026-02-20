@@ -233,7 +233,8 @@ jobs:
               healthcheck: [
                 `${taskId}_healthcheck_53122_root.txt`,
                 `${taskId}_healthcheck_53122_pairs.txt`
-              ]
+              ],
+              gate_light_exit: 0
             }
           };
           fs.writeFileSync(result, JSON.stringify(resultData, null, 2));
