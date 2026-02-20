@@ -1,6 +1,6 @@
 {
   "task_id": "260219_004",
-  "generated_at": "2026-02-20T11:50:40.107Z",
+  "generated_at": "2026-02-20T12:04:01.530Z",
   "files": [
     {
       "name": "ci_parity_260219_004.json",
@@ -24,8 +24,8 @@
     },
     {
       "name": "preflight_attestation_260219_004.json",
-      "size": 332,
-      "sha256_short": "ea3cf391"
+      "size": 324,
+      "sha256_short": "7b134b8f"
     },
     {
       "name": "workspace_healer_260219_004.json",
@@ -35,7 +35,7 @@
     {
       "name": "result_260219_004.json",
       "size": 768,
-      "sha256_short": "bee9c6e7"
+      "sha256_short": "1b5cf877"
     },
     {
       "name": "run_260219_004.log",
@@ -54,8 +54,8 @@
     },
     {
       "name": "notify_260219_004.txt",
-      "size": 8785,
-      "sha256_short": "ec548ea3"
+      "size": 8781,
+      "sha256_short": "37917cb6"
     },
     {
       "name": "manual_verification_260219_004.json",
@@ -65,7 +65,7 @@
     {
       "name": "evidence_manifest_260219_004.json",
       "size": 764,
-      "sha256_short": "2a75122b"
+      "sha256_short": "2edac894"
     },
     {
       "name": "open_pr_guard_260219_004.json",
