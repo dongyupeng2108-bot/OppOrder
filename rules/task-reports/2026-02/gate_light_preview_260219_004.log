@@ -1,16 +1,20 @@
 [Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
-[Gate Light] Target locked via argument: 260219_004
+[Gate Light] Attempting to detect task_id from git diff...
+[Gate Light] Checking for Evidence WORM Violations...
+[Gate Light] WORM Check Passed.
+[Gate Light] Detected unique PR Task ID from diff: 260219_004
 [Gate Light] LATEST.json consistency verified.
 [Gate Light] Verifying task_id: 260219_004
 [Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Report Block Check Passed: notify_260219_004.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260219_004.txt
+[Gate Light] Header Check Passed: TraeTask_260219_004
 [Gate Light] Checking Workspace Healer Evidence...
 [Gate Light] Workspace Healer verified (Clean Environment).
 [Gate Light] Checking CI Parity JSON Evidence...
-[Gate Light] DEBUG: is_shallow_repository=true
-[Gate Light] DEBUG: HEAD=555c59e797b4257191725d0b6297d2f7f914fcd5
+[Gate Light] DEBUG: is_shallow_repository=false
+[Gate Light] DEBUG: HEAD=7c586d43178eef5340d6b637181bdd5af8973f4a
 [Gate Light] DEBUG: git merge-base origin/main HEAD=e90d60f8113a94ef29ebce09594e49b1921f0e27
-[Gate Light] DETECTED SHALLOW CLONE. Attempting to unshallow (Fix Strategy A)...
-[Gate Light] Unshallow command executed.
 [Gate Light] CI Parity JSON Evidence verified.
 [Gate Light] Skipping Error Digest Validation (Preview Mode).
 [Gate Light] Checking doc path standards...
@@ -34,36 +38,51 @@ PASS
 [Gate Light] Checking Rank V2 API Contract...
 === Rank V2 Contract Verification ===
 Schema loaded.
-Server already running.
+Starting mock server...
+[Ledger] Init. Path: E:\OppRadar\data\opps_ledger\opps_ledger.jsonl
+LLM Provider initialized: mock
+Loaded 782 scans (total), 2 opps (total) from runtime store.
+Mock server running on port 53122
+Connected to SQLite database at E:\OppRadar\data\runtime\oppradar.sqlite
 Fetching http://localhost:53122/opportunities/rank_v2?provider=mock&limit=5&run_id=verify_rank_v2...
-Received 5 items.
+GET /opportunities/rank_v2?provider=mock&limit=5&run_id=verify_rank_v2
+Received 3 items.
 Validating against schema...
 Schema Validation PASSED.
-Response Hash: e9b6e114
-::set-output name=rank_v2_hash::e9b6e114
+Response Hash: ff3d7b77
+::set-output name=rank_v2_hash::ff3d7b77
 VERIFICATION_SUCCESS
+Stopping temp server...
 [Gate Light] Checking Export V1 API Contract...
 === Export V1 Contract Verification ===
 Schema loaded.
-Server already running.
+Starting mock server...
+[Ledger] Init. Path: E:\OppRadar\data\opps_ledger\opps_ledger.jsonl
+LLM Provider initialized: mock
+Loaded 782 scans (total), 2 opps (total) from runtime store.
+Mock server running on port 53122
+Connected to SQLite database at E:\OppRadar\data\runtime\oppradar.sqlite
 Generating Run assets via http://localhost:53122/scans/run...
-Run assets generated. Run ID: scan_ce9b5e6b5fef2094
-Fetching Export: http://localhost:53122/opportunities/runs/export_v1?run_id=scan_ce9b5e6b5fef2094...
+POST /scans/run
+Run assets generated. Run ID: sc_9558323c
+Fetching Export: http://localhost:53122/opportunities/runs/export_v1?run_id=sc_9558323c...
+GET /opportunities/runs/export_v1?run_id=sc_9558323c
 Received Export JSON.
 Validating against schema...
 Export Schema Validation PASSED.
-Export Hash: f844b9aa
-::set-output name=export_v1_hash::f844b9aa
+Export Hash: 2f0003de
+::set-output name=export_v1_hash::2f0003de
 EXPORT_CONTRACT_VERIFICATION_SUCCESS
+Stopping temp server...
 [Gate Light] Checking Ledger V0 API Contract...
 === Ledger V0 Contract Verification ===
 Schema loaded.
-Server already running.
+Starting server...
 Fetching /opportunities/ledger/query_v0?limit=1...
 Validating against schema...
 Validation PASSED.
 [Gate Light] Checking healthcheck evidence...
-[Gate Light] Using evidence directory: E:\OppRadar\rules\task-reports\2026-02
+[Gate Light] Using evidence directory: rules\task-reports\2026-02
 [Gate Light] Healthcheck evidence verified (Path + Content).
 [Gate Light] Skipping DoD Evidence Excerpt Check (Preview Mode).
 [Gate Light] Checking Deletion Audit (Locks & Runs)...
@@ -75,6 +94,7 @@ Validation PASSED.
 [Gate Light] Skipping Evidence Truth check (Generation Mode).
 [Gate Light] Evidence Truth & Sufficiency verified.
 [Gate Light] Checking CI Parity Preview...
+[Gate Light] CI Parity Preview verified.
 [Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
 [Gate Light] Fetching origin/main history for diff context...
 [Gate Light] Allowed legacy task_id (transition): 260219_001
@@ -93,8 +113,3 @@ Validation PASSED.
 [Gate Light] Skipping Postflight Envelope Validation (Preview Mode).
 [Gate Light] PASS
 GATE_LIGHT_EXIT=0
-
-From https://github.com/dongyupeng2108-bot/OppOrder
- - [deleted]         (none)     -> origin/feat/mg2-autopr-default-260219_001
-From https://github.com/dongyupeng2108-bot/OppOrder
- * branch            main       -> FETCH_HEAD
