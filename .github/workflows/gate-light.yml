@@ -121,10 +121,26 @@ jobs:
           PAIRS_FILE="${EVIDENCE_DIR}/${TASK_ID}_healthcheck_53122_pairs.txt"
           node scripts/mock_server.mjs > /tmp/mock_server_53122.log 2>&1 &
           echo $! > /tmp/mock_server_53122.pid
-          sleep 2
-          curl -s -i http://localhost:53122/ --output "$ROOT_FILE"
-          curl -s -i http://localhost:53122/pairs --output "$PAIRS_FILE"
-          kill "$(cat /tmp/mock_server_53122.pid)"
+          trap 'if [ -f /tmp/mock_server_53122.pid ]; then kill "$(cat /tmp/mock_server_53122.pid)" || true; fi' EXIT
+          READY=0
+          for i in {1..30}; do
+            if curl -sf http://localhost:53122/ > /dev/null; then
+              READY=1
+              break
+            fi
+            sleep 1
+          done
+          if [ "$READY" -ne 1 ]; then
+            echo "Healthcheck server not ready after timeout."
+            tail -n 200 /tmp/mock_server_53122.log || true
+            if command -v lsof >/dev/null 2>&1; then
+              lsof -i :53122 || true
+            fi
+            ps -ef | grep -E "mock_server|node scripts/mock_server" | grep -v grep || true
+            exit 1
+          fi
+          curl --retry 5 --retry-delay 1 --retry-connrefused -s -i http://localhost:53122/ --output "$ROOT_FILE"
+          curl --retry 5 --retry-delay 1 --retry-connrefused -s -i http://localhost:53122/pairs --output "$PAIRS_FILE"
 
       - name: Verify Healthcheck Evidence
         run: |
