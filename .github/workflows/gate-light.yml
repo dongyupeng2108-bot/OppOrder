@@ -188,10 +188,31 @@ jobs:
           }
           const notify = path.join(dir, `notify_${taskId}.txt`);
           const result = path.join(dir, `result_${taskId}.json`);
+          const crypto = require('crypto');
+          const parityRelative = `rules/task-reports/${dir.split('rules/task-reports/').pop()}/ci_parity_${taskId}.json`;
+          const parityPath = path.join(dir, `ci_parity_${taskId}.json`);
+          let paritySummary = `${parityRelative}`;
+          if (fs.existsSync(parityPath)) {
+            const parityHash = crypto.createHash('sha256').update(fs.readFileSync(parityPath)).digest('hex');
+            paritySummary = `${parityRelative} sha256=${parityHash}`;
+          } else {
+            paritySummary = `${parityRelative} (missing)`;
+          }
           const notifyContent = [
-            `Header: TraeTask_${taskId}`,
-            `Commit: ${sha}`,
-            'CI: gate-light.yml',
+            '=== HEADER ===',
+            `task_id: ${taskId}`,
+            'mode: CI',
+            `commit: ${sha}`,
+            '',
+            '=== DOD_EVIDENCE_STDOUT ===',
+            `CI generated; healthcheck files: ${taskId}_healthcheck_53122_root.txt, ${taskId}_healthcheck_53122_pairs.txt`,
+            '',
+            '=== CI_PARITY_PREVIEW ===',
+            paritySummary,
+            '',
+            '=== GATE_LIGHT_VERIFY ===',
+            'PENDING (generated in CI before gate_light_ci.mjs)',
+            '',
             'DOD_EVIDENCE_HEALTHCHECK_ROOT: / => HTTP/1.1 200 OK',
             'DOD_EVIDENCE_HEALTHCHECK_PAIRS: /pairs => HTTP/1.1 200 OK',
             ''
