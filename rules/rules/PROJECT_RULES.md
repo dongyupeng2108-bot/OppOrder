@@ -110,16 +110,16 @@
 ## Evidence Contract（证据契约）
 
 ### A) Contract Table（契约表）
-| 产物（Artifact / 产物） | 目的（Purpose / 目的） | 必要校验（Required Checks / 必要校验） | 口径说明（Notes / 口径说明） |
-| --- | --- | --- | --- |
-| notify_<task_id>.txt | 门禁摘要与DoD（完成定义）输出 | 结构完整、含关键段落 | 需与 result 中 report_file/sha256 对齐 |
-| result_<task_id>.json | 任务结果元数据 | task_id、report_file、sha256_short | Evidence=Commit Snapshot |
-| deliverables_index*.json | 证据索引 | 哈希与路径完整 | 任一证据变动必须重建 |
-| envelope.json | 证据清单封装 | 引用与哈希一致 | 与 index 绑定一致性 |
-| trae_report_snippet_<task_id>.txt | Gate Light 核心输出摘要 | COMMIT 解析、关键段落存在 | SnippetCommitMustMatch 仅允许证据/文档/LATEST 例外 |
-| healthcheck_root_53122_<task_id>.txt | 站点根路径健康检查 | HTTP 200 + DoD marker | 需明确 status 与正文 |
-| healthcheck_pairs_53122_<task_id>.txt | pairs 路径健康检查 | HTTP 200 + DoD marker | 需明确 status 与正文 |
-| 通用约束 | 统一格式 | LF + UTF-8（无 BOM） | 禁止 UTF-16/BOM 与 CRLF |
+| 文件模式 | 必含字段或 marker | 生成来源 | 门禁校验点 | 常见报错与修复要点 |
+| --- | --- | --- | --- | --- |
+| notify_<task_id>.txt | DoD marker、healthcheck marker、GATE_LIGHT_EXIT=0、Header 一致性 | assemble_evidence.mjs | Evidence Truth & Consistency、DoD Evidence Excerpts | report_file/sha256 绑定不一致 → 重新 assemble |
+| result_<task_id>.json | gate_light_exit、report_file、report_sha256_short | assemble_evidence.mjs | Evidence Truth & Consistency | result/notify 字段不一致 → 重新 assemble |
+| deliverables_index*.json | 证据条目与 sha256 绑定 | assemble_evidence.mjs | Postflight（index/envelope 绑定） | POSTFLIGHT_REPORT_BINDING_MISMATCH → 重建 index/envelope |
+| envelope.json | 证据条目与 sha256 绑定 | postflight_validate_envelope.mjs | Postflight（index/envelope 绑定） | POSTFLIGHT_REPORT_BINDING_MISMATCH → 重建 index/envelope |
+| trae_report_snippet_<task_id>.txt | SnippetCommitMustMatch；例外边界仅允许证据/文档/LATEST | assemble_evidence.mjs | SnippetCommitMustMatch | SNIPPET_COMMIT_MISMATCH → 回滚非证据变更 |
+| healthcheck_root_53122_<task_id>.txt | HTTP 200 + DoD marker | run_task.ps1（curl） | Healthcheck Evidence + DoD marker | HEALTHCHECK_MARKER_MISSING → 重跑 healthcheck |
+| healthcheck_pairs_53122_<task_id>.txt | HTTP 200 + DoD marker | run_task.ps1（curl） | Healthcheck Evidence + DoD marker | HEALTHCHECK_MARKER_MISSING → 重跑 healthcheck |
+| 通用约束 | LF + UTF-8（无 BOM） | 各生成器统一约束 | LF/编码红线校验 | UTF-16/BOM 或 CRLF → 统一 LF/UTF-8 |
 
 ### B) Interpretation Rules（口径规则）
 1. Evidence = Commit Snapshot（证据=提交快照）：代码或证据一变动，必须同步重建证据并提交。
