@@ -110,8 +110,12 @@ try {
 if (changesMade) {
     console.log('[AutoFix] Committing changes...');
     try {
-        // Add evidence dir files
-        execSync(`git add "${evidenceDir}"`, { stdio: 'inherit' });
+        const evidenceDirRel = path.relative(repoRoot, evidenceDir).replace(/\\/g, '/');
+        execSync(`git add -f "${evidenceDirRel}/*${taskId}*"`, { stdio: 'inherit' });
+        const envelopePath = path.join(repoRoot, 'rules', 'task-reports', 'envelopes', `${taskId}.envelope.json`);
+        if (fs.existsSync(envelopePath)) {
+            execSync(`git add -f "rules/task-reports/envelopes/${taskId}.envelope.json"`, { stdio: 'inherit' });
+        }
         // Add LATEST.json
         execSync(`git add rules/LATEST.json`, { stdio: 'inherit', cwd: repoRoot });
         
