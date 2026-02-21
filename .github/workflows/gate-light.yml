@@ -325,7 +325,7 @@ jobs:
             echo "Missing notify evidence for snippet: $NOTIFY_FILE"
             exit 1
           fi
-          GATE_LIGHT_GENERATE_PREVIEW=1 node scripts/build_trae_report_snippet.mjs --task_id "$TASK_ID" --result_dir "$EVIDENCE_DIR"
+          GATE_LIGHT_GENERATE_PREVIEW=1 node scripts/build_trae_report_snippet.mjs --task_id="$TASK_ID" --result_dir="$EVIDENCE_DIR"
           TASK_ID="$TASK_ID" EVIDENCE_DIR="$EVIDENCE_DIR" node <<'NODE'
           const fs = require('fs');
           const path = require('path');
