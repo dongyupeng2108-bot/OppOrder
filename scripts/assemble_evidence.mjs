@@ -15,11 +15,19 @@ const norm = (v) => (v ?? '').toString().trim()
   .replace(/^"(.*)"$/, '$1')
   .replace(/^'(.*)'$/, '$1');
 
-const taskId = norm(ARGS.find(arg => arg.startsWith('--task_id='))?.split('=')[1]);
-const evidenceDir = norm(ARGS.find(arg => arg.startsWith('--evidence_dir='))?.split('=')[1]) || `rules/task-reports/${new Date().toISOString().slice(0, 7)}`;
-const mode = norm(ARGS.find(arg => arg.startsWith('--mode='))?.split('=')[1]);
-const phase = norm(ARGS.find(arg => arg.startsWith('--phase='))?.split('=')[1]) || 'assemble';
-const runIdArg = norm(ARGS.find(arg => arg.startsWith('--run_id='))?.split('=')[1]);
+const getArgValue = (key) => {
+    const direct = ARGS.find(arg => arg.startsWith(`--${key}=`));
+    if (direct) return norm(direct.split('=').slice(1).join('='));
+    const idx = ARGS.findIndex(arg => arg === `--${key}`);
+    if (idx !== -1) return norm(ARGS[idx + 1]);
+    return '';
+};
+
+const taskId = getArgValue('task_id');
+const evidenceDir = getArgValue('evidence_dir') || `rules/task-reports/${new Date().toISOString().slice(0, 7)}`;
+const mode = getArgValue('mode');
+const phase = getArgValue('phase') || 'assemble';
+const runIdArg = getArgValue('run_id');
 
 if (!taskId) {
     console.error('Usage: node scripts/assemble_evidence.mjs --task_id=<id> [--evidence_dir=<path>] [--phase=assemble|archive]');
