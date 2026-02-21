@@ -585,28 +585,26 @@ const indexPath = resolvePath(`deliverables_index_${taskId}.json`);
 fs.writeFileSync(indexPath, JSON.stringify(indexData, null, 2));
 console.log(`[Assembler] Wrote index: ${indexPath}`);
 
-// --- 8. Write Snippet (Same as Notify) ---
+// --- 8. Write Snippet (Build from Preview Extract) ---
 const snippetPath = resolvePath(`trae_report_snippet_${taskId}.txt`);
-
-// Ensure snippet contains required keywords for Gate Light Verification
-let snippetContent = notifyContent;
-
-// Ensure [Postflight] PASS
-if (!snippetContent.includes('[Postflight] PASS')) {
-    if (resolvedMode === 'Integrate') {
-         snippetContent += `\n[Postflight] PASS`;
-    } else {
-         snippetContent += `\n[Postflight] Skipping Postflight Envelope Validation (Preview Mode)`;
+const previewTxtPath = resolvePath(`gate_light_preview_${taskId}.txt`);
+if (fs.existsSync(inputs.gateLightLog)) {
+    try {
+        execSync(`node scripts/extract_gate_light_preview.mjs --task_id=${taskId} --log="${inputs.gateLightLog}"`, { stdio: 'inherit' });
+    } catch (e) {
+        console.warn(`[Assembler] Warning: Failed to extract gate light preview: ${e.message}`);
     }
 }
-
-// Ensure [Gate Light] PASS
-if (!snippetContent.includes('[Gate Light] PASS')) {
-    snippetContent += `\n[Gate Light] PASS`;
+try {
+    execSync(`node scripts/build_trae_report_snippet.mjs --task_id=${taskId} --result_dir="${evidenceDir}"`, { stdio: 'inherit' });
+} catch (e) {
+    console.error(`[Assembler] FAIL: Failed to build snippet: ${e.message}`);
+    process.exit(1);
 }
-
-fs.writeFileSync(snippetPath, snippetContent);
-console.log(`[Assembler] Wrote snippet: ${snippetPath}`);
+if (!fs.existsSync(snippetPath)) {
+    console.error(`[Assembler] FAIL: Snippet not created at ${snippetPath}`);
+    process.exit(1);
+}
 
 if (strictSelfCheck && selfCheckExit === 1) {
     process.exit(1);
@@ -729,14 +727,19 @@ if (resolvedMode === 'Integrate') {
             files: updatedIndexFiles
         };
         fs.writeFileSync(indexPath, JSON.stringify(updatedIndexData, null, 2));
-        let updatedSnippetContent = updatedNotifyContent;
-        if (!updatedSnippetContent.includes('[Postflight] PASS')) {
-            updatedSnippetContent += `\n[Postflight] PASS`;
+        if (fs.existsSync(inputs.gateLightLog)) {
+            try {
+                execSync(`node scripts/extract_gate_light_preview.mjs --task_id=${taskId} --log="${inputs.gateLightLog}"`, { stdio: 'inherit' });
+            } catch (e) {
+                console.warn(`[Assembler] Warning: Failed to extract gate light preview: ${e.message}`);
+            }
         }
-        if (!updatedSnippetContent.includes('[Gate Light] PASS')) {
-            updatedSnippetContent += `\n[Gate Light] PASS`;
+        try {
+            execSync(`node scripts/build_trae_report_snippet.mjs --task_id=${taskId} --result_dir="${evidenceDir}"`, { stdio: 'inherit' });
+        } catch (e) {
+            console.error(`[Assembler] FAIL: Failed to build snippet: ${e.message}`);
+            process.exit(1);
         }
-        fs.writeFileSync(snippetPath, updatedSnippetContent);
         execSync(`node scripts/postflight_validate_envelope.mjs --task_id ${taskId} --result_dir "${evidenceDir}" --report_dir "${evidenceDir}"`, { stdio: 'inherit' });
     }
 }
