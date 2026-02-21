@@ -1,0 +1,6 @@
+Task: 260221_004f (Docs-only: Evidence Contract table hardening)
+Branch: feat/docs-deliver-002-goals-260221_004f
+HEAD: 59cf506af2b10cb819631f871f11d8293ee9e050
+Base(origin/main): fc027430dde7e3364b2455cc4077789d1c052923
+MergeBase: fc027430dde7e3364b2455cc4077789d1c052923
+GeneratedAt: 2026-02-21T11:58:04.280Z
