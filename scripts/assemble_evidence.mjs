@@ -1,3 +1,4 @@
+import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
@@ -580,6 +581,15 @@ const indexData = {
 const indexPath = resolvePath(`deliverables_index_${taskId}.json`);
 fs.writeFileSync(indexPath, JSON.stringify(indexData, null, 2));
 console.log(`[Assembler] Wrote index: ${indexPath}`);
+
+if (resolvedMode === 'Integrate') {
+    try {
+        execSync(`node scripts/postflight_validate_envelope.mjs --task_id ${taskId} --result_dir "${evidenceDir}" --report_dir "${evidenceDir}"`, { stdio: 'inherit' });
+    } catch (e) {
+        console.error(`[Assembler] Postflight validation failed: ${e.message}`);
+        process.exit(1);
+    }
+}
 
 // --- 8. Write Snippet (Same as Notify) ---
 const snippetPath = resolvePath(`trae_report_snippet_${taskId}.txt`);
