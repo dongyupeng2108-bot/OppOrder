@@ -60,7 +60,23 @@ if (fs.existsSync(dodStdoutPath)) {
     if (notifyContent.includes(marker)) {
         const parts = notifyContent.split(marker);
         if (parts.length > 1) {
-            dodContent = marker + '\n' + parts[1].trim();
+            let section = parts[1].trim();
+            const cutMarkers = [
+                '=== CI_PARITY_PREVIEW ===',
+                '=== GATE_LIGHT_PREVIEW ===',
+                '=== GATE_LIGHT_VERIFY ==='
+            ];
+            let cutIndex = -1;
+            for (const cutMarker of cutMarkers) {
+                const idx = section.indexOf(cutMarker);
+                if (idx !== -1 && (cutIndex === -1 || idx < cutIndex)) {
+                    cutIndex = idx;
+                }
+            }
+            if (cutIndex !== -1) {
+                section = section.slice(0, cutIndex).trim();
+            }
+            dodContent = marker + '\n' + section;
         }
     }
 }
