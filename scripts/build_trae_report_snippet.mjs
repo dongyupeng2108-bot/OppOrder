@@ -49,6 +49,7 @@ try {
 // 2. Read DoD Evidence (Stdout + Healthcheck)
 const notifyPath = path.join(resultDir, `notify_${taskId}.txt`);
 let dodContent = '';
+let headerValue = 'Unknown';
 
 // A. DoD Stdout
 const dodStdoutPath = path.join(resultDir, `dod_stdout_${taskId}.txt`);
@@ -56,6 +57,10 @@ if (fs.existsSync(dodStdoutPath)) {
     dodContent = fs.readFileSync(dodStdoutPath, 'utf8').trim();
 } else if (fs.existsSync(notifyPath)) {
     const notifyContent = fs.readFileSync(notifyPath, 'utf8');
+    const headerMatch = notifyContent.match(/^Header:\s*(.+)$/m);
+    if (headerMatch) {
+        headerValue = headerMatch[1].trim();
+    }
     const marker = '=== DOD_EVIDENCE_STDOUT ===';
     if (notifyContent.includes(marker)) {
         const parts = notifyContent.split(marker);
@@ -162,6 +167,7 @@ GATE_LIGHT_EXIT=__PENDING__`;
 const snippetContent = `
 === TRAE_REPORT_SNIPPET ===
 
+Header: ${headerValue}
 BRANCH: ${branchName}
 COMMIT: ${commitHash}
 
