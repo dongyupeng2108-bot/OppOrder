@@ -107,7 +107,40 @@
 9. Source of Truth（事实来源）：工程状态以 GitHub Actions CI + 锁文件为准；文档必须明确 writer/verifier 边界与例外处理口径。 
 10. Change Containment（变更收敛）：治理改动优先“新增自检/摘要/工具入口”，避免在多个位置同时修改规则与实现导致漂移。 
 
-Evidence Contract（证据契约）表与排查手册将在后续 Task#2 落盘。
+## Evidence Contract（证据契约）
+
+### A) Contract Table（契约表）
+| 产物（Artifact / 产物） | 目的（Purpose / 目的） | 必要校验（Required Checks / 必要校验） | 口径说明（Notes / 口径说明） |
+| --- | --- | --- | --- |
+| notify_<task_id>.txt | 门禁摘要与DoD（完成定义）输出 | 结构完整、含关键段落 | 需与 result 中 report_file/sha256 对齐 |
+| result_<task_id>.json | 任务结果元数据 | task_id、report_file、sha256_short | Evidence=Commit Snapshot |
+| deliverables_index*.json | 证据索引 | 哈希与路径完整 | 任一证据变动必须重建 |
+| envelope.json | 证据清单封装 | 引用与哈希一致 | 与 index 绑定一致性 |
+| trae_report_snippet_<task_id>.txt | Gate Light 核心输出摘要 | COMMIT 解析、关键段落存在 | SnippetCommitMustMatch 仅允许证据/文档/LATEST 例外 |
+| healthcheck_root_53122_<task_id>.txt | 站点根路径健康检查 | HTTP 200 + DoD marker | 需明确 status 与正文 |
+| healthcheck_pairs_53122_<task_id>.txt | pairs 路径健康检查 | HTTP 200 + DoD marker | 需明确 status 与正文 |
+| 通用约束 | 统一格式 | LF + UTF-8（无 BOM） | 禁止 UTF-16/BOM 与 CRLF |
+
+### B) Interpretation Rules（口径规则）
+1. Evidence = Commit Snapshot（证据=提交快照）：代码或证据一变动，必须同步重建证据并提交。
+2. Atomic Evidence Rule（证据原子性）：任一证据变动必须重建 deliverables_index/envelope。
+3. SnippetCommitMustMatch 例外边界：仅允许证据/文档/LATEST 变动触发“证据更新”例外，不得扩展到业务代码。
+4. No Bypass（禁止绕过）：不得为让 CI 通过而削弱/删除校验。
+5. LF/编码红线：只允许 LF + UTF-8（无 BOM）。
+
+## Troubleshooting Playbook（排查手册）
+唯一排查顺序（必须按序执行）：
+1. 先按 Gate Light 首个失败点分类：SnippetCommitMustMatch / Postflight / Evidence Truth / Healthcheck / LF-encoding。
+2. 再核对 result 与 notify 一致性（report_file / sha256_short / gate_light_exit）。
+3. 再核对 deliverables_index 与 envelope 的引用与哈希一致性。
+4. 最后核对 healthcheck 路径与内容（HTTP 200）及 LF 一致性。
+
+每类优先动作：
+- Snippet：优先刷新证据中的 snippet，必要时回滚非证据变更。
+- Postflight：优先补齐结构字段绑定（index/envelope），再重建证据。
+- Evidence Truth：优先对齐 notify/result 与 index/envelope 的哈希绑定。
+- Healthcheck：优先修复路径解析与内容匹配并重建证据。
+- LF-encoding：统一 LF 与 UTF-8（无 BOM），再重建证据。
 
 ## Automation Pack V1 Standards
 - **Two-Pass Verification**:
