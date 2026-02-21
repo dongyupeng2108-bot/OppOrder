@@ -5,11 +5,11 @@
   "pr_url": "https://github.com/dongyupeng2108-bot/OppOrder/pull/141",
   "head": "feat/contract-selfcheck-260221_005h",
   "base": "main",
-  "attempt": 1,
+  "attempt": 2,
   "autofix_max": 1,
   "status": "OPEN",
   "final_state": "FAIL",
-  "timestamp": "2026-02-21T23:33:13.618Z",
+  "timestamp": "2026-02-21T23:33:59.752Z",
   "checks_summary": {
     "total": 1,
     "success": 0,
