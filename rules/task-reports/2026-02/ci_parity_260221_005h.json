@@ -1,0 +1,17 @@
+{
+  "task_id": "260221_005h",
+  "is_shallow_repo": true,
+  "base": "bd17c730c9f7af9787a502999138423fc3b998d4",
+  "head": "c28dd6a79981c2bc4ed326153d997aefe84cd10d",
+  "merge_base": "2b7ad1a37e8a35d22f5bd953a9f1db49a0604379",
+  "scope_files": [
+    ".github/workflows/gate-light.yml",
+    "rules/LATEST.json",
+    "scripts/assemble_evidence.mjs",
+    "scripts/build_trae_report_snippet.mjs",
+    "scripts/ci_autofix_pack.mjs",
+    "scripts/error_digest.mjs"
+  ],
+  "scope_count": 6,
+  "generated_at": "2026-02-21T18:05:09.734Z"
+}
