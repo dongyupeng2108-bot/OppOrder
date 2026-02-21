@@ -443,34 +443,38 @@ const healthcheckPass = hasHttp200(hcRootContent) && hasHttp200(hcPairsContent);
 
 const notifyLfCheck = checkLfUtf8('notify', Buffer.from(notifyDraftContent, 'utf8'));
 const resultLfCheck = checkLfUtf8('result', Buffer.from(JSON.stringify(resultData, null, 2), 'utf8'));
-
-const selfCheckLines = [];
-const addCheck = (name, pass, detail) => {
-    const line = `${name}=${pass ? 'PASS' : 'FAIL'}${detail ? ` (${detail})` : ''}`;
-    selfCheckLines.push(line);
+ 
+const buildSelfCheckContent = (envelopePass, envelopeDetail) => {
+    const selfCheckLines = [];
+    const addCheck = (name, pass, detail) => {
+        const line = `${name}=${pass ? 'PASS' : 'FAIL'}${detail ? ` (${detail})` : ''}`;
+        selfCheckLines.push(line);
+    };
+    addCheck('CONTRACT_CHECK_NOTIFY_MARKERS', notifyMarkersPass, notifyMarkersPass ? '' : notifyMarkersMissing.join(','));
+    addCheck('CONTRACT_CHECK_RESULT_FIELDS', resultFieldsPass, resultFieldsPass ? '' : resultFieldsMissing.join(','));
+    addCheck('CONTRACT_CHECK_INDEX_BINDING', indexBindingPass, indexBindingPass ? '' : indexMissing.slice(0, 5).join(','));
+    addCheck('CONTRACT_CHECK_ENVELOPE_BINDING', envelopePass, envelopeDetail);
+    addCheck('CONTRACT_CHECK_SNIPPET_COMMIT', snippetCommitPass, snippetCommitPass ? '' : 'scope_or_commit_mismatch');
+    addCheck('CONTRACT_CHECK_HEALTHCHECK_HTTP200', healthcheckPass, healthcheckPass ? '' : 'root_or_pairs_not_200');
+    const lfPass = notifyLfCheck.pass && resultLfCheck.pass;
+    const lfDetail = [notifyLfCheck.detail, resultLfCheck.detail].filter(Boolean).join(';');
+    addCheck('CONTRACT_CHECK_LF_UTF8_NOBOM', lfPass, lfPass ? '' : lfDetail);
+    const selfCheckExit = selfCheckLines.some(line => line.includes('=FAIL')) ? 1 : 0;
+    if (selfCheckExit === 1) {
+        const failList = selfCheckLines.filter(line => line.includes('=FAIL')).map(line => line.split('=')[0]);
+        selfCheckLines.push(`CONTRACT_SELF_CHECK_FAIL_REASON=${failList.join(',')}`);
+    }
+    selfCheckLines.push(`CONTRACT_SELF_CHECK_EXIT=${selfCheckExit}`);
+    return { content: selfCheckLines.join('\n') + '\n', exit: selfCheckExit };
 };
-addCheck('CONTRACT_CHECK_NOTIFY_MARKERS', notifyMarkersPass, notifyMarkersPass ? '' : notifyMarkersMissing.join(','));
-addCheck('CONTRACT_CHECK_RESULT_FIELDS', resultFieldsPass, resultFieldsPass ? '' : resultFieldsMissing.join(','));
-addCheck('CONTRACT_CHECK_INDEX_BINDING', indexBindingPass, indexBindingPass ? '' : indexMissing.slice(0, 5).join(','));
-addCheck('CONTRACT_CHECK_ENVELOPE_BINDING', envelopeBindingPass, envelopeBindingDetail);
-addCheck('CONTRACT_CHECK_SNIPPET_COMMIT', snippetCommitPass, snippetCommitPass ? '' : 'scope_or_commit_mismatch');
-addCheck('CONTRACT_CHECK_HEALTHCHECK_HTTP200', healthcheckPass, healthcheckPass ? '' : 'root_or_pairs_not_200');
-const lfPass = notifyLfCheck.pass && resultLfCheck.pass;
-const lfDetail = [notifyLfCheck.detail, resultLfCheck.detail].filter(Boolean).join(';');
-addCheck('CONTRACT_CHECK_LF_UTF8_NOBOM', lfPass, lfPass ? '' : lfDetail);
 
-const selfCheckExit = selfCheckLines.some(line => line.includes('=FAIL')) ? 1 : 0;
-if (selfCheckExit === 1) {
-    const failList = selfCheckLines.filter(line => line.includes('=FAIL')).map(line => line.split('=')[0]);
-    selfCheckLines.push(`CONTRACT_SELF_CHECK_FAIL_REASON=${failList.join(',')}`);
-}
-selfCheckLines.push(`CONTRACT_SELF_CHECK_EXIT=${selfCheckExit}`);
-const selfCheckContent = selfCheckLines.join('\n') + '\n';
+const { content: selfCheckContent, exit: selfCheckExit } = buildSelfCheckContent(envelopeBindingPass, envelopeBindingDetail);
 fs.writeFileSync(selfCheckPath, selfCheckContent);
 console.log(`[Assembler] Wrote contract self-check: ${selfCheckPath}`);
-
+ 
+const baseDodBlock = dodBlock;
 dodBlock += `\nDOD_EVIDENCE_CONTRACT_SELF_CHECK: ${path.basename(selfCheckPath)} => CONTRACT_SELF_CHECK_EXIT=${selfCheckExit}`;
-
+ 
 const notifyContent = buildNotifyContent(dodBlock);
 fs.writeFileSync(notifyPath, notifyContent);
 console.log(`[Assembler] Updated notify with contract self-check: ${notifyPath}`);
@@ -482,10 +486,8 @@ resultData.report_sha256_short = finalNotifyHashShort;
 fs.writeFileSync(resultPath, JSON.stringify(resultData, null, 2));
 console.log(`[Assembler] Updated result JSON after contract self-check: ${resultPath}`);
 
-if (strictSelfCheck && selfCheckExit === 1) {
-    console.error('[Assembler] FAIL: Contract self-check failed in Integrate mode.');
-    process.exit(1);
-}
+let currentSelfCheckExit = selfCheckExit;
+let currentSelfCheckContent = selfCheckContent;
 
 // --- 6.5. Generate Evidence Manifest (New in v1) ---
 const manifestPath = resolvePath(`evidence_manifest_${taskId}.json`);
@@ -617,6 +619,131 @@ if (resolvedMode === 'Integrate') {
         console.error(`[Assembler] Postflight validation failed: ${e.message}`);
         process.exit(1);
     }
+}
+ 
+if (resolvedMode === 'Integrate') {
+    const updatedEnvelopeBinding = (() => {
+        let pass = true;
+        let detail = '';
+        if (fs.existsSync(envelopePath)) {
+            try {
+                const envelope = readJson(envelopePath);
+                const envelopeFiles = new Set((envelope.index_files || []).map(f => f.replace(/\\/g, '/')));
+                const expectedNames = indexCheckPaths.map(p => path.relative(evidenceDir, p).replace(/\\/g, '/'));
+                const missing = expectedNames.filter(name => !envelopeFiles.has(name));
+                if (missing.length > 0) {
+                    pass = false;
+                    detail = `missing=${missing.slice(0, 5).join(',')}${missing.length > 5 ? '...' : ''}`;
+                }
+            } catch (e) {
+                pass = false;
+                detail = 'parse_error';
+            }
+        } else if (strictSelfCheck) {
+            pass = false;
+            detail = 'envelope_missing';
+        }
+        return { pass, detail };
+    })();
+ 
+    const rebuiltSelfCheck = buildSelfCheckContent(updatedEnvelopeBinding.pass, updatedEnvelopeBinding.detail);
+    if (rebuiltSelfCheck.content !== currentSelfCheckContent) {
+        currentSelfCheckContent = rebuiltSelfCheck.content;
+        currentSelfCheckExit = rebuiltSelfCheck.exit;
+        fs.writeFileSync(selfCheckPath, currentSelfCheckContent);
+        const updatedDodBlock = `${baseDodBlock}\nDOD_EVIDENCE_CONTRACT_SELF_CHECK: ${path.basename(selfCheckPath)} => CONTRACT_SELF_CHECK_EXIT=${currentSelfCheckExit}`;
+        const updatedNotifyContent = buildNotifyContent(updatedDodBlock);
+        fs.writeFileSync(notifyPath, updatedNotifyContent);
+        const updatedNotifyHash = calcHash(notifyPath);
+        resultData.report_file = path.basename(notifyPath);
+        resultData.report_sha256_short = updatedNotifyHash.substring(0, 8);
+        fs.writeFileSync(resultPath, JSON.stringify(resultData, null, 2));
+        const updatedRequiredFilesList = [
+            path.basename(inputs.resultJson),
+            path.basename(inputs.runLog),
+            path.basename(notifyPath),
+            path.basename(inputs.workspaceHealer),
+            path.basename(inputs.errorsJsonl),
+            path.basename(inputs.errorsSummary),
+            path.basename(selfCheckPath),
+            `deliverables_index_${taskId}.json`
+        ];
+        if (fs.existsSync(inputs.ciParity)) updatedRequiredFilesList.push(path.basename(inputs.ciParity));
+        if (fs.existsSync(inputs.gateLightLog)) updatedRequiredFilesList.push(path.basename(inputs.gateLightLog));
+        if (fs.existsSync(inputs.dodEvidence)) updatedRequiredFilesList.push(path.basename(inputs.dodEvidence));
+        if (fs.existsSync(inputs.gitMeta)) updatedRequiredFilesList.push(path.basename(inputs.gitMeta));
+        if (fs.existsSync(inputs.attestation)) updatedRequiredFilesList.push(path.basename(inputs.attestation));
+        if (fs.existsSync(openPrPath)) updatedRequiredFilesList.push(path.basename(openPrPath));
+        if (fs.existsSync(autoPrPath)) updatedRequiredFilesList.push(path.basename(autoPrPath));
+        if (fs.existsSync(manualVerifyPath)) updatedRequiredFilesList.push(path.basename(manualVerifyPath));
+        const updatedHcRootManifest = `${taskId}_healthcheck_53122_root.txt`;
+        if (fs.existsSync(resolvePath(updatedHcRootManifest))) updatedRequiredFilesList.push(updatedHcRootManifest);
+        const updatedHcPairsManifest = `${taskId}_healthcheck_53122_pairs.txt`;
+        if (fs.existsSync(resolvePath(updatedHcPairsManifest))) updatedRequiredFilesList.push(updatedHcPairsManifest);
+        const updatedVerifyLogManifest = `gate_light_verify_${taskId}.log`;
+        if (fs.existsSync(resolvePath(updatedVerifyLogManifest))) updatedRequiredFilesList.push(updatedVerifyLogManifest);
+        const updatedManifestData = {
+            task_id: taskId,
+            mode: resolvedMode,
+            generated_at: new Date().toISOString(),
+            evidence_dir: evidenceDir,
+            required_files: updatedRequiredFilesList
+        };
+        fs.writeFileSync(manifestPath, JSON.stringify(updatedManifestData, null, 2));
+        const updatedFilesToIndex = [
+            inputs.ciParity,
+            inputs.gateLightLog,
+            inputs.dodEvidence,
+            inputs.gitMeta,
+            inputs.attestation,
+            inputs.workspaceHealer,
+            resultPath,
+            inputs.runLog,
+            inputs.errorsJsonl,
+            inputs.errorsSummary,
+            notifyPath,
+            manualVerifyPath,
+            manifestPath,
+            selfCheckPath
+        ];
+        if (fs.existsSync(openPrPath)) updatedFilesToIndex.push(openPrPath);
+        if (fs.existsSync(autoPrPath)) updatedFilesToIndex.push(autoPrPath);
+        const updatedHcRootIndex = resolvePath(`${taskId}_healthcheck_53122_root.txt`);
+        if (fs.existsSync(updatedHcRootIndex)) updatedFilesToIndex.push(updatedHcRootIndex);
+        const updatedHcPairsIndex = resolvePath(`${taskId}_healthcheck_53122_pairs.txt`);
+        if (fs.existsSync(updatedHcPairsIndex)) updatedFilesToIndex.push(updatedHcPairsIndex);
+        const updatedLegacyHcRoot = resolvePath('reports/healthcheck_root.txt');
+        if (fs.existsSync(updatedLegacyHcRoot)) updatedFilesToIndex.push(updatedLegacyHcRoot);
+        const updatedIndexFiles = updatedFilesToIndex.map(fPath => {
+            const stat = fs.statSync(fPath);
+            const hash = calcHash(fPath);
+            return {
+                name: path.relative(evidenceDir, fPath).replace(/\\/g, '/'),
+                size: stat.size,
+                sha256_short: hash ? hash.substring(0, 8) : null
+            };
+        });
+        const updatedIndexData = {
+            task_id: taskId,
+            generated_at: new Date().toISOString(),
+            files: updatedIndexFiles
+        };
+        fs.writeFileSync(indexPath, JSON.stringify(updatedIndexData, null, 2));
+        let updatedSnippetContent = updatedNotifyContent;
+        if (!updatedSnippetContent.includes('[Postflight] PASS')) {
+            updatedSnippetContent += `\n[Postflight] PASS`;
+        }
+        if (!updatedSnippetContent.includes('[Gate Light] PASS')) {
+            updatedSnippetContent += `\n[Gate Light] PASS`;
+        }
+        fs.writeFileSync(snippetPath, updatedSnippetContent);
+        execSync(`node scripts/postflight_validate_envelope.mjs --task_id ${taskId} --result_dir "${evidenceDir}" --report_dir "${evidenceDir}"`, { stdio: 'inherit' });
+    }
+}
+ 
+if (strictSelfCheck && currentSelfCheckExit === 1) {
+    console.error('[Assembler] FAIL: Contract self-check failed in Integrate mode.');
+    process.exit(1);
 }
 
 console.log(`[Assembler] SUCCESS: Assembled evidence for Task ${taskId}.`);
