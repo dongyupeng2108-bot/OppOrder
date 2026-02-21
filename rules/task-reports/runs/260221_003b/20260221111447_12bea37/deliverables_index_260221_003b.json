@@ -1,6 +1,6 @@
 {
   "task_id": "260221_003b",
-  "generated_at": "2026-02-21T04:18:43.659Z",
+  "generated_at": "2026-02-21T04:27:08.636Z",
   "files": [
     {
       "name": "ci_parity_260221_003b.json",
@@ -35,7 +35,7 @@
     {
       "name": "result_260221_003b.json",
       "size": 768,
-      "sha256_short": "8ff7a443"
+      "sha256_short": "1cfbd489"
     },
     {
       "name": "run_260221_003b.log",
@@ -45,17 +45,17 @@
     {
       "name": "errors_260221_003b.jsonl",
       "size": 223,
-      "sha256_short": "064aaac9"
+      "sha256_short": "081a70c4"
     },
     {
       "name": "errors_summary_260221_003b.txt",
       "size": 147,
-      "sha256_short": "92b1cfe6"
+      "sha256_short": "6b7b1431"
     },
     {
       "name": "notify_260221_003b.txt",
       "size": 8978,
-      "sha256_short": "c4181f95"
+      "sha256_short": "0c06aa26"
     },
     {
       "name": "manual_verification_260221_003b.json",
@@ -65,7 +65,7 @@
     {
       "name": "evidence_manifest_260221_003b.json",
       "size": 854,
-      "sha256_short": "7a76be49"
+      "sha256_short": "ef044b82"
     },
     {
       "name": "open_pr_guard_260221_003b.json",
