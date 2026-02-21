@@ -267,6 +267,7 @@ jobs:
           const healthcheckPairs = `${dir}/${taskId}_healthcheck_53122_pairs.txt`;
           const notifyContent = [
             '=== HEADER ===',
+            `Header: TraeTask_${taskId}`,
             `task_id: ${taskId}`,
             'mode: CI',
             `commit: ${sha}`,
