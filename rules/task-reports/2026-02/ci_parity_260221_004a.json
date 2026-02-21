@@ -1,0 +1,16 @@
+{
+  "task_id": "260221_004a",
+  "is_shallow_repo": true,
+  "base": "fc027430dde7e3364b2455cc4077789d1c052923",
+  "head": "cfa15964152efe23b766a07966149278166d89a8",
+  "merge_base": "fc027430dde7e3364b2455cc4077789d1c052923",
+  "scope_files": [
+    "rules/LATEST.json",
+    "rules/rules/PROJECT_RULES.md",
+    "rules/rules/WORKFLOW.md",
+    "rules/task-reports/2026-02/generate_evidence_260221_004.mjs",
+    "rules/task-reports/governance-backlog/GOV_20260221_260221_004_EVIDENCE_CONTRACT_PLAYBOOK.md"
+  ],
+  "scope_count": 5,
+  "generated_at": "2026-02-21T10:24:43.380Z"
+}

@@ -1,0 +1,21 @@
+{
+  "task_id": "260221_004a",
+  "branch": "feat/docs-deliver-002-goals-260221_004",
+  "commit": "cfa15964152efe23b766a07966149278166d89a8",
+  "base": "fc027430dde7e3364b2455cc4077789d1c052923",
+  "mergeBase": "fc027430dde7e3364b2455cc4077789d1c052923",
+  "generatedAt": "2026-02-21T10:23:42.031Z",
+  "status": "DONE",
+  "summary": "Automation Pack V1 Validation for Task 260221_004a",
+  "report_file": "notify_260221_004a.txt",
+  "updatedAt": "2026-02-21T10:23:42.031Z",
+  "report_sha256_short": "45a8f9ac",
+  "mode": "Integrate",
+  "dod_evidence": {
+    "gate_light_exit": 0,
+    "healthcheck": [
+      "rules/task-reports/2026-02/260221_004a_healthcheck_53122_root.txt",
+      "rules/task-reports/2026-02/260221_004a_healthcheck_53122_pairs.txt"
+    ]
+  }
+}

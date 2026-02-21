@@ -1,0 +1,6 @@
+Task: 260221_004a (Docs-only: Evidence Contract, Troubleshooting Playbook, Fix-Front)
+Branch: feat/docs-deliver-002-goals-260221_004
+HEAD: cfa15964152efe23b766a07966149278166d89a8
+Base(origin/main): fc027430dde7e3364b2455cc4077789d1c052923
+MergeBase: fc027430dde7e3364b2455cc4077789d1c052923
+GeneratedAt: 2026-02-21T10:23:42.031Z
