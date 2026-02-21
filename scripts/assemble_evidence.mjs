@@ -549,6 +549,7 @@ const filesToIndex = [
 ];
 
 if (fs.existsSync(openPrPath)) filesToIndex.push(openPrPath);
+if (fs.existsSync(autoPrPath)) filesToIndex.push(autoPrPath);
 
 // Add healthcheck files if they exist
 const hcRootIndex = resolvePath(`${taskId}_healthcheck_53122_root.txt`);
