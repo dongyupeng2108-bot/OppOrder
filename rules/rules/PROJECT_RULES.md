@@ -107,40 +107,7 @@
 9. Source of Truth（事实来源）：工程状态以 GitHub Actions CI + 锁文件为准；文档必须明确 writer/verifier 边界与例外处理口径。 
 10. Change Containment（变更收敛）：治理改动优先“新增自检/摘要/工具入口”，避免在多个位置同时修改规则与实现导致漂移。 
 
-## Evidence Contract（证据契约）
-
-### A) Contract Table（契约表）
-| 产物/文件模式 | 必含字段或 marker | 生成来源 | 门禁校验点 | 常见报错与修复要点 |
-| --- | --- | --- | --- | --- |
-| notify_<task_id>.txt | 必含 DoD marker、DOD_EVIDENCE_SITE_HEALTH_ROOT_53122、DOD_EVIDENCE_SITE_HEALTH_PAIRS_53122、GATE_LIGHT_EXIT=0、任务 Header 与输入一致（避免 Header mismatch） | assemble_evidence / run_task（集成） | Gate Light（闸门灯）DoD Excerpts、GATE_LIGHT_EXIT、Header 一致性 | Header mismatch → 校正任务头并重建证据；缺 marker → 补证据生成并重跑集成 |
-| result_<task_id>.json | task_id、status、summary、report_file、report_sha256_short、gate_light_exit 一致性 | assemble_evidence / run_task（集成） | Evidence Truth（证据真相）与结果一致性 | report_file/sha256_short 不一致 → 重建 notify 与 result 并再生成 index/envelope |
-| deliverables_index_<task_id>.json / deliverables_index*.json | 引用文件名 + sha256_short 一致 | assemble_evidence（集成） | Evidence Truth / 哈希绑定核验 | index 中哈希与实际文件不符 → 全量重建证据与 index/envelope |
-| envelope.json | manifest + 哈希绑定一致 | assemble_evidence（集成） | Postflight / Evidence Truth | envelope 与 index 不一致 → 重新生成 index/envelope |
-| trae_report_snippet_<task_id>.txt | SnippetCommitMustMatch（提交一致性）口径；允许仅证据/文档/LATEST 变更作为例外边界（不得扩大） | build_trae_report_snippet / assemble_evidence | Workflow Hardening | Snippet commit 不一致 → 若非证据/文档/LATEST 变更，必须回滚或重建 |
-| healthcheck_root_53122_<task_id>.txt | DOD_EVIDENCE_SITE_HEALTH_ROOT_53122，HTTP 200 | healthcheck 生成脚本（集成） | Healthcheck Evidence（路径 + 内容） | 路径解析错误或内容不匹配 → 修路径与内容并重建证据 |
-| healthcheck_pairs_53122_<task_id>.txt | DOD_EVIDENCE_SITE_HEALTH_PAIRS_53122，HTTP 200 | healthcheck 生成脚本（集成） | Healthcheck Evidence（路径 + 内容） | pairs 内容缺失或格式错误 → 修内容并重建证据 |
-| 通用约束（全部证据文件） | LF + UTF-8（无 BOM） | 证据生成脚本 | 跨平台哈希一致性 | UTF-16/BOM 或 CRLF → 统一编码与换行后重建 |
-
-### B) Interpretation Rules（口径规则）
-1. Evidence = Commit Snapshot（证据=提交快照）：代码或证据一动，证据必须同步重建并提交。 
-2. Atomic Evidence Rule（证据原子性）：任一 evidence 变动必须再生成 deliverables_index/envelope。 
-3. SnippetCommitMustMatch 例外边界：仅允许证据/文档/LATEST 变动触发“证据更新”例外，不得扩大到业务代码。 
-4. No Bypass（禁止绕过）：不得为了让 CI 过而削弱/删除校验或绕过门禁。 
-5. LF/编码红线：禁止 UTF-16/BOM，必须使用 LF + UTF-8（无 BOM）。 
-
-## Troubleshooting Playbook（排查手册）
-唯一排查顺序（必须按序执行）：
-1. 先按 Gate Light 首个失败点分类：SnippetCommitMustMatch / Postflight / Evidence Truth / Healthcheck / LF-encoding。 
-2. 再核对 result vs notify 一致性（report_file / sha256_short / gate_light_exit 等）。 
-3. 再核对 deliverables_index / envelope 的引用与哈希一致性。 
-4. 最后核对 healthcheck 路径与内容（HTTP 200）与 LF 一致性。 
-
-优先修复动作：
-- Snippet 类：优先刷新证据与 snippet，必要时回滚非证据变更。 
-- Postflight 类：优先补结构字段/绑定（index/envelope），再重建证据。 
-- Evidence Truth 类：优先对齐 notify/result 与 index/envelope 的哈希绑定。 
-- Healthcheck 类：优先修路径解析与内容匹配并重建证据。 
-- LF-encoding 类：统一 LF 与 UTF-8（无 BOM），再重建证据。 
+Evidence Contract（证据契约）表与排查手册将在后续 Task#2 落盘。
 
 ## Automation Pack V1 Standards
 - **Two-Pass Verification**:
