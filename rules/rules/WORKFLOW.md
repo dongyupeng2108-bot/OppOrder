@@ -103,6 +103,8 @@ Before starting any new task, the Agent MUST perform these checks:
 
 ### Gate Light Evidence Standards (CI Parity)
 
+task_id（任务标识）允许格式：`YYMMDD_NNN` + 可选 1 位字母后缀（用于 rerun/patch（重跑/补丁））。Gate Light（门禁）/CI（持续集成）必须解析完整 task_id（含后缀），作为 PR（拉取请求）任务锁定（task lock）与证据路径定位依据。
+
 *   **Automation Pack V1 Workflow (Standard for M4+)**:
     The `scripts/run_task.ps1` pipeline automates the Two-Phase Rhythm.
 

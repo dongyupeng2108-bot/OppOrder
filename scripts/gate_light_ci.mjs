@@ -40,22 +40,25 @@ if (fs.existsSync(LATEST_JSON_PATH)) {
 
 let targetTaskId = null;
 let detectionSource = null;
+let prTaskIdDetected = null;
 
 // A. Explicit Argument (Highest Priority)
 if (argTaskId) {
     targetTaskId = argTaskId;
     detectionSource = 'ARGUMENT';
+    prTaskIdDetected = argTaskId;
     console.log(`[Gate Light] Target locked via argument: ${targetTaskId}`);
 } 
 // B. PR / Branch Auto-Detection (If no arg)
 else {
     // 1. Try Branch Name
     const branchName = process.env.GITHUB_HEAD_REF || process.env.GITHUB_REF_NAME || '';
-    const branchMatch = branchName.match(/(\d{6}_\d{3})/);
+    const branchMatch = branchName.match(/(\d{6}_\d{3}[a-z]?)/i);
     
     if (branchMatch) {
         targetTaskId = branchMatch[1];
         detectionSource = 'BRANCH_NAME';
+        prTaskIdDetected = branchMatch[1];
         console.log(`[Gate Light] Detected PR Task ID from branch: ${targetTaskId}`);
     } 
     // 2. Try Git Diff (Deep Scan)
@@ -106,11 +109,11 @@ else {
             
             const candidates = new Set();
             const patterns = [
-                /rules\/task-reports\/.*\/(\d{6}_\d{3})_/, // Evidence files
-                /rules\/task-reports\/envelopes\/(\d{6}_\d{3})\.envelope\.json/, // Envelopes
-                /trae_report_snippet_(\d{6}_\d{3})\.txt/,
-                /notify_(\d{6}_\d{3})\.txt/,
-                /result_(\d{6}_\d{3})\.json/
+                /rules\/task-reports\/.*\/(\d{6}_\d{3}[A-Za-z]?)_/, // Evidence files
+                /rules\/task-reports\/envelopes\/(\d{6}_\d{3}[A-Za-z]?)\.envelope\.json/, // Envelopes
+                /trae_report_snippet_(\d{6}_\d{3}[A-Za-z]?)\.txt/,
+                /notify_(\d{6}_\d{3}[A-Za-z]?)\.txt/,
+                /result_(\d{6}_\d{3}[A-Za-z]?)\.json/
             ];
 
             files.forEach(f => {
@@ -127,6 +130,7 @@ else {
             if (candidates.size === 1) {
                 targetTaskId = Array.from(candidates)[0];
                 detectionSource = 'GIT_DIFF';
+                prTaskIdDetected = targetTaskId;
                 console.log(`[Gate Light] Detected unique PR Task ID from diff: ${targetTaskId}`);
             } else if (candidates.size > 1) {
                 console.error('[Gate Light] FAILED: Multiple task_id candidates found in PR diff.');
@@ -159,6 +163,10 @@ if (targetTaskId && latestJson && latestJson.task_id && latestJson.task_id.start
 }
 
 const task_id = targetTaskId;
+const latestTaskId = latestJson && latestJson.task_id ? latestJson.task_id : 'MISSING';
+console.log(`PR_TASK_ID_DETECTED=${prTaskIdDetected || 'NONE'}`);
+console.log(`TARGET_TASK_ID=${task_id || 'NONE'}`);
+console.log(`LATEST_TASK_ID=${latestTaskId}`);
 
 // --- 1. Consistency Hard Rule (LATEST Consistency) ---
 // If we locked onto a specific task (Arg or PR) AND we are in a PR context (or just enforcing consistency),
@@ -173,6 +181,7 @@ if (detectionSource === 'ARGUMENT' || detectionSource === 'BRANCH_NAME' || detec
     }
     if (latestJson.task_id !== task_id) {
          console.error(`[Gate Light] FAILED: LATEST.json Out of Sync.`);
+         console.error('FAIL_REASON=LATEST_OUT_OF_SYNC');
          console.error(`  LATEST_OUT_OF_SYNC=1`);
          console.error(`  LATEST_TASK_ID: ${latestJson.task_id}`);
          console.error(`  PR_TASK_ID: ${task_id}`);

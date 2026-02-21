@@ -326,6 +326,7 @@
   - All `DOD_EVIDENCE_` lines must contain `=>` followed by the excerpt.
 
 ## Gate Light Hardening Rules (Task 260209_009)
+task_id（任务标识）允许格式：`YYMMDD_NNN` + 可选 1 位字母后缀（用于 rerun/patch（重跑/补丁））。Gate Light（门禁）/CI（持续集成）必须解析完整 task_id（含后缀），作为 PR（拉取请求）任务锁定（task lock）与证据路径定位依据。
 ### CI 校验对象锁定与 LATEST 一致性 (PR Task Lock + LATEST Consistency)
 *   **Single Source of Truth**: 以 CI Checks (GitHub Actions) 结果为准。本地 Pass 仅作为参考，必须通过 CI 门禁才能合并。
 *   **PR Task Lock**: PR 门禁必须校验“本 PR 的 `task_id`”（从分支名或 PR diff 解析），不得仅依赖 `rules/LATEST.json`。
