@@ -107,7 +107,40 @@
 9. Source of Truth（事实来源）：工程状态以 GitHub Actions CI + 锁文件为准；文档必须明确 writer/verifier 边界与例外处理口径。 
 10. Change Containment（变更收敛）：治理改动优先“新增自检/摘要/工具入口”，避免在多个位置同时修改规则与实现导致漂移。 
 
-Evidence Contract（证据契约）表与排查手册将在后续 Task#2 落盘。
+## Evidence Contract（证据契约）
+
+### A) Contract Table（契约表）
+| 文件模式 | 必含字段或 marker | 生成来源 | 门禁校验点 | 常见报错与修复要点 |
+| --- | --- | --- | --- | --- |
+| notify_<task_id>.txt | DoD marker、healthcheck marker、GATE_LIGHT_EXIT=0、Header 一致性 | assemble_evidence.mjs | Evidence Truth & Consistency、DoD Evidence Excerpts | report_file/sha256 绑定不一致 → 重新 assemble |
+| result_<task_id>.json | gate_light_exit、report_file、report_sha256_short | assemble_evidence.mjs | Evidence Truth & Consistency | result/notify 字段不一致 → 重新 assemble |
+| deliverables_index*.json | 证据条目与 sha256 绑定 | assemble_evidence.mjs | Postflight（index/envelope 绑定） | POSTFLIGHT_REPORT_BINDING_MISMATCH → 重建 index/envelope |
+| envelope.json | 证据条目与 sha256 绑定 | postflight_validate_envelope.mjs | Postflight（index/envelope 绑定） | POSTFLIGHT_REPORT_BINDING_MISMATCH → 重建 index/envelope |
+| trae_report_snippet_<task_id>.txt | SnippetCommitMustMatch；例外边界仅允许证据/文档/LATEST | assemble_evidence.mjs | SnippetCommitMustMatch | SNIPPET_COMMIT_MISMATCH → 回滚非证据变更 |
+| healthcheck_root_53122_<task_id>.txt | HTTP 200 + DoD marker | run_task.ps1（curl） | Healthcheck Evidence + DoD marker | HEALTHCHECK_MARKER_MISSING → 重跑 healthcheck |
+| healthcheck_pairs_53122_<task_id>.txt | HTTP 200 + DoD marker | run_task.ps1（curl） | Healthcheck Evidence + DoD marker | HEALTHCHECK_MARKER_MISSING → 重跑 healthcheck |
+| 通用约束 | LF + UTF-8（无 BOM） | 各生成器统一约束 | LF/编码红线校验 | UTF-16/BOM 或 CRLF → 统一 LF/UTF-8 |
+
+### B) Interpretation Rules（口径规则）
+1. Evidence = Commit Snapshot（证据=提交快照）：代码或证据一变动，必须同步重建证据并提交。
+2. Atomic Evidence Rule（证据原子性）：任一证据变动必须重建 deliverables_index/envelope。
+3. SnippetCommitMustMatch 例外边界：仅允许证据/文档/LATEST 变动触发“证据更新”例外，不得扩展到业务代码。
+4. No Bypass（禁止绕过）：不得为让 CI 通过而削弱/删除校验。
+5. LF/编码红线：只允许 LF + UTF-8（无 BOM）。
+
+## Troubleshooting Playbook（排查手册）
+唯一排查顺序（必须按序执行）：
+1. 先按 Gate Light 首个失败点分类：SnippetCommitMustMatch / Postflight / Evidence Truth / Healthcheck / LF-encoding。
+2. 再核对 result 与 notify 一致性（report_file / sha256_short / gate_light_exit）。
+3. 再核对 deliverables_index 与 envelope 的引用与哈希一致性。
+4. 最后核对 healthcheck 路径与内容（HTTP 200）及 LF 一致性。
+
+每类优先动作：
+- Snippet：优先刷新证据中的 snippet，必要时回滚非证据变更。
+- Postflight：优先补齐结构字段绑定（index/envelope），再重建证据。
+- Evidence Truth：优先对齐 notify/result 与 index/envelope 的哈希绑定。
+- Healthcheck：优先修复路径解析与内容匹配并重建证据。
+- LF-encoding：统一 LF 与 UTF-8（无 BOM），再重建证据。
 
 ## Automation Pack V1 Standards
 - **Two-Pass Verification**:

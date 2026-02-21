@@ -1,0 +1,28 @@
+{
+    "mode":  "EnforceClean",
+    "branch":  "feat/docs-deliver-002-goals-260221_004",
+    "cleaned_paths":  [
+                          "rules/task-reports",
+                          "rules/reports",
+                          "data/opps_ledger",
+                          "rules/task-reports/locks",
+                          "rules/task-reports/runs"
+                      ],
+    "after":  {
+                  "untracked_count":  0,
+                  "tracked_changed_count":  0,
+                  "sample_paths":  {
+
+                                   }
+              },
+    "head_commit":  "cfa15964152efe23b766a07966149278166d89a8",
+    "before":  {
+                   "untracked_count":  1,
+                   "tracked_changed_count":  0,
+                   "sample_paths":  "rules/task-reports/governance-backlog/GOV_20260221_260221_004a_EVIDENCE_CONTRACT_PLAYBOOK.md"
+               },
+    "repo_root":  "E:/OppRadar",
+    "reason":  null,
+    "result":  "PASS"
+}
+

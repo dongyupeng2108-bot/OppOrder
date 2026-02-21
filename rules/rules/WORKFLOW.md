@@ -96,6 +96,11 @@ Before starting any new task, the Agent MUST perform these checks:
 9. Source of Truth（事实来源）：工程状态以 GitHub Actions CI + 锁文件为准；文档必须明确 writer/verifier 边界与例外处理口径。 
 10. Change Containment（变更收敛）：治理改动优先“新增自检/摘要/工具入口”，避免在多个位置同时修改规则与实现导致漂移。 
 
+### Fix-Front 排查顺序（Front-of-Queue）
+1. 只修当前最前失败点；一次修复=一次最小提交；禁止并行混修。
+2. 修复后必须本地重建相关证据并触发 CI 复验。
+3. 适用于 Integrate（集成）修复回环场景。
+
 ### Gate Light Evidence Standards (CI Parity)
 
 task_id（任务标识）允许格式：`YYMMDD_NNN` + 可选 1 位字母后缀（用于 rerun/patch（重跑/补丁））。Gate Light（门禁）/CI（持续集成）必须解析完整 task_id（含后缀），作为 PR（拉取请求）任务锁定（task lock）与证据路径定位依据。
