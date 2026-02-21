@@ -1,0 +1,11 @@
+﻿{
+    "mode":  "Integrate",
+    "branch":  "feat/workflow-upgrade-taskid-suffix-260221_003b",
+    "write_allowed":  true,
+    "input_hash_short":  "2ebc1197",
+    "header":  "TraeTask_260221_003b",
+    "commit":  "12bea37",
+    "task_id":  "260221_003b",
+    "header_detected":  true,
+    "timestamp":  "2026-02-21 11:14:32 UTC"
+}

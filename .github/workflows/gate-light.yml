@@ -25,7 +25,7 @@ jobs:
           if [ -z "$TASK_REF" ]; then
             TASK_REF="${GITHUB_REF_NAME}"
           fi
-          PR_TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}' | head -n 1 || true)
+          PR_TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}[A-Za-z]?' | head -n 1 || true)
           echo "GITHUB_HEAD_REF=${GITHUB_HEAD_REF}"
           echo "GITHUB_REF_NAME=${GITHUB_REF_NAME}"
           echo "PR_TASK_ID=${PR_TASK_ID}"
@@ -65,10 +65,27 @@ jobs:
           if [ -z "$TASK_REF" ]; then
             TASK_REF="${GITHUB_REF_NAME}"
           fi
-          PR_TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}' | head -n 1 || true)
+          PR_TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}[A-Za-z]?' | head -n 1 || true)
           YEAR="20${PR_TASK_ID:0:2}"
           MONTH="${PR_TASK_ID:2:2}"
           EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
+          echo "EVIDENCE_DIR=${EVIDENCE_DIR}"
+          echo "PR_TASK_ID=${PR_TASK_ID}"
+          echo "EVIDENCE_DIR=${EVIDENCE_DIR}"
+          echo "TASK_ID=${TASK_ID}"
+          echo "EVIDENCE_DIR=${EVIDENCE_DIR}"
+          echo "TASK_ID=${TASK_ID}"
+          echo "EVIDENCE_DIR=${EVIDENCE_DIR}"
+          echo "TASK_ID=${TASK_ID}"
+          echo "EVIDENCE_DIR=${EVIDENCE_DIR}"
+          echo "TASK_ID=${TASK_ID}"
+          echo "EVIDENCE_DIR=${EVIDENCE_DIR}"
+          echo "TASK_ID=${TASK_ID}"
+          echo "EVIDENCE_DIR=${EVIDENCE_DIR}"
+          echo "TASK_ID=${TASK_ID}"
+          echo "EVIDENCE_DIR=${EVIDENCE_DIR}"
+          echo "PR_TASK_ID=${PR_TASK_ID}"
+          echo "EVIDENCE_DIR=${EVIDENCE_DIR}"
           EVIDENCE_FILE="${EVIDENCE_DIR}/workspace_healer_${PR_TASK_ID}.json"
           if [ -n "$WORKSPACE_HEALER_TMP" ] && [ -f "$WORKSPACE_HEALER_TMP" ]; then
             cat "$WORKSPACE_HEALER_TMP" > "$EVIDENCE_FILE"
@@ -80,10 +97,12 @@ jobs:
           if [ -z "$TASK_REF" ]; then
             TASK_REF="${GITHUB_REF_NAME}"
           fi
-          PR_TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}' | head -n 1 || true)
+          PR_TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}[A-Za-z]?' | head -n 1 || true)
           YEAR="20${PR_TASK_ID:0:2}"
           MONTH="${PR_TASK_ID:2:2}"
           EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
+          echo "PR_TASK_ID=${PR_TASK_ID}"
+          echo "EVIDENCE_DIR=${EVIDENCE_DIR}"
           EVIDENCE_FILE="${EVIDENCE_DIR}/workspace_healer_${PR_TASK_ID}.json"
           ls -la "$EVIDENCE_DIR"
           if [ ! -f "$EVIDENCE_FILE" ]; then
@@ -94,19 +113,23 @@ jobs:
       - name: Generate CI Parity Evidence
         run: |
           TASK_REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
-          TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}' | head -n 1 || true)
+          TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}[A-Za-z]?' | head -n 1 || true)
           YEAR="20${TASK_ID:0:2}"
           MONTH="${TASK_ID:2:2}"
           EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
+          echo "TASK_ID=${TASK_ID}"
+          echo "EVIDENCE_DIR=${EVIDENCE_DIR}"
           node scripts/ci_parity_probe.mjs --task_id "$TASK_ID" --result_dir "$EVIDENCE_DIR"
 
       - name: Verify CI Parity Evidence
         run: |
           TASK_REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
-          TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}' | head -n 1 || true)
+          TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}[A-Za-z]?' | head -n 1 || true)
           YEAR="20${TASK_ID:0:2}"
           MONTH="${TASK_ID:2:2}"
           EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
+          echo "TASK_ID=${TASK_ID}"
+          echo "EVIDENCE_DIR=${EVIDENCE_DIR}"
           EVIDENCE_FILE="${EVIDENCE_DIR}/ci_parity_${TASK_ID}.json"
           ls -la "$EVIDENCE_DIR"
           if [ ! -f "$EVIDENCE_FILE" ]; then
@@ -117,20 +140,24 @@ jobs:
       - name: Generate Error Digest Evidence
         run: |
           TASK_REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
-          TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}' | head -n 1 || true)
+          TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}[A-Za-z]?' | head -n 1 || true)
           YEAR="20${TASK_ID:0:2}"
           MONTH="${TASK_ID:2:2}"
           EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
+          echo "TASK_ID=${TASK_ID}"
+          echo "EVIDENCE_DIR=${EVIDENCE_DIR}"
           COMMIT=$(git rev-parse HEAD)
           node scripts/error_digest.mjs --task_id "$TASK_ID" --mode CI --commit "$COMMIT" --out_dir "$EVIDENCE_DIR"
 
       - name: Verify Error Digest Evidence
         run: |
           TASK_REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
-          TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}' | head -n 1 || true)
+          TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}[A-Za-z]?' | head -n 1 || true)
           YEAR="20${TASK_ID:0:2}"
           MONTH="${TASK_ID:2:2}"
           EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
+          echo "TASK_ID=${TASK_ID}"
+          echo "EVIDENCE_DIR=${EVIDENCE_DIR}"
           EVIDENCE_FILE="${EVIDENCE_DIR}/errors_${TASK_ID}.jsonl"
           ls -la "$EVIDENCE_DIR"
           if [ ! -f "$EVIDENCE_FILE" ]; then
@@ -141,10 +168,12 @@ jobs:
       - name: Generate Healthcheck Evidence
         run: |
           TASK_REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
-          TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}' | head -n 1 || true)
+          TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}[A-Za-z]?' | head -n 1 || true)
           YEAR="20${TASK_ID:0:2}"
           MONTH="${TASK_ID:2:2}"
           EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
+          echo "TASK_ID=${TASK_ID}"
+          echo "EVIDENCE_DIR=${EVIDENCE_DIR}"
           ROOT_FILE="${EVIDENCE_DIR}/${TASK_ID}_healthcheck_53122_root.txt"
           PAIRS_FILE="${EVIDENCE_DIR}/${TASK_ID}_healthcheck_53122_pairs.txt"
           node scripts/mock_server.mjs > /tmp/mock_server_53122.log 2>&1 &
@@ -173,10 +202,12 @@ jobs:
       - name: Verify Healthcheck Evidence
         run: |
           TASK_REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
-          TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}' | head -n 1 || true)
+          TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}[A-Za-z]?' | head -n 1 || true)
           YEAR="20${TASK_ID:0:2}"
           MONTH="${TASK_ID:2:2}"
           EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
+          echo "TASK_ID=${TASK_ID}"
+          echo "EVIDENCE_DIR=${EVIDENCE_DIR}"
           ROOT_FILE="${EVIDENCE_DIR}/${TASK_ID}_healthcheck_53122_root.txt"
           PAIRS_FILE="${EVIDENCE_DIR}/${TASK_ID}_healthcheck_53122_pairs.txt"
           ls -la "$EVIDENCE_DIR"
@@ -195,7 +226,7 @@ jobs:
           if [ -z "$TASK_REF" ]; then
             TASK_REF="${GITHUB_REF_NAME}"
           fi
-          PR_TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}' | head -n 1 || true)
+          PR_TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}[A-Za-z]?' | head -n 1 || true)
           if [ -z "$PR_TASK_ID" ]; then
             echo "No task_id detected."
             exit 0
@@ -203,6 +234,8 @@ jobs:
           YEAR="20${PR_TASK_ID:0:2}"
           MONTH="${PR_TASK_ID:2:2}"
           EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
+          echo "PR_TASK_ID=${PR_TASK_ID}"
+          echo "EVIDENCE_DIR=${EVIDENCE_DIR}"
           mkdir -p "$EVIDENCE_DIR"
           if [ -f "$EVIDENCE_DIR/notify_${PR_TASK_ID}.txt" ] && [ -f "$EVIDENCE_DIR/result_${PR_TASK_ID}.json" ]; then
             echo "Notify/Result already exist. Skip CI placeholder generation."
