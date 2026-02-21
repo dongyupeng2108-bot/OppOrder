@@ -199,6 +199,19 @@ jobs:
           curl --retry 5 --retry-delay 1 --retry-connrefused -s -i http://localhost:53122/ --output "$ROOT_FILE"
           curl --retry 5 --retry-delay 1 --retry-connrefused -s -i http://localhost:53122/pairs --output "$PAIRS_FILE"
 
+      - name: Generate Gate Light Preview Evidence
+        run: |
+          TASK_REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
+          TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}[A-Za-z]?' | head -n 1 || true)
+          YEAR="20${TASK_ID:0:2}"
+          MONTH="${TASK_ID:2:2}"
+          EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
+          PREVIEW_LOG="${EVIDENCE_DIR}/gate_light_preview_${TASK_ID}.log"
+          echo "TASK_ID=${TASK_ID}"
+          echo "EVIDENCE_DIR=${EVIDENCE_DIR}"
+          GENERATE_PREVIEW=1 node scripts/gate_light_ci.mjs --task_id "$TASK_ID" --result_dir "$EVIDENCE_DIR" > "$PREVIEW_LOG"
+          node scripts/extract_gate_light_preview.mjs --task_id="$TASK_ID" --log="$PREVIEW_LOG"
+
       - name: Verify Healthcheck Evidence
         run: |
           TASK_REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
