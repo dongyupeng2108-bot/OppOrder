@@ -71,6 +71,15 @@ $Timing = [ordered]@{
 }
 $TimingStartedAt = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
 $TotalWatch = [System.Diagnostics.Stopwatch]::StartNew()
+$Script:RunChainStartedAt = Get-Date
+$Script:RunChainStartedAtIso = $Script:RunChainStartedAt.ToString("o")
+$Script:RunChainWatch = [System.Diagnostics.Stopwatch]::StartNew()
+$Script:RunChainPath = ""
+$Script:CiWatchMs = 0
+$Script:AutoFixCount = 0
+$Script:DidAutoPr = $false
+$Script:RunChainErrorClass = ""
+$Script:RunChainFailReason = ""
 
 function Measure-Step {
     param([string]$Key, [scriptblock]$Action)
@@ -138,6 +147,13 @@ function Append-JsonlUtf8 {
     if (-not (Test-Path $Dir)) { New-Item -ItemType Directory -Path $Dir -Force | Out-Null }
     $Utf8 = New-Object System.Text.UTF8Encoding($false)
     [System.IO.File]::AppendAllText($Path, $Line + "`n", $Utf8)
+}
+
+function Write-RunChainEntry {
+    param([hashtable]$Record)
+    if (-not $Script:RunChainPath) { return }
+    $Line = $Record | ConvertTo-Json -Compress
+    Append-JsonlUtf8 -Path $Script:RunChainPath -Line $Line
 }
 
 function Read-JsonSafe {
@@ -239,10 +255,12 @@ function Invoke-EscalationReport {
         "--arg_task_id", "$TaskId",
         "--branch_task_id", "$BranchTaskId",
         "--latest_task_id", "$LatestTaskId",
-        "--pr_task_id_detected", "$PrTaskIdDetected",
         "--log_path", "$LogPath",
         "--fix_actions", "$FixJson"
     )
+    if (-not [string]::IsNullOrWhiteSpace($PrTaskIdDetected)) {
+        $Args += @("--pr_task_id_detected", "$PrTaskIdDetected")
+    }
     $ReportPath = & node @Args
     return $ReportPath
 }
@@ -309,6 +327,23 @@ if ($GenerateScript) {
 }
 Write-Host "Evidence Dir: $EvidenceDir" -ForegroundColor Yellow
 $EvidenceDir = $EvidenceDir.Trim()
+$Script:RunChainPath = Join-Path $EvidenceDir "run_chain_$TaskId.jsonl"
+$RunChainStart = @{
+    task_id = $TaskId
+    mode = $Mode
+    branch = $BranchName
+    started_at = $Script:RunChainStartedAtIso
+    finished_at = ""
+    duration_ms = $null
+    ci_watch_ms = $null
+    error_class = ""
+    fail_reason = ""
+    did_autofix = $false
+    autofix_count = 0
+    did_autopr = $false
+    pr_number = ""
+}
+Write-RunChainEntry -Record $RunChainStart
 
 function PreassembleFailfast {
     param($EvidenceDir, $TaskId, $Mode, $GenerateScript)
@@ -656,6 +691,7 @@ if ($Mode -eq "Integrate" -and $AutoPR) {
     
     $WatchScript = "$RepoRoot\scripts\ci_watch_pr.mjs"
     $FixScript = "$RepoRoot\scripts\ci_autofix_pack.mjs"
+    $Script:DidAutoPr = $true
     
     Measure-Step -Key "ci_watch" -Action {
         $CurrentFixCount = 0
@@ -671,7 +707,10 @@ if ($Mode -eq "Integrate" -and $AutoPR) {
             
             Write-Host ">>> [AutoPR] Running CI Watch..." -ForegroundColor Cyan
             $WatchArgs = @("$WatchScript", "--task_id", "$TaskId", "--attempt", "$CurrentAttempt", "--max_attempts", "$($AutoFixMax + 1)", "--result_dir", "$EvidenceDir")
+            $WatchTimer = [System.Diagnostics.Stopwatch]::StartNew()
             $WatchProcess = Start-Process -FilePath "node" -ArgumentList $WatchArgs -NoNewWindow -PassThru -Wait
+            $WatchTimer.Stop()
+            $Script:CiWatchMs += [int]$WatchTimer.ElapsedMilliseconds
             $ExitCode = $WatchProcess.ExitCode
             
             if ($ExitCode -eq 0) {
@@ -707,6 +746,7 @@ if ($Mode -eq "Integrate" -and $AutoPR) {
                 if ($CurrentFixCount -lt $AutoFixMax) {
                     $CurrentFixCount++
                     $GlobalFixCount++
+                    $Script:AutoFixCount++
                     if (-not $FixCountByClass.ContainsKey($ErrorClass)) { $FixCountByClass[$ErrorClass] = 0 }
                     $FixCountByClass[$ErrorClass]++
                     $Script:FixActions += "AutoFix pack for $ErrorClass"
@@ -846,6 +886,8 @@ Write-Host ">>> [RunTask] SUCCESS: Task $TaskId ($Mode) Completed." -ForegroundC
         $FailReason = $LoopReason
         $TierInfo = @{ tier = "NON_SELF_HEALABLE"; recommended_action = "ESCALATE" }
     }
+    $Script:RunChainErrorClass = $ErrorClass
+    $Script:RunChainFailReason = $FailReason
 
     if ($TierInfo.tier -eq "NON_SELF_HEALABLE" -or $LoopTriggered) {
         $PrTaskIdDetected = if ($AutoPrInfo.pr_task_id_detected) { $AutoPrInfo.pr_task_id_detected } else { "" }
@@ -855,6 +897,33 @@ Write-Host ">>> [RunTask] SUCCESS: Task $TaskId ($Mode) Completed." -ForegroundC
 
     exit 1
 } finally {
+    try {
+        if ($Script:RunChainWatch) { $Script:RunChainWatch.Stop() }
+        $AutoPrPath = "$EvidenceDir\auto_pr_$TaskId.json"
+        $AutoPrJson = Read-JsonSafe -Path $AutoPrPath
+        $PrNumber = ""
+        if ($AutoPrJson -and $AutoPrJson.PSObject.Properties.Name -contains "number" -and $AutoPrJson.number) {
+            $PrNumber = $AutoPrJson.number.ToString()
+        }
+        $DidAutoFix = $false
+        if ($Script:AutoFixCount -gt 0) { $DidAutoFix = $true }
+        $RunChainEnd = @{
+            task_id = $TaskId
+            mode = $Mode
+            branch = $BranchName
+            started_at = $Script:RunChainStartedAtIso
+            finished_at = (Get-Date).ToString("o")
+            duration_ms = [int]$Script:RunChainWatch.ElapsedMilliseconds
+            ci_watch_ms = $Script:CiWatchMs
+            error_class = $Script:RunChainErrorClass
+            fail_reason = $Script:RunChainFailReason
+            did_autofix = $DidAutoFix
+            autofix_count = $Script:AutoFixCount
+            did_autopr = $Script:DidAutoPr
+            pr_number = $PrNumber
+        }
+        Write-RunChainEntry -Record $RunChainEnd
+    } catch {}
     if ($Mode -eq "Dev") {
         if ($null -ne $LatestJsonRaw) {
             $Utf8NoBom = New-Object System.Text.UTF8Encoding($false)

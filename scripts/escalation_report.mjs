@@ -21,11 +21,9 @@ if (!taskId) {
 
 const outDir = norm(getArg('out_dir')) || `rules/task-reports/${new Date().toISOString().slice(0, 7)}`;
 const errorClass = norm(getArg('error_class')) || 'UNKNOWN_ERROR';
-const failReason = norm(getArg('fail_reason')) || 'UNKNOWN_FAIL_REASON';
+const baseFailReason = norm(getArg('fail_reason')) || 'UNKNOWN_FAIL_REASON';
 const argTaskId = norm(getArg('arg_task_id')) || taskId;
 const branchTaskId = norm(getArg('branch_task_id')) || 'UNKNOWN';
-const latestTaskId = norm(getArg('latest_task_id')) || 'UNKNOWN';
-const prTaskIdDetected = norm(getArg('pr_task_id_detected')) || 'UNKNOWN';
 const logPath = norm(getArg('log_path'));
 const fixActionsRaw = getArg('fix_actions');
 
@@ -40,10 +38,61 @@ if (fixActionsRaw) {
 }
 fixActions = fixActions.filter(v => typeof v === 'string' && v.trim()).slice(0, 5);
 
-let tailLines = [];
+const readLatestTaskId = () => {
+    const latestPath = path.join(process.cwd(), 'rules', 'LATEST.json');
+    const raw = fs.readFileSync(latestPath, 'utf8');
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed.task_id === 'string' && parsed.task_id.trim()) {
+        return { taskId: parsed.task_id.trim(), error: '' };
+    }
+    return { taskId: 'UNKNOWN', error: 'LATEST_TASK_ID_MISSING' };
+};
+
+const isPlaceholder = (value) => {
+    if (!value) return true;
+    const lowered = value.toLowerCase();
+    if (lowered === 'unknown' || lowered === 'null' || lowered === 'undefined') return true;
+    if (value.startsWith('--')) return true;
+    if (value.includes('log_path')) return true;
+    return false;
+};
+
+const parsePrTaskIdFromLog = (content) => {
+    const matches = [...content.matchAll(/PR_TASK_ID_DETECTED=([0-9]{6}_[0-9]{3}[a-z]?)/g)];
+    if (matches.length) return matches[matches.length - 1][1];
+    return '';
+};
+
+let prTaskIdDetected = norm(getArg('pr_task_id_detected'));
+let latestTaskId = 'UNKNOWN';
+let latestReadError = '';
+let failReason = baseFailReason;
+
+try {
+    const latest = readLatestTaskId();
+    latestTaskId = latest.taskId;
+    if (latest.error) {
+        latestReadError = latest.error;
+        failReason = 'LATEST_READ_FAILED';
+    }
+} catch (e) {
+    latestReadError = e && e.message ? e.message : 'LATEST_READ_FAILED';
+    failReason = 'LATEST_READ_FAILED';
+}
+
+let logContent = '';
 if (logPath && fs.existsSync(logPath)) {
-    const content = fs.readFileSync(logPath, 'utf8');
-    const lines = content.split('\n');
+    logContent = fs.readFileSync(logPath, 'utf8');
+}
+
+if (isPlaceholder(prTaskIdDetected) || !/^\d{6}_\d{3}[a-z]?$/.test(prTaskIdDetected)) {
+    const fromLog = logContent ? parsePrTaskIdFromLog(logContent) : '';
+    prTaskIdDetected = fromLog || 'UNKNOWN';
+}
+
+let tailLines = [];
+if (logContent) {
+    const lines = logContent.split('\n');
     let lastIndex = -1;
     lines.forEach((line, idx) => {
         if (line.includes('FAIL_ROOT_CAUSE_BLOCK')) lastIndex = idx;
@@ -53,6 +102,14 @@ if (logPath && fs.existsSync(logPath)) {
     tailLines = slice.slice(-40);
 } else {
     tailLines = ['N/A'];
+}
+
+if (latestReadError) {
+    tailLines.push(`LATEST_READ_ERROR: ${latestReadError}`);
+    if (baseFailReason && baseFailReason !== failReason) {
+        tailLines.push(`ORIGINAL_FAIL_REASON: ${baseFailReason}`);
+    }
+    tailLines = tailLines.slice(-40);
 }
 
 const reportLines = [
