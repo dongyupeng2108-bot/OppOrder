@@ -30,7 +30,7 @@ const evidenceFile = path.join(evidenceDir, `auto_pr_${taskId}.json`);
 console.log(`[CI Watch] Task: ${taskId} (Attempt ${attempt}/${maxAttempts})`);
 
 // Helper to write evidence
-function writeEvidence(prInfo, state, checksSummary, errorMessage) {
+function writeEvidence(prInfo, state, checksSummary, errorMessage, errorClass, failReason) {
     const evidence = {
         task_id: taskId,
         branch: '', 
@@ -44,7 +44,9 @@ function writeEvidence(prInfo, state, checksSummary, errorMessage) {
         final_state: state,
         timestamp: new Date().toISOString(),
         checks_summary: checksSummary || {},
-        error: errorMessage || null
+        error: errorMessage || null,
+        error_class: errorClass || null,
+        fail_reason: failReason || null
     };
     
     try {
@@ -86,7 +88,7 @@ try {
             console.log(`[CI Watch] Created PR #${prInfo.number}: ${prInfo.url}`);
         } catch (createErr) {
             console.error(`[CI Watch] Failed to create PR: ${createErr.message}`);
-            writeEvidence(null, 'INFRA_FAIL', { error: createErr.message }, createErr.message);
+            writeEvidence(null, 'INFRA_FAIL', { error: createErr.message }, createErr.message, 'AUTO_PR_INFRA_FAIL', 'PR_CREATE_FAILED');
             process.exit(1);
         }
     }
@@ -129,13 +131,17 @@ try {
             if (failed.length > 0) {
                 console.error('[CI Watch] CI FAILED.');
                 failed.forEach(f => console.error(`  - ${f.name}: ${f.state} (${f.link})`));
-                writeEvidence(prInfo, 'FAIL', summary);
+                const failedNames = failed.map(f => (f.name || '').toLowerCase());
+                const isGateLight = failedNames.some(n => n.includes('gate-light') || n.includes('gate light') || n.includes('gate_light'));
+                const errorClass = isGateLight ? 'GATE_LIGHT_FAILURE' : 'AUTO_PR_CI_FAIL';
+                const failReason = isGateLight ? 'CI_CHECK_GATE_LIGHT_FAILED' : 'CI_CHECKS_FAILED';
+                writeEvidence(prInfo, 'FAIL', summary, null, errorClass, failReason);
                 process.exit(2); // CI Failure
             }
 
             if (pending.length === 0 && checks.length > 0) {
                 console.log('[CI Watch] CI PASSED.');
-                writeEvidence(prInfo, 'PASS', summary);
+            writeEvidence(prInfo, 'PASS', summary, null, null, null);
                 process.exit(0); // Success
             }
         }
@@ -149,11 +155,11 @@ try {
     }
 
     console.error('[CI Watch] TIMEOUT waiting for CI.');
-    writeEvidence(prInfo, 'TIMEOUT', { error: 'Timeout waiting for CI checks' }, 'Timeout waiting for CI checks');
+    writeEvidence(prInfo, 'TIMEOUT', { error: 'Timeout waiting for CI checks' }, 'Timeout waiting for CI checks', 'AUTO_PR_TIMEOUT', 'CI_CHECK_TIMEOUT');
     process.exit(1); // Infra/Timeout Error
 
 } catch (err) {
     console.error(`[CI Watch] Unexpected Error: ${err.message}`);
-    writeEvidence(prInfo, 'INFRA_FAIL', { error: err.message }, err.message);
+    writeEvidence(prInfo, 'INFRA_FAIL', { error: err.message }, err.message, 'AUTO_PR_INFRA_FAIL', 'CI_WATCH_EXCEPTION');
     process.exit(1);
 }

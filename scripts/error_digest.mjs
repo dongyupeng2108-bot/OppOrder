@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { classifyError } from './error_tiering.mjs';
 
 /**
  * Error Digest Generator (M-G1)
@@ -114,6 +115,7 @@ if (isSelfTest) {
                 mode: mode,
                 step: 'FailBlockExtraction',
                 error_class: failBlock.ERROR_CLASS || 'UNKNOWN_BLOCK_ERROR',
+                fail_reason: failBlock.FAIL_REASON || '',
                 exit_code: failBlock.EXIT_CODE || 1,
                 command: 'N/A', // Block usually doesn't have command context directly unless embedded
                 ts: new Date().toISOString(),
@@ -127,14 +129,21 @@ if (isSelfTest) {
         // Priority 2: Gate Light Logs (regex for FAIL)
         if (filename.startsWith('gate_light')) {
             const lines = content.split('\n');
+            let lastErrorClass = '';
+            let lastFailReason = '';
+            lines.forEach(line => {
+                const trimmed = line.trim();
+                if (trimmed.startsWith('ERROR_CLASS=')) lastErrorClass = trimmed.split('=').slice(1).join('=').trim();
+                if (trimmed.startsWith('FAIL_REASON=')) lastFailReason = trimmed.split('=').slice(1).join('=').trim();
+            });
             lines.forEach(line => {
                 if (line.includes('[Gate Light]') && (line.includes('FAIL') || line.includes('Exit Code') && !line.includes('Exit Code 0'))) {
-                    // Simple extraction
-                     errors.push({
+                    errors.push({
                         task_id: taskId,
                         mode: mode,
                         step: 'GateLightCheck',
-                        error_class: 'GATE_LIGHT_FAILURE',
+                        error_class: lastErrorClass || 'GATE_LIGHT_FAILURE',
+                        fail_reason: lastFailReason || '',
                         exit_code: 1,
                         command: 'gate_light_ci.mjs',
                         ts: new Date().toISOString(),
@@ -160,6 +169,7 @@ if (isSelfTest) {
                             mode: mode,
                             step: 'CommandExecution',
                             error_class: 'SHELL_EXIT_NONZERO',
+                            fail_reason: '',
                             exit_code: entry.exit_code,
                             command: entry.command,
                             ts: entry.timestamp,
@@ -189,6 +199,7 @@ if (selfCheckPath && fs.existsSync(selfCheckPath)) {
             mode: mode,
             step: 'ContractSelfCheck',
             error_class: 'CONTRACT_SELF_CHECK_FAIL',
+            fail_reason: 'CONTRACT_SELF_CHECK_FAIL',
             exit_code: 1,
             command: 'assemble_evidence.mjs',
             ts: new Date().toISOString(),
@@ -212,6 +223,7 @@ if (errors.length === 0) {
         mode: mode,
         step: 'Digest',
         error_class: 'NO_ERROR',
+        fail_reason: '',
         exit_code: 0,
         command: 'check_errors',
         ts: new Date().toISOString(),
@@ -219,10 +231,14 @@ if (errors.length === 0) {
         stderr_tail: '',
         is_test: false
     };
-    fs.writeFileSync(errorsJsonlPath, JSON.stringify(noErrorEntry) + '\n');
+    const tiered = classifyError({ error_class: noErrorEntry.error_class, fail_reason: noErrorEntry.fail_reason });
+    fs.writeFileSync(errorsJsonlPath, JSON.stringify({ ...noErrorEntry, error_tier: tiered.tier, recommended_action: tiered.recommended_action }) + '\n');
     console.log(`[ErrorDigest] Wrote NO_ERROR record to ${errorsJsonlPath}`);
 } else {
-    const jsonlContent = errors.map(e => JSON.stringify(e)).join('\n');
+    const jsonlContent = errors.map(e => {
+        const tiered = classifyError({ error_class: e.error_class, fail_reason: e.fail_reason });
+        return JSON.stringify({ ...e, error_tier: tiered.tier, recommended_action: tiered.recommended_action });
+    }).join('\n');
     fs.writeFileSync(errorsJsonlPath, jsonlContent);
     console.log(`[ErrorDigest] Wrote ${errors.length} errors to ${errorsJsonlPath}`);
 }
@@ -233,10 +249,20 @@ errors.forEach(e => {
     const cls = e.error_class || 'UNKNOWN';
     errorCounts[cls] = (errorCounts[cls] || 0) + 1;
 });
+const tierCounts = {};
+errors.forEach(e => {
+    const tiered = classifyError({ error_class: e.error_class, fail_reason: e.fail_reason });
+    const tier = tiered.tier || 'UNKNOWN_TIER';
+    tierCounts[tier] = (tierCounts[tier] || 0) + 1;
+});
 
 const topErrors = Object.entries(errorCounts)
     .sort((a, b) => b[1] - a[1])
     .map(([cls, count]) => `- ${cls}: ${count}`)
+    .join('\n');
+const topTiers = Object.entries(tierCounts)
+    .sort((a, b) => b[1] - a[1])
+    .map(([tier, count]) => `- ${tier}: ${count}`)
     .join('\n');
 
 const summaryContent = `TASK_ID: ${taskId}
@@ -248,6 +274,9 @@ CONTRACT_SELF_CHECK_LINES: ${selfCheckLines.length ? selfCheckLines.slice(0, 5).
 
 TOP ERROR CLASSES:
 ${topErrors || 'None'}
+
+TOP ERROR TIERS:
+${topTiers || 'None'}
 
 Errors (First 5):
 ${errors.slice(0, 5).map(e => `[${e.ts}] ${e.error_class} (Exit ${e.exit_code}) - ${e.source || 'Unknown'}`).join('\n')}

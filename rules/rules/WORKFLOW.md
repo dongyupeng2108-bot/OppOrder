@@ -137,6 +137,13 @@ task_id（任务标识）允许格式：`YYMMDD_NNN` + 可选 1 位字母后缀�
             *   **Pass 2**: Verifies evidence with Gate Light (Verify Mode).
             *   **Archive**: Moves evidence to `runs/<task_id>/` and creates Lock File.
 
+### Error Tiering + Escalation + Loop Detection（错误分层+升级报告+循环检测）
+1. **Error Tiering（错误分层）**：错误分为“可自愈（Self-healable）/不可自愈（Non-self-healable）”，由硬编码表判定，不依赖 LLM。
+2. **Bounded Auto-recovery（有限自救）**：仅对可自愈类执行自动修复，每个 ERROR_CLASS 最多 1 次，全局最多 1 次（对齐 AutoFixMax=1）。
+3. **Loop Detection（循环检测）**：同一 ERROR_CLASS 或 FAIL_REASON 连续 ≥2 次，或同日同基号 task_id 后缀短窗口递增 ≥2，立即触发升级并停止。
+4. **Escalation Report（升级报告）**：触发不可自愈或循环阈值时，生成 `rules/task-reports/<YYYY-MM>/escalation_<task_id>.md`，字段必须完整（见 PROJECT_RULES.md）。
+5. **DoD**：错误摘要包含 tier；升级报告必须为 LF + UTF-8（无 BOM）；不可自愈/循环一律“停 + 报告”，禁止继续自动化动作。
+
 ## Open PR Guard Protocols (One Task at a Time)
 
 To maintain a linear, conflict-free history, we enforce a strict "One Task at a Time" policy.

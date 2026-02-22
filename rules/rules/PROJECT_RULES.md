@@ -102,6 +102,46 @@
   - `OppRadar`: 53122 (Fixed).
   - `arb-validate-web`: 53121 (Fixed reference).
 
+## Error Tiering & Escalation（错误分层与升级报告）
+### 允许自动修复的错误白名单（Self-healable）
+- CI_PARITY_MERGEBASE_MISMATCH
+- ERROR_STATS_INDEX_MISSING
+- ERROR_STATS_RECORD_MISSING
+- AUTO_PR_EVIDENCE_MISSING
+- LATEST_JSON_MISMATCH
+- PREVIEW_ENCODING
+
+### 不可自愈的错误黑名单（Non-self-healable）
+- EVIDENCE_WORM_BYPASS
+- OPEN_PR_GUARD_BLOCKED
+- WORKSPACE_DIRTY_TRACKED
+- STEP_TIMEOUT
+- SERVICE_HEALTHCHECK_FAIL
+- CMD_SYNTAX_BANNED
+- AUTO_PR_CI_FAIL
+- AUTO_PR_INFRA_FAIL
+- AUTO_PR_TIMEOUT
+- AUTO_PR_UNKNOWN_EXIT
+- AUTO_FIX_MAX_EXCEEDED
+- AUTO_FIX_FAILED
+- IMMUTABLE_INTEGRATE_LOCKED
+- FAIL_BUDGET_EXCEEDED_DEV
+- FAIL_BUDGET_EXCEEDED_INTEGRATE
+- PREASSEMBLE_PRECHECK_FAIL
+- PREASSEMBLE_GENERATOR_MISSING
+- PREASSEMBLE_MIN_SET_MISSING
+- PREVIEW_LOG_MISSING
+- TASK_ID_MISMATCH
+- LOOP_DETECTED
+- CONTRACT_SELF_CHECK_FAIL
+
+### 升级报告模板字段（Escalation Report）
+- ERROR_CLASS / FAIL_REASON
+- ARG_TASK_ID / BRANCH_TASK_ID / LATEST_TASK_ID / PR_TASK_ID_DETECTED
+- 最近一次 FAIL_ROOT_CAUSE_BLOCK（Tail 40 行）
+- 已尝试的修复动作（最多 5 条）
+- 只问 1 个需要人类决策的问题（A/B 选项）
+
 ## Governance Principles（治理原则）
 1. Complexity Budget（复杂度预算）：任何新增治理规则必须 **减少** 人工步骤或状态空间；若只增加人工步骤/例外判断，一律禁止落地。 
 2. Automation-Only Rule（自动化优先）：任何新增规则若不能被脚本自动检查/自动生成，则不得新增（先补自动化再写规则）。 
