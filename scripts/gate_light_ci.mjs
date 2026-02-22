@@ -193,6 +193,55 @@ if (detectionSource === 'ARGUMENT' || detectionSource === 'BRANCH_NAME' || detec
 
 // Resolve result_dir
 let result_dir;
+const profileData = [];
+const addProfile = (step, durationMs, metrics) => {
+    const entry = { step, duration_ms: durationMs };
+    if (metrics && typeof metrics === 'object') {
+        Object.entries(metrics).forEach(([key, value]) => {
+            if (value !== undefined && value !== null) {
+                entry[key] = value;
+            }
+        });
+    }
+    profileData.push(entry);
+};
+const writeProfile = () => {
+    if (!task_id || !result_dir) return;
+    const profilePath = path.join(result_dir, `gate_light_profile_${task_id}.json`);
+    const payload = { task_id, generated_at: new Date().toISOString(), steps: profileData };
+    const json = JSON.stringify(payload, null, 2).replace(/\r\n/g, '\n');
+    fs.writeFileSync(profilePath, json, 'utf8');
+};
+const docRefExtensions = ['.md', '.mjs', '.js', '.ts', '.ps1', '.yml', '.yaml', '.json'];
+const docRefExcludedDirs = ['node_modules', 'rules/task-reports', 'data', '.git'];
+const docRefExcludedFiles = [
+    'scripts/check_doc_path_refs.mjs',
+    'scripts/gate_light_ci.mjs'
+];
+const isDocRefExcluded = (filePath) => {
+    const normalizedPath = filePath.replace(/\\/g, '/');
+    const relativePath = path.relative(process.cwd(), filePath).replace(/\\/g, '/');
+    if (docRefExcludedFiles.includes(relativePath)) return true;
+    return docRefExcludedDirs.some(excluded => normalizedPath.includes(excluded));
+};
+const collectDocRefTargets = (dir, fileList = []) => {
+    const files = fs.readdirSync(dir);
+    for (const file of files) {
+        const filePath = path.join(dir, file);
+        const stat = fs.statSync(filePath);
+        if (stat.isDirectory()) {
+            if (!isDocRefExcluded(filePath)) {
+                collectDocRefTargets(filePath, fileList);
+            }
+        } else {
+            const ext = path.extname(file).toLowerCase();
+            if (docRefExtensions.includes(ext) && !isDocRefExcluded(filePath)) {
+                fileList.push(filePath);
+            }
+        }
+    }
+    return fileList;
+};
 
 // Option A: Lock file lookup (Priority 1 - CI/Archived State)
 const lockFile = path.join('rules', 'task-reports', 'locks', `${task_id}.lock.json`);
@@ -710,21 +759,48 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
 
     // --- Doc Path Reference Check (Task 260208_026) ---
     console.log('[Gate Light] Checking for legacy doc path references...');
+    const docRefStart = Date.now();
+    const docRefTargets = collectDocRefTargets(process.cwd());
+    let docRefLineCount = 0;
+    docRefTargets.forEach(file => {
+        try {
+            const content = fs.readFileSync(file, 'utf8');
+            docRefLineCount += content.split(/\r?\n/).length;
+        } catch (e) {}
+    });
     try {
         execSync('node scripts/check_doc_path_refs.mjs', { stdio: 'inherit' });
     } catch (e) {
         console.error('[Gate Light] Doc Path Reference Check FAILED.');
         process.exit(1);
     }
+    addProfile('doc_path_refs_scan', Date.now() - docRefStart, { file_count: docRefTargets.length, line_count: docRefLineCount });
 
     // --- Banned Cmd Syntax Static Scan (Task 260218_012) ---
     console.log('[Gate Light] Checking for banned cmd syntax in PowerShell scripts...');
+    const bannedStart = Date.now();
+    const bannedTargets = [
+        'scripts/run_task.ps1',
+        'scripts/test_fail_budget.ps1',
+        'scripts/ps/Invoke-Step.ps1'
+    ];
+    let bannedLineCount = 0;
+    bannedTargets.forEach(file => {
+        const fullPath = path.resolve(process.cwd(), file);
+        if (fs.existsSync(fullPath)) {
+            try {
+                const content = fs.readFileSync(fullPath, 'utf8');
+                bannedLineCount += content.split(/\r?\n/).length;
+            } catch (e) {}
+        }
+    });
     try {
         execSync('node scripts/scan_ps_cmd_syntax.mjs', { stdio: 'inherit' });
     } catch (e) {
         console.error('[Gate Light] Banned Cmd Syntax Check FAILED.');
         process.exit(1);
     }
+    addProfile('ps_cmd_static_scan', Date.now() - bannedStart, { file_count: bannedTargets.length, line_count: bannedLineCount });
 
     // --- Global Artifact Guard (Task 260208_029) ---
     console.log('[Gate Light] Checking for global healthcheck artifacts...');
@@ -1141,6 +1217,7 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         // Or global? Usually task-specific.
         
         // Find audit files for this task
+        const taskReportStart = Date.now();
         const auditFiles = [];
         const monthDirs = fs.readdirSync(path.join('rules', 'task-reports')).filter(d => /^\d{4}-\d{2}$/.test(d));
         for (const md of monthDirs) {
@@ -1155,9 +1232,11 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         // For now, focus on task-specific audit files.
         
         let violation = false;
+        let auditLineCount = 0;
         for (const file of auditFiles) {
             const content = fs.readFileSync(file, 'utf8');
             const lines = content.split('\n');
+            auditLineCount += lines.length;
             for (const line of lines) {
                 // Check for forbidden commands
                 // git merge, push origin main, checkout main + write?
@@ -1176,6 +1255,7 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
             console.error('[Gate Light] FAILED: Auto-Merge/Push-to-Main detected. Agents must use PRs.');
             process.exit(62);
         }
+        addProfile('task_reports_audit_scan', Date.now() - taskReportStart, { file_count: auditFiles.length, line_count: auditLineCount });
         console.log('[Gate Light] No Auto-Merge verified.');
     }
 
@@ -2176,7 +2256,8 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         console.log('[Gate Light] Executing: ' + cmd);
         execSync(cmd, { stdio: 'inherit' });
     }
-    
+
+    writeProfile();
     console.log('[Gate Light] PASS');
     console.log('GATE_LIGHT_EXIT=0');
 } catch (error) {

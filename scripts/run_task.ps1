@@ -69,6 +69,18 @@ $Timing = [ordered]@{
     postflight = 0
     total = 0
 }
+$StepDurations = [ordered]@{
+    task_id = $TaskId
+    mode = $Mode
+    preflight = 0
+    workspace_healer = 0
+    pass1_preview = 0
+    assemble_evidence = 0
+    pass2_verify = 0
+    ci_watch = 0
+    postflight = 0
+    total = 0
+}
 $TimingStartedAt = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
 $TotalWatch = [System.Diagnostics.Stopwatch]::StartNew()
 $Script:RunChainStartedAt = Get-Date
@@ -80,17 +92,24 @@ $Script:AutoFixCount = 0
 $Script:DidAutoPr = $false
 $Script:RunChainErrorClass = ""
 $Script:RunChainFailReason = ""
+$Script:WallTotalMs = 0
+$Script:WallTotalRecorded = $false
+$Script:CiPassAtIso = ""
+$Script:FirstCiFailWatchMs = 0
+$Script:AutoFixApplyMs = 0
+$Script:SecondCiPassWatchMs = 0
+$Script:FailurePenaltyTotalMs = 0
+$Script:CiAttempts = 0
+$Script:SpeedEvidenceWritten = $false
 
 function Measure-Step {
     param([string]$Key, [scriptblock]$Action)
-    if (-not $TimingEnabled) {
-        & $Action
-        return
-    }
     $sw = [System.Diagnostics.Stopwatch]::StartNew()
     & $Action
     $sw.Stop()
-    $Timing[$Key] = [int]$sw.ElapsedMilliseconds
+    $elapsed = [int]$sw.ElapsedMilliseconds
+    $StepDurations[$Key] = $elapsed
+    if ($TimingEnabled) { $Timing[$Key] = $elapsed }
 }
 
 function Get-BranchTaskId {
@@ -147,6 +166,57 @@ function Append-JsonlUtf8 {
     if (-not (Test-Path $Dir)) { New-Item -ItemType Directory -Path $Dir -Force | Out-Null }
     $Utf8 = New-Object System.Text.UTF8Encoding($false)
     [System.IO.File]::AppendAllText($Path, $Line + "`n", $Utf8)
+}
+
+function Write-LfFile {
+    param([string]$Path, [string]$Content)
+    $Dir = Split-Path -Parent $Path
+    if (-not (Test-Path $Dir)) { New-Item -ItemType Directory -Path $Dir -Force | Out-Null }
+    $Normalized = $Content -replace "`r`n", "`n"
+    [System.IO.File]::WriteAllText($Path, $Normalized, [System.Text.UTF8Encoding]::new($false))
+}
+
+function Write-SpeedEvidence {
+    param([string]$EvidenceDir, [string]$TaskId)
+    if ($Mode -ne "Integrate") { return }
+    if ([string]::IsNullOrWhiteSpace($EvidenceDir)) { return }
+    $StepDurations.total = [int]$TotalWatch.ElapsedMilliseconds
+    if (-not $Script:WallTotalRecorded) {
+        $Script:WallTotalMs = $StepDurations.total
+        $Script:WallTotalRecorded = $true
+    }
+    if ($Script:CiAttempts -le 0) { $Script:CiAttempts = 1 }
+    $SpeedWallPath = "$EvidenceDir\speed_wall_$TaskId.json"
+    $SpeedWall = [ordered]@{
+        task_id = $TaskId
+        generated_at = (Get-Date).ToString("o")
+        wall_total_ms = [int]$Script:WallTotalMs
+        ci_watch_ms = [int]$Script:CiWatchMs
+        ci_pass_at = $Script:CiPassAtIso
+        attempts = [int]$Script:CiAttempts
+        failure_penalty_total_ms = [int]$Script:FailurePenaltyTotalMs
+        first_ci_fail_watch_ms = [int]$Script:FirstCiFailWatchMs
+        autofix_apply_ms = [int]$Script:AutoFixApplyMs
+        second_ci_pass_watch_ms = [int]$Script:SecondCiPassWatchMs
+    }
+    $SpeedWallJson = $SpeedWall | ConvertTo-Json -Depth 6
+    Write-LfFile -Path $SpeedWallPath -Content $SpeedWallJson
+
+    $TopEntries = @()
+    foreach ($Entry in $StepDurations.GetEnumerator()) {
+        if ($Entry.Key -in @("task_id", "mode")) { continue }
+        $ms = [int]$Entry.Value
+        if ($ms -gt 0) { $TopEntries += @{ key = $Entry.Key; ms = $ms } }
+    }
+    if ($Script:WallTotalMs -gt 0) { $TopEntries += @{ key = "wall_total_ms"; ms = [int]$Script:WallTotalMs } }
+    $TopEntries = $TopEntries | Sort-Object -Property ms -Descending | Select-Object -First 5
+    $TopLines = @()
+    $TopLines += "task_id=$TaskId"
+    $TopLines += "generated_at=$((Get-Date).ToString("o"))"
+    foreach ($Entry in $TopEntries) { $TopLines += "$($Entry.key)=$($Entry.ms)" }
+    $SpeedTop5Path = "$EvidenceDir\speed_top5_$TaskId.txt"
+    Write-LfFile -Path $SpeedTop5Path -Content ($TopLines -join "`n")
+    $Script:SpeedEvidenceWritten = $true
 }
 
 function Write-RunChainEntry {
@@ -703,6 +773,7 @@ if ($Mode -eq "Integrate" -and $AutoPR) {
         
         while ($LoopActive) {
             $CurrentAttempt = $CurrentFixCount + 1
+            $Script:CiAttempts = $CurrentAttempt
             Write-Host "[AutoPR] Loop Iteration $CurrentAttempt (Max Fixes: $AutoFixMax)..." -ForegroundColor Cyan
             
             Write-Host ">>> [AutoPR] Running CI Watch..." -ForegroundColor Cyan
@@ -710,11 +781,24 @@ if ($Mode -eq "Integrate" -and $AutoPR) {
             $WatchTimer = [System.Diagnostics.Stopwatch]::StartNew()
             $WatchProcess = Start-Process -FilePath "node" -ArgumentList $WatchArgs -NoNewWindow -PassThru -Wait
             $WatchTimer.Stop()
-            $Script:CiWatchMs += [int]$WatchTimer.ElapsedMilliseconds
+            $WatchElapsed = [int]$WatchTimer.ElapsedMilliseconds
+            $Script:CiWatchMs += $WatchElapsed
             $ExitCode = $WatchProcess.ExitCode
             
             if ($ExitCode -eq 0) {
                 Write-Host "[AutoPR] CI Passed!" -ForegroundColor Green
+                $Script:CiPassAtIso = (Get-Date).ToString("o")
+                $Script:WallTotalMs = [int]((Get-Date) - $Script:RunChainStartedAt).TotalMilliseconds
+                $Script:WallTotalRecorded = $true
+                if ($CurrentAttempt -eq 1) {
+                    $Script:FailurePenaltyTotalMs = 0
+                    $Script:FirstCiFailWatchMs = 0
+                    $Script:AutoFixApplyMs = 0
+                    $Script:SecondCiPassWatchMs = 0
+                } elseif ($Script:FirstCiFailWatchMs -gt 0 -and $Script:SecondCiPassWatchMs -eq 0) {
+                    $Script:SecondCiPassWatchMs = $WatchElapsed
+                    $Script:FailurePenaltyTotalMs = $Script:FirstCiFailWatchMs + $Script:AutoFixApplyMs + $Script:SecondCiPassWatchMs
+                }
                 $LoopActive = $false
             } elseif ($ExitCode -eq 1) {
                 Write-Error "[AutoPR] CI Watch failed with Infra/Critical Error (Exit Code 1)."
@@ -724,6 +808,9 @@ if ($Mode -eq "Integrate" -and $AutoPR) {
                 Stop-RunTask -Message "AUTO_PR_INFRA_FAIL" -ErrorClass $ErrorClass -FailReason $FailReason
             } elseif ($ExitCode -eq 2) {
                 Write-Host "[AutoPR] CI Failed (Exit Code 2)." -ForegroundColor Red
+                if ($CurrentAttempt -eq 1 -and $Script:FirstCiFailWatchMs -eq 0) {
+                    $Script:FirstCiFailWatchMs = $WatchElapsed
+                }
                 
                 $AutoPrInfo = Get-AutoPrInfo -EvidenceDir $EvidenceDir -TaskId $TaskId
                 $ErrorClass = if ($AutoPrInfo.error_class) { $AutoPrInfo.error_class } else { "AUTO_PR_CI_FAIL" }
@@ -753,7 +840,10 @@ if ($Mode -eq "Integrate" -and $AutoPR) {
                     Write-Host "[AutoPR] Attempting AutoFix ($CurrentFixCount/$AutoFixMax)..." -ForegroundColor Yellow
                     
                     Write-Host ">>> [AutoPR] Running AutoFix..." -ForegroundColor Cyan
+                    $FixTimer = [System.Diagnostics.Stopwatch]::StartNew()
                     $FixProcess = Start-Process -FilePath "node" -ArgumentList "$FixScript", "--task_id", "$TaskId" -NoNewWindow -PassThru -Wait
+                    $FixTimer.Stop()
+                    if ($Script:AutoFixApplyMs -eq 0) { $Script:AutoFixApplyMs = [int]$FixTimer.ElapsedMilliseconds }
                     
                     if ($FixProcess.ExitCode -ne 0) {
                         Write-Error "[AutoPR] AutoFix failed with exit code $($FixProcess.ExitCode)."
@@ -810,6 +900,7 @@ if ($Mode -eq "Integrate") {
     Copy-Item -Path $VerifyLog -Destination "$EvidenceDir\gate_light_preview_$TaskId.log" -Force
     
     # Re-run Assemble Evidence
+    Write-SpeedEvidence -EvidenceDir $EvidenceDir -TaskId $TaskId
     $UpdateCmd = @("node", "$RepoRoot\scripts\assemble_evidence.mjs", "--task_id=$TaskId", "--evidence_dir=$EvidenceDir", "--mode=$Mode", "--phase=assemble")
     Invoke-Step -Name "Update Evidence" -Cmd $UpdateCmd
     Write-Host "    Updated notify and index with Verify logs." -ForegroundColor Gray
@@ -932,12 +1023,21 @@ Write-Host ">>> [RunTask] SUCCESS: Task $TaskId ($Mode) Completed." -ForegroundC
             Remove-Item $LatestJsonPath -ErrorAction SilentlyContinue
         }
     }
+    if ($TotalWatch) { $TotalWatch.Stop() }
+    $StepDurations.total = [int]$TotalWatch.ElapsedMilliseconds
+    if (-not $Script:WallTotalRecorded) {
+        $Script:WallTotalMs = $StepDurations.total
+        $Script:WallTotalRecorded = $true
+    }
+    if ($Script:CiAttempts -le 0) { $Script:CiAttempts = 1 }
     if ($TimingEnabled) {
-        $TotalWatch.Stop()
-        $Timing.total = [int]$TotalWatch.ElapsedMilliseconds
+        $Timing.total = $StepDurations.total
         $Timing["started_at"] = $TimingStartedAt
         $Timing["finished_at"] = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
         $Timing | ConvertTo-Json | Set-Content -Encoding UTF8 $TimingOutput
+    }
+    if (-not $Script:SpeedEvidenceWritten) {
+        try { Write-SpeedEvidence -EvidenceDir $EvidenceDir -TaskId $TaskId } catch {}
     }
     try { Stop-Transcript -ErrorAction SilentlyContinue } catch {}
 }
