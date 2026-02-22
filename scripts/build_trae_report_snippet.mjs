@@ -49,6 +49,7 @@ try {
 // 2. Read DoD Evidence (Stdout + Healthcheck)
 const notifyPath = path.join(resultDir, `notify_${taskId}.txt`);
 let dodContent = '';
+let headerValue = 'Unknown';
 
 // A. DoD Stdout
 const dodStdoutPath = path.join(resultDir, `dod_stdout_${taskId}.txt`);
@@ -56,11 +57,31 @@ if (fs.existsSync(dodStdoutPath)) {
     dodContent = fs.readFileSync(dodStdoutPath, 'utf8').trim();
 } else if (fs.existsSync(notifyPath)) {
     const notifyContent = fs.readFileSync(notifyPath, 'utf8');
+    const headerMatch = notifyContent.match(/^Header:\s*(.+)$/m);
+    if (headerMatch) {
+        headerValue = headerMatch[1].trim();
+    }
     const marker = '=== DOD_EVIDENCE_STDOUT ===';
     if (notifyContent.includes(marker)) {
         const parts = notifyContent.split(marker);
         if (parts.length > 1) {
-            dodContent = marker + '\n' + parts[1].trim();
+            let section = parts[1].trim();
+            const cutMarkers = [
+                '=== CI_PARITY_PREVIEW ===',
+                '=== GATE_LIGHT_PREVIEW ===',
+                '=== GATE_LIGHT_VERIFY ==='
+            ];
+            let cutIndex = -1;
+            for (const cutMarker of cutMarkers) {
+                const idx = section.indexOf(cutMarker);
+                if (idx !== -1 && (cutIndex === -1 || idx < cutIndex)) {
+                    cutIndex = idx;
+                }
+            }
+            if (cutIndex !== -1) {
+                section = section.slice(0, cutIndex).trim();
+            }
+            dodContent = marker + '\n' + section;
         }
     }
 }
@@ -131,7 +152,7 @@ GATE_LIGHT_EXIT=0`;
             process.exit(61);
         }
     } else {
-        gateLightContent = fs.readFileSync(previewPath, 'utf8').trim();
+        gateLightContent = fs.readFileSync(previewPath, 'utf8').replace(/^\uFEFF/, '');
     }
 } else {
     // Fallback for old tasks
@@ -143,23 +164,25 @@ GATE_LIGHT_EXIT=__PENDING__`;
 }
 
 // 4. Construct Snippet Content
-const snippetContent = `
-=== TRAE_REPORT_SNIPPET ===
-
-BRANCH: ${branchName}
-COMMIT: ${commitHash}
-
-=== GIT_SCOPE_DIFF ===
-${scopeDiff || '(No changes detected or new branch)'}
-
-${dodContent}
-
-${ciParityContent}
-
-${gateLightContent}
-`;
+const snippetContent = [
+    '=== TRAE_REPORT_SNIPPET ===',
+    '',
+    `Header: ${headerValue}`,
+    `BRANCH: ${branchName}`,
+    `COMMIT: ${commitHash}`,
+    '',
+    '=== GIT_SCOPE_DIFF ===',
+    scopeDiff || '(No changes detected or new branch)',
+    '',
+    dodContent,
+    '',
+    ciParityContent,
+    '',
+    gateLightContent
+].join('\n');
 
 const snippetPath = path.join(resultDir, `trae_report_snippet_${taskId}.txt`);
-fs.writeFileSync(snippetPath, snippetContent.trim() + '\n');
+const normalizedSnippet = snippetContent.replace(/\r\n/g, '\n');
+fs.writeFileSync(snippetPath, normalizedSnippet);
 console.log(`[Snippet Builder] Wrote snippet to: ${snippetPath}`);
 console.log(`[Snippet Builder] NOTE: Notify/Result/Index updates must be handled by the caller (dev_batch_mode).`);

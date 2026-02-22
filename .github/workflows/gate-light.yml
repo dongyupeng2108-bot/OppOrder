@@ -199,6 +199,24 @@ jobs:
           curl --retry 5 --retry-delay 1 --retry-connrefused -s -i http://localhost:53122/ --output "$ROOT_FILE"
           curl --retry 5 --retry-delay 1 --retry-connrefused -s -i http://localhost:53122/pairs --output "$PAIRS_FILE"
 
+      - name: Generate Gate Light Preview Evidence
+        run: |
+          TASK_REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
+          TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}[A-Za-z]?' | head -n 1 || true)
+          YEAR="20${TASK_ID:0:2}"
+          MONTH="${TASK_ID:2:2}"
+          EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
+          PREVIEW_LOG="${EVIDENCE_DIR}/gate_light_preview_${TASK_ID}.log"
+          PREVIEW_TXT="${EVIDENCE_DIR}/gate_light_preview_${TASK_ID}.txt"
+          echo "TASK_ID=${TASK_ID}"
+          echo "EVIDENCE_DIR=${EVIDENCE_DIR}"
+          if [ -f "$PREVIEW_TXT" ]; then
+            echo "Preview already exists. Skip CI generation."
+            exit 0
+          fi
+          GENERATE_PREVIEW=1 node scripts/gate_light_ci.mjs --task_id "$TASK_ID" --result_dir "$EVIDENCE_DIR" > "$PREVIEW_LOG"
+          node scripts/extract_gate_light_preview.mjs --task_id="$TASK_ID" --log="$PREVIEW_LOG"
+
       - name: Verify Healthcheck Evidence
         run: |
           TASK_REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
@@ -267,6 +285,7 @@ jobs:
           const healthcheckPairs = `${dir}/${taskId}_healthcheck_53122_pairs.txt`;
           const notifyContent = [
             '=== HEADER ===',
+            `Header: TraeTask_${taskId}`,
             `task_id: ${taskId}`,
             'mode: CI',
             `commit: ${sha}`,
@@ -303,6 +322,38 @@ jobs:
             }
           };
           fs.writeFileSync(result, JSON.stringify(resultData, null, 2));
+          NODE
+
+      - name: Generate Trae Report Snippet Evidence
+        run: |
+          TASK_REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
+          TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}[A-Za-z]?' | head -n 1 || true)
+          YEAR="20${TASK_ID:0:2}"
+          MONTH="${TASK_ID:2:2}"
+          EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
+          echo "TASK_ID=${TASK_ID}"
+          echo "EVIDENCE_DIR=${EVIDENCE_DIR}"
+          NOTIFY_FILE="${EVIDENCE_DIR}/notify_${TASK_ID}.txt"
+          SNIPPET_FILE="${EVIDENCE_DIR}/trae_report_snippet_${TASK_ID}.txt"
+          if [ -f "$SNIPPET_FILE" ]; then
+            echo "Snippet already exists. Skip CI placeholder generation."
+            exit 0
+          fi
+          if [ ! -f "$NOTIFY_FILE" ]; then
+            echo "Missing notify evidence for snippet: $NOTIFY_FILE"
+            exit 1
+          fi
+          GATE_LIGHT_GENERATE_PREVIEW=1 node scripts/build_trae_report_snippet.mjs --task_id="$TASK_ID" --result_dir="$EVIDENCE_DIR"
+          TASK_ID="$TASK_ID" EVIDENCE_DIR="$EVIDENCE_DIR" node <<'NODE'
+          const fs = require('fs');
+          const path = require('path');
+          const taskId = process.env.TASK_ID;
+          const dir = process.env.EVIDENCE_DIR;
+          const snippetPath = path.join(dir, `trae_report_snippet_${taskId}.txt`);
+          const content = fs.readFileSync(snippetPath, 'utf8');
+          if (!/^Header:\s*/m.test(content)) {
+            fs.writeFileSync(snippetPath, `Header: TraeTask_${taskId}\n` + content);
+          }
           NODE
 
       - name: Run Gate Light CI

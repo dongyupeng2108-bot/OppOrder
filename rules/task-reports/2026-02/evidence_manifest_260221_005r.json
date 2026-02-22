@@ -1,0 +1,26 @@
+{
+  "task_id": "260221_005r",
+  "mode": "Integrate",
+  "generated_at": "2026-02-22T01:13:25.796Z",
+  "evidence_dir": "rules/task-reports/2026-02",
+  "required_files": [
+    "result_260221_005r.json",
+    "run_260221_005r.log",
+    "notify_260221_005r.txt",
+    "workspace_healer_260221_005r.json",
+    "errors_260221_005r.jsonl",
+    "errors_summary_260221_005r.txt",
+    "contract_self_check_260221_005r.txt",
+    "deliverables_index_260221_005r.json",
+    "ci_parity_260221_005r.json",
+    "gate_light_preview_260221_005r.log",
+    "dod_evidence_260221_005r.txt",
+    "git_meta_260221_005r.json",
+    "preflight_attestation_260221_005r.json",
+    "open_pr_guard_260221_005r.json",
+    "auto_pr_260221_005r.json",
+    "manual_verification_260221_005r.json",
+    "260221_005r_healthcheck_53122_root.txt",
+    "260221_005r_healthcheck_53122_pairs.txt"
+  ]
+}

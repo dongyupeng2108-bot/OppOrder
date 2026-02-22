@@ -1,0 +1,23 @@
+{
+  "task_id": "260221_005n",
+  "branch": "feat/contract-selfcheck-260221_005n",
+  "pr_number": 144,
+  "pr_url": "https://github.com/dongyupeng2108-bot/OppOrder/pull/144",
+  "head": "feat/contract-selfcheck-260221_005n",
+  "base": "main",
+  "attempt": 1,
+  "autofix_max": 1,
+  "status": "OPEN",
+  "final_state": "FAIL",
+  "timestamp": "2026-02-21T23:58:57.448Z",
+  "checks_summary": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "pending": 0,
+    "details": [
+      "gate-light-check: FAILURE"
+    ]
+  },
+  "error": null
+}

@@ -1,0 +1,53 @@
+{
+  "queried_at": "2026-02-21T23:32:14.764Z",
+  "mode": "Integrate",
+  "open_prs": [
+    {
+      "number": 141,
+      "title": "TraeTask_260221_005h: AutoPR",
+      "headRefName": "feat/contract-selfcheck-260221_005h",
+      "url": "https://github.com/dongyupeng2108-bot/OppOrder/pull/141"
+    },
+    {
+      "number": 140,
+      "title": "TraeTask_260221_005g: AutoPR",
+      "headRefName": "feat/contract-selfcheck-260221_005g",
+      "url": "https://github.com/dongyupeng2108-bot/OppOrder/pull/140"
+    },
+    {
+      "number": 139,
+      "title": "TraeTask_260221_005e: AutoPR",
+      "headRefName": "feat/contract-selfcheck-260221_005e",
+      "url": "https://github.com/dongyupeng2108-bot/OppOrder/pull/139"
+    },
+    {
+      "number": 138,
+      "title": "TraeTask_260221_012f: gate-light snippet evidence",
+      "headRefName": "feat/docs-deliver-002-goals-260221_012f",
+      "url": "https://github.com/dongyupeng2108-bot/OppOrder/pull/138"
+    }
+  ],
+  "ignored_pr_numbers": [
+    141
+  ],
+  "supersede_task_ids": [
+    "260221_005h"
+  ],
+  "blocking_prs": [
+    {
+      "number": 140,
+      "reason": "Open PR not ignored or superseded"
+    },
+    {
+      "number": 139,
+      "reason": "Open PR not ignored or superseded"
+    },
+    {
+      "number": 138,
+      "reason": "Open PR not ignored or superseded"
+    }
+  ],
+  "decision": "BLOCK",
+  "exit_code": 1,
+  "open_prs_blocking_count": 3
+}

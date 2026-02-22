@@ -1,0 +1,11 @@
+﻿{
+    "mode":  "Integrate",
+    "branch":  "feat/contract-selfcheck-260221_005r",
+    "write_allowed":  true,
+    "input_hash_short":  "444c7e1",
+    "header":  "TraeTask_260221_005r",
+    "commit":  "44994f60",
+    "task_id":  "260221_005r",
+    "header_detected":  true,
+    "timestamp":  "2026-02-22 08:42:09 UTC"
+}

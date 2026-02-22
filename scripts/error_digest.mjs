@@ -56,6 +56,7 @@ if (!taskId && !isSelfTest) {
 const resolvePath = (p) => path.isAbsolute(p) ? p : path.resolve(process.cwd(), p);
 const errorsJsonlPath = path.join(outDir, `errors_${taskId}.jsonl`);
 const summaryPath = path.join(outDir, `errors_summary_${taskId}.txt`);
+const selfCheckPath = taskId ? path.join(outDir, `contract_self_check_${taskId}.txt`) : null;
 
 // Ensure output directory exists
 if (!fs.existsSync(outDir)) {
@@ -63,6 +64,8 @@ if (!fs.existsSync(outDir)) {
 }
 
 let errors = [];
+let selfCheckLines = [];
+let selfCheckExit = null;
 
 if (isSelfTest) {
     console.log('[ErrorDigest] Running in Self-Test Mode...');
@@ -172,6 +175,31 @@ if (isSelfTest) {
     });
 }
 
+if (selfCheckPath && fs.existsSync(selfCheckPath)) {
+    const raw = fs.readFileSync(selfCheckPath, 'utf8').trim();
+    selfCheckLines = raw ? raw.split('\n') : [];
+    const exitLine = selfCheckLines.find(line => line.startsWith('CONTRACT_SELF_CHECK_EXIT='));
+    if (exitLine) {
+        const parsedExit = parseInt(exitLine.split('=')[1], 10);
+        selfCheckExit = Number.isNaN(parsedExit) ? null : parsedExit;
+    }
+    if (selfCheckExit === 1) {
+        errors.push({
+            task_id: taskId,
+            mode: mode,
+            step: 'ContractSelfCheck',
+            error_class: 'CONTRACT_SELF_CHECK_FAIL',
+            exit_code: 1,
+            command: 'assemble_evidence.mjs',
+            ts: new Date().toISOString(),
+            stdout_tail: selfCheckLines.slice(0, 5).join(' | '),
+            stderr_tail: '',
+            is_test: false,
+            source: path.basename(selfCheckPath)
+        });
+    }
+}
+
 // Deduplicate errors (simple strategy: same error_class and source)
 // For now, keep all, but limit total count to avoid explosion?
 // Requirement says "limit length", implies tail.
@@ -215,6 +243,8 @@ const summaryContent = `TASK_ID: ${taskId}
 COMMIT: ${commit}
 TOTAL_ERRORS: ${errors.length}
 MODE: ${mode}
+CONTRACT_SELF_CHECK_EXIT: ${selfCheckExit ?? 'N/A'}
+CONTRACT_SELF_CHECK_LINES: ${selfCheckLines.length ? selfCheckLines.slice(0, 5).join(' | ') : 'N/A'}
 
 TOP ERROR CLASSES:
 ${topErrors || 'None'}
