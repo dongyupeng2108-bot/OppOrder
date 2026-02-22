@@ -15,10 +15,27 @@ console.log(`[Evidence Generator] Running generation for Task ${taskId}...`);
 try {
     const smokeOutput = execSync('node scripts/smoke_workspace_healer_static.mjs', { encoding: 'utf8' });
     const dodFile = path.join(evidenceDir, `dod_evidence_${taskId}.txt`);
+    const negativeTestBlock = [
+        '=== NEGATIVE_TEST_TASK_ID_BINDING ===',
+        '[BLOCK] TASK_ID_BINDING_FAILFAST',
+        'EXIT_CODE=1',
+        '----------',
+        '========== TASK_ID_BINDING_FAILFAST ==========',
+        'MODE=Integrate',
+        'ARG_TASK_ID=260222_002x',
+        'BRANCH_TASK_ID=260222_002',
+        'LATEST_TASK_ID=260222_002',
+        'FAIL_REASON=TASK_ID_MISMATCH',
+        'ACTION=Align branch name + run_task -TaskId + rules/LATEST.json to same task_id (including suffix if any)',
+        '==============================================',
+        '============================================='
+    ].join('\n');
     const evidenceContent = [
         '=== DOD_EVIDENCE_STDOUT ===',
         smokeOutput.trim(),
         '===========================',
+        '',
+        negativeTestBlock,
         ''
     ].join('\n');
     fs.writeFileSync(dodFile, evidenceContent);

@@ -256,14 +256,17 @@ if ($Mode -eq "Integrate") {
     if ($BranchTaskId -ne $TaskId -or $LatestTaskId -ne $TaskId) {
         $PreviousErrorActionPreference = $ErrorActionPreference
         $ErrorActionPreference = "Continue"
-        Write-Error "========== TASK_ID_BINDING_FAILFAST =========="
-        Write-Error "MODE=Integrate"
-        Write-Error "ARG_TASK_ID=$TaskId"
-        Write-Error "BRANCH_TASK_ID=$BranchTaskIdDisplay"
-        Write-Error "LATEST_TASK_ID=$LatestTaskId"
-        Write-Error "FAIL_REASON=TASK_ID_MISMATCH"
-        Write-Error "ACTION=Align branch name + run_task -TaskId + rules/LATEST.json to same task_id (including suffix if any)"
-        Write-Error "=============================================="
+        $FailfastBlock = @"
+========== TASK_ID_BINDING_FAILFAST ==========
+MODE=Integrate
+ARG_TASK_ID=$TaskId
+BRANCH_TASK_ID=$BranchTaskIdDisplay
+LATEST_TASK_ID=$LatestTaskId
+FAIL_REASON=TASK_ID_MISMATCH
+ACTION=Align branch name + run_task -TaskId + rules/LATEST.json to same task_id (including suffix if any)
+==============================================
+"@
+        Write-Error $FailfastBlock
         $ErrorActionPreference = $PreviousErrorActionPreference
         exit 1
     }
@@ -300,15 +303,18 @@ if ($Mode -eq "Integrate") {
         $FirstBlock = $BlockingPrs | Select-Object -First 1
         $PreviousErrorActionPreference = $ErrorActionPreference
         $ErrorActionPreference = "Continue"
-        Write-Error "========== AUTO_PR_TASK_MISMATCH =========="
-        Write-Error "MODE=Integrate"
-        Write-Error "ARG_TASK_ID=$TaskId"
-        Write-Error "CURRENT_BRANCH=$CurrentBranch"
-        Write-Error "BLOCKING_PR=#$($FirstBlock.number) $($FirstBlock.title)"
-        Write-Error "BLOCKING_BRANCH=$($FirstBlock.headRefName)"
-        Write-Error "FAIL_REASON=OPEN_PR_TASK_MISMATCH"
-        Write-Error "ACTION=Close non-matching open PRs or retitle/rebranch to current task_id; do not reuse old PR"
-        Write-Error "=========================================="
+        $OpenPrBlock = @"
+========== AUTO_PR_TASK_MISMATCH ==========
+MODE=Integrate
+ARG_TASK_ID=$TaskId
+CURRENT_BRANCH=$CurrentBranch
+BLOCKING_PR=#$($FirstBlock.number) $($FirstBlock.title)
+BLOCKING_BRANCH=$($FirstBlock.headRefName)
+FAIL_REASON=OPEN_PR_TASK_MISMATCH
+ACTION=Close non-matching open PRs or retitle/rebranch to current task_id; do not reuse old PR
+==========================================
+"@
+        Write-Error $OpenPrBlock
         $ErrorActionPreference = $PreviousErrorActionPreference
         exit 1
     }
