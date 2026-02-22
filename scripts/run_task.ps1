@@ -134,49 +134,6 @@ if ($Mode -eq "Integrate") {
 # --- Import Unified Command Executor ---
 . "$RepoRoot\scripts\ps\Invoke-Step.ps1"
 
-# --- 0. Fail Budget & Immutable Integrate Guard ---
-$YearMonth = Get-Date -Format "yyyy-MM"
-$BudgetFile = "$RepoRoot\rules\task-reports\$YearMonth\.budget_$TaskId.json"
-if (-not (Test-Path "$RepoRoot\rules\task-reports\$YearMonth")) {
-    New-Item -ItemType Directory -Path "$RepoRoot\rules\task-reports\$YearMonth" -Force | Out-Null
-}
-
-# Load Budget
-$Budget = @{ Dev = 0; Integrate = 0 }
-if (Test-Path $BudgetFile) {
-    try {
-        $Json = Get-Content $BudgetFile -Raw | ConvertFrom-Json
-        $Budget.Dev = $Json.Dev
-        $Budget.Integrate = $Json.Integrate
-    } catch {
-        Write-Warning "Failed to load budget file. Resetting."
-    }
-}
-
-# Increment & Check
-if ($Mode -eq "Dev") {
-    $Budget.Dev++
-    if ($Budget.Dev -gt 2) {
-        Write-Error "[RunTask] FAILED: Dev Fail Budget Exceeded ($($Budget.Dev)/2)."
-        Write-Error "    You have exhausted your 2 allowed Dev attempts for Task $TaskId."
-        Write-Error "    Action: Fix your code/logic and use a NEW Task ID."
-        $Budget | ConvertTo-Json | Set-Content $BudgetFile
-        exit 1
-    }
-} elseif ($Mode -eq "Integrate") {
-    $Budget.Integrate++
-    if ($Budget.Integrate -gt 1) {
-        Write-Error "[RunTask] FAILED: Integrate Fail Budget Exceeded ($($Budget.Integrate)/1)."
-        Write-Error "    Integrate mode is strictly One-Shot."
-        Write-Error "    Action: Use a NEW Task ID."
-        $Budget | ConvertTo-Json | Set-Content $BudgetFile
-        exit 1
-    }
-}
-
-# Save Budget
-$Budget | ConvertTo-Json | Set-Content $BudgetFile
-
 # --- 1. Immutable Integrate Guard (Fail-fast) ---
 if ($Mode -eq "Integrate") {
     $LockFile = "$RepoRoot\rules\task-reports\locks\$TaskId.lock.json"
@@ -356,6 +313,49 @@ Measure-Step -Key "workspace_healer" -Action {
 # --- Start Transcript (Log Everything) ---
 $LogFile = "$EvidenceDir\run_$TaskId.log"
 Start-Transcript -Path $LogFile -Force
+
+# --- 0. Fail Budget ---
+$YearMonth = Get-Date -Format "yyyy-MM"
+$BudgetFile = "$RepoRoot\rules\task-reports\$YearMonth\.budget_$TaskId.json"
+if (-not (Test-Path "$RepoRoot\rules\task-reports\$YearMonth")) {
+    New-Item -ItemType Directory -Path "$RepoRoot\rules\task-reports\$YearMonth" -Force | Out-Null
+}
+
+# Load Budget
+$Budget = @{ Dev = 0; Integrate = 0 }
+if (Test-Path $BudgetFile) {
+    try {
+        $Json = Get-Content $BudgetFile -Raw | ConvertFrom-Json
+        $Budget.Dev = $Json.Dev
+        $Budget.Integrate = $Json.Integrate
+    } catch {
+        Write-Warning "Failed to load budget file. Resetting."
+    }
+}
+
+# Increment & Check
+if ($Mode -eq "Dev") {
+    $Budget.Dev++
+    if ($Budget.Dev -gt 2) {
+        Write-Error "[RunTask] FAILED: Dev Fail Budget Exceeded ($($Budget.Dev)/2)."
+        Write-Error "    You have exhausted your 2 allowed Dev attempts for Task $TaskId."
+        Write-Error "    Action: Fix your code/logic and use a NEW Task ID."
+        $Budget | ConvertTo-Json | Set-Content $BudgetFile
+        exit 1
+    }
+} elseif ($Mode -eq "Integrate") {
+    $Budget.Integrate++
+    if ($Budget.Integrate -gt 1) {
+        Write-Error "[RunTask] FAILED: Integrate Fail Budget Exceeded ($($Budget.Integrate)/1)."
+        Write-Error "    Integrate mode is strictly One-Shot."
+        Write-Error "    Action: Use a NEW Task ID."
+        $Budget | ConvertTo-Json | Set-Content $BudgetFile
+        exit 1
+    }
+}
+
+# Save Budget
+$Budget | ConvertTo-Json | Set-Content $BudgetFile
 
 # --- Step 1: Preflight ---
 Write-Host ">>> [RunTask] Step 1: Preflight" -ForegroundColor Cyan
