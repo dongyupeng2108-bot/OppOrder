@@ -9,6 +9,9 @@ param (
     [Parameter(Mandatory=$false)]
     [string]$Header,
 
+    [Parameter(Mandatory=$false)]
+    [string]$RunId,
+
     [switch]$NonInteractive = $true,
 
     [Parameter(Mandatory=$false)]
@@ -101,6 +104,14 @@ $Script:SecondCiPassWatchMs = 0
 $Script:FailurePenaltyTotalMs = 0
 $Script:CiAttempts = 0
 $Script:SpeedEvidenceWritten = $false
+$Script:ExitCode = 0
+$Script:LastStep = ""
+$Script:ActiveStage = ""
+$Script:RunDir = ""
+$Script:TimelinePath = ""
+$Script:TranscriptPath = ""
+$Script:FailureSummaryFileName = ""
+$Script:StageWatches = @{}
 
 function Measure-Step {
     param([string]$Key, [scriptblock]$Action)
@@ -176,6 +187,39 @@ function Write-LfFile {
     [System.IO.File]::WriteAllText($Path, $Normalized, [System.Text.UTF8Encoding]::new($false))
 }
 
+function Append-TextUtf8 {
+    param([string]$Path, [string]$Line)
+    $Dir = Split-Path -Parent $Path
+    if (-not (Test-Path $Dir)) { New-Item -ItemType Directory -Path $Dir -Force | Out-Null }
+    $Normalized = $Line -replace "`r`n", "`n"
+    $Utf8 = New-Object System.Text.UTF8Encoding($false)
+    [System.IO.File]::AppendAllText($Path, $Normalized + "`n", $Utf8)
+}
+
+function StageStart {
+    param([string]$Name)
+    $Script:LastStep = $Name
+    $Script:ActiveStage = $Name
+    $Script:StageWatches[$Name] = Get-Date
+    $NowIso = (Get-Date).ToString("o")
+    $Line = "STAGE_START name=$Name at=$NowIso"
+    Write-Host $Line -ForegroundColor DarkGray
+    if ($Script:TimelinePath) { Append-TextUtf8 -Path $Script:TimelinePath -Line $Line }
+}
+
+function StageEnd {
+    param([string]$Name)
+    $Start = $null
+    if ($Script:StageWatches.ContainsKey($Name)) { $Start = $Script:StageWatches[$Name] }
+    $DurationMs = 0
+    if ($Start) { $DurationMs = [int]((Get-Date) - $Start).TotalMilliseconds }
+    $NowIso = (Get-Date).ToString("o")
+    $Line = "STAGE_END name=$Name at=$NowIso duration_ms=$DurationMs"
+    Write-Host $Line -ForegroundColor DarkGray
+    if ($Script:TimelinePath) { Append-TextUtf8 -Path $Script:TimelinePath -Line $Line }
+    if ($Script:ActiveStage -eq $Name) { $Script:ActiveStage = "" }
+}
+
 function Write-SpeedEvidence {
     param([string]$EvidenceDir, [string]$TaskId)
     if ($Mode -ne "Integrate") { return }
@@ -201,6 +245,10 @@ function Write-SpeedEvidence {
     }
     $SpeedWallJson = $SpeedWall | ConvertTo-Json -Depth 6
     Write-LfFile -Path $SpeedWallPath -Content $SpeedWallJson
+    if ($Script:RunDir) {
+        $RunSpeedWallPath = Join-Path $Script:RunDir ("speed_wall_{0}.json" -f $TaskId)
+        Write-LfFile -Path $RunSpeedWallPath -Content $SpeedWallJson
+    }
 
     $TopEntries = @()
     foreach ($Entry in $StepDurations.GetEnumerator()) {
@@ -339,6 +387,36 @@ $BranchName = ""
 try { $BranchName = (git rev-parse --abbrev-ref HEAD).Trim() } catch { $BranchName = "" }
 $BranchTaskId = Get-BranchTaskId -BranchName $BranchName
 $LatestTaskId = Read-LatestTaskId
+$Commit = ""
+try { $Commit = (git rev-parse HEAD).Trim() } catch { $Commit = "" }
+$ShortSha = if ($Commit -and $Commit.Length -ge 7) { $Commit.Substring(0, 7) } else { "unknown" }
+$RunIdProvided = $PSBoundParameters.ContainsKey("RunId") -and -not [string]::IsNullOrWhiteSpace($RunId)
+if (-not $RunIdProvided) { $RunId = (Get-Date).ToString("yyyyMMdd_HHmmss") + "_" + $ShortSha }
+Write-Host "RUN_ID=$RunId; TASK_ID=$TaskId; MODE=$Mode; BRANCH=$BranchName; HEAD=$ShortSha"
+
+if ($Mode -eq "Dev") {
+    $RunDir = Join-Path $Env:TEMP "OppRadar\runs\$TaskId\$RunId"
+} else {
+    $RunDir = Join-Path $RepoRoot "rules\task-reports\runs\$TaskId\$RunId"
+}
+New-Item -ItemType Directory -Path $RunDir -Force | Out-Null
+$Script:RunDir = $RunDir
+$Script:TimelinePath = Join-Path $RunDir ("timeline_{0}_{1}.log" -f $TaskId, $RunId)
+$Script:TranscriptPath = Join-Path $RunDir ("transcript_{0}_{1}.log" -f $TaskId, $RunId)
+$Script:RunChainPath = Join-Path $RunDir ("run_chain_{0}.jsonl" -f $TaskId)
+
+try {
+
+$RunChainStart = @{
+    event = "run_start"
+    run_id = $RunId
+    task_id = $TaskId
+    started_at = $Script:RunChainStartedAtIso
+    mode = $Mode
+    branch = $BranchName
+    head_sha = $ShortSha
+}
+Write-RunChainEntry -Record $RunChainStart
 
 if ($Mode -eq "Integrate") {
     if ([string]::IsNullOrWhiteSpace($BranchTaskId) -or $BranchTaskId -ne $TaskId) {
@@ -397,23 +475,6 @@ if ($GenerateScript) {
 }
 Write-Host "Evidence Dir: $EvidenceDir" -ForegroundColor Yellow
 $EvidenceDir = $EvidenceDir.Trim()
-$Script:RunChainPath = Join-Path $EvidenceDir "run_chain_$TaskId.jsonl"
-$RunChainStart = @{
-    task_id = $TaskId
-    mode = $Mode
-    branch = $BranchName
-    started_at = $Script:RunChainStartedAtIso
-    finished_at = ""
-    duration_ms = $null
-    ci_watch_ms = $null
-    error_class = ""
-    fail_reason = ""
-    did_autofix = $false
-    autofix_count = 0
-    did_autopr = $false
-    pr_number = ""
-}
-Write-RunChainEntry -Record $RunChainStart
 
 function PreassembleFailfast {
     param($EvidenceDir, $TaskId, $Mode, $GenerateScript)
@@ -493,10 +554,13 @@ function PreAssemblePrecheck {
     return $true
 }
 
-try {
-
 Write-Host ">>> [RunTask] TaskId: $TaskId | Mode: $Mode | Header: $Header" -ForegroundColor Cyan
 Write-Host ">>> [RunTask] Evidence Dir: $EvidenceDir" -ForegroundColor Gray
+
+# --- Start Transcript (Log Everything) ---
+$LogFile = $Script:TranscriptPath
+Start-Transcript -Path $LogFile -Append
+StageStart "preflight"
 
 # --- State Skeleton ---
 Write-Host "[State] INITIALIZING..." -ForegroundColor Cyan
@@ -542,10 +606,6 @@ Measure-Step -Key "workspace_healer" -Action {
         Write-Host "    Workspace Healer PASS. Output: $HealerEvidence" -ForegroundColor Gray
     }
 }
-
-# --- Start Transcript (Log Everything) ---
-$LogFile = "$EvidenceDir\run_$TaskId.log"
-Start-Transcript -Path $LogFile -Force
 
 # --- Step 1: Preflight ---
 Write-Host ">>> [RunTask] Step 1: Preflight" -ForegroundColor Cyan
@@ -658,7 +718,6 @@ if (Test-Path $ContractScript) {
 } else {
     Write-Host "[RunTask] Warning: Contract Verification script not found ($ContractScript)." -ForegroundColor Yellow
 }
-
 # --- Step 1.5: Healthcheck Evidence ---
 Write-Host ">>> [RunTask] Step 1.5: Healthcheck Evidence" -ForegroundColor Cyan
 $HealthRoot = "$EvidenceDir\${TaskId}_healthcheck_53122_root.txt"
@@ -672,6 +731,7 @@ Write-Host ">>> [RunTask] Step 1.6: CI Parity Probe" -ForegroundColor Cyan
 $ParityScript = "$RepoRoot\scripts\ci_parity_probe.mjs"
 $ParityCmd = @("node", $ParityScript, "--task_id", $TaskId, "--result_dir", $EvidenceDir)
 Invoke-Step -Name "CI Parity Probe" -Cmd $ParityCmd
+StageEnd "preflight"
 
 # --- Step 2 & 3: Evidence Generation & Pass 1 (with Retry Logic) ---
 Write-Host "[State] GENERATING EVIDENCE..." -ForegroundColor Cyan
@@ -709,6 +769,7 @@ function Run-Evidence-Gen-And-Preview {
 }
 
 # Run first attempt
+StageStart "pass1"
 Run-Evidence-Gen-And-Preview
 
 # Precheck
@@ -724,10 +785,9 @@ if (-not (PreAssemblePrecheck -EvidenceDir $EvidenceDir -TaskId $TaskId -Mode $M
 
 # --- Step 3.5: Error Digest (Pass 1) ---
 Write-Host ">>> [RunTask] Step 3.5: Error Digest (Pass 1)" -ForegroundColor Cyan
-$Commit = git rev-parse HEAD
-$ShortSha = $Commit.Substring(0, 7)
-$RunId = (Get-Date).ToString("yyyyMMddHHmmss") + "_" + $ShortSha
-Write-Host ">>> [RunTask] Generated Run ID: $RunId" -ForegroundColor Cyan
+if ([string]::IsNullOrWhiteSpace($Commit)) {
+    $Commit = (git rev-parse HEAD).Trim()
+}
 
 $DigestCmd = @("node", "$RepoRoot\scripts\error_digest.mjs", "--task_id", $TaskId, "--mode", $Mode, "--commit", $Commit, "--out_dir", $EvidenceDir)
 if (Test-Path "$EvidenceDir\gate_light_preview_$TaskId.log") { $DigestCmd += "--source_logs=$EvidenceDir\gate_light_preview_$TaskId.log" }
@@ -745,11 +805,12 @@ if ($Mode -eq "Integrate") {
     $ThreeStrikeCmd = @("node", "$RepoRoot\scripts\error_three_strike.mjs", "--run_id", $RunId)
     Invoke-Step -Name "Three-Strike Governance" -Cmd $ThreeStrikeCmd
 }
+StageEnd "pass1"
 
 # --- Step 4: Assemble Evidence ---
 if ($Mode -eq "Integrate") {
     Write-Host ">>> [RunTask] Step 4: Assemble Evidence" -ForegroundColor Cyan
-    $AssembleCmd = @("node", "$RepoRoot\scripts\assemble_evidence.mjs", "--task_id=$TaskId", "--evidence_dir=$EvidenceDir", "--mode=$Mode", "--phase=assemble")
+    $AssembleCmd = @("node", "$RepoRoot\scripts\assemble_evidence.mjs", "--task_id=$TaskId", "--evidence_dir=$EvidenceDir", "--mode=$Mode", "--phase=assemble", "--run_id=$RunId")
     Measure-Step -Key "assemble_evidence" -Action { Invoke-Step -Name "Assemble Evidence" -Cmd $AssembleCmd }
 } else {
     Write-Host ">>> [RunTask] Step 4: Skip Assemble Evidence (Dev Mode)" -ForegroundColor Yellow
@@ -761,7 +822,9 @@ if ($Mode -eq "Integrate" -and $AutoPR) {
     
     $WatchScript = "$RepoRoot\scripts\ci_watch_pr.mjs"
     $FixScript = "$RepoRoot\scripts\ci_autofix_pack.mjs"
+    StageStart "autopr_create"
     $Script:DidAutoPr = $true
+    StageEnd "autopr_create"
     
     Measure-Step -Key "ci_watch" -Action {
         $CurrentFixCount = 0
@@ -778,12 +841,14 @@ if ($Mode -eq "Integrate" -and $AutoPR) {
             
             Write-Host ">>> [AutoPR] Running CI Watch..." -ForegroundColor Cyan
             $WatchArgs = @("$WatchScript", "--task_id", "$TaskId", "--attempt", "$CurrentAttempt", "--max_attempts", "$($AutoFixMax + 1)", "--result_dir", "$EvidenceDir")
+            StageStart "ci_watch"
             $WatchTimer = [System.Diagnostics.Stopwatch]::StartNew()
             $WatchProcess = Start-Process -FilePath "node" -ArgumentList $WatchArgs -NoNewWindow -PassThru -Wait
             $WatchTimer.Stop()
             $WatchElapsed = [int]$WatchTimer.ElapsedMilliseconds
             $Script:CiWatchMs += $WatchElapsed
             $ExitCode = $WatchProcess.ExitCode
+            StageEnd "ci_watch"
             
             if ($ExitCode -eq 0) {
                 Write-Host "[AutoPR] CI Passed!" -ForegroundColor Green
@@ -840,10 +905,12 @@ if ($Mode -eq "Integrate" -and $AutoPR) {
                     Write-Host "[AutoPR] Attempting AutoFix ($CurrentFixCount/$AutoFixMax)..." -ForegroundColor Yellow
                     
                     Write-Host ">>> [AutoPR] Running AutoFix..." -ForegroundColor Cyan
+                    StageStart "autofix"
                     $FixTimer = [System.Diagnostics.Stopwatch]::StartNew()
                     $FixProcess = Start-Process -FilePath "node" -ArgumentList "$FixScript", "--task_id", "$TaskId" -NoNewWindow -PassThru -Wait
                     $FixTimer.Stop()
                     if ($Script:AutoFixApplyMs -eq 0) { $Script:AutoFixApplyMs = [int]$FixTimer.ElapsedMilliseconds }
+                    StageEnd "autofix"
                     
                     if ($FixProcess.ExitCode -ne 0) {
                         Write-Error "[AutoPR] AutoFix failed with exit code $($FixProcess.ExitCode)."
@@ -867,7 +934,9 @@ if ($Mode -eq "Integrate") {
     Write-Host ">>> [RunTask] Step 5: Pass 2 - Gate Light Verify" -ForegroundColor Cyan
     $VerifyLog = "$EvidenceDir\gate_light_verify_$TaskId.log"
     $Pass2Cmd = @("node", "$RepoRoot\scripts\gate_light_ci.mjs", "--task_id", $TaskId, "--mode", $Mode, "--result_dir", $EvidenceDir, "--run_id", $RunId)
+    StageStart "pass2_verify"
     Measure-Step -Key "pass2_verify" -Action { Invoke-Step -Name "Pass 2 - Gate Light Verify" -Cmd $Pass2Cmd -RedirectTo $VerifyLog }
+    StageEnd "pass2_verify"
     Write-Host "    Verify Log: $VerifyLog" -ForegroundColor Gray
 } else {
     Write-Host ">>> [RunTask] Step 5: Skip Pass 2 Verify (Dev Mode)" -ForegroundColor Yellow
@@ -875,6 +944,7 @@ if ($Mode -eq "Integrate") {
 
 # --- Step 6: Postflight (Integrate Only) ---
 if ($Mode -eq "Integrate") {
+    StageStart "postflight"
     Write-Host "[State] POSTFLIGHT..." -ForegroundColor Cyan
     Write-Host ">>> [RunTask] Step 6: Postflight (Integrate)" -ForegroundColor Cyan
     $PostflightScript = "$RepoRoot\scripts\postflight_validate_envelope.mjs"
@@ -893,19 +963,23 @@ if ($Mode -eq "Integrate") {
     if (Test-Path "$EvidenceDir\gate_light_verify_$TaskId.log") { $DigestCmd2 += "--source_logs=$EvidenceDir\gate_light_verify_$TaskId.log" }
     if (Test-Path "$EvidenceDir\command_audit_$TaskId.jsonl") { $DigestCmd2 += "--source_logs=$EvidenceDir\command_audit_$TaskId.jsonl" }
     Invoke-Step -Name "Error Digest (Pass 2)" -Cmd $DigestCmd2
+    StageEnd "postflight"
 
     # --- Step 7: Update Evidence with Verify Logs (Integrate Only) ---
+    StageStart "update_evidence"
     Write-Host ">>> [RunTask] Step 7: Update Evidence with Verify Logs" -ForegroundColor Cyan
     # Overwrite Preview Log with Verify Log
     Copy-Item -Path $VerifyLog -Destination "$EvidenceDir\gate_light_preview_$TaskId.log" -Force
     
     # Re-run Assemble Evidence
     Write-SpeedEvidence -EvidenceDir $EvidenceDir -TaskId $TaskId
-    $UpdateCmd = @("node", "$RepoRoot\scripts\assemble_evidence.mjs", "--task_id=$TaskId", "--evidence_dir=$EvidenceDir", "--mode=$Mode", "--phase=assemble")
+    $UpdateCmd = @("node", "$RepoRoot\scripts\assemble_evidence.mjs", "--task_id=$TaskId", "--evidence_dir=$EvidenceDir", "--mode=$Mode", "--phase=assemble", "--run_id=$RunId")
     Invoke-Step -Name "Update Evidence" -Cmd $UpdateCmd
     Write-Host "    Updated notify and index with Verify logs." -ForegroundColor Gray
+    StageEnd "update_evidence"
 
     # --- Step 8: Archive & Lock (Integrate Only) ---
+    StageStart "archive"
     Write-Host "[State] ARCHIVING..." -ForegroundColor Cyan
     Write-Host ">>> [RunTask] Step 8: Archive & Lock" -ForegroundColor Cyan
     
@@ -915,16 +989,17 @@ if ($Mode -eq "Integrate") {
     Invoke-Step -Name "Evidence Smoke Test" -Cmd $SmokeCmd
     Write-Host "    Evidence Smoke Test PASS." -ForegroundColor Gray
 
-    Stop-Transcript
-
     # --- Step 8.2: Execute Archive ---
     $ArchiveCmd = @("node", "$RepoRoot\scripts\assemble_evidence.mjs", "--task_id=$TaskId", "--evidence_dir=$EvidenceDir", "--mode=$Mode", "--phase=archive", "--run_id=$RunId")
     Invoke-Step -Name "Archive & Lock" -Cmd $ArchiveCmd
     Write-Host "    Archived evidence and locked task." -ForegroundColor Gray
+    StageEnd "archive"
 
 }
 
 Write-Host ">>> [RunTask] SUCCESS: Task $TaskId ($Mode) Completed." -ForegroundColor Green
+$Script:ExitCode = 0
+$Script:LastStep = "success"
 } catch {
     Write-Host "[RunTask] FAILED: Script execution error: $_" -ForegroundColor Red
     $ErrorHistoryPath = Join-Path $HistoryRoot "error_history.jsonl"
@@ -986,10 +1061,13 @@ Write-Host ">>> [RunTask] SUCCESS: Task $TaskId ($Mode) Completed." -ForegroundC
         if ($ReportPath) { Write-Host "Escalation report generated: $ReportPath" -ForegroundColor Yellow }
     }
 
+    $Script:ExitCode = 1
+    if ($Script:ActiveStage) { $Script:LastStep = $Script:ActiveStage }
     exit 1
 } finally {
     try {
         if ($Script:RunChainWatch) { $Script:RunChainWatch.Stop() }
+        if ($Script:ActiveStage) { StageEnd $Script:ActiveStage }
         $AutoPrPath = "$EvidenceDir\auto_pr_$TaskId.json"
         $AutoPrJson = Read-JsonSafe -Path $AutoPrPath
         $PrNumber = ""
@@ -998,20 +1076,38 @@ Write-Host ">>> [RunTask] SUCCESS: Task $TaskId ($Mode) Completed." -ForegroundC
         }
         $DidAutoFix = $false
         if ($Script:AutoFixCount -gt 0) { $DidAutoFix = $true }
+        $FailureSummaryFile = ""
+        if ($Script:ExitCode -ne 0) {
+            $FailureSummaryFile = "failure_summary_{0}_{1}.json" -f $TaskId, $RunId
+            $FailureSummaryPath = Join-Path $Script:RunDir $FailureSummaryFile
+            $FailureSummary = [ordered]@{
+                run_id = $RunId
+                task_id = $TaskId
+                exit_code = $Script:ExitCode
+                last_step = $Script:LastStep
+                error_class = $Script:RunChainErrorClass
+                fail_reason = $Script:RunChainFailReason
+                head_sha = $ShortSha
+            }
+            $FailureSummaryJson = $FailureSummary | ConvertTo-Json -Depth 6
+            Write-LfFile -Path $FailureSummaryPath -Content $FailureSummaryJson
+            $Script:FailureSummaryFileName = $FailureSummaryFile
+        }
+        $FinalStep = if ($Script:ActiveStage) { $Script:ActiveStage } else { $Script:LastStep }
         $RunChainEnd = @{
+            event = "run_end"
+            run_id = $RunId
             task_id = $TaskId
-            mode = $Mode
-            branch = $BranchName
-            started_at = $Script:RunChainStartedAtIso
             finished_at = (Get-Date).ToString("o")
             duration_ms = [int]$Script:RunChainWatch.ElapsedMilliseconds
-            ci_watch_ms = $Script:CiWatchMs
+            exit_code = $Script:ExitCode
+            last_step = $FinalStep
             error_class = $Script:RunChainErrorClass
             fail_reason = $Script:RunChainFailReason
-            did_autofix = $DidAutoFix
-            autofix_count = $Script:AutoFixCount
             did_autopr = $Script:DidAutoPr
             pr_number = $PrNumber
+            ci_watch_ms = $Script:CiWatchMs
+            failure_summary_file = $Script:FailureSummaryFileName
         }
         Write-RunChainEntry -Record $RunChainEnd
     } catch {}
