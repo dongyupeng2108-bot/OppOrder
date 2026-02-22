@@ -1,0 +1,23 @@
+{
+  "task_id": "260222_001j",
+  "branch": "feat/preview-single-source-260222_001j",
+  "pr_number": 152,
+  "pr_url": "https://github.com/dongyupeng2108-bot/OppOrder/pull/152",
+  "head": "feat/preview-single-source-260222_001j",
+  "base": "main",
+  "attempt": 1,
+  "autofix_max": 1,
+  "status": "OPEN",
+  "final_state": "FAIL",
+  "timestamp": "2026-02-22T04:26:43.435Z",
+  "checks_summary": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "pending": 0,
+    "details": [
+      "gate-light-check: FAILURE"
+    ]
+  },
+  "error": null
+}
