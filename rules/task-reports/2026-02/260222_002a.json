@@ -1,0 +1,33 @@
+{
+  "task_id": "260222_002a",
+  "timestamp": "2026-02-22T04:59:57.739Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "smoke_test": "PASS",
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260222_002a",
+      "status": "DONE",
+      "summary": "Automation Pack V1 Validation for Task 260222_002a",
+      "dod_evidence": {
+        "manual_verification": true,
+        "gate_light_exit": 0,
+        "healthcheck": [
+          "rules/task-reports/2026-02/260222_002a_healthcheck_53122_root.txt",
+          "rules/task-reports/2026-02/260222_002a_healthcheck_53122_pairs.txt"
+        ]
+      },
+      "report_file": "notify_260222_002a.txt",
+      "report_sha256_short": "beec8627",
+      "mode": "Integrate"
+    }
+  }
+}
