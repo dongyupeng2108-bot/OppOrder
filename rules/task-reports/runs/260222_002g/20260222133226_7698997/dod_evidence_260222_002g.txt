@@ -1,0 +1,18 @@
+=== DOD_EVIDENCE_STDOUT ===
+[Smoke] Checking scripts/reset_workspace.ps1...
+[Smoke] PASS: Static checks passed.
+===========================
+
+=== NEGATIVE_TEST_TASK_ID_BINDING ===
+[BLOCK] TASK_ID_BINDING_FAILFAST
+EXIT_CODE=1
+----------
+========== TASK_ID_BINDING_FAILFAST ==========
+MODE=Integrate
+ARG_TASK_ID=260222_002gx
+BRANCH_TASK_ID=260222_002g
+LATEST_TASK_ID=260222_002g
+FAIL_REASON=TASK_ID_MISMATCH
+ACTION=Align branch name + run_task -TaskId + rules/LATEST.json to same task_id (including suffix if any)
+==============================================
+=============================================
