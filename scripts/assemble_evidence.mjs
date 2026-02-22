@@ -65,7 +65,10 @@ if (missingInputs.length > 0) {
 }
 
 // Helper to read text
-const readText = (path) => fs.readFileSync(path, 'utf8').trim();
+const readText = (path) => fs.readFileSync(path, 'utf8')
+    .replace(/^\uFEFF/, '')
+    .replace(/\r\n/g, '\n')
+    .trim();
 // Helper to read JSON
 const readJson = (path) => JSON.parse(fs.readFileSync(path, 'utf8').replace(/^\uFEFF/, ''));
 const hasBomText = (text) => text.charCodeAt(0) === 0xFEFF;
