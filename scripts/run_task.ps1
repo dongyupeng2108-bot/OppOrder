@@ -61,6 +61,7 @@ $Timing = [ordered]@{
     assemble_evidence = 0
     pass2_verify = 0
     ci_watch = 0
+    postflight = 0
     total = 0
 }
 $TimingStartedAt = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
@@ -563,11 +564,13 @@ if ($Mode -eq "Integrate") {
     Write-Host "[State] POSTFLIGHT..." -ForegroundColor Cyan
     Write-Host ">>> [RunTask] Step 6: Postflight (Integrate)" -ForegroundColor Cyan
     $PostflightScript = "$RepoRoot\scripts\postflight_validate_envelope.mjs"
-    if (Test-Path $PostflightScript) {
-        $PostCmd = @("node", $PostflightScript, "--task_id", $TaskId, "--result_dir", $EvidenceDir)
-        Invoke-Step -Name "Postflight" -Cmd $PostCmd -RedirectTo $VerifyLog -Append
-    } else {
-        Write-Host "    Warning: Postflight script not found." -ForegroundColor Yellow
+    Measure-Step -Key "postflight" -Action {
+        if (Test-Path $PostflightScript) {
+            $PostCmd = @("node", $PostflightScript, "--task_id", $TaskId, "--result_dir", $EvidenceDir)
+            Invoke-Step -Name "Postflight" -Cmd $PostCmd -RedirectTo $VerifyLog -Append
+        } else {
+            Write-Host "    Warning: Postflight script not found." -ForegroundColor Yellow
+        }
     }
 
     # --- Step 6.5: Error Digest (Pass 2) ---
