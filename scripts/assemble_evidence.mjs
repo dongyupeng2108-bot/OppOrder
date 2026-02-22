@@ -68,15 +68,15 @@ if (missingInputs.length > 0) {
 const readText = (path) => fs.readFileSync(path, 'utf8').trim();
 // Helper to read JSON
 const readJson = (path) => JSON.parse(fs.readFileSync(path, 'utf8').replace(/^\uFEFF/, ''));
-const hasBom = (text) => text.charCodeAt(0) === 0xFEFF;
-const hasCrlf = (text) => text.includes('\r\n');
+const hasBomText = (text) => text.charCodeAt(0) === 0xFEFF;
+const hasCrlfText = (text) => text.includes('\r\n');
 const failPreviewEncoding = (label) => {
     console.error('FAIL_REASON=PREVIEW_ENCODING');
     console.error(label);
     process.exit(1);
 };
 const ensurePreviewEncoding = (text, label) => {
-    if (hasBom(text) || hasCrlf(text)) {
+    if (hasBomText(text) || hasCrlfText(text)) {
         failPreviewEncoding(label);
     }
 };
