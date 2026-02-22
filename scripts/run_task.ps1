@@ -175,8 +175,18 @@ function Append-JsonlUtf8 {
     param([string]$Path, [string]$Line)
     $Dir = Split-Path -Parent $Path
     if (-not (Test-Path $Dir)) { New-Item -ItemType Directory -Path $Dir -Force | Out-Null }
+    $Normalized = $Line -replace "`r`n", "`n"
+    if (-not $Normalized.EndsWith("`n")) { $Normalized += "`n" }
     $Utf8 = New-Object System.Text.UTF8Encoding($false)
-    [System.IO.File]::AppendAllText($Path, $Line + "`n", $Utf8)
+    $Stream = [System.IO.File]::Open($Path, [System.IO.FileMode]::Append, [System.IO.FileAccess]::Write, [System.IO.FileShare]::Read)
+    try {
+        $Writer = New-Object System.IO.StreamWriter($Stream, $Utf8)
+        $Writer.AutoFlush = $true
+        $Writer.Write($Normalized)
+        $Writer.Flush()
+    } finally {
+        if ($Writer) { $Writer.Dispose() } else { $Stream.Dispose() }
+    }
 }
 
 function Write-LfFile {
@@ -192,8 +202,17 @@ function Append-TextUtf8 {
     $Dir = Split-Path -Parent $Path
     if (-not (Test-Path $Dir)) { New-Item -ItemType Directory -Path $Dir -Force | Out-Null }
     $Normalized = $Line -replace "`r`n", "`n"
+    if (-not $Normalized.EndsWith("`n")) { $Normalized += "`n" }
     $Utf8 = New-Object System.Text.UTF8Encoding($false)
-    [System.IO.File]::AppendAllText($Path, $Normalized + "`n", $Utf8)
+    $Stream = [System.IO.File]::Open($Path, [System.IO.FileMode]::Append, [System.IO.FileAccess]::Write, [System.IO.FileShare]::Read)
+    try {
+        $Writer = New-Object System.IO.StreamWriter($Stream, $Utf8)
+        $Writer.AutoFlush = $true
+        $Writer.Write($Normalized)
+        $Writer.Flush()
+    } finally {
+        if ($Writer) { $Writer.Dispose() } else { $Stream.Dispose() }
+    }
 }
 
 function StageStart {
