@@ -1,0 +1,23 @@
+{
+  "task_id": "260222_003a",
+  "branch": "feat/speed-baseline-260222_003a",
+  "pr_number": 157,
+  "pr_url": "https://github.com/dongyupeng2108-bot/OppOrder/pull/157",
+  "head": "feat/speed-baseline-260222_003a",
+  "base": "main",
+  "attempt": 1,
+  "autofix_max": 0,
+  "status": "OPEN",
+  "final_state": "FAIL",
+  "timestamp": "2026-02-22T09:57:50.239Z",
+  "checks_summary": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "pending": 0,
+    "details": [
+      "gate-light-check: FAILURE"
+    ]
+  },
+  "error": null
+}
