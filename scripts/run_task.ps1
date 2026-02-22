@@ -50,7 +50,7 @@ if ($NonInteractive) {
 }
 
 $RepoRoot = "E:\OppRadar"
-$HistoryRoot = if ($Mode -eq "Integrate") { "$RepoRoot\rules\task-reports\index" } else { Join-Path $Env:TEMP "oppradar_history" }
+$HistoryRoot = Join-Path $Env:TEMP "oppradar_history"
 $LatestJsonPath = "$RepoRoot\rules\LATEST.json"
 $LatestJsonRaw = $null
 if ($Mode -eq "Dev" -and (Test-Path $LatestJsonPath)) { $LatestJsonRaw = Get-Content $LatestJsonPath -Raw }
