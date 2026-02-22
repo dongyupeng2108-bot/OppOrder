@@ -1,0 +1,30 @@
+{
+    "mode":  "EnforceClean",
+    "branch":  "feat/task-r-error-tiering-260222_004x",
+    "cleaned_paths":  [
+                          "rules/task-reports",
+                          "rules/reports",
+                          "data/opps_ledger",
+                          "rules/task-reports/locks",
+                          "rules/task-reports/runs"
+                      ],
+    "after":  {
+                  "untracked_count":  0,
+                  "tracked_changed_count":  0,
+                  "sample_paths":  {
+
+                                   }
+              },
+    "head_commit":  "1e39cefc295f7fb557e6d8f9d852afb880ad7414",
+    "before":  {
+                   "untracked_count":  0,
+                   "tracked_changed_count":  0,
+                   "sample_paths":  {
+
+                                    }
+               },
+    "repo_root":  "E:/OppRadar",
+    "reason":  null,
+    "result":  "PASS"
+}
+

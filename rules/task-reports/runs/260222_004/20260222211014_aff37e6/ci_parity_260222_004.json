@@ -1,0 +1,20 @@
+{
+  "task_id": "260222_004",
+  "is_shallow_repo": true,
+  "base": "648b0a98d6f43dd6fd270df4fa49580ca26ee945",
+  "head": "aff37e62e0ed7e77fb5b6ec93e0fa3f81b0bcc07",
+  "merge_base": "adce52e8af6841cacacf55b3e54f8f39cd4f0a3a",
+  "scope_files": [
+    "rules/rules/PROJECT_RULES.md",
+    "rules/rules/WORKFLOW.md",
+    "rules/task-reports/2026-02/generate_evidence_260222_004.mjs",
+    "scripts/ci_watch_pr.mjs",
+    "scripts/error_digest.mjs",
+    "scripts/error_tiering.mjs",
+    "scripts/escalation_report.mjs",
+    "scripts/run_task.ps1",
+    "scripts/test_error_tiering.mjs"
+  ],
+  "scope_count": 9,
+  "generated_at": "2026-02-22T13:11:06.513Z"
+}
