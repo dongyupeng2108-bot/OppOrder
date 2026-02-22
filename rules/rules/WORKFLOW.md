@@ -105,6 +105,11 @@ Before starting any new task, the Agent MUST perform these checks:
 
 task_id（任务标识）允许格式：`YYMMDD_NNN` + 可选 1 位字母后缀（用于 rerun/patch（重跑/补丁））。Gate Light（门禁）/CI（持续集成）必须解析完整 task_id（含后缀），作为 PR（拉取请求）任务锁定（task lock）与证据路径定位依据。
 
+**Integrate 入口强绑定与前置缺口 fail-fast（快速失败）**：
+*   **单一事实源**：分支/PR task_id 作为唯一事实源；`ARG_TASK_ID` 与 `rules/LATEST.json` 必须一致，不一致立即退出。
+*   **入口强绑定**：`BRANCH_TASK_ID == ARG_TASK_ID == LATEST_TASK_ID` 必须在 Integrate 最前置校验，≤3秒 fail-fast。
+*   **PreAssemble fail-fast**：在 Gate Light/Contract/CI Watch 前检查 `generate_evidence_<task_id>.mjs` 与最小三件套（`dod_evidence`/`git_meta`/`result`），任一缺失立即退出。
+
 *   **Automation Pack V1 Workflow (Standard for M4+)**:
     The `scripts/run_task.ps1` pipeline automates the Two-Phase Rhythm.
 

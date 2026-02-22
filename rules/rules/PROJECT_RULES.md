@@ -85,6 +85,10 @@
 - **Atomic Evidence Rule (Evidence Integrity)**:
   - ANY modification to `notify`, `result`, `preview`, or `healthcheck` files MUST be immediately followed by a regeneration of `deliverables_index.json` and `envelope.json`.
   - Gate Light enforces strict hash binding (`POSTFLIGHT_REPORT_BINDING_MISMATCH`).
+- **Task ID 单一事实源**:
+  - 分支/PR task_id 为唯一事实源；`ARG_TASK_ID` 与 `rules/LATEST.json` 必须同步。
+  - Integrate 入口必须先校验 `BRANCH_TASK_ID == ARG_TASK_ID == LATEST_TASK_ID`，不一致立即 fail-fast。
+  - PreAssemble fail-fast 必须在 Gate Light/Contract/CI Watch 之前校验生成器与最小三件套。
 - **Cross-Platform Hard Rules**:
   - **LF Normalization**: All text-based evidence files (`.txt`, `.json`, `.log`) MUST use LF (Line Feed) line endings. Scripts must enforce `.replace(/\r\n/g, '\n')` before hashing.
   - **No UTF-16/NUL**: PROHIBIT PowerShell default redirection (`>`) which creates UTF-16/BOM. MUST use `Set-Content -Encoding UTF8` or `curl.exe --output` or Node.js `fs.writeFileSync`.

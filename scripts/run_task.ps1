@@ -51,6 +51,58 @@ if ($NonInteractive) {
 
 $RepoRoot = "E:\OppRadar"
 
+function Get-BranchTaskId {
+    param([string]$BranchName)
+    $Matches = [regex]::Matches($BranchName, "\d{6}_\d{3}[a-z]?")
+    if ($Matches.Count -gt 0) {
+        return $Matches[$Matches.Count - 1].Value
+    }
+    return ""
+}
+
+function Read-LatestTaskId {
+    $LatestFile = "$RepoRoot\rules\LATEST.json"
+    if (-not (Test-Path $LatestFile)) {
+        return ""
+    }
+    try {
+        $LatestJson = Get-Content $LatestFile -Raw | ConvertFrom-Json
+        if ($null -ne $LatestJson.task_id) {
+            return $LatestJson.task_id.ToString().Trim()
+        }
+    } catch {
+        return ""
+    }
+    return ""
+}
+
+function Write-TaskIdBindingFailfast {
+    param([string]$ArgTaskId, [string]$BranchTaskId, [string]$LatestTaskId)
+    Write-Host "========== TASK_ID_BINDING_FAILFAST =========="
+    Write-Host "MODE=Integrate"
+    Write-Host "ARG_TASK_ID=$ArgTaskId"
+    Write-Host "BRANCH_TASK_ID=$BranchTaskId"
+    Write-Host "LATEST_TASK_ID=$LatestTaskId"
+    Write-Host "FAIL_REASON=TASK_ID_MISMATCH"
+    Write-Host "ACTION=Align branch name + run_task -TaskId + rules/LATEST.json to same task_id (including suffix if any)"
+    Write-Host "=============================================="
+}
+
+if ($Mode -eq "Integrate") {
+    $BranchName = ""
+    try {
+        $BranchName = (git rev-parse --abbrev-ref HEAD).Trim()
+    } catch {
+        $BranchName = ""
+    }
+    $BranchTaskId = Get-BranchTaskId -BranchName $BranchName
+    $LatestTaskId = Read-LatestTaskId
+    if ([string]::IsNullOrWhiteSpace($BranchTaskId) -or [string]::IsNullOrWhiteSpace($LatestTaskId) -or $BranchTaskId -ne $TaskId -or $LatestTaskId -ne $TaskId) {
+        Write-TaskIdBindingFailfast -ArgTaskId $TaskId -BranchTaskId $BranchTaskId -LatestTaskId $LatestTaskId
+        exit 1
+    }
+}
+
 # --- Import Unified Command Executor ---
 . "$RepoRoot\scripts\ps\Invoke-Step.ps1"
 
@@ -144,6 +196,48 @@ if ($GenerateScript) {
 }
 Write-Host "Evidence Dir: $EvidenceDir" -ForegroundColor Yellow
 $EvidenceDir = $EvidenceDir.Trim()
+
+function PreassembleFailfast {
+    param($EvidenceDir, $TaskId, $Mode, $GenerateScript)
+    if ($Mode -ne "Integrate") {
+        return
+    }
+    if (-not $GenerateScript) {
+        $YearMonth = Get-Date -Format "yyyy-MM"
+        Write-Host "========== PREASSEMBLE_FAILFAST =========="
+        Write-Host "MODE=Integrate"
+        Write-Host "TASK_ID=$TaskId"
+        Write-Host "FAIL_REASON=GENERATE_EVIDENCE_SCRIPT_MISSING"
+        Write-Host "ACTION=Create rules/task-reports/$YearMonth/generate_evidence_${TaskId}.mjs to generate result/git_meta/dod_evidence before Integrate"
+        Write-Host "=========================================="
+        exit 1
+    }
+    $RequiredMin = @(
+        "result_${TaskId}.json",
+        "git_meta_${TaskId}.json",
+        "dod_evidence_${TaskId}.txt"
+    )
+    $MissingMin = @()
+    foreach ($File in $RequiredMin) {
+        if (-not (Test-Path "$EvidenceDir\$File")) {
+            $MissingMin += $File
+        }
+    }
+    if ($MissingMin.Count -gt 0) {
+        $MissingList = $MissingMin -join ","
+        Write-Host "========== PREASSEMBLE_FAILFAST =========="
+        Write-Host "MODE=Integrate"
+        Write-Host "TASK_ID=$TaskId"
+        Write-Host "FAIL_REASON=MIN_SET_MISSING"
+        Write-Host "MISSING=$MissingList"
+        Write-Host "ACTION=Run generate_evidence_${TaskId}.mjs (or fix it) to produce missing files before Integrate"
+        Write-Host "=========================================="
+        exit 1
+    }
+    Write-Host "PREASSEMBLE_FAILFAST=PASS"
+}
+
+PreassembleFailfast -EvidenceDir $EvidenceDir -TaskId $TaskId -Mode $Mode -GenerateScript $GenerateScript
 
 # --- Start Transcript (Log Everything) ---
 $LogFile = "$EvidenceDir\run_$TaskId.log"
