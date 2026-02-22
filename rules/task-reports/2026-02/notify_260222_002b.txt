@@ -1,0 +1,293 @@
+Trae Task Report
+Task ID: 260222_002b
+Header: TraeTask_260222_002b
+Date: 2026-02-22T09:06:04.813Z
+Branch: feat/taskid-single-source-260222_002b
+Commit: cd2b00f2c7f9aa5a7ca526cde151ebe36d20f72e
+
+
+=== RESULT_JSON ===
+(See result_260222_002b.json)
+
+=== LOG_HEAD ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260222_002b
+PR_TASK_ID_DETECTED=260222_002b
+TARGET_TASK_ID=260222_002b
+LATEST_TASK_ID=260222_002b
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] Verifying task_id: 260222_002b
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Report Block Check Passed: notify_260222_002b.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260222_002b.txt
+[Gate Light] Header Check Passed: TraeTask_260222_002b
+[Gate Light] Preflight Attestation verified (Integrate Mode).
+[Gate Light] Checking Open PR Guard Evidence...
+[Gate Light] Recalculating Open PR Guard status...
+[Gate Light] Open PR Guard Recalculation verified (PASS).
+[Gate Light] Open PR Guard verified (blocking_count=0).
+[Gate Light] Checking Workspace Healer Evidence...
+[Gate Light] Workspace Healer verified (Clean Environment).
+[Gate Light] Checking AutoPR Evidence...
+[Gate Light] AutoPR verified (State: PASS, Attempt: 2).
+...
+
+=== LOG_TAIL ===
+...
+[Gate Light] Three-Strike recalculation verified.
+[Gate Light] Executing: node scripts/postflight_validate_envelope.mjs --task_id 260222_002b --result_dir E:\OppRadar\rules\task-reports\2026-02 --report_dir E:\OppRadar\rules\task-reports\2026-02
+[Postflight] Validating 260222_002b in E:\OppRadar\rules\task-reports\2026-02...
+[Postflight] Running Evidence Smoke Test for 260222_002b...
+[SmokeTest] Running Evidence Smoke Test for Task 260222_002b in E:\OppRadar\rules\task-reports\2026-02...
+[SmokeTest] PASS: All 19 required files exist and manifest is valid.
+[Postflight] Report: E:\OppRadar\rules\task-reports\2026-02\260222_002b.json
+[Postflight] Envelope: E:\OppRadar\rules\task-reports\envelopes\260222_002b.envelope.json
+[Postflight] PASS
+[Gate Light] PASS
+
+From https://github.com/dongyupeng2108-bot/OppOrder
+ * branch              main       -> FETCH_HEAD
+[Postflight] Validating 260222_002b in E:\OppRadar\rules\task-reports\2026-02...
+[Postflight] Running Evidence Smoke Test for 260222_002b...
+[SmokeTest] Running Evidence Smoke Test for Task 260222_002b in E:\OppRadar\rules\task-reports\2026-02...
+[SmokeTest] PASS: All 19 required files exist and manifest is valid.
+[Postflight] Report: E:\OppRadar\rules\reports\postflight\260222_002b.json
+[Postflight] Envelope: E:\OppRadar\rules\reports\envelopes\260222_002b.envelope.json
+[Postflight] PASS
+
+=== INDEX ===
+(See deliverables_index_260222_002b.json)
+
+=== DOD_EVIDENCE_STDOUT ===
+[Smoke] Checking scripts/reset_workspace.ps1...
+[Smoke] PASS: Static checks passed.
+===========================
+
+=== NEGATIVE_TEST_TASK_ID_BINDING ===
+[BLOCK] TASK_ID_BINDING_FAILFAST
+EXIT_CODE=1
+----------
+========== TASK_ID_BINDING_FAILFAST ==========
+MODE=Integrate
+ARG_TASK_ID=260222_002bx
+BRANCH_TASK_ID=260222_002b
+LATEST_TASK_ID=260222_002b
+FAIL_REASON=TASK_ID_MISMATCH
+ACTION=Align branch name + run_task -TaskId + rules/LATEST.json to same task_id (including suffix if any)
+==============================================
+=============================================
+
+=== NEGATIVE_TEST_PREASSEMBLE ===
+[BLOCK] PREASSEMBLE_FAILFAST
+EXIT_CODE=1
+----------
+========== PREASSEMBLE_FAILFAST ==========
+MODE=Integrate
+TASK_ID=260222_002b
+FAIL_REASON=MIN_SET_MISSING
+MISSING=dod_evidence_260222_002b.txt,git_meta_260222_002b.json,result_260222_002b.json
+ACTION=Run generate_evidence_260222_002b.mjs (or fix it) to produce missing files before Integrate
+==========================================
+=============================================
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260222_002b_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_SITE_HEALTH_ROOT_53122: 260222_002b_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260222_002b_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_SITE_HEALTH_PAIRS_53122: 260222_002b_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_CONTRACT_SELF_CHECK: contract_self_check_260222_002b.txt => CONTRACT_SELF_CHECK_EXIT=0
+
+=== CI_PARITY_PREVIEW ===
+Base: 96c2ace9a2ee09c6807304c189ae939c512d4734
+Head: cd2b00f2c7f9aa5a7ca526cde151ebe36d20f72e
+MergeBase: 96c2ace9a2ee09c6807304c189ae939c512d4734
+Source: JSON (Evidence-as-Code)
+Scope: 5 files
+Files (Top 3):
+  - rules/LATEST.json
+  - rules/rules/PROJECT_RULES.md
+  - rules/rules/WORKFLOW.md
+...
+=========================
+
+=== WORKSPACE_HEALER ===
+Result: PASS
+Mode: EnforceClean
+Tracked Changed: 0
+Untracked: 0
+========================
+
+=== OPEN_PR_GUARD ===
+Status: PASS
+Blocking PRs: 0
+(None)
+=====================
+
+
+=== AUTO_PR ===
+PR: https://github.com/dongyupeng2108-bot/OppOrder/pull/156
+Attempt: 2 (Max: 2)
+State: PASS
+Checks: {"total":1,"success":1,"failed":0,"pending":0,"details":["All Passed"]}
+Branch: feat/taskid-single-source-260222_002b
+================
+
+=== GATE_LIGHT_PREVIEW ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260222_002b
+PR_TASK_ID_DETECTED=260222_002b
+TARGET_TASK_ID=260222_002b
+LATEST_TASK_ID=260222_002b
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] Verifying task_id: 260222_002b
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Report Block Check Passed: notify_260222_002b.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260222_002b.txt
+[Gate Light] Header Check Passed: TraeTask_260222_002b
+[Gate Light] Preflight Attestation verified (Integrate Mode).
+[Gate Light] Checking Open PR Guard Evidence...
+[Gate Light] Recalculating Open PR Guard status...
+[Gate Light] Open PR Guard Recalculation verified (PASS).
+[Gate Light] Open PR Guard verified (blocking_count=0).
+[Gate Light] Checking Workspace Healer Evidence...
+[Gate Light] Workspace Healer verified (Clean Environment).
+[Gate Light] Checking AutoPR Evidence...
+[Gate Light] AutoPR verified (State: PASS, Attempt: 2).
+[Gate Light] Checking CI Parity JSON Evidence...
+[Gate Light] DEBUG: is_shallow_repository=true
+[Gate Light] DEBUG: HEAD=0c09cd64170050d35895d41542a03c50ef3b9be5
+[Gate Light] DEBUG: git merge-base origin/main HEAD=96c2ace9a2ee09c6807304c189ae939c512d4734
+[Gate Light] DETECTED SHALLOW CLONE. Attempting to unshallow (Fix Strategy A)...
+[Gate Light] Unshallow command executed.
+[Gate Light] CI Parity Head mismatch (JSON=cd2b00f2c7f9aa5a7ca526cde151ebe36d20f72e, Calc=0c09cd64170050d35895d41542a03c50ef3b9be5). Checking for evidence-only update...
+[Gate Light] Head mismatch accepted (Evidence/Docs-only update).
+[Gate Light] CI Parity JSON Evidence verified.
+[Gate Light] Checking Error Digest Evidence...
+[Gate Light] Error Summary Commit (cd2b00f2c7f9aa5a7ca526cde151ebe36d20f72e) != HEAD (0c09cd64170050d35895d41542a03c50ef3b9be5). Checking for allowed drift...
+[Gate Light] Drift allowed (Evidence/Docs only).
+[Gate Light] Error Digest Evidence Verified.
+[Gate Light] Checking doc path standards...
+[Gate Light] Doc path standards verified.
+[Gate Light] Checking for legacy doc path references...
+[CheckDocPathRefs] Scanning for legacy doc path references...
+[CheckDocPathRefs] PASS: No legacy doc path references found.
+[Gate Light] Checking for banned cmd syntax in PowerShell scripts...
+Starting static scan for banned cmd syntax in .ps1 files...
+Scanning targets: scripts/run_task.ps1, scripts/test_fail_budget.ps1, scripts/ps/Invoke-Step.ps1
+Static scan PASSED.
+[Gate Light] Checking for global healthcheck artifacts...
+[Gate Light] Global Artifact Guard verified.
+[Gate Light] Checking News Pull API Contract...
+[Contract Check] Loading schema from: E:\OppRadar\OppRadar\contracts\news_pull_response.schema.json
+[Contract Check] Validating Success Sample...
+PASS
+[Contract Check] Validating Error Sample...
+PASS
+[Contract Check] All samples validated against schema.
+[Gate Light] Checking Rank V2 API Contract...
+=== Rank V2 Contract Verification ===
+Schema loaded.
+Server already running.
+Fetching http://localhost:53122/opportunities/rank_v2?provider=mock&limit=5&run_id=verify_rank_v2...
+Received 5 items.
+Validating against schema...
+Schema Validation PASSED.
+Response Hash: aab3b777
+::set-output name=rank_v2_hash::aab3b777
+VERIFICATION_SUCCESS
+[Gate Light] Checking Export V1 API Contract...
+=== Export V1 Contract Verification ===
+Schema loaded.
+Server already running.
+Generating Run assets via http://localhost:53122/scans/run...
+Run assets generated. Run ID: scan_5f32e6b7507b4cef
+Fetching Export: http://localhost:53122/opportunities/runs/export_v1?run_id=scan_5f32e6b7507b4cef...
+Received Export JSON.
+Validating against schema...
+Export Schema Validation PASSED.
+Export Hash: 5478eae2
+::set-output name=export_v1_hash::5478eae2
+EXPORT_CONTRACT_VERIFICATION_SUCCESS
+[Gate Light] Checking Ledger V0 API Contract...
+=== Ledger V0 Contract Verification ===
+Schema loaded.
+Server already running.
+Fetching /opportunities/ledger/query_v0?limit=1...
+Validating against schema...
+Validation PASSED.
+[Gate Light] Checking healthcheck evidence...
+[Gate Light] Using evidence directory: E:\OppRadar\rules\task-reports\2026-02
+[Gate Light] Healthcheck evidence verified (Path + Content).
+[Gate Light] Checking DoD Evidence Excerpts...
+[Gate Light] DoD Evidence Excerpts verified.
+[Gate Light] Checking Deletion Audit (Locks & Runs)...
+[Gate Light] Deletion Audit: No lock/index yet (Assuming Pre-Integrate or First Run in progress).
+[Gate Light] Checking No Auto-Merge (Git Forbidden Commands)...
+[Gate Light] No Auto-Merge verified.
+[Gate Light] Checking Evidence Truth & Sufficiency (Hardening Rule)...
+[Gate Light] Evidence Truth (Two-Pass) verified.
+[Gate Light] Evidence Truth & Sufficiency verified.
+[Gate Light] Checking CI Parity Preview...
+[Gate Light] CI Parity Preview verified.
+[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
+[Gate Light] Fetching origin/main history for diff context...
+[Gate Light] Allowed legacy task_id (transition): 260222_001j
+[Gate Light] NoHistoricalEvidenceTouch verified.
+[Gate Light] Snippet commit (cd2b00f2) != HEAD (0c09cd64). Checking for code drift...
+[Gate Light] SnippetCommitMustMatch verified (Evidence/Docs-only update detected).
+[Gate Light] SnippetCommitMustMatch verified.
+[Gate Light] Checking GATE_LIGHT_EXIT Mechanism...
+[Gate Light] GATE_LIGHT_EXIT Mechanism verified.
+[Gate Light] Checking Evidence Truth & Consistency...
+[Gate Light] Evidence Truth & Consistency verified.
+[Gate Light] Checking Rank V2 Contract Version Guard...
+[Gate Light] Base Commit: 96c2ace9a2ee09c6807304c189ae939c512d4734
+[Gate Light] Schema Unchanged (3bd83a08). Version check skipped.
+[Gate Light] Rank V2 Contract Version Guard PASS
+[Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...
+[Gate Light] Immutable Integrate & SafeCmd Enforcement verified.
+[Gate Light] Checking Two-Pass Evidence Truth & No Auto-Merge...
+[Gate Light] Two-Pass Evidence Truth & No Auto-Merge verified.
+[Gate Light] Checking Error Stats Index & Three-Strike Governance...
+[Gate Light] Error Stats Index verified (found records for task_id/run_id).
+[Gate Light] Three-Strike recalculation verified.
+[Gate Light] Executing: node scripts/postflight_validate_envelope.mjs --task_id 260222_002b --result_dir E:\OppRadar\rules\task-reports\2026-02 --report_dir E:\OppRadar\rules\task-reports\2026-02
+[Postflight] Validating 260222_002b in E:\OppRadar\rules\task-reports\2026-02...
+[Postflight] Running Evidence Smoke Test for 260222_002b...
+[SmokeTest] Running Evidence Smoke Test for Task 260222_002b in E:\OppRadar\rules\task-reports\2026-02...
+[SmokeTest] PASS: All 19 required files exist and manifest is valid.
+[Postflight] Report: E:\OppRadar\rules\task-reports\2026-02\260222_002b.json
+[Postflight] Envelope: E:\OppRadar\rules\task-reports\envelopes\260222_002b.envelope.json
+[Postflight] PASS
+[Gate Light] PASS
+
+From https://github.com/dongyupeng2108-bot/OppOrder
+ * branch              main       -> FETCH_HEAD
+[Postflight] Validating 260222_002b in E:\OppRadar\rules\task-reports\2026-02...
+[Postflight] Running Evidence Smoke Test for 260222_002b...
+[SmokeTest] Running Evidence Smoke Test for Task 260222_002b in E:\OppRadar\rules\task-reports\2026-02...
+[SmokeTest] PASS: All 19 required files exist and manifest is valid.
+[Postflight] Report: E:\OppRadar\rules\reports\postflight\260222_002b.json
+[Postflight] Envelope: E:\OppRadar\rules\reports\envelopes\260222_002b.envelope.json
+[Postflight] PASS
+==========================
+
+=== ERROR_STATS_INDEX ===
+{"task_id":"260222_002b","run_id":"20260222170411_cd2b00f","commit":"cd2b00f2c7f9aa5a7ca526cde151ebe36d20f72e","ts":"2026-02-22T09:04:11.653Z","mode":"Integrate","error_class":"NO_ERROR","severity":"INFO","message":"No errors found.","hint":""}
+=========================
+
+=== ERROR_SUMMARY ===
+TASK_ID: 260222_002b
+COMMIT: cd2b00f2c7f9aa5a7ca526cde151ebe36d20f72e
+TOTAL_ERRORS: 0
+MODE: Integrate
+CONTRACT_SELF_CHECK_EXIT: 0
+CONTRACT_SELF_CHECK_LINES: CONTRACT_CHECK_NOTIFY_MARKERS=PASS | CONTRACT_CHECK_RESULT_FIELDS=PASS | CONTRACT_CHECK_INDEX_BINDING=PASS | CONTRACT_CHECK_ENVELOPE_BINDING=PASS | CONTRACT_CHECK_SNIPPET_COMMIT=PASS
+
+TOP ERROR CLASSES:
+None
+
+Errors (First 5):
+=====================
+
+GATE_LIGHT_EXIT=0
+[Generated by scripts/assemble_evidence.mjs]

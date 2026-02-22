@@ -1,0 +1,23 @@
+{
+  "task_id": "260222_002b",
+  "branch": "feat/taskid-single-source-260222_002b",
+  "pr_number": 156,
+  "pr_url": "https://github.com/dongyupeng2108-bot/OppOrder/pull/156",
+  "head": "feat/taskid-single-source-260222_002b",
+  "base": "main",
+  "attempt": 2,
+  "autofix_max": 1,
+  "status": "OPEN",
+  "final_state": "PASS",
+  "timestamp": "2026-02-22T09:05:48.053Z",
+  "checks_summary": {
+    "total": 1,
+    "success": 1,
+    "failed": 0,
+    "pending": 0,
+    "details": [
+      "All Passed"
+    ]
+  },
+  "error": null
+}

@@ -1,0 +1,11 @@
+﻿{
+    "mode":  "Integrate",
+    "branch":  "feat/taskid-single-source-260222_002b",
+    "write_allowed":  true,
+    "input_hash_short":  "2ebc1e15",
+    "header":  "TraeTask_260222_002b",
+    "commit":  "cd2b00f2",
+    "task_id":  "260222_002b",
+    "header_detected":  true,
+    "timestamp":  "2026-02-22 17:03:54 UTC"
+}
