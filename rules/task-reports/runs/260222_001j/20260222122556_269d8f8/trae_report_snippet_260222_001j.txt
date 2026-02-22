@@ -1,0 +1,201 @@
+=== TRAE_REPORT_SNIPPET ===
+
+Header: TraeTask_260222_001j
+BRANCH: feat/preview-single-source-260222_001j
+COMMIT: ac99d242
+
+=== GIT_SCOPE_DIFF ===
+M	rules/LATEST.json
+M	rules/rules/PROJECT_RULES.md
+A	rules/task-reports/2026-02/.budget_260222_001g.json
+A	rules/task-reports/2026-02/.budget_260222_001j.json
+A	rules/task-reports/2026-02/260222_001g.json
+A	rules/task-reports/2026-02/260222_001g_healthcheck_53122_pairs.txt
+A	rules/task-reports/2026-02/260222_001g_healthcheck_53122_root.txt
+A	rules/task-reports/2026-02/260222_001j.json
+A	rules/task-reports/2026-02/260222_001j_healthcheck_53122_pairs.txt
+A	rules/task-reports/2026-02/260222_001j_healthcheck_53122_root.txt
+A	rules/task-reports/2026-02/auto_pr_260222_001g.json
+A	rules/task-reports/2026-02/auto_pr_260222_001j.json
+A	rules/task-reports/2026-02/ci_parity_260222_001g.json
+A	rules/task-reports/2026-02/ci_parity_260222_001j.json
+A	rules/task-reports/2026-02/contract_self_check_260222_001g.txt
+A	rules/task-reports/2026-02/contract_self_check_260222_001j.txt
+A	rules/task-reports/2026-02/deliverables_index_260222_001g.json
+A	rules/task-reports/2026-02/deliverables_index_260222_001j.json
+A	rules/task-reports/2026-02/dod_evidence_260222_001g.txt
+A	rules/task-reports/2026-02/dod_evidence_260222_001j.txt
+A	rules/task-reports/2026-02/errors_260222_001g.jsonl
+A	rules/task-reports/2026-02/errors_260222_001j.jsonl
+A	rules/task-reports/2026-02/errors_summary_260222_001g.txt
+A	rules/task-reports/2026-02/errors_summary_260222_001j.txt
+A	rules/task-reports/2026-02/evidence_manifest_260222_001g.json
+A	rules/task-reports/2026-02/evidence_manifest_260222_001j.json
+A	rules/task-reports/2026-02/gate_light_preview_260222_001g.log
+A	rules/task-reports/2026-02/gate_light_preview_260222_001g.txt
+A	rules/task-reports/2026-02/gate_light_preview_260222_001j.log
+A	rules/task-reports/2026-02/gate_light_preview_260222_001j.txt
+A	rules/task-reports/2026-02/generate_evidence_260222_001g.mjs
+A	rules/task-reports/2026-02/generate_evidence_260222_001j.mjs
+A	rules/task-reports/2026-02/git_meta_260222_001g.json
+A	rules/task-reports/2026-02/git_meta_260222_001j.json
+A	rules/task-reports/2026-02/manual_verification_260222_001g.json
+A	rules/task-reports/2026-02/manual_verification_260222_001j.json
+A	rules/task-reports/2026-02/notify_260222_001g.txt
+A	rules/task-reports/2026-02/notify_260222_001j.txt
+A	rules/task-reports/2026-02/open_pr_guard_260222_001g.json
+A	rules/task-reports/2026-02/open_pr_guard_260222_001j.json
+A	rules/task-reports/2026-02/preflight_attestation_260222_001g.json
+A	rules/task-reports/2026-02/preflight_attestation_260222_001j.json
+A	rules/task-reports/2026-02/preview_cmp_260222_001g.txt
+A	rules/task-reports/2026-02/preview_cmp_260222_001j.txt
+A	rules/task-reports/2026-02/result_260222_001g.json
+A	rules/task-reports/2026-02/result_260222_001j.json
+A	rules/task-reports/2026-02/run_260222_001g.log
+A	rules/task-reports/2026-02/run_260222_001j.log
+A	rules/task-reports/2026-02/trae_report_snippet_260222_001g.txt
+A	rules/task-reports/2026-02/trae_report_snippet_260222_001j.txt
+A	rules/task-reports/2026-02/workspace_healer_260222_001g.json
+A	rules/task-reports/2026-02/workspace_healer_260222_001j.json
+A	rules/task-reports/envelopes/260222_001g.envelope.json
+A	rules/task-reports/envelopes/260222_001j.envelope.json
+M	rules/task-reports/index/error_stats.jsonl
+M	rules/task-reports/index/runs_index.jsonl
+A	rules/task-reports/locks/260222_001g.lock.json
+A	rules/task-reports/runs/260222_001g/20260222105452_7f783ac/260222_001g_healthcheck_53122_pairs.txt
+A	rules/task-reports/runs/260222_001g/20260222105452_7f783ac/260222_001g_healthcheck_53122_root.txt
+A	rules/task-reports/runs/260222_001g/20260222105452_7f783ac/auto_pr_260222_001g.json
+A	rules/task-reports/runs/260222_001g/20260222105452_7f783ac/ci_parity_260222_001g.json
+A	rules/task-reports/runs/260222_001g/20260222105452_7f783ac/contract_self_check_260222_001g.txt
+A	rules/task-reports/runs/260222_001g/20260222105452_7f783ac/deliverables_index_260222_001g.json
+A	rules/task-reports/runs/260222_001g/20260222105452_7f783ac/dod_evidence_260222_001g.txt
+A	rules/task-reports/runs/260222_001g/20260222105452_7f783ac/errors_260222_001g.jsonl
+A	rules/task-reports/runs/260222_001g/20260222105452_7f783ac/errors_summary_260222_001g.txt
+A	rules/task-reports/runs/260222_001g/20260222105452_7f783ac/evidence_manifest_260222_001g.json
+A	rules/task-reports/runs/260222_001g/20260222105452_7f783ac/gate_light_preview_260222_001g.log
+A	rules/task-reports/runs/260222_001g/20260222105452_7f783ac/gate_light_verify_260222_001g.log
+A	rules/task-reports/runs/260222_001g/20260222105452_7f783ac/git_meta_260222_001g.json
+A	rules/task-reports/runs/260222_001g/20260222105452_7f783ac/manual_verification_260222_001g.json
+A	rules/task-reports/runs/260222_001g/20260222105452_7f783ac/notify_260222_001g.txt
+A	rules/task-reports/runs/260222_001g/20260222105452_7f783ac/open_pr_guard_260222_001g.json
+A	rules/task-reports/runs/260222_001g/20260222105452_7f783ac/preflight_attestation_260222_001g.json
+A	rules/task-reports/runs/260222_001g/20260222105452_7f783ac/preview_cmp_260222_001g.txt
+A	rules/task-reports/runs/260222_001g/20260222105452_7f783ac/result_260222_001g.json
+A	rules/task-reports/runs/260222_001g/20260222105452_7f783ac/run_260222_001g.log
+A	rules/task-reports/runs/260222_001g/20260222105452_7f783ac/trae_report_snippet_260222_001g.txt
+A	rules/task-reports/runs/260222_001g/20260222105452_7f783ac/workspace_healer_260222_001g.json
+M	scripts/assemble_evidence.mjs
+M	scripts/build_trae_report_snippet.mjs
+M	scripts/extract_gate_light_preview.mjs
+
+=== DOD_EVIDENCE_STDOUT ===
+[Smoke] Checking scripts/reset_workspace.ps1...
+[Smoke] PASS: Static checks passed.
+===========================
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260222_001j_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_SITE_HEALTH_ROOT_53122: 260222_001j_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260222_001j_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_SITE_HEALTH_PAIRS_53122: 260222_001j_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260222_001j_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260222_001j_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+
+=== CI_PARITY_PREVIEW ===
+Base: 2225568
+Head: 269d8f8
+MergeBase: 2225568
+Source: JSON (Evidence-as-Code)
+Scope: 57 files
+Files (Top 3):
+  - rules/LATEST.json
+  - rules/rules/PROJECT_RULES.md
+  - rules/task-reports/2026-02/.budget_260222_001g.json
+  ... (truncated)
+=========================
+
+=== GATE_LIGHT_PREVIEW ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260222_001j
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] Verifying task_id: 260222_001j
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Report Block Check Passed: notify_260222_001j.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260222_001j.txt
+[Gate Light] Header Check Passed: TraeTask_260222_001j
+[Gate Light] Preflight Attestation verified (Integrate Mode).
+[Gate Light] Checking Open PR Guard Evidence...
+[Gate Light] Recalculating Open PR Guard status...
+[Gate Light] Open PR Guard Recalculation verified (PASS).
+[Gate Light] Open PR Guard verified (blocking_count=0).
+[Gate Light] Checking Workspace Healer Evidence...
+[Gate Light] Workspace Healer verified (Clean Environment).
+[Gate Light] Checking AutoPR Evidence...
+[Gate Light] AutoPR verified (State: PASS, Attempt: 2).
+[Gate Light] Checking CI Parity JSON Evidence...
+[Gate Light] DEBUG: is_shallow_repository=true
+[Gate Light] DEBUG: HEAD=ac99d2421323f724acc05dc1f491d5bc738fb7cc
+[Gate Light] DEBUG: git merge-base origin/main HEAD=222556851b1d543a1c2df850c894910a9a1d9d7f
+[Gate Light] DETECTED SHALLOW CLONE. Attempting to unshallow (Fix Strategy A)...
+[Gate Light] Unshallow command executed.
+[Gate Light] CI Parity Head mismatch (JSON=269d8f872be6f1fd8f9d7b7ff533360909c40794, Calc=ac99d2421323f724acc05dc1f491d5bc738fb7cc). Checking for evidence-only update...
+[Gate Light] Head mismatch accepted (Evidence/Docs-only update).
+[Gate Light] CI Parity JSON Evidence verified.
+[Gate Light] Checking Error Digest Evidence...
+[Gate Light] Error Summary Commit (269d8f872be6f1fd8f9d7b7ff533360909c40794) != HEAD (ac99d2421323f724acc05dc1f491d5bc738fb7cc). Checking for allowed drift...
+[Gate Light] Drift allowed (Evidence/Docs only).
+[Gate Light] Error Digest Evidence Verified.
+[Gate Light] Checking doc path standards...
+[Gate Light] Doc path standards verified.
+[Gate Light] Checking for legacy doc path references...
+[Gate Light] Checking for banned cmd syntax in PowerShell scripts...
+[Gate Light] Checking for global healthcheck artifacts...
+[Gate Light] Global Artifact Guard verified.
+[Gate Light] Checking News Pull API Contract...
+[Gate Light] Checking Rank V2 API Contract...
+[Gate Light] Checking Export V1 API Contract...
+[Gate Light] Checking Ledger V0 API Contract...
+[Gate Light] Checking healthcheck evidence...
+[Gate Light] Using evidence directory: E:\OppRadar\rules\task-reports\2026-02
+[Gate Light] Healthcheck evidence verified (Path + Content).
+[Gate Light] Checking DoD Evidence Excerpts...
+[Gate Light] DoD Evidence Excerpts verified.
+[Gate Light] Checking Deletion Audit (Locks & Runs)...
+[Gate Light] Deletion Audit: No lock/index yet (Assuming Pre-Integrate or First Run in progress).
+[Gate Light] Checking No Auto-Merge (Git Forbidden Commands)...
+[Gate Light] No Auto-Merge verified.
+[Gate Light] Checking Evidence Truth & Sufficiency (Hardening Rule)...
+[Gate Light] Evidence Truth (Two-Pass) verified.
+[Gate Light] Evidence Truth & Sufficiency verified.
+[Gate Light] Checking CI Parity Preview...
+[Gate Light] CI Parity Preview verified.
+[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
+[Gate Light] Fetching origin/main history for diff context...
+[Gate Light] Allowed legacy task_id (transition): 260221_005r
+[Gate Light] NoHistoricalEvidenceTouch verified.
+[Gate Light] Snippet commit (269d8f87) != HEAD (ac99d242). Checking for code drift...
+[Gate Light] SnippetCommitMustMatch verified (Evidence/Docs-only update detected).
+[Gate Light] SnippetCommitMustMatch verified.
+[Gate Light] Checking GATE_LIGHT_EXIT Mechanism...
+[Gate Light] GATE_LIGHT_EXIT Mechanism verified.
+[Gate Light] Checking Evidence Truth & Consistency...
+[Gate Light] Evidence Truth & Consistency verified.
+[Gate Light] Checking Rank V2 Contract Version Guard...
+[Gate Light] Base Commit: 222556851b1d543a1c2df850c894910a9a1d9d7f
+[Gate Light] Schema Unchanged (3bd83a08). Version check skipped.
+[Gate Light] Rank V2 Contract Version Guard PASS
+[Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...
+[Gate Light] Immutable Integrate & SafeCmd Enforcement verified.
+[Gate Light] Checking Two-Pass Evidence Truth & No Auto-Merge...
+[Gate Light] Two-Pass Evidence Truth & No Auto-Merge verified.
+[Gate Light] Checking Error Stats Index & Three-Strike Governance...
+[Gate Light] Error Stats Index verified (found records for task_id/run_id).
+[Gate Light] Three-Strike recalculation verified.
+[Gate Light] Executing: node scripts/postflight_validate_envelope.mjs --task_id 260222_001j --result_dir E:\OppRadar\rules\task-reports\2026-02 --report_dir E:\OppRadar\rules\task-reports\2026-02
+[Postflight] Validating 260222_001j in E:\OppRadar\rules\task-reports\2026-02...
+[Postflight] Running Evidence Smoke Test for 260222_001j...
+[Postflight] Report: E:\OppRadar\rules\task-reports\2026-02\260222_001j.json
+[Postflight] Envelope: E:\OppRadar\rules\task-reports\envelopes\260222_001j.envelope.json
+[Postflight] PASS
+[Gate Light] PASS
+GATE_LIGHT_EXIT=0

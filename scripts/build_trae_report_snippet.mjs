@@ -152,7 +152,14 @@ GATE_LIGHT_EXIT=0`;
             process.exit(61);
         }
     } else {
-        gateLightContent = fs.readFileSync(previewPath, 'utf8').replace(/^\uFEFF/, '');
+        const previewBuffer = fs.readFileSync(previewPath);
+        const previewText = previewBuffer.toString('utf8');
+        if (previewText.charCodeAt(0) === 0xFEFF || previewText.includes('\r\n')) {
+            console.error('FAIL_REASON=PREVIEW_ENCODING');
+            console.error(`[Snippet Builder] ERROR: Preview file must be LF + UTF-8 (no BOM): ${previewPath}`);
+            process.exit(1);
+        }
+        gateLightContent = previewText;
     }
 } else {
     // Fallback for old tasks
@@ -181,8 +188,12 @@ const snippetContent = [
     gateLightContent
 ].join('\n');
 
+if (snippetContent.charCodeAt(0) === 0xFEFF || snippetContent.includes('\r\n')) {
+    console.error('FAIL_REASON=PREVIEW_ENCODING');
+    console.error('[Snippet Builder] ERROR: Snippet content must be LF + UTF-8 (no BOM).');
+    process.exit(1);
+}
 const snippetPath = path.join(resultDir, `trae_report_snippet_${taskId}.txt`);
-const normalizedSnippet = snippetContent.replace(/\r\n/g, '\n');
-fs.writeFileSync(snippetPath, normalizedSnippet);
+fs.writeFileSync(snippetPath, snippetContent);
 console.log(`[Snippet Builder] Wrote snippet to: ${snippetPath}`);
 console.log(`[Snippet Builder] NOTE: Notify/Result/Index updates must be handled by the caller (dev_batch_mode).`);

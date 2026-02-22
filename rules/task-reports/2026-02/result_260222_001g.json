@@ -1,0 +1,16 @@
+{
+  "task_id": "260222_001g",
+  "status": "DONE",
+  "summary": "Automation Pack V1 Validation for Task 260222_001g",
+  "dod_evidence": {
+    "manual_verification": true,
+    "gate_light_exit": 0,
+    "healthcheck": [
+      "rules/task-reports/2026-02/260222_001g_healthcheck_53122_root.txt",
+      "rules/task-reports/2026-02/260222_001g_healthcheck_53122_pairs.txt"
+    ]
+  },
+  "report_file": "notify_260222_001g.txt",
+  "report_sha256_short": "bdd05c29",
+  "mode": "Integrate"
+}

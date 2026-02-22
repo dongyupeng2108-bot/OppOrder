@@ -1,0 +1,23 @@
+{
+  "task_id": "260222_001g",
+  "branch": "feat/preview-single-source-260222_001g",
+  "pr_number": 150,
+  "pr_url": "https://github.com/dongyupeng2108-bot/OppOrder/pull/150",
+  "head": "feat/preview-single-source-260222_001g",
+  "base": "main",
+  "attempt": 2,
+  "autofix_max": 1,
+  "status": "OPEN",
+  "final_state": "PASS",
+  "timestamp": "2026-02-22T02:55:51.858Z",
+  "checks_summary": {
+    "total": 1,
+    "success": 1,
+    "failed": 0,
+    "pending": 0,
+    "details": [
+      "All Passed"
+    ]
+  },
+  "error": null
+}
