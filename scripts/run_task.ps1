@@ -267,10 +267,6 @@ function PreassembleFailfast {
 
 PreassembleFailfast -EvidenceDir $EvidenceDir -TaskId $TaskId -Mode $Mode -GenerateScript $GenerateScript
 
-# --- Start Transcript (Log Everything) ---
-$LogFile = "$EvidenceDir\run_$TaskId.log"
-Start-Transcript -Path $LogFile -Force
-
 # --- PreAssemblePrecheck Function ---
 function PreAssemblePrecheck {
     param($EvidenceDir, $TaskId, $Mode)
@@ -356,6 +352,10 @@ Measure-Step -Key "workspace_healer" -Action {
         Write-Host "    Workspace Healer PASS. Output: $HealerEvidence" -ForegroundColor Gray
     }
 }
+
+# --- Start Transcript (Log Everything) ---
+$LogFile = "$EvidenceDir\run_$TaskId.log"
+Start-Transcript -Path $LogFile -Force
 
 # --- Step 1: Preflight ---
 Write-Host ">>> [RunTask] Step 1: Preflight" -ForegroundColor Cyan
