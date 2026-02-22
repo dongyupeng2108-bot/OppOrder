@@ -54,7 +54,7 @@ if (startIndex === -1 || endIndex === -1) {
 const previewLines = lines.slice(startIndex, endIndex + 1);
 const filteredLines = previewLines.filter(line => {
     const trimmed = line.trim();
-    return trimmed.startsWith('[Gate Light]') || trimmed.startsWith('[BLOCK]') || trimmed.startsWith('GATE_LIGHT_EXIT=');
+    return trimmed.startsWith('[Gate Light]') || trimmed.startsWith('[BLOCK]') || trimmed.startsWith('[Postflight]') || trimmed.startsWith('GATE_LIGHT_EXIT=');
 });
 const previewContent = filteredLines.join('\n');
 
