@@ -152,7 +152,7 @@ GATE_LIGHT_EXIT=0`;
             process.exit(61);
         }
     } else {
-        gateLightContent = fs.readFileSync(previewPath, 'utf8').trim();
+        gateLightContent = fs.readFileSync(previewPath, 'utf8').replace(/^\uFEFF/, '');
     }
 } else {
     // Fallback for old tasks
@@ -164,24 +164,25 @@ GATE_LIGHT_EXIT=__PENDING__`;
 }
 
 // 4. Construct Snippet Content
-const snippetContent = `
-=== TRAE_REPORT_SNIPPET ===
-
-Header: ${headerValue}
-BRANCH: ${branchName}
-COMMIT: ${commitHash}
-
-=== GIT_SCOPE_DIFF ===
-${scopeDiff || '(No changes detected or new branch)'}
-
-${dodContent}
-
-${ciParityContent}
-
-${gateLightContent}
-`;
+const snippetContent = [
+    '=== TRAE_REPORT_SNIPPET ===',
+    '',
+    `Header: ${headerValue}`,
+    `BRANCH: ${branchName}`,
+    `COMMIT: ${commitHash}`,
+    '',
+    '=== GIT_SCOPE_DIFF ===',
+    scopeDiff || '(No changes detected or new branch)',
+    '',
+    dodContent,
+    '',
+    ciParityContent,
+    '',
+    gateLightContent
+].join('\n');
 
 const snippetPath = path.join(resultDir, `trae_report_snippet_${taskId}.txt`);
-fs.writeFileSync(snippetPath, snippetContent.trim() + '\n');
+const normalizedSnippet = snippetContent.replace(/\r\n/g, '\n');
+fs.writeFileSync(snippetPath, normalizedSnippet);
 console.log(`[Snippet Builder] Wrote snippet to: ${snippetPath}`);
 console.log(`[Snippet Builder] NOTE: Notify/Result/Index updates must be handled by the caller (dev_batch_mode).`);

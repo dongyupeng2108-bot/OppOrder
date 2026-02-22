@@ -2,7 +2,7 @@
 
 Header: TraeTask_260221_005r
 BRANCH: feat/contract-selfcheck-260221_005r
-COMMIT: 44994f60
+COMMIT: bf2561f0
 
 === GIT_SCOPE_DIFF ===
 M	.github/workflows/gate-light.yml
@@ -15,6 +15,7 @@ A	rules/task-reports/2026-02/.budget_260221_005l.json
 A	rules/task-reports/2026-02/.budget_260221_005m.json
 A	rules/task-reports/2026-02/.budget_260221_005n.json
 A	rules/task-reports/2026-02/.budget_260221_005o.json
+A	rules/task-reports/2026-02/.budget_260221_005r.json
 A	rules/task-reports/2026-02/260221_005h.json
 A	rules/task-reports/2026-02/260221_005h_healthcheck_53122_pairs.txt
 A	rules/task-reports/2026-02/260221_005h_healthcheck_53122_root.txt
@@ -39,6 +40,9 @@ A	rules/task-reports/2026-02/260221_005n_healthcheck_53122_root.txt
 A	rules/task-reports/2026-02/260221_005o.json
 A	rules/task-reports/2026-02/260221_005o_healthcheck_53122_pairs.txt
 A	rules/task-reports/2026-02/260221_005o_healthcheck_53122_root.txt
+A	rules/task-reports/2026-02/260221_005r.json
+A	rules/task-reports/2026-02/260221_005r_healthcheck_53122_pairs.txt
+A	rules/task-reports/2026-02/260221_005r_healthcheck_53122_root.txt
 A	rules/task-reports/2026-02/auto_pr_260221_005h.json
 A	rules/task-reports/2026-02/auto_pr_260221_005i.json
 A	rules/task-reports/2026-02/auto_pr_260221_005j.json
@@ -47,6 +51,7 @@ A	rules/task-reports/2026-02/auto_pr_260221_005l.json
 A	rules/task-reports/2026-02/auto_pr_260221_005m.json
 A	rules/task-reports/2026-02/auto_pr_260221_005n.json
 A	rules/task-reports/2026-02/auto_pr_260221_005o.json
+A	rules/task-reports/2026-02/auto_pr_260221_005r.json
 A	rules/task-reports/2026-02/ci_parity_260221_005h.json
 A	rules/task-reports/2026-02/ci_parity_260221_005i.json
 A	rules/task-reports/2026-02/ci_parity_260221_005j.json
@@ -55,6 +60,7 @@ A	rules/task-reports/2026-02/ci_parity_260221_005l.json
 A	rules/task-reports/2026-02/ci_parity_260221_005m.json
 A	rules/task-reports/2026-02/ci_parity_260221_005n.json
 A	rules/task-reports/2026-02/ci_parity_260221_005o.json
+A	rules/task-reports/2026-02/ci_parity_260221_005r.json
 A	rules/task-reports/2026-02/contract_self_check_260221_005h.txt
 A	rules/task-reports/2026-02/contract_self_check_260221_005i.txt
 A	rules/task-reports/2026-02/contract_self_check_260221_005j.txt
@@ -63,6 +69,7 @@ A	rules/task-reports/2026-02/contract_self_check_260221_005l.txt
 A	rules/task-reports/2026-02/contract_self_check_260221_005m.txt
 A	rules/task-reports/2026-02/contract_self_check_260221_005n.txt
 A	rules/task-reports/2026-02/contract_self_check_260221_005o.txt
+A	rules/task-reports/2026-02/contract_self_check_260221_005r.txt
 A	rules/task-reports/2026-02/deliverables_index_260221_005h.json
 A	rules/task-reports/2026-02/deliverables_index_260221_005i.json
 A	rules/task-reports/2026-02/deliverables_index_260221_005j.json
@@ -71,6 +78,7 @@ A	rules/task-reports/2026-02/deliverables_index_260221_005l.json
 A	rules/task-reports/2026-02/deliverables_index_260221_005m.json
 A	rules/task-reports/2026-02/deliverables_index_260221_005n.json
 A	rules/task-reports/2026-02/deliverables_index_260221_005o.json
+A	rules/task-reports/2026-02/deliverables_index_260221_005r.json
 A	rules/task-reports/2026-02/dod_evidence_260221_005h.txt
 A	rules/task-reports/2026-02/dod_evidence_260221_005i.txt
 A	rules/task-reports/2026-02/dod_evidence_260221_005j.txt
@@ -79,6 +87,7 @@ A	rules/task-reports/2026-02/dod_evidence_260221_005l.txt
 A	rules/task-reports/2026-02/dod_evidence_260221_005m.txt
 A	rules/task-reports/2026-02/dod_evidence_260221_005n.txt
 A	rules/task-reports/2026-02/dod_evidence_260221_005o.txt
+A	rules/task-reports/2026-02/dod_evidence_260221_005r.txt
 A	rules/task-reports/2026-02/errors_260221_005h.jsonl
 A	rules/task-reports/2026-02/errors_260221_005i.jsonl
 A	rules/task-reports/2026-02/errors_260221_005j.jsonl
@@ -87,6 +96,7 @@ A	rules/task-reports/2026-02/errors_260221_005l.jsonl
 A	rules/task-reports/2026-02/errors_260221_005m.jsonl
 A	rules/task-reports/2026-02/errors_260221_005n.jsonl
 A	rules/task-reports/2026-02/errors_260221_005o.jsonl
+A	rules/task-reports/2026-02/errors_260221_005r.jsonl
 A	rules/task-reports/2026-02/errors_summary_260221_005h.txt
 A	rules/task-reports/2026-02/errors_summary_260221_005i.txt
 A	rules/task-reports/2026-02/errors_summary_260221_005j.txt
@@ -95,6 +105,7 @@ A	rules/task-reports/2026-02/errors_summary_260221_005l.txt
 A	rules/task-reports/2026-02/errors_summary_260221_005m.txt
 A	rules/task-reports/2026-02/errors_summary_260221_005n.txt
 A	rules/task-reports/2026-02/errors_summary_260221_005o.txt
+A	rules/task-reports/2026-02/errors_summary_260221_005r.txt
 A	rules/task-reports/2026-02/evidence_manifest_260221_005h.json
 A	rules/task-reports/2026-02/evidence_manifest_260221_005i.json
 A	rules/task-reports/2026-02/evidence_manifest_260221_005j.json
@@ -103,6 +114,7 @@ A	rules/task-reports/2026-02/evidence_manifest_260221_005l.json
 A	rules/task-reports/2026-02/evidence_manifest_260221_005m.json
 A	rules/task-reports/2026-02/evidence_manifest_260221_005n.json
 A	rules/task-reports/2026-02/evidence_manifest_260221_005o.json
+A	rules/task-reports/2026-02/evidence_manifest_260221_005r.json
 A	rules/task-reports/2026-02/gate_light_preview_260221_005h.log
 A	rules/task-reports/2026-02/gate_light_preview_260221_005i.log
 A	rules/task-reports/2026-02/gate_light_preview_260221_005j.log
@@ -115,6 +127,8 @@ A	rules/task-reports/2026-02/gate_light_preview_260221_005n.log
 A	rules/task-reports/2026-02/gate_light_preview_260221_005n.txt
 A	rules/task-reports/2026-02/gate_light_preview_260221_005o.log
 A	rules/task-reports/2026-02/gate_light_preview_260221_005o.txt
+A	rules/task-reports/2026-02/gate_light_preview_260221_005r.log
+A	rules/task-reports/2026-02/gate_light_preview_260221_005r.txt
 A	rules/task-reports/2026-02/generate_evidence_260221_005h.mjs
 A	rules/task-reports/2026-02/generate_evidence_260221_005i.mjs
 A	rules/task-reports/2026-02/generate_evidence_260221_005j.mjs
@@ -123,6 +137,7 @@ A	rules/task-reports/2026-02/generate_evidence_260221_005l.mjs
 A	rules/task-reports/2026-02/generate_evidence_260221_005m.mjs
 A	rules/task-reports/2026-02/generate_evidence_260221_005n.mjs
 A	rules/task-reports/2026-02/generate_evidence_260221_005o.mjs
+A	rules/task-reports/2026-02/generate_evidence_260221_005r.mjs
 A	rules/task-reports/2026-02/git_meta_260221_005h.json
 A	rules/task-reports/2026-02/git_meta_260221_005i.json
 A	rules/task-reports/2026-02/git_meta_260221_005j.json
@@ -131,6 +146,7 @@ A	rules/task-reports/2026-02/git_meta_260221_005l.json
 A	rules/task-reports/2026-02/git_meta_260221_005m.json
 A	rules/task-reports/2026-02/git_meta_260221_005n.json
 A	rules/task-reports/2026-02/git_meta_260221_005o.json
+A	rules/task-reports/2026-02/git_meta_260221_005r.json
 A	rules/task-reports/2026-02/manual_verification_260221_005h.json
 A	rules/task-reports/2026-02/manual_verification_260221_005i.json
 A	rules/task-reports/2026-02/manual_verification_260221_005j.json
@@ -139,6 +155,7 @@ A	rules/task-reports/2026-02/manual_verification_260221_005l.json
 A	rules/task-reports/2026-02/manual_verification_260221_005m.json
 A	rules/task-reports/2026-02/manual_verification_260221_005n.json
 A	rules/task-reports/2026-02/manual_verification_260221_005o.json
+A	rules/task-reports/2026-02/manual_verification_260221_005r.json
 A	rules/task-reports/2026-02/notify_260221_005h.txt
 A	rules/task-reports/2026-02/notify_260221_005i.txt
 A	rules/task-reports/2026-02/notify_260221_005j.txt
@@ -147,6 +164,7 @@ A	rules/task-reports/2026-02/notify_260221_005l.txt
 A	rules/task-reports/2026-02/notify_260221_005m.txt
 A	rules/task-reports/2026-02/notify_260221_005n.txt
 A	rules/task-reports/2026-02/notify_260221_005o.txt
+A	rules/task-reports/2026-02/notify_260221_005r.txt
 A	rules/task-reports/2026-02/open_pr_guard_260221_005h.json
 A	rules/task-reports/2026-02/open_pr_guard_260221_005i.json
 A	rules/task-reports/2026-02/open_pr_guard_260221_005j.json
@@ -155,6 +173,7 @@ A	rules/task-reports/2026-02/open_pr_guard_260221_005l.json
 A	rules/task-reports/2026-02/open_pr_guard_260221_005m.json
 A	rules/task-reports/2026-02/open_pr_guard_260221_005n.json
 A	rules/task-reports/2026-02/open_pr_guard_260221_005o.json
+A	rules/task-reports/2026-02/open_pr_guard_260221_005r.json
 A	rules/task-reports/2026-02/preflight_attestation_260221_005h.json
 A	rules/task-reports/2026-02/preflight_attestation_260221_005i.json
 A	rules/task-reports/2026-02/preflight_attestation_260221_005j.json
@@ -163,6 +182,7 @@ A	rules/task-reports/2026-02/preflight_attestation_260221_005l.json
 A	rules/task-reports/2026-02/preflight_attestation_260221_005m.json
 A	rules/task-reports/2026-02/preflight_attestation_260221_005n.json
 A	rules/task-reports/2026-02/preflight_attestation_260221_005o.json
+A	rules/task-reports/2026-02/preflight_attestation_260221_005r.json
 A	rules/task-reports/2026-02/result_260221_005h.json
 A	rules/task-reports/2026-02/result_260221_005i.json
 A	rules/task-reports/2026-02/result_260221_005j.json
@@ -171,6 +191,7 @@ A	rules/task-reports/2026-02/result_260221_005l.json
 A	rules/task-reports/2026-02/result_260221_005m.json
 A	rules/task-reports/2026-02/result_260221_005n.json
 A	rules/task-reports/2026-02/result_260221_005o.json
+A	rules/task-reports/2026-02/result_260221_005r.json
 A	rules/task-reports/2026-02/run_260221_005h.log
 A	rules/task-reports/2026-02/run_260221_005i.log
 A	rules/task-reports/2026-02/run_260221_005j.log
@@ -179,6 +200,7 @@ A	rules/task-reports/2026-02/run_260221_005l.log
 A	rules/task-reports/2026-02/run_260221_005m.log
 A	rules/task-reports/2026-02/run_260221_005n.log
 A	rules/task-reports/2026-02/run_260221_005o.log
+A	rules/task-reports/2026-02/run_260221_005r.log
 A	rules/task-reports/2026-02/trae_report_snippet_260221_005h.txt
 A	rules/task-reports/2026-02/trae_report_snippet_260221_005i.txt
 A	rules/task-reports/2026-02/trae_report_snippet_260221_005j.txt
@@ -187,6 +209,7 @@ A	rules/task-reports/2026-02/trae_report_snippet_260221_005l.txt
 A	rules/task-reports/2026-02/trae_report_snippet_260221_005m.txt
 A	rules/task-reports/2026-02/trae_report_snippet_260221_005n.txt
 A	rules/task-reports/2026-02/trae_report_snippet_260221_005o.txt
+A	rules/task-reports/2026-02/trae_report_snippet_260221_005r.txt
 A	rules/task-reports/2026-02/workspace_healer_260221_005h.json
 A	rules/task-reports/2026-02/workspace_healer_260221_005i.json
 A	rules/task-reports/2026-02/workspace_healer_260221_005j.json
@@ -195,6 +218,7 @@ A	rules/task-reports/2026-02/workspace_healer_260221_005l.json
 A	rules/task-reports/2026-02/workspace_healer_260221_005m.json
 A	rules/task-reports/2026-02/workspace_healer_260221_005n.json
 A	rules/task-reports/2026-02/workspace_healer_260221_005o.json
+A	rules/task-reports/2026-02/workspace_healer_260221_005r.json
 A	rules/task-reports/envelopes/260221_005h.envelope.json
 A	rules/task-reports/envelopes/260221_005i.envelope.json
 A	rules/task-reports/envelopes/260221_005j.envelope.json
@@ -203,6 +227,7 @@ A	rules/task-reports/envelopes/260221_005l.envelope.json
 A	rules/task-reports/envelopes/260221_005m.envelope.json
 A	rules/task-reports/envelopes/260221_005n.envelope.json
 A	rules/task-reports/envelopes/260221_005o.envelope.json
+A	rules/task-reports/envelopes/260221_005r.envelope.json
 M	scripts/assemble_evidence.mjs
 M	scripts/build_trae_report_snippet.mjs
 M	scripts/ci_autofix_pack.mjs
@@ -242,14 +267,19 @@ Files (Top 3):
 [Gate Light] LATEST.json consistency verified.
 [Gate Light] Verifying task_id: 260221_005r
 [Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Report Block Check Passed: notify_260221_005r.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260221_005r.txt
+[Gate Light] Header Check Passed: TraeTask_260221_005r
 [Gate Light] Checking Workspace Healer Evidence...
 [Gate Light] Workspace Healer verified (Clean Environment).
 [Gate Light] Checking CI Parity JSON Evidence...
 [Gate Light] DEBUG: is_shallow_repository=true
-[Gate Light] DEBUG: HEAD=44994f600c5608279f907ac2e474a0deeac8da86
+[Gate Light] DEBUG: HEAD=bf2561f0b51389fc381810ab1813e27e3ec04cb4
 [Gate Light] DEBUG: git merge-base origin/main HEAD=2b7ad1a37e8a35d22f5bd953a9f1db49a0604379
 [Gate Light] DETECTED SHALLOW CLONE. Attempting to unshallow (Fix Strategy A)...
 [Gate Light] Unshallow command executed.
+[Gate Light] CI Parity Head mismatch (JSON=44994f600c5608279f907ac2e474a0deeac8da86, Calc=bf2561f0b51389fc381810ab1813e27e3ec04cb4). Checking for evidence-only update...
+[Gate Light] Head mismatch accepted (Evidence/Docs-only update).
 [Gate Light] CI Parity JSON Evidence verified.
 [Gate Light] Skipping Error Digest Validation (Preview Mode).
 [Gate Light] Checking doc path standards...
@@ -263,7 +293,7 @@ Files (Top 3):
 [Gate Light] Checking Export V1 API Contract...
 [Gate Light] Checking Ledger V0 API Contract...
 [Gate Light] Checking healthcheck evidence...
-[Gate Light] Using evidence directory: E:\OppRadar\rules\task-reports\2026-02
+[Gate Light] Using evidence directory: rules/task-reports/2026-02
 [Gate Light] Healthcheck evidence verified (Path + Content).
 [Gate Light] Skipping DoD Evidence Excerpt Check (Preview Mode).
 [Gate Light] Checking Deletion Audit (Locks & Runs)...
@@ -275,6 +305,7 @@ Files (Top 3):
 [Gate Light] Skipping Evidence Truth check (Generation Mode).
 [Gate Light] Evidence Truth & Sufficiency verified.
 [Gate Light] Checking CI Parity Preview...
+[Gate Light] CI Parity Preview verified.
 [Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
 [Gate Light] Fetching origin/main history for diff context...
 [Gate Light] Allowed legacy task_id (transition): 260221_004f

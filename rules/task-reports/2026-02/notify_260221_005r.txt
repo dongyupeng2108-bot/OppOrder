@@ -1,7 +1,7 @@
 Trae Task Report
 Task ID: 260221_005r
 Header: TraeTask_260221_005r
-Date: 2026-02-22T00:42:39.542Z
+Date: 2026-02-22T00:55:09.102Z
 Branch: feat/contract-selfcheck-260221_005r
 Commit: 44994f600c5608279f907ac2e474a0deeac8da86
 
@@ -18,22 +18,25 @@ LATEST_TASK_ID=260221_005r
 [Gate Light] LATEST.json consistency verified.
 [Gate Light] Verifying task_id: 260221_005r
 [Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Report Block Check Passed: notify_260221_005r.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260221_005r.txt
+[Gate Light] Header Check Passed: TraeTask_260221_005r
 [Gate Light] Checking Workspace Healer Evidence...
 [Gate Light] Workspace Healer verified (Clean Environment).
 [Gate Light] Checking CI Parity JSON Evidence...
 [Gate Light] DEBUG: is_shallow_repository=true
-[Gate Light] DEBUG: HEAD=44994f600c5608279f907ac2e474a0deeac8da86
+[Gate Light] DEBUG: HEAD=bf2561f0b51389fc381810ab1813e27e3ec04cb4
 [Gate Light] DEBUG: git merge-base origin/main HEAD=2b7ad1a37e8a35d22f5bd953a9f1db49a0604379
 [Gate Light] DETECTED SHALLOW CLONE. Attempting to unshallow (Fix Strategy A)...
 [Gate Light] Unshallow command executed.
-[Gate Light] CI Parity JSON Evidence verified.
-[Gate Light] Skipping Error Digest Validation (Preview Mode).
-[Gate Light] Checking doc path standards...
-[Gate Light] Doc path standards verified.
+[Gate Light] CI Parity Head mismatch (JSON=44994f600c5608279f907ac2e474a0deeac8da86, Calc=bf2561f0b51389fc381810ab1813e27e3ec04cb4). Checking for evidence-only update...
 ...
 
 === LOG_TAIL ===
 ...
+[Gate Light] Evidence Truth & Sufficiency verified.
+[Gate Light] Checking CI Parity Preview...
+[Gate Light] CI Parity Preview verified.
 [Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
 [Gate Light] Fetching origin/main history for diff context...
 [Gate Light] Allowed legacy task_id (transition): 260221_004f
@@ -51,9 +54,6 @@ LATEST_TASK_ID=260221_005r
 [Gate Light] Two-Pass Evidence Truth & No Auto-Merge verified.
 [Gate Light] Skipping Postflight Envelope Validation (Preview Mode).
 [Gate Light] PASS
-
-From https://github.com/dongyupeng2108-bot/OppOrder
- * branch              main       -> FETCH_HEAD
 
 === INDEX ===
 (See deliverables_index_260221_005r.json)
@@ -98,7 +98,7 @@ Blocking PRs: 0
 
 === AUTO_PR ===
 PR: https://github.com/dongyupeng2108-bot/OppOrder/pull/146
-Attempt: 1 (Max: 2)
+Attempt: 2 (Max: 2)
 State: FAIL
 Checks: {"total":1,"success":0,"failed":1,"pending":0,"details":["gate-light-check: FAILURE"]}
 Branch: feat/contract-selfcheck-260221_005r
@@ -113,14 +113,19 @@ LATEST_TASK_ID=260221_005r
 [Gate Light] LATEST.json consistency verified.
 [Gate Light] Verifying task_id: 260221_005r
 [Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Report Block Check Passed: notify_260221_005r.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260221_005r.txt
+[Gate Light] Header Check Passed: TraeTask_260221_005r
 [Gate Light] Checking Workspace Healer Evidence...
 [Gate Light] Workspace Healer verified (Clean Environment).
 [Gate Light] Checking CI Parity JSON Evidence...
 [Gate Light] DEBUG: is_shallow_repository=true
-[Gate Light] DEBUG: HEAD=44994f600c5608279f907ac2e474a0deeac8da86
+[Gate Light] DEBUG: HEAD=bf2561f0b51389fc381810ab1813e27e3ec04cb4
 [Gate Light] DEBUG: git merge-base origin/main HEAD=2b7ad1a37e8a35d22f5bd953a9f1db49a0604379
 [Gate Light] DETECTED SHALLOW CLONE. Attempting to unshallow (Fix Strategy A)...
 [Gate Light] Unshallow command executed.
+[Gate Light] CI Parity Head mismatch (JSON=44994f600c5608279f907ac2e474a0deeac8da86, Calc=bf2561f0b51389fc381810ab1813e27e3ec04cb4). Checking for evidence-only update...
+[Gate Light] Head mismatch accepted (Evidence/Docs-only update).
 [Gate Light] CI Parity JSON Evidence verified.
 [Gate Light] Skipping Error Digest Validation (Preview Mode).
 [Gate Light] Checking doc path standards...
@@ -149,21 +154,21 @@ Fetching http://localhost:53122/opportunities/rank_v2?provider=mock&limit=5&run_
 Received 5 items.
 Validating against schema...
 Schema Validation PASSED.
-Response Hash: 466d28a6
-::set-output name=rank_v2_hash::466d28a6
+Response Hash: d446d5f5
+::set-output name=rank_v2_hash::d446d5f5
 VERIFICATION_SUCCESS
 [Gate Light] Checking Export V1 API Contract...
 === Export V1 Contract Verification ===
 Schema loaded.
 Server already running.
 Generating Run assets via http://localhost:53122/scans/run...
-Run assets generated. Run ID: scan_ea8d8078621be6d8
-Fetching Export: http://localhost:53122/opportunities/runs/export_v1?run_id=scan_ea8d8078621be6d8...
+Run assets generated. Run ID: scan_e2e3d372a431ea98
+Fetching Export: http://localhost:53122/opportunities/runs/export_v1?run_id=scan_e2e3d372a431ea98...
 Received Export JSON.
 Validating against schema...
 Export Schema Validation PASSED.
-Export Hash: b4c2c987
-::set-output name=export_v1_hash::b4c2c987
+Export Hash: cd5c5f75
+::set-output name=export_v1_hash::cd5c5f75
 EXPORT_CONTRACT_VERIFICATION_SUCCESS
 [Gate Light] Checking Ledger V0 API Contract...
 === Ledger V0 Contract Verification ===
@@ -173,7 +178,7 @@ Fetching /opportunities/ledger/query_v0?limit=1...
 Validating against schema...
 Validation PASSED.
 [Gate Light] Checking healthcheck evidence...
-[Gate Light] Using evidence directory: E:\OppRadar\rules\task-reports\2026-02
+[Gate Light] Using evidence directory: rules/task-reports/2026-02
 [Gate Light] Healthcheck evidence verified (Path + Content).
 [Gate Light] Skipping DoD Evidence Excerpt Check (Preview Mode).
 [Gate Light] Checking Deletion Audit (Locks & Runs)...
@@ -185,6 +190,7 @@ Validation PASSED.
 [Gate Light] Skipping Evidence Truth check (Generation Mode).
 [Gate Light] Evidence Truth & Sufficiency verified.
 [Gate Light] Checking CI Parity Preview...
+[Gate Light] CI Parity Preview verified.
 [Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
 [Gate Light] Fetching origin/main history for diff context...
 [Gate Light] Allowed legacy task_id (transition): 260221_004f
@@ -202,9 +208,6 @@ Validation PASSED.
 [Gate Light] Two-Pass Evidence Truth & No Auto-Merge verified.
 [Gate Light] Skipping Postflight Envelope Validation (Preview Mode).
 [Gate Light] PASS
-
-From https://github.com/dongyupeng2108-bot/OppOrder
- * branch              main       -> FETCH_HEAD
 ==========================
 
 === ERROR_STATS_INDEX ===

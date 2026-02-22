@@ -1,8 +1,8 @@
 {
   "task_id": "260221_005r",
   "mode": "Integrate",
-  "generated_at": "2026-02-22T00:42:41.085Z",
-  "evidence_dir": "E:\\OppRadar\\rules\\task-reports\\2026-02",
+  "generated_at": "2026-02-22T00:55:09.108Z",
+  "evidence_dir": "rules/task-reports/2026-02",
   "required_files": [
     "result_260221_005r.json",
     "run_260221_005r.log",
