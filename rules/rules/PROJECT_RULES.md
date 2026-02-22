@@ -82,6 +82,10 @@
 - **Trust Level: Verifiable & Traceable** (Not "Absolute Trust"):
   - Gate Light ensures evidence is **traceable** (linked to git commit), **recalculable** (via scripts), and **tamper-evident** (hash binding).
   - It detects non-expected changes within its coverage scope but does not mathematically prove "correctness".
+- **Task ID 单一事实源**:
+  - Integrate（集成）入口必须绑定 `BRANCH_TASK_ID == ARG_TASK_ID == LATEST_TASK_ID`，任一不一致立即 fail-fast（快速失败）。
+  - PR（拉取请求）分支解析出的 task_id 为唯一锁定来源；`rules/LATEST.json` 必须同步，否则 Gate Light（门禁）失败（LATEST_OUT_OF_SYNC）。
+  - AutoPR（自动 PR）不得复用不同 task_id 的 open PR（开放 PR），发现不匹配必须 fail-fast 并给出明确行动提示。
 - **Atomic Evidence Rule (Evidence Integrity)**:
   - ANY modification to `notify`, `result`, `preview`, or `healthcheck` files MUST be immediately followed by a regeneration of `deliverables_index.json` and `envelope.json`.
   - Gate Light enforces strict hash binding (`POSTFLIGHT_REPORT_BINDING_MISMATCH`).

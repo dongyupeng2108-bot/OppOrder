@@ -238,6 +238,76 @@ Write-Host ">>> [RunTask] Step 1: Preflight" -ForegroundColor Cyan
 $PreflightCmd = @("powershell", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", "$RepoRoot\scripts\preflight.ps1", "-TaskId", $TaskId, "-Mode", $Mode, "-Header", $Header)
 Invoke-Step -Name "Preflight" -Cmd $PreflightCmd
 
+if ($Mode -eq "Integrate") {
+    $CurrentBranch = (git branch --show-current).Trim()
+    $BranchTaskId = $null
+    if ($CurrentBranch -match "(\d{6}_\d{3}[a-z]?)") { $BranchTaskId = $Matches[1] }
+    $LatestTaskId = "MISSING"
+    $LatestPath = "$RepoRoot\rules\LATEST.json"
+    if (Test-Path $LatestPath) {
+        try {
+            $LatestJson = Get-Content $LatestPath -Raw | ConvertFrom-Json
+            if ($LatestJson.task_id) { $LatestTaskId = $LatestJson.task_id }
+        } catch {
+            $LatestTaskId = "MISSING"
+        }
+    }
+    $BranchTaskIdDisplay = if ($BranchTaskId) { $BranchTaskId } else { "MISSING" }
+    if ($BranchTaskId -ne $TaskId -or $LatestTaskId -ne $TaskId) {
+        Write-Error "========== TASK_ID_BINDING_FAILFAST =========="
+        Write-Error "MODE=Integrate"
+        Write-Error "ARG_TASK_ID=$TaskId"
+        Write-Error "BRANCH_TASK_ID=$BranchTaskIdDisplay"
+        Write-Error "LATEST_TASK_ID=$LatestTaskId"
+        Write-Error "FAIL_REASON=TASK_ID_MISMATCH"
+        Write-Error "ACTION=Align branch name + run_task -TaskId + rules/LATEST.json to same task_id (including suffix if any)"
+        Write-Error "=============================================="
+        exit 1
+    }
+    if ($Env:RUN_TASK_VERBOSE -eq "1" -or $Env:RUN_TASK_DEBUG -eq "1") {
+        Write-Host "TASK_ID_BINDING=PASS ARG=$TaskId BRANCH=$BranchTaskIdDisplay LATEST=$LatestTaskId"
+    }
+    $OpenPrs = @()
+    try {
+        $OpenPrs = gh pr list --state open --json number,title,headRefName | ConvertFrom-Json
+    } catch {
+        $OpenPrs = @()
+    }
+    $IgnorePrs = @()
+    $SupersedeTaskIds = @()
+    if ($Env:OPEN_PR_GUARD_IGNORE_PR_NUMBERS) { $IgnorePrs = $Env:OPEN_PR_GUARD_IGNORE_PR_NUMBERS.Split(",") | ForEach-Object { $_.Trim() } | Where-Object { $_ } }
+    if ($Env:OPEN_PR_GUARD_SUPERSEDE_TASK_IDS) { $SupersedeTaskIds = $Env:OPEN_PR_GUARD_SUPERSEDE_TASK_IDS.Split(",") | ForEach-Object { $_.Trim() } | Where-Object { $_ } }
+    $BlockingPrs = @()
+    foreach ($Pr in $OpenPrs) {
+        $IsSelf = ($Pr.headRefName -like "*$TaskId*") -or ($Pr.title -like "*$TaskId*")
+        if ($IsSelf) { continue }
+        $IsIgnored = $false
+        if ($IgnorePrs -contains "$($Pr.number)") {
+            $PrTaskMatch = $Pr.headRefName -match "(\d{6}_\d{3}[a-z]?)"
+            $PrTaskId = if ($PrTaskMatch) { $Matches[1] } else { $null }
+            if (-not $PrTaskId) {
+                $PrTaskMatch = $Pr.title -match "(\d{6}_\d{3}[a-z]?)"
+                $PrTaskId = if ($PrTaskMatch) { $Matches[1] } else { $null }
+            }
+            if ($PrTaskId -and ($SupersedeTaskIds -contains $PrTaskId) -and ($PrTaskId -ne $TaskId)) { $IsIgnored = $true }
+        }
+        if (-not $IsIgnored) { $BlockingPrs += $Pr }
+    }
+    if ($BlockingPrs.Count -gt 0) {
+        $FirstBlock = $BlockingPrs | Select-Object -First 1
+        Write-Error "========== AUTO_PR_TASK_MISMATCH =========="
+        Write-Error "MODE=Integrate"
+        Write-Error "ARG_TASK_ID=$TaskId"
+        Write-Error "CURRENT_BRANCH=$CurrentBranch"
+        Write-Error "BLOCKING_PR=#$($FirstBlock.number) $($FirstBlock.title)"
+        Write-Error "BLOCKING_BRANCH=$($FirstBlock.headRefName)"
+        Write-Error "FAIL_REASON=OPEN_PR_TASK_MISMATCH"
+        Write-Error "ACTION=Close non-matching open PRs or retitle/rebranch to current task_id; do not reuse old PR"
+        Write-Error "=========================================="
+        exit 1
+    }
+}
+
 # --- Step 1.1: Update LATEST.json ---
 # Ensure LATEST.json points to current task so Gate Light consistency checks pass
 if ($Header -match "^(TraeTask_|FIX:)") {

@@ -105,6 +105,10 @@ Before starting any new task, the Agent MUST perform these checks:
 
 task_id（任务标识）允许格式：`YYMMDD_NNN` + 可选 1 位字母后缀（用于 rerun/patch（重跑/补丁））。Gate Light（门禁）/CI（持续集成）必须解析完整 task_id（含后缀），作为 PR（拉取请求）任务锁定（task lock）与证据路径定位依据。
 
+*   **Task ID 单一事实源**：Integrate（集成）入口强制 `BRANCH_TASK_ID == ARG_TASK_ID == LATEST_TASK_ID`，任一不一致立即 fail-fast（快速失败）。
+*   **分支/PR 唯一锁定**：以 PR（拉取请求）分支解析出的 task_id 作为最终锁定来源；`rules/LATEST.json` 必须同步，否则 Gate Light（门禁）失败（保持 LATEST_OUT_OF_SYNC 语义）。
+*   **AutoPR 禁止漂移**：若存在非当前 task_id 的 open PR（开放 PR），Integrate 必须 fail-fast，不得自动切换到其他 task_id。
+
 *   **Automation Pack V1 Workflow (Standard for M4+)**:
     The `scripts/run_task.ps1` pipeline automates the Two-Phase Rhythm.
 
