@@ -1,0 +1,31 @@
+=== DOD_EVIDENCE_STDOUT ===
+[Smoke] Checking scripts/reset_workspace.ps1...
+[Smoke] PASS: Static checks passed.
+===========================
+
+=== NEGATIVE_TEST_TASK_ID_BINDING ===
+[BLOCK] TASK_ID_BINDING_FAILFAST
+EXIT_CODE=1
+----------
+========== TASK_ID_BINDING_FAILFAST ==========
+MODE=Integrate
+ARG_TASK_ID=260222_002bx
+BRANCH_TASK_ID=260222_002b
+LATEST_TASK_ID=260222_002b
+FAIL_REASON=TASK_ID_MISMATCH
+ACTION=Align branch name + run_task -TaskId + rules/LATEST.json to same task_id (including suffix if any)
+==============================================
+=============================================
+
+=== NEGATIVE_TEST_PREASSEMBLE ===
+[BLOCK] PREASSEMBLE_FAILFAST
+EXIT_CODE=1
+----------
+========== PREASSEMBLE_FAILFAST ==========
+MODE=Integrate
+TASK_ID=260222_002b
+FAIL_REASON=MIN_SET_MISSING
+MISSING=dod_evidence_260222_002b.txt,git_meta_260222_002b.json,result_260222_002b.json
+ACTION=Run generate_evidence_260222_002b.mjs (or fix it) to produce missing files before Integrate
+==========================================
+=============================================
