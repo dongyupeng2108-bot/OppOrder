@@ -1,0 +1,11 @@
+﻿{
+    "mode":  "Integrate",
+    "branch":  "feat/task-r-error-tiering-260222_004",
+    "write_allowed":  true,
+    "input_hash_short":  "1d57625d",
+    "header":  "TraeTask_260222_004",
+    "commit":  "aff37e62",
+    "task_id":  "260222_004",
+    "header_detected":  true,
+    "timestamp":  "2026-02-22 21:09:58 UTC"
+}
