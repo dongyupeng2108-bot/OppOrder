@@ -1,0 +1,30 @@
+{
+    "mode":  "EnforceClean",
+    "branch":  "feat/preview-single-source-260222_001j",
+    "cleaned_paths":  [
+                          "rules/task-reports",
+                          "rules/reports",
+                          "data/opps_ledger",
+                          "rules/task-reports/locks",
+                          "rules/task-reports/runs"
+                      ],
+    "after":  {
+                  "untracked_count":  0,
+                  "tracked_changed_count":  0,
+                  "sample_paths":  {
+
+                                   }
+              },
+    "head_commit":  "269d8f872be6f1fd8f9d7b7ff533360909c40794",
+    "before":  {
+                   "untracked_count":  0,
+                   "tracked_changed_count":  0,
+                   "sample_paths":  {
+
+                                    }
+               },
+    "repo_root":  "E:/OppRadar",
+    "reason":  null,
+    "result":  "PASS"
+}
+
