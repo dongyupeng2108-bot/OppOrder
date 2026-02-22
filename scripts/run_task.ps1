@@ -50,8 +50,13 @@ if ($NonInteractive) {
 }
 
 $RepoRoot = "E:\OppRadar"
+$HistoryRoot = if ($Mode -eq "Integrate") { "$RepoRoot\rules\task-reports\index" } else { Join-Path $Env:TEMP "oppradar_history" }
+$LatestJsonPath = "$RepoRoot\rules\LATEST.json"
+$LatestJsonRaw = $null
+if ($Mode -eq "Dev" -and (Test-Path $LatestJsonPath)) { $LatestJsonRaw = Get-Content $LatestJsonPath -Raw }
 $TimingOutput = $Env:SPEED_TIMING_OUT
 $TimingEnabled = -not [string]::IsNullOrWhiteSpace($TimingOutput)
+if ($Mode -eq "Dev") { $TimingEnabled = $false }
 $Timing = [ordered]@{
     task_id = $TaskId
     mode = $Mode
@@ -116,18 +121,141 @@ function Write-TaskIdBindingFailfast {
     Write-Host "=============================================="
 }
 
-if ($Mode -eq "Integrate") {
-    $BranchName = ""
-    try {
-        $BranchName = (git rev-parse --abbrev-ref HEAD).Trim()
-    } catch {
-        $BranchName = ""
+$Script:LastErrorClass = ""
+$Script:LastFailReason = ""
+$Script:FixActions = @()
+
+function Stop-RunTask {
+    param([string]$Message, [string]$ErrorClass, [string]$FailReason)
+    if ($ErrorClass) { $Script:LastErrorClass = $ErrorClass }
+    if ($FailReason) { $Script:LastFailReason = $FailReason }
+    throw $Message
+}
+
+function Append-JsonlUtf8 {
+    param([string]$Path, [string]$Line)
+    $Dir = Split-Path -Parent $Path
+    if (-not (Test-Path $Dir)) { New-Item -ItemType Directory -Path $Dir -Force | Out-Null }
+    $Utf8 = New-Object System.Text.UTF8Encoding($false)
+    [System.IO.File]::AppendAllText($Path, $Line + "`n", $Utf8)
+}
+
+function Read-JsonSafe {
+    param([string]$Path)
+    if (-not (Test-Path $Path)) { return $null }
+    try { return (Get-Content $Path -Raw | ConvertFrom-Json) } catch { return $null }
+}
+
+function Get-TaskIdParts {
+    param([string]$TaskId)
+    $m = [regex]::Match($TaskId, '^(\d{6}_\d{3})([a-z]?)$')
+    if ($m.Success) {
+        return @{ Base = $m.Groups[1].Value; Suffix = $m.Groups[2].Value }
     }
-    $BranchTaskId = Get-BranchTaskId -BranchName $BranchName
-    $LatestTaskId = Read-LatestTaskId
-    if ([string]::IsNullOrWhiteSpace($BranchTaskId) -or [string]::IsNullOrWhiteSpace($LatestTaskId) -or $BranchTaskId -ne $TaskId -or $LatestTaskId -ne $TaskId) {
+    return @{ Base = $TaskId; Suffix = '' }
+}
+
+function Get-SuffixNumber {
+    param([string]$Suffix)
+    if ([string]::IsNullOrWhiteSpace($Suffix)) { return 0 }
+    $c = $Suffix.ToLower()[0]
+    return ([int][char]$c) - ([int][char]'a') + 1
+}
+
+function Test-TaskIdSuffixLoop {
+    param([string]$HistoryPath, [string]$Base, [string]$DatePart)
+    if (-not (Test-Path $HistoryPath)) { return $false }
+    $Now = Get-Date
+    $Lines = Get-Content $HistoryPath -ErrorAction SilentlyContinue
+    $Records = @()
+    foreach ($Line in $Lines) {
+        if (-not $Line.Trim()) { continue }
+        try { $Records += ($Line | ConvertFrom-Json) } catch {}
+    }
+    $Recent = $Records | Where-Object {
+        $_.base -eq $Base -and $_.date_part -eq $DatePart -and $_.timestamp_utc
+    } | Where-Object {
+        try { ($Now - [DateTime]::Parse($_.timestamp_utc)).TotalMinutes -le 120 } catch { $false }
+    } | Sort-Object { [DateTime]::Parse($_.timestamp_utc) }
+    if ($Recent.Count -lt 3) { return $false }
+    $Last3 = $Recent | Select-Object -Last 3
+    $Nums = $Last3 | ForEach-Object { [int]$_.suffix_num }
+    if ($Nums.Count -lt 3) { return $false }
+    return ($Nums[2] -gt $Nums[1]) -and ($Nums[1] -gt $Nums[0]) -and (($Nums[2] - $Nums[0]) -ge 2)
+}
+
+function Invoke-ErrorTiering {
+    param([string]$ErrorClass, [string]$FailReason)
+    $Args = @("$RepoRoot\scripts\error_tiering.mjs", "--error_class", "$ErrorClass")
+    if ($FailReason) { $Args += @("--fail_reason", "$FailReason") }
+    $Output = & node @Args
+    if ($LASTEXITCODE -ne 0) {
+        return @{ tier = "NON_SELF_HEALABLE"; recommended_action = "ESCALATE"; error_class = $ErrorClass; fail_reason = $FailReason }
+    }
+    try { return $Output | ConvertFrom-Json } catch { return @{ tier = "NON_SELF_HEALABLE"; recommended_action = "ESCALATE"; error_class = $ErrorClass; fail_reason = $FailReason } }
+}
+
+function Get-LastErrorMarkersFromLog {
+    param([string]$LogPath)
+    if ([string]::IsNullOrWhiteSpace($LogPath)) { return @{ error_class = ""; fail_reason = "" } }
+    if (-not (Test-Path $LogPath)) { return @{ error_class = ""; fail_reason = "" } }
+    $Lines = @(Get-Content $LogPath -ErrorAction SilentlyContinue)
+    $ErrorClass = ""
+    $FailReason = ""
+    foreach ($Line in $Lines) {
+        $Trimmed = $Line.Trim()
+        if ($Trimmed -like "ERROR_CLASS=*") { $ErrorClass = $Trimmed.Split("=", 2)[1].Trim() }
+        if ($Trimmed -like "FAIL_REASON=*") { $FailReason = $Trimmed.Split("=", 2)[1].Trim() }
+    }
+    return @{ error_class = $ErrorClass; fail_reason = $FailReason }
+}
+
+function Get-AutoPrInfo {
+    param([string]$EvidenceDir, [string]$TaskId)
+    $AutoPrPath = "$EvidenceDir\auto_pr_$TaskId.json"
+    $AutoPr = Read-JsonSafe -Path $AutoPrPath
+    if (-not $AutoPr) { return @{ error_class = ""; fail_reason = ""; pr_task_id_detected = "" } }
+    $PrTaskId = ""
+    if ($AutoPr.head) {
+        $Match = [regex]::Match($AutoPr.head, '\d{6}_\d{3}[a-z]?')
+        if ($Match.Success) { $PrTaskId = $Match.Value }
+    }
+    $ErrorClass = ""
+    if ($AutoPr.PSObject.Properties.Name -contains "error_class" -and $AutoPr.error_class) { $ErrorClass = $AutoPr.error_class }
+    $FailReason = ""
+    if ($AutoPr.PSObject.Properties.Name -contains "fail_reason" -and $AutoPr.fail_reason) { $FailReason = $AutoPr.fail_reason }
+    return @{ error_class = $ErrorClass; fail_reason = $FailReason; pr_task_id_detected = $PrTaskId }
+}
+
+function Invoke-EscalationReport {
+    param([string]$ErrorClass, [string]$FailReason, [string]$LogPath, [string]$PrTaskIdDetected)
+    $FixJson = $Script:FixActions | ConvertTo-Json -Compress
+    $Args = @(
+        "$RepoRoot\scripts\escalation_report.mjs",
+        "--task_id", "$TaskId",
+        "--out_dir", "$EvidenceDir",
+        "--error_class", "$ErrorClass",
+        "--fail_reason", "$FailReason",
+        "--arg_task_id", "$TaskId",
+        "--branch_task_id", "$BranchTaskId",
+        "--latest_task_id", "$LatestTaskId",
+        "--pr_task_id_detected", "$PrTaskIdDetected",
+        "--log_path", "$LogPath",
+        "--fix_actions", "$FixJson"
+    )
+    $ReportPath = & node @Args
+    return $ReportPath
+}
+
+$BranchName = ""
+try { $BranchName = (git rev-parse --abbrev-ref HEAD).Trim() } catch { $BranchName = "" }
+$BranchTaskId = Get-BranchTaskId -BranchName $BranchName
+$LatestTaskId = Read-LatestTaskId
+
+if ($Mode -eq "Integrate") {
+    if ([string]::IsNullOrWhiteSpace($BranchTaskId) -or $BranchTaskId -ne $TaskId) {
         Write-TaskIdBindingFailfast -ArgTaskId $TaskId -BranchTaskId $BranchTaskId -LatestTaskId $LatestTaskId
-        exit 1
+        Stop-RunTask -Message "TASK_ID_BINDING_FAILFAST" -ErrorClass "TASK_ID_MISMATCH" -FailReason "TASK_ID_MISMATCH"
     }
 }
 
@@ -143,7 +271,7 @@ if ($Mode -eq "Integrate") {
         Write-Error "[RunTask] FAILED: Immutable Integrate Guard Triggered."
         Write-Error "    Lock file already exists: $LockFile"
         Write-Error "    You MUST use a new task_id. Modification of locked tasks is FORBIDDEN."
-        exit 1
+        Stop-RunTask -Message "IMMUTABLE_INTEGRATE_LOCKED" -ErrorClass "IMMUTABLE_INTEGRATE_LOCKED" -FailReason "LOCK_EXISTS"
     }
 
     # 1.2 WORM Defense: History Check (Strategy B)
@@ -159,7 +287,7 @@ if ($Mode -eq "Integrate") {
             Write-Host "`nFAIL_ROOT_CAUSE_BLOCK"
             Write-Host "ERROR_CLASS=EVIDENCE_WORM_BYPASS"
             Write-Host "ROOT_CAUSE_HINT=Lock file found in history but missing locally (Tampering detected)."
-            exit 1
+            Stop-RunTask -Message "EVIDENCE_WORM_BYPASS" -ErrorClass "EVIDENCE_WORM_BYPASS" -FailReason "WORM_TAMPER"
         }
     } catch {
         Write-Warning "[RunTask] Warning: Failed to check git history for lock file. Skipping WORM check."
@@ -195,7 +323,7 @@ function PreassembleFailfast {
         Write-Host "FAIL_REASON=GENERATE_EVIDENCE_SCRIPT_MISSING"
         Write-Host "ACTION=Create rules/task-reports/$YearMonth/generate_evidence_${TaskId}.mjs to generate result/git_meta/dod_evidence before Integrate"
         Write-Host "=========================================="
-        exit 1
+        Stop-RunTask -Message "PREASSEMBLE_GENERATOR_MISSING" -ErrorClass "PREASSEMBLE_GENERATOR_MISSING" -FailReason "GENERATE_EVIDENCE_SCRIPT_MISSING"
     }
     $RequiredMin = @(
         "result_${TaskId}.json",
@@ -217,7 +345,7 @@ function PreassembleFailfast {
         Write-Host "MISSING=$MissingList"
         Write-Host "ACTION=Run generate_evidence_${TaskId}.mjs (or fix it) to produce missing files before Integrate"
         Write-Host "=========================================="
-        exit 1
+        Stop-RunTask -Message "PREASSEMBLE_MIN_SET_MISSING" -ErrorClass "PREASSEMBLE_MIN_SET_MISSING" -FailReason "MIN_SET_MISSING"
     }
     Write-Host "PREASSEMBLE_FAILFAST=PASS"
 }
@@ -227,7 +355,7 @@ PreassembleFailfast -EvidenceDir $EvidenceDir -TaskId $TaskId -Mode $Mode -Gener
 # --- PreAssemblePrecheck Function ---
 function PreAssemblePrecheck {
     param($EvidenceDir, $TaskId, $Mode)
-    
+    if ($Mode -eq "Dev") { return $true }
     $Required = @(
             "ci_parity_${TaskId}.json",
             "gate_light_preview_${TaskId}.log",
@@ -254,7 +382,7 @@ function PreAssemblePrecheck {
              return $false
         } else {
              Write-Error "Integrate Mode: Precheck failed. Cannot retry."
-             exit 1
+             Stop-RunTask -Message "PREASSEMBLE_PRECHECK_FAIL" -ErrorClass "PREASSEMBLE_PRECHECK_FAIL" -FailReason "PRECHECK_MISSING"
         }
     }
     return $true
@@ -299,7 +427,7 @@ Measure-Step -Key "workspace_healer" -Action {
         
         if (-not (Test-Path $HealerEvidence)) {
             Write-Error "FATAL: Failed to create dummy workspace healer evidence at $HealerEvidence"
-            exit 1
+            Stop-RunTask -Message "WORKSPACE_HEALER_DUMMY_FAIL" -ErrorClass "WORKSPACE_DIRTY_TRACKED" -FailReason "WORKSPACE_HEALER_DUMMY_FAIL"
         }
         Write-Host "    Dummy Workspace Healer Evidence Created: $HealerEvidence" -ForegroundColor Gray
     } else {
@@ -314,11 +442,36 @@ Measure-Step -Key "workspace_healer" -Action {
 $LogFile = "$EvidenceDir\run_$TaskId.log"
 Start-Transcript -Path $LogFile -Force
 
+# --- Step 1: Preflight ---
+Write-Host ">>> [RunTask] Step 1: Preflight" -ForegroundColor Cyan
+$PreflightCmd = @("powershell", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", "$RepoRoot\scripts\preflight.ps1", "-TaskId", $TaskId, "-Mode", $Mode, "-Header", $Header)
+Measure-Step -Key "preflight" -Action { Invoke-Step -Name "Preflight" -Cmd $PreflightCmd }
+
+$TaskIdParts = Get-TaskIdParts -TaskId $TaskId
+$TaskIdBase = $TaskIdParts.Base
+$TaskIdSuffix = $TaskIdParts.Suffix
+$TaskIdSuffixNum = Get-SuffixNumber -Suffix $TaskIdSuffix
+$DatePart = if ($TaskIdBase.Length -ge 6) { $TaskIdBase.Substring(0, 6) } else { "" }
+$TaskIdHistoryPath = Join-Path $HistoryRoot "task_id_history.jsonl"
+$TaskIdRecord = @{
+    task_id = $TaskId
+    base = $TaskIdBase
+    suffix = $TaskIdSuffix
+    suffix_num = $TaskIdSuffixNum
+    date_part = $DatePart
+    timestamp_utc = (Get-Date).ToUniversalTime().ToString("o")
+} | ConvertTo-Json -Compress
+Append-JsonlUtf8 -Path $TaskIdHistoryPath -Line $TaskIdRecord
+if ($TaskIdSuffix -and (Test-TaskIdSuffixLoop -HistoryPath $TaskIdHistoryPath -Base $TaskIdBase -DatePart $DatePart)) {
+    Stop-RunTask -Message "TASK_ID_SUFFIX_LOOP" -ErrorClass "LOOP_DETECTED" -FailReason "TASK_ID_SUFFIX_LOOP"
+}
+
 # --- 0. Fail Budget ---
 $YearMonth = Get-Date -Format "yyyy-MM"
-$BudgetFile = "$RepoRoot\rules\task-reports\$YearMonth\.budget_$TaskId.json"
-if (-not (Test-Path "$RepoRoot\rules\task-reports\$YearMonth")) {
-    New-Item -ItemType Directory -Path "$RepoRoot\rules\task-reports\$YearMonth" -Force | Out-Null
+$BudgetDir = "$RepoRoot\rules\task-reports\$YearMonth"
+$BudgetFile = Join-Path $BudgetDir ".budget_$TaskId.json"
+if (-not (Test-Path $BudgetDir)) {
+    New-Item -ItemType Directory -Path $BudgetDir -Force | Out-Null
 }
 
 # Load Budget
@@ -341,7 +494,7 @@ if ($Mode -eq "Dev") {
         Write-Error "    You have exhausted your 2 allowed Dev attempts for Task $TaskId."
         Write-Error "    Action: Fix your code/logic and use a NEW Task ID."
         $Budget | ConvertTo-Json | Set-Content $BudgetFile
-        exit 1
+        Stop-RunTask -Message "FAIL_BUDGET_EXCEEDED_DEV" -ErrorClass "FAIL_BUDGET_EXCEEDED_DEV" -FailReason "DEV_FAIL_BUDGET_EXCEEDED"
     }
 } elseif ($Mode -eq "Integrate") {
     $Budget.Integrate++
@@ -350,17 +503,12 @@ if ($Mode -eq "Dev") {
         Write-Error "    Integrate mode is strictly One-Shot."
         Write-Error "    Action: Use a NEW Task ID."
         $Budget | ConvertTo-Json | Set-Content $BudgetFile
-        exit 1
+        Stop-RunTask -Message "FAIL_BUDGET_EXCEEDED_INTEGRATE" -ErrorClass "FAIL_BUDGET_EXCEEDED_INTEGRATE" -FailReason "INTEGRATE_FAIL_BUDGET_EXCEEDED"
     }
 }
 
 # Save Budget
 $Budget | ConvertTo-Json | Set-Content $BudgetFile
-
-# --- Step 1: Preflight ---
-Write-Host ">>> [RunTask] Step 1: Preflight" -ForegroundColor Cyan
-$PreflightCmd = @("powershell", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", "$RepoRoot\scripts\preflight.ps1", "-TaskId", $TaskId, "-Mode", $Mode, "-Header", $Header)
-Measure-Step -Key "preflight" -Action { Invoke-Step -Name "Preflight" -Cmd $PreflightCmd }
 
 # --- Step 1.1: Update LATEST.json ---
 # Ensure LATEST.json points to current task so Gate Light consistency checks pass
@@ -370,7 +518,7 @@ if ($Header -match "^(TraeTask_|FIX:)") {
         task_id = $TaskId
         timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
     }
-    $LatestInfo | ConvertTo-Json | Set-Content "$RepoRoot\rules\LATEST.json"
+    $LatestInfo | ConvertTo-Json | Set-Content $LatestJsonPath
     Write-Host "    Updated rules/LATEST.json to $TaskId" -ForegroundColor Gray
 }
 
@@ -450,7 +598,7 @@ function Run-Evidence-Gen-And-Preview {
     
     if (-not (Test-Path $PreviewLog)) {
         Write-Host "[RunTask] FAILED: Preview log not created." -ForegroundColor Red
-        exit 1
+        Stop-RunTask -Message "PREVIEW_LOG_MISSING" -ErrorClass "PREVIEW_LOG_MISSING" -FailReason "PREVIEW_LOG_MISSING"
     }
     Write-Host "    Preview Log: $PreviewLog" -ForegroundColor Gray
 }
@@ -465,7 +613,7 @@ if (-not (PreAssemblePrecheck -EvidenceDir $EvidenceDir -TaskId $TaskId -Mode $M
     
     if (-not (PreAssemblePrecheck -EvidenceDir $EvidenceDir -TaskId $TaskId -Mode $Mode)) {
         Write-Error "Precheck failed after retry."
-        exit 1
+        Stop-RunTask -Message "PREASSEMBLE_PRECHECK_FAIL" -ErrorClass "PREASSEMBLE_PRECHECK_FAIL" -FailReason "PRECHECK_MISSING"
     }
 }
 
@@ -494,9 +642,13 @@ if ($Mode -eq "Integrate") {
 }
 
 # --- Step 4: Assemble Evidence ---
-Write-Host ">>> [RunTask] Step 4: Assemble Evidence" -ForegroundColor Cyan
-$AssembleCmd = @("node", "$RepoRoot\scripts\assemble_evidence.mjs", "--task_id=$TaskId", "--evidence_dir=$EvidenceDir", "--mode=$Mode", "--phase=assemble")
-Measure-Step -Key "assemble_evidence" -Action { Invoke-Step -Name "Assemble Evidence" -Cmd $AssembleCmd }
+if ($Mode -eq "Integrate") {
+    Write-Host ">>> [RunTask] Step 4: Assemble Evidence" -ForegroundColor Cyan
+    $AssembleCmd = @("node", "$RepoRoot\scripts\assemble_evidence.mjs", "--task_id=$TaskId", "--evidence_dir=$EvidenceDir", "--mode=$Mode", "--phase=assemble")
+    Measure-Step -Key "assemble_evidence" -Action { Invoke-Step -Name "Assemble Evidence" -Cmd $AssembleCmd }
+} else {
+    Write-Host ">>> [RunTask] Step 4: Skip Assemble Evidence (Dev Mode)" -ForegroundColor Yellow
+}
 
 # --- Step 9: AutoPR (Optional) ---
 if ($Mode -eq "Integrate" -and $AutoPR) {
@@ -507,6 +659,10 @@ if ($Mode -eq "Integrate" -and $AutoPR) {
     
     Measure-Step -Key "ci_watch" -Action {
         $CurrentFixCount = 0
+        $GlobalFixCount = 0
+        $FixCountByClass = @{}
+        $LastCiErrorClass = ""
+        $LastCiFailReason = ""
         $LoopActive = $true
         
         while ($LoopActive) {
@@ -523,12 +679,37 @@ if ($Mode -eq "Integrate" -and $AutoPR) {
                 $LoopActive = $false
             } elseif ($ExitCode -eq 1) {
                 Write-Error "[AutoPR] CI Watch failed with Infra/Critical Error (Exit Code 1)."
-                exit 1
+                $AutoPrInfo = Get-AutoPrInfo -EvidenceDir $EvidenceDir -TaskId $TaskId
+                $ErrorClass = if ($AutoPrInfo.error_class) { $AutoPrInfo.error_class } else { "AUTO_PR_INFRA_FAIL" }
+                $FailReason = if ($AutoPrInfo.fail_reason) { $AutoPrInfo.fail_reason } else { "CI_WATCH_INFRA_FAIL" }
+                Stop-RunTask -Message "AUTO_PR_INFRA_FAIL" -ErrorClass $ErrorClass -FailReason $FailReason
             } elseif ($ExitCode -eq 2) {
                 Write-Host "[AutoPR] CI Failed (Exit Code 2)." -ForegroundColor Red
                 
+                $AutoPrInfo = Get-AutoPrInfo -EvidenceDir $EvidenceDir -TaskId $TaskId
+                $ErrorClass = if ($AutoPrInfo.error_class) { $AutoPrInfo.error_class } else { "AUTO_PR_CI_FAIL" }
+                $FailReason = if ($AutoPrInfo.fail_reason) { $AutoPrInfo.fail_reason } else { "CI_CHECKS_FAILED" }
+                if ($ErrorClass -and $ErrorClass -eq $LastCiErrorClass) {
+                    Stop-RunTask -Message "LOOP_DETECTED" -ErrorClass "LOOP_DETECTED" -FailReason "ERROR_CLASS_REPEAT"
+                }
+                if ($FailReason -and $FailReason -eq $LastCiFailReason) {
+                    Stop-RunTask -Message "LOOP_DETECTED" -ErrorClass "LOOP_DETECTED" -FailReason "FAIL_REASON_REPEAT"
+                }
+                $LastCiErrorClass = $ErrorClass
+                $LastCiFailReason = $FailReason
+
+                if ($GlobalFixCount -ge 1 -or $AutoFixMax -le 0) {
+                    Stop-RunTask -Message "AUTO_FIX_MAX_EXCEEDED" -ErrorClass "AUTO_FIX_MAX_EXCEEDED" -FailReason "GLOBAL_AUTOFIX_MAX_REACHED"
+                }
+                if ($FixCountByClass.ContainsKey($ErrorClass) -and $FixCountByClass[$ErrorClass] -ge 1) {
+                    Stop-RunTask -Message "AUTO_FIX_MAX_EXCEEDED" -ErrorClass "AUTO_FIX_MAX_EXCEEDED" -FailReason "CLASS_AUTOFIX_MAX_REACHED"
+                }
                 if ($CurrentFixCount -lt $AutoFixMax) {
                     $CurrentFixCount++
+                    $GlobalFixCount++
+                    if (-not $FixCountByClass.ContainsKey($ErrorClass)) { $FixCountByClass[$ErrorClass] = 0 }
+                    $FixCountByClass[$ErrorClass]++
+                    $Script:FixActions += "AutoFix pack for $ErrorClass"
                     Write-Host "[AutoPR] Attempting AutoFix ($CurrentFixCount/$AutoFixMax)..." -ForegroundColor Yellow
                     
                     Write-Host ">>> [AutoPR] Running AutoFix..." -ForegroundColor Cyan
@@ -536,28 +717,31 @@ if ($Mode -eq "Integrate" -and $AutoPR) {
                     
                     if ($FixProcess.ExitCode -ne 0) {
                         Write-Error "[AutoPR] AutoFix failed with exit code $($FixProcess.ExitCode)."
-                        exit 1
+                        Stop-RunTask -Message "AUTO_FIX_FAILED" -ErrorClass "AUTO_FIX_FAILED" -FailReason "AUTO_FIX_FAILED"
                     }
                 } else {
                     Write-Error "[AutoPR] AutoFix limit reached ($AutoFixMax). CI still failing."
-                    exit 1
+                    Stop-RunTask -Message "AUTO_FIX_MAX_EXCEEDED" -ErrorClass "AUTO_FIX_MAX_EXCEEDED" -FailReason "AUTOFIX_LIMIT_REACHED"
                 }
             } else {
                 Write-Error "[AutoPR] Unknown Exit Code from CI Watch: $ExitCode"
-                exit 1
+                Stop-RunTask -Message "AUTO_PR_UNKNOWN_EXIT" -ErrorClass "AUTO_PR_UNKNOWN_EXIT" -FailReason "CI_WATCH_UNKNOWN_EXIT"
             }
         }
     }
 }
 
 # --- Step 5: Pass 2 - Gate Light Verify ---
-Write-Host "[State] VERIFYING (Pass 2)..." -ForegroundColor Cyan
-Write-Host ">>> [RunTask] Step 5: Pass 2 - Gate Light Verify" -ForegroundColor Cyan
-$VerifyLog = "$EvidenceDir\gate_light_verify_$TaskId.log"
-$Pass2Cmd = @("node", "$RepoRoot\scripts\gate_light_ci.mjs", "--task_id", $TaskId, "--mode", $Mode, "--result_dir", $EvidenceDir, "--run_id", $RunId)
-Measure-Step -Key "pass2_verify" -Action { Invoke-Step -Name "Pass 2 - Gate Light Verify" -Cmd $Pass2Cmd -RedirectTo $VerifyLog }
-
-Write-Host "    Verify Log: $VerifyLog" -ForegroundColor Gray
+if ($Mode -eq "Integrate") {
+    Write-Host "[State] VERIFYING (Pass 2)..." -ForegroundColor Cyan
+    Write-Host ">>> [RunTask] Step 5: Pass 2 - Gate Light Verify" -ForegroundColor Cyan
+    $VerifyLog = "$EvidenceDir\gate_light_verify_$TaskId.log"
+    $Pass2Cmd = @("node", "$RepoRoot\scripts\gate_light_ci.mjs", "--task_id", $TaskId, "--mode", $Mode, "--result_dir", $EvidenceDir, "--run_id", $RunId)
+    Measure-Step -Key "pass2_verify" -Action { Invoke-Step -Name "Pass 2 - Gate Light Verify" -Cmd $Pass2Cmd -RedirectTo $VerifyLog }
+    Write-Host "    Verify Log: $VerifyLog" -ForegroundColor Gray
+} else {
+    Write-Host ">>> [RunTask] Step 5: Skip Pass 2 Verify (Dev Mode)" -ForegroundColor Yellow
+}
 
 # --- Step 6: Postflight (Integrate Only) ---
 if ($Mode -eq "Integrate") {
@@ -612,8 +796,73 @@ if ($Mode -eq "Integrate") {
 Write-Host ">>> [RunTask] SUCCESS: Task $TaskId ($Mode) Completed." -ForegroundColor Green
 } catch {
     Write-Host "[RunTask] FAILED: Script execution error: $_" -ForegroundColor Red
+    $ErrorHistoryPath = Join-Path $HistoryRoot "error_history.jsonl"
+    $AutoPrInfo = Get-AutoPrInfo -EvidenceDir $EvidenceDir -TaskId $TaskId
+    $ErrorClass = $Script:LastErrorClass
+    $FailReason = $Script:LastFailReason
+    if (-not $ErrorClass) { $ErrorClass = $AutoPrInfo.error_class }
+    if (-not $FailReason) { $FailReason = $AutoPrInfo.fail_reason }
+    if (-not $ErrorClass -or -not $FailReason) {
+        $Markers = Get-LastErrorMarkersFromLog -LogPath $LogFile
+        if (-not $ErrorClass) { $ErrorClass = $Markers.error_class }
+        if (-not $FailReason) { $FailReason = $Markers.fail_reason }
+    }
+    if (-not $ErrorClass) { $ErrorClass = "UNKNOWN_ERROR" }
+    if (-not $FailReason) { $FailReason = "UNKNOWN_FAIL_REASON" }
+
+    $PrevRecord = $null
+    if (Test-Path $ErrorHistoryPath) {
+        $Lines = @(Get-Content $ErrorHistoryPath -ErrorAction SilentlyContinue)
+        for ($i = $Lines.Count - 1; $i -ge 0; $i--) {
+            if ($Lines[$i].Trim()) {
+                try { $PrevRecord = $Lines[$i] | ConvertFrom-Json } catch {}
+                break
+            }
+        }
+    }
+    $LoopTriggered = $false
+    $LoopReason = ""
+    if ($PrevRecord) {
+        if ($PrevRecord.error_class -and $PrevRecord.error_class -eq $ErrorClass) {
+            $LoopTriggered = $true
+            $LoopReason = "ERROR_CLASS_REPEAT"
+        } elseif ($PrevRecord.fail_reason -and $PrevRecord.fail_reason -eq $FailReason) {
+            $LoopTriggered = $true
+            $LoopReason = "FAIL_REASON_REPEAT"
+        }
+    }
+
+    $ErrorRecord = @{
+        task_id = $TaskId
+        error_class = $ErrorClass
+        fail_reason = $FailReason
+        timestamp_utc = (Get-Date).ToUniversalTime().ToString("o")
+    } | ConvertTo-Json -Compress
+    Append-JsonlUtf8 -Path $ErrorHistoryPath -Line $ErrorRecord
+
+    $TierInfo = Invoke-ErrorTiering -ErrorClass $ErrorClass -FailReason $FailReason
+    if ($LoopTriggered) {
+        $ErrorClass = "LOOP_DETECTED"
+        $FailReason = $LoopReason
+        $TierInfo = @{ tier = "NON_SELF_HEALABLE"; recommended_action = "ESCALATE" }
+    }
+
+    if ($TierInfo.tier -eq "NON_SELF_HEALABLE" -or $LoopTriggered) {
+        $PrTaskIdDetected = if ($AutoPrInfo.pr_task_id_detected) { $AutoPrInfo.pr_task_id_detected } else { "" }
+        $ReportPath = Invoke-EscalationReport -ErrorClass $ErrorClass -FailReason $FailReason -LogPath $LogFile -PrTaskIdDetected $PrTaskIdDetected
+        if ($ReportPath) { Write-Host "Escalation report generated: $ReportPath" -ForegroundColor Yellow }
+    }
+
     exit 1
 } finally {
+    if ($Mode -eq "Dev") {
+        if ($null -ne $LatestJsonRaw) {
+            $Utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+            [System.IO.File]::WriteAllText($LatestJsonPath, $LatestJsonRaw, $Utf8NoBom)
+        } elseif (Test-Path $LatestJsonPath) {
+            Remove-Item $LatestJsonPath -ErrorAction SilentlyContinue
+        }
+    }
     if ($TimingEnabled) {
         $TotalWatch.Stop()
         $Timing.total = [int]$TotalWatch.ElapsedMilliseconds
