@@ -1,0 +1,14 @@
+{
+  "task_id": "260222_003a",
+  "mode": "Integrate",
+  "preflight": 2522,
+  "workspace_healer": 2588,
+  "pass1_preview": 12713,
+  "assemble_evidence": 1804,
+  "pass2_verify": 13851,
+  "ci_watch": 5022,
+  "postflight": 235,
+  "total": 48443,
+  "started_at": "2026-02-22 19:34:52",
+  "finished_at": "2026-02-22 19:35:40"
+}

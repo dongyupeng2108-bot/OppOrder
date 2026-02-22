@@ -50,6 +50,34 @@ if ($NonInteractive) {
 }
 
 $RepoRoot = "E:\OppRadar"
+$TimingOutput = $Env:SPEED_TIMING_OUT
+$TimingEnabled = -not [string]::IsNullOrWhiteSpace($TimingOutput)
+$Timing = [ordered]@{
+    task_id = $TaskId
+    mode = $Mode
+    preflight = 0
+    workspace_healer = 0
+    pass1_preview = 0
+    assemble_evidence = 0
+    pass2_verify = 0
+    ci_watch = 0
+    postflight = 0
+    total = 0
+}
+$TimingStartedAt = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
+$TotalWatch = [System.Diagnostics.Stopwatch]::StartNew()
+
+function Measure-Step {
+    param([string]$Key, [scriptblock]$Action)
+    if (-not $TimingEnabled) {
+        & $Action
+        return
+    }
+    $sw = [System.Diagnostics.Stopwatch]::StartNew()
+    & $Action
+    $sw.Stop()
+    $Timing[$Key] = [int]$sw.ElapsedMilliseconds
+}
 
 function Get-BranchTaskId {
     param([string]$BranchName)
@@ -105,49 +133,6 @@ if ($Mode -eq "Integrate") {
 
 # --- Import Unified Command Executor ---
 . "$RepoRoot\scripts\ps\Invoke-Step.ps1"
-
-# --- 0. Fail Budget & Immutable Integrate Guard ---
-$YearMonth = Get-Date -Format "yyyy-MM"
-$BudgetFile = "$RepoRoot\rules\task-reports\$YearMonth\.budget_$TaskId.json"
-if (-not (Test-Path "$RepoRoot\rules\task-reports\$YearMonth")) {
-    New-Item -ItemType Directory -Path "$RepoRoot\rules\task-reports\$YearMonth" -Force | Out-Null
-}
-
-# Load Budget
-$Budget = @{ Dev = 0; Integrate = 0 }
-if (Test-Path $BudgetFile) {
-    try {
-        $Json = Get-Content $BudgetFile -Raw | ConvertFrom-Json
-        $Budget.Dev = $Json.Dev
-        $Budget.Integrate = $Json.Integrate
-    } catch {
-        Write-Warning "Failed to load budget file. Resetting."
-    }
-}
-
-# Increment & Check
-if ($Mode -eq "Dev") {
-    $Budget.Dev++
-    if ($Budget.Dev -gt 2) {
-        Write-Error "[RunTask] FAILED: Dev Fail Budget Exceeded ($($Budget.Dev)/2)."
-        Write-Error "    You have exhausted your 2 allowed Dev attempts for Task $TaskId."
-        Write-Error "    Action: Fix your code/logic and use a NEW Task ID."
-        $Budget | ConvertTo-Json | Set-Content $BudgetFile
-        exit 1
-    }
-} elseif ($Mode -eq "Integrate") {
-    $Budget.Integrate++
-    if ($Budget.Integrate -gt 1) {
-        Write-Error "[RunTask] FAILED: Integrate Fail Budget Exceeded ($($Budget.Integrate)/1)."
-        Write-Error "    Integrate mode is strictly One-Shot."
-        Write-Error "    Action: Use a NEW Task ID."
-        $Budget | ConvertTo-Json | Set-Content $BudgetFile
-        exit 1
-    }
-}
-
-# Save Budget
-$Budget | ConvertTo-Json | Set-Content $BudgetFile
 
 # --- 1. Immutable Integrate Guard (Fail-fast) ---
 if ($Mode -eq "Integrate") {
@@ -239,10 +224,6 @@ function PreassembleFailfast {
 
 PreassembleFailfast -EvidenceDir $EvidenceDir -TaskId $TaskId -Mode $Mode -GenerateScript $GenerateScript
 
-# --- Start Transcript (Log Everything) ---
-$LogFile = "$EvidenceDir\run_$TaskId.log"
-Start-Transcript -Path $LogFile -Force
-
 # --- PreAssemblePrecheck Function ---
 function PreAssemblePrecheck {
     param($EvidenceDir, $TaskId, $Mode)
@@ -301,36 +282,85 @@ if (Test-Path $ServiceScript) {
 Write-Host ">>> [RunTask] Step 0.5: Workspace Healer" -ForegroundColor Cyan
 $HealerEvidence = "$EvidenceDir\workspace_healer_$TaskId.json"
 
-if ($TaskId -match "TEST") {
-    Write-Host "    SKIPPED: Workspace Healer bypassed for TEST task (Creating Dummy Evidence)." -ForegroundColor Yellow
-    @{
-        task_id = $TaskId
-        timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
-        mode = "EnforceClean"
-        result = "PASS"
-        reason = "TEST_TASK_BYPASS"
-        after = @{
-            tracked_changed_count = 0
-            untracked_count = 0
+Measure-Step -Key "workspace_healer" -Action {
+    if ($TaskId -match "TEST") {
+        Write-Host "    SKIPPED: Workspace Healer bypassed for TEST task (Creating Dummy Evidence)." -ForegroundColor Yellow
+        @{
+            task_id = $TaskId
+            timestamp = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
+            mode = "EnforceClean"
+            result = "PASS"
+            reason = "TEST_TASK_BYPASS"
+            after = @{
+                tracked_changed_count = 0
+                untracked_count = 0
+            }
+        } | ConvertTo-Json | Set-Content $HealerEvidence
+        
+        if (-not (Test-Path $HealerEvidence)) {
+            Write-Error "FATAL: Failed to create dummy workspace healer evidence at $HealerEvidence"
+            exit 1
         }
-    } | ConvertTo-Json | Set-Content $HealerEvidence
-    
-    if (-not (Test-Path $HealerEvidence)) {
-        Write-Error "FATAL: Failed to create dummy workspace healer evidence at $HealerEvidence"
+        Write-Host "    Dummy Workspace Healer Evidence Created: $HealerEvidence" -ForegroundColor Gray
+    } else {
+        $HealerCmd = @("powershell", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", "$RepoRoot\scripts\reset_workspace.ps1", "-Mode", "EnforceClean")
+        
+        Invoke-Step -Name "Workspace Healer" -Cmd $HealerCmd -RedirectTo $HealerEvidence
+        Write-Host "    Workspace Healer PASS. Output: $HealerEvidence" -ForegroundColor Gray
+    }
+}
+
+# --- Start Transcript (Log Everything) ---
+$LogFile = "$EvidenceDir\run_$TaskId.log"
+Start-Transcript -Path $LogFile -Force
+
+# --- 0. Fail Budget ---
+$YearMonth = Get-Date -Format "yyyy-MM"
+$BudgetFile = "$RepoRoot\rules\task-reports\$YearMonth\.budget_$TaskId.json"
+if (-not (Test-Path "$RepoRoot\rules\task-reports\$YearMonth")) {
+    New-Item -ItemType Directory -Path "$RepoRoot\rules\task-reports\$YearMonth" -Force | Out-Null
+}
+
+# Load Budget
+$Budget = @{ Dev = 0; Integrate = 0 }
+if (Test-Path $BudgetFile) {
+    try {
+        $Json = Get-Content $BudgetFile -Raw | ConvertFrom-Json
+        $Budget.Dev = $Json.Dev
+        $Budget.Integrate = $Json.Integrate
+    } catch {
+        Write-Warning "Failed to load budget file. Resetting."
+    }
+}
+
+# Increment & Check
+if ($Mode -eq "Dev") {
+    $Budget.Dev++
+    if ($Budget.Dev -gt 2) {
+        Write-Error "[RunTask] FAILED: Dev Fail Budget Exceeded ($($Budget.Dev)/2)."
+        Write-Error "    You have exhausted your 2 allowed Dev attempts for Task $TaskId."
+        Write-Error "    Action: Fix your code/logic and use a NEW Task ID."
+        $Budget | ConvertTo-Json | Set-Content $BudgetFile
         exit 1
     }
-    Write-Host "    Dummy Workspace Healer Evidence Created: $HealerEvidence" -ForegroundColor Gray
-} else {
-    $HealerCmd = @("powershell", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", "$RepoRoot\scripts\reset_workspace.ps1", "-Mode", "EnforceClean")
-    
-    Invoke-Step -Name "Workspace Healer" -Cmd $HealerCmd -RedirectTo $HealerEvidence
-    Write-Host "    Workspace Healer PASS. Output: $HealerEvidence" -ForegroundColor Gray
+} elseif ($Mode -eq "Integrate") {
+    $Budget.Integrate++
+    if ($Budget.Integrate -gt 1) {
+        Write-Error "[RunTask] FAILED: Integrate Fail Budget Exceeded ($($Budget.Integrate)/1)."
+        Write-Error "    Integrate mode is strictly One-Shot."
+        Write-Error "    Action: Use a NEW Task ID."
+        $Budget | ConvertTo-Json | Set-Content $BudgetFile
+        exit 1
+    }
 }
+
+# Save Budget
+$Budget | ConvertTo-Json | Set-Content $BudgetFile
 
 # --- Step 1: Preflight ---
 Write-Host ">>> [RunTask] Step 1: Preflight" -ForegroundColor Cyan
 $PreflightCmd = @("powershell", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", "$RepoRoot\scripts\preflight.ps1", "-TaskId", $TaskId, "-Mode", $Mode, "-Header", $Header)
-Invoke-Step -Name "Preflight" -Cmd $PreflightCmd
+Measure-Step -Key "preflight" -Action { Invoke-Step -Name "Preflight" -Cmd $PreflightCmd }
 
 # --- Step 1.1: Update LATEST.json ---
 # Ensure LATEST.json points to current task so Gate Light consistency checks pass
@@ -414,7 +444,7 @@ function Run-Evidence-Gen-And-Preview {
     
     $GateScript = "$RepoRoot\scripts\gate_light_ci.mjs"
     $Pass1Cmd = @("node", $GateScript, "--task_id", $TaskId, "--result_dir", $EvidenceDir)
-    Invoke-Step -Name "Pass 1 - Gate Light Preview" -Cmd $Pass1Cmd -RedirectTo $PreviewLog
+    Measure-Step -Key "pass1_preview" -Action { Invoke-Step -Name "Pass 1 - Gate Light Preview" -Cmd $Pass1Cmd -RedirectTo $PreviewLog }
     
     $Env:GENERATE_PREVIEW = $null
     
@@ -466,7 +496,7 @@ if ($Mode -eq "Integrate") {
 # --- Step 4: Assemble Evidence ---
 Write-Host ">>> [RunTask] Step 4: Assemble Evidence" -ForegroundColor Cyan
 $AssembleCmd = @("node", "$RepoRoot\scripts\assemble_evidence.mjs", "--task_id=$TaskId", "--evidence_dir=$EvidenceDir", "--mode=$Mode", "--phase=assemble")
-Invoke-Step -Name "Assemble Evidence" -Cmd $AssembleCmd
+Measure-Step -Key "assemble_evidence" -Action { Invoke-Step -Name "Assemble Evidence" -Cmd $AssembleCmd }
 
 # --- Step 9: AutoPR (Optional) ---
 if ($Mode -eq "Integrate" -and $AutoPR) {
@@ -475,45 +505,47 @@ if ($Mode -eq "Integrate" -and $AutoPR) {
     $WatchScript = "$RepoRoot\scripts\ci_watch_pr.mjs"
     $FixScript = "$RepoRoot\scripts\ci_autofix_pack.mjs"
     
-    $CurrentFixCount = 0
-    $LoopActive = $true
-    
-    while ($LoopActive) {
-        $CurrentAttempt = $CurrentFixCount + 1
-        Write-Host "[AutoPR] Loop Iteration $CurrentAttempt (Max Fixes: $AutoFixMax)..." -ForegroundColor Cyan
+    Measure-Step -Key "ci_watch" -Action {
+        $CurrentFixCount = 0
+        $LoopActive = $true
         
-        Write-Host ">>> [AutoPR] Running CI Watch..." -ForegroundColor Cyan
-        $WatchArgs = @("$WatchScript", "--task_id", "$TaskId", "--attempt", "$CurrentAttempt", "--max_attempts", "$($AutoFixMax + 1)", "--result_dir", "$EvidenceDir")
-        $WatchProcess = Start-Process -FilePath "node" -ArgumentList $WatchArgs -NoNewWindow -PassThru -Wait
-        $ExitCode = $WatchProcess.ExitCode
-        
-        if ($ExitCode -eq 0) {
-            Write-Host "[AutoPR] CI Passed!" -ForegroundColor Green
-            $LoopActive = $false
-        } elseif ($ExitCode -eq 1) {
-            Write-Error "[AutoPR] CI Watch failed with Infra/Critical Error (Exit Code 1)."
-            exit 1
-        } elseif ($ExitCode -eq 2) {
-            Write-Host "[AutoPR] CI Failed (Exit Code 2)." -ForegroundColor Red
+        while ($LoopActive) {
+            $CurrentAttempt = $CurrentFixCount + 1
+            Write-Host "[AutoPR] Loop Iteration $CurrentAttempt (Max Fixes: $AutoFixMax)..." -ForegroundColor Cyan
             
-            if ($CurrentFixCount -lt $AutoFixMax) {
-                $CurrentFixCount++
-                Write-Host "[AutoPR] Attempting AutoFix ($CurrentFixCount/$AutoFixMax)..." -ForegroundColor Yellow
+            Write-Host ">>> [AutoPR] Running CI Watch..." -ForegroundColor Cyan
+            $WatchArgs = @("$WatchScript", "--task_id", "$TaskId", "--attempt", "$CurrentAttempt", "--max_attempts", "$($AutoFixMax + 1)", "--result_dir", "$EvidenceDir")
+            $WatchProcess = Start-Process -FilePath "node" -ArgumentList $WatchArgs -NoNewWindow -PassThru -Wait
+            $ExitCode = $WatchProcess.ExitCode
+            
+            if ($ExitCode -eq 0) {
+                Write-Host "[AutoPR] CI Passed!" -ForegroundColor Green
+                $LoopActive = $false
+            } elseif ($ExitCode -eq 1) {
+                Write-Error "[AutoPR] CI Watch failed with Infra/Critical Error (Exit Code 1)."
+                exit 1
+            } elseif ($ExitCode -eq 2) {
+                Write-Host "[AutoPR] CI Failed (Exit Code 2)." -ForegroundColor Red
                 
-                Write-Host ">>> [AutoPR] Running AutoFix..." -ForegroundColor Cyan
-                $FixProcess = Start-Process -FilePath "node" -ArgumentList "$FixScript", "--task_id", "$TaskId" -NoNewWindow -PassThru -Wait
-                
-                if ($FixProcess.ExitCode -ne 0) {
-                    Write-Error "[AutoPR] AutoFix failed with exit code $($FixProcess.ExitCode)."
+                if ($CurrentFixCount -lt $AutoFixMax) {
+                    $CurrentFixCount++
+                    Write-Host "[AutoPR] Attempting AutoFix ($CurrentFixCount/$AutoFixMax)..." -ForegroundColor Yellow
+                    
+                    Write-Host ">>> [AutoPR] Running AutoFix..." -ForegroundColor Cyan
+                    $FixProcess = Start-Process -FilePath "node" -ArgumentList "$FixScript", "--task_id", "$TaskId" -NoNewWindow -PassThru -Wait
+                    
+                    if ($FixProcess.ExitCode -ne 0) {
+                        Write-Error "[AutoPR] AutoFix failed with exit code $($FixProcess.ExitCode)."
+                        exit 1
+                    }
+                } else {
+                    Write-Error "[AutoPR] AutoFix limit reached ($AutoFixMax). CI still failing."
                     exit 1
                 }
             } else {
-                Write-Error "[AutoPR] AutoFix limit reached ($AutoFixMax). CI still failing."
+                Write-Error "[AutoPR] Unknown Exit Code from CI Watch: $ExitCode"
                 exit 1
             }
-        } else {
-            Write-Error "[AutoPR] Unknown Exit Code from CI Watch: $ExitCode"
-            exit 1
         }
     }
 }
@@ -523,7 +555,7 @@ Write-Host "[State] VERIFYING (Pass 2)..." -ForegroundColor Cyan
 Write-Host ">>> [RunTask] Step 5: Pass 2 - Gate Light Verify" -ForegroundColor Cyan
 $VerifyLog = "$EvidenceDir\gate_light_verify_$TaskId.log"
 $Pass2Cmd = @("node", "$RepoRoot\scripts\gate_light_ci.mjs", "--task_id", $TaskId, "--mode", $Mode, "--result_dir", $EvidenceDir, "--run_id", $RunId)
-Invoke-Step -Name "Pass 2 - Gate Light Verify" -Cmd $Pass2Cmd -RedirectTo $VerifyLog
+Measure-Step -Key "pass2_verify" -Action { Invoke-Step -Name "Pass 2 - Gate Light Verify" -Cmd $Pass2Cmd -RedirectTo $VerifyLog }
 
 Write-Host "    Verify Log: $VerifyLog" -ForegroundColor Gray
 
@@ -532,11 +564,13 @@ if ($Mode -eq "Integrate") {
     Write-Host "[State] POSTFLIGHT..." -ForegroundColor Cyan
     Write-Host ">>> [RunTask] Step 6: Postflight (Integrate)" -ForegroundColor Cyan
     $PostflightScript = "$RepoRoot\scripts\postflight_validate_envelope.mjs"
-    if (Test-Path $PostflightScript) {
-        $PostCmd = @("node", $PostflightScript, "--task_id", $TaskId, "--result_dir", $EvidenceDir)
-        Invoke-Step -Name "Postflight" -Cmd $PostCmd -RedirectTo $VerifyLog -Append
-    } else {
-        Write-Host "    Warning: Postflight script not found." -ForegroundColor Yellow
+    Measure-Step -Key "postflight" -Action {
+        if (Test-Path $PostflightScript) {
+            $PostCmd = @("node", $PostflightScript, "--task_id", $TaskId, "--result_dir", $EvidenceDir)
+            Invoke-Step -Name "Postflight" -Cmd $PostCmd -RedirectTo $VerifyLog -Append
+        } else {
+            Write-Host "    Warning: Postflight script not found." -ForegroundColor Yellow
+        }
     }
 
     # --- Step 6.5: Error Digest (Pass 2) ---
@@ -580,5 +614,12 @@ Write-Host ">>> [RunTask] SUCCESS: Task $TaskId ($Mode) Completed." -ForegroundC
     Write-Host "[RunTask] FAILED: Script execution error: $_" -ForegroundColor Red
     exit 1
 } finally {
+    if ($TimingEnabled) {
+        $TotalWatch.Stop()
+        $Timing.total = [int]$TotalWatch.ElapsedMilliseconds
+        $Timing["started_at"] = $TimingStartedAt
+        $Timing["finished_at"] = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
+        $Timing | ConvertTo-Json | Set-Content -Encoding UTF8 $TimingOutput
+    }
     try { Stop-Transcript -ErrorAction SilentlyContinue } catch {}
 }
