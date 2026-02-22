@@ -68,6 +68,40 @@ if (missingInputs.length > 0) {
 const readText = (path) => fs.readFileSync(path, 'utf8').trim();
 // Helper to read JSON
 const readJson = (path) => JSON.parse(fs.readFileSync(path, 'utf8').replace(/^\uFEFF/, ''));
+const hasBom = (text) => text.charCodeAt(0) === 0xFEFF;
+const hasCrlf = (text) => text.includes('\r\n');
+const failPreviewEncoding = (label) => {
+    console.error('FAIL_REASON=PREVIEW_ENCODING');
+    console.error(label);
+    process.exit(1);
+};
+const ensurePreviewEncoding = (text, label) => {
+    if (hasBom(text) || hasCrlf(text)) {
+        failPreviewEncoding(label);
+    }
+};
+const buildFirstDiffContext = (aText, bText, context) => {
+    const aLines = aText.split('\n');
+    const bLines = bText.split('\n');
+    const max = Math.max(aLines.length, bLines.length);
+    let diffIndex = -1;
+    for (let i = 0; i < max; i++) {
+        if (aLines[i] !== bLines[i]) {
+            diffIndex = i;
+            break;
+        }
+    }
+    if (diffIndex === -1) {
+        return { line: 0, snippet: '', preview: '' };
+    }
+    const start = Math.max(0, diffIndex - context);
+    const end = Math.min(max - 1, diffIndex + context);
+    return {
+        line: diffIndex + 1,
+        snippet: aLines.slice(start, end + 1).join('\n'),
+        preview: bLines.slice(start, end + 1).join('\n')
+    };
+};
 // Helper to calc hash (LF normalized for text)
 const calcHash = (filePath) => {
     try {
@@ -360,6 +394,56 @@ const resultPath = inputs.resultJson; // Overwrite existing
 fs.writeFileSync(resultPath, JSON.stringify(resultData, null, 2));
 console.log(`[Assembler] Updated result JSON: ${resultPath}`);
 
+const snippetPath = resolvePath(`trae_report_snippet_${taskId}.txt`);
+const previewTxtPath = resolvePath(`gate_light_preview_${taskId}.txt`);
+const previewCmpPath = resolvePath(`preview_cmp_${taskId}.txt`);
+if (fs.existsSync(inputs.gateLightLog)) {
+    try {
+        execSync(`node scripts/extract_gate_light_preview.mjs --task_id=${taskId} --log="${inputs.gateLightLog}"`, { stdio: 'inherit' });
+    } catch (e) {
+        console.warn(`[Assembler] Warning: Failed to extract gate light preview: ${e.message}`);
+    }
+}
+try {
+    execSync(`node scripts/build_trae_report_snippet.mjs --task_id=${taskId} --result_dir="${evidenceDir}"`, { stdio: 'inherit' });
+} catch (e) {
+    console.error(`[Assembler] FAIL: Failed to build snippet: ${e.message}`);
+    process.exit(1);
+}
+if (!fs.existsSync(snippetPath)) {
+    console.error(`[Assembler] FAIL: Snippet not created at ${snippetPath}`);
+    process.exit(1);
+}
+if (!fs.existsSync(previewTxtPath)) {
+    console.error(`[Assembler] FAIL: Preview not created at ${previewTxtPath}`);
+    process.exit(1);
+}
+const previewText = fs.readFileSync(previewTxtPath, 'utf8');
+const snippetText = fs.readFileSync(snippetPath, 'utf8');
+ensurePreviewEncoding(previewText, `[Assembler] FAIL: Preview must be LF + UTF-8 (no BOM): ${previewTxtPath}`);
+ensurePreviewEncoding(snippetText, `[Assembler] FAIL: Snippet must be LF + UTF-8 (no BOM): ${snippetPath}`);
+const snippetBlockMatch = snippetText.match(/=== GATE_LIGHT_(?:PREVIEW|VERIFY) ===[\s\S]*?GATE_LIGHT_EXIT=\d+/);
+if (!snippetBlockMatch) {
+    console.error('[Assembler] FAIL: Snippet missing Gate Light preview block for compare.');
+    process.exit(1);
+}
+const snippetBlock = snippetBlockMatch[0];
+const rawEqual = snippetBlock === previewText;
+const normSnippet = snippetBlock.replace(/\r\n/g, '\n');
+const normPreview = previewText.replace(/\r\n/g, '\n');
+const lfEqual = normSnippet === normPreview;
+const diff = buildFirstDiffContext(normSnippet, normPreview, 2);
+const diffText = rawEqual ? '(none)' : `LINE=${diff.line}\nSNIPPET:\n${diff.snippet}\nPREVIEW:\n${diff.preview}`;
+const previewCmpContent = [
+    `RAW_EQUAL=${rawEqual}`,
+    `LF_NORMALIZED_EQUAL=${lfEqual}`,
+    'FIRST_DIFF_CONTEXT:',
+    diffText
+].join('\n');
+ensurePreviewEncoding(previewCmpContent, '[Assembler] FAIL: preview_cmp must be LF + UTF-8 (no BOM).');
+fs.writeFileSync(previewCmpPath, previewCmpContent);
+console.log(`[Assembler] Wrote preview compare: ${previewCmpPath}`);
+
 const selfCheckPath = resolvePath(`contract_self_check_${taskId}.txt`);
 const envelopePath = path.resolve(evidenceDir, '..', 'envelopes', `${taskId}.envelope.json`);
 
@@ -387,6 +471,7 @@ const indexCheckPaths = [
     inputs.errorsJsonl,
     inputs.errorsSummary,
     notifyPath,
+    previewCmpPath,
     manualVerifyPath
 ];
 if (fs.existsSync(openPrPath)) indexCheckPaths.push(openPrPath);
@@ -499,6 +584,7 @@ const requiredFilesList = [
     path.basename(inputs.errorsJsonl),
     path.basename(inputs.errorsSummary),
     path.basename(selfCheckPath),
+    path.basename(previewCmpPath),
     `deliverables_index_${taskId}.json`
 ];
 
@@ -545,6 +631,7 @@ const filesToIndex = [
     inputs.errorsJsonl,
     inputs.errorsSummary,
     notifyPath,
+    previewCmpPath,
     manualVerifyPath,
     manifestPath,
     selfCheckPath
@@ -584,27 +671,6 @@ const indexData = {
 const indexPath = resolvePath(`deliverables_index_${taskId}.json`);
 fs.writeFileSync(indexPath, JSON.stringify(indexData, null, 2));
 console.log(`[Assembler] Wrote index: ${indexPath}`);
-
-// --- 8. Write Snippet (Build from Preview Extract) ---
-const snippetPath = resolvePath(`trae_report_snippet_${taskId}.txt`);
-const previewTxtPath = resolvePath(`gate_light_preview_${taskId}.txt`);
-if (fs.existsSync(inputs.gateLightLog)) {
-    try {
-        execSync(`node scripts/extract_gate_light_preview.mjs --task_id=${taskId} --log="${inputs.gateLightLog}"`, { stdio: 'inherit' });
-    } catch (e) {
-        console.warn(`[Assembler] Warning: Failed to extract gate light preview: ${e.message}`);
-    }
-}
-try {
-    execSync(`node scripts/build_trae_report_snippet.mjs --task_id=${taskId} --result_dir="${evidenceDir}"`, { stdio: 'inherit' });
-} catch (e) {
-    console.error(`[Assembler] FAIL: Failed to build snippet: ${e.message}`);
-    process.exit(1);
-}
-if (!fs.existsSync(snippetPath)) {
-    console.error(`[Assembler] FAIL: Snippet not created at ${snippetPath}`);
-    process.exit(1);
-}
 
 if (strictSelfCheck && selfCheckExit === 1) {
     process.exit(1);
@@ -664,6 +730,7 @@ if (resolvedMode === 'Integrate') {
             path.basename(inputs.errorsJsonl),
             path.basename(inputs.errorsSummary),
             path.basename(selfCheckPath),
+            path.basename(previewCmpPath),
             `deliverables_index_${taskId}.json`
         ];
         if (fs.existsSync(inputs.ciParity)) updatedRequiredFilesList.push(path.basename(inputs.ciParity));
@@ -700,6 +767,7 @@ if (resolvedMode === 'Integrate') {
             inputs.errorsJsonl,
             inputs.errorsSummary,
             notifyPath,
+            previewCmpPath,
             manualVerifyPath,
             manifestPath,
             selfCheckPath
@@ -740,6 +808,38 @@ if (resolvedMode === 'Integrate') {
             console.error(`[Assembler] FAIL: Failed to build snippet: ${e.message}`);
             process.exit(1);
         }
+        if (!fs.existsSync(snippetPath)) {
+            console.error(`[Assembler] FAIL: Snippet not created at ${snippetPath}`);
+            process.exit(1);
+        }
+        if (!fs.existsSync(previewTxtPath)) {
+            console.error(`[Assembler] FAIL: Preview not created at ${previewTxtPath}`);
+            process.exit(1);
+        }
+        const previewTextUpdated = fs.readFileSync(previewTxtPath, 'utf8');
+        const snippetTextUpdated = fs.readFileSync(snippetPath, 'utf8');
+        ensurePreviewEncoding(previewTextUpdated, `[Assembler] FAIL: Preview must be LF + UTF-8 (no BOM): ${previewTxtPath}`);
+        ensurePreviewEncoding(snippetTextUpdated, `[Assembler] FAIL: Snippet must be LF + UTF-8 (no BOM): ${snippetPath}`);
+        const snippetBlockMatchUpdated = snippetTextUpdated.match(/=== GATE_LIGHT_(?:PREVIEW|VERIFY) ===[\s\S]*?GATE_LIGHT_EXIT=\d+/);
+        if (!snippetBlockMatchUpdated) {
+            console.error('[Assembler] FAIL: Snippet missing Gate Light preview block for compare.');
+            process.exit(1);
+        }
+        const snippetBlockUpdated = snippetBlockMatchUpdated[0];
+        const rawEqualUpdated = snippetBlockUpdated === previewTextUpdated;
+        const normSnippetUpdated = snippetBlockUpdated.replace(/\r\n/g, '\n');
+        const normPreviewUpdated = previewTextUpdated.replace(/\r\n/g, '\n');
+        const lfEqualUpdated = normSnippetUpdated === normPreviewUpdated;
+        const diffUpdated = buildFirstDiffContext(normSnippetUpdated, normPreviewUpdated, 2);
+        const diffTextUpdated = rawEqualUpdated ? '(none)' : `LINE=${diffUpdated.line}\nSNIPPET:\n${diffUpdated.snippet}\nPREVIEW:\n${diffUpdated.preview}`;
+        const previewCmpContentUpdated = [
+            `RAW_EQUAL=${rawEqualUpdated}`,
+            `LF_NORMALIZED_EQUAL=${lfEqualUpdated}`,
+            'FIRST_DIFF_CONTEXT:',
+            diffTextUpdated
+        ].join('\n');
+        ensurePreviewEncoding(previewCmpContentUpdated, '[Assembler] FAIL: preview_cmp must be LF + UTF-8 (no BOM).');
+        fs.writeFileSync(previewCmpPath, previewCmpContentUpdated);
         execSync(`node scripts/postflight_validate_envelope.mjs --task_id ${taskId} --result_dir "${evidenceDir}" --report_dir "${evidenceDir}"`, { stdio: 'inherit' });
     }
 }

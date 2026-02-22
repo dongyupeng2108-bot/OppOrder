@@ -18,8 +18,14 @@ if (!fs.existsSync(logPath)) {
     process.exit(1);
 }
 
-const logContent = fs.readFileSync(logPath, 'utf8').replace(/^\uFEFF/, '');
-const lines = logContent.split(/\r?\n/);
+const logBuffer = fs.readFileSync(logPath);
+const logContent = logBuffer.toString('utf8');
+if (logContent.charCodeAt(0) === 0xFEFF || logContent.includes('\r\n')) {
+    console.error('FAIL_REASON=PREVIEW_ENCODING');
+    console.error(`[Extract Preview] Error: Log must be LF + UTF-8 (no BOM): ${logPath}`);
+    process.exit(1);
+}
+const lines = logContent.split('\n');
 
 // Strategy: Extract from first '[Gate Light]' to 'GATE_LIGHT_EXIT='
 let startIndex = -1;
@@ -58,5 +64,10 @@ ${previewContent}`;
 const outputDir = path.dirname(logPath);
 const outputPath = path.join(outputDir, `gate_light_preview_${taskId}.txt`);
 
+if (outputContent.includes('\r\n') || outputContent.charCodeAt(0) === 0xFEFF) {
+    console.error('FAIL_REASON=PREVIEW_ENCODING');
+    console.error('[Extract Preview] Error: Preview content must be LF + UTF-8 (no BOM).');
+    process.exit(1);
+}
 fs.writeFileSync(outputPath, outputContent);
 console.log(`[Extract Preview] Wrote preview to: ${outputPath}`);
