@@ -207,8 +207,13 @@ jobs:
           MONTH="${TASK_ID:2:2}"
           EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
           PREVIEW_LOG="${EVIDENCE_DIR}/gate_light_preview_${TASK_ID}.log"
+          PREVIEW_TXT="${EVIDENCE_DIR}/gate_light_preview_${TASK_ID}.txt"
           echo "TASK_ID=${TASK_ID}"
           echo "EVIDENCE_DIR=${EVIDENCE_DIR}"
+          if [ -f "$PREVIEW_TXT" ]; then
+            echo "Preview already exists. Skip CI generation."
+            exit 0
+          fi
           GENERATE_PREVIEW=1 node scripts/gate_light_ci.mjs --task_id "$TASK_ID" --result_dir "$EVIDENCE_DIR" > "$PREVIEW_LOG"
           node scripts/extract_gate_light_preview.mjs --task_id="$TASK_ID" --log="$PREVIEW_LOG"
 

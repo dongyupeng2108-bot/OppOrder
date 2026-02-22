@@ -1,6 +1,6 @@
 {
   "task_id": "260221_005r",
-  "generated_at": "2026-02-22T00:55:09.111Z",
+  "generated_at": "2026-02-22T01:11:17.744Z",
   "files": [
     {
       "name": "ci_parity_260221_005r.json",
@@ -35,7 +35,7 @@
     {
       "name": "result_260221_005r.json",
       "size": 481,
-      "sha256_short": "92213606"
+      "sha256_short": "504aa8c9"
     },
     {
       "name": "run_260221_005r.log",
@@ -55,7 +55,7 @@
     {
       "name": "notify_260221_005r.txt",
       "size": 10214,
-      "sha256_short": "e10ce390"
+      "sha256_short": "dc0a06b0"
     },
     {
       "name": "manual_verification_260221_005r.json",
@@ -65,7 +65,7 @@
     {
       "name": "evidence_manifest_260221_005r.json",
       "size": 856,
-      "sha256_short": "dbad17ce"
+      "sha256_short": "a0e84ef5"
     },
     {
       "name": "contract_self_check_260221_005r.txt",

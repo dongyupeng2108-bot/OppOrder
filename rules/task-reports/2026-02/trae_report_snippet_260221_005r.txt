@@ -2,7 +2,7 @@
 
 Header: TraeTask_260221_005r
 BRANCH: feat/contract-selfcheck-260221_005r
-COMMIT: bf2561f0
+COMMIT: d44f5da2
 
 === GIT_SCOPE_DIFF ===
 M	.github/workflows/gate-light.yml
@@ -228,6 +228,7 @@ A	rules/task-reports/envelopes/260221_005m.envelope.json
 A	rules/task-reports/envelopes/260221_005n.envelope.json
 A	rules/task-reports/envelopes/260221_005o.envelope.json
 A	rules/task-reports/envelopes/260221_005r.envelope.json
+M	rules/task-reports/index/error_stats.jsonl
 M	scripts/assemble_evidence.mjs
 M	scripts/build_trae_report_snippet.mjs
 M	scripts/ci_autofix_pack.mjs
