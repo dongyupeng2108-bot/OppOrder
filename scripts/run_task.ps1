@@ -254,6 +254,8 @@ if ($Mode -eq "Integrate") {
     }
     $BranchTaskIdDisplay = if ($BranchTaskId) { $BranchTaskId } else { "MISSING" }
     if ($BranchTaskId -ne $TaskId -or $LatestTaskId -ne $TaskId) {
+        $PreviousErrorActionPreference = $ErrorActionPreference
+        $ErrorActionPreference = "Continue"
         Write-Error "========== TASK_ID_BINDING_FAILFAST =========="
         Write-Error "MODE=Integrate"
         Write-Error "ARG_TASK_ID=$TaskId"
@@ -262,6 +264,7 @@ if ($Mode -eq "Integrate") {
         Write-Error "FAIL_REASON=TASK_ID_MISMATCH"
         Write-Error "ACTION=Align branch name + run_task -TaskId + rules/LATEST.json to same task_id (including suffix if any)"
         Write-Error "=============================================="
+        $ErrorActionPreference = $PreviousErrorActionPreference
         exit 1
     }
     if ($Env:RUN_TASK_VERBOSE -eq "1" -or $Env:RUN_TASK_DEBUG -eq "1") {
@@ -295,6 +298,8 @@ if ($Mode -eq "Integrate") {
     }
     if ($BlockingPrs.Count -gt 0) {
         $FirstBlock = $BlockingPrs | Select-Object -First 1
+        $PreviousErrorActionPreference = $ErrorActionPreference
+        $ErrorActionPreference = "Continue"
         Write-Error "========== AUTO_PR_TASK_MISMATCH =========="
         Write-Error "MODE=Integrate"
         Write-Error "ARG_TASK_ID=$TaskId"
@@ -304,6 +309,7 @@ if ($Mode -eq "Integrate") {
         Write-Error "FAIL_REASON=OPEN_PR_TASK_MISMATCH"
         Write-Error "ACTION=Close non-matching open PRs or retitle/rebranch to current task_id; do not reuse old PR"
         Write-Error "=========================================="
+        $ErrorActionPreference = $PreviousErrorActionPreference
         exit 1
     }
 }
