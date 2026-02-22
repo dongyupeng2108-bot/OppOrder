@@ -30,12 +30,28 @@ try {
         '==============================================',
         '============================================='
     ].join('\n');
+    const preassembleNegativeBlock = [
+        '=== NEGATIVE_TEST_PREASSEMBLE ===',
+        '[BLOCK] PREASSEMBLE_FAILFAST',
+        'EXIT_CODE=1',
+        '----------',
+        '========== PREASSEMBLE_FAILFAST ==========',
+        'MODE=Integrate',
+        'TASK_ID=260222_002b',
+        'FAIL_REASON=MIN_SET_MISSING',
+        'MISSING=dod_evidence_260222_002b.txt,git_meta_260222_002b.json,result_260222_002b.json',
+        'ACTION=Run generate_evidence_260222_002b.mjs (or fix it) to produce missing files before Integrate',
+        '==========================================',
+        '============================================='
+    ].join('\n');
     const evidenceContent = [
         '=== DOD_EVIDENCE_STDOUT ===',
         smokeOutput.trim(),
         '===========================',
         '',
         negativeTestBlock,
+        '',
+        preassembleNegativeBlock,
         ''
     ].join('\n');
     fs.writeFileSync(dodFile, evidenceContent);
