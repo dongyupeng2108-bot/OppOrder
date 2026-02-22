@@ -45,9 +45,12 @@ if (startIndex === -1 || endIndex === -1) {
     process.exit(1);
 }
 
-// Extract lines inclusive
 const previewLines = lines.slice(startIndex, endIndex + 1);
-const previewContent = previewLines.join('\n');
+const filteredLines = previewLines.filter(line => {
+    const trimmed = line.trim();
+    return trimmed.startsWith('[Gate Light]') || trimmed.startsWith('[BLOCK]') || trimmed.startsWith('GATE_LIGHT_EXIT=');
+});
+const previewContent = filteredLines.join('\n');
 
 const outputContent = `=== GATE_LIGHT_PREVIEW ===
 ${previewContent}`;
