@@ -1,9 +1,9 @@
 Trae Task Report
 Task ID: 260222_003a
 Header: TraeTask_260222_003a
-Date: 2026-02-22T09:57:02.521Z
+Date: 2026-02-22T11:29:27.374Z
 Branch: feat/speed-baseline-260222_003a
-Commit: 256b84810dec937031e65b01dfb9a0a4f1221e29
+Commit: ec0a297eb32e83de0e2ae1a8af03f1f0c6bd48d2
 
 
 === RESULT_JSON ===
@@ -18,18 +18,18 @@ LATEST_TASK_ID=260222_003a
 [Gate Light] LATEST.json consistency verified.
 [Gate Light] Verifying task_id: 260222_003a
 [Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Report Block Check Passed: notify_260222_003a.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260222_003a.txt
+[Gate Light] Header Check Passed: TraeTask_260222_003a
 [Gate Light] Checking Workspace Healer Evidence...
 [Gate Light] Workspace Healer verified (Clean Environment).
 [Gate Light] Checking CI Parity JSON Evidence...
 [Gate Light] DEBUG: is_shallow_repository=true
-[Gate Light] DEBUG: HEAD=256b84810dec937031e65b01dfb9a0a4f1221e29
+[Gate Light] DEBUG: HEAD=ec0a297eb32e83de0e2ae1a8af03f1f0c6bd48d2
 [Gate Light] DEBUG: git merge-base origin/main HEAD=6999263e73f3f22f031ea15201c765ba9704abb8
 [Gate Light] DETECTED SHALLOW CLONE. Attempting to unshallow (Fix Strategy A)...
 [Gate Light] Unshallow command executed.
 [Gate Light] CI Parity JSON Evidence verified.
-[Gate Light] Skipping Error Digest Validation (Preview Mode).
-[Gate Light] Checking doc path standards...
-[Gate Light] Doc path standards verified.
 ...
 
 === LOG_TAIL ===
@@ -71,14 +71,14 @@ DOD_EVIDENCE_CONTRACT_SELF_CHECK: contract_self_check_260222_003a.txt => CONTRAC
 
 === CI_PARITY_PREVIEW ===
 Base: 6999263e73f3f22f031ea15201c765ba9704abb8
-Head: 256b84810dec937031e65b01dfb9a0a4f1221e29
+Head: ec0a297eb32e83de0e2ae1a8af03f1f0c6bd48d2
 MergeBase: 6999263e73f3f22f031ea15201c765ba9704abb8
 Source: JSON (Evidence-as-Code)
-Scope: 3 files
+Scope: 31 files
 Files (Top 3):
   - rules/LATEST.json
-  - scripts/run_task.ps1
-  - scripts/speed_probe.ps1
+  - rules/task-reports/2026-02/.budget_260222_003a.json
+  - rules/task-reports/2026-02/260222_003a.json
 ...
 =========================
 
@@ -96,6 +96,13 @@ Blocking PRs: 0
 =====================
 
 
+=== AUTO_PR ===
+PR: https://github.com/dongyupeng2108-bot/OppOrder/pull/157
+Attempt: 1 (Max: 1)
+State: FAIL
+Checks: {"total":1,"success":0,"failed":1,"pending":0,"details":["gate-light-check: FAILURE"]}
+Branch: feat/speed-baseline-260222_003a
+================
 
 === GATE_LIGHT_PREVIEW ===
 [Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
@@ -106,11 +113,14 @@ LATEST_TASK_ID=260222_003a
 [Gate Light] LATEST.json consistency verified.
 [Gate Light] Verifying task_id: 260222_003a
 [Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Report Block Check Passed: notify_260222_003a.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260222_003a.txt
+[Gate Light] Header Check Passed: TraeTask_260222_003a
 [Gate Light] Checking Workspace Healer Evidence...
 [Gate Light] Workspace Healer verified (Clean Environment).
 [Gate Light] Checking CI Parity JSON Evidence...
 [Gate Light] DEBUG: is_shallow_repository=true
-[Gate Light] DEBUG: HEAD=256b84810dec937031e65b01dfb9a0a4f1221e29
+[Gate Light] DEBUG: HEAD=ec0a297eb32e83de0e2ae1a8af03f1f0c6bd48d2
 [Gate Light] DEBUG: git merge-base origin/main HEAD=6999263e73f3f22f031ea15201c765ba9704abb8
 [Gate Light] DETECTED SHALLOW CLONE. Attempting to unshallow (Fix Strategy A)...
 [Gate Light] Unshallow command executed.
@@ -142,21 +152,21 @@ Fetching http://localhost:53122/opportunities/rank_v2?provider=mock&limit=5&run_
 Received 5 items.
 Validating against schema...
 Schema Validation PASSED.
-Response Hash: d20bcaa4
-::set-output name=rank_v2_hash::d20bcaa4
+Response Hash: bf7d23d0
+::set-output name=rank_v2_hash::bf7d23d0
 VERIFICATION_SUCCESS
 [Gate Light] Checking Export V1 API Contract...
 === Export V1 Contract Verification ===
 Schema loaded.
 Server already running.
 Generating Run assets via http://localhost:53122/scans/run...
-Run assets generated. Run ID: scan_59bc1e5f5c67024d
-Fetching Export: http://localhost:53122/opportunities/runs/export_v1?run_id=scan_59bc1e5f5c67024d...
+Run assets generated. Run ID: scan_1628e4fa07008e1d
+Fetching Export: http://localhost:53122/opportunities/runs/export_v1?run_id=scan_1628e4fa07008e1d...
 Received Export JSON.
 Validating against schema...
 Export Schema Validation PASSED.
-Export Hash: 6c01c9ea
-::set-output name=export_v1_hash::6c01c9ea
+Export Hash: 4df47a06
+::set-output name=export_v1_hash::4df47a06
 EXPORT_CONTRACT_VERIFICATION_SUCCESS
 [Gate Light] Checking Ledger V0 API Contract...
 === Ledger V0 Contract Verification ===
@@ -178,6 +188,7 @@ Validation PASSED.
 [Gate Light] Skipping Evidence Truth check (Generation Mode).
 [Gate Light] Evidence Truth & Sufficiency verified.
 [Gate Light] Checking CI Parity Preview...
+[Gate Light] CI Parity Preview verified.
 [Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
 [Gate Light] Fetching origin/main history for diff context...
 [Gate Light] Allowed legacy task_id (transition): 260222_002b
@@ -201,16 +212,16 @@ From https://github.com/dongyupeng2108-bot/OppOrder
 ==========================
 
 === ERROR_STATS_INDEX ===
-{"task_id":"260222_003a","run_id":"20260222175702_256b848","commit":"256b84810dec937031e65b01dfb9a0a4f1221e29","ts":"2026-02-22T09:57:02.255Z","mode":"Integrate","error_class":"NO_ERROR","severity":"INFO","message":"No errors found.","hint":""}
+{"task_id":"260222_003a","run_id":"20260222192927_ec0a297","commit":"ec0a297eb32e83de0e2ae1a8af03f1f0c6bd48d2","ts":"2026-02-22T11:29:27.096Z","mode":"Integrate","error_class":"NO_ERROR","severity":"INFO","message":"No errors found.","hint":""}
 =========================
 
 === ERROR_SUMMARY ===
 TASK_ID: 260222_003a
-COMMIT: 256b84810dec937031e65b01dfb9a0a4f1221e29
+COMMIT: ec0a297eb32e83de0e2ae1a8af03f1f0c6bd48d2
 TOTAL_ERRORS: 0
 MODE: Integrate
-CONTRACT_SELF_CHECK_EXIT: N/A
-CONTRACT_SELF_CHECK_LINES: N/A
+CONTRACT_SELF_CHECK_EXIT: 0
+CONTRACT_SELF_CHECK_LINES: CONTRACT_CHECK_NOTIFY_MARKERS=PASS | CONTRACT_CHECK_RESULT_FIELDS=PASS | CONTRACT_CHECK_INDEX_BINDING=PASS | CONTRACT_CHECK_ENVELOPE_BINDING=PASS | CONTRACT_CHECK_SNIPPET_COMMIT=PASS
 
 TOP ERROR CLASSES:
 None

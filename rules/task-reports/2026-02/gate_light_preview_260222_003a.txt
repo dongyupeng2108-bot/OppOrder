@@ -4,11 +4,14 @@
 [Gate Light] LATEST.json consistency verified.
 [Gate Light] Verifying task_id: 260222_003a
 [Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Report Block Check Passed: notify_260222_003a.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260222_003a.txt
+[Gate Light] Header Check Passed: TraeTask_260222_003a
 [Gate Light] Checking Workspace Healer Evidence...
 [Gate Light] Workspace Healer verified (Clean Environment).
 [Gate Light] Checking CI Parity JSON Evidence...
 [Gate Light] DEBUG: is_shallow_repository=true
-[Gate Light] DEBUG: HEAD=256b84810dec937031e65b01dfb9a0a4f1221e29
+[Gate Light] DEBUG: HEAD=ec0a297eb32e83de0e2ae1a8af03f1f0c6bd48d2
 [Gate Light] DEBUG: git merge-base origin/main HEAD=6999263e73f3f22f031ea15201c765ba9704abb8
 [Gate Light] DETECTED SHALLOW CLONE. Attempting to unshallow (Fix Strategy A)...
 [Gate Light] Unshallow command executed.
@@ -37,6 +40,7 @@
 [Gate Light] Skipping Evidence Truth check (Generation Mode).
 [Gate Light] Evidence Truth & Sufficiency verified.
 [Gate Light] Checking CI Parity Preview...
+[Gate Light] CI Parity Preview verified.
 [Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
 [Gate Light] Fetching origin/main history for diff context...
 [Gate Light] Allowed legacy task_id (transition): 260222_002b
