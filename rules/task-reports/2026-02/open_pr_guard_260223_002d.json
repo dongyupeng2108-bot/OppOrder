@@ -1,0 +1,23 @@
+{
+  "queried_at": "2026-02-23T02:18:00.005Z",
+  "mode": "Integrate",
+  "open_prs": [
+    {
+      "number": 164,
+      "title": "TraeTask_260223_002c: AutoPR",
+      "headRefName": "fix/merge-log-260223_002c",
+      "url": "https://github.com/dongyupeng2108-bot/OppOrder/pull/164"
+    }
+  ],
+  "ignored_pr_numbers": [],
+  "supersede_task_ids": [],
+  "blocking_prs": [
+    {
+      "number": 164,
+      "reason": "Open PR not ignored or superseded"
+    }
+  ],
+  "decision": "BLOCK",
+  "exit_code": 1,
+  "open_prs_blocking_count": 1
+}
