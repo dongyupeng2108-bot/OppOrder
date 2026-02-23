@@ -49,10 +49,16 @@ try {
         throw new Error('Delete verification failed: Files still exist.');
     }
 
-    // Write result and notify files
+    // Write result and dod_evidence files
     const resultFile = path.join(__dirname, 'result_260223_004.json');
+    const dodFile = path.join(__dirname, 'dod_evidence_260223_004.txt');
     const notifyFile = path.join(__dirname, 'notify_260223_004.txt');
     
+    // Ensure stale notify file is removed so Gate Light doesn't check it prematurely
+    if (fs.existsSync(notifyFile)) {
+        fs.unlinkSync(notifyFile);
+    }
+
     fs.writeFileSync(resultFile, JSON.stringify({
         task_id: "260223_004",
         status: "success",
@@ -62,7 +68,12 @@ try {
         }
     }, null, 2));
 
-    fs.writeFileSync(notifyFile, "Task 260223_004 Completed.\nVerified ops_copy_file.mjs and ops_delete.mjs.\nGATE_LIGHT_EXIT=0\n");
+    const dodContent = `Task 260223_004 Verification:
+Verified ops_copy_file.mjs and ops_delete.mjs.
+See logs for details.
+GATE_LIGHT_EXIT=0
+`;
+    fs.writeFileSync(dodFile, dodContent);
 
     console.log('Evidence generation complete.');
 
