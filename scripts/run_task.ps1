@@ -839,11 +839,13 @@ if ($Mode -eq "Integrate") {
             Write-Host ">>> [RunTask] Step 8.9: AutoPR Pre-Commit" -ForegroundColor Cyan
             $SafeCommitScript = "$RepoRoot\scripts\safe_commit.ps1"
             $CommitMessage = "TraeTask_${TaskId}: integrate evidence"
-            # FIX: Pass message as a single argument, not part of a string array that might be split
-            # We rely on Invoke-Step using proper argument list
-            $CommitCmd = @("powershell", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", $SafeCommitScript, "-Message", $CommitMessage)
+            # FIX: Use argument array with call operator '&' to prevent argument splitting
+            # This replaces Invoke-Step to guarantee correct array handling by PowerShell
+            $CommitArgs = @("-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", $SafeCommitScript, "-Message", $CommitMessage)
+            
             try {
-                Invoke-Step -Name "AutoPR Pre-Commit" -Cmd $CommitCmd
+                & powershell $CommitArgs
+                if ($LASTEXITCODE -ne 0) { throw "AutoPR Pre-Commit failed with exit code $LASTEXITCODE" }
             } catch {
                 Stop-RunTask -Message "AutoPR Pre-Commit Failed" -ErrorClass "AUTOPR_PRECOMMIT_FAIL" -FailReason "SAFE_COMMIT_ARG_SPLIT"
             }
@@ -854,13 +856,18 @@ if ($Mode -eq "Integrate") {
         
         # Generate dummy AutoPR evidence for Gate Light compliance
         $AutoPrEvidencePath = "$EvidenceDir\auto_pr_${TaskId}.json"
-        $DummyEvidence = @{
-            pr_url = "SKIPPED_BY_USER_REQUEST"
-            attempt = 1
+        $DummyEvidence = [ordered]@{
+            task_id = $TaskId
+            run_id = $RunId
+            attempt = 0
+            did_autopr = $false
+            status = "SKIPPED"
             final_state = "SKIPPED"
-        } | ConvertTo-Json
-        $DummyEvidence | Out-File -FilePath $AutoPrEvidencePath -Encoding utf8 -Force
-        Write-Host ">>> [RunTask] Generated dummy AutoPR evidence: $AutoPrEvidencePath" -ForegroundColor DarkGray
+            reason = "AUTOPR_DISABLED_BY_FLAG"
+            pr_url = "SKIPPED_BY_USER_REQUEST"
+        }
+        $DummyEvidence | ConvertTo-Json | Out-File -FilePath $AutoPrEvidencePath -Encoding utf8 -Force
+        Write-Host "DUMMY_AUTOPR_EVIDENCE=1 path=$AutoPrEvidencePath attempt=0" -ForegroundColor DarkGray
     }
 }
 
