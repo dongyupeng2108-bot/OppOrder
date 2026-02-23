@@ -167,8 +167,13 @@ elseif ($Mode -eq 'Integrate') {
     # envelope_build.mjs expects reports/healthcheck_root.txt
     $LegacyReportsDir = Join-Path $RepoRoot "reports"
     if (-not (Test-Path $LegacyReportsDir)) { New-Item -ItemType Directory -Path $LegacyReportsDir | Out-Null }
-    Copy-Item $HcRoot -Destination (Join-Path $LegacyReportsDir "healthcheck_root.txt") -Force
-    Copy-Item $HcPairs -Destination (Join-Path $LegacyReportsDir "healthcheck_pairs.txt") -Force
+    # REPLACED: Copy-Item $HcRoot -Destination (Join-Path $LegacyReportsDir "healthcheck_root.txt") -Force
+    node scripts/ops_copy_file.mjs "$HcRoot" (Join-Path $LegacyReportsDir "healthcheck_root.txt") --force
+    if ($LASTEXITCODE -ne 0) { throw "Failed to copy healthcheck_root.txt" }
+
+    # REPLACED: Copy-Item $HcPairs -Destination (Join-Path $LegacyReportsDir "healthcheck_pairs.txt") -Force
+    node scripts/ops_copy_file.mjs "$HcPairs" (Join-Path $LegacyReportsDir "healthcheck_pairs.txt") --force
+    if ($LASTEXITCODE -ne 0) { throw "Failed to copy healthcheck_pairs.txt" }
     
     Write-Host "   Saved to $HcRoot and $HcPairs"
 
@@ -204,7 +209,9 @@ elseif ($Mode -eq 'Integrate') {
         if ((Test-Path $Hardcoded006) -and ($Hardcoded006 -ne $OppsSmokeFile)) {
              # If target file doesn't exist or is older than 006 (implying script wrote to 006), copy it
              if (!(Test-Path $OppsSmokeFile) -or (Get-Item $Hardcoded006).LastWriteTime -gt (Get-Item $OppsSmokeFile).LastWriteTime) {
-                 Copy-Item $Hardcoded006 -Destination $OppsSmokeFile -Force
+                 # REPLACED: Copy-Item $Hardcoded006 -Destination $OppsSmokeFile -Force
+                 node scripts/ops_copy_file.mjs "$Hardcoded006" "$OppsSmokeFile" --force
+                 if ($LASTEXITCODE -ne 0) { Write-Error "Failed to copy fallback smoke file"; exit 1 }
                  Write-Host "   (Fallback) Copied 006 output to $OppsSmokeFile"
              }
         }
