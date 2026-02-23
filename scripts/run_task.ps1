@@ -15,15 +15,19 @@ param (
     [int]$StepTimeoutSeconds = 120,
 
     [Parameter(Mandatory=$false)]
-    [switch]$AutoPR,
+    [bool]$AutoPR = $true,
 
     [Parameter(Mandatory=$false)]
     [int]$AutoFixMax = 0
+
+    ,[Parameter(Mandatory=$false)]
+    [string]$RunId
 )
 
 # --- Parameter Normalization ---
 $TaskId = $TaskId.Trim()
 $Mode = $Mode.Trim()
+if ($RunId) { $RunId = $RunId.Trim() }
 
 if ([string]::IsNullOrWhiteSpace($Header)) {
     $Header = "TraeTask_$TaskId"
@@ -152,11 +156,64 @@ function Write-TaskIdBindingFailfast {
 $Script:LastErrorClass = ""
 $Script:LastFailReason = ""
 $Script:FixActions = @()
+$Script:HardStopTriggered = $false
+$Script:HardStopMarkers = @(
+    "EVIDENCE_WORM_BYPASS",
+    "OPEN_PR_GUARD_BLOCKED",
+    "WORKSPACE_DIRTY_TRACKED",
+    "STEP_TIMEOUT",
+    "SERVICE_HEALTHCHECK_FAIL",
+    "CMD_SYNTAX_BANNED",
+    "AUTO_PR_CI_FAIL",
+    "AUTO_PR_INFRA_FAIL",
+    "AUTO_PR_TIMEOUT",
+    "AUTO_PR_UNKNOWN_EXIT",
+    "AUTO_FIX_MAX_EXCEEDED",
+    "AUTO_FIX_FAILED",
+    "IMMUTABLE_INTEGRATE_LOCKED",
+    "FAIL_BUDGET_EXCEEDED_DEV",
+    "FAIL_BUDGET_EXCEEDED_INTEGRATE",
+    "PREASSEMBLE_PRECHECK_FAIL",
+    "PREASSEMBLE_GENERATOR_MISSING",
+    "PREASSEMBLE_MIN_SET_MISSING",
+    "PREVIEW_LOG_MISSING",
+    "TASK_ID_MISMATCH",
+    "LOOP_DETECTED",
+    "CONTRACT_SELF_CHECK_FAIL",
+    "SAFE_COMMIT_ARG_SPLIT",
+    "AUTOPR_PRECOMMIT_FAIL"
+)
+
+function Write-HardStopBlock {
+    param([string]$Reason)
+    Write-Host "HARD_STOP=1"
+    Write-Host "HARD_STOP_REASON=$Reason"
+    Write-Host "NEXT_ACTION=STOP_AND_REPORT"
+}
+
+function Get-HardStopReason {
+    param([string]$ErrorClass, [string]$FailReason, [string]$Mode)
+    if ($Mode -eq "Dev" -and -not [string]::IsNullOrWhiteSpace($Env:HARD_STOP_SIMULATE)) {
+        return @{ active = $true; reason = $Env:HARD_STOP_SIMULATE }
+    }
+    if ($FailReason -and $Script:HardStopMarkers -contains $FailReason) {
+        return @{ active = $true; reason = $FailReason }
+    }
+    if ($ErrorClass -and $Script:HardStopMarkers -contains $ErrorClass) {
+        return @{ active = $true; reason = $ErrorClass }
+    }
+    return @{ active = $false; reason = "" }
+}
 
 function Stop-RunTask {
     param([string]$Message, [string]$ErrorClass, [string]$FailReason)
     if ($ErrorClass) { $Script:LastErrorClass = $ErrorClass }
     if ($FailReason) { $Script:LastFailReason = $FailReason }
+    $HardStop = Get-HardStopReason -ErrorClass $ErrorClass -FailReason $FailReason -Mode $Mode
+    if ($HardStop.active -and -not $Script:HardStopTriggered) {
+        $Script:HardStopTriggered = $true
+        Write-HardStopBlock -Reason $HardStop.reason
+    }
     throw $Message
 }
 
@@ -503,6 +560,10 @@ try {
 Write-Host ">>> [RunTask] TaskId: $TaskId | Mode: $Mode | Header: $Header" -ForegroundColor Cyan
 Write-Host ">>> [RunTask] Evidence Dir: $EvidenceDir" -ForegroundColor Gray
 
+if ($Mode -eq "Dev" -and -not [string]::IsNullOrWhiteSpace($Env:HARD_STOP_SIMULATE)) {
+    Stop-RunTask -Message "HARD_STOP_SIMULATE" -ErrorClass "HARD_STOP_SIMULATE" -FailReason $Env:HARD_STOP_SIMULATE
+}
+
 # --- State Skeleton ---
 Write-Host "[State] INITIALIZING..." -ForegroundColor Cyan
 
@@ -605,18 +666,18 @@ if (Test-Path $BudgetFile) {
 if ($Mode -eq "Dev") {
     $Budget.Dev++
     if ($Budget.Dev -gt 2) {
-        Write-Error "[RunTask] FAILED: Dev Fail Budget Exceeded ($($Budget.Dev)/2)."
-        Write-Error "    You have exhausted your 2 allowed Dev attempts for Task $TaskId."
-        Write-Error "    Action: Fix your code/logic and use a NEW Task ID."
+        Write-Host "[RunTask] FAILED: Dev Fail Budget Exceeded ($($Budget.Dev)/2)." -ForegroundColor Red
+        Write-Host "    You have exhausted your 2 allowed Dev attempts for Task $TaskId." -ForegroundColor Red
+        Write-Host "    Action: Fix your code/logic and use a NEW Task ID." -ForegroundColor Red
         $Budget | ConvertTo-Json | Set-Content $BudgetFile
         Stop-RunTask -Message "FAIL_BUDGET_EXCEEDED_DEV" -ErrorClass "FAIL_BUDGET_EXCEEDED_DEV" -FailReason "DEV_FAIL_BUDGET_EXCEEDED"
     }
 } elseif ($Mode -eq "Integrate") {
     $Budget.Integrate++
     if ($Budget.Integrate -gt 1) {
-        Write-Error "[RunTask] FAILED: Integrate Fail Budget Exceeded ($($Budget.Integrate)/1)."
-        Write-Error "    Integrate mode is strictly One-Shot."
-        Write-Error "    Action: Use a NEW Task ID."
+        Write-Host "[RunTask] FAILED: Integrate Fail Budget Exceeded ($($Budget.Integrate)/1)." -ForegroundColor Red
+        Write-Host "    Integrate mode is strictly One-Shot." -ForegroundColor Red
+        Write-Host "    Action: Use a NEW Task ID." -ForegroundColor Red
         $Budget | ConvertTo-Json | Set-Content $BudgetFile
         Stop-RunTask -Message "FAIL_BUDGET_EXCEEDED_INTEGRATE" -ErrorClass "FAIL_BUDGET_EXCEEDED_INTEGRATE" -FailReason "INTEGRATE_FAIL_BUDGET_EXCEEDED"
     }
@@ -695,7 +756,10 @@ function Run-Evidence-Gen-And-Preview {
         if (Test-Path "$EvidenceDir\gate_light_verify_$TaskId.log") { Remove-Item "$EvidenceDir\gate_light_verify_$TaskId.log" }
 
         $GenCmd = @("node", $GenerateScript.FullName)
-        Invoke-Step -Name "Generate Evidence" -Cmd $GenCmd -TimeoutSec $StepTimeoutSeconds
+        $EffectiveTimeoutSec = $StepTimeoutSeconds
+        if ($EffectiveTimeoutSec -le 0) { $EffectiveTimeoutSec = 300 }
+        Write-Host "STEP_TIMEOUT_SEC=$EffectiveTimeoutSec step=Generate Evidence"
+        Invoke-Step -Name "Generate Evidence" -Cmd $GenCmd -TimeoutSec $EffectiveTimeoutSec
     } else {
         Write-Host ">>> [RunTask] Step 2: Skip Generation (Script not found)" -ForegroundColor Yellow
     }
@@ -736,7 +800,9 @@ if (-not (PreAssemblePrecheck -EvidenceDir $EvidenceDir -TaskId $TaskId -Mode $M
 Write-Host ">>> [RunTask] Step 3.5: Error Digest (Pass 1)" -ForegroundColor Cyan
 $Commit = git rev-parse HEAD
 $ShortSha = $Commit.Substring(0, 7)
-$RunId = (Get-Date).ToString("yyyyMMddHHmmss") + "_" + $ShortSha
+if ([string]::IsNullOrWhiteSpace($RunId)) {
+    $RunId = (Get-Date).ToString("yyyyMMddHHmmss") + "_" + $ShortSha
+}
 Write-Host ">>> [RunTask] Generated Run ID: $RunId" -ForegroundColor Cyan
 
 $DigestCmd = @("node", "$RepoRoot\scripts\error_digest.mjs", "--task_id", $TaskId, "--mode", $Mode, "--commit", $Commit, "--out_dir", $EvidenceDir)
@@ -765,20 +831,50 @@ if ($Mode -eq "Integrate") {
     Write-Host ">>> [RunTask] Step 4: Skip Assemble Evidence (Dev Mode)" -ForegroundColor Yellow
 }
 
-if ($Mode -eq "Integrate" -and $AutoPR) {
-    $DirtyStatus = git status --porcelain
-    if ($DirtyStatus) {
-        Write-Host ">>> [RunTask] Step 8.9: AutoPR Pre-Commit" -ForegroundColor Cyan
-        $SafeCommitScript = "$RepoRoot\scripts\safe_commit.ps1"
-        $CommitMessage = "TraeTask_${TaskId}: integrate evidence"
-        $CommitCmd = @("powershell", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", $SafeCommitScript, "-Message", $CommitMessage)
-        Invoke-Step -Name "AutoPR Pre-Commit" -Cmd $CommitCmd
+# --- Step 8.9: AutoPR Pre-Commit (Optional) ---
+if ($Mode -eq "Integrate") {
+    if ($AutoPR) {
+        $DirtyStatus = git status --porcelain
+        if ($DirtyStatus) {
+            Write-Host ">>> [RunTask] Step 8.9: AutoPR Pre-Commit" -ForegroundColor Cyan
+            $SafeCommitScript = "$RepoRoot\scripts\safe_commit.ps1"
+            $CommitMessage = "TraeTask_${TaskId}: integrate evidence"
+            # FIX: Use argument array with call operator '&' to prevent argument splitting
+            # This replaces Invoke-Step to guarantee correct array handling by PowerShell
+            $CommitArgs = @("-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", $SafeCommitScript, "-Message", $CommitMessage)
+            
+            try {
+                & powershell $CommitArgs
+                if ($LASTEXITCODE -ne 0) { throw "AutoPR Pre-Commit failed with exit code $LASTEXITCODE" }
+            } catch {
+                Stop-RunTask -Message "AutoPR Pre-Commit Failed" -ErrorClass "AUTOPR_PRECOMMIT_FAIL" -FailReason "SAFE_COMMIT_ARG_SPLIT"
+            }
+        }
+    } else {
+        Write-Host "AUTOPR_DISABLED=1" -ForegroundColor Yellow
+        Write-Host ">>> [RunTask] Step 9: AutoPR Disabled. Skipping." -ForegroundColor Yellow
+        
+        # Generate dummy AutoPR evidence for Gate Light compliance
+        $AutoPrEvidencePath = "$EvidenceDir\auto_pr_${TaskId}.json"
+        $DummyEvidence = [ordered]@{
+            task_id = $TaskId
+            run_id = $RunId
+            attempt = "0"
+            did_autopr = $false
+            status = "SKIPPED"
+            final_state = "SKIPPED"
+            reason = "AUTOPR_DISABLED_BY_FLAG"
+            pr_url = "SKIPPED_BY_USER_REQUEST"
+        }
+        $DummyEvidence | ConvertTo-Json | Out-File -FilePath $AutoPrEvidencePath -Encoding Ascii -Force
+        Write-Host "DUMMY_AUTOPR_EVIDENCE=1 path=$AutoPrEvidencePath attempt=0" -ForegroundColor DarkGray
     }
 }
 
 # --- Step 9: AutoPR (Optional) ---
-if ($Mode -eq "Integrate" -and $AutoPR) {
-    Write-Host ">>> [RunTask] Step 9: AutoPR Loop" -ForegroundColor Cyan
+if ($Mode -eq "Integrate") {
+    if ($AutoPR) {
+        Write-Host ">>> [RunTask] Step 9: AutoPR Loop" -ForegroundColor Cyan
     
     $WatchScript = "$RepoRoot\scripts\ci_watch_pr.mjs"
     $FixScript = "$RepoRoot\scripts\ci_autofix_pack.mjs"
@@ -826,6 +922,10 @@ if ($Mode -eq "Integrate" -and $AutoPR) {
                 $AutoPrInfo = Get-AutoPrInfo -EvidenceDir $EvidenceDir -TaskId $TaskId
                 $ErrorClass = if ($AutoPrInfo.error_class) { $AutoPrInfo.error_class } else { "AUTO_PR_INFRA_FAIL" }
                 $FailReason = if ($AutoPrInfo.fail_reason) { $AutoPrInfo.fail_reason } else { "CI_WATCH_INFRA_FAIL" }
+                $HardStop = Get-HardStopReason -ErrorClass $ErrorClass -FailReason $FailReason -Mode $Mode
+                if ($HardStop.active) {
+                    Stop-RunTask -Message "HARD_STOP" -ErrorClass $ErrorClass -FailReason $HardStop.reason
+                }
                 Stop-RunTask -Message "AUTO_PR_INFRA_FAIL" -ErrorClass $ErrorClass -FailReason $FailReason
             } elseif ($ExitCode -eq 2) {
                 Write-Host "[AutoPR] CI Failed (Exit Code 2)." -ForegroundColor Red
@@ -836,6 +936,10 @@ if ($Mode -eq "Integrate" -and $AutoPR) {
                 $AutoPrInfo = Get-AutoPrInfo -EvidenceDir $EvidenceDir -TaskId $TaskId
                 $ErrorClass = if ($AutoPrInfo.error_class) { $AutoPrInfo.error_class } else { "AUTO_PR_CI_FAIL" }
                 $FailReason = if ($AutoPrInfo.fail_reason) { $AutoPrInfo.fail_reason } else { "CI_CHECKS_FAILED" }
+                $HardStop = Get-HardStopReason -ErrorClass $ErrorClass -FailReason $FailReason -Mode $Mode
+                if ($HardStop.active) {
+                    Stop-RunTask -Message "HARD_STOP" -ErrorClass $ErrorClass -FailReason $HardStop.reason
+                }
                 if ($ErrorClass -and $ErrorClass -eq $LastCiErrorClass) {
                     Stop-RunTask -Message "LOOP_DETECTED" -ErrorClass "LOOP_DETECTED" -FailReason "ERROR_CLASS_REPEAT"
                 }
@@ -879,6 +983,10 @@ if ($Mode -eq "Integrate" -and $AutoPR) {
                 Stop-RunTask -Message "AUTO_PR_UNKNOWN_EXIT" -ErrorClass "AUTO_PR_UNKNOWN_EXIT" -FailReason "CI_WATCH_UNKNOWN_EXIT"
             }
         }
+    }
+    } else {
+        Write-Host "AUTOPR_DISABLED=1" -ForegroundColor Yellow
+        Write-Host ">>> [RunTask] Step 9: AutoPR Disabled. Skipping." -ForegroundColor Yellow
     }
 }
 
@@ -994,12 +1102,22 @@ Write-Host ">>> [RunTask] SUCCESS: Task $TaskId ($Mode) Completed." -ForegroundC
 
     $TierInfo = Invoke-ErrorTiering -ErrorClass $ErrorClass -FailReason $FailReason
     if ($LoopTriggered) {
+        if ($ErrorClass -eq "FAIL_BUDGET_EXCEEDED_INTEGRATE" -or $FailReason -eq "INTEGRATE_FAIL_BUDGET_EXCEEDED") {
+            $LoopReason = "FAIL_BUDGET_EXCEEDED_INTEGRATE"
+        }
         $ErrorClass = "LOOP_DETECTED"
         $FailReason = $LoopReason
         $TierInfo = @{ tier = "NON_SELF_HEALABLE"; recommended_action = "ESCALATE" }
     }
     $Script:RunChainErrorClass = $ErrorClass
     $Script:RunChainFailReason = $FailReason
+    if (-not $Script:HardStopTriggered) {
+        $HardStop = Get-HardStopReason -ErrorClass $ErrorClass -FailReason $FailReason -Mode $Mode
+        if ($HardStop.active) {
+            $Script:HardStopTriggered = $true
+            Write-HardStopBlock -Reason $HardStop.reason
+        }
+    }
 
     if ($TierInfo.tier -eq "NON_SELF_HEALABLE" -or $LoopTriggered) {
         $PrTaskIdDetected = if ($AutoPrInfo.pr_task_id_detected) { $AutoPrInfo.pr_task_id_detected } else { "" }

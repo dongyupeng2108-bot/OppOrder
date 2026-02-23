@@ -144,6 +144,12 @@ task_id（任务标识）允许格式：`YYMMDD_NNN` + 可选 1 位字母后缀�
 4. **Escalation Report（升级报告）**：触发不可自愈或循环阈值时，生成 `rules/task-reports/<YYYY-MM>/escalation_<task_id>.md`，字段必须完整（见 PROJECT_RULES.md）。
 5. **DoD**：错误摘要包含 tier；升级报告必须为 LF + UTF-8（无 BOM）；不可自愈/循环一律“停 + 报告”，禁止继续自动化动作。
 
+### Stop-on-hardstop（硬停）
+1. **触发条件**：ERROR_CLASS 或 FAIL_REASON 命中不可自愈（Non-self-healable）或硬停清单。
+2. **立即停止**：外层流程立刻停止，不再执行 AutoPR（自动 PR）、AutoFix（自动修复）、Task ID（任务标识）自动变更或重跑。
+3. **最短事实块**：仅输出三行：HARD_STOP=1；HARD_STOP_REASON=...；NEXT_ACTION=STOP_AND_REPORT。
+4. **Dev 冒烟**：仅 Dev 模式允许 HARD_STOP_SIMULATE（硬停冒烟）环境变量触发；Integrate（集成）/CI（持续集成）禁止生效。
+
 ## Open PR Guard Protocols (One Task at a Time)
 
 To maintain a linear, conflict-free history, we enforce a strict "One Task at a Time" policy.
