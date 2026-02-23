@@ -879,8 +879,17 @@ if ($Mode -eq "Integrate") {
 if ($Mode -eq "Integrate") {
     if ($AutoPR) {
         Write-Host ">>> [RunTask] Step 9: AutoPR Loop" -ForegroundColor Cyan
+
+        # --- Stage Evidence (Node Wrapper) ---
+        Write-Host ">>> [AutoPR] Staging Evidence (Node)..." -ForegroundColor Cyan
+        $StageArgs = @("$RepoRoot\scripts\ops_git_stage_task_evidence.mjs", "--task_id", "$TaskId", "--evidence_dir", "$EvidenceDir")
+        if ($RunId) { $StageArgs += "--run_id"; $StageArgs += "$RunId" }
+        $StageProcess = Start-Process -FilePath "node" -ArgumentList $StageArgs -NoNewWindow -PassThru -Wait
+        if ($StageProcess.ExitCode -ne 0) {
+            Write-Warning "[AutoPR] Failed to stage evidence files via Node tool. Proceeding anyway..."
+        }
     
-    $WatchScript = "$RepoRoot\scripts\ci_watch_pr.mjs"
+        $WatchScript = "$RepoRoot\scripts\ci_watch_pr.mjs"
     $FixScript = "$RepoRoot\scripts\ci_autofix_pack.mjs"
     $Script:DidAutoPr = $true
     
