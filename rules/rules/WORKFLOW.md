@@ -171,6 +171,26 @@ To prevent phantom execution and UI blocking after a task failure or hard stop:
         ```
     *   **Why**: Node.js `fs.rm` / `fs.unlink` provides deterministic, non-interactive deletion without triggering OS/IDE shell confirmation popups.
 
+### Standard Investigation/Audit Command Discipline (标准排查/审计命令纪律)
+
+To reduce Trae Desktop popups and environment dependency risks, strict discipline is enforced for investigation and audit commands.
+
+1.  **Mandatory Tool**:
+    *   **Standard**: MUST use `node scripts/ops_scan_text.mjs ...` for all automated or standard procedure scanning/auditing.
+    *   **Prohibition**: `grep`, `Select-String`, `findstr`, or other shell-native search commands are **FORBIDDEN** in standard task reports, scripts, or automated workflows.
+    *   **Exception**: Temporary manual use in the terminal during ad-hoc debugging is allowed, but the output MUST NOT be used as the standard "Fact Block" in task reports.
+
+2.  **Usage Pattern**:
+    *   **Scan & Report**:
+        ```bash
+        # Scan for high-risk keywords in scripts
+        node scripts/ops_scan_text.mjs --globs "scripts/*.ps1" --pattern "(Remove-Item|\\bdel\\b)" --json
+        
+        # Audit specific file types for patterns
+        node scripts/ops_scan_text.mjs --globs "rules/rules/*.md" --pattern "echo\\s+.*\\s+>" --max_hits 50 --json
+        ```
+    *   **Why**: Node.js provides consistent, cross-platform behavior (regex, globbing) and avoids "High Risk Command" warnings in Trae Desktop.
+
 ## Open PR Guard Protocols (One Task at a Time)
 
 To maintain a linear, conflict-free history, we enforce a strict "One Task at a Time" policy.
