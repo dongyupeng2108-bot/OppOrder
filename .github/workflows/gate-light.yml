@@ -357,6 +357,18 @@ jobs:
           }
           NODE
 
+      - name: Generate Evidence Manifest
+        run: |
+          TASK_REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
+          TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}[A-Za-z]?' | head -n 1 || true)
+          YEAR="20${TASK_ID:0:2}"
+          MONTH="${TASK_ID:2:2}"
+          EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
+          echo "TASK_ID=${TASK_ID}"
+          echo "EVIDENCE_DIR=${EVIDENCE_DIR}"
+          # assemble_evidence.mjs will look for files in EVIDENCE_DIR and generate manifest
+          node scripts/assemble_evidence.mjs --task_id="$TASK_ID" --evidence_dir="$EVIDENCE_DIR"
+
       - name: Run Gate Light CI
         run: |
           git fetch origin main
