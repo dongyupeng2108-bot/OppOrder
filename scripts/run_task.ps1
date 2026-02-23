@@ -752,8 +752,12 @@ function Run-Evidence-Gen-And-Preview {
         Write-Host ">>> [RunTask] Step 2: Generate Evidence" -ForegroundColor Cyan
         
         # Cleanup previous run logs
-        if (Test-Path "$EvidenceDir\gate_light_preview_$TaskId.log") { Remove-Item "$EvidenceDir\gate_light_preview_$TaskId.log" }
-        if (Test-Path "$EvidenceDir\gate_light_verify_$TaskId.log") { Remove-Item "$EvidenceDir\gate_light_verify_$TaskId.log" }
+        if (Test-Path "$EvidenceDir\gate_light_preview_$TaskId.log") {
+             node "$RepoRoot\scripts\ops_delete.mjs" "$EvidenceDir\gate_light_preview_$TaskId.log" --force
+        }
+        if (Test-Path "$EvidenceDir\gate_light_verify_$TaskId.log") {
+             node "$RepoRoot\scripts\ops_delete.mjs" "$EvidenceDir\gate_light_verify_$TaskId.log" --force
+        }
 
         $GenCmd = @("node", $GenerateScript.FullName)
         $EffectiveTimeoutSec = $StepTimeoutSeconds
@@ -1026,7 +1030,9 @@ if ($Mode -eq "Integrate") {
     # --- Step 7: Update Evidence with Verify Logs (Integrate Only) ---
     Write-Host ">>> [RunTask] Step 7: Update Evidence with Verify Logs" -ForegroundColor Cyan
     # Overwrite Preview Log with Verify Log
-    Copy-Item -Path $VerifyLog -Destination "$EvidenceDir\gate_light_preview_$TaskId.log" -Force
+    # REPLACED: Copy-Item -Path $VerifyLog -Destination "$EvidenceDir\gate_light_preview_$TaskId.log" -Force
+    node "$RepoRoot\scripts\ops_copy_file.mjs" "$VerifyLog" "$EvidenceDir\gate_light_preview_$TaskId.log" --force
+    if ($LASTEXITCODE -ne 0) { throw "Failed to overwrite preview log with verify log" }
     
     # Re-run Assemble Evidence
     Write-SpeedEvidence -EvidenceDir $EvidenceDir -TaskId $TaskId

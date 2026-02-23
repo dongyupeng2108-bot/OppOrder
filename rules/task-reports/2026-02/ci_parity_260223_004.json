@@ -1,0 +1,17 @@
+{
+  "task_id": "260223_004",
+  "is_shallow_repo": true,
+  "base": "76dd712f829c206bd0268e22d1c008e89d341f4a",
+  "head": "7418f7df6c0e05217da9e1f357b22eb0bc0466bc",
+  "merge_base": "d7d433c6d8ccfc3fc812579bbac4b2f17bc67fa3",
+  "scope_files": [
+    "rules/LATEST.json",
+    "rules/task-reports/index/error_stats.jsonl",
+    "scripts/dev_batch_mode.ps1",
+    "scripts/ops_copy_file.mjs",
+    "scripts/ops_delete.mjs",
+    "scripts/run_task.ps1"
+  ],
+  "scope_count": 6,
+  "generated_at": "2026-02-23T11:01:27.827Z"
+}
