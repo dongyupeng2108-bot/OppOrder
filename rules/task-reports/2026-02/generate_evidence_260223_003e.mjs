@@ -48,4 +48,32 @@ Status: PRE-GENERATED
 fs.writeFileSync(path.join(evidenceDir, `dod_evidence_${taskId}.txt`), dodContent);
 console.log(`Generated dod_evidence_${taskId}.txt`);
 
+// 4. Speed Wall (Dummy)
+const speedWallJson = {
+    task_id: taskId,
+    speed_wall: []
+};
+fs.writeFileSync(path.join(evidenceDir, `speed_wall_${taskId}.json`), JSON.stringify(speedWallJson, null, 2));
+console.log(`Generated speed_wall_${taskId}.json`);
+
+// 5. Gate Light Profile (Dummy)
+const gateLightProfileJson = {
+    task_id: taskId,
+    profile: "dummy",
+    gate_light_version: "v1.0"
+};
+fs.writeFileSync(path.join(evidenceDir, `gate_light_profile_${taskId}.json`), JSON.stringify(gateLightProfileJson, null, 2));
+console.log(`Generated gate_light_profile_${taskId}.json`);
+
+// 6. Speed Top 5 (Dummy)
+const speedTop5Content = `Speed Top 5 for ${taskId}
+1. Dummy Entry 1
+2. Dummy Entry 2
+3. Dummy Entry 3
+4. Dummy Entry 4
+5. Dummy Entry 5
+`;
+fs.writeFileSync(path.join(evidenceDir, `speed_top5_${taskId}.txt`), speedTop5Content);
+console.log(`Generated speed_top5_${taskId}.txt`);
+
 console.log("Done.");
