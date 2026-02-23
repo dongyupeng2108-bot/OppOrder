@@ -2,7 +2,7 @@
   "task_id": "260223_007",
   "is_shallow_repo": true,
   "base": "0128d9f644fcae29002d5a3bd213ffa820c2e86b",
-  "head": "5d71dce46245e75b43c79d11734d59dcb7a6171f",
+  "head": "9dded2308ea6f463675d564438795a6061b01794",
   "merge_base": "0026448f848fd03cee6e5acd650577dfd4e9299e",
   "scope_files": [
     ".github/workflows/gate-light.yml",
@@ -14,23 +14,12 @@
     "rules/task-reports/envelopes/260223_007.envelope.json",
     "rules/task-reports/index/error_stats.jsonl",
     "rules/task-reports/index/runs_index.jsonl",
-    "rules/task-reports/locks/260223_007.lock.json",
-    "rules/task-reports/runs/260223_007/20260223_260223_007_fix/260223_007_healthcheck_53122_pairs.txt",
-    "rules/task-reports/runs/260223_007/20260223_260223_007_fix/260223_007_healthcheck_53122_root.txt",
-    "rules/task-reports/runs/260223_007/20260223_260223_007_fix/ci_parity_260223_007.json",
-    "rules/task-reports/runs/260223_007/20260223_260223_007_fix/errors_260223_007.jsonl",
-    "rules/task-reports/runs/260223_007/20260223_260223_007_fix/errors_summary_260223_007.txt",
-    "rules/task-reports/runs/260223_007/20260223_260223_007_fix/evidence_manifest_260223_007.json",
-    "rules/task-reports/runs/260223_007/20260223_260223_007_fix/notify_260223_007.txt",
-    "rules/task-reports/runs/260223_007/20260223_260223_007_fix/result_260223_007.json",
-    "rules/task-reports/runs/260223_007/20260223_260223_007_fix/trae_report_snippet_260223_007.txt",
-    "rules/task-reports/runs/260223_007/20260223_260223_007_fix/workspace_healer_260223_007.json",
     "scripts/assemble_evidence.mjs",
     "scripts/ops_git_stage_task_evidence.mjs",
     "scripts/ops_scan_text.mjs",
     "scripts/postflight_validate_envelope.mjs",
     "scripts/run_task.ps1"
   ],
-  "scope_count": 25,
+  "scope_count": 14,
   "generated_at": "2026-02-23T18:11:09.617Z"
 }

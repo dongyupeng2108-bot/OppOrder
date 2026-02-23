@@ -1,0 +1,11 @@
+﻿{
+    "mode":  "Integrate",
+    "branch":  "feat/ops-node-scan-260223_007",
+    "write_allowed":  true,
+    "input_hash_short":  "1d575e5b",
+    "header":  "TraeTask_260223_007",
+    "commit":  "9dded230",
+    "task_id":  "260223_007",
+    "header_detected":  true,
+    "timestamp":  "2026-02-24 02:11:05 UTC"
+}
