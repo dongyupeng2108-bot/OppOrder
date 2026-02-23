@@ -374,7 +374,7 @@ jobs:
           echo "{\"commit\": \"$GIT_SHA\", \"message\": \"$GIT_MSG\", \"branch\": \"$TASK_REF\"}" > "$EVIDENCE_DIR/git_meta_${TASK_ID}.json"
           
           # 2. Generate preflight_attestation (Mock for CI)
-          echo "{\"verified\": true, \"mode\": \"CI\", \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" > "$EVIDENCE_DIR/preflight_attestation_${TASK_ID}.json"
+            echo "{\"verified\": true, \"mode\": \"CI\", \"header\": \"TraeTask_${TASK_ID}\", \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" > "$EVIDENCE_DIR/preflight_attestation_${TASK_ID}.json"
           
           # 3. Generate run_log (Copy preview log or create dummy)
           if [ -f "$EVIDENCE_DIR/gate_light_preview_${TASK_ID}.log" ]; then
