@@ -152,11 +152,62 @@ function Write-TaskIdBindingFailfast {
 $Script:LastErrorClass = ""
 $Script:LastFailReason = ""
 $Script:FixActions = @()
+$Script:HardStopTriggered = $false
+$Script:HardStopMarkers = @(
+    "EVIDENCE_WORM_BYPASS",
+    "OPEN_PR_GUARD_BLOCKED",
+    "WORKSPACE_DIRTY_TRACKED",
+    "STEP_TIMEOUT",
+    "SERVICE_HEALTHCHECK_FAIL",
+    "CMD_SYNTAX_BANNED",
+    "AUTO_PR_CI_FAIL",
+    "AUTO_PR_INFRA_FAIL",
+    "AUTO_PR_TIMEOUT",
+    "AUTO_PR_UNKNOWN_EXIT",
+    "AUTO_FIX_MAX_EXCEEDED",
+    "AUTO_FIX_FAILED",
+    "IMMUTABLE_INTEGRATE_LOCKED",
+    "FAIL_BUDGET_EXCEEDED_DEV",
+    "FAIL_BUDGET_EXCEEDED_INTEGRATE",
+    "PREASSEMBLE_PRECHECK_FAIL",
+    "PREASSEMBLE_GENERATOR_MISSING",
+    "PREASSEMBLE_MIN_SET_MISSING",
+    "PREVIEW_LOG_MISSING",
+    "TASK_ID_MISMATCH",
+    "LOOP_DETECTED",
+    "CONTRACT_SELF_CHECK_FAIL"
+)
+
+function Write-HardStopBlock {
+    param([string]$Reason)
+    Write-Host "HARD_STOP=1"
+    Write-Host "HARD_STOP_REASON=$Reason"
+    Write-Host "NEXT_ACTION=STOP_AND_REPORT"
+}
+
+function Get-HardStopReason {
+    param([string]$ErrorClass, [string]$FailReason, [string]$Mode)
+    if ($Mode -eq "Dev" -and -not [string]::IsNullOrWhiteSpace($Env:HARD_STOP_SIMULATE)) {
+        return @{ active = $true; reason = $Env:HARD_STOP_SIMULATE }
+    }
+    if ($FailReason -and $Script:HardStopMarkers -contains $FailReason) {
+        return @{ active = $true; reason = $FailReason }
+    }
+    if ($ErrorClass -and $Script:HardStopMarkers -contains $ErrorClass) {
+        return @{ active = $true; reason = $ErrorClass }
+    }
+    return @{ active = $false; reason = "" }
+}
 
 function Stop-RunTask {
     param([string]$Message, [string]$ErrorClass, [string]$FailReason)
     if ($ErrorClass) { $Script:LastErrorClass = $ErrorClass }
     if ($FailReason) { $Script:LastFailReason = $FailReason }
+    $HardStop = Get-HardStopReason -ErrorClass $ErrorClass -FailReason $FailReason -Mode $Mode
+    if ($HardStop.active -and -not $Script:HardStopTriggered) {
+        $Script:HardStopTriggered = $true
+        Write-HardStopBlock -Reason $HardStop.reason
+    }
     throw $Message
 }
 
@@ -503,6 +554,10 @@ try {
 Write-Host ">>> [RunTask] TaskId: $TaskId | Mode: $Mode | Header: $Header" -ForegroundColor Cyan
 Write-Host ">>> [RunTask] Evidence Dir: $EvidenceDir" -ForegroundColor Gray
 
+if ($Mode -eq "Dev" -and -not [string]::IsNullOrWhiteSpace($Env:HARD_STOP_SIMULATE)) {
+    Stop-RunTask -Message "HARD_STOP_SIMULATE" -ErrorClass "HARD_STOP_SIMULATE" -FailReason $Env:HARD_STOP_SIMULATE
+}
+
 # --- State Skeleton ---
 Write-Host "[State] INITIALIZING..." -ForegroundColor Cyan
 
@@ -826,6 +881,10 @@ if ($Mode -eq "Integrate" -and $AutoPR) {
                 $AutoPrInfo = Get-AutoPrInfo -EvidenceDir $EvidenceDir -TaskId $TaskId
                 $ErrorClass = if ($AutoPrInfo.error_class) { $AutoPrInfo.error_class } else { "AUTO_PR_INFRA_FAIL" }
                 $FailReason = if ($AutoPrInfo.fail_reason) { $AutoPrInfo.fail_reason } else { "CI_WATCH_INFRA_FAIL" }
+                $HardStop = Get-HardStopReason -ErrorClass $ErrorClass -FailReason $FailReason -Mode $Mode
+                if ($HardStop.active) {
+                    Stop-RunTask -Message "HARD_STOP" -ErrorClass $ErrorClass -FailReason $HardStop.reason
+                }
                 Stop-RunTask -Message "AUTO_PR_INFRA_FAIL" -ErrorClass $ErrorClass -FailReason $FailReason
             } elseif ($ExitCode -eq 2) {
                 Write-Host "[AutoPR] CI Failed (Exit Code 2)." -ForegroundColor Red
@@ -836,6 +895,10 @@ if ($Mode -eq "Integrate" -and $AutoPR) {
                 $AutoPrInfo = Get-AutoPrInfo -EvidenceDir $EvidenceDir -TaskId $TaskId
                 $ErrorClass = if ($AutoPrInfo.error_class) { $AutoPrInfo.error_class } else { "AUTO_PR_CI_FAIL" }
                 $FailReason = if ($AutoPrInfo.fail_reason) { $AutoPrInfo.fail_reason } else { "CI_CHECKS_FAILED" }
+                $HardStop = Get-HardStopReason -ErrorClass $ErrorClass -FailReason $FailReason -Mode $Mode
+                if ($HardStop.active) {
+                    Stop-RunTask -Message "HARD_STOP" -ErrorClass $ErrorClass -FailReason $HardStop.reason
+                }
                 if ($ErrorClass -and $ErrorClass -eq $LastCiErrorClass) {
                     Stop-RunTask -Message "LOOP_DETECTED" -ErrorClass "LOOP_DETECTED" -FailReason "ERROR_CLASS_REPEAT"
                 }
@@ -1000,6 +1063,13 @@ Write-Host ">>> [RunTask] SUCCESS: Task $TaskId ($Mode) Completed." -ForegroundC
     }
     $Script:RunChainErrorClass = $ErrorClass
     $Script:RunChainFailReason = $FailReason
+    if (-not $Script:HardStopTriggered) {
+        $HardStop = Get-HardStopReason -ErrorClass $ErrorClass -FailReason $FailReason -Mode $Mode
+        if ($HardStop.active) {
+            $Script:HardStopTriggered = $true
+            Write-HardStopBlock -Reason $HardStop.reason
+        }
+    }
 
     if ($TierInfo.tier -eq "NON_SELF_HEALABLE" -or $LoopTriggered) {
         $PrTaskIdDetected = if ($AutoPrInfo.pr_task_id_detected) { $AutoPrInfo.pr_task_id_detected } else { "" }
