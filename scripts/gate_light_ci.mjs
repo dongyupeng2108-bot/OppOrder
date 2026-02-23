@@ -446,12 +446,28 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
     // Hard Guard: For task_id >= 260216_002, workspace_healer_${task_id}.json must exist and be clean.
     if (task_id >= '260216_002') {
         console.log('[Gate Light] Checking Workspace Healer Evidence...');
-        const healerFile = path.join(result_dir, `workspace_healer_${task_id}.json`);
+        let healerFile = path.join(result_dir, `workspace_healer_${task_id}.json`);
         
         if (!fs.existsSync(healerFile)) {
-            console.error(`[Gate Light] FAILED: Workspace Healer evidence missing: ${healerFile}`);
-            console.error(`  ACTION: Ensure 'run_task.ps1' Step 0 executed correctly.`);
-            process.exit(1);
+            let fallbackFound = false;
+            const match = task_id.match(/^(\d{2})(\d{2})\d{2}_/);
+            if (match) {
+                 const year = '20' + match[1];
+                 const month = match[2];
+                 const fallbackFile = path.join('rules', 'task-reports', `${year}-${month}`, `workspace_healer_${task_id}.json`);
+                 if (fs.existsSync(fallbackFile)) {
+                     console.warn(`[Gate Light] WARNING: Workspace Healer evidence missing in runs (${healerFile}).`);
+                     console.warn(`[Gate Light] Fallback used: ${fallbackFile}`);
+                     healerFile = fallbackFile;
+                     fallbackFound = true;
+                 }
+            }
+            
+            if (!fallbackFound) {
+                console.error(`[Gate Light] FAILED: Workspace Healer evidence missing: ${healerFile}`);
+                console.error(`  ACTION: run gate-light workflow step Generate Workspace Healer Evidence or commit run archive`);
+                process.exit(1);
+            }
         }
         
         try {
