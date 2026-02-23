@@ -765,6 +765,17 @@ if ($Mode -eq "Integrate") {
     Write-Host ">>> [RunTask] Step 4: Skip Assemble Evidence (Dev Mode)" -ForegroundColor Yellow
 }
 
+if ($Mode -eq "Integrate" -and $AutoPR) {
+    $DirtyStatus = git status --porcelain
+    if ($DirtyStatus) {
+        Write-Host ">>> [RunTask] Step 8.9: AutoPR Pre-Commit" -ForegroundColor Cyan
+        $SafeCommitScript = "$RepoRoot\scripts\safe_commit.ps1"
+        $CommitMessage = "TraeTask_${TaskId}: integrate evidence"
+        $CommitCmd = @("powershell", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", $SafeCommitScript, "-Message", $CommitMessage)
+        Invoke-Step -Name "AutoPR Pre-Commit" -Cmd $CommitCmd
+    }
+}
+
 # --- Step 9: AutoPR (Optional) ---
 if ($Mode -eq "Integrate" -and $AutoPR) {
     Write-Host ">>> [RunTask] Step 9: AutoPR Loop" -ForegroundColor Cyan
