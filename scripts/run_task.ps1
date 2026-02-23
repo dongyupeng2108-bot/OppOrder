@@ -19,11 +19,15 @@ param (
 
     [Parameter(Mandatory=$false)]
     [int]$AutoFixMax = 0
+
+    ,[Parameter(Mandatory=$false)]
+    [string]$RunId
 )
 
 # --- Parameter Normalization ---
 $TaskId = $TaskId.Trim()
 $Mode = $Mode.Trim()
+if ($RunId) { $RunId = $RunId.Trim() }
 
 if ([string]::IsNullOrWhiteSpace($Header)) {
     $Header = "TraeTask_$TaskId"
@@ -791,7 +795,9 @@ if (-not (PreAssemblePrecheck -EvidenceDir $EvidenceDir -TaskId $TaskId -Mode $M
 Write-Host ">>> [RunTask] Step 3.5: Error Digest (Pass 1)" -ForegroundColor Cyan
 $Commit = git rev-parse HEAD
 $ShortSha = $Commit.Substring(0, 7)
-$RunId = (Get-Date).ToString("yyyyMMddHHmmss") + "_" + $ShortSha
+if ([string]::IsNullOrWhiteSpace($RunId)) {
+    $RunId = (Get-Date).ToString("yyyyMMddHHmmss") + "_" + $ShortSha
+}
 Write-Host ">>> [RunTask] Generated Run ID: $RunId" -ForegroundColor Cyan
 
 $DigestCmd = @("node", "$RepoRoot\scripts\error_digest.mjs", "--task_id", $TaskId, "--mode", $Mode, "--commit", $Commit, "--out_dir", $EvidenceDir)
