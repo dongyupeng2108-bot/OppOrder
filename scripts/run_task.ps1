@@ -856,7 +856,7 @@ if ($Mode -eq "Integrate") {
         $AutoPrEvidencePath = "$EvidenceDir\auto_pr_${TaskId}.json"
         $DummyEvidence = @{
             pr_url = "SKIPPED_BY_USER_REQUEST"
-            attempt = 0
+            attempt = 1
             final_state = "SKIPPED"
         } | ConvertTo-Json
         $DummyEvidence | Out-File -FilePath $AutoPrEvidencePath -Encoding utf8 -Force
