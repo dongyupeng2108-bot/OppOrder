@@ -754,7 +754,10 @@ function Run-Evidence-Gen-And-Preview {
         if (Test-Path "$EvidenceDir\gate_light_verify_$TaskId.log") { Remove-Item "$EvidenceDir\gate_light_verify_$TaskId.log" }
 
         $GenCmd = @("node", $GenerateScript.FullName)
-        Invoke-Step -Name "Generate Evidence" -Cmd $GenCmd -TimeoutSec $StepTimeoutSeconds
+        $EffectiveTimeoutSec = $StepTimeoutSeconds
+        if ($EffectiveTimeoutSec -le 0) { $EffectiveTimeoutSec = 300 }
+        Write-Host "STEP_TIMEOUT_SEC=$EffectiveTimeoutSec step=Generate Evidence"
+        Invoke-Step -Name "Generate Evidence" -Cmd $GenCmd -TimeoutSec $EffectiveTimeoutSec
     } else {
         Write-Host ">>> [RunTask] Step 2: Skip Generation (Script not found)" -ForegroundColor Yellow
     }
