@@ -223,7 +223,12 @@ function Write-RunChainEntry {
     param([hashtable]$Record)
     if (-not $Script:RunChainPath) { return }
     $Line = $Record | ConvertTo-Json -Compress
-    Append-JsonlUtf8 -Path $Script:RunChainPath -Line $Line
+    if (-not $Script:RunChainStartLine) {
+        $Script:RunChainStartLine = $Line
+        Write-LfFile -Path $Script:RunChainPath -Content ($Line + "`n")
+        return
+    }
+    Write-LfFile -Path $Script:RunChainPath -Content ($Script:RunChainStartLine + "`n" + $Line + "`n")
 }
 
 function Read-JsonSafe {
@@ -549,7 +554,12 @@ Start-Transcript -Path $LogFile -Force
 
 # --- Step 1: Preflight ---
 Write-Host ">>> [RunTask] Step 1: Preflight" -ForegroundColor Cyan
-$PreflightCmd = @("powershell", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", "$RepoRoot\scripts\preflight.ps1", "-TaskId", $TaskId, "-Mode", $Mode, "-Header", $Header)
+$HeaderArg = $Header
+if (-not [string]::IsNullOrWhiteSpace($HeaderArg)) {
+    $HeaderArg = '"' + ($HeaderArg -replace '"', '\"') + '"'
+}
+$PreflightArgs = @("-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", "$RepoRoot\scripts\preflight.ps1", "-TaskId", $TaskId, "-Mode", $Mode, "-Header", $HeaderArg)
+$PreflightCmd = @("powershell") + $PreflightArgs
 Measure-Step -Key "preflight" -Action { Invoke-Step -Name "Preflight" -Cmd $PreflightCmd }
 
 $TaskIdParts = Get-TaskIdParts -TaskId $TaskId
