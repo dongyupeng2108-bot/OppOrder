@@ -1,7 +1,7 @@
 {
   "task_id": "260223_005",
-  "mode": "Dev",
-  "generated_at": "2026-02-23T12:56:07.142Z",
+  "mode": "Integrate",
+  "generated_at": "2026-02-23T14:14:18.007Z",
   "evidence_dir": "rules/task-reports/2026-02",
   "required_files": [
     "result_260223_005.json",

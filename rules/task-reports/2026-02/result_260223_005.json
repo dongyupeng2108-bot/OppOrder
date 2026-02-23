@@ -7,7 +7,7 @@
   },
   "summary": "Automation Pack V1 Validation for Task 260223_005",
   "report_file": "notify_260223_005.txt",
-  "report_sha256_short": "e0713e76",
+  "report_sha256_short": "be00da3f",
   "mode": "Integrate",
   "dod_evidence": {
     "gate_light_exit": 0,

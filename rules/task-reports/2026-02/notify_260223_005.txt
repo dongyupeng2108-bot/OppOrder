@@ -1,7 +1,7 @@
 Trae Task Report
 Task ID: 260223_005
 Header: TraeTask_260223_005
-Date: 2026-02-23T13:16:01.621Z
+Date: 2026-02-23T14:14:16.291Z
 Branch: feat/cleanup-node-260223_005
 Commit: ee8f2c5338aafea0243fe14cc1a571359b7e16c6
 
@@ -11,7 +11,10 @@ Commit: ee8f2c5338aafea0243fe14cc1a571359b7e16c6
 
 === LOG_HEAD ===
 [Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
-[Gate Light] Target locked via argument: 260223_005
+[Gate Light] Attempting to detect task_id from git diff...
+[Gate Light] Checking for Evidence WORM Violations...
+[Gate Light] WORM Check Passed.
+[Gate Light] Detected unique PR Task ID from diff: 260223_005
 PR_TASK_ID_DETECTED=260223_005
 TARGET_TASK_ID=260223_005
 LATEST_TASK_ID=260223_005
@@ -25,15 +28,15 @@ LATEST_TASK_ID=260223_005
 [Gate Light] Workspace Healer verified (Clean Environment).
 [Gate Light] Checking CI Parity JSON Evidence...
 [Gate Light] DEBUG: is_shallow_repository=true
-[Gate Light] DEBUG: HEAD=ee8f2c5338aafea0243fe14cc1a571359b7e16c6
+[Gate Light] DEBUG: HEAD=9eb49677a82fde7c31cbc38fc7e7b113674a2b38
 [Gate Light] DEBUG: git merge-base origin/main HEAD=276a86c768b3923007860b9e3cece4662d525136
-[Gate Light] DETECTED SHALLOW CLONE. Attempting to unshallow (Fix Strategy A)...
-[Gate Light] Unshallow command executed.
-[Gate Light] CI Parity JSON Evidence verified.
 ...
 
 === LOG_TAIL ===
 ...
+[Gate Light] Evidence Truth & Sufficiency verified.
+[Gate Light] Checking CI Parity Preview...
+[Gate Light] CI Parity Preview verified.
 [Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
 [Gate Light] Fetching origin/main history for diff context...
 [Gate Light] Allowed legacy task_id (transition): 260223_004
@@ -51,9 +54,6 @@ LATEST_TASK_ID=260223_005
 [Gate Light] Two-Pass Evidence Truth & No Auto-Merge verified.
 [Gate Light] Skipping Postflight Envelope Validation (Preview Mode).
 [Gate Light] PASS
-
-From https://github.com/dongyupeng2108-bot/OppOrder
- * branch              main       -> FETCH_HEAD
 
 === INDEX ===
 (See deliverables_index_260223_005.json)
@@ -101,7 +101,10 @@ Untracked: 0
 
 === GATE_LIGHT_PREVIEW ===
 [Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
-[Gate Light] Target locked via argument: 260223_005
+[Gate Light] Attempting to detect task_id from git diff...
+[Gate Light] Checking for Evidence WORM Violations...
+[Gate Light] WORM Check Passed.
+[Gate Light] Detected unique PR Task ID from diff: 260223_005
 PR_TASK_ID_DETECTED=260223_005
 TARGET_TASK_ID=260223_005
 LATEST_TASK_ID=260223_005
@@ -115,10 +118,12 @@ LATEST_TASK_ID=260223_005
 [Gate Light] Workspace Healer verified (Clean Environment).
 [Gate Light] Checking CI Parity JSON Evidence...
 [Gate Light] DEBUG: is_shallow_repository=true
-[Gate Light] DEBUG: HEAD=ee8f2c5338aafea0243fe14cc1a571359b7e16c6
+[Gate Light] DEBUG: HEAD=9eb49677a82fde7c31cbc38fc7e7b113674a2b38
 [Gate Light] DEBUG: git merge-base origin/main HEAD=276a86c768b3923007860b9e3cece4662d525136
 [Gate Light] DETECTED SHALLOW CLONE. Attempting to unshallow (Fix Strategy A)...
 [Gate Light] Unshallow command executed.
+[Gate Light] CI Parity Head mismatch (JSON=ee8f2c5338aafea0243fe14cc1a571359b7e16c6, Calc=9eb49677a82fde7c31cbc38fc7e7b113674a2b38). Checking for evidence-only update...
+[Gate Light] Head mismatch accepted (Evidence/Docs-only update).
 [Gate Light] CI Parity JSON Evidence verified.
 [Gate Light] Skipping Error Digest Validation (Preview Mode).
 [Gate Light] Checking doc path standards...
@@ -147,21 +152,21 @@ Fetching http://localhost:53122/opportunities/rank_v2?provider=mock&limit=5&run_
 Received 5 items.
 Validating against schema...
 Schema Validation PASSED.
-Response Hash: c6db5dfc
-::set-output name=rank_v2_hash::c6db5dfc
+Response Hash: 2af2025e
+::set-output name=rank_v2_hash::2af2025e
 VERIFICATION_SUCCESS
 [Gate Light] Checking Export V1 API Contract...
 === Export V1 Contract Verification ===
 Schema loaded.
 Server already running.
 Generating Run assets via http://localhost:53122/scans/run...
-Run assets generated. Run ID: scan_5dbbca6154ed7467
-Fetching Export: http://localhost:53122/opportunities/runs/export_v1?run_id=scan_5dbbca6154ed7467...
+Run assets generated. Run ID: scan_9bde549919c74a3e
+Fetching Export: http://localhost:53122/opportunities/runs/export_v1?run_id=scan_9bde549919c74a3e...
 Received Export JSON.
 Validating against schema...
 Export Schema Validation PASSED.
-Export Hash: fb8e1197
-::set-output name=export_v1_hash::fb8e1197
+Export Hash: a6af7881
+::set-output name=export_v1_hash::a6af7881
 EXPORT_CONTRACT_VERIFICATION_SUCCESS
 [Gate Light] Checking Ledger V0 API Contract...
 === Ledger V0 Contract Verification ===
@@ -171,7 +176,7 @@ Fetching /opportunities/ledger/query_v0?limit=1...
 Validating against schema...
 Validation PASSED.
 [Gate Light] Checking healthcheck evidence...
-[Gate Light] Using evidence directory: E:\OppRadar\rules\task-reports\2026-02
+[Gate Light] Using evidence directory: rules\task-reports\2026-02
 [Gate Light] Healthcheck evidence verified (Path + Content).
 [Gate Light] Skipping DoD Evidence Excerpt Check (Preview Mode).
 [Gate Light] Checking Deletion Audit (Locks & Runs)...
@@ -201,9 +206,6 @@ Validation PASSED.
 [Gate Light] Two-Pass Evidence Truth & No Auto-Merge verified.
 [Gate Light] Skipping Postflight Envelope Validation (Preview Mode).
 [Gate Light] PASS
-
-From https://github.com/dongyupeng2108-bot/OppOrder
- * branch              main       -> FETCH_HEAD
 ==========================
 
 
@@ -228,7 +230,7 @@ Errors (First 5):
 === SPEED_SUMMARY ===
 wall_total_ms=0
 ci_watch_ms=0
-gate_light_profile_top3=doc_path_refs_scan:93, ps_cmd_static_scan:47, task_reports_audit_scan:1
+gate_light_profile_top3=doc_path_refs_scan:93, ps_cmd_static_scan:51, task_reports_audit_scan:0
 failure_penalty_total_ms=0
 
 GATE_LIGHT_EXIT=0

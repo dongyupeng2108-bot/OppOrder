@@ -1,6 +1,6 @@
 {
   "task_id": "260223_005",
-  "generated_at": "2026-02-23T13:16:03.247Z",
+  "generated_at": "2026-02-23T14:14:18.010Z",
   "files": [
     {
       "name": "ci_parity_260223_005.json",
@@ -9,8 +9,8 @@
     },
     {
       "name": "gate_light_preview_260223_005.log",
-      "size": 5219,
-      "sha256_short": "b6877d63"
+      "size": 5496,
+      "sha256_short": "a9a04b90"
     },
     {
       "name": "dod_evidence_260223_005.txt",
@@ -35,7 +35,7 @@
     {
       "name": "result_260223_005.json",
       "size": 519,
-      "sha256_short": "a95e8879"
+      "sha256_short": "ee5a951b"
     },
     {
       "name": "run_260223_005.log",
@@ -54,8 +54,8 @@
     },
     {
       "name": "notify_260223_005.txt",
-      "size": 9853,
-      "sha256_short": "e0713e76"
+      "size": 10151,
+      "sha256_short": "be00da3f"
     },
     {
       "name": "preview_cmp_260223_005.txt",
@@ -70,7 +70,7 @@
     {
       "name": "evidence_manifest_260223_005.json",
       "size": 845,
-      "sha256_short": "c4b69fef"
+      "sha256_short": "1aec9c2a"
     },
     {
       "name": "contract_self_check_260223_005.txt",
@@ -80,7 +80,7 @@
     {
       "name": "gate_light_profile_260223_005.json",
       "size": 462,
-      "sha256_short": "4eaf9ce5"
+      "sha256_short": "74211a8b"
     },
     {
       "name": "260223_005_healthcheck_53122_root.txt",
