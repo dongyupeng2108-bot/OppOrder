@@ -1,0 +1,18 @@
+{
+  "task_id": "260223_006",
+  "is_shallow_repo": true,
+  "base": "0026448f848fd03cee6e5acd650577dfd4e9299e",
+  "head": "0ddb4790827e86698d3a33949eee4b2440429006",
+  "merge_base": "0026448f848fd03cee6e5acd650577dfd4e9299e",
+  "scope_files": [
+    "rules/LATEST.json",
+    "rules/rules/WORKFLOW.md",
+    "rules/task-reports/index/error_stats.jsonl",
+    "scripts/ops_exists.mjs",
+    "scripts/ops_git_stage_task_evidence.mjs",
+    "scripts/ops_write_file.mjs",
+    "scripts/run_task.ps1"
+  ],
+  "scope_count": 7,
+  "generated_at": "2026-02-23T15:24:33.313Z"
+}

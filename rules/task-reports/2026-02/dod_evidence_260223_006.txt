@@ -1,0 +1,8 @@
+Task 260223_006 DoD Evidence:
+1. Implemented scripts/ops_git_stage_task_evidence.mjs to handle git add -f via Node.
+2. Updated scripts/run_task.ps1 to use the new Node tool in AutoPR loop.
+3. Updated rules/rules/WORKFLOW.md with new Write & Stage Discipline.
+4. Verified ops_write_file.mjs usage example in WORKFLOW.md.
+5. All critical paths verified locally.
+
+Status: DoD Met

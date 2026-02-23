@@ -1,0 +1,11 @@
+﻿{
+    "mode":  "Integrate",
+    "branch":  "feat/ops-node-write-stage-260223_006",
+    "write_allowed":  true,
+    "input_hash_short":  "2a391222",
+    "header":  "FIX: Implement Node-based evidence staging",
+    "commit":  "8b453e75",
+    "task_id":  "260223_006",
+    "header_detected":  true,
+    "timestamp":  "2026-02-23 23:23:08 UTC"
+}

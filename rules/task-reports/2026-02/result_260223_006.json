@@ -1,0 +1,23 @@
+{
+  "task_id": "260223_006",
+  "status": "DONE",
+  "mode": "Integrate",
+  "timestamp": "2026-02-23T15:23:12.238Z",
+  "artifacts": [
+    "scripts/ops_git_stage_task_evidence.mjs",
+    "scripts/ops_write_file.mjs",
+    "scripts/ops_exists.mjs",
+    "rules/rules/WORKFLOW.md",
+    "scripts/run_task.ps1"
+  ],
+  "summary": "Automation Pack V1 Validation for Task 260223_006",
+  "report_file": "notify_260223_006.txt",
+  "report_sha256_short": "68da2aec",
+  "dod_evidence": {
+    "gate_light_exit": 0,
+    "healthcheck": [
+      "rules/task-reports/2026-02/260223_006_healthcheck_53122_root.txt",
+      "rules/task-reports/2026-02/260223_006_healthcheck_53122_pairs.txt"
+    ]
+  }
+}
