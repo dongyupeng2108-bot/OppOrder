@@ -1,0 +1,7 @@
+task_id=260223_003e
+generated_at=2026-02-23T14:57:58.3930585+08:00
+total=39640
+wall_total_ms=39640
+pass2_verify=13697
+pass1_preview=12789
+assemble_evidence=3304

@@ -1,0 +1,12 @@
+{
+  "task_id": "260223_003e",
+  "generated_at": "2026-02-23T14:57:58.3904550+08:00",
+  "wall_total_ms": 39640,
+  "ci_watch_ms": 0,
+  "ci_pass_at": "",
+  "attempts": 1,
+  "failure_penalty_total_ms": 0,
+  "first_ci_fail_watch_ms": 0,
+  "autofix_apply_ms": 0,
+  "second_ci_pass_watch_ms": 0
+}
