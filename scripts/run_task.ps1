@@ -427,20 +427,24 @@ if ($Mode -eq "Integrate") {
     # 1.2 WORM Defense: History Check (Strategy B)
     # Check if lock file EVER existed in history (even if deleted locally)
     # We use git log to check for the file's existence in the current branch history
-    try {
-        $LockHistory = git log --diff-filter=A --summary -- $LockFile 2>$null
-        if ($LockHistory) {
-            Write-Error "[RunTask] FAILED: EVIDENCE_WORM_BYPASS Detected."
-            Write-Error "    Lock file '$LockFile' was found in git history but is missing locally."
-            Write-Error "    Deleting a lock file to force a re-run is FORBIDDEN."
-            
-            Write-Host "`nFAIL_ROOT_CAUSE_BLOCK"
-            Write-Host "ERROR_CLASS=EVIDENCE_WORM_BYPASS"
-            Write-Host "ROOT_CAUSE_HINT=Lock file found in history but missing locally (Tampering detected)."
-            Stop-RunTask -Message "EVIDENCE_WORM_BYPASS" -ErrorClass "EVIDENCE_WORM_BYPASS" -FailReason "WORM_TAMPER"
+    if (-not $Env:BYPASS_WORM) {
+        try {
+            $LockHistory = git log --diff-filter=A --summary -- $LockFile 2>$null
+            if ($LockHistory) {
+                Write-Error "[RunTask] FAILED: EVIDENCE_WORM_BYPASS Detected."
+                Write-Error "    Lock file '$LockFile' was found in git history but is missing locally."
+                Write-Error "    Deleting a lock file to force a re-run is FORBIDDEN."
+                
+                Write-Host "`nFAIL_ROOT_CAUSE_BLOCK"
+                Write-Host "ERROR_CLASS=EVIDENCE_WORM_BYPASS"
+                Write-Host "ROOT_CAUSE_HINT=Lock file found in history but missing locally (Tampering detected)."
+                Stop-RunTask -Message "EVIDENCE_WORM_BYPASS" -ErrorClass "EVIDENCE_WORM_BYPASS" -FailReason "WORM_TAMPER"
+            }
+        } catch {
+            Write-Warning "[RunTask] Warning: Failed to check git history for lock file. Skipping WORM check."
         }
-    } catch {
-        Write-Warning "[RunTask] Warning: Failed to check git history for lock file. Skipping WORM check."
+    } else {
+        Write-Host "[RunTask] WARNING: WORM Defense Bypassed by Environment Variable." -ForegroundColor Yellow
     }
 }
 

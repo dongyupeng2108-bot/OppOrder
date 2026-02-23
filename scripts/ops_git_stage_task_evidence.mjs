@@ -25,33 +25,32 @@ const filesToStage = [
     path.join(evidenceDir, `evidence_manifest_${taskId}.json`),
     // Envelope
     path.join('rules/task-reports/envelopes', `${taskId}.envelope.json`),
-    // Report (if not envelope?) - Usually included in manifest
     // Lock file
     path.join('rules/task-reports/locks', `${taskId}.lock.json`),
     // Index (Important!)
     path.join('rules/task-reports/index', `deliverables_index_${taskId}.json`),
-    // Any other relevant files in evidence dir that are NOT ignored (e.g. permanent logs if any)
-    // But usually runtime reports are ignored. The instruction says "evidence manifest" and "envelope".
-    // And "rules/task-reports/envelopes/*.json"
+    // LATEST.json
+    'rules/LATEST.json',
+    // Index updates
+    'rules/task-reports/index/error_stats.jsonl',
+    'rules/task-reports/index/runs_index.jsonl',
+    // Generated evidence script itself
+    path.join(evidenceDir, `generate_evidence_${taskId}.mjs`),
+    // Other relevant files
+    'scripts/ops_scan_text.mjs',
+    'rules/rules/WORKFLOW.md',
+    'scripts/assemble_evidence.mjs',
+    'scripts/postflight_validate_envelope.mjs',
+    '.github/workflows/gate-light.yml'
 ];
-
-// Add generated evidence script itself if it's new
-filesToStage.push(path.join(evidenceDir, `generate_evidence_${taskId}.mjs`));
-
-// Add any other files created/modified
-filesToStage.push('scripts/ops_scan_text.mjs');
-filesToStage.push('rules/rules/WORKFLOW.md');
-// Also add the scripts modified for debug/fix
-filesToStage.push('scripts/assemble_evidence.mjs');
-filesToStage.push('scripts/postflight_validate_envelope.mjs');
-filesToStage.push('.github/workflows/gate-light.yml');
 
 // Helper to stage
 function stage(file) {
     if (fs.existsSync(file)) {
         console.log(`Staging: ${file}`);
         try {
-            execSync(`git add "${file}"`, { stdio: 'inherit' });
+            // Use -f to force add ignored files (evidence manifest etc)
+            execSync(`git add -f "${file}"`, { stdio: 'inherit' });
         } catch (e) {
             console.error(`Failed to stage ${file}: ${e.message}`);
         }
