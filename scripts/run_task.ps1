@@ -866,7 +866,7 @@ if ($Mode -eq "Integrate") {
             reason = "AUTOPR_DISABLED_BY_FLAG"
             pr_url = "SKIPPED_BY_USER_REQUEST"
         }
-        $DummyEvidence | ConvertTo-Json | Out-File -FilePath $AutoPrEvidencePath -Encoding utf8 -Force
+        $DummyEvidence | ConvertTo-Json | Out-File -FilePath $AutoPrEvidencePath -Encoding Ascii -Force
         Write-Host "DUMMY_AUTOPR_EVIDENCE=1 path=$AutoPrEvidencePath attempt=0" -ForegroundColor DarkGray
     }
 }
