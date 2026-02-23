@@ -69,7 +69,7 @@ $Env:SPEED_TIMING_OUT = $null
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 $IntegrateTiming = Get-Content $IntegrateTimingTmp -Raw | ConvertFrom-Json
-Remove-Item $IntegrateTimingTmp -Force -ErrorAction SilentlyContinue
+node scripts/ops_delete.mjs "$IntegrateTimingTmp" --force
 
 $FinalTiming = [ordered]@{
     task_id = $TaskId

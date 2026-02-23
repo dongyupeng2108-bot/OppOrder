@@ -150,6 +150,27 @@ task_id（任务标识）允许格式：`YYMMDD_NNN` + 可选 1 位字母后缀�
 3. **最短事实块**：仅输出三行：HARD_STOP=1；HARD_STOP_REASON=...；NEXT_ACTION=STOP_AND_REPORT。
 4. **Dev 冒烟**：仅 Dev 模式允许 HARD_STOP_SIMULATE（硬停冒烟）环境变量触发；Integrate（集成）/CI（持续集成）禁止生效。
 
+### Cleanup Discipline & Hard Stop Protocol (清理纪律与硬停协议)
+
+To prevent phantom execution and UI blocking after a task failure or hard stop:
+
+1.  **Forbidden Operations (禁止操作)**:
+    *   **Post-Hard-Stop**: After `HARD_STOP=1` is triggered, NO further `Remove-Item`, `del`, `rm`, `rd`, or wildcard deletions are allowed in PowerShell/Shell.
+    *   **Wildcard Deletion**: `Remove-Item *` or `del *` is STRICTLY PROHIBITED in the execution chain (run_task, dev_batch_mode) as it may trigger interactive confirmation dialogs in the Trae IDE.
+
+2.  **Allowed & Recommended Cleanup (推荐清理方式)**:
+    *   **Node.js Only**: ALL cleanup operations MUST use `scripts/ops_delete.mjs` (or `ops_cleanup_patterns.mjs` for batch).
+    *   **Pattern**:
+        ```powershell
+        # Single Pattern
+        node scripts/ops_delete.mjs "rules/task-reports/2026-02/*<task_id>*" --dry-run --max 200
+        node scripts/ops_delete.mjs "rules/task-reports/2026-02/*<task_id>*" --force --max 200
+        
+        # Batch Pattern (Recommended)
+        node scripts/ops_cleanup_patterns.mjs --max 200 --force "pattern1" "pattern2"
+        ```
+    *   **Why**: Node.js `fs.rm` / `fs.unlink` provides deterministic, non-interactive deletion without triggering OS/IDE shell confirmation popups.
+
 ## Open PR Guard Protocols (One Task at a Time)
 
 To maintain a linear, conflict-free history, we enforce a strict "One Task at a Time" policy.
