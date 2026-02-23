@@ -6,11 +6,14 @@ LATEST_TASK_ID=260223_005
 [Gate Light] LATEST.json consistency verified.
 [Gate Light] Verifying task_id: 260223_005
 [Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Report Block Check Passed: notify_260223_005.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260223_005.txt
+[Gate Light] Header Check Passed: TraeTask_260223_005
 [Gate Light] Checking Workspace Healer Evidence...
 [Gate Light] Workspace Healer verified (Clean Environment).
 [Gate Light] Checking CI Parity JSON Evidence...
 [Gate Light] DEBUG: is_shallow_repository=true
-[Gate Light] DEBUG: HEAD=d95251ef7e3172f2a5ca8ed7148e4aeb12f02ce3
+[Gate Light] DEBUG: HEAD=ee8f2c5338aafea0243fe14cc1a571359b7e16c6
 [Gate Light] DEBUG: git merge-base origin/main HEAD=276a86c768b3923007860b9e3cece4662d525136
 [Gate Light] DETECTED SHALLOW CLONE. Attempting to unshallow (Fix Strategy A)...
 [Gate Light] Unshallow command executed.
@@ -42,21 +45,21 @@ Fetching http://localhost:53122/opportunities/rank_v2?provider=mock&limit=5&run_
 Received 5 items.
 Validating against schema...
 Schema Validation PASSED.
-Response Hash: 5a20c1f8
-::set-output name=rank_v2_hash::5a20c1f8
+Response Hash: c6db5dfc
+::set-output name=rank_v2_hash::c6db5dfc
 VERIFICATION_SUCCESS
 [Gate Light] Checking Export V1 API Contract...
 === Export V1 Contract Verification ===
 Schema loaded.
 Server already running.
 Generating Run assets via http://localhost:53122/scans/run...
-Run assets generated. Run ID: scan_3246b6f927e166dd
-Fetching Export: http://localhost:53122/opportunities/runs/export_v1?run_id=scan_3246b6f927e166dd...
+Run assets generated. Run ID: scan_5dbbca6154ed7467
+Fetching Export: http://localhost:53122/opportunities/runs/export_v1?run_id=scan_5dbbca6154ed7467...
 Received Export JSON.
 Validating against schema...
 Export Schema Validation PASSED.
-Export Hash: 7ca82bb6
-::set-output name=export_v1_hash::7ca82bb6
+Export Hash: fb8e1197
+::set-output name=export_v1_hash::fb8e1197
 EXPORT_CONTRACT_VERIFICATION_SUCCESS
 [Gate Light] Checking Ledger V0 API Contract...
 === Ledger V0 Contract Verification ===
@@ -78,6 +81,7 @@ Validation PASSED.
 [Gate Light] Skipping Evidence Truth check (Generation Mode).
 [Gate Light] Evidence Truth & Sufficiency verified.
 [Gate Light] Checking CI Parity Preview...
+[Gate Light] CI Parity Preview verified.
 [Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
 [Gate Light] Fetching origin/main history for diff context...
 [Gate Light] Allowed legacy task_id (transition): 260223_004
