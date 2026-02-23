@@ -1066,7 +1066,7 @@ Write-Host ">>> [RunTask] SUCCESS: Task $TaskId ($Mode) Completed." -ForegroundC
 
     $TierInfo = Invoke-ErrorTiering -ErrorClass $ErrorClass -FailReason $FailReason
     if ($LoopTriggered) {
-        if ($ErrorClass -eq "FAIL_BUDGET_EXCEEDED_INTEGRATE") {
+        if ($ErrorClass -eq "FAIL_BUDGET_EXCEEDED_INTEGRATE" -or $FailReason -eq "INTEGRATE_FAIL_BUDGET_EXCEEDED") {
             $LoopReason = "FAIL_BUDGET_EXCEEDED_INTEGRATE"
         }
         $ErrorClass = "LOOP_DETECTED"
