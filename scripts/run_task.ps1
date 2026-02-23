@@ -859,7 +859,7 @@ if ($Mode -eq "Integrate") {
         $DummyEvidence = [ordered]@{
             task_id = $TaskId
             run_id = $RunId
-            attempt = 0
+            attempt = "0"
             did_autopr = $false
             status = "SKIPPED"
             final_state = "SKIPPED"
