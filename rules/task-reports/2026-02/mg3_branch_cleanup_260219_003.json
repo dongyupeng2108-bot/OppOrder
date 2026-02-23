@@ -1,7 +1,0 @@
-{
-  "generatedAt": "2026-02-19T18:57:53.2588640+08:00",
-  "pr_exit": 0,
-  "pr": "{\"closedAt\":\"2026-02-19T10:15:20Z\",\"headRefName\":\"dongyupeng2108-bot-patch-1\",\"number\":124,\"state\":\"CLOSED\"}",
-  "branch_exit": 1,
-  "branch": "gh: Branch not found (HTTP 404)\r\n{\"message\":\"Branch not found\",\"documentation_url\":\"https://docs.github.com/rest/branches/branches#get-a-branch\",\"status\":\"404\"}"
-}

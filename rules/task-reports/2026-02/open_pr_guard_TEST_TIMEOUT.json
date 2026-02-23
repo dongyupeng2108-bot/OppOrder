@@ -1,9 +1,0 @@
-{
-  "checked_at": "2026-02-18T02:30:00.986Z",
-  "task_id": "TEST_TIMEOUT",
-  "run_mode": "Dev",
-  "bypassed_for_test_task": true,
-  "open_prs_raw_count": 0,
-  "open_prs_blocking_count": 0,
-  "blocking_prs": []
-}

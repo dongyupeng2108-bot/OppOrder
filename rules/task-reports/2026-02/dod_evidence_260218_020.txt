@@ -1,6 +1,0 @@
-=== DOD_EVIDENCE_STDOUT ===
-[Verification]
-Verified AutoPR functionality.
-Verified CI Loop.
-PASS
-===========================

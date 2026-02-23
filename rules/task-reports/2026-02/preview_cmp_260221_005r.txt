@@ -1,3 +1,0 @@
-RAW_EQUAL=True
-LF_NORMALIZED_EQUAL=True
-first_diff_context=N/A

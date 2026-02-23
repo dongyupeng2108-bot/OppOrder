@@ -1,6 +1,0 @@
-Task: 260221_002f (Evidence Contract + Troubleshooting Playbook landing)
-Branch: feat/mg3-codeowners-260219_004_fix
-HEAD: 293c0efb96ea6ea1779e1dcb5d1b41a5d20cdc63
-Base(origin/main): 512b2b3e0310d496f9467fc31152576e124e556c
-MergeBase: 0234e7e62beae3b980460ba487629ff3e08e2959
-GeneratedAt: 2026-02-20T17:53:47.908Z

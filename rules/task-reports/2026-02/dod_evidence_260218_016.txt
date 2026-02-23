@@ -1,7 +1,0 @@
-=== DOD_EVIDENCE_STDOUT ===
-Task: Open PR Guard Implementation
-Status: Implemented
-Probe Script: scripts/open_pr_guard_probe.mjs
-Gate Light CI: Updated
-Error Taxonomy: Updated
-===========================

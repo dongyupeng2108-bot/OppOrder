@@ -1,6 +1,0 @@
-
-> scripts\run_task.ps1:482:                Write-Error "[AutoPR] Unknown Exit Code from CI Watch: $ExitCode"
-  scripts\run_task.ps1:483:                exit 1
-  scripts\run_task.ps1:484:            }
-  scripts\run_task.ps1:485:        }
-

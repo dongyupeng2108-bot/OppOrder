@@ -1,2 +1,0 @@
-﻿scripts/run_task.ps1 -TaskId 260222_003 -Mode Dev -Header "TraeTask_260222_003"
-scripts/run_task.ps1 -TaskId 260222_003 -Mode Integrate -Header "TraeTask_260222_003" -AutoFixMax 0

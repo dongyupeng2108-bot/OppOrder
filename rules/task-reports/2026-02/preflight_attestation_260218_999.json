@@ -1,8 +1,0 @@
-{
-  "task_id": "260218_999",
-  "timestamp": "2026-02-18T00:00:00.000Z",
-  "mode": "Integrate",
-  "header_detected": "TraeTask_",
-  "write_allowed": true,
-  "signature": "mock_signature"
-}

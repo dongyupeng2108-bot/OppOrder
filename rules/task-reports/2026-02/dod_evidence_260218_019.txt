@@ -1,6 +1,0 @@
-=== DOD_EVIDENCE_STDOUT ===
-[Verification]
-Verified run_task.ps1 Header default logic.
-Verified Gate Light Header check.
-PASS
-===========================

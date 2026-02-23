@@ -1,8 +1,0 @@
-<?xml version="1.0" ?>
-<coverage version="1">
-  <project timestamp="1708668000">
-    <file name="dummy.js">
-      <line num="1" count="1" type="stmt"/>
-    </file>
-  </project>
-</coverage>

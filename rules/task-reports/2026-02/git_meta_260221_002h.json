@@ -1,8 +1,0 @@
-{
-  "task_id": "260221_002h",
-  "branch": "feat/mg3-codeowners-260219_004_fix",
-  "commit": "f0683ff01fd6b19fe8bed432d017db37738fd076",
-  "base": "512b2b3e0310d496f9467fc31152576e124e556c",
-  "mergeBase": "0234e7e62beae3b980460ba487629ff3e08e2959",
-  "generatedAt": "2026-02-20T22:03:18.568Z"
-}
