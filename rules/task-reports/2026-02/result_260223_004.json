@@ -1,8 +1,0 @@
-{
-  "task_id": "260223_004",
-  "status": "success",
-  "evidence": {
-    "ops_copy_file": "verified",
-    "ops_delete": "verified"
-  }
-}
