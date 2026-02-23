@@ -2,7 +2,7 @@ import { execSync } from 'child_process';
 import path from 'path';
 import fs from 'fs';
 
-// Usage: node scripts/ops_git_stage_task_evidence.mjs --task_id <task_id> --evidence_dir <dir> --run_id <run_id>
+// Usage: node scripts/ops_git_stage_task_evidence.mjs --task_id=<task_id> --evidence_dir=<dir> --run_id=<run_id>
 
 const args = process.argv.slice(2);
 const taskIdArg = args.find(a => a.startsWith('--task_id='));
@@ -18,11 +18,30 @@ const taskId = taskIdArg.split('=')[1];
 const evidenceDir = evidenceDirArg.split('=')[1];
 const runId = runIdArg ? runIdArg.split('=')[1] : null;
 
-console.log(`[Staging] Task: ${taskId}, Dir: ${evidenceDir}`);
+console.log(`[Staging] Task: ${taskId}, Dir: ${evidenceDir}, Run: ${runId}`);
 
+// Helper to stage a file
+function stageFile(file) {
+    if (fs.existsSync(file)) {
+        console.log(`Staging: ${file}`);
+        try {
+            // Use -f to force add ignored files
+            execSync(`git add -f "${file}"`, { stdio: 'inherit' });
+        } catch (e) {
+            console.error(`Failed to stage ${file}: ${e.message}`);
+        }
+    } else {
+        console.log(`Skipping missing: ${file}`);
+    }
+}
+
+// 1. Stage explicit files from lists b, c, d, e
 const filesToStage = [
-    // Manifest
+    // Manifest in evidence dir
     path.join(evidenceDir, `evidence_manifest_${taskId}.json`),
+    // Deliverables index in evidence dir (if present there, though it usually lives in index/)
+    path.join(evidenceDir, `deliverables_index_${taskId}.json`),
+    
     // Envelope
     path.join('rules/task-reports/envelopes', `${taskId}.envelope.json`),
     // Lock file
@@ -36,7 +55,7 @@ const filesToStage = [
     'rules/task-reports/index/runs_index.jsonl',
     // Generated evidence script itself
     path.join(evidenceDir, `generate_evidence_${taskId}.mjs`),
-    // Other relevant files
+    // Scripts
     'scripts/ops_scan_text.mjs',
     'rules/rules/WORKFLOW.md',
     'scripts/assemble_evidence.mjs',
@@ -44,39 +63,35 @@ const filesToStage = [
     '.github/workflows/gate-light.yml'
 ];
 
-// Helper to stage
-function stage(file) {
-    if (fs.existsSync(file)) {
-        console.log(`Staging: ${file}`);
-        try {
-            // Use -f to force add ignored files (evidence manifest etc)
-            execSync(`git add -f "${file}"`, { stdio: 'inherit' });
-        } catch (e) {
-            console.error(`Failed to stage ${file}: ${e.message}`);
+filesToStage.forEach(stageFile);
+
+// 2. Stage runs directory (recursive) - list a)
+if (runId) {
+    const runsDir = path.join('rules/task-reports/runs', taskId, runId);
+    if (fs.existsSync(runsDir)) {
+        console.log(`Staging runs directory: ${runsDir}`);
+        
+        // Recursive function to get all files
+        function getFiles(dir) {
+            let results = [];
+            const list = fs.readdirSync(dir);
+            list.forEach(file => {
+                file = path.join(dir, file);
+                const stat = fs.statSync(file);
+                if (stat && stat.isDirectory()) {
+                    results = results.concat(getFiles(file));
+                } else {
+                    results.push(file);
+                }
+            });
+            return results;
         }
+
+        const runFiles = getFiles(runsDir);
+        runFiles.forEach(stageFile);
     } else {
-        console.log(`Skipping missing: ${file}`);
+        console.warn(`Runs directory not found: ${runsDir}`);
     }
 }
-
-filesToStage.forEach(stage);
-
-// Also force add the healthcheck mock files if they need to be in the repo for CI to see them?
-// No, CI generates them or they are artifacts. But wait, if CI runs generate_evidence, it generates them.
-// If CI runs assemble_evidence, it looks for them.
-// In the user's instruction: "Generate minimal evidence set".
-// And "git commit -m ...".
-// The user wants to commit the EVIDENCE artifacts so that CI can verify them?
-// Usually evidence is generated in CI.
-// But the user says "生成最小证据集...把证据暂存并提交".
-// This implies committing the evidence files to the repo.
-// This might be to bypass some generation step or to provide a "golden" set.
-// Or maybe just the manifest/envelope/index/lock.
-// I will verify what files are usually committed.
-// `rules/task-reports/YYYY-MM/` is usually ignored except for `generate_evidence_*.js`.
-// `rules/task-reports/envelopes/` IS tracked.
-// `rules/task-reports/index/` IS tracked.
-// `rules/task-reports/locks/` IS tracked.
-// So I should stage those.
 
 console.log('Staging complete.');
