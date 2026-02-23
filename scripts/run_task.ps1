@@ -666,18 +666,18 @@ if (Test-Path $BudgetFile) {
 if ($Mode -eq "Dev") {
     $Budget.Dev++
     if ($Budget.Dev -gt 2) {
-        Write-Error "[RunTask] FAILED: Dev Fail Budget Exceeded ($($Budget.Dev)/2)."
-        Write-Error "    You have exhausted your 2 allowed Dev attempts for Task $TaskId."
-        Write-Error "    Action: Fix your code/logic and use a NEW Task ID."
+        Write-Host "[RunTask] FAILED: Dev Fail Budget Exceeded ($($Budget.Dev)/2)." -ForegroundColor Red
+        Write-Host "    You have exhausted your 2 allowed Dev attempts for Task $TaskId." -ForegroundColor Red
+        Write-Host "    Action: Fix your code/logic and use a NEW Task ID." -ForegroundColor Red
         $Budget | ConvertTo-Json | Set-Content $BudgetFile
         Stop-RunTask -Message "FAIL_BUDGET_EXCEEDED_DEV" -ErrorClass "FAIL_BUDGET_EXCEEDED_DEV" -FailReason "DEV_FAIL_BUDGET_EXCEEDED"
     }
 } elseif ($Mode -eq "Integrate") {
     $Budget.Integrate++
     if ($Budget.Integrate -gt 1) {
-        Write-Error "[RunTask] FAILED: Integrate Fail Budget Exceeded ($($Budget.Integrate)/1)."
-        Write-Error "    Integrate mode is strictly One-Shot."
-        Write-Error "    Action: Use a NEW Task ID."
+        Write-Host "[RunTask] FAILED: Integrate Fail Budget Exceeded ($($Budget.Integrate)/1)." -ForegroundColor Red
+        Write-Host "    Integrate mode is strictly One-Shot." -ForegroundColor Red
+        Write-Host "    Action: Use a NEW Task ID." -ForegroundColor Red
         $Budget | ConvertTo-Json | Set-Content $BudgetFile
         Stop-RunTask -Message "FAIL_BUDGET_EXCEEDED_INTEGRATE" -ErrorClass "FAIL_BUDGET_EXCEEDED_INTEGRATE" -FailReason "INTEGRATE_FAIL_BUDGET_EXCEEDED"
     }
