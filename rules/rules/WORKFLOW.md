@@ -189,6 +189,10 @@ To reduce Trae Desktop popups and environment dependency risks, strict disciplin
         # Audit specific file types for patterns
         node scripts/ops_scan_text.mjs --globs "rules/rules/*.md" --pattern "echo\\s+.*\\s+>" --max_hits 50 --json
         ```
+    *   **JSON Output Fields**:
+        *   `scanned_files`: Total files matching the glob pattern (candidates).
+        *   `file_count`: Number of files containing the search pattern (hits).
+        *   `hit_count`: Total number of pattern matches across all files.
     *   **Why**: Node.js provides consistent, cross-platform behavior (regex, globbing) and avoids "High Risk Command" warnings in Trae Desktop.
 
 ## Open PR Guard Protocols (One Task at a Time)
