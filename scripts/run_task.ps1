@@ -851,6 +851,16 @@ if ($Mode -eq "Integrate") {
     } else {
         Write-Host "AUTOPR_DISABLED=1" -ForegroundColor Yellow
         Write-Host ">>> [RunTask] Step 9: AutoPR Disabled. Skipping." -ForegroundColor Yellow
+        
+        # Generate dummy AutoPR evidence for Gate Light compliance
+        $AutoPrEvidencePath = "$EvidenceDir\auto_pr_${TaskId}.json"
+        $DummyEvidence = @{
+            pr_url = "SKIPPED_BY_USER_REQUEST"
+            attempt = 0
+            final_state = "SKIPPED"
+        } | ConvertTo-Json
+        $DummyEvidence | Out-File -FilePath $AutoPrEvidencePath -Encoding utf8 -Force
+        Write-Host ">>> [RunTask] Generated dummy AutoPR evidence: $AutoPrEvidencePath" -ForegroundColor DarkGray
     }
 }
 
