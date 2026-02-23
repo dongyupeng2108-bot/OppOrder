@@ -1,7 +1,11 @@
 
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
+import fs from 'fs';
+import path from 'path';
+import { execSync } from 'child_process';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const repoRoot = path.resolve(__dirname, '../../..');
 const opsCopy = path.join(repoRoot, 'scripts', 'ops_copy_file.mjs');
@@ -44,6 +48,21 @@ try {
     } else {
         throw new Error('Delete verification failed: Files still exist.');
     }
+
+    // Write result and notify files
+    const resultFile = path.join(__dirname, 'result_260223_004.json');
+    const notifyFile = path.join(__dirname, 'notify_260223_004.txt');
+    
+    fs.writeFileSync(resultFile, JSON.stringify({
+        task_id: "260223_004",
+        status: "success",
+        evidence: {
+            ops_copy_file: "verified",
+            ops_delete: "verified"
+        }
+    }, null, 2));
+
+    fs.writeFileSync(notifyFile, "Task 260223_004 Completed.\nVerified ops_copy_file.mjs and ops_delete.mjs.\nGATE_LIGHT_EXIT=0\n");
 
     console.log('Evidence generation complete.');
 
