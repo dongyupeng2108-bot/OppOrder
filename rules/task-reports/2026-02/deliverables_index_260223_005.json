@@ -1,16 +1,16 @@
 {
   "task_id": "260223_005",
-  "generated_at": "2026-02-23T12:56:07.146Z",
+  "generated_at": "2026-02-23T13:16:03.247Z",
   "files": [
     {
       "name": "ci_parity_260223_005.json",
-      "size": 498,
-      "sha256_short": "745b40bc"
+      "size": 102539,
+      "sha256_short": "ae1ddf41"
     },
     {
       "name": "gate_light_preview_260223_005.log",
-      "size": 4987,
-      "sha256_short": "c5c6a4f4"
+      "size": 5219,
+      "sha256_short": "b6877d63"
     },
     {
       "name": "dod_evidence_260223_005.txt",
@@ -20,42 +20,42 @@
     {
       "name": "git_meta_260223_005.json",
       "size": 102,
-      "sha256_short": "ae6660ba"
+      "sha256_short": "c6bf80c9"
     },
     {
       "name": "preflight_attestation_260223_005.json",
       "size": 319,
-      "sha256_short": "1e020a29"
+      "sha256_short": "cb27297f"
     },
     {
       "name": "workspace_healer_260223_005.json",
       "size": 940,
-      "sha256_short": "01d1e1dd"
+      "sha256_short": "86950219"
     },
     {
       "name": "result_260223_005.json",
-      "size": 513,
-      "sha256_short": "dceba34d"
+      "size": 519,
+      "sha256_short": "a95e8879"
     },
     {
       "name": "run_260223_005.log",
-      "size": 8828,
-      "sha256_short": "136511fb"
+      "size": 9572,
+      "sha256_short": "8cf651b6"
     },
     {
       "name": "errors_260223_005.jsonl",
       "size": 290,
-      "sha256_short": "2d8a57e9"
+      "sha256_short": "8cde910d"
     },
     {
       "name": "errors_summary_260223_005.txt",
-      "size": 224,
-      "sha256_short": "58a29d0d"
+      "size": 401,
+      "sha256_short": "4e16ee2a"
     },
     {
       "name": "notify_260223_005.txt",
-      "size": 9380,
-      "sha256_short": "b0da9ddf"
+      "size": 9853,
+      "sha256_short": "e0713e76"
     },
     {
       "name": "preview_cmp_260223_005.txt",
@@ -69,8 +69,8 @@
     },
     {
       "name": "evidence_manifest_260223_005.json",
-      "size": 839,
-      "sha256_short": "83d91d97"
+      "size": 845,
+      "sha256_short": "c4b69fef"
     },
     {
       "name": "contract_self_check_260223_005.txt",
@@ -80,7 +80,7 @@
     {
       "name": "gate_light_profile_260223_005.json",
       "size": 462,
-      "sha256_short": "d5557375"
+      "sha256_short": "4eaf9ce5"
     },
     {
       "name": "260223_005_healthcheck_53122_root.txt",
