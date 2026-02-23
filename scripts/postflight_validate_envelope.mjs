@@ -626,9 +626,12 @@ async function validate(resultDir, taskId, report) {
         // New Standard (Task 260210_006): Check via Notify References
         if (taskId >= '260210_006') {
             const hcRootMatch = notifyContent.match(/DOD_EVIDENCE_HEALTHCHECK_ROOT:\s*(.*?)(?:\s*=>|$)/);
-            const hcPairsMatch = notifyContent.match(/DOD_EVIDENCE_HEALTHCHECK_PAIRS:\s*(.*?)(?:\s*=>|$)/);
-            
-            if (!hcRootMatch || !hcPairsMatch) {
+        const hcPairsMatch = notifyContent.match(/DOD_EVIDENCE_HEALTHCHECK_PAIRS:\s*(.*?)(?:\s*=>|$)/);
+        
+        console.log(`[DEBUG] Healthcheck Root Match: ${hcRootMatch ? hcRootMatch[0] : 'null'}`);
+        console.log(`[DEBUG] Healthcheck Pairs Match: ${hcPairsMatch ? hcPairsMatch[0] : 'null'}`);
+        
+        if (!hcRootMatch || !hcPairsMatch) {
                 fail(report, ERR.HEALTHCHECK_MISSING, `Notify missing DOD_EVIDENCE_HEALTHCHECK_{ROOT|PAIRS} markers.`);
             } else {
                 const checkEvidenceFile = (refPath, label) => {
