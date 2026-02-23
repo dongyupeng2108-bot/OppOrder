@@ -1,0 +1,24 @@
+{
+  "task_id": "260220_001",
+  "mode": "Integrate",
+  "generated_at": "2026-02-19T17:18:59.025Z",
+  "evidence_dir": "E:\\OppRadar\\rules\\task-reports\\2026-02",
+  "required_files": [
+    "result_260220_001.json",
+    "run_260220_001.log",
+    "notify_260220_001.txt",
+    "workspace_healer_260220_001.json",
+    "errors_260220_001.jsonl",
+    "errors_summary_260220_001.txt",
+    "deliverables_index_260220_001.json",
+    "ci_parity_260220_001.json",
+    "gate_light_preview_260220_001.log",
+    "dod_evidence_260220_001.txt",
+    "git_meta_260220_001.json",
+    "preflight_attestation_260220_001.json",
+    "open_pr_guard_260220_001.json",
+    "manual_verification_260220_001.json",
+    "260220_001_healthcheck_53122_root.txt",
+    "260220_001_healthcheck_53122_pairs.txt"
+  ]
+}

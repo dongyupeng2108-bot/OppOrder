@@ -1,0 +1,21 @@
+{
+    "mode":  "EnforceClean",
+    "branch":  "feat/stop-on-hardstop-260223_003d",
+    "cleaned_paths":  [
+
+                      ],
+    "after":  null,
+    "head_commit":  "d18143e25253e14c88a1de039ac44c04d8de1bbe",
+    "before":  {
+                   "untracked_count":  0,
+                   "tracked_changed_count":  2,
+                   "sample_paths":  [
+                                        "rules/LATEST.json",
+                                        "rules/task-reports/index/error_stats.jsonl"
+                                    ]
+               },
+    "repo_root":  "E:/OppRadar",
+    "reason":  "Tracked changes detected. Please commit, stash, or run with -Mode Heal.",
+    "result":  "FAIL"
+}
+

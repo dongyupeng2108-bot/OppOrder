@@ -1,0 +1,23 @@
+{
+    "mode":  "EnforceClean",
+    "branch":  "feat/task-r-error-tiering-260222_005a",
+    "cleaned_paths":  [
+
+                      ],
+    "after":  null,
+    "head_commit":  "2037cf4cce78d32e72d6244cdd79172c1dc7154d",
+    "before":  {
+                   "untracked_count":  1,
+                   "tracked_changed_count":  3,
+                   "sample_paths":  [
+                                        "rules/LATEST.json",
+                                        "rules/task-reports/2026-02/speed_timing_260222_003a.json",
+                                        "rules/task-reports/index/task_id_history.jsonl",
+                                        "rules/task-reports/index/error_history.jsonl"
+                                    ]
+               },
+    "repo_root":  "E:/OppRadar",
+    "reason":  "Tracked changes detected. Please commit, stash, or run with -Mode Heal.",
+    "result":  "FAIL"
+}
+

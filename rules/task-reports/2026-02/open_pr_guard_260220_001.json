@@ -1,0 +1,23 @@
+{
+  "queried_at": "2026-02-19T17:18:42.919Z",
+  "mode": "Integrate",
+  "open_prs": [
+    {
+      "number": 126,
+      "title": "TraeTask_260219_006: AutoPR",
+      "headRefName": "feat/mg3-codeowners-260219_004_fix",
+      "url": "https://github.com/dongyupeng2108-bot/OppOrder/pull/126"
+    }
+  ],
+  "ignored_pr_numbers": [],
+  "supersede_task_ids": [],
+  "blocking_prs": [
+    {
+      "number": 126,
+      "reason": "Open PR not ignored or superseded"
+    }
+  ],
+  "decision": "BLOCK",
+  "exit_code": 1,
+  "open_prs_blocking_count": 1
+}

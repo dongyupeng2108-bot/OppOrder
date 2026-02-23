@@ -1,0 +1,16 @@
+{
+  "task_id": "260223_003b",
+  "is_shallow_repo": true,
+  "base": "36748cafa812f5868ebb22b8cee9878b0880b713",
+  "head": "be552d2b7459037fc0955220dd4765ccab21eed6",
+  "merge_base": "36748cafa812f5868ebb22b8cee9878b0880b713",
+  "scope_files": [
+    "rules/LATEST.json",
+    "rules/rules/WORKFLOW.md",
+    "rules/task-reports/2026-02/generate_evidence_260223_003a.mjs",
+    "rules/task-reports/2026-02/generate_evidence_260223_003b.mjs",
+    "scripts/run_task.ps1"
+  ],
+  "scope_count": 5,
+  "generated_at": "2026-02-23T04:52:12.104Z"
+}

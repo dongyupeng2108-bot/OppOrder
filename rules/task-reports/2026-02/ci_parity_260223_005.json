@@ -1,0 +1,17 @@
+{
+  "task_id": "260223_005",
+  "is_shallow_repo": true,
+  "base": "276a86c768b3923007860b9e3cece4662d525136",
+  "head": "d95251ef7e3172f2a5ca8ed7148e4aeb12f02ce3",
+  "merge_base": "276a86c768b3923007860b9e3cece4662d525136",
+  "scope_files": [
+    "rules/LATEST.json",
+    "rules/rules/WORKFLOW.md",
+    "scripts/ops_cleanup_patterns.mjs",
+    "scripts/ps_safe_rm.ps1",
+    "scripts/run_task.ps1",
+    "scripts/speed_probe.ps1"
+  ],
+  "scope_count": 6,
+  "generated_at": "2026-02-23T12:55:40.425Z"
+}

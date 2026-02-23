@@ -1,0 +1,11 @@
+﻿{
+    "mode":  "Integrate",
+    "branch":  "feat/docs-deliver-002-goals-260221_004f",
+    "write_allowed":  true,
+    "input_hash_short":  "7d1b9ba0",
+    "header":  "FIX:contract-self-check-summary",
+    "commit":  "b105fd92",
+    "task_id":  "260221_012",
+    "header_detected":  true,
+    "timestamp":  "2026-02-21 22:41:48 UTC"
+}

@@ -1,0 +1,14 @@
+{
+  "task_id": "260222_003",
+  "is_shallow_repo": true,
+  "base": "6999263e73f3f22f031ea15201c765ba9704abb8",
+  "head": "d4a3f957bdd1e0951207aeabecab8074879708ac",
+  "merge_base": "6999263e73f3f22f031ea15201c765ba9704abb8",
+  "scope_files": [
+    "rules/LATEST.json",
+    "scripts/run_task.ps1",
+    "scripts/speed_probe.ps1"
+  ],
+  "scope_count": 3,
+  "generated_at": "2026-02-22T09:36:41.076Z"
+}

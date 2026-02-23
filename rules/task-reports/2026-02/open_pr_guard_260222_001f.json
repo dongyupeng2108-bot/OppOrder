@@ -1,0 +1,23 @@
+{
+  "queried_at": "2026-02-22T02:51:15.810Z",
+  "mode": "Integrate",
+  "open_prs": [
+    {
+      "number": 148,
+      "title": "TraeTask_260222_001e: AutoPR",
+      "headRefName": "feat/preview-single-source-260222_001e",
+      "url": "https://github.com/dongyupeng2108-bot/OppOrder/pull/148"
+    }
+  ],
+  "ignored_pr_numbers": [],
+  "supersede_task_ids": [],
+  "blocking_prs": [
+    {
+      "number": 148,
+      "reason": "Open PR not ignored or superseded"
+    }
+  ],
+  "decision": "BLOCK",
+  "exit_code": 1,
+  "open_prs_blocking_count": 1
+}

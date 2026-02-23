@@ -1,0 +1,11 @@
+﻿{
+    "mode":  "Integrate",
+    "branch":  "feat/preview-single-source-260222_001",
+    "write_allowed":  true,
+    "input_hash_short":  "2ebc1e18",
+    "header":  "TraeTask_260222_001b",
+    "commit":  "8e3e7008",
+    "task_id":  "260222_001b",
+    "header_detected":  true,
+    "timestamp":  "2026-02-22 09:29:03 UTC"
+}

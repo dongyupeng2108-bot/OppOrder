@@ -1,0 +1,91 @@
+{
+  "task_id": "260221_012a",
+  "generated_at": "2026-02-21T14:53:17.664Z",
+  "files": [
+    {
+      "name": "ci_parity_260221_012a.json",
+      "size": 383,
+      "sha256_short": "0ecbe8eb"
+    },
+    {
+      "name": "gate_light_preview_260221_012a.log",
+      "size": 4993,
+      "sha256_short": "3182eeed"
+    },
+    {
+      "name": "dod_evidence_260221_012a.txt",
+      "size": 306,
+      "sha256_short": "c550bcdf"
+    },
+    {
+      "name": "git_meta_260221_012a.json",
+      "size": 299,
+      "sha256_short": "3878aae9"
+    },
+    {
+      "name": "preflight_attestation_260221_012a.json",
+      "size": 338,
+      "sha256_short": "09a58787"
+    },
+    {
+      "name": "workspace_healer_260221_012a.json",
+      "size": 951,
+      "sha256_short": "aa7293ba"
+    },
+    {
+      "name": "result_260221_012a.json",
+      "size": 760,
+      "sha256_short": "7139ea09"
+    },
+    {
+      "name": "run_260221_012a.log",
+      "size": 10475,
+      "sha256_short": "80fecff7"
+    },
+    {
+      "name": "errors_260221_012a.jsonl",
+      "size": 223,
+      "sha256_short": "76be7ab0"
+    },
+    {
+      "name": "errors_summary_260221_012a.txt",
+      "size": 208,
+      "sha256_short": "5ac872d2"
+    },
+    {
+      "name": "notify_260221_012a.txt",
+      "size": 9574,
+      "sha256_short": "eaddd9c2"
+    },
+    {
+      "name": "manual_verification_260221_012a.json",
+      "size": 99,
+      "sha256_short": "3a0f28d7"
+    },
+    {
+      "name": "evidence_manifest_260221_012a.json",
+      "size": 840,
+      "sha256_short": "dc73582f"
+    },
+    {
+      "name": "contract_self_check_260221_012a.txt",
+      "size": 276,
+      "sha256_short": "980d42a2"
+    },
+    {
+      "name": "open_pr_guard_260221_012a.json",
+      "size": 543,
+      "sha256_short": "702d0048"
+    },
+    {
+      "name": "260221_012a_healthcheck_53122_root.txt",
+      "size": 173,
+      "sha256_short": "eeaabcf8"
+    },
+    {
+      "name": "260221_012a_healthcheck_53122_pairs.txt",
+      "size": 178,
+      "sha256_short": "8a2bd714"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "task_id": "260221_005f",
+  "milestone": "260221",
+  "status": "FAILED",
+  "healthcheck": {
+    "root": 0,
+    "pairs": 0
+  },
+  "index_files": [
+    "ci_parity_260221_005f.json",
+    "gate_light_preview_260221_005f.log",
+    "dod_evidence_260221_005f.txt",
+    "git_meta_260221_005f.json",
+    "preflight_attestation_260221_005f.json",
+    "workspace_healer_260221_005f.json",
+    "result_260221_005f.json",
+    "run_260221_005f.log",
+    "errors_260221_005f.jsonl",
+    "errors_summary_260221_005f.txt",
+    "notify_260221_005f.txt",
+    "manual_verification_260221_005f.json",
+    "evidence_manifest_260221_005f.json",
+    "contract_self_check_260221_005f.txt",
+    "open_pr_guard_260221_005f.json",
+    "260221_005f_healthcheck_53122_root.txt",
+    "260221_005f_healthcheck_53122_pairs.txt"
+  ],
+  "forbidden_phrases_hit": [],
+  "report_file": "notify_260221_005f.txt"
+}

@@ -1,0 +1,11 @@
+
+> scripts\run_task.ps1:482:                Write-Error "[AutoPR] Unknown Exit Code from CI Watch: $ExitCode"
+  scripts\run_task.ps1:483:                exit 1
+  scripts\run_task.ps1:484:            }
+  scripts\run_task.ps1:485:        }
+  scripts\run_task.ps1:486:    }
+  scripts\run_task.ps1:487:}
+  scripts\run_task.ps1:488:
+  scripts\run_task.ps1:489:Write-Host ">>> [RunTask] SUCCESS: Task $TaskId ($Mode) Completed." -ForegroundColor Green
+  scripts\run_task.ps1:490:} catch {
+

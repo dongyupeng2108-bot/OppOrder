@@ -1,0 +1,27 @@
+{
+  "task_id": "260218_014",
+  "milestone": "260218",
+  "status": "DONE",
+  "healthcheck": {
+    "root": 0,
+    "pairs": 0
+  },
+  "index_files": [
+    "ci_parity_260218_014.json",
+    "gate_light_preview_260218_014.log",
+    "dod_evidence_260218_014.txt",
+    "git_meta_260218_014.json",
+    "preflight_attestation_260218_014.json",
+    "workspace_healer_260218_014.json",
+    "result_260218_014.json",
+    "run_260218_014.log",
+    "notify_260218_014.txt",
+    "manual_verification_260218_014.json",
+    "evidence_manifest_260218_014.json",
+    "open_pr_guard_260218_014.json",
+    "260218_014_healthcheck_53122_root.txt",
+    "260218_014_healthcheck_53122_pairs.txt"
+  ],
+  "forbidden_phrases_hit": [],
+  "report_file": "notify_260218_014.txt"
+}

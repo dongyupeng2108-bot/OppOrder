@@ -1,0 +1,23 @@
+{
+  "queried_at": "2026-02-21T14:41:48.306Z",
+  "mode": "Integrate",
+  "open_prs": [
+    {
+      "number": 134,
+      "title": "TraeTask_260221_011: AutoPR",
+      "headRefName": "feat/docs-deliver-002-goals-260221_004f",
+      "url": "https://github.com/dongyupeng2108-bot/OppOrder/pull/134"
+    }
+  ],
+  "ignored_pr_numbers": [],
+  "supersede_task_ids": [],
+  "blocking_prs": [
+    {
+      "number": 134,
+      "reason": "Open PR not ignored or superseded"
+    }
+  ],
+  "decision": "BLOCK",
+  "exit_code": 1,
+  "open_prs_blocking_count": 1
+}

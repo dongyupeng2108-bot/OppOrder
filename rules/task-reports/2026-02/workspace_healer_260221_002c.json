@@ -1,0 +1,18 @@
+{
+    "mode":  "EnforceClean",
+    "branch":  "feat/mg3-codeowners-260219_004_fix",
+    "cleaned_paths":  [
+
+                      ],
+    "after":  null,
+    "head_commit":  "0ae9f5a7e2ae6ced7e52b82b5656b3a6881923f5",
+    "before":  {
+                   "untracked_count":  0,
+                   "tracked_changed_count":  1,
+                   "sample_paths":  "rules/LATEST.json"
+               },
+    "repo_root":  "E:/OppRadar",
+    "reason":  "Tracked changes detected. Please commit, stash, or run with -Mode Heal.",
+    "result":  "FAIL"
+}
+

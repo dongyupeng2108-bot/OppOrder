@@ -1,0 +1,30 @@
+{
+    "mode":  "EnforceClean",
+    "branch":  "feat/mg3-codeowners-260219_004_fix",
+    "cleaned_paths":  [
+                          "rules/task-reports",
+                          "rules/reports",
+                          "data/opps_ledger",
+                          "rules/task-reports/locks",
+                          "rules/task-reports/runs"
+                      ],
+    "after":  {
+                  "untracked_count":  0,
+                  "tracked_changed_count":  0,
+                  "sample_paths":  {
+
+                                   }
+              },
+    "head_commit":  "0cc30bde8f92e47ffebf618d15b76b6659730188",
+    "before":  {
+                   "untracked_count":  0,
+                   "tracked_changed_count":  0,
+                   "sample_paths":  {
+
+                                    }
+               },
+    "repo_root":  "E:/OppRadar",
+    "reason":  null,
+    "result":  "PASS"
+}
+

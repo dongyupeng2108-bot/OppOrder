@@ -1,0 +1,7 @@
+{
+  "generatedAt": "2026-02-19T20:02:40.2981891+08:00",
+  "branch": "feat/mg3-codeowners-260219_003_fix",
+  "head": "dd6cf6747d342a4142eb47be831d3111d78ed577",
+  "file": "rules/LATEST.json",
+  "diff": "diff --git a/rules/LATEST.json b/rules/LATEST.json\r\nindex 4b18eb4..0156e02 100644\r\n--- a/rules/LATEST.json\r\n+++ b/rules/LATEST.json\r\n@@ -1,6 +1,4 @@\r\n {\r\n-  \"task_id\": \"260219_001\",\r\n-  \"result_dir\": \"rules/task-reports/2026-02\",\r\n-  \"branch\": \"feat/mg2-autopr-default-260219_001\",\r\n-  \"timestamp\": \"2026-02-19T10:00:00.000Z\"\r\n+    \"task_id\":  \"260219_003\",\r\n+    \"timestamp\":  \"2026-02-19 19:31:40\"\r\n }\r\n"
+}

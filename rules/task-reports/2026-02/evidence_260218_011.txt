@@ -1,0 +1,14 @@
+Task 260218_011 Evidence
+Date: 2026-02-17T18:07:06.418Z
+Goal: Bypass Open PR Guard for TEST tasks & Improve fail budget cleanup.
+
+Scope of Changes:
+1. scripts/open_pr_guard.mjs: Added bypass logic for tasks containing '_TEST_' or starting with 'TEST_'.
+2. scripts/test_fail_budget.ps1: Improved cleanup logic to be dynamic and safe.
+
+Verification:
+- Manual execution of scripts/test_fail_budget.ps1 passed (All 4 tests).
+- Open PR Guard logic verified via code review and test tasks.
+- Clean up logic verified to not delete non-test artifacts.
+
+This evidence file confirms the task logic is ready for integration.

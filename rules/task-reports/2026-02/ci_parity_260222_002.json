@@ -1,0 +1,15 @@
+{
+  "task_id": "260222_002",
+  "is_shallow_repo": true,
+  "base": "96c2ace9a2ee09c6807304c189ae939c512d4734",
+  "head": "30b929bb77cc01452821ccbfff658c7df7058fd2",
+  "merge_base": "96c2ace9a2ee09c6807304c189ae939c512d4734",
+  "scope_files": [
+    "rules/LATEST.json",
+    "rules/rules/PROJECT_RULES.md",
+    "rules/rules/WORKFLOW.md",
+    "scripts/run_task.ps1"
+  ],
+  "scope_count": 4,
+  "generated_at": "2026-02-22T04:48:59.083Z"
+}

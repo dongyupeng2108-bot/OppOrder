@@ -1,0 +1,34 @@
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260222_001g
+PR_TASK_ID_DETECTED=260222_001g
+TARGET_TASK_ID=260222_001g
+LATEST_TASK_ID=260222_001g
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] Using run_dir from lock file: rules/task-reports/runs/260222_001g/20260222105452_7f783ac
+[Gate Light] Verifying task_id: 260222_001g
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Report Block Check Passed: notify_260222_001g.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260222_001g.txt
+[Gate Light] Header Check Passed: TraeTask_260222_001g
+[Gate Light] Preflight Attestation verified (Integrate Mode).
+[Gate Light] Checking Open PR Guard Evidence...
+[Gate Light] Recalculating Open PR Guard status...
+[Gate Light] Open PR Guard Recalculation verified (PASS).
+[Gate Light] Open PR Guard verified (blocking_count=0).
+[Gate Light] Checking Workspace Healer Evidence...
+[Gate Light] Workspace Healer verified (Clean Environment).
+[Gate Light] Checking AutoPR Evidence...
+[Gate Light] AutoPR verified (State: PASS, Attempt: 2).
+[Gate Light] Checking CI Parity JSON Evidence...
+[Gate Light] DEBUG: is_shallow_repository=false
+[Gate Light] DEBUG: HEAD=3e419cc47c625da120bb564cdcb88fdb31a80f08
+[Gate Light] DEBUG: git merge-base origin/main HEAD=222556851b1d543a1c2df850c894910a9a1d9d7f
+[Gate Light] CI Parity Head mismatch (JSON=7f783ac08b251bb401cc0bc04732b2ffd4aaee24, Calc=3e419cc47c625da120bb564cdcb88fdb31a80f08). Checking for evidence-only update...
+From https://github.com/dongyupeng2108-bot/OppOrder
+ * branch              main       -> FETCH_HEAD
+Changed code files between Parity Head and Current Head:
+  - rules/LATEST.json
+  - scripts/extract_gate_light_preview.mjs
+[Gate Light] FAIL: CI Parity JSON Evidence validation failed:
+  - Head mismatch with CODE CHANGES: JSON=7f783ac08b251bb401cc0bc04732b2ffd4aaee24, Calc=3e419cc47c625da120bb564cdcb88fdb31a80f08
+ACTION: Re-run ci_parity_probe.mjs and ensure no manual tampering.

@@ -1,0 +1,11 @@
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260221_002g
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] Verifying task_id: 260221_002g
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Report Block Check Passed: notify_260221_002g.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260221_002g.txt
+
+[Gate Light] FAILED: Header mismatch.
+  Found: TraeTask_260221_002
+  Expected: TraeTask_260221_002g

@@ -1,0 +1,23 @@
+{
+  "task_id": "260220_001",
+  "branch": "feat/mg3-codeowners-260219_004_fix",
+  "pr_number": 126,
+  "pr_url": "https://github.com/dongyupeng2108-bot/OppOrder/pull/126",
+  "head": "feat/mg3-codeowners-260219_004_fix",
+  "base": "main",
+  "attempt": 2,
+  "autofix_max": 1,
+  "status": "OPEN",
+  "final_state": "FAIL",
+  "timestamp": "2026-02-19T17:19:11.315Z",
+  "checks_summary": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "pending": 0,
+    "details": [
+      "gate-light-check: FAILURE"
+    ]
+  },
+  "error": null
+}

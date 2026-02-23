@@ -1,0 +1,6 @@
+Task: 260219_005 (MG3 Step0 Precheck Fix)
+Branch: feat/mg3-codeowners-260219_004_fix
+HEAD: 0cc30bde8f92e47ffebf618d15b76b6659730188
+Base(origin/main): e90d60f8113a94ef29ebce09594e49b1921f0e27
+MergeBase: e90d60f8113a94ef29ebce09594e49b1921f0e27
+GeneratedAt: 2026-02-19T16:08:50.744Z

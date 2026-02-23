@@ -1,0 +1,28 @@
+{
+    "mode":  "EnforceClean",
+    "branch":  "feat/p4-doc-convergence-260216_005",
+    "cleaned_paths":  [
+                          "rules/task-reports",
+                          "rules/reports",
+                          "rules/task-reports/locks",
+                          "rules/task-reports/runs"
+                      ],
+    "after":  {
+                  "untracked_count":  0,
+                  "tracked_changed_count":  0,
+                  "sample_paths":  {
+
+                                   }
+              },
+    "head_commit":  "f138f3db69270ccb4d7d93b1bcc8feca22d45caf",
+    "before":  {
+                   "untracked_count":  0,
+                   "tracked_changed_count":  0,
+                   "sample_paths":  {
+
+                                    }
+               },
+    "repo_root":  "E:/OppRadar",
+    "reason":  null,
+    "result":  "PASS"
+}

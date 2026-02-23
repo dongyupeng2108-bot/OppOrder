@@ -1,0 +1,86 @@
+{
+  "task_id": "260219_006",
+  "generated_at": "2026-02-19T16:46:02.851Z",
+  "files": [
+    {
+      "name": "ci_parity_260219_006.json",
+      "size": 599,
+      "sha256_short": "bcf3c445"
+    },
+    {
+      "name": "gate_light_preview_260219_006.log",
+      "size": 4902,
+      "sha256_short": "e36fd558"
+    },
+    {
+      "name": "dod_evidence_260219_006.txt",
+      "size": 281,
+      "sha256_short": "1eabe39a"
+    },
+    {
+      "name": "git_meta_260219_006.json",
+      "size": 293,
+      "sha256_short": "0b8bbed1"
+    },
+    {
+      "name": "preflight_attestation_260219_006.json",
+      "size": 335,
+      "sha256_short": "b4fcd108"
+    },
+    {
+      "name": "workspace_healer_260219_006.json",
+      "size": 946,
+      "sha256_short": "22bec089"
+    },
+    {
+      "name": "result_260219_006.json",
+      "size": 750,
+      "sha256_short": "24afd3e4"
+    },
+    {
+      "name": "run_260219_006.log",
+      "size": 10313,
+      "sha256_short": "51854558"
+    },
+    {
+      "name": "errors_260219_006.jsonl",
+      "size": 222,
+      "sha256_short": "966f403f"
+    },
+    {
+      "name": "errors_summary_260219_006.txt",
+      "size": 146,
+      "sha256_short": "5c870143"
+    },
+    {
+      "name": "notify_260219_006.txt",
+      "size": 9199,
+      "sha256_short": "7d84247d"
+    },
+    {
+      "name": "manual_verification_260219_006.json",
+      "size": 99,
+      "sha256_short": "8f487a6e"
+    },
+    {
+      "name": "evidence_manifest_260219_006.json",
+      "size": 780,
+      "sha256_short": "f03814cb"
+    },
+    {
+      "name": "open_pr_guard_260219_006.json",
+      "size": 237,
+      "sha256_short": "d34baea0"
+    },
+    {
+      "name": "260219_006_healthcheck_53122_root.txt",
+      "size": 173,
+      "sha256_short": "2eab41d9"
+    },
+    {
+      "name": "260219_006_healthcheck_53122_pairs.txt",
+      "size": 178,
+      "sha256_short": "29593733"
+    }
+  ]
+}

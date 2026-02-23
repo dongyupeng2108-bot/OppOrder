@@ -1,0 +1,11 @@
+﻿{
+    "mode":  "Integrate",
+    "branch":  "feat/p1-run-task-header-default-260218_019",
+    "write_allowed":  true,
+    "input_hash_short":  "5432da96",
+    "header":  "TraeTask_260218_019",
+    "commit":  "80ea9d2",
+    "task_id":  "260218_019",
+    "header_detected":  true,
+    "timestamp":  "2026-02-18 20:13:45 UTC"
+}

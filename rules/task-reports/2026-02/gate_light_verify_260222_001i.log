@@ -1,0 +1,20 @@
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260222_001i
+PR_TASK_ID_DETECTED=260222_001i
+TARGET_TASK_ID=260222_001i
+LATEST_TASK_ID=260222_001i
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] Verifying task_id: 260222_001i
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Report Block Check Passed: notify_260222_001i.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260222_001i.txt
+[Gate Light] Header Check Passed: TraeTask_260222_001i
+[Gate Light] Preflight Attestation verified (Integrate Mode).
+[Gate Light] Checking Open PR Guard Evidence...
+FAIL_ROOT_CAUSE_BLOCK
+ERROR_CLASS=OPEN_PR_GUARD_BLOCKED
+ROOT_CAUSE_HINT=Open PR Guard blocked execution due to existing Open PRs.
+
+[Gate Light] FAILED: Open PR Guard blocked execution (Evidence).
+  Blocking PRs Count: 1
+  ACTION: Close unrelated open PRs before running Integrate.

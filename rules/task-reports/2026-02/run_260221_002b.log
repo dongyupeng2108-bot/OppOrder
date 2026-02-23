@@ -1,0 +1,394 @@
+**********************
+PowerShell transcript start
+Start time: 20260221013923
+Username: DESKTOP-BOHP945\ypdong
+RunAs User: DESKTOP-BOHP945\ypdong
+Configuration Name: 
+Machine: DESKTOP-BOHP945 (Microsoft Windows NT 10.0.19045.0)
+Host Application: C:\Program Files\PowerShell\7\pwsh.dll -noexit -command try { . "d:\Trae\resources\app\out\vs\workbench\contrib\terminal\common\scripts\shellIntegration.ps1" } catch {}
+Process ID: 5172
+PSVersion: 7.4.13
+PSEdition: Core
+GitCommitId: 7.4.13
+OS: Microsoft Windows 10.0.19045
+Platform: Win32NT
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1, 6.0, 7.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+WSManStackVersion: 3.0
+**********************
+Transcript started, output file is E:\OppRadar\rules\task-reports\2026-02\run_260221_002b.log
+>>> [RunTask] TaskId: 260221_002b | Mode: Integrate | Header: TraeTask_260221_002
+>>> [RunTask] Evidence Dir: E:\OppRadar\rules\task-reports\2026-02
+[State] INITIALIZING...
+>>> [RunTask] Step 0: Service Policy (ensure_server_53122)
+>>> [RunTask] Step: Service Policy
+[Service Policy] Checking Port 53122...
+[Service Policy] Server 53122 is ALREADY RUNNING and Healthy.
+>>> [RunTask] Step 0.5: Workspace Healer
+>>> [RunTask] Step: Workspace Healer
+{
+    "mode":  "EnforceClean",
+    "branch":  "feat/mg3-codeowners-260219_004_fix",
+    "cleaned_paths":  [
+                          "rules/task-reports",
+                          "rules/reports",
+                          "data/opps_ledger",
+                          "rules/task-reports/locks",
+                          "rules/task-reports/runs"
+                      ],
+    "after":  {
+                  "untracked_count":  0,
+                  "tracked_changed_count":  0,
+                  "sample_paths":  {
+
+                                   }
+              },
+    "head_commit":  "4f70d6ecb6aa5dce76680fe2836f0d9883631ae1",
+    "before":  {
+                   "untracked_count":  0,
+                   "tracked_changed_count":  0,
+                   "sample_paths":  {
+
+                                    }
+               },
+    "repo_root":  "E:/OppRadar",
+    "reason":  null,
+    "result":  "PASS"
+}
+    Workspace Healer PASS. Output: E:\OppRadar\rules\task-reports\2026-02\workspace_healer_260221_002b.json
+>>> [RunTask] Step 1: Preflight
+>>> [RunTask] Step: Preflight
+[Preflight] Starting checks for TaskId: 260221_002b | Mode: Integrate | Header: TraeTask_260221_002
+[Preflight] Header 'TraeTask_260221_002' => Execution Allowed.
+[Preflight] Git Status: Clean | Branch: feat/mg3-codeowners-260219_004_fix
+[Preflight] Git Status: Clean | Branch: feat/mg3-codeowners-260219_004_fix
+[Preflight] Checking Port 53122 Health...
+[Preflight] Port 53122 is Healthy.
+[Preflight] Attestation generated at: E:\OppRadar\rules\task-reports\2026-02\preflight_attestation_260221_002b.json
+[Preflight] PASS
+>>> [RunTask] Step 1.1: Update LATEST.json
+    Updated rules/LATEST.json to 260221_002b
+>>> [RunTask] Step 1.2: Open PR Guard
+>>> [RunTask] Step: Open PR Guard
+Wrote Open PR Guard evidence to E:\OppRadar\rules\task-reports\2026-02\open_pr_guard_260221_002b.json
+    Open PR Guard PASS. Output: E:\OppRadar\rules\task-reports\2026-02\open_pr_guard_260221_002b.json
+>>> [RunTask] Step 1.3: Contract Verification First
+>>> [RunTask] Step: Contract Verification
+[Contract First] Starting Early Contract Verification...
+[Contract First] Verifying Rank V2 (/opportunities/rank_v2?limit=5&provider=mock)...
+[Contract First] PASS: Rank V2
+[Contract First] Verifying Export V1 (/opportunities/runs/export_v1?limit=5)...
+[Contract First] PASS: Export V1
+[Contract First] Verifying Ledger V0 (/opportunities/ledger/query_v0?limit=5)...
+[Contract First] PASS: Ledger V0
+[Contract First] All Contracts Verified Successfully.
+>>> [RunTask] Step 1.5: Healthcheck Evidence
+>>> [RunTask] Step: Healthcheck Root
+>>> [RunTask] Step: Healthcheck Pairs
+>>> [RunTask] Step 1.6: CI Parity Probe
+>>> [RunTask] Step: CI Parity Probe
+[CI Parity Probe] Running for task 260221_002b (JSON Mode)...
+[CI Parity Probe] Evidence written to: E:\OppRadar\rules\task-reports\2026-02\ci_parity_260221_002b.json
+From https://github.com/dongyupeng2108-bot/OppOrder
+ * branch            main       -> FETCH_HEAD
+   86de5dd..512b2b3  main       -> origin/main
+[State] GENERATING EVIDENCE...
+>>> [RunTask] Step 2: Skip Generation (Script not found)
+[State] VERIFYING (Pass 1)...
+>>> [RunTask] Step 3: Pass 1 - Gate Light Preview
+>>> [RunTask] Step: Pass 1 - Gate Light Preview
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260221_002b
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] Verifying task_id: 260221_002b
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Checking Workspace Healer Evidence...
+[Gate Light] Workspace Healer verified (Clean Environment).
+[Gate Light] Checking CI Parity JSON Evidence...
+[Gate Light] DEBUG: is_shallow_repository=true
+[Gate Light] DEBUG: HEAD=4f70d6ecb6aa5dce76680fe2836f0d9883631ae1
+[Gate Light] DEBUG: git merge-base origin/main HEAD=0234e7e62beae3b980460ba487629ff3e08e2959
+[Gate Light] DETECTED SHALLOW CLONE. Attempting to unshallow (Fix Strategy A)...
+[Gate Light] Unshallow command executed.
+[Gate Light] CI Parity JSON Evidence verified.
+[Gate Light] Skipping Error Digest Validation (Preview Mode).
+[Gate Light] Checking doc path standards...
+[Gate Light] Doc path standards verified.
+[Gate Light] Checking for legacy doc path references...
+[CheckDocPathRefs] Scanning for legacy doc path references...
+[CheckDocPathRefs] PASS: No legacy doc path references found.
+[Gate Light] Checking for banned cmd syntax in PowerShell scripts...
+Starting static scan for banned cmd syntax in .ps1 files...
+Scanning targets: scripts/run_task.ps1, scripts/test_fail_budget.ps1, scripts/ps/Invoke-Step.ps1
+Static scan PASSED.
+[Gate Light] Checking for global healthcheck artifacts...
+[Gate Light] Global Artifact Guard verified.
+[Gate Light] Checking News Pull API Contract...
+[Contract Check] Loading schema from: E:\OppRadar\OppRadar\contracts\news_pull_response.schema.json
+[Contract Check] Validating Success Sample...
+PASS
+[Contract Check] Validating Error Sample...
+PASS
+[Contract Check] All samples validated against schema.
+[Gate Light] Checking Rank V2 API Contract...
+=== Rank V2 Contract Verification ===
+Schema loaded.
+Server already running.
+Fetching http://localhost:53122/opportunities/rank_v2?provider=mock&limit=5&run_id=verify_rank_v2...
+Received 5 items.
+Validating against schema...
+Schema Validation PASSED.
+Response Hash: 5a7e01c3
+::set-output name=rank_v2_hash::5a7e01c3
+VERIFICATION_SUCCESS
+[Gate Light] Checking Export V1 API Contract...
+=== Export V1 Contract Verification ===
+Schema loaded.
+Server already running.
+Generating Run assets via http://localhost:53122/scans/run...
+Run assets generated. Run ID: scan_89a16122a859717d
+Fetching Export: http://localhost:53122/opportunities/runs/export_v1?run_id=scan_89a16122a859717d...
+Received Export JSON.
+Validating against schema...
+Export Schema Validation PASSED.
+Export Hash: 23949239
+::set-output name=export_v1_hash::23949239
+EXPORT_CONTRACT_VERIFICATION_SUCCESS
+[Gate Light] Checking Ledger V0 API Contract...
+=== Ledger V0 Contract Verification ===
+Schema loaded.
+Server already running.
+Fetching /opportunities/ledger/query_v0?limit=1...
+Validating against schema...
+Validation PASSED.
+[Gate Light] Checking healthcheck evidence...
+[Gate Light] Using evidence directory: E:\OppRadar\rules\task-reports\2026-02
+[Gate Light] Healthcheck evidence verified (Path + Content).
+[Gate Light] Skipping DoD Evidence Excerpt Check (Preview Mode).
+[Gate Light] Checking Deletion Audit (Locks & Runs)...
+[Gate Light] Deletion Audit: No lock/index yet (Assuming Pre-Integrate or First Run in progress).
+[Gate Light] Checking No Auto-Merge (Git Forbidden Commands)...
+[Gate Light] No Auto-Merge verified.
+[Gate Light] Checking Evidence Truth & Sufficiency (Hardening Rule)...
+[Gate Light] Skipping DoD Healthcheck marker check (Preview Mode).
+[Gate Light] Skipping Evidence Truth check (Generation Mode).
+[Gate Light] Evidence Truth & Sufficiency verified.
+[Gate Light] Checking CI Parity Preview...
+[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
+[Gate Light] Fetching origin/main history for diff context...
+[Gate Light] Allowed legacy task_id (transition): 260219_004
+From https://github.com/dongyupeng2108-bot/OppOrder
+ * branch            main       -> FETCH_HEAD
+[Gate Light] FAILED: NoHistoricalEvidenceTouch violation. Found modifications to historical evidence:
+  - M rules/task-reports/governance-backlog/governance_principles.md
+Fix Suggestion: Use 'git restore --source=origin/main -- <path>' to revert, or ensure new files contain '260221_002b'.
+[RunTask] FAILED: Step 'Pass 1 - Gate Light Preview' failed with exit code 1.
+
+========== FAIL_ROOT_CAUSE_BLOCK ==========
+Step: Pass 1 - Gate Light Preview
+Command: node E:\OppRadar\scripts\gate_light_ci.mjs --task_id 260221_002b --result_dir E:\OppRadar\rules\task-reports\2026-02
+Exit Code: 1
+--- STDERR (Tail 80) ---
+From https://github.com/dongyupeng2108-bot/OppOrder
+ * branch            main       -> FETCH_HEAD
+[Gate Light] FAILED: NoHistoricalEvidenceTouch violation. Found modifications to historical evidence:
+  - M rules/task-reports/governance-backlog/governance_principles.md
+Fix Suggestion: Use 'git restore --source=origin/main -- <path>' to revert, or ensure new files contain '260221_002b'.
+
+--- STDOUT (Tail 80) ---
+[Gate Light] Target locked via argument: 260221_002b
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] Verifying task_id: 260221_002b
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Checking Workspace Healer Evidence...
+[Gate Light] Workspace Healer verified (Clean Environment).
+[Gate Light] Checking CI Parity JSON Evidence...
+[Gate Light] DEBUG: is_shallow_repository=true
+[Gate Light] DEBUG: HEAD=4f70d6ecb6aa5dce76680fe2836f0d9883631ae1
+[Gate Light] DEBUG: git merge-base origin/main HEAD=0234e7e62beae3b980460ba487629ff3e08e2959
+[Gate Light] DETECTED SHALLOW CLONE. Attempting to unshallow (Fix Strategy A)...
+[Gate Light] Unshallow command executed.
+[Gate Light] CI Parity JSON Evidence verified.
+[Gate Light] Skipping Error Digest Validation (Preview Mode).
+[Gate Light] Checking doc path standards...
+[Gate Light] Doc path standards verified.
+[Gate Light] Checking for legacy doc path references...
+[CheckDocPathRefs] Scanning for legacy doc path references...
+[CheckDocPathRefs] PASS: No legacy doc path references found.
+[Gate Light] Checking for banned cmd syntax in PowerShell scripts...
+Starting static scan for banned cmd syntax in .ps1 files...
+Scanning targets: scripts/run_task.ps1, scripts/test_fail_budget.ps1, scripts/ps/Invoke-Step.ps1
+Static scan PASSED.
+[Gate Light] Checking for global healthcheck artifacts...
+[Gate Light] Global Artifact Guard verified.
+[Gate Light] Checking News Pull API Contract...
+[Contract Check] Loading schema from: E:\OppRadar\OppRadar\contracts\news_pull_response.schema.json
+[Contract Check] Validating Success Sample...
+PASS
+[Contract Check] Validating Error Sample...
+PASS
+[Contract Check] All samples validated against schema.
+[Gate Light] Checking Rank V2 API Contract...
+=== Rank V2 Contract Verification ===
+Schema loaded.
+Server already running.
+Fetching http://localhost:53122/opportunities/rank_v2?provider=mock&limit=5&run_id=verify_rank_v2...
+Received 5 items.
+Validating against schema...
+Schema Validation PASSED.
+Response Hash: 5a7e01c3
+::set-output name=rank_v2_hash::5a7e01c3
+VERIFICATION_SUCCESS
+[Gate Light] Checking Export V1 API Contract...
+=== Export V1 Contract Verification ===
+Schema loaded.
+Server already running.
+Generating Run assets via http://localhost:53122/scans/run...
+Run assets generated. Run ID: scan_89a16122a859717d
+Fetching Export: http://localhost:53122/opportunities/runs/export_v1?run_id=scan_89a16122a859717d...
+Received Export JSON.
+Validating against schema...
+Export Schema Validation PASSED.
+Export Hash: 23949239
+::set-output name=export_v1_hash::23949239
+EXPORT_CONTRACT_VERIFICATION_SUCCESS
+[Gate Light] Checking Ledger V0 API Contract...
+=== Ledger V0 Contract Verification ===
+Schema loaded.
+Server already running.
+Fetching /opportunities/ledger/query_v0?limit=1...
+Validating against schema...
+Validation PASSED.
+[Gate Light] Checking healthcheck evidence...
+[Gate Light] Using evidence directory: E:\OppRadar\rules\task-reports\2026-02
+[Gate Light] Healthcheck evidence verified (Path + Content).
+[Gate Light] Skipping DoD Evidence Excerpt Check (Preview Mode).
+[Gate Light] Checking Deletion Audit (Locks & Runs)...
+[Gate Light] Deletion Audit: No lock/index yet (Assuming Pre-Integrate or First Run in progress).
+[Gate Light] Checking No Auto-Merge (Git Forbidden Commands)...
+[Gate Light] No Auto-Merge verified.
+[Gate Light] Checking Evidence Truth & Sufficiency (Hardening Rule)...
+[Gate Light] Skipping DoD Healthcheck marker check (Preview Mode).
+[Gate Light] Skipping Evidence Truth check (Generation Mode).
+[Gate Light] Evidence Truth & Sufficiency verified.
+[Gate Light] Checking CI Parity Preview...
+[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
+[Gate Light] Fetching origin/main history for diff context...
+[Gate Light] Allowed legacy task_id (transition): 260219_004
+
+--- Context ---
+Evidence Dir: E:\OppRadar\rules\task-reports\2026-02
+Task ID: 260221_002b
+Mode: Integrate
+Branch: feat/mg3-codeowners-260219_004_fix
+HEAD: 4f70d6e
+==========================================
+[RunTask] FAILED: Step 'Pass 1 - Gate Light Preview' Exception: [RunTask] FAILED: Step 'Pass 1 - Gate Light Preview' failed with exit code 1.
+
+========== FAIL_ROOT_CAUSE_BLOCK ==========
+Step: Pass 1 - Gate Light Preview
+Command: node E:\OppRadar\scripts\gate_light_ci.mjs --task_id 260221_002b --result_dir E:\OppRadar\rules\task-reports\2026-02
+Exit Code: EXCEPTION
+--- STDERR (Tail 80) ---
+From https://github.com/dongyupeng2108-bot/OppOrder
+ * branch            main       -> FETCH_HEAD
+[Gate Light] FAILED: NoHistoricalEvidenceTouch violation. Found modifications to historical evidence:
+  - M rules/task-reports/governance-backlog/governance_principles.md
+Fix Suggestion: Use 'git restore --source=origin/main -- <path>' to revert, or ensure new files contain '260221_002b'.
+
+--- STDOUT (Tail 80) ---
+[Gate Light] Target locked via argument: 260221_002b
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] Verifying task_id: 260221_002b
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Checking Workspace Healer Evidence...
+[Gate Light] Workspace Healer verified (Clean Environment).
+[Gate Light] Checking CI Parity JSON Evidence...
+[Gate Light] DEBUG: is_shallow_repository=true
+[Gate Light] DEBUG: HEAD=4f70d6ecb6aa5dce76680fe2836f0d9883631ae1
+[Gate Light] DEBUG: git merge-base origin/main HEAD=0234e7e62beae3b980460ba487629ff3e08e2959
+[Gate Light] DETECTED SHALLOW CLONE. Attempting to unshallow (Fix Strategy A)...
+[Gate Light] Unshallow command executed.
+[Gate Light] CI Parity JSON Evidence verified.
+[Gate Light] Skipping Error Digest Validation (Preview Mode).
+[Gate Light] Checking doc path standards...
+[Gate Light] Doc path standards verified.
+[Gate Light] Checking for legacy doc path references...
+[CheckDocPathRefs] Scanning for legacy doc path references...
+[CheckDocPathRefs] PASS: No legacy doc path references found.
+[Gate Light] Checking for banned cmd syntax in PowerShell scripts...
+Starting static scan for banned cmd syntax in .ps1 files...
+Scanning targets: scripts/run_task.ps1, scripts/test_fail_budget.ps1, scripts/ps/Invoke-Step.ps1
+Static scan PASSED.
+[Gate Light] Checking for global healthcheck artifacts...
+[Gate Light] Global Artifact Guard verified.
+[Gate Light] Checking News Pull API Contract...
+[Contract Check] Loading schema from: E:\OppRadar\OppRadar\contracts\news_pull_response.schema.json
+[Contract Check] Validating Success Sample...
+PASS
+[Contract Check] Validating Error Sample...
+PASS
+[Contract Check] All samples validated against schema.
+[Gate Light] Checking Rank V2 API Contract...
+=== Rank V2 Contract Verification ===
+Schema loaded.
+Server already running.
+Fetching http://localhost:53122/opportunities/rank_v2?provider=mock&limit=5&run_id=verify_rank_v2...
+Received 5 items.
+Validating against schema...
+Schema Validation PASSED.
+Response Hash: 5a7e01c3
+::set-output name=rank_v2_hash::5a7e01c3
+VERIFICATION_SUCCESS
+[Gate Light] Checking Export V1 API Contract...
+=== Export V1 Contract Verification ===
+Schema loaded.
+Server already running.
+Generating Run assets via http://localhost:53122/scans/run...
+Run assets generated. Run ID: scan_89a16122a859717d
+Fetching Export: http://localhost:53122/opportunities/runs/export_v1?run_id=scan_89a16122a859717d...
+Received Export JSON.
+Validating against schema...
+Export Schema Validation PASSED.
+Export Hash: 23949239
+::set-output name=export_v1_hash::23949239
+EXPORT_CONTRACT_VERIFICATION_SUCCESS
+[Gate Light] Checking Ledger V0 API Contract...
+=== Ledger V0 Contract Verification ===
+Schema loaded.
+Server already running.
+Fetching /opportunities/ledger/query_v0?limit=1...
+Validating against schema...
+Validation PASSED.
+[Gate Light] Checking healthcheck evidence...
+[Gate Light] Using evidence directory: E:\OppRadar\rules\task-reports\2026-02
+[Gate Light] Healthcheck evidence verified (Path + Content).
+[Gate Light] Skipping DoD Evidence Excerpt Check (Preview Mode).
+[Gate Light] Checking Deletion Audit (Locks & Runs)...
+[Gate Light] Deletion Audit: No lock/index yet (Assuming Pre-Integrate or First Run in progress).
+[Gate Light] Checking No Auto-Merge (Git Forbidden Commands)...
+[Gate Light] No Auto-Merge verified.
+[Gate Light] Checking Evidence Truth & Sufficiency (Hardening Rule)...
+[Gate Light] Skipping DoD Healthcheck marker check (Preview Mode).
+[Gate Light] Skipping Evidence Truth check (Generation Mode).
+[Gate Light] Evidence Truth & Sufficiency verified.
+[Gate Light] Checking CI Parity Preview...
+[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
+[Gate Light] Fetching origin/main history for diff context...
+[Gate Light] Allowed legacy task_id (transition): 260219_004
+
+--- Context ---
+Evidence Dir: E:\OppRadar\rules\task-reports\2026-02
+Task ID: 260221_002b
+Mode: Integrate
+Branch: feat/mg3-codeowners-260219_004_fix
+HEAD: 4f70d6e
+==========================================
+PS>TerminatingError(): "[RunTask] FAILED: Step 'Pass 1 - Gate Light Preview' failed with exit code 1."
+>> TerminatingError(): "[RunTask] FAILED: Step 'Pass 1 - Gate Light Preview' failed with exit code 1."
+[RunTask] FAILED: Script execution error: [RunTask] FAILED: Step 'Pass 1 - Gate Light Preview' failed with exit code 1.
+**********************
+PowerShell transcript end
+End time: 20260221013946
+**********************

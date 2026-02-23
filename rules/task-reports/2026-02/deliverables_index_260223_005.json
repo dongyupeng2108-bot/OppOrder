@@ -1,0 +1,96 @@
+{
+  "task_id": "260223_005",
+  "generated_at": "2026-02-23T12:56:07.146Z",
+  "files": [
+    {
+      "name": "ci_parity_260223_005.json",
+      "size": 498,
+      "sha256_short": "745b40bc"
+    },
+    {
+      "name": "gate_light_preview_260223_005.log",
+      "size": 4987,
+      "sha256_short": "c5c6a4f4"
+    },
+    {
+      "name": "dod_evidence_260223_005.txt",
+      "size": 317,
+      "sha256_short": "e1aa8091"
+    },
+    {
+      "name": "git_meta_260223_005.json",
+      "size": 102,
+      "sha256_short": "ae6660ba"
+    },
+    {
+      "name": "preflight_attestation_260223_005.json",
+      "size": 319,
+      "sha256_short": "1e020a29"
+    },
+    {
+      "name": "workspace_healer_260223_005.json",
+      "size": 940,
+      "sha256_short": "01d1e1dd"
+    },
+    {
+      "name": "result_260223_005.json",
+      "size": 513,
+      "sha256_short": "dceba34d"
+    },
+    {
+      "name": "run_260223_005.log",
+      "size": 8828,
+      "sha256_short": "136511fb"
+    },
+    {
+      "name": "errors_260223_005.jsonl",
+      "size": 290,
+      "sha256_short": "2d8a57e9"
+    },
+    {
+      "name": "errors_summary_260223_005.txt",
+      "size": 224,
+      "sha256_short": "58a29d0d"
+    },
+    {
+      "name": "notify_260223_005.txt",
+      "size": 9380,
+      "sha256_short": "b0da9ddf"
+    },
+    {
+      "name": "preview_cmp_260223_005.txt",
+      "size": 66,
+      "sha256_short": "196b26ec"
+    },
+    {
+      "name": "manual_verification_260223_005.json",
+      "size": 99,
+      "sha256_short": "d4444458"
+    },
+    {
+      "name": "evidence_manifest_260223_005.json",
+      "size": 839,
+      "sha256_short": "83d91d97"
+    },
+    {
+      "name": "contract_self_check_260223_005.txt",
+      "size": 276,
+      "sha256_short": "980d42a2"
+    },
+    {
+      "name": "gate_light_profile_260223_005.json",
+      "size": 462,
+      "sha256_short": "d5557375"
+    },
+    {
+      "name": "260223_005_healthcheck_53122_root.txt",
+      "size": 24,
+      "sha256_short": "0ee9fff1"
+    },
+    {
+      "name": "260223_005_healthcheck_53122_pairs.txt",
+      "size": 30,
+      "sha256_short": "d52db9aa"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "task_id": "260220_001",
+  "branch": "feat/mg3-codeowners-260219_004_fix",
+  "commit": "ea470b4af12cd641505eec77e183b35d22d8bce0",
+  "base": "e90d60f8113a94ef29ebce09594e49b1921f0e27",
+  "mergeBase": "e90d60f8113a94ef29ebce09594e49b1921f0e27",
+  "generatedAt": "2026-02-19T17:18:46.028Z",
+  "status": "DONE",
+  "summary": "Automation Pack V1 Validation for Task 260220_001",
+  "report_file": "notify_260220_001.txt",
+  "updatedAt": "2026-02-19T17:18:46.028Z",
+  "report_sha256_short": "e3859256",
+  "mode": "Integrate",
+  "dod_evidence": {
+    "gate_light_exit": 0,
+    "healthcheck": [
+      "rules/task-reports/2026-02/260220_001_healthcheck_53122_root.txt",
+      "rules/task-reports/2026-02/260220_001_healthcheck_53122_pairs.txt"
+    ]
+  }
+}

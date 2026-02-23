@@ -1,0 +1,11 @@
+﻿{
+    "mode":  "Dev",
+    "branch":  "feat/cleanup-node-260223_005",
+    "write_allowed":  true,
+    "input_hash_short":  "1d575e5d",
+    "header":  "TraeTask_260223_005",
+    "commit":  "d95251ef",
+    "task_id":  "260223_005",
+    "header_detected":  true,
+    "timestamp":  "2026-02-23 20:55:38 UTC"
+}

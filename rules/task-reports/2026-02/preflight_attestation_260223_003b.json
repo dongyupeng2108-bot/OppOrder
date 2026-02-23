@@ -1,0 +1,11 @@
+﻿{
+    "mode":  "Integrate",
+    "branch":  "feat/stop-on-hardstop-260223_003b",
+    "write_allowed":  true,
+    "input_hash_short":  "2ebc1a15",
+    "header":  "TraeTask_260223_003b",
+    "commit":  "be552d2b",
+    "task_id":  "260223_003b",
+    "header_detected":  true,
+    "timestamp":  "2026-02-23 13:12:40 UTC"
+}

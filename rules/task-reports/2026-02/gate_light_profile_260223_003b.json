@@ -1,0 +1,24 @@
+{
+  "task_id": "260223_003b",
+  "generated_at": "2026-02-23T04:52:24.811Z",
+  "steps": [
+    {
+      "step": "doc_path_refs_scan",
+      "duration_ms": 100,
+      "file_count": 182,
+      "line_count": 24961
+    },
+    {
+      "step": "ps_cmd_static_scan",
+      "duration_ms": 57,
+      "file_count": 3,
+      "line_count": 1455
+    },
+    {
+      "step": "task_reports_audit_scan",
+      "duration_ms": 1,
+      "file_count": 0,
+      "line_count": 0
+    }
+  ]
+}

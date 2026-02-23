@@ -1,0 +1,166 @@
+
+> scripts\run_task.ps1:311:        Invoke-Step -Name "Generate Evidence" -Cmd $GenCmd -TimeoutSec $StepTimeoutSeconds
+  scripts\run_task.ps1:312:    } else {
+  scripts\run_task.ps1:313:        Write-Host ">>> [RunTask] Step 2: Skip Generation (Script not found)" -ForegroundColor Yellow
+  scripts\run_task.ps1:314:    }
+  scripts\run_task.ps1:315:
+  scripts\run_task.ps1:316:    Write-Host "[State] VERIFYING (Pass 1)..." -ForegroundColor Cyan
+  scripts\run_task.ps1:317:    Write-Host ">>> [RunTask] Step 3: Pass 1 - Gate Light Preview" -ForegroundColor Cyan
+  scripts\run_task.ps1:318:    $PreviewLog = "$EvidenceDir\gate_light_preview_$TaskId.log"
+  scripts\run_task.ps1:319:    $Env:GENERATE_PREVIEW = "1"
+  scripts\run_task.ps1:320:    
+  scripts\run_task.ps1:321:    $GateScript = "$RepoRoot\scripts\gate_light_ci.mjs"
+  scripts\run_task.ps1:322:    $Pass1Cmd = @("node", $GateScript, "--task_id", $TaskId, "--result_dir", $EvidenceDir)
+  scripts\run_task.ps1:323:    Invoke-Step -Name "Pass 1 - Gate Light Preview" -Cmd $Pass1Cmd -RedirectTo $PreviewLog
+  scripts\run_task.ps1:324:    
+  scripts\run_task.ps1:325:    $Env:GENERATE_PREVIEW = $null
+  scripts\run_task.ps1:326:    
+  scripts\run_task.ps1:327:    if (-not (Test-Path $PreviewLog)) {
+  scripts\run_task.ps1:328:        Write-Host "[RunTask] FAILED: Preview log not created." -ForegroundColor Red
+  scripts\run_task.ps1:329:        exit 1
+  scripts\run_task.ps1:330:    }
+  scripts\run_task.ps1:331:    Write-Host "    Preview Log: $PreviewLog" -ForegroundColor Gray
+  scripts\run_task.ps1:332:}
+  scripts\run_task.ps1:333:
+  scripts\run_task.ps1:334:# Run first attempt
+  scripts\run_task.ps1:335:Run-Evidence-Gen-And-Preview
+  scripts\run_task.ps1:336:
+
+
+  scripts\run_task.ps1:127:    } catch {
+  scripts\run_task.ps1:128:        Write-Warning "[RunTask] Warning: Failed to check git history for lock file. Skipping WORM check."
+  scripts\run_task.ps1:129:    }
+  scripts\run_task.ps1:130:}
+  scripts\run_task.ps1:131:
+  scripts\run_task.ps1:132:# --- Helper: Find Evidence Directory & Generator ---
+  scripts\run_task.ps1:133:$GenerateScript = Get-ChildItem -Path "$RepoRoot\rules\task-reports" -Recurse | Where-Object { $_.Name -match "^generate_evidence_$TaskId\.(js|mjs)$" } | Select-Object -First 1
+  scripts\run_task.ps1:134:
+  scripts\run_task.ps1:135:$EvidenceDir = ""
+  scripts\run_task.ps1:136:if ($GenerateScript) {
+  scripts\run_task.ps1:137:    $EvidenceDir = $GenerateScript.DirectoryName
+  scripts\run_task.ps1:138:} else {
+  scripts\run_task.ps1:139:    $YearMonth = Get-Date -Format "yyyy-MM"
+  scripts\run_task.ps1:140:    $EvidenceDir = "$RepoRoot\rules\task-reports\$YearMonth"
+  scripts\run_task.ps1:141:    if (-not (Test-Path $EvidenceDir)) {
+  scripts\run_task.ps1:142:        New-Item -ItemType Directory -Path $EvidenceDir | Out-Null
+  scripts\run_task.ps1:143:    }
+  scripts\run_task.ps1:144:}
+  scripts\run_task.ps1:145:Write-Host "Evidence Dir: $EvidenceDir" -ForegroundColor Yellow
+  scripts\run_task.ps1:146:$EvidenceDir = $EvidenceDir.Trim()
+  scripts\run_task.ps1:147:
+  scripts\run_task.ps1:148:# --- Start Transcript (Log Everything) ---
+  scripts\run_task.ps1:149:$LogFile = "$EvidenceDir\run_$TaskId.log"
+  scripts\run_task.ps1:150:Start-Transcript -Path $LogFile -Force
+  scripts\run_task.ps1:151:
+> scripts\run_task.ps1:152:# --- PreAssemblePrecheck Function ---
+
+
+> scripts\run_task.ps1:153:function PreAssemblePrecheck {
+  scripts\run_task.ps1:154:    param($EvidenceDir, $TaskId, $Mode)
+  scripts\run_task.ps1:155:    
+  scripts\run_task.ps1:156:    $Required = @(
+  scripts\run_task.ps1:157:            "ci_parity_${TaskId}.json",
+  scripts\run_task.ps1:158:            "gate_light_preview_${TaskId}.log",
+  scripts\run_task.ps1:159:            "dod_evidence_${TaskId}.txt",
+  scripts\run_task.ps1:160:            "git_meta_${TaskId}.json",
+  scripts\run_task.ps1:161:            "preflight_attestation_${TaskId}.json",
+  scripts\run_task.ps1:162:            "workspace_healer_${TaskId}.json",
+  scripts\run_task.ps1:163:            "result_${TaskId}.json"
+  scripts\run_task.ps1:164:        )
+  scripts\run_task.ps1:165:    
+  scripts\run_task.ps1:166:    $Missing = @()
+  scripts\run_task.ps1:167:    foreach ($File in $Required) {
+  scripts\run_task.ps1:168:        if (-not (Test-Path "$EvidenceDir\$File")) {
+  scripts\run_task.ps1:169:            $Missing += $File
+  scripts\run_task.ps1:170:        }
+  scripts\run_task.ps1:171:    }
+  scripts\run_task.ps1:172:    
+  scripts\run_task.ps1:173:    if ($Missing.Count -gt 0) {
+
+
+> scripts\run_task.ps1:174:        Write-Host "PreAssemblePrecheck FAILED. Missing files:" -ForegroundColor Red
+  scripts\run_task.ps1:175:        $Missing | ForEach-Object { Write-Host "  - $_" -ForegroundColor Yellow }
+  scripts\run_task.ps1:176:        
+  scripts\run_task.ps1:177:        if ($Mode -eq "Dev") {
+  scripts\run_task.ps1:178:             Write-Host "Dev Mode: Retrying Generate Evidence..." -ForegroundColor Yellow
+  scripts\run_task.ps1:179:             return $false
+  scripts\run_task.ps1:180:        } else {
+  scripts\run_task.ps1:181:             Write-Error "Integrate Mode: Precheck failed. Cannot retry."
+  scripts\run_task.ps1:182:             exit 1
+  scripts\run_task.ps1:183:        }
+  scripts\run_task.ps1:184:    }
+  scripts\run_task.ps1:185:    return $true
+  scripts\run_task.ps1:186:}
+  scripts\run_task.ps1:187:
+  scripts\run_task.ps1:188:try {
+  scripts\run_task.ps1:189:
+  scripts\run_task.ps1:190:Write-Host ">>> [RunTask] TaskId: $TaskId | Mode: $Mode | Header: $Header" -ForegroundColor Cyan
+  scripts\run_task.ps1:191:Write-Host ">>> [RunTask] Evidence Dir: $EvidenceDir" -ForegroundColor Gray
+  scripts\run_task.ps1:192:
+  scripts\run_task.ps1:193:# --- State Skeleton ---
+  scripts\run_task.ps1:194:Write-Host "[State] INITIALIZING..." -ForegroundColor Cyan
+  scripts\run_task.ps1:195:
+  scripts\run_task.ps1:196:# --- Step 0: Service Policy ---
+  scripts\run_task.ps1:197:Write-Host ">>> [RunTask] Step 0: Service Policy (ensure_server_53122)" -ForegroundColor Cyan
+  scripts\run_task.ps1:198:$ServiceScript = "$RepoRoot\scripts\ensure_server_53122.ps1"
+  scripts\run_task.ps1:199:if (Test-Path $ServiceScript) {
+
+
+  scripts\run_task.ps1:313:        Write-Host ">>> [RunTask] Step 2: Skip Generation (Script not found)" -ForegroundColor Yellow
+  scripts\run_task.ps1:314:    }
+  scripts\run_task.ps1:315:
+  scripts\run_task.ps1:316:    Write-Host "[State] VERIFYING (Pass 1)..." -ForegroundColor Cyan
+  scripts\run_task.ps1:317:    Write-Host ">>> [RunTask] Step 3: Pass 1 - Gate Light Preview" -ForegroundColor Cyan
+  scripts\run_task.ps1:318:    $PreviewLog = "$EvidenceDir\gate_light_preview_$TaskId.log"
+  scripts\run_task.ps1:319:    $Env:GENERATE_PREVIEW = "1"
+  scripts\run_task.ps1:320:    
+  scripts\run_task.ps1:321:    $GateScript = "$RepoRoot\scripts\gate_light_ci.mjs"
+  scripts\run_task.ps1:322:    $Pass1Cmd = @("node", $GateScript, "--task_id", $TaskId, "--result_dir", $EvidenceDir)
+  scripts\run_task.ps1:323:    Invoke-Step -Name "Pass 1 - Gate Light Preview" -Cmd $Pass1Cmd -RedirectTo $PreviewLog
+  scripts\run_task.ps1:324:    
+  scripts\run_task.ps1:325:    $Env:GENERATE_PREVIEW = $null
+  scripts\run_task.ps1:326:    
+  scripts\run_task.ps1:327:    if (-not (Test-Path $PreviewLog)) {
+  scripts\run_task.ps1:328:        Write-Host "[RunTask] FAILED: Preview log not created." -ForegroundColor Red
+  scripts\run_task.ps1:329:        exit 1
+  scripts\run_task.ps1:330:    }
+  scripts\run_task.ps1:331:    Write-Host "    Preview Log: $PreviewLog" -ForegroundColor Gray
+  scripts\run_task.ps1:332:}
+  scripts\run_task.ps1:333:
+  scripts\run_task.ps1:334:# Run first attempt
+  scripts\run_task.ps1:335:Run-Evidence-Gen-And-Preview
+  scripts\run_task.ps1:336:
+  scripts\run_task.ps1:337:# Precheck
+> scripts\run_task.ps1:338:if (-not (PreAssemblePrecheck -EvidenceDir $EvidenceDir -TaskId $TaskId -Mode $Mode)) {
+  scripts\run_task.ps1:339:    Write-Host ">>> [RunTask] Retrying Evidence Generation & Preview..." -ForegroundColor Yellow
+  scripts\run_task.ps1:340:    Run-Evidence-Gen-And-Preview
+  scripts\run_task.ps1:341:    
+
+
+> scripts\run_task.ps1:342:    if (-not (PreAssemblePrecheck -EvidenceDir $EvidenceDir -TaskId $TaskId -Mode $Mode)) {
+  scripts\run_task.ps1:343:        Write-Error "Precheck failed after retry."
+  scripts\run_task.ps1:344:        exit 1
+  scripts\run_task.ps1:345:    }
+  scripts\run_task.ps1:346:}
+  scripts\run_task.ps1:347:
+  scripts\run_task.ps1:348:# --- Step 3.5: Error Digest (Pass 1) ---
+  scripts\run_task.ps1:349:Write-Host ">>> [RunTask] Step 3.5: Error Digest (Pass 1)" -ForegroundColor Cyan
+  scripts\run_task.ps1:350:$Commit = git rev-parse HEAD
+  scripts\run_task.ps1:351:$ShortSha = $Commit.Substring(0, 7)
+  scripts\run_task.ps1:352:$RunId = (Get-Date).ToString("yyyyMMddHHmmss") + "_" + $ShortSha
+  scripts\run_task.ps1:353:Write-Host ">>> [RunTask] Generated Run ID: $RunId" -ForegroundColor Cyan
+  scripts\run_task.ps1:354:
+  scripts\run_task.ps1:355:$DigestCmd = @("node", "$RepoRoot\scripts\error_digest.mjs", "--task_id", $TaskId, "--mode", $Mode, "--commit", $Commit, "--out_dir", $EvidenceDir)
+  scripts\run_task.ps1:356:if (Test-Path "$EvidenceDir\gate_light_preview_$TaskId.log") { $DigestCmd += "--source_logs=$EvidenceDir\gate_light_preview_$TaskId.log" }
+  scripts\run_task.ps1:357:if (Test-Path "$EvidenceDir\command_audit_$TaskId.jsonl") { $DigestCmd += "--source_logs=$EvidenceDir\command_audit_$TaskId.jsonl" }
+  scripts\run_task.ps1:358:Invoke-Step -Name "Error Digest (Pass 1)" -Cmd $DigestCmd
+  scripts\run_task.ps1:359:
+  scripts\run_task.ps1:360:# --- Step 3.6: Append Error Stats (Pass 1) ---
+  scripts\run_task.ps1:361:if ($Mode -eq "Integrate") {
+  scripts\run_task.ps1:362:    Write-Host ">>> [RunTask] Step 3.6: Append Error Stats (Pass 1)" -ForegroundColor Cyan
+  scripts\run_task.ps1:363:    $AppendCmd = @("node", "$RepoRoot\scripts\error_stats_append.mjs", "--task_id", $TaskId, "--run_id", $RunId, "--commit", $Commit, "--mode", $Mode, "--source_errors", "$EvidenceDir\errors_$TaskId.jsonl")
+  scripts\run_task.ps1:364:    Invoke-Step -Name "Append Error Stats" -Cmd $AppendCmd
+  scripts\run_task.ps1:365:
+  scripts\run_task.ps1:366:    # --- Step 3.7: Three-Strike Governance ---
+  scripts\run_task.ps1:367:    Write-Host ">>> [RunTask] Step 3.7: Three-Strike Governance" -ForegroundColor Cyan
+

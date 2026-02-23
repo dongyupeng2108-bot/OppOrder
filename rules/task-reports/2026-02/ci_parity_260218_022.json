@@ -1,0 +1,16 @@
+{
+  "task_id": "260218_022",
+  "is_shallow_repo": true,
+  "base": "f8dcdbadde616cb39b7afaf60ac4764f0d0c1473",
+  "head": "dadfaa5f9fba13f1b7717b1ba82dd95b2f86ad9f",
+  "merge_base": "f8dcdbadde616cb39b7afaf60ac4764f0d0c1473",
+  "scope_files": [
+    "rules/LATEST.json",
+    "rules/task-reports/2026-02/generate_evidence_260218_022.mjs",
+    "scripts/ci_autofix_pack.mjs",
+    "scripts/ci_watch_pr.mjs",
+    "scripts/run_task.ps1"
+  ],
+  "scope_count": 5,
+  "generated_at": "2026-02-18T16:08:38.419Z"
+}

@@ -1,0 +1,10 @@
+Task: 260219_003 (MG3 CODEOWNERS)
+Branch: feat/mg3-codeowners-260219_003_fix
+HEAD: dd6cf6747d342a4142eb47be831d3111d78ed577
+
+Change summary:
+- Added .github/CODEOWNERS to enforce Code Owner review for protected paths:
+  /scripts/, /rules/rules/, /.github/workflows/
+
+Evidence (local):
+- git show --name-only --pretty="" dd6cf6747d342a4142eb47be831d3111d78ed577

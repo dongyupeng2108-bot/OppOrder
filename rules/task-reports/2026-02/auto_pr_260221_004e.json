@@ -1,0 +1,23 @@
+{
+  "task_id": "260221_004e",
+  "branch": "feat/docs-deliver-002-goals-260221_004",
+  "pr_number": 132,
+  "pr_url": "https://github.com/dongyupeng2108-bot/OppOrder/pull/132",
+  "head": "feat/docs-deliver-002-goals-260221_004",
+  "base": "main",
+  "attempt": 2,
+  "autofix_max": 1,
+  "status": "OPEN",
+  "final_state": "FAIL",
+  "timestamp": "2026-02-21T11:44:28.823Z",
+  "checks_summary": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "pending": 0,
+    "details": [
+      "gate-light-check: FAILURE"
+    ]
+  },
+  "error": null
+}

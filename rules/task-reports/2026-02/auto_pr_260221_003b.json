@@ -1,0 +1,23 @@
+{
+  "task_id": "260221_003b",
+  "branch": "feat/workflow-upgrade-taskid-suffix-260221_003b",
+  "pr_number": 131,
+  "pr_url": "https://github.com/dongyupeng2108-bot/OppOrder/pull/131",
+  "head": "feat/workflow-upgrade-taskid-suffix-260221_003b",
+  "base": "main",
+  "attempt": 2,
+  "autofix_max": 1,
+  "status": "OPEN",
+  "final_state": "FAIL",
+  "timestamp": "2026-02-21T03:15:41.523Z",
+  "checks_summary": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "pending": 0,
+    "details": [
+      "gate-light-check: FAILURE"
+    ]
+  },
+  "error": null
+}

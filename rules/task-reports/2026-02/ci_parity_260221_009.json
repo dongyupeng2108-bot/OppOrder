@@ -1,0 +1,13 @@
+{
+  "task_id": "260221_009",
+  "is_shallow_repo": true,
+  "base": "bd17c730c9f7af9787a502999138423fc3b998d4",
+  "head": "f53332fca92dd47cf61be927b6f5b1008b182810",
+  "merge_base": "2b7ad1a37e8a35d22f5bd953a9f1db49a0604379",
+  "scope_files": [
+    "scripts/assemble_evidence.mjs",
+    "scripts/error_digest.mjs"
+  ],
+  "scope_count": 2,
+  "generated_at": "2026-02-21T14:23:06.414Z"
+}

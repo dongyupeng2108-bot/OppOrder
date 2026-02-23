@@ -1,0 +1,38 @@
+{
+  "task_id": "260221_003b",
+  "timestamp": "2026-02-21T03:26:20.885Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "smoke_test": "PASS",
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260221_003b",
+      "branch": "feat/workflow-upgrade-taskid-suffix-260221_003b",
+      "commit": "12bea37bec477f6c51dddbba813ea9a88dce4fb0",
+      "base": "512b2b3e0310d496f9467fc31152576e124e556c",
+      "mergeBase": "0234e7e62beae3b980460ba487629ff3e08e2959",
+      "generatedAt": "2026-02-21T03:14:35.513Z",
+      "status": "DONE",
+      "summary": "Automation Pack V1 Validation for Task 260221_003b",
+      "report_file": "notify_260221_003b.txt",
+      "updatedAt": "2026-02-21T03:14:35.513Z",
+      "report_sha256_short": "dbf42f38",
+      "mode": "Integrate",
+      "dod_evidence": {
+        "gate_light_exit": 0,
+        "healthcheck": [
+          "rules/task-reports/2026-02/260221_003b_healthcheck_53122_root.txt",
+          "rules/task-reports/2026-02/260221_003b_healthcheck_53122_pairs.txt"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "task_id": "260218_013",
+  "base": "d354b8d8f9c114e6c5799c94db9a0dee89d155f6",
+  "head": "d0be6ad91ad0054f2ff04f05c90b8d86d6bbbacc",
+  "merge_base": "a668a1990185e9a18ad0b4edd1e0b45897250d97",
+  "scope_files": [
+    "rules/rules/ERROR_TAXONOMY.md",
+    "rules/rules/PROJECT_MASTER_PLAN.md",
+    "rules/rules/WORKFLOW.md",
+    "rules/task-reports/governance-backlog/.gitkeep",
+    "rules/task-reports/index/error_stats.jsonl",
+    "scripts/ci_parity_probe.mjs",
+    "scripts/error_governance.mjs",
+    "scripts/preflight.ps1",
+    "scripts/reset_workspace.ps1",
+    "scripts/run_task.ps1",
+    "scripts/test_error_governance.ps1"
+  ],
+  "scope_count": 11,
+  "generated_at": "2026-02-18T03:37:33.714Z"
+}

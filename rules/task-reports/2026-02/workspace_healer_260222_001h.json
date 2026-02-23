@@ -1,0 +1,18 @@
+{
+    "mode":  "EnforceClean",
+    "branch":  "feat/preview-single-source-260222_001h",
+    "cleaned_paths":  [
+
+                      ],
+    "after":  null,
+    "head_commit":  "eb509b19a5ad7afa8ecf8f7efb95a9ec0b1612d3",
+    "before":  {
+                   "untracked_count":  0,
+                   "tracked_changed_count":  1,
+                   "sample_paths":  "scripts/extract_gate_light_preview.mjs"
+               },
+    "repo_root":  "E:/OppRadar",
+    "reason":  "Tracked changes detected. Please commit, stash, or run with -Mode Heal.",
+    "result":  "FAIL"
+}
+

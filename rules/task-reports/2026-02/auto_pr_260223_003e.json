@@ -1,0 +1,10 @@
+{
+  "task_id": "260223_003e",
+  "run_id": "20260223145740_e4675d1",
+  "attempt": "0",
+  "did_autopr": false,
+  "status": "SKIPPED",
+  "final_state": "SKIPPED",
+  "reason": "AUTOPR_DISABLED_BY_FLAG",
+  "pr_url": "SKIPPED_BY_USER_REQUEST"
+}

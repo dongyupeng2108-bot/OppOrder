@@ -1,0 +1,11 @@
+﻿{
+    "mode":  "Integrate",
+    "branch":  "fix/merge-log-260223_002b",
+    "write_allowed":  true,
+    "input_hash_short":  "c1ba97a3",
+    "header":  "FIX:继续",
+    "commit":  "7932baab",
+    "task_id":  "260223_002b",
+    "header_detected":  true,
+    "timestamp":  "2026-02-23 10:08:20 UTC"
+}

@@ -1,0 +1,12 @@
+{
+  "task_id": "260221_002f",
+  "branch": "feat/mg3-codeowners-260219_004_fix",
+  "commit": "293c0efb96ea6ea1779e1dcb5d1b41a5d20cdc63",
+  "base": "512b2b3e0310d496f9467fc31152576e124e556c",
+  "mergeBase": "0234e7e62beae3b980460ba487629ff3e08e2959",
+  "generatedAt": "2026-02-20T17:53:47.908Z",
+  "status": "IN_PROGRESS",
+  "summary": "Evidence Contract table and Troubleshooting Playbook docs update",
+  "report_file": "notify_260221_002f.txt",
+  "updatedAt": "2026-02-20T17:53:47.908Z"
+}

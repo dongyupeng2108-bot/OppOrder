@@ -1,0 +1,13 @@
+{
+  "task_id": "260223_002b",
+  "is_shallow_repo": true,
+  "base": "50deb423f16c77141ca013461f7d47e9540ede8a",
+  "head": "7932baab564b6f98702df7fa36493ced7954023b",
+  "merge_base": "50deb423f16c77141ca013461f7d47e9540ede8a",
+  "scope_files": [
+    "rules/LATEST.json",
+    "scripts/run_task.ps1"
+  ],
+  "scope_count": 2,
+  "generated_at": "2026-02-23T02:08:23.183Z"
+}

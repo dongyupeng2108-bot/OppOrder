@@ -1,0 +1,4 @@
+=== DOD_EVIDENCE_STDOUT ===
+[Smoke] Checking scripts/reset_workspace.ps1...
+[Smoke] PASS: Static checks passed.
+===========================
