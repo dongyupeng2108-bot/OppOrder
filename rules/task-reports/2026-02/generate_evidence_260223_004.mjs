@@ -53,6 +53,15 @@ try {
     const resultFile = path.join(__dirname, 'result_260223_004.json');
     const dodFile = path.join(__dirname, 'dod_evidence_260223_004.txt');
     const notifyFile = path.join(__dirname, 'notify_260223_004.txt');
+    const gitMetaFile = path.join(__dirname, 'git_meta_260223_004.json');
+
+    const gitHash = execSync('git rev-parse HEAD', { cwd: repoRoot }).toString().trim();
+    const gitBranch = execSync('git rev-parse --abbrev-ref HEAD', { cwd: repoRoot }).toString().trim();
+    fs.writeFileSync(gitMetaFile, JSON.stringify({
+        commit: gitHash,
+        branch: gitBranch,
+        timestamp: new Date().toISOString()
+    }, null, 2));
     
     // Ensure stale notify file is removed so Gate Light doesn't check it prematurely
     if (fs.existsSync(notifyFile)) {
