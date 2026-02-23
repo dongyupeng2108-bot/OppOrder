@@ -8,7 +8,7 @@ $SessionId = [Guid]::NewGuid().ToString().Substring(0, 8)
 $LatestFile = "rules/LATEST.json"
 $LatestBackup = "rules/LATEST.json.bak"
 if (Test-Path $LatestFile) {
-    Copy-Item $LatestFile $LatestBackup -Force
+    node scripts/ops_copy_file.mjs "$LatestFile" "$LatestBackup"
 }
 
 function Update-LatestJson {
@@ -53,8 +53,8 @@ function Run-Task {
     if (Test-Path $ErrFile) { $Content += (Get-Content $ErrFile -Raw) }
     Set-Content -Path $Log -Value $Content
     
-    if (Test-Path $OutFile) { Remove-Item $OutFile -Force -ErrorAction SilentlyContinue }
-    if (Test-Path $ErrFile) { Remove-Item $ErrFile -Force -ErrorAction SilentlyContinue }
+    if (Test-Path $OutFile) { node scripts/ops_delete.mjs "$OutFile" --force }
+    if (Test-Path $ErrFile) { node scripts/ops_delete.mjs "$ErrFile" --force }
     
     if ($ExpectedError) {
         # C1. Detect TIMED OUT
@@ -72,8 +72,8 @@ function Run-Task {
 
 # Ensure clean state for tests
 Write-Host "Cleaning up previous budget files..."
-Get-ChildItem "rules/task-reports/*/.budget_*.json" | ForEach-Object { Remove-Item $_.FullName -Force -ErrorAction SilentlyContinue }
-Get-ChildItem "rules/task-reports/*/fail_budget_*.json" | ForEach-Object { Remove-Item $_.FullName -Force -ErrorAction SilentlyContinue }
+node scripts/ops_delete.mjs "rules/task-reports/*/.budget_*.json" --force --max 200
+node scripts/ops_delete.mjs "rules/task-reports/*/fail_budget_*.json" --force --max 200
 
 # Test 1: Dev Budget (Limit 2)
 Write-Host "--- Test 1: Dev Budget ---"
@@ -94,7 +94,7 @@ Set-Content -Path $InteractiveScript -Value "console.log('Please provide value: 
 try {
     Run-Task -TaskId $InteractiveTask -Mode "Dev" -Header "TraeTask_" -ExpectedError "INTERACTIVE_PROMPT_DETECTED"
 } finally {
-    if (Test-Path $InteractiveScript) { Remove-Item $InteractiveScript -Force -ErrorAction SilentlyContinue }
+    if (Test-Path $InteractiveScript) { node scripts/ops_delete.mjs "$InteractiveScript" --force }
 }
 
 # Test 4: Timeout
@@ -107,7 +107,7 @@ try {
     # Run with 3s timeout
     Run-Task -TaskId $TimeoutTask -Mode "Dev" -Header "TraeTask_" -StepTimeoutSeconds 3 -ExpectedError "TIMED OUT"
 } finally {
-    if (Test-Path $GenScript) { Remove-Item $GenScript -Force -ErrorAction SilentlyContinue }
+    if (Test-Path $GenScript) { node scripts/ops_delete.mjs "$GenScript" --force }
 }
 
 # Cleanup Artifacts
@@ -119,25 +119,25 @@ foreach ($Dir in $ReportDirs) {
     if (Test-Path $Dir) {
         # Clean Test Logs
         Get-ChildItem -Path $Dir -Filter "test_*.log" | Where-Object { $_.Name -match "_TEST_" -or $_.Name -match "TEST_" } | ForEach-Object {
-            Remove-Item $_.FullName -Force -ErrorAction SilentlyContinue
+            node scripts/ops_delete.mjs "$($_.FullName)" --force
         }
 
         # Clean Task Artifacts
         Get-ChildItem -Path $Dir | Where-Object { $_.Name -match "_TEST_" -or $_.Name -match "^TEST_" } | ForEach-Object {
-            Remove-Item $_.FullName -Recurse -Force -ErrorAction SilentlyContinue
+            node scripts/ops_delete.mjs "$($_.FullName)" --force --recurse
         }
 
         # Clean Hidden Budget Files
         Get-ChildItem -Path $Dir -Filter ".budget_*.json" -Force | Where-Object { $_.Name -match "_TEST_" -or $_.Name -match "TEST_" } | ForEach-Object {
-             Remove-Item $_.FullName -Force -ErrorAction SilentlyContinue
+             node scripts/ops_delete.mjs "$($_.FullName)" --force
         }
     }
 }
 
 # Restore LATEST.json
 if (Test-Path $LatestBackup) {
-    Copy-Item $LatestBackup $LatestFile -Force
-    Remove-Item $LatestBackup -Force
+    node scripts/ops_copy_file.mjs "$LatestBackup" "$LatestFile"
+    node scripts/ops_delete.mjs "$LatestBackup" --force
 }
 
 if ($Global:TestFailed) {

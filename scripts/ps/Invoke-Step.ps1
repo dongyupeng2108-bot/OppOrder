@@ -128,8 +128,8 @@ function Invoke-Step {
         Write-RootCauseSummary -Name $Name -Cmd $Cmd -ExitCode "EXCEPTION" -Out $ContentOut -Err $ContentErr
         Throw $_
     } finally {
-        if (Test-Path $TempLogOut) { Remove-Item $TempLogOut -Force -ErrorAction SilentlyContinue }
-        if (Test-Path $TempLogErr) { Remove-Item $TempLogErr -Force -ErrorAction SilentlyContinue }
+        if (Test-Path $TempLogOut) { node scripts/ops_delete.mjs "$TempLogOut" --force }
+        if (Test-Path $TempLogErr) { node scripts/ops_delete.mjs "$TempLogErr" --force }
     }
 }
 

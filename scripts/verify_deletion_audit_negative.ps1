@@ -35,7 +35,7 @@ function Run-GateLight {
 }
 
 # Clear previous output
-if (Test-Path $OutputFile) { Remove-Item $OutputFile }
+if (Test-Path $OutputFile) { node scripts/ops_delete.mjs "$OutputFile" --force }
 
 Write-Host "Starting Negative Tests for Deletion Audit..."
 
