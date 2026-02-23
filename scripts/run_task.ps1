@@ -752,8 +752,12 @@ function Run-Evidence-Gen-And-Preview {
         Write-Host ">>> [RunTask] Step 2: Generate Evidence" -ForegroundColor Cyan
         
         # Cleanup previous run logs
-        if (Test-Path "$EvidenceDir\gate_light_preview_$TaskId.log") { Remove-Item "$EvidenceDir\gate_light_preview_$TaskId.log" }
-        if (Test-Path "$EvidenceDir\gate_light_verify_$TaskId.log") { Remove-Item "$EvidenceDir\gate_light_verify_$TaskId.log" }
+        if (Test-Path "$EvidenceDir\gate_light_preview_$TaskId.log") {
+             node "$RepoRoot\scripts\ops_delete.mjs" "$EvidenceDir\gate_light_preview_$TaskId.log" --force
+        }
+        if (Test-Path "$EvidenceDir\gate_light_verify_$TaskId.log") {
+             node "$RepoRoot\scripts\ops_delete.mjs" "$EvidenceDir\gate_light_verify_$TaskId.log" --force
+        }
 
         $GenCmd = @("node", $GenerateScript.FullName)
         $EffectiveTimeoutSec = $StepTimeoutSeconds

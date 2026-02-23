@@ -278,7 +278,7 @@ fetch('http://localhost:53122/pairs', '${PairsHcFileJS}');
         node $HcScriptPath
         Start-Sleep -Seconds 2
         Check-LastExitCode
-        Remove-Item $HcScriptPath -ErrorAction SilentlyContinue
+        node scripts/ops_delete.mjs "$HcScriptPath" --force
     }
 
     # 1.11 LLM Route Smoke (Task 260211_005+)
@@ -556,7 +556,7 @@ const newSize = fileBuffer.length;
     $InjectScript | Out-File -FilePath $InjectScriptPath -Encoding UTF8
     node $InjectScriptPath $TaskId $ReportsDir
     Check-LastExitCode
-    Remove-Item $InjectScriptPath -ErrorAction SilentlyContinue
+    node scripts/ops_delete.mjs "$InjectScriptPath" --force
 
     # 2.55 CI Parity Probe (Task 260210_009+)
     if ($TaskId -ge "260210_009") {
@@ -805,7 +805,7 @@ if (fs.existsSync(indexFile) && newHash) {
         Write-Host "GATE_LIGHT_EXIT=$GateExitCode" -ForegroundColor Magenta
         
         # Cleanup
-        Remove-Item $GateInjectScriptPath -ErrorAction SilentlyContinue
+        node scripts/ops_delete.mjs "$GateInjectScriptPath" --force
         
         # 6.5 Fail if Gate Failed
         if ($GateExitCode -ne 0) {
