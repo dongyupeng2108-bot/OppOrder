@@ -1066,6 +1066,9 @@ Write-Host ">>> [RunTask] SUCCESS: Task $TaskId ($Mode) Completed." -ForegroundC
 
     $TierInfo = Invoke-ErrorTiering -ErrorClass $ErrorClass -FailReason $FailReason
     if ($LoopTriggered) {
+        if ($ErrorClass -eq "FAIL_BUDGET_EXCEEDED_INTEGRATE") {
+            $LoopReason = "FAIL_BUDGET_EXCEEDED_INTEGRATE"
+        }
         $ErrorClass = "LOOP_DETECTED"
         $FailReason = $LoopReason
         $TierInfo = @{ tier = "NON_SELF_HEALABLE"; recommended_action = "ESCALATE" }
