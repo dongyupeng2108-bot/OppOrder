@@ -427,24 +427,20 @@ if ($Mode -eq "Integrate") {
     # 1.2 WORM Defense: History Check (Strategy B)
     # Check if lock file EVER existed in history (even if deleted locally)
     # We use git log to check for the file's existence in the current branch history
-    if (-not $Env:BYPASS_WORM) {
-        try {
-            $LockHistory = git log --diff-filter=A --summary -- $LockFile 2>$null
-            if ($LockHistory) {
-                Write-Error "[RunTask] FAILED: EVIDENCE_WORM_BYPASS Detected."
-                Write-Error "    Lock file '$LockFile' was found in git history but is missing locally."
-                Write-Error "    Deleting a lock file to force a re-run is FORBIDDEN."
-                
-                Write-Host "`nFAIL_ROOT_CAUSE_BLOCK"
-                Write-Host "ERROR_CLASS=EVIDENCE_WORM_BYPASS"
-                Write-Host "ROOT_CAUSE_HINT=Lock file found in history but missing locally (Tampering detected)."
-                Stop-RunTask -Message "EVIDENCE_WORM_BYPASS" -ErrorClass "EVIDENCE_WORM_BYPASS" -FailReason "WORM_TAMPER"
-            }
-        } catch {
-            Write-Warning "[RunTask] Warning: Failed to check git history for lock file. Skipping WORM check."
+    try {
+        $LockHistory = git log --diff-filter=A --summary -- $LockFile 2>$null
+        if ($LockHistory) {
+            Write-Error "[RunTask] FAILED: EVIDENCE_WORM_BYPASS Detected."
+            Write-Error "    Lock file '$LockFile' was found in git history but is missing locally."
+            Write-Error "    Deleting a lock file to force a re-run is FORBIDDEN."
+            
+            Write-Host "`nFAIL_ROOT_CAUSE_BLOCK"
+            Write-Host "ERROR_CLASS=EVIDENCE_WORM_BYPASS"
+            Write-Host "ROOT_CAUSE_HINT=Lock file found in history but missing locally (Tampering detected)."
+            Stop-RunTask -Message "EVIDENCE_WORM_BYPASS" -ErrorClass "EVIDENCE_WORM_BYPASS" -FailReason "WORM_TAMPER"
         }
-    } else {
-        Write-Host "[RunTask] WARNING: WORM Defense Bypassed by Environment Variable." -ForegroundColor Yellow
+    } catch {
+        Write-Warning "[RunTask] Warning: Failed to check git history for lock file. Skipping WORM check."
     }
 }
 
@@ -883,8 +879,17 @@ if ($Mode -eq "Integrate") {
 if ($Mode -eq "Integrate") {
     if ($AutoPR) {
         Write-Host ">>> [RunTask] Step 9: AutoPR Loop" -ForegroundColor Cyan
+
+        # --- Stage Evidence (Node Wrapper) ---
+        Write-Host ">>> [AutoPR] Staging Evidence (Node)..." -ForegroundColor Cyan
+        $StageArgs = @("$RepoRoot\scripts\ops_git_stage_task_evidence.mjs", "--task_id", "$TaskId", "--evidence_dir", "$EvidenceDir")
+        if ($RunId) { $StageArgs += "--run_id"; $StageArgs += "$RunId" }
+        $StageProcess = Start-Process -FilePath "node" -ArgumentList $StageArgs -NoNewWindow -PassThru -Wait
+        if ($StageProcess.ExitCode -ne 0) {
+            Write-Warning "[AutoPR] Failed to stage evidence files via Node tool. Proceeding anyway..."
+        }
     
-    $WatchScript = "$RepoRoot\scripts\ci_watch_pr.mjs"
+        $WatchScript = "$RepoRoot\scripts\ci_watch_pr.mjs"
     $FixScript = "$RepoRoot\scripts\ci_autofix_pack.mjs"
     $Script:DidAutoPr = $true
     
