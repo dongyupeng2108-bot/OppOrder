@@ -15,7 +15,7 @@ param (
     [int]$StepTimeoutSeconds = 120,
 
     [Parameter(Mandatory=$false)]
-    [switch]$AutoPR,
+    [int]$AutoPR = 1,
 
     [Parameter(Mandatory=$false)]
     [int]$AutoFixMax = 0
@@ -39,7 +39,7 @@ if ([string]::IsNullOrWhiteSpace($Header)) {
 # --- Integrate Defaults (TraeTask_260219_001) ---
 if ($Mode -eq "Integrate") {
     if (-not $PSBoundParameters.ContainsKey("AutoPR")) {
-        $AutoPR = $true
+        $AutoPR = 1
         Write-Host "[RunTask] Integrate Default: AutoPR enabled." -ForegroundColor Cyan
     }
     if (-not $PSBoundParameters.ContainsKey("AutoFixMax")) {
@@ -829,19 +829,21 @@ if ($Mode -eq "Integrate") {
     Write-Host ">>> [RunTask] Step 4: Skip Assemble Evidence (Dev Mode)" -ForegroundColor Yellow
 }
 
-if ($Mode -eq "Integrate" -and $AutoPR) {
+if ($Mode -eq "Integrate" -and $AutoPR -ne 0) {
     $DirtyStatus = git status --porcelain
     if ($DirtyStatus) {
         Write-Host ">>> [RunTask] Step 8.9: AutoPR Pre-Commit" -ForegroundColor Cyan
         $SafeCommitScript = "$RepoRoot\scripts\safe_commit.ps1"
         $CommitMessage = "TraeTask_${TaskId}: integrate evidence"
+        # FIX: Pass message as a single argument, not part of a string array that might be split
+        # We rely on Invoke-Step using proper argument list
         $CommitCmd = @("powershell", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", $SafeCommitScript, "-Message", $CommitMessage)
         Invoke-Step -Name "AutoPR Pre-Commit" -Cmd $CommitCmd
     }
 }
 
 # --- Step 9: AutoPR (Optional) ---
-if ($Mode -eq "Integrate" -and $AutoPR) {
+if ($Mode -eq "Integrate" -and $AutoPR -ne 0) {
     Write-Host ">>> [RunTask] Step 9: AutoPR Loop" -ForegroundColor Cyan
     
     $WatchScript = "$RepoRoot\scripts\ci_watch_pr.mjs"
