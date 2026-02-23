@@ -1,0 +1,7 @@
+task_id=260223_002d
+generated_at=2026-02-23T10:18:19.5320436+08:00
+total=25916
+wall_total_ms=25916
+pass1_preview=12395
+workspace_healer=2148
+preflight=2110

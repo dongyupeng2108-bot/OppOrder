@@ -1,0 +1,18 @@
+{
+  "task_id": "260223_002d",
+  "status": "DONE",
+  "summary": "Automation Pack V1 Validation for Task 260223_002d",
+  "dod_evidence": {
+    "error_tiering": true,
+    "escalation_report": true,
+    "loop_detection": true,
+    "gate_light_exit": 0,
+    "healthcheck": [
+      "rules/task-reports/2026-02/260223_002d_healthcheck_53122_root.txt",
+      "rules/task-reports/2026-02/260223_002d_healthcheck_53122_pairs.txt"
+    ]
+  },
+  "report_file": "notify_260223_002d.txt",
+  "report_sha256_short": "95f5bef0",
+  "mode": "Integrate"
+}

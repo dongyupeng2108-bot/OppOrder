@@ -223,7 +223,12 @@ function Write-RunChainEntry {
     param([hashtable]$Record)
     if (-not $Script:RunChainPath) { return }
     $Line = $Record | ConvertTo-Json -Compress
-    Append-JsonlUtf8 -Path $Script:RunChainPath -Line $Line
+    if (-not $Script:RunChainStartLine) {
+        $Script:RunChainStartLine = $Line
+        Write-LfFile -Path $Script:RunChainPath -Content ($Line + "`n")
+        return
+    }
+    Write-LfFile -Path $Script:RunChainPath -Content ($Script:RunChainStartLine + "`n" + $Line + "`n")
 }
 
 function Read-JsonSafe {
@@ -549,7 +554,12 @@ Start-Transcript -Path $LogFile -Force
 
 # --- Step 1: Preflight ---
 Write-Host ">>> [RunTask] Step 1: Preflight" -ForegroundColor Cyan
-$PreflightCmd = @("powershell", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", "$RepoRoot\scripts\preflight.ps1", "-TaskId", $TaskId, "-Mode", $Mode, "-Header", $Header)
+$HeaderArg = $Header
+if (-not [string]::IsNullOrWhiteSpace($HeaderArg)) {
+    $HeaderArg = '"' + ($HeaderArg -replace '"', '\"') + '"'
+}
+$PreflightArgs = @("-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", "$RepoRoot\scripts\preflight.ps1", "-TaskId", $TaskId, "-Mode", $Mode, "-Header", $HeaderArg)
+$PreflightCmd = @("powershell") + $PreflightArgs
 Measure-Step -Key "preflight" -Action { Invoke-Step -Name "Preflight" -Cmd $PreflightCmd }
 
 $TaskIdParts = Get-TaskIdParts -TaskId $TaskId
@@ -753,6 +763,17 @@ if ($Mode -eq "Integrate") {
     Measure-Step -Key "assemble_evidence" -Action { Invoke-Step -Name "Assemble Evidence" -Cmd $AssembleCmd }
 } else {
     Write-Host ">>> [RunTask] Step 4: Skip Assemble Evidence (Dev Mode)" -ForegroundColor Yellow
+}
+
+if ($Mode -eq "Integrate" -and $AutoPR) {
+    $DirtyStatus = git status --porcelain
+    if ($DirtyStatus) {
+        Write-Host ">>> [RunTask] Step 8.9: AutoPR Pre-Commit" -ForegroundColor Cyan
+        $SafeCommitScript = "$RepoRoot\scripts\safe_commit.ps1"
+        $CommitMessage = "TraeTask_${TaskId}: integrate evidence"
+        $CommitCmd = @("powershell", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", $SafeCommitScript, "-Message", $CommitMessage)
+        Invoke-Step -Name "AutoPR Pre-Commit" -Cmd $CommitCmd
+    }
 }
 
 # --- Step 9: AutoPR (Optional) ---
