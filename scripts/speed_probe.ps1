@@ -43,13 +43,13 @@ $Env:SPEED_TIMING_OUT = $null
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 $DevTiming = Get-Content $DevTimingTmp -Raw | ConvertFrom-Json
-Remove-Item $DevTimingTmp -Force -ErrorAction SilentlyContinue
+node scripts/ops_delete.mjs "$DevTimingTmp" --force
 
 $CleanupTargets = Get-ChildItem -Path $EvidenceDir -Filter "*${TaskId}*" -File | Where-Object {
     $_.Name -notmatch "^generate_evidence_${TaskId}\.(js|mjs)$" -and $_.Name -ne ".budget_${TaskId}.json"
 }
 foreach ($Item in $CleanupTargets) {
-    Remove-Item $Item.FullName -Force -ErrorAction SilentlyContinue
+    node scripts/ops_delete.mjs "$($Item.FullName)" --force
 }
 
 if (-not $GenerateScript) {
@@ -69,7 +69,7 @@ $Env:SPEED_TIMING_OUT = $null
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 $IntegrateTiming = Get-Content $IntegrateTimingTmp -Raw | ConvertFrom-Json
-Remove-Item $IntegrateTimingTmp -Force -ErrorAction SilentlyContinue
+node scripts/ops_delete.mjs "$IntegrateTimingTmp" --force
 
 $FinalTiming = [ordered]@{
     task_id = $TaskId

@@ -1,0 +1,9 @@
+
+Task: 260223_005
+Type: Refactoring/Cleanup Discipline
+Status: Verified
+
+1. ops_cleanup_patterns.mjs: Verified (Dry Run Success)
+2. Replaced PowerShell delete commands in execution chain (run_task.ps1, speed_probe.ps1, ps_safe_rm.ps1)
+3. Updated WORKFLOW.md with Cleanup Discipline
+4. No changes to gate_light_ci.mjs

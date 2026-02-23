@@ -1165,7 +1165,7 @@ Write-Host ">>> [RunTask] SUCCESS: Task $TaskId ($Mode) Completed." -ForegroundC
             $Utf8NoBom = New-Object System.Text.UTF8Encoding($false)
             [System.IO.File]::WriteAllText($LatestJsonPath, $LatestJsonRaw, $Utf8NoBom)
         } elseif (Test-Path $LatestJsonPath) {
-            Remove-Item $LatestJsonPath -ErrorAction SilentlyContinue
+            node scripts/ops_delete.mjs "$LatestJsonPath" --force
         }
     }
     if ($TotalWatch) { $TotalWatch.Stop() }
