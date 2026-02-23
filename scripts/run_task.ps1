@@ -15,7 +15,7 @@ param (
     [int]$StepTimeoutSeconds = 120,
 
     [Parameter(Mandatory=$false)]
-    [int]$AutoPR = 1,
+    [bool]$AutoPR = $true,
 
     [Parameter(Mandatory=$false)]
     [int]$AutoFixMax = 0
@@ -39,7 +39,7 @@ if ([string]::IsNullOrWhiteSpace($Header)) {
 # --- Integrate Defaults (TraeTask_260219_001) ---
 if ($Mode -eq "Integrate") {
     if (-not $PSBoundParameters.ContainsKey("AutoPR")) {
-        $AutoPR = 1
+        $AutoPR = $true
         Write-Host "[RunTask] Integrate Default: AutoPR enabled." -ForegroundColor Cyan
     }
     if (-not $PSBoundParameters.ContainsKey("AutoFixMax")) {
@@ -179,7 +179,9 @@ $Script:HardStopMarkers = @(
     "PREVIEW_LOG_MISSING",
     "TASK_ID_MISMATCH",
     "LOOP_DETECTED",
-    "CONTRACT_SELF_CHECK_FAIL"
+    "CONTRACT_SELF_CHECK_FAIL",
+    "SAFE_COMMIT_ARG_SPLIT",
+    "AUTOPR_PRECOMMIT_FAIL"
 )
 
 function Write-HardStopBlock {
@@ -829,22 +831,33 @@ if ($Mode -eq "Integrate") {
     Write-Host ">>> [RunTask] Step 4: Skip Assemble Evidence (Dev Mode)" -ForegroundColor Yellow
 }
 
-if ($Mode -eq "Integrate" -and $AutoPR -ne 0) {
-    $DirtyStatus = git status --porcelain
-    if ($DirtyStatus) {
-        Write-Host ">>> [RunTask] Step 8.9: AutoPR Pre-Commit" -ForegroundColor Cyan
-        $SafeCommitScript = "$RepoRoot\scripts\safe_commit.ps1"
-        $CommitMessage = "TraeTask_${TaskId}: integrate evidence"
-        # FIX: Pass message as a single argument, not part of a string array that might be split
-        # We rely on Invoke-Step using proper argument list
-        $CommitCmd = @("powershell", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", $SafeCommitScript, "-Message", $CommitMessage)
-        Invoke-Step -Name "AutoPR Pre-Commit" -Cmd $CommitCmd
+# --- Step 8.9: AutoPR Pre-Commit (Optional) ---
+if ($Mode -eq "Integrate") {
+    if ($AutoPR) {
+        $DirtyStatus = git status --porcelain
+        if ($DirtyStatus) {
+            Write-Host ">>> [RunTask] Step 8.9: AutoPR Pre-Commit" -ForegroundColor Cyan
+            $SafeCommitScript = "$RepoRoot\scripts\safe_commit.ps1"
+            $CommitMessage = "TraeTask_${TaskId}: integrate evidence"
+            # FIX: Pass message as a single argument, not part of a string array that might be split
+            # We rely on Invoke-Step using proper argument list
+            $CommitCmd = @("powershell", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", $SafeCommitScript, "-Message", $CommitMessage)
+            try {
+                Invoke-Step -Name "AutoPR Pre-Commit" -Cmd $CommitCmd
+            } catch {
+                Stop-RunTask -Message "AutoPR Pre-Commit Failed" -ErrorClass "AUTOPR_PRECOMMIT_FAIL" -FailReason "SAFE_COMMIT_ARG_SPLIT"
+            }
+        }
+    } else {
+        Write-Host "AUTOPR_DISABLED=1" -ForegroundColor Yellow
+        Write-Host ">>> [RunTask] Step 9: AutoPR Disabled. Skipping." -ForegroundColor Yellow
     }
 }
 
 # --- Step 9: AutoPR (Optional) ---
-if ($Mode -eq "Integrate" -and $AutoPR -ne 0) {
-    Write-Host ">>> [RunTask] Step 9: AutoPR Loop" -ForegroundColor Cyan
+if ($Mode -eq "Integrate") {
+    if ($AutoPR) {
+        Write-Host ">>> [RunTask] Step 9: AutoPR Loop" -ForegroundColor Cyan
     
     $WatchScript = "$RepoRoot\scripts\ci_watch_pr.mjs"
     $FixScript = "$RepoRoot\scripts\ci_autofix_pack.mjs"
@@ -953,6 +966,10 @@ if ($Mode -eq "Integrate" -and $AutoPR -ne 0) {
                 Stop-RunTask -Message "AUTO_PR_UNKNOWN_EXIT" -ErrorClass "AUTO_PR_UNKNOWN_EXIT" -FailReason "CI_WATCH_UNKNOWN_EXIT"
             }
         }
+    }
+    } else {
+        Write-Host "AUTOPR_DISABLED=1" -ForegroundColor Yellow
+        Write-Host ">>> [RunTask] Step 9: AutoPR Disabled. Skipping." -ForegroundColor Yellow
     }
 }
 
