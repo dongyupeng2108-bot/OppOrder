@@ -1,0 +1,9 @@
+
+Task: 260223_004
+Type: Refactoring/Tooling
+Status: Verified
+
+1. ops_copy_file.mjs: Verified (Copy success)
+2. ops_delete.mjs: Verified (Delete success)
+3. Replaced PowerShell commands in run_task.ps1 and dev_batch_mode.ps1
+4. No changes to gate_light_ci.mjs

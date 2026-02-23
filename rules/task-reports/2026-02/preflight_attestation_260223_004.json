@@ -1,0 +1,11 @@
+﻿{
+    "mode":  "Integrate",
+    "branch":  "feat/ops-node-copy-260223_004",
+    "write_allowed":  true,
+    "input_hash_short":  "1d575e5e",
+    "header":  "TraeTask_260223_004",
+    "commit":  "0b11e948",
+    "task_id":  "260223_004",
+    "header_detected":  true,
+    "timestamp":  "2026-02-23 19:00:04 UTC"
+}
