@@ -178,6 +178,11 @@ To ensure consistency and avoid interactive prompts (like `git add -f` warnings)
 1.  **Write Operations (写操作)**:
     *   **Recommended**: Use `node scripts/ops_write_file.mjs` for critical status files or cross-platform consistency.
     *   **Reasoning**: Ensures UTF-8 encoding and handles directory creation automatically.
+    *   **Pattern**:
+        ```powershell
+        # Positional arguments: <file_path> <content> [encoding]
+        node scripts/ops_write_file.mjs "output.txt" "content line" "utf8"
+        ```
 
 2.  **Stage Operations (暂存操作)**:
     *   **Strict Rule**: NEVER use `git add -f` (force add) directly in PowerShell/Shell scripts exposed to Trae.
