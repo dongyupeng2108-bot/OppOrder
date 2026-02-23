@@ -4,5 +4,12 @@
   "metrics": {
     "tool_verified": true,
     "workflow_updated": true
+  },
+  "dod_evidence": {
+    "healthcheck": [
+      "HTTP/1.1 200 OK",
+      "HTTP/1.1 200 OK"
+    ],
+    "gate_light_exit": 0
   }
 }
