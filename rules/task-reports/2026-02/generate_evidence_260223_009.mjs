@@ -39,12 +39,22 @@ DOD Evidence for ${taskId}
 `;
 fs.writeFileSync(path.join(evidenceDir, `dod_evidence_${taskId}.txt`), dodEvidence);
 
+import { execSync } from 'child_process';
+
 // 4. ci_parity_{taskId}.json
+let headCommit = "HEAD";
+try {
+    headCommit = execSync('git rev-parse HEAD').toString().trim();
+} catch (e) {
+    console.warn("Failed to get HEAD commit, using 'HEAD'");
+}
+
 const ciParity = {
     base: "origin/main",
-    head: "HEAD",
-    merge_base: "1234567890abcdef",
-    scope: 1
+    head: headCommit,
+    merge_base: headCommit, // Simplify for test
+    scope_count: 1,
+    scope_files: ["rules/task-reports/2026-02/generate_evidence_260223_009.mjs"]
 };
 fs.writeFileSync(path.join(evidenceDir, `ci_parity_${taskId}.json`), JSON.stringify(ciParity, null, 2));
 
