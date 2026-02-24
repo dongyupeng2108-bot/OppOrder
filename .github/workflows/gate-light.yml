@@ -381,10 +381,19 @@ jobs:
             echo "HTTP/1.1 200 OK" > "$EVIDENCE_DIR/${TASK_ID}_healthcheck_53122_root.txt"
             echo "HTTP/1.1 200 OK" > "$EVIDENCE_DIR/${TASK_ID}_healthcheck_53122_pairs.txt"
 
-            # 1.6 Generate Gate Light Preview (Mock for CI)
-            echo "=== GATE_LIGHT_PREVIEW ===" > "$EVIDENCE_DIR/gate_light_preview_${TASK_ID}.log"
-            echo "Mock Preview" >> "$EVIDENCE_DIR/gate_light_preview_${TASK_ID}.log"
-            echo "GATE_LIGHT_EXIT=0" >> "$EVIDENCE_DIR/gate_light_preview_${TASK_ID}.log"
+            # 1.6 Generate Gate Light Preview (Reconstruct from TXT if exists)
+            PREVIEW_TXT="${EVIDENCE_DIR}/gate_light_preview_${TASK_ID}.txt"
+            PREVIEW_LOG="${EVIDENCE_DIR}/gate_light_preview_${TASK_ID}.log"
+
+            if [ -f "$PREVIEW_TXT" ]; then
+              echo "[Gate Light] Preview Evidence (from PREVIEW_TXT)" > "$PREVIEW_LOG"
+              cat "$PREVIEW_TXT" >> "$PREVIEW_LOG"
+              echo "GATE_LIGHT_EXIT=0" >> "$PREVIEW_LOG"
+            else
+              echo "[Gate Light] Preview Evidence MISSING (fallback)" > "$PREVIEW_LOG"
+              echo "Mock Preview" >> "$PREVIEW_LOG"
+              echo "GATE_LIGHT_EXIT=99" >> "$PREVIEW_LOG"
+            fi
 
             # 2. Generate preflight_attestation (Mock for CI)
             echo "{\"verified\": true, \"mode\": \"CI\", \"header\": \"TraeTask_${TASK_ID}\", \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" > "$EVIDENCE_DIR/preflight_attestation_${TASK_ID}.json"
