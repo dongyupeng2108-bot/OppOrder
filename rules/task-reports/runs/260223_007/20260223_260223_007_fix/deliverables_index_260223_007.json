@@ -5,7 +5,7 @@
     {
       "name": "ci_parity_260223_007.json",
       "size": 4036,
-      "sha256_short": "7bcf4bfa"
+      "sha256_short": "4a11f7a8"
     },
     {
       "name": "gate_light_preview_260223_007.log",
@@ -54,8 +54,13 @@
     },
     {
       "name": "notify_260223_007.txt",
-      "size": 13498,
-      "sha256_short": "c2df7754"
+      "size": 13438,
+      "sha256_short": "07e5727c"
+    },
+    {
+      "name": "trae_report_snippet_260223_007.txt",
+      "size": 6255,
+      "sha256_short": "ba3a9ce8"
     },
     {
       "name": "preview_cmp_260223_007.txt",

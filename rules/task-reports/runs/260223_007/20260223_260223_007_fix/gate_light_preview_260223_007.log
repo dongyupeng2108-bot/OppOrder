@@ -13,8 +13,8 @@ LATEST_TASK_ID=260223_007
 [Gate Light] Workspace Healer verified (Clean Environment).
 [Gate Light] Checking CI Parity JSON Evidence...
 [Gate Light] DEBUG: is_shallow_repository=true
-[Gate Light] DEBUG: HEAD=9dded2308ea6f463675d564438795a6061b01794
-[Gate Light] DEBUG: git merge-base origin/main HEAD=0026448f848fd03cee6e5acd650577dfd4e9299e
+[Gate Light] DEBUG: HEAD=d7318062df070268a6cbdf9c6a7a08b6e781ebb2
+[Gate Light] DEBUG: git merge-base origin/main HEAD=0128d9f644fcae29002d5a3bd213ffa820c2e86b
 [Gate Light] DETECTED SHALLOW CLONE. Attempting to unshallow (Fix Strategy A)...
 [Gate Light] Unshallow command executed.
 [Gate Light] CI Parity JSON Evidence verified.

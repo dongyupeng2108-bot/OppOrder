@@ -3,7 +3,7 @@ Task ID: 260223_007
 Header: TraeTask_260223_007
 Date: 2026-02-23T17:52:39.430Z
 Branch: feat/ops-node-scan-260223_007
-Commit: a5d742c32ae538c2b8be0a2a9774dc853cadd4e9
+Commit: d7318062df070268a6cbdf9c6a7a08b6e781ebb2
 
 
 === RESULT_JSON ===
@@ -80,7 +80,7 @@ DOD_EVIDENCE_CONTRACT_SELF_CHECK: contract_self_check_260223_007.txt => CONTRACT
 
 === CI_PARITY_PREVIEW ===
 Base: 0128d9f644fcae29002d5a3bd213ffa820c2e86b
-Head: a5d742c32ae538c2b8be0a2a9774dc853cadd4e9
+Head: d7318062df070268a6cbdf9c6a7a08b6e781ebb2
 MergeBase: 0026448f848fd03cee6e5acd650577dfd4e9299e
 Source: JSON (Evidence-as-Code)
 Scope: 8 files
@@ -136,8 +136,8 @@ LATEST_TASK_ID=260223_007
 [Gate Light] AutoPR verified (State: SKIPPED, Attempt: 0).
 [Gate Light] Checking CI Parity JSON Evidence...
 [Gate Light] DEBUG: is_shallow_repository=true
-[Gate Light] DEBUG: HEAD=a5d742c32ae538c2b8be0a2a9774dc853cadd4e9
-[Gate Light] DEBUG: git merge-base origin/main HEAD=0026448f848fd03cee6e5acd650577dfd4e9299e
+[Gate Light] DEBUG: HEAD=d7318062df070268a6cbdf9c6a7a08b6e781ebb2
+[Gate Light] DEBUG: git merge-base origin/main HEAD=0128d9f644fcae29002d5a3bd213ffa820c2e86b
 [Gate Light] DETECTED SHALLOW CLONE. Attempting to unshallow (Fix Strategy A)...
 [Gate Light] Unshallow command executed.
 [Gate Light] CI Parity JSON Evidence verified.
@@ -198,7 +198,7 @@ Validation PASSED.
 [Gate Light] Checking DoD Evidence Excerpts...
 [Gate Light] DoD Evidence Excerpts verified.
 [Gate Light] Checking Deletion Audit (Locks & Runs)...
-[Gate Light] Deletion Audit: No lock/index yet (Assuming Pre-Integrate or First Run in progress).
+[Gate Light] Deletion Audit verified.
 [Gate Light] Checking No Auto-Merge (Git Forbidden Commands)...
 [Gate Light] No Auto-Merge verified.
 [Gate Light] Checking Evidence Truth & Sufficiency (Hardening Rule)...
@@ -216,7 +216,7 @@ Validation PASSED.
 [Gate Light] Checking Evidence Truth & Consistency...
 [Gate Light] Evidence Truth & Consistency verified.
 [Gate Light] Checking Rank V2 Contract Version Guard...
-[Gate Light] Base Commit: 0026448f848fd03cee6e5acd650577dfd4e9299e
+[Gate Light] Base Commit: 0128d9f644fcae29002d5a3bd213ffa820c2e86b
 [Gate Light] Schema Unchanged (3bd83a08). Version check skipped.
 [Gate Light] Rank V2 Contract Version Guard PASS
 [Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...
@@ -260,12 +260,12 @@ From https://github.com/dongyupeng2108-bot/OppOrder
 ==========================
 
 === ERROR_STATS_INDEX ===
-{"task_id":"260223_007","run_id":"20260223_260223_007_fix","commit":"a5d742c32ae538c2b8be0a2a9774dc853cadd4e9","ts":"2026-02-23T17:52:13.869Z","mode":"Integrate","error_class":"NO_ERROR","severity":"INFO","message":"No errors found.","hint":""}
+{"task_id":"260223_007","run_id":"20260223_260223_007_fix","commit":"d7318062df070268a6cbdf9c6a7a08b6e781ebb2","ts":"2026-02-23T17:52:13.869Z","mode":"Integrate","error_class":"NO_ERROR","severity":"INFO","message":"No errors found.","hint":""}
 =========================
 
 === ERROR_SUMMARY ===
 TASK_ID: 260223_007
-COMMIT: a5d742c32ae538c2b8be0a2a9774dc853cadd4e9
+COMMIT: d7318062df070268a6cbdf9c6a7a08b6e781ebb2
 TOTAL_ERRORS: 0
 MODE: Integrate
 CONTRACT_SELF_CHECK_EXIT: 0
