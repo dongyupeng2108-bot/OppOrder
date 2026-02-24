@@ -11,5 +11,8 @@
       "HTTP/1.1 200 OK"
     ],
     "gate_light_exit": 0
-  }
+  },
+  "summary": "Fix PR 171 CI Failure (Evidence Patch)",
+  "report_file": "notify_260223_007.txt",
+  "report_sha256_short": "c2df7754"
 }
