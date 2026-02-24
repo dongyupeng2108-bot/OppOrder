@@ -2,17 +2,60 @@
 
 Header: TraeTask_260223_007
 BRANCH: feat/ops-node-scan-260223_007
-COMMIT: d7318062
+COMMIT: b28dc714
 
 === GIT_SCOPE_DIFF ===
 M	.github/workflows/gate-light.yml
 M	rules/LATEST.json
 M	rules/rules/WORKFLOW.md
+A	rules/task-reports/2026-02/ci_parity_260223_007.json
+A	rules/task-reports/2026-02/deliverables_index_260223_007.json
+A	rules/task-reports/2026-02/evidence_manifest_260223_007.json
+A	rules/task-reports/2026-02/gate_light_preview_260223_007.txt
 A	rules/task-reports/2026-02/generate_evidence_260223_007.mjs
+A	rules/task-reports/2026-02/workspace_healer_260223_007.json
+A	rules/task-reports/envelopes/260223_007.envelope.json
+M	rules/task-reports/index/error_stats.jsonl
+M	rules/task-reports/index/runs_index.jsonl
+A	rules/task-reports/locks/260223_007.lock.json
+A	rules/task-reports/runs/260223_007/20260223_260223_007_fix/.budget_260223_007.json
+A	rules/task-reports/runs/260223_007/20260223_260223_007_fix/260223_007.json
+A	rules/task-reports/runs/260223_007/20260223_260223_007_fix/260223_007_healthcheck_53122_pairs.txt
+A	rules/task-reports/runs/260223_007/20260223_260223_007_fix/260223_007_healthcheck_53122_root.txt
+A	rules/task-reports/runs/260223_007/20260223_260223_007_fix/auto_pr_260223_007.json
+A	rules/task-reports/runs/260223_007/20260223_260223_007_fix/ci_parity_260223_007.json
+A	rules/task-reports/runs/260223_007/20260223_260223_007_fix/contract_self_check_260223_007.txt
+A	rules/task-reports/runs/260223_007/20260223_260223_007_fix/deliverables_index_260223_007.json
+A	rules/task-reports/runs/260223_007/20260223_260223_007_fix/dod_evidence_260223_007.txt
+A	rules/task-reports/runs/260223_007/20260223_260223_007_fix/errors_260223_007.jsonl
+A	rules/task-reports/runs/260223_007/20260223_260223_007_fix/errors_summary_260223_007.txt
+A	rules/task-reports/runs/260223_007/20260223_260223_007_fix/escalation_260223_007.md
+A	rules/task-reports/runs/260223_007/20260223_260223_007_fix/evidence_manifest_260223_007.json
+A	rules/task-reports/runs/260223_007/20260223_260223_007_fix/gate_light_preview_260223_007.log
+A	rules/task-reports/runs/260223_007/20260223_260223_007_fix/gate_light_preview_260223_007.txt
+A	rules/task-reports/runs/260223_007/20260223_260223_007_fix/gate_light_profile_260223_007.json
+A	rules/task-reports/runs/260223_007/20260223_260223_007_fix/generate_evidence_260223_007.mjs
+A	rules/task-reports/runs/260223_007/20260223_260223_007_fix/git_meta_260223_007.json
+A	rules/task-reports/runs/260223_007/20260223_260223_007_fix/manual_verification_260223_007.json
+A	rules/task-reports/runs/260223_007/20260223_260223_007_fix/notify_260223_007.txt
+A	rules/task-reports/runs/260223_007/20260223_260223_007_fix/open_pr_guard_260223_007.json
+A	rules/task-reports/runs/260223_007/20260223_260223_007_fix/preflight_attestation_260223_007.json
+A	rules/task-reports/runs/260223_007/20260223_260223_007_fix/preview_cmp_260223_007.txt
+A	rules/task-reports/runs/260223_007/20260223_260223_007_fix/result_260223_007.json
+A	rules/task-reports/runs/260223_007/20260223_260223_007_fix/run_260223_007.log
+A	rules/task-reports/runs/260223_007/20260223_260223_007_fix/run_chain_260223_007.jsonl
+A	rules/task-reports/runs/260223_007/20260223_260223_007_fix/speed_top5_260223_007.txt
+A	rules/task-reports/runs/260223_007/20260223_260223_007_fix/speed_wall_260223_007.json
+A	rules/task-reports/runs/260223_007/20260223_260223_007_fix/trae_report_snippet_260223_007.txt
+A	rules/task-reports/runs/260223_007/20260223_260223_007_fix/workspace_healer_260223_007.json
 M	scripts/assemble_evidence.mjs
-A	scripts/ops_git_stage_task_evidence.mjs
+M	scripts/gate_light_ci.mjs
+M	scripts/ops_git_stage_task_evidence.mjs
 A	scripts/ops_scan_text.mjs
 M	scripts/postflight_validate_envelope.mjs
+M	scripts/run_task.ps1
+M	scripts/safe_commit.ps1
+M	scripts/safe_push.ps1
 
 === DOD_EVIDENCE_STDOUT ===
 Task: 260223_007
@@ -39,10 +82,10 @@ DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260223_007_healthcheck_53122_pairs.txt => HTTP/1
 
 === CI_PARITY_PREVIEW ===
 Base: 0128d9f
-Head: d7318062
+Head: 005e879
 MergeBase: 0128d9f
 Source: JSON (Evidence-as-Code)
-Scope: 8 files
+Scope: 51 files
 Files (Top 3):
   - .github/workflows/gate-light.yml
   - rules/LATEST.json
@@ -50,7 +93,6 @@ Files (Top 3):
   ... (truncated)
 =========================
 
-=== GATE_LIGHT_PREVIEW ===
 [Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
 [Gate Light] Target locked via argument: 260223_007
 [Gate Light] LATEST.json consistency verified.
@@ -128,4 +170,3 @@ Files (Top 3):
 [Postflight] Envelope: E:\OppRadar\rules\task-reports\envelopes\260223_007.envelope.json
 [Postflight] PASS
 [Gate Light] PASS
-GATE_LIGHT_EXIT=0
