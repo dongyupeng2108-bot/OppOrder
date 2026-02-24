@@ -2,7 +2,7 @@
   "task_id": "260223_007",
   "is_shallow_repo": false,
   "base": "0128d9f644fcae29002d5a3bd213ffa820c2e86b",
-  "head": "070280af329f0f26a7b559444be3a492395ab87c",
+  "head": "7d2baf80244aadf0d65c62f1766febd1b0ce4f99",
   "merge_base": "0128d9f644fcae29002d5a3bd213ffa820c2e86b",
   "scope_files": [
     ".github/workflows/gate-light.yml",
@@ -50,8 +50,11 @@
     "scripts/gate_light_ci.mjs",
     "scripts/ops_git_stage_task_evidence.mjs",
     "scripts/ops_scan_text.mjs",
-    "scripts/postflight_validate_envelope.mjs"
+    "scripts/postflight_validate_envelope.mjs",
+    "scripts/run_task.ps1",
+    "scripts/safe_commit.ps1",
+    "scripts/safe_push.ps1"
   ],
-  "scope_count": 46,
-  "generated_at": "2026-02-24T02:02:07.133Z"
+  "scope_count": 49,
+  "generated_at": "2026-02-24T03:51:37.812Z"
 }
