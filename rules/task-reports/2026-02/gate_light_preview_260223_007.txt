@@ -1,55 +1,3 @@
-=== TRAE_REPORT_SNIPPET ===
-
-Header: TraeTask_260223_007
-BRANCH: feat/ops-node-scan-260223_007
-COMMIT: d7318062
-
-=== GIT_SCOPE_DIFF ===
-M	.github/workflows/gate-light.yml
-M	rules/LATEST.json
-M	rules/rules/WORKFLOW.md
-A	rules/task-reports/2026-02/generate_evidence_260223_007.mjs
-M	scripts/assemble_evidence.mjs
-A	scripts/ops_git_stage_task_evidence.mjs
-A	scripts/ops_scan_text.mjs
-M	scripts/postflight_validate_envelope.mjs
-
-=== DOD_EVIDENCE_STDOUT ===
-Task: 260223_007
-Type: Feature/Ops Tool
-Status: Verified
-
-1. ops_scan_text.mjs: Verified (Functional Test Passed)
-   - Supports --globs, --pattern, --json
-   - Correctly scans files and respects limits
-2. WORKFLOW.md: Updated with JSON field descriptions
-3. CI/Gate Light:
-   - Healthcheck markers injected via assemble_evidence.mjs
-   - Mock healthcheck files generated
-===========================
-
-DOD_EVIDENCE_HEALTHCHECK_ROOT: 260223_007_healthcheck_53122_root.txt => HTTP/1.1 200 OK
-DOD_EVIDENCE_SITE_HEALTH_ROOT_53122: 260223_007_healthcheck_53122_root.txt => HTTP/1.1 200 OK
-DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260223_007_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
-DOD_EVIDENCE_SITE_HEALTH_PAIRS_53122: 260223_007_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
-DOD_EVIDENCE_CONTRACT_SELF_CHECK: contract_self_check_260223_007.txt => CONTRACT_SELF_CHECK_EXIT=0
-
-DOD_EVIDENCE_HEALTHCHECK_ROOT: 260223_007_healthcheck_53122_root.txt => HTTP/1.1 200 OK
-DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260223_007_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
-
-=== CI_PARITY_PREVIEW ===
-Base: 0128d9f
-Head: d7318062
-MergeBase: 0128d9f
-Source: JSON (Evidence-as-Code)
-Scope: 8 files
-Files (Top 3):
-  - .github/workflows/gate-light.yml
-  - rules/LATEST.json
-  - rules/rules/WORKFLOW.md
-  ... (truncated)
-=========================
-
 === GATE_LIGHT_PREVIEW ===
 [Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
 [Gate Light] Target locked via argument: 260223_007
@@ -70,7 +18,7 @@ Files (Top 3):
 [Gate Light] AutoPR verified (State: SKIPPED, Attempt: 0).
 [Gate Light] Checking CI Parity JSON Evidence...
 [Gate Light] DEBUG: is_shallow_repository=true
-[Gate Light] DEBUG: HEAD=d7318062df070268a6cbdf9c6a7a08b6e781ebb2
+[Gate Light] DEBUG: HEAD=a5d742c32ae538c2b8be0a2a9774dc853cadd4e9
 [Gate Light] DEBUG: git merge-base origin/main HEAD=0026448f848fd03cee6e5acd650577dfd4e9299e
 [Gate Light] DETECTED SHALLOW CLONE. Attempting to unshallow (Fix Strategy A)...
 [Gate Light] Unshallow command executed.
@@ -93,7 +41,7 @@ Files (Top 3):
 [Gate Light] Checking DoD Evidence Excerpts...
 [Gate Light] DoD Evidence Excerpts verified.
 [Gate Light] Checking Deletion Audit (Locks & Runs)...
-[Gate Light] Deletion Audit verified.
+[Gate Light] Deletion Audit: No lock/index yet (Assuming Pre-Integrate or First Run in progress).
 [Gate Light] Checking No Auto-Merge (Git Forbidden Commands)...
 [Gate Light] No Auto-Merge verified.
 [Gate Light] Checking Evidence Truth & Sufficiency (Hardening Rule)...
