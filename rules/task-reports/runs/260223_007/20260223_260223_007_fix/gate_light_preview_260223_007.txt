@@ -1,3 +1,4 @@
+=== GATE_LIGHT_PREVIEW ===
 [Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
 [Gate Light] Target locked via argument: 260223_007
 [Gate Light] LATEST.json consistency verified.
@@ -75,3 +76,4 @@
 [Postflight] Envelope: E:\OppRadar\rules\task-reports\envelopes\260223_007.envelope.json
 [Postflight] PASS
 [Gate Light] PASS
+GATE_LIGHT_EXIT=0
