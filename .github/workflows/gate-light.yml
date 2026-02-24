@@ -381,11 +381,14 @@ jobs:
             echo "HTTP/1.1 200 OK" > "$EVIDENCE_DIR/${TASK_ID}_healthcheck_53122_root.txt"
             echo "HTTP/1.1 200 OK" > "$EVIDENCE_DIR/${TASK_ID}_healthcheck_53122_pairs.txt"
 
-            # 1.6 Generate Gate Light Preview (Reconstruct from TXT if exists)
+            # 1.6 Generate Gate Light Preview (keep valid log; else reconstruct from TXT)
             PREVIEW_TXT="${EVIDENCE_DIR}/gate_light_preview_${TASK_ID}.txt"
             PREVIEW_LOG="${EVIDENCE_DIR}/gate_light_preview_${TASK_ID}.log"
 
-            if [ -f "$PREVIEW_TXT" ]; then
+            # Check if log is valid (contains [Gate Light] and GATE_LIGHT_EXIT=) before overwriting
+            if [ -f "$PREVIEW_LOG" ] && grep -q "\[Gate Light\]" "$PREVIEW_LOG" && grep -q "GATE_LIGHT_EXIT=" "$PREVIEW_LOG"; then
+              echo "Preview log already valid. Keep existing."
+            elif [ -f "$PREVIEW_TXT" ]; then
               echo "[Gate Light] Preview Evidence (from PREVIEW_TXT)" > "$PREVIEW_LOG"
               cat "$PREVIEW_TXT" >> "$PREVIEW_LOG"
               echo "GATE_LIGHT_EXIT=0" >> "$PREVIEW_LOG"
