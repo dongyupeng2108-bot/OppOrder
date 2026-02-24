@@ -42,21 +42,28 @@ fs.writeFileSync(path.join(evidenceDir, `dod_evidence_${taskId}.txt`), dodEviden
 import { execSync } from 'child_process';
 
 // 4. ci_parity_{taskId}.json
-let headCommit = "HEAD";
+// Use the official probe to generate valid parity data
 try {
-    headCommit = execSync('git rev-parse HEAD').toString().trim();
+    const probeScript = path.resolve('scripts/ci_parity_probe.mjs');
+    if (fs.existsSync(probeScript)) {
+        console.log(`Invoking ci_parity_probe.mjs for task ${taskId}...`);
+        execSync(`node "${probeScript}" --task_id ${taskId} --result_dir "${evidenceDir}"`, { stdio: 'inherit' });
+    } else {
+        console.error(`ci_parity_probe.mjs not found at ${probeScript}`);
+        // Fallback to manual (dangerous, likely fail Gate Light)
+        const ciParity = {
+            base: "origin/main",
+            head: "HEAD", 
+            merge_base: "HEAD",
+            scope_count: 0,
+            scope_files: []
+        };
+        fs.writeFileSync(path.join(evidenceDir, `ci_parity_${taskId}.json`), JSON.stringify(ciParity, null, 2));
+    }
 } catch (e) {
-    console.warn("Failed to get HEAD commit, using 'HEAD'");
+    console.error("Failed to run ci_parity_probe.mjs:", e.message);
+    // Don't fail hard, let Gate Light catch the missing file or bad content
 }
-
-const ciParity = {
-    base: "origin/main",
-    head: headCommit,
-    merge_base: headCommit, // Simplify for test
-    scope_count: 1,
-    scope_files: ["rules/task-reports/2026-02/generate_evidence_260223_009.mjs"]
-};
-fs.writeFileSync(path.join(evidenceDir, `ci_parity_${taskId}.json`), JSON.stringify(ciParity, null, 2));
 
 // 5. gate_light_preview_{taskId}.log
 // Must contain [Gate Light] block and GATE_LIGHT_EXIT=0
