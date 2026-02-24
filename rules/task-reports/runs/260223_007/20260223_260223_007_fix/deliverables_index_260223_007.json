@@ -5,7 +5,7 @@
     {
       "name": "ci_parity_260223_007.json",
       "size": 4036,
-      "sha256_short": "dfcd1eac"
+      "sha256_short": "7bcf4bfa"
     },
     {
       "name": "gate_light_preview_260223_007.log",
@@ -50,7 +50,7 @@
     {
       "name": "errors_summary_260223_007.txt",
       "size": 407,
-      "sha256_short": "98bfb447"
+      "sha256_short": "e7c9458c"
     },
     {
       "name": "notify_260223_007.txt",
