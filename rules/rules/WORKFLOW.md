@@ -147,8 +147,12 @@ task_id（任务标识）允许格式：`YYMMDD_NNN` + 可选 1 位字母后缀�
 ### Stop-on-hardstop（硬停）
 1. **触发条件**：ERROR_CLASS 或 FAIL_REASON 命中不可自愈（Non-self-healable）或硬停清单。
 2. **立即停止**：外层流程立刻停止，不再执行 AutoPR（自动 PR）、AutoFix（自动修复）、Task ID（任务标识）自动变更或重跑。
-3. **最短事实块**：仅输出三行：HARD_STOP=1；HARD_STOP_REASON=...；NEXT_ACTION=STOP_AND_REPORT。
-4. **Dev 冒烟**：仅 Dev 模式允许 HARD_STOP_SIMULATE（硬停冒烟）环境变量触发；Integrate（集成）/CI（持续集成）禁止生效。
+3. **HardStop Latch（硬停闩锁）**：
+   *   **机制**：一旦硬停触发，系统会在 `rules/task-reports/<YYYY-MM>/.hardstop_latch_<task_id>.json` 写入闩锁文件。
+   *   **作用**：该文件存在期间，禁止该 Task ID 进行任何后续操作（`run_task` 重跑、`safe_commit`、`safe_push`）。
+   *   **解除**：Integrate 模式下禁止解除（必须换新 Task ID）；Dev 模式下修复根因后可手动删除。
+4. **最短事实块**：仅输出三行：HARD_STOP=1；HARD_STOP_REASON=...；NEXT_ACTION=STOP_AND_REPORT。
+5. **Dev 冒烟**：仅 Dev 模式允许 HARD_STOP_SIMULATE（硬停冒烟）环境变量触发；Integrate（集成）/CI（持续集成）禁止生效。
 
 ### Cleanup Discipline & Hard Stop Protocol (清理纪律与硬停协议)
 
