@@ -2,7 +2,13 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const repoRoot = path.resolve(__dirname, '..');
+
 // Usage: node ops_git_stage_task_evidence.mjs --task_id <id> --evidence_dir <dir> [--run_id <id>]
+
 
 const args = process.argv.slice(2);
 const taskId = getArgValue(args, '--task_id');
@@ -34,29 +40,30 @@ try {
     if (fs.existsSync(evidenceDir)) {
         const files = fs.readdirSync(evidenceDir);
         files.forEach(file => {
-            if (file.startsWith(taskId)) {
+            // Stage standard task files (taskId_*) AND workspace_healer (workspace_healer_taskId.json)
+            if (file.startsWith(taskId) || file === `workspace_healer_${taskId}.json`) {
                 filesToStage.push(path.join(evidenceDir, file));
             }
         });
     }
 
     // 2. Lock file
-    const lockFile = `rules/task-reports/locks/${taskId}.lock.json`;
+    const lockFile = path.join(repoRoot, `rules/task-reports/locks/${taskId}.lock.json`);
     if (fs.existsSync(lockFile)) {
         filesToStage.push(lockFile);
     }
 
     // 3. Index file (Always check if it exists)
-    const indexFile = `rules/task-reports/index/deliverables_index.jsonl`;
+    const indexFile = path.join(repoRoot, `rules/task-reports/index/deliverables_index.jsonl`);
     if (fs.existsSync(indexFile)) {
          filesToStage.push(indexFile);
     }
     
     // 4. Run logs (if runId provided)
     if (runId) {
-        const runDir = `rules/task-reports/runs/${taskId}/${runId}`;
+        const runDir = path.join(repoRoot, `rules/task-reports/runs/${taskId}/${runId}`);
         // Try direct runId path first (legacy/flat)
-        let runDirToStage = `rules/task-reports/runs/${runId}`;
+        let runDirToStage = path.join(repoRoot, `rules/task-reports/runs/${runId}`);
         
         if (fs.existsSync(runDir)) {
              runDirToStage = runDir;
@@ -71,14 +78,16 @@ try {
 
     // 5. Extra files specifically for 260223_007 and future standards
     const extraFiles = [
-        'rules/LATEST.json',
-        'rules/task-reports/index/error_stats.jsonl',
-        'rules/task-reports/index/runs_index.jsonl',
-        'scripts/ops_scan_text.mjs',
-        'rules/rules/WORKFLOW.md',
-        'scripts/assemble_evidence.mjs',
-        'scripts/postflight_validate_envelope.mjs',
-        '.github/workflows/gate-light.yml'
+        path.join(repoRoot, 'rules/LATEST.json'),
+        path.join(repoRoot, 'rules/task-reports/index/error_stats.jsonl'),
+        path.join(repoRoot, 'rules/task-reports/index/runs_index.jsonl'),
+        path.join(repoRoot, 'scripts/ops_scan_text.mjs'),
+        path.join(repoRoot, 'rules/rules/WORKFLOW.md'),
+        path.join(repoRoot, 'scripts/assemble_evidence.mjs'),
+        path.join(repoRoot, 'scripts/postflight_validate_envelope.mjs'),
+        path.join(repoRoot, '.github/workflows/gate-light.yml'),
+        path.join(repoRoot, 'scripts/run_task.ps1'),
+        path.join(repoRoot, 'scripts/ops_git_stage_task_evidence.mjs')
     ];
     
     extraFiles.forEach(f => {

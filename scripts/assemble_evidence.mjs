@@ -2,6 +2,11 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const repoRoot = path.resolve(__dirname, '..');
 
 /**
  * Evidence Assembler (V3.9 Standard)
@@ -36,7 +41,7 @@ if (!taskId) {
 }
 
 const resolvePath = (filename) => path.resolve(evidenceDir, filename);
-const repoRoot = path.resolve(evidenceDir, '../../..');
+// const repoRoot = path.resolve(evidenceDir, '../../..');
 
 // --- 3) Define Inputs (Single Sources of Truth) ---
 const inputs = {
@@ -925,7 +930,6 @@ if (mode === 'Integrate' && phase === 'archive') {
             process.exit(0);
         }
 
-        const repoRoot = path.resolve(evidenceDir, '../../..'); // E:\OppRadar
         const lockPath = path.join(repoRoot, 'rules/task-reports/locks', `${taskId}.lock.json`);
 
         if (fs.existsSync(lockPath)) {
@@ -955,6 +959,10 @@ if (mode === 'Integrate' && phase === 'archive') {
 
             // 9.3. Update Runs Index
             const indexFile = path.join(repoRoot, 'rules/task-reports/index/runs_index.jsonl');
+            const indexDir = path.dirname(indexFile);
+            if (!fs.existsSync(indexDir)) {
+                fs.mkdirSync(indexDir, { recursive: true });
+            }
             const indexEntry = {
                 task_id: taskId,
                 run_id: runTimestamp,

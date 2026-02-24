@@ -98,6 +98,17 @@ Before starting any new task, the Agent MUST perform these checks:
 
 ### Fix-Front 排查顺序（Front-of-Queue）
 1. 只修当前最前失败点；一次修复=一次最小提交；禁止并行混修。
+
+### Evidence Archiving & Staging Discipline (证据归档与暂存纪律)
+1. **Archive Truth (归档即事实)**:
+   - In `Integrate` mode, `run_task.ps1` MUST ensure all key evidence (including `workspace_healer_<task_id>.json` and run logs) is archived to `rules/task-reports/runs/<task_id>/<run_id>/`.
+   - The `runs` directory is the **Source of Truth** for the specific execution.
+
+2. **Automated Staging (自动化暂存)**:
+   - **No Manual Force-Add**: Users and scripts MUST NOT manually execute `git add -f` to stage evidence files.
+   - **Unified Tooling**: All evidence staging MUST use `scripts/ops_git_stage_task_evidence.mjs`. This tool handles force-add logic internally and ensures all required files (including ignored ones like `workspace_healer`) are staged.
+   - **Run Task Integration**: `run_task.ps1` automatically calls the staging tool after a successful Integrate run, ensuring the repository is "Commit-Ready" without manual intervention.
+
 2. 修复后必须本地重建相关证据并触发 CI 复验。
 3. 适用于 Integrate（集成）修复回环场景。
 

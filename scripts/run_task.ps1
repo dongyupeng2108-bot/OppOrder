@@ -1107,6 +1107,13 @@ if ($Mode -eq "Integrate") {
     Invoke-Step -Name "Archive & Lock" -Cmd $ArchiveCmd
     Write-Host "    Archived evidence and locked task." -ForegroundColor Gray
 
+    # --- Step 8.3: Stage Evidence ---
+    if ($Mode -eq "Integrate") {
+        $StageCmd = @("node", "$RepoRoot\scripts\ops_git_stage_task_evidence.mjs", "--task_id=$TaskId", "--evidence_dir=$EvidenceDir", "--run_id=$RunId")
+        Invoke-Step -Name "Stage Evidence" -Cmd $StageCmd
+        Write-Host "    Staged evidence (including workspace_healer & run logs)." -ForegroundColor Gray
+    }
+
 }
 
 Write-Host ">>> [RunTask] SUCCESS: Task $TaskId ($Mode) Completed." -ForegroundColor Green
