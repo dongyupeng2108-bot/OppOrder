@@ -1,0 +1,11 @@
+{
+  "commit": "HEAD",
+  "branch": "feat/ops-node-write-stage-260223_006",
+  "files_changed": [
+    "scripts/ops_git_stage_task_evidence.mjs",
+    "scripts/ops_write_file.mjs",
+    "scripts/ops_exists.mjs",
+    "rules/rules/WORKFLOW.md",
+    "scripts/run_task.ps1"
+  ]
+}
