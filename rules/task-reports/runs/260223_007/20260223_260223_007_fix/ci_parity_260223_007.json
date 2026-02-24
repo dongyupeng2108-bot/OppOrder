@@ -2,7 +2,7 @@
   "task_id": "260223_007",
   "is_shallow_repo": false,
   "base": "0128d9f644fcae29002d5a3bd213ffa820c2e86b",
-  "head": "d7318062df070268a6cbdf9c6a7a08b6e781ebb2",
+  "head": "005e879dea4cea17f36144067ff0ac66f44eb138",
   "merge_base": "0128d9f644fcae29002d5a3bd213ffa820c2e86b",
   "scope_files": [
     ".github/workflows/gate-light.yml",
@@ -11,7 +11,9 @@
     "rules/task-reports/2026-02/ci_parity_260223_007.json",
     "rules/task-reports/2026-02/deliverables_index_260223_007.json",
     "rules/task-reports/2026-02/evidence_manifest_260223_007.json",
+    "rules/task-reports/2026-02/gate_light_preview_260223_007.txt",
     "rules/task-reports/2026-02/generate_evidence_260223_007.mjs",
+    "rules/task-reports/2026-02/workspace_healer_260223_007.json",
     "rules/task-reports/envelopes/260223_007.envelope.json",
     "rules/task-reports/index/error_stats.jsonl",
     "rules/task-reports/index/runs_index.jsonl",
@@ -55,6 +57,6 @@
     "scripts/safe_commit.ps1",
     "scripts/safe_push.ps1"
   ],
-  "scope_count": 49,
-  "generated_at": "2026-02-24T03:51:37.812Z"
+  "scope_count": 51,
+  "generated_at": "2026-02-24T16:43:50.965Z"
 }
