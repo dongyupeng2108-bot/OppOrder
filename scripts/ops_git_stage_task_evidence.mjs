@@ -19,6 +19,11 @@ function getArgValue(args, key) {
     if (index !== -1 && index + 1 < args.length) {
         return args[index + 1];
     }
+    // Fallback for '=' syntax
+    const found = args.find(a => a.startsWith(key + '='));
+    if (found) {
+        return found.split('=')[1];
+    }
     return null;
 }
 
@@ -49,11 +54,36 @@ try {
     
     // 4. Run logs (if runId provided)
     if (runId) {
-        const runDir = `rules/task-reports/runs/${runId}`;
+        const runDir = `rules/task-reports/runs/${taskId}/${runId}`;
+        // Try direct runId path first (legacy/flat)
+        let runDirToStage = `rules/task-reports/runs/${runId}`;
+        
         if (fs.existsSync(runDir)) {
-             filesToStage.push(runDir);
+             runDirToStage = runDir;
+        }
+        
+        if (fs.existsSync(runDirToStage)) {
+             filesToStage.push(runDirToStage);
+        } else {
+             console.warn(`[ops_git_stage] Run directory not found: ${runDir} or ${runDirToStage}`);
         }
     }
+
+    // 5. Extra files specifically for 260223_007 and future standards
+    const extraFiles = [
+        'rules/LATEST.json',
+        'rules/task-reports/index/error_stats.jsonl',
+        'rules/task-reports/index/runs_index.jsonl',
+        'scripts/ops_scan_text.mjs',
+        'rules/rules/WORKFLOW.md',
+        'scripts/assemble_evidence.mjs',
+        'scripts/postflight_validate_envelope.mjs',
+        '.github/workflows/gate-light.yml'
+    ];
+    
+    extraFiles.forEach(f => {
+        if (fs.existsSync(f)) filesToStage.push(f);
+    });
 
     if (filesToStage.length === 0) {
         console.log("[ops_git_stage] No evidence files found to stage.");

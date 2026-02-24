@@ -319,12 +319,16 @@ const hcPairs = resolvePath(`${taskId}_healthcheck_53122_pairs.txt`);
 if (fs.existsSync(hcRoot)) {
     // Read only first line or check content
     const content = fs.readFileSync(hcRoot, 'utf8').split('\n')[0].trim();
-    dodBlock += `\n\nDOD_EVIDENCE_HEALTHCHECK_ROOT: ${taskId}_healthcheck_53122_root.txt => ${content}`;
+    const line = `\n\nDOD_EVIDENCE_HEALTHCHECK_ROOT: ${taskId}_healthcheck_53122_root.txt => ${content}`;
+    console.log(`[Assemble] Adding Healthcheck Root Line: ${line.trim()}`);
+    dodBlock += line;
     dodBlock += `\nDOD_EVIDENCE_SITE_HEALTH_ROOT_53122: ${taskId}_healthcheck_53122_root.txt => ${content}`;
 }
 if (fs.existsSync(hcPairs)) {
     const content = fs.readFileSync(hcPairs, 'utf8').split('\n')[0].trim();
-    dodBlock += `\nDOD_EVIDENCE_HEALTHCHECK_PAIRS: ${taskId}_healthcheck_53122_pairs.txt => ${content}`;
+    const line = `\nDOD_EVIDENCE_HEALTHCHECK_PAIRS: ${taskId}_healthcheck_53122_pairs.txt => ${content}`;
+    console.log(`[Assemble] Adding Healthcheck Pairs Line: ${line.trim()}`);
+    dodBlock += line;
     dodBlock += `\nDOD_EVIDENCE_SITE_HEALTH_PAIRS_53122: ${taskId}_healthcheck_53122_pairs.txt => ${content}`;
 }
 
