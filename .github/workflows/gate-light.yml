@@ -215,7 +215,11 @@ jobs:
             echo "Preview already exists. Skip CI generation."
             exit 0
           fi
-          GENERATE_PREVIEW=1 node scripts/gate_light_ci.mjs --task_id "$TASK_ID" --result_dir "$EVIDENCE_DIR" > "$PREVIEW_LOG"
+          set +e
+          GENERATE_PREVIEW=1 node scripts/gate_light_ci.mjs --task_id "$TASK_ID" --result_dir "$EVIDENCE_DIR" > "$PREVIEW_LOG" 2>&1
+          rc=$?
+          echo "GATE_LIGHT_EXIT=$rc" >> "$PREVIEW_LOG"
+          set -e
           node scripts/extract_gate_light_preview.mjs --task_id="$TASK_ID" --log="$PREVIEW_LOG"
 
       - name: Verify Healthcheck Evidence
