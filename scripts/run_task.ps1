@@ -800,7 +800,7 @@ function Run-Evidence-Gen-And-Preview {
              node "$RepoRoot\scripts\ops_delete.mjs" "$EvidenceDir\gate_light_verify_$TaskId.log" --force
         }
 
-        $GenCmd = @("node", $GenerateScript.FullName)
+        $GenCmd = @("node", $GenerateScript.FullName, $EvidenceDir)
         $EffectiveTimeoutSec = $StepTimeoutSeconds
         if ($EffectiveTimeoutSec -le 0) { $EffectiveTimeoutSec = 300 }
         Write-Host "STEP_TIMEOUT_SEC=$EffectiveTimeoutSec step=Generate Evidence"
