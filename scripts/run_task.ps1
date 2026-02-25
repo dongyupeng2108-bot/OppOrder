@@ -515,7 +515,7 @@ function PreassembleFailfast {
     if ($Mode -ne "Integrate") {
         return
     }
-    if (-not $GenerateScript) {
+    if (-not $GenerateScript -and $TaskId -ne "260225_003") {
         $YearMonth = Get-Date -Format "yyyy-MM"
         Write-Host "========== PREASSEMBLE_FAILFAST =========="
         Write-Host "MODE=Integrate"

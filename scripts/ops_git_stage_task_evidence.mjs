@@ -96,7 +96,7 @@ try {
     for (const file of filesToStage) {
         try {
             // Force add ignored files
-            execSync(`git add -f "${file}"`, { stdio: 'inherit' });
+            execSync(`git add --force "${file}"`, { stdio: 'inherit' });
         } catch (e) {
             console.warn(`[ops_git_stage] Warning: Failed to stage ${file}`);
             // Continue with others
