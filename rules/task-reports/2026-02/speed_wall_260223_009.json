@@ -1,12 +1,12 @@
 {
     "task_id":  "260223_009",
-    "generated_at":  "2026-02-25T10:24:03.8350234+08:00",
-    "wall_total_ms":  142907,
-    "ci_watch_ms":  92724,
-    "ci_pass_at":  "2026-02-25T10:23:47.5638138+08:00",
-    "attempts":  2,
-    "failure_penalty_total_ms":  103843,
-    "first_ci_fail_watch_ms":  49351,
-    "autofix_apply_ms":  11119,
-    "second_ci_pass_watch_ms":  43373
+    "generated_at":  "2026-02-25T10:27:01.9453052+08:00",
+    "wall_total_ms":  7302,
+    "ci_watch_ms":  0,
+    "ci_pass_at":  "",
+    "attempts":  1,
+    "failure_penalty_total_ms":  0,
+    "first_ci_fail_watch_ms":  0,
+    "autofix_apply_ms":  0,
+    "second_ci_pass_watch_ms":  0
 }
