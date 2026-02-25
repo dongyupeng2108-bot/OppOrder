@@ -1,11 +1,11 @@
 {
   "task_id": "260223_009c",
-  "generated_at": "2026-02-25T05:27:37.458Z",
+  "generated_at": "2026-02-25T05:28:37.413Z",
   "files": [
     {
       "name": "ci_parity_260223_009c.json",
       "size": 7427,
-      "sha256_short": "431fcad1"
+      "sha256_short": "88822908"
     },
     {
       "name": "gate_light_preview_260223_009c.log",
@@ -35,12 +35,12 @@
     {
       "name": "result_260223_009c.json",
       "size": 500,
-      "sha256_short": "c0f57cca"
+      "sha256_short": "5d33cae0"
     },
     {
       "name": "run_260223_009c.log",
-      "size": 9785,
-      "sha256_short": "2c6f5fc4"
+      "size": 17097,
+      "sha256_short": "87035cdc"
     },
     {
       "name": "errors_260223_009c.jsonl",
@@ -54,8 +54,8 @@
     },
     {
       "name": "notify_260223_009c.txt",
-      "size": 10313,
-      "sha256_short": "89d74f10"
+      "size": 10328,
+      "sha256_short": "fbbc14ec"
     },
     {
       "name": "preview_cmp_260223_009c.txt",
@@ -70,7 +70,7 @@
     {
       "name": "evidence_manifest_260223_009c.json",
       "size": 1019,
-      "sha256_short": "4888247d"
+      "sha256_short": "097e2557"
     },
     {
       "name": "contract_self_check_260223_009c.txt",
@@ -84,8 +84,8 @@
     },
     {
       "name": "auto_pr_260223_009c.json",
-      "size": 552,
-      "sha256_short": "bd42ff10"
+      "size": 607,
+      "sha256_short": "4c622687"
     },
     {
       "name": "260223_009c_healthcheck_53122_root.txt",
