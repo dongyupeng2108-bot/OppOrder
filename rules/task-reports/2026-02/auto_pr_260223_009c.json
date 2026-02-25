@@ -1,0 +1,25 @@
+{
+  "task_id": "260223_009c",
+  "branch": "feat/verification-260223_009c",
+  "pr_number": 175,
+  "pr_url": "https://github.com/dongyupeng2108-bot/OppOrder/pull/175",
+  "head": "feat/verification-260223_009c",
+  "base": "main",
+  "attempt": 1,
+  "autofix_max": 1,
+  "status": "OPEN",
+  "final_state": "FAIL",
+  "timestamp": "2026-02-25T05:39:28.563Z",
+  "checks_summary": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "pending": 0,
+    "details": [
+      "gate-light-check: FAILURE"
+    ]
+  },
+  "error": null,
+  "error_class": "GATE_LIGHT_FAILURE",
+  "fail_reason": "CI_CHECK_GATE_LIGHT_FAILED"
+}
