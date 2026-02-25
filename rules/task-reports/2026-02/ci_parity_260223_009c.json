@@ -2,14 +2,13 @@
   "task_id": "260223_009c",
   "is_shallow_repo": true,
   "base": "a43f3876961fa9ea7957d808644610876c1124e9",
-  "head": "ead89cccb2db478c2890155ca5107ae8b914cf6d",
+  "head": "de568c778e97160f230a49a771e9df699ba541bd",
   "merge_base": "8c4e9caaea5501b825ebeef420eeb23bb6c7889f",
   "scope_files": [
     "rules/LATEST.json",
     "rules/rules/WORKFLOW.md",
     "rules/task-reports/2026-02/.budget_260223_009.json",
     "rules/task-reports/2026-02/.budget_260223_009b.json",
-    "rules/task-reports/2026-02/.budget_260223_009c.json",
     "rules/task-reports/2026-02/260223_009.json",
     "rules/task-reports/2026-02/260223_009_healthcheck_53122_pairs.txt",
     "rules/task-reports/2026-02/260223_009_healthcheck_53122_root.txt",
@@ -61,7 +60,6 @@
     "rules/task-reports/2026-02/gate_light_preview_260223_009b.log",
     "rules/task-reports/2026-02/gate_light_preview_260223_009b.txt",
     "rules/task-reports/2026-02/gate_light_preview_260223_009bb.log",
-    "rules/task-reports/2026-02/gate_light_preview_260223_009c.log",
     "rules/task-reports/2026-02/gate_light_preview_260223_009c.txt",
     "rules/task-reports/2026-02/gate_light_profile_260223_009.json",
     "rules/task-reports/2026-02/gate_light_profile_260223_009a.json",
@@ -83,7 +81,6 @@
     "rules/task-reports/2026-02/notify_260223_009.txt",
     "rules/task-reports/2026-02/notify_260223_009a.txt",
     "rules/task-reports/2026-02/notify_260223_009b.txt",
-    "rules/task-reports/2026-02/notify_260223_009c.txt",
     "rules/task-reports/2026-02/open_pr_guard_260223_009.json",
     "rules/task-reports/2026-02/open_pr_guard_260223_009a.json",
     "rules/task-reports/2026-02/open_pr_guard_260223_009b.json",
@@ -91,7 +88,6 @@
     "rules/task-reports/2026-02/preflight_attestation_260223_009.json",
     "rules/task-reports/2026-02/preflight_attestation_260223_009a.json",
     "rules/task-reports/2026-02/preflight_attestation_260223_009b.json",
-    "rules/task-reports/2026-02/preflight_attestation_260223_009c.json",
     "rules/task-reports/2026-02/preview_cmp_260223_009.txt",
     "rules/task-reports/2026-02/preview_cmp_260223_009a.txt",
     "rules/task-reports/2026-02/preview_cmp_260223_009b.txt",
@@ -110,7 +106,6 @@
     "rules/task-reports/2026-02/trae_report_snippet_260223_009.txt",
     "rules/task-reports/2026-02/trae_report_snippet_260223_009a.txt",
     "rules/task-reports/2026-02/trae_report_snippet_260223_009b.txt",
-    "rules/task-reports/2026-02/trae_report_snippet_260223_009c.txt",
     "rules/task-reports/2026-02/workspace_healer_260223_009.json",
     "rules/task-reports/2026-02/workspace_healer_260223_009b.json",
     "rules/task-reports/envelopes/260223_009.envelope.json",
@@ -124,6 +119,6 @@
     "scripts/ops_git_stage_task_evidence.mjs",
     "scripts/run_task.ps1"
   ],
-  "scope_count": 118,
-  "generated_at": "2026-02-25T05:25:34.889Z"
+  "scope_count": 113,
+  "generated_at": "2026-02-25T05:27:18.745Z"
 }
