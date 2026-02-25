@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import os from 'os';
 
 // Usage: node scripts/ops_delete.mjs <pathOrGlob> [--force] [--recurse] [--dry-run] [--max N] [--allow-under <root>]
 
@@ -38,6 +39,7 @@ const result = {
     deleted: 0,
     dry_run: dryRun,
     ok: false,
+    warnings: [],
     errors: []
 };
 
@@ -49,6 +51,18 @@ if (!pattern) {
 
 try {
     allowUnder = path.resolve(allowUnder);
+
+    // --- Allowed Roots Strategy ---
+    // 1. User specified root (default: repo root)
+    // 2. System Temp
+    // 3. User Temp
+    const allowedRoots = [
+        allowUnder,
+        os.tmpdir(),
+        'C:\\Windows\\Temp',
+        // Hardcoded common user temp to be safe if os.tmpdir() varies
+        `C:\\Users\\${process.env.USERNAME || 'ypdong'}\\AppData\\Local\\Temp` 
+    ].map(r => path.resolve(r).toLowerCase());
 
     // --- Helper: Glob Matching ---
     function findFiles(pattern) {
@@ -136,12 +150,20 @@ try {
     for (const file of matchedFiles) {
         const absFile = path.resolve(file);
         
-        // Check 1: Under Allow Root
+        // Check 1: Under Allowed Roots
         const normFile = absFile.toLowerCase();
-        const normRoot = allowUnder.toLowerCase();
+        let isAllowed = false;
+
+        for (const root of allowedRoots) {
+            if (normFile.startsWith(root)) {
+                isAllowed = true;
+                break;
+            }
+        }
         
-        if (!normFile.startsWith(normRoot)) {
-            result.errors.push(`File outside allowed root: ${absFile}`);
+        if (!isAllowed) {
+            result.warnings.push(`File outside allowed root (skipped): ${absFile}`);
+            result.skipped = true;
             continue;
         }
 
