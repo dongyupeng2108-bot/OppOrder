@@ -1,0 +1,19 @@
+{
+  "task_id": "260225_002",
+  "status": "DONE",
+  "metrics": {
+    "pnl": 100,
+    "trades": 3
+  },
+  "summary": "Automation Pack V1 Validation for Task 260225_002",
+  "report_file": "notify_260225_002.txt",
+  "report_sha256_short": "b769d268",
+  "mode": "Integrate",
+  "dod_evidence": {
+    "gate_light_exit": 0,
+    "healthcheck": [
+      "rules/task-reports/2026-02/260225_002_healthcheck_53122_root.txt",
+      "rules/task-reports/2026-02/260225_002_healthcheck_53122_pairs.txt"
+    ]
+  }
+}
