@@ -884,8 +884,10 @@ if ($Mode -eq "Integrate") {
             Write-Host ">>> [RunTask] Step 8.9: AutoPR Pre-Commit" -ForegroundColor Cyan
             $SafeCommitScript = "$RepoRoot\scripts\safe_commit.ps1"
             $CommitMessage = "TraeTask_${TaskId}: integrate evidence"
+            # Quote the message to prevent argument splitting when passing to powershell -File
+            $CommitMessageArg = '"' + $CommitMessage + '"'
             
-            $CommitArgs = @("-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", $SafeCommitScript, "-Message", $CommitMessage)
+            $CommitArgs = @("-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", $SafeCommitScript, "-Message", $CommitMessageArg)
             $CommitCmd = @("powershell") + $CommitArgs
             
             Invoke-Step -Name "AutoPR Pre-Commit" -Cmd $CommitCmd
