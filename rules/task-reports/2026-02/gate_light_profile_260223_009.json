@@ -1,16 +1,16 @@
 {
   "task_id": "260223_009",
-  "generated_at": "2026-02-25T02:45:36.281Z",
+  "generated_at": "2026-02-25T02:47:41.898Z",
   "steps": [
     {
       "step": "doc_path_refs_scan",
-      "duration_ms": 117,
+      "duration_ms": 156,
       "file_count": 202,
       "line_count": 26469
     },
     {
       "step": "ps_cmd_static_scan",
-      "duration_ms": 66,
+      "duration_ms": 87,
       "file_count": 3,
       "line_count": 1552
     },

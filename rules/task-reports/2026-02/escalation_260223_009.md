@@ -10,28 +10,42 @@ PR_TASK_ID_DETECTED: 260223_009
 
 RECENT_FAIL_ROOT_CAUSE_BLOCK (TAIL 40):
 ```
-========== FAIL_ROOT_CAUSE_BLOCK ==========
-Step: AutoPR Pre-Commit
-Command: powershell -NonInteractive -ExecutionPolicy Bypass -File E:\OppRadar\scripts\safe_commit.ps1 -Message TraeTask_260223_009: integrate evidence
-Exit Code: EXCEPTION
---- STDERR (Tail 80) ---
-E:\OppRadar\scripts\safe_commit.ps1 : 找不到接受实际参数“integrate”的位置形式参数。
-    + CategoryInfo          : InvalidArgument: (:) [safe_commit.ps1]，ParentContainsErrorRecordException
-    + FullyQualifiedErrorId : PositionalParameterNotFound,safe_commit.ps1
+[DEBUG] Checking Evidence File: Label=Root, RefPath='260223_009_healthcheck_53122_root.txt'
+[DEBUG] Resolved EvPath: 'E:\OppRadar\rules\task-reports\2026-02\260223_009_healthcheck_53122_root.txt'
+[DEBUG] Checking Evidence File: Label=Pairs, RefPath='260223_009_healthcheck_53122_pairs.txt'
+[DEBUG] Resolved EvPath: 'E:\OppRadar\rules\task-reports\2026-02\260223_009_healthcheck_53122_pairs.txt'
+[Postflight] Report: E:\OppRadar\rules\task-reports\2026-02\260223_009.json
+[Postflight] Envelope: E:\OppRadar\rules\task-reports\envelopes\260223_009.envelope.json
+[Postflight] PASS
+[Extract Preview] Wrote preview to: E:\OppRadar\rules\task-reports\2026-02\gate_light_preview_260223_009.txt
+[Snippet Builder] Building report snippet for task 260223_009...
+[Snippet Builder] Wrote snippet to: E:\OppRadar\rules\task-reports\2026-02\trae_report_snippet_260223_009.txt
+[Snippet Builder] NOTE: Notify/Result/Index updates must be handled by the caller (dev_batch_mode).
+[Postflight] Validating 260223_009 in E:\OppRadar\rules\task-reports\2026-02...
+[Postflight] Running Evidence Smoke Test for 260223_009...
+[SmokeTest] Running Evidence Smoke Test for Task 260223_009 in E:\OppRadar\rules\task-reports\2026-02...
+[SmokeTest] PASS: All 23 required files exist and manifest is valid.
+[DEBUG] Healthcheck Root Match: DOD_EVIDENCE_HEALTHCHECK_ROOT: 260223_009_healthcheck_53122_root.txt =>
+[DEBUG] Healthcheck Pairs Match: DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260223_009_healthcheck_53122_pairs.txt =>
+[DEBUG] Checking Evidence File: Label=Root, RefPath='260223_009_healthcheck_53122_root.txt'
+[DEBUG] Resolved EvPath: 'E:\OppRadar\rules\task-reports\2026-02\260223_009_healthcheck_53122_root.txt'
+[DEBUG] Checking Evidence File: Label=Pairs, RefPath='260223_009_healthcheck_53122_pairs.txt'
+[DEBUG] Resolved EvPath: 'E:\OppRadar\rules\task-reports\2026-02\260223_009_healthcheck_53122_pairs.txt'
+[Postflight] Report: E:\OppRadar\rules\task-reports\2026-02\260223_009.json
+[Postflight] Envelope: E:\OppRadar\rules\task-reports\envelopes\260223_009.envelope.json
+[Postflight] PASS
 
-
---- STDOUT (Tail 80) ---
 --- Context ---
 Evidence Dir: E:\OppRadar\rules\task-reports\2026-02
 Task ID: 260223_009
 Mode: Integrate
 Branch: feat/evidence-fix-260223_009
-HEAD: 03cb8ccb
+HEAD: 785dfd70
 ==========================================
 
 
-PS>TerminatingError():“[RunTask] FAILED: Step 'AutoPR Pre-Commit' failed with exit code 1.”
-[RunTask] FAILED: Script execution error: [RunTask] FAILED: Step 'AutoPR Pre-Commit' failed with exit code 1.
+PS>TerminatingError():“[RunTask] FAILED: Step 'Update Evidence' failed with exit code 1.”
+[RunTask] FAILED: Script execution error: [RunTask] FAILED: Step 'Update Evidence' failed with exit code 1.
 HARD_STOP=1
 HARD_STOP_REASON=LOOP_DETECTED
 NEXT_ACTION=STOP_AND_REPORT

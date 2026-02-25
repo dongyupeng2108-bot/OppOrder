@@ -1,6 +1,6 @@
 {
   "task_id": "260223_009",
-  "generated_at": "2026-02-25T02:46:37.196Z",
+  "generated_at": "2026-02-25T02:47:44.606Z",
   "files": [
     {
       "name": "ci_parity_260223_009.json",
@@ -9,8 +9,8 @@
     },
     {
       "name": "gate_light_preview_260223_009.log",
-      "size": 5219,
-      "sha256_short": "87ecbbfe"
+      "size": 8741,
+      "sha256_short": "096cf5a5"
     },
     {
       "name": "dod_evidence_260223_009.txt",
@@ -35,27 +35,27 @@
     {
       "name": "result_260223_009.json",
       "size": 495,
-      "sha256_short": "cc79ea1d"
+      "sha256_short": "2cab12c8"
     },
     {
       "name": "run_260223_009.log",
-      "size": 15977,
-      "sha256_short": "2d1fd089"
+      "size": 25531,
+      "sha256_short": "dd68b8fd"
     },
     {
       "name": "errors_260223_009.jsonl",
       "size": 602,
-      "sha256_short": "a9ec8aba"
+      "sha256_short": "ecc52729"
     },
     {
       "name": "errors_summary_260223_009.txt",
       "size": 574,
-      "sha256_short": "6fca1dd7"
+      "sha256_short": "043a1b5c"
     },
     {
       "name": "notify_260223_009.txt",
-      "size": 10585,
-      "sha256_short": "c58a32e9"
+      "size": 14281,
+      "sha256_short": "ce5b867f"
     },
     {
       "name": "preview_cmp_260223_009.txt",
@@ -69,8 +69,8 @@
     },
     {
       "name": "evidence_manifest_260223_009.json",
-      "size": 996,
-      "sha256_short": "d2e50fa4"
+      "size": 1036,
+      "sha256_short": "766fe4d2"
     },
     {
       "name": "contract_self_check_260223_009.txt",
@@ -84,8 +84,8 @@
     },
     {
       "name": "auto_pr_260223_009.json",
-      "size": 604,
-      "sha256_short": "0793c17f"
+      "size": 549,
+      "sha256_short": "a6ad9e3f"
     },
     {
       "name": "260223_009_healthcheck_53122_root.txt",

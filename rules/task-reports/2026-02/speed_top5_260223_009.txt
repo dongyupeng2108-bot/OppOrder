@@ -1,7 +1,7 @@
 task_id=260223_009
-generated_at=2026-02-25T10:43:55.1249686+08:00
-assemble_evidence=3956
-total=39582
-wall_total_ms=39582
-preflight=3470
-workspace_healer=3971
+generated_at=2026-02-25T10:47:42.6575258+08:00
+postflight=290
+ci_watch=99610
+wall_total_ms=140472
+total=156896
+pass2_verify=15816
