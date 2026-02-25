@@ -1,0 +1,11 @@
+﻿{
+    "mode":  "Integrate",
+    "branch":  "TraeTask_260225_003",
+    "write_allowed":  true,
+    "input_hash_short":  "960e6f5a",
+    "header":  "TraeTask_260225_003 HardStop Latch Implementation",
+    "commit":  "e8103c00",
+    "task_id":  "260225_003",
+    "header_detected":  true,
+    "timestamp":  "2026-02-26 00:18:02 UTC"
+}

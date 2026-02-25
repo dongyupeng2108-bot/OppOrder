@@ -1,0 +1,25 @@
+{
+  "task_id": "260225_003",
+  "branch": "TraeTask_260225_003",
+  "pr_number": 179,
+  "pr_url": "https://github.com/dongyupeng2108-bot/OppOrder/pull/179",
+  "head": "TraeTask_260225_003",
+  "base": "main",
+  "attempt": 1,
+  "autofix_max": 1,
+  "status": "OPEN",
+  "final_state": "FAIL",
+  "timestamp": "2026-02-25T16:19:58.307Z",
+  "checks_summary": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "pending": 0,
+    "details": [
+      "gate-light-check: FAILURE"
+    ]
+  },
+  "error": null,
+  "error_class": "GATE_LIGHT_FAILURE",
+  "fail_reason": "CI_CHECK_GATE_LIGHT_FAILED"
+}

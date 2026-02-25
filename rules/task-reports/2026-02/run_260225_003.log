@@ -1,0 +1,257 @@
+﻿**********************
+Windows PowerShell 脚本开始
+开始时间: 20260226001759
+用户名: DESKTOP-BOHP945\ypdong
+RunAs 用户: DESKTOP-BOHP945\ypdong
+配置名称: 
+计算机: DESKTOP-BOHP945 (Microsoft Windows NT 10.0.19045.0)
+主机应用程序: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -File scripts/run_task.ps1 -TaskId 260225_003 -Mode Integrate -Header TraeTask_260225_003 HardStop Latch Implementation
+进程 ID: 12136
+PSVersion: 5.1.19041.6456
+PSEdition: Desktop
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.19041.6456
+BuildVersion: 10.0.19041.6456
+CLRVersion: 4.0.30319.42000
+WSManStackVersion: 3.0
+PSRemotingProtocolVersion: 2.3
+SerializationVersion: 1.1.0.1
+**********************
+已启动脚本，输出文件为 E:\OppRadar\rules\task-reports\2026-02\run_260225_003.log
+>>> [RunTask] Step 1: Preflight
+>>> [RunTask] Step: Preflight
+[Preflight] Starting checks for TaskId: 260225_003 | Mode: Integrate | Header: TraeTask_260225_003 HardStop Latch Implementation
+[Preflight] Header 'TraeTask_260225_003 HardStop Latch Implementation' => Execution Allowed.
+[Preflight] Git Status: Clean | Branch: TraeTask_260225_003
+[Preflight] Git Status: Clean | Branch: TraeTask_260225_003
+[Preflight] WARNING: Artifact 'result_260225_003.json' already exists. Overwriting allowed in Dev/Integrate flow, but ensure this is intentional.
+[Preflight] Checking Port 53122 Health...
+[Preflight] Port 53122 is Healthy.
+[Preflight] Attestation generated at: E:\OppRadar\rules\task-reports\2026-02\preflight_attestation_260225_003.json
+[Preflight] PASS
+
+
+>>> [RunTask] Step 1.1: Update LATEST.json
+    Updated rules/LATEST.json to 260225_003
+>>> [RunTask] Step 1.2: Open PR Guard
+>>> [RunTask] Step: Open PR Guard
+Wrote Open PR Guard evidence to E:\OppRadar\rules\task-reports\2026-02\open_pr_guard_260225_003.json
+
+
+    Open PR Guard PASS. Output: E:\OppRadar\rules\task-reports\2026-02\open_pr_guard_260225_003.json
+>>> [RunTask] Step 1.3: Contract Verification First
+>>> [RunTask] Step: Contract Verification
+[Contract First] Starting Early Contract Verification...
+[Contract First] Verifying Rank V2 (/opportunities/rank_v2?limit=5&provider=mock)...
+[Contract First] PASS: Rank V2
+[Contract First] Verifying Export V1 (/opportunities/runs/export_v1?limit=5)...
+[Contract First] PASS: Export V1
+[Contract First] Verifying Ledger V0 (/opportunities/ledger/query_v0?limit=5)...
+[Contract First] PASS: Ledger V0
+[Contract First] All Contracts Verified Successfully.
+
+
+>>> [RunTask] Step 1.5: Healthcheck Evidence
+>>> [RunTask] Step: Healthcheck Root
+
+
+>>> [RunTask] Step: Healthcheck Pairs
+
+
+>>> [RunTask] Step 1.6: CI Parity Probe
+>>> [RunTask] Step: CI Parity Probe
+[CI Parity Probe] Running for task 260225_003 (JSON Mode)...
+[CI Parity Probe] Evidence written to: E:\OppRadar\rules\task-reports\2026-02\ci_parity_260225_003.json
+From https://github.com/dongyupeng2108-bot/OppOrder
+ * branch              main       -> FETCH_HEAD
+
+
+[State] GENERATING EVIDENCE...
+>>> [RunTask] Step 2: Generate Evidence
+STEP_TIMEOUT_SEC=120 step=Generate Evidence
+>>> [RunTask] Step: Generate Evidence
+[GenerateEvidence] Running regression script: E:\OppRadar\scripts\regress_hardstop_latch_260225_003.mjs
+[GenerateEvidence] Regression PASSED.
+[GenerateEvidence] Wrote dod_evidence to: E:\OppRadar\rules\task-reports\2026-02\dod_evidence_260225_003.txt
+[GenerateEvidence] Wrote git_meta to: E:\OppRadar\rules\task-reports\2026-02\git_meta_260225_003.json
+[GenerateEvidence] Wrote result to: E:\OppRadar\rules\task-reports\2026-02\result_260225_003.json
+(node:29332) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///E:/OppRadar/rules/task-reports/2026-02/generate_evidence_260225_003.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to E:\OppRadar\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[State] VERIFYING (Pass 1)...
+>>> [RunTask] Step 3: Pass 1 - Gate Light Preview
+>>> [RunTask] Step: Pass 1 - Gate Light Preview
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260225_003
+PR_TASK_ID_DETECTED=260225_003
+TARGET_TASK_ID=260225_003
+LATEST_TASK_ID=260225_003
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] Verifying task_id: 260225_003
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Checking Workspace Healer Evidence...
+[Gate Light] Workspace Healer verified (Clean Environment).
+[Gate Light] Checking CI Parity JSON Evidence...
+[Gate Light] DEBUG: is_shallow_repository=true
+[Gate Light] DEBUG: HEAD=e8103c00e32f45731576f0b18a54ae2184fa078c
+[Gate Light] DEBUG: git merge-base origin/main HEAD=4513f9cf9614e15abf8869426eeafd3bfe2c1bb9
+[Gate Light] DETECTED SHALLOW CLONE. Attempting to unshallow (Fix Strategy A)...
+[Gate Light] Unshallow command executed.
+[Gate Light] CI Parity JSON Evidence verified.
+[Gate Light] Skipping Error Digest Validation (Preview Mode).
+[Gate Light] Checking doc path standards...
+[Gate Light] Doc path standards verified.
+[Gate Light] Checking for legacy doc path references...
+[CheckDocPathRefs] Scanning for legacy doc path references...
+[CheckDocPathRefs] PASS: No legacy doc path references found.
+[Gate Light] Checking for banned cmd syntax in PowerShell scripts...
+Starting static scan for banned cmd syntax in .ps1 files...
+Scanning targets: scripts/run_task.ps1, scripts/test_fail_budget.ps1, scripts/ps/Invoke-Step.ps1
+Static scan PASSED.
+[Gate Light] Checking for global healthcheck artifacts...
+[Gate Light] Global Artifact Guard verified.
+[Gate Light] Checking News Pull API Contract...
+[Contract Check] Loading schema from: E:\OppRadar\OppRadar\contracts\news_pull_response.schema.json
+[Contract Check] Validating Success Sample...
+PASS
+[Contract Check] Validating Error Sample...
+PASS
+[Contract Check] All samples validated against schema.
+[Gate Light] Checking Rank V2 API Contract...
+=== Rank V2 Contract Verification ===
+Schema loaded.
+Server already running.
+Fetching http://localhost:53122/opportunities/rank_v2?provider=mock&limit=5&run_id=verify_rank_v2...
+Received 5 items.
+Validating against schema...
+Schema Validation PASSED.
+Response Hash: 61ad1e98
+::set-output name=rank_v2_hash::61ad1e98
+VERIFICATION_SUCCESS
+[Gate Light] Checking Export V1 API Contract...
+=== Export V1 Contract Verification ===
+Schema loaded.
+Server already running.
+Generating Run assets via http://localhost:53122/scans/run...
+Run assets generated. Run ID: scan_28a8b37e5ebd1b0d
+Fetching Export: http://localhost:53122/opportunities/runs/export_v1?run_id=scan_28a8b37e5ebd1b0d...
+Received Export JSON.
+Validating against schema...
+Export Schema Validation PASSED.
+Export Hash: 3ac392c6
+::set-output name=export_v1_hash::3ac392c6
+EXPORT_CONTRACT_VERIFICATION_SUCCESS
+[Gate Light] Checking Ledger V0 API Contract...
+=== Ledger V0 Contract Verification ===
+Schema loaded.
+Server already running.
+Fetching /opportunities/ledger/query_v0?limit=1...
+Validating against schema...
+Validation PASSED.
+[Gate Light] Checking healthcheck evidence...
+[Gate Light] Using evidence directory: E:\OppRadar\rules\task-reports\2026-02
+[Gate Light] Healthcheck evidence verified (Path + Content).
+[Gate Light] Skipping DoD Evidence Excerpt Check (Preview Mode).
+[Gate Light] Checking Deletion Audit (Locks & Runs)...
+[Gate Light] Deletion Audit: No lock/index yet (Assuming Pre-Integrate or First Run in progress).
+[Gate Light] Checking No Auto-Merge (Git Forbidden Commands)...
+[Gate Light] No Auto-Merge verified.
+[Gate Light] Checking Evidence Truth & Sufficiency (Hardening Rule)...
+[Gate Light] Skipping DoD Healthcheck marker check (Preview Mode).
+[Gate Light] Skipping Evidence Truth check (Generation Mode).
+[Gate Light] Evidence Truth & Sufficiency verified.
+[Gate Light] Checking CI Parity Preview...
+[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
+[Gate Light] Fetching origin/main history for diff context...
+[Gate Light] Allowed legacy task_id (transition): 260225_002
+[Gate Light] NoHistoricalEvidenceTouch verified.
+[Gate Light] Skipping SnippetCommitMustMatch check (Preview Mode).
+[Gate Light] Skipping GATE_LIGHT_EXIT Mechanism check (Preview Mode).
+[Gate Light] Skipping Evidence Truth & Consistency check (Preview Mode).
+[Gate Light] Checking Rank V2 Contract Version Guard...
+[Gate Light] Base Commit: 4513f9cf9614e15abf8869426eeafd3bfe2c1bb9
+[Gate Light] Schema Unchanged (3bd83a08). Version check skipped.
+[Gate Light] Rank V2 Contract Version Guard PASS
+[Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...
+[Gate Light] Immutable Integrate & SafeCmd Enforcement verified.
+[Gate Light] Checking Two-Pass Evidence Truth & No Auto-Merge...
+[Gate Light] Two-Pass Evidence Truth & No Auto-Merge verified.
+[Gate Light] Skipping Postflight Envelope Validation (Preview Mode).
+[Gate Light] PASS
+GATE_LIGHT_EXIT=0
+From https://github.com/dongyupeng2108-bot/OppOrder
+ - [deleted]           (none)     -> origin/feat/evidence-fix-260223_009
+ - [deleted]           (none)     -> origin/feat/verification-260223_009c
+ - [deleted]           (none)     -> origin/feat/verification-260223_009g
+ - [deleted]           (none)     -> origin/feat/verification-260225_001
+ - [deleted]           (none)     -> origin/feat/verification-260225_002
+From https://github.com/dongyupeng2108-bot/OppOrder
+ * branch              main       -> FETCH_HEAD
+
+
+    Preview Log: E:\OppRadar\rules\task-reports\2026-02\gate_light_preview_260225_003.log
+>>> [RunTask] Step 3.5: Error Digest (Pass 1)
+>>> [RunTask] Generated Run ID: 20260226001837_e8103c0
+>>> [RunTask] Step: Error Digest (Pass 1)
+[ErrorDigest] Wrote NO_ERROR record to E:\OppRadar\rules\task-reports\2026-02\errors_260225_003.jsonl
+[ErrorDigest] Wrote summary to E:\OppRadar\rules\task-reports\2026-02\errors_summary_260225_003.txt
+
+
+>>> [RunTask] Step 3.6: Append Error Stats (Pass 1)
+>>> [RunTask] Step: Append Error Stats
+Appended 1 records to rules/task-reports/index/error_stats.jsonl
+
+
+>>> [RunTask] Step 3.7: Three-Strike Governance
+>>> [RunTask] Step: Three-Strike Governance
+[ThreeStrike] No triggers detected (max count < 3).
+
+
+>>> [RunTask] Step 4: Assemble Evidence
+>>> [RunTask] Step: Assemble Evidence
+[Assembler] Reading inputs for Task 260225_003 from E:\OppRadar\rules\task-reports\2026-02...
+[Assembler] DEBUG taskId="260225_003" evidenceDir="E:\\OppRadar\\rules\\task-reports\\2026-02"
+[Assembler] DEBUG attestationPath="E:\\OppRadar\\rules\\task-reports\\2026-02\\preflight_attestation_260225_003.json"
+[Assemble] Adding Healthcheck Root Line: DOD_EVIDENCE_HEALTHCHECK_ROOT: 260225_003_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+[Assemble] Adding Healthcheck Pairs Line: DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260225_003_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+[Assembler] Wrote notify file: E:\OppRadar\rules\task-reports\2026-02\notify_260225_003.txt
+[Assembler] Updated result JSON: E:\OppRadar\rules\task-reports\2026-02\result_260225_003.json
+[Extract Preview] Wrote preview to: E:\OppRadar\rules\task-reports\2026-02\gate_light_preview_260225_003.txt
+[Snippet Builder] Building report snippet for task 260225_003...
+[Snippet Builder] Wrote snippet to: E:\OppRadar\rules\task-reports\2026-02\trae_report_snippet_260225_003.txt
+[Snippet Builder] NOTE: Notify/Result/Index updates must be handled by the caller (dev_batch_mode).
+[Assembler] Wrote preview compare: E:\OppRadar\rules\task-reports\2026-02\preview_cmp_260225_003.txt
+[Assembler] Wrote contract self-check: E:\OppRadar\rules\task-reports\2026-02\contract_self_check_260225_003.txt
+[Assembler] Updated notify with contract self-check: E:\OppRadar\rules\task-reports\2026-02\notify_260225_003.txt
+[Assembler] Updated result JSON after contract self-check: E:\OppRadar\rules\task-reports\2026-02\result_260225_003.json
+[Assembler] Wrote manifest: E:\OppRadar\rules\task-reports\2026-02\evidence_manifest_260225_003.json
+[Assembler] Wrote index: E:\OppRadar\rules\task-reports\2026-02\deliverables_index_260225_003.json
+[Postflight] Validating 260225_003 in E:\OppRadar\rules\task-reports\2026-02...
+[Postflight] Running Evidence Smoke Test for 260225_003...
+[SmokeTest] Running Evidence Smoke Test for Task 260225_003 in E:\OppRadar\rules\task-reports\2026-02...
+[SmokeTest] PASS: All 21 required files exist and manifest is valid.
+[DEBUG] Healthcheck Root Match: DOD_EVIDENCE_HEALTHCHECK_ROOT: 260225_003_healthcheck_53122_root.txt =>
+[DEBUG] Healthcheck Pairs Match: DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260225_003_healthcheck_53122_pairs.txt =>
+[DEBUG] Checking Evidence File: Label=Root, RefPath='260225_003_healthcheck_53122_root.txt'
+[DEBUG] Resolved EvPath: 'E:\OppRadar\rules\task-reports\2026-02\260225_003_healthcheck_53122_root.txt'
+[DEBUG] Checking Evidence File: Label=Pairs, RefPath='260225_003_healthcheck_53122_pairs.txt'
+[DEBUG] Resolved EvPath: 'E:\OppRadar\rules\task-reports\2026-02\260225_003_healthcheck_53122_pairs.txt'
+[Postflight] Report: E:\OppRadar\rules\task-reports\2026-02\260225_003.json
+[Postflight] Envelope: E:\OppRadar\rules\task-reports\envelopes\260225_003.envelope.json
+[Postflight] PASS
+[Assembler] SUCCESS: Assembled evidence for Task 260225_003.
+From https://github.com/dongyupeng2108-bot/OppOrder
+ * branch              main       -> FETCH_HEAD
+
+
+>>> [RunTask] Step 8.9: AutoPR Pre-Commit
+
+>>> [RunTask] Step 9: AutoPR Loop
+>>> [AutoPR] Staging Evidence (Node)...
+[AutoPR] Loop Iteration 1 (Max Fixes: 1)...
+>>> [AutoPR] Running CI Watch...
+[AutoPR] CI Failed (Exit Code 2).
+[AutoPR] Attempting AutoFix (1/1)...
+>>> [AutoPR] Running AutoFix...

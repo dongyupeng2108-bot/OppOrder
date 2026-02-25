@@ -1,0 +1,18 @@
+>>> [Regression] Starting Static Analysis...
+[PASS] Static Check: scripts/run_task.ps1 contains latch check.
+[PASS] Static Check: scripts/safe_commit.ps1 contains latch check.
+[PASS] Static Check: scripts/safe_push.ps1 contains latch check.
+>>> [Regression] Starting Behavioral Analysis (Dev Mode)...
+[Setup] Switching to test branch: TraeTask_999999_999
+[Setup] Created latch file at: E:\OppRadar\.tmp\hardstop_latch_regress\.hardstop_latch_999999_999.json
+[Test] Running run_task...
+[PASS] run_task exited with code 33 as expected.
+[PASS] run_task output contained 3-line block.
+[Test] Running safe_commit...
+[PASS] safe_commit exited with code 33 as expected.
+[PASS] safe_commit output contained 3-line block.
+[Test] Running safe_push...
+[PASS] safe_push exited with code 33 as expected.
+[PASS] safe_push output contained 3-line block.
+[Cleanup] Switching back to original branch: TraeTask_260225_003
+>>> [Regression] All tests PASSED.

@@ -1,0 +1,118 @@
+=== TRAE_REPORT_SNIPPET ===
+
+Header: TraeTask_260225_003 HardStop Latch Implementation
+BRANCH: TraeTask_260225_003
+COMMIT: 2e23bc73
+
+=== GIT_SCOPE_DIFF ===
+M	rules/LATEST.json
+M	rules/rules/WORKFLOW.md
+A	rules/task-reports/2026-02/generate_evidence_260225_003.js
+M	rules/task-reports/index/error_stats.jsonl
+M	scripts/ops_git_stage_task_evidence.mjs
+A	scripts/ops_hardstop_latch.mjs
+A	scripts/regress_hardstop_latch_260225_003.mjs
+M	scripts/run_task.ps1
+M	scripts/safe_commit.ps1
+M	scripts/safe_push.ps1
+
+=== DOD_EVIDENCE_STDOUT ===
+>>> [Regression] Starting Static Analysis...
+[PASS] Static Check: scripts/run_task.ps1 contains latch check.
+[PASS] Static Check: scripts/safe_commit.ps1 contains latch check.
+[PASS] Static Check: scripts/safe_push.ps1 contains latch check.
+>>> [Regression] Starting Behavioral Analysis (Dev Mode)...
+[Setup] Switching to test branch: TraeTask_999999_999
+[Setup] Created latch file at: E:\OppRadar\.tmp\hardstop_latch_regress\.hardstop_latch_999999_999.json
+[Test] Running run_task...
+[PASS] run_task exited with code 33 as expected.
+[PASS] run_task output contained 3-line block.
+[Test] Running safe_commit...
+[PASS] safe_commit exited with code 33 as expected.
+[PASS] safe_commit output contained 3-line block.
+[Test] Running safe_push...
+[PASS] safe_push exited with code 33 as expected.
+[PASS] safe_push output contained 3-line block.
+[Cleanup] Switching back to original branch: TraeTask_260225_003
+>>> [Regression] All tests PASSED.
+===========================
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260225_003_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_SITE_HEALTH_ROOT_53122: 260225_003_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260225_003_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_SITE_HEALTH_PAIRS_53122: 260225_003_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_CONTRACT_SELF_CHECK: contract_self_check_260225_003.txt => CONTRACT_SELF_CHECK_EXIT=1
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260225_003_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260225_003_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+
+=== CI_PARITY_PREVIEW ===
+Base: 4513f9c
+Head: 2e23bc7
+MergeBase: 4513f9c
+Source: JSON (Evidence-as-Code)
+Scope: 10 files
+Files (Top 3):
+  - rules/LATEST.json
+  - rules/rules/WORKFLOW.md
+  - rules/task-reports/2026-02/generate_evidence_260225_003.js
+  ... (truncated)
+=========================
+
+=== GATE_LIGHT_PREVIEW ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260225_003
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] Verifying task_id: 260225_003
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Checking Workspace Healer Evidence...
+[Gate Light] Workspace Healer verified (Clean Environment).
+[Gate Light] Checking CI Parity JSON Evidence...
+[Gate Light] DEBUG: is_shallow_repository=true
+[Gate Light] DEBUG: HEAD=e8103c00e32f45731576f0b18a54ae2184fa078c
+[Gate Light] DEBUG: git merge-base origin/main HEAD=4513f9cf9614e15abf8869426eeafd3bfe2c1bb9
+[Gate Light] DETECTED SHALLOW CLONE. Attempting to unshallow (Fix Strategy A)...
+[Gate Light] Unshallow command executed.
+[Gate Light] CI Parity JSON Evidence verified.
+[Gate Light] Skipping Error Digest Validation (Preview Mode).
+[Gate Light] Checking doc path standards...
+[Gate Light] Doc path standards verified.
+[Gate Light] Checking for legacy doc path references...
+[Gate Light] Checking for banned cmd syntax in PowerShell scripts...
+[Gate Light] Checking for global healthcheck artifacts...
+[Gate Light] Global Artifact Guard verified.
+[Gate Light] Checking News Pull API Contract...
+[Gate Light] Checking Rank V2 API Contract...
+[Gate Light] Checking Export V1 API Contract...
+[Gate Light] Checking Ledger V0 API Contract...
+[Gate Light] Checking healthcheck evidence...
+[Gate Light] Using evidence directory: E:\OppRadar\rules\task-reports\2026-02
+[Gate Light] Healthcheck evidence verified (Path + Content).
+[Gate Light] Skipping DoD Evidence Excerpt Check (Preview Mode).
+[Gate Light] Checking Deletion Audit (Locks & Runs)...
+[Gate Light] Deletion Audit: No lock/index yet (Assuming Pre-Integrate or First Run in progress).
+[Gate Light] Checking No Auto-Merge (Git Forbidden Commands)...
+[Gate Light] No Auto-Merge verified.
+[Gate Light] Checking Evidence Truth & Sufficiency (Hardening Rule)...
+[Gate Light] Skipping DoD Healthcheck marker check (Preview Mode).
+[Gate Light] Skipping Evidence Truth check (Generation Mode).
+[Gate Light] Evidence Truth & Sufficiency verified.
+[Gate Light] Checking CI Parity Preview...
+[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
+[Gate Light] Fetching origin/main history for diff context...
+[Gate Light] Allowed legacy task_id (transition): 260225_002
+[Gate Light] NoHistoricalEvidenceTouch verified.
+[Gate Light] Skipping SnippetCommitMustMatch check (Preview Mode).
+[Gate Light] Skipping GATE_LIGHT_EXIT Mechanism check (Preview Mode).
+[Gate Light] Skipping Evidence Truth & Consistency check (Preview Mode).
+[Gate Light] Checking Rank V2 Contract Version Guard...
+[Gate Light] Base Commit: 4513f9cf9614e15abf8869426eeafd3bfe2c1bb9
+[Gate Light] Schema Unchanged (3bd83a08). Version check skipped.
+[Gate Light] Rank V2 Contract Version Guard PASS
+[Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...
+[Gate Light] Immutable Integrate & SafeCmd Enforcement verified.
+[Gate Light] Checking Two-Pass Evidence Truth & No Auto-Merge...
+[Gate Light] Two-Pass Evidence Truth & No Auto-Merge verified.
+[Gate Light] Skipping Postflight Envelope Validation (Preview Mode).
+[Gate Light] PASS
+GATE_LIGHT_EXIT=0

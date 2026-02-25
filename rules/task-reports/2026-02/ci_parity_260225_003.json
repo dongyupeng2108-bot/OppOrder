@@ -1,0 +1,21 @@
+{
+  "task_id": "260225_003",
+  "is_shallow_repo": true,
+  "base": "4513f9cf9614e15abf8869426eeafd3bfe2c1bb9",
+  "head": "2e23bc73cff62116250baef90116cf871aabe29f",
+  "merge_base": "4513f9cf9614e15abf8869426eeafd3bfe2c1bb9",
+  "scope_files": [
+    "rules/LATEST.json",
+    "rules/rules/WORKFLOW.md",
+    "rules/task-reports/2026-02/generate_evidence_260225_003.js",
+    "rules/task-reports/index/error_stats.jsonl",
+    "scripts/ops_git_stage_task_evidence.mjs",
+    "scripts/ops_hardstop_latch.mjs",
+    "scripts/regress_hardstop_latch_260225_003.mjs",
+    "scripts/run_task.ps1",
+    "scripts/safe_commit.ps1",
+    "scripts/safe_push.ps1"
+  ],
+  "scope_count": 10,
+  "generated_at": "2026-02-25T16:20:02.878Z"
+}

@@ -1,0 +1,18 @@
+{
+  "task_id": "260225_003",
+  "status": "DONE",
+  "timestamp": "2026-02-25T16:18:17.779Z",
+  "details": "HardStop Latch Regression Evidence",
+  "regression_passed": true,
+  "summary": "Automation Pack V1 Validation for Task 260225_003",
+  "report_file": "notify_260225_003.txt",
+  "report_sha256_short": "922ce449",
+  "mode": "Integrate",
+  "dod_evidence": {
+    "gate_light_exit": 0,
+    "healthcheck": [
+      "rules/task-reports/2026-02/260225_003_healthcheck_53122_root.txt",
+      "rules/task-reports/2026-02/260225_003_healthcheck_53122_pairs.txt"
+    ]
+  }
+}
