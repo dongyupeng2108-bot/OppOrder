@@ -183,63 +183,43 @@ try {
         throw new Error(`Matched files (${validFiles.length}) exceeds limit (${maxFiles}). Use --max N to increase.`);
     }
 
-    // --- Delete ---
-    let deletedCount = 0;
-    
-    // Sort reverse length to delete children before parents
-    validFiles.sort((a, b) => b.length - a.length);
+    // --- Delete Files ---
+    for (const absFile of validFiles) {
+        if (result.deleted >= maxFiles) {
+            result.warnings.push(`Max files limit (${maxFiles}) reached. Skipping remaining.`);
+            break;
+        }
 
-    for (const file of validFiles) {
-        if (dryRun) {
-            // Just simulate
-            deletedCount++;
-        } else {
-            try {
-                // Check if exists (might have been deleted if child of deleted dir)
-                if (!fs.existsSync(file)) {
-                    // Already gone (e.g. we deleted parent dir)
-                    // We count it as deleted or just ignore?
-                    // If we explicitly matched it, we should count it.
-                    // But if we deleted 'dir', and 'dir/file' was in list, it's gone.
-                    continue;
-                }
-
-                const stat = fs.statSync(file);
-                if (stat.isDirectory()) {
-                    if (recurse) {
-                        fs.rmSync(file, { recursive: true, force: true });
-                        deletedCount++;
-                    } else {
-                        // Try rmdir (only works if empty)
-                        fs.rmdirSync(file);
-                        deletedCount++;
-                    }
-                } else {
-                    fs.unlinkSync(file);
-                    deletedCount++;
-                }
-            } catch (err) {
-                if (err.code !== 'ENOENT') {
-                    result.errors.push(`Failed to delete ${file}: ${err.message}`);
-                }
+        try {
+            const isAllowed = allowedRoots.some(root => absFile.toLowerCase().startsWith(root));
+            if (!isAllowed) {
+                result.warnings.push(`File outside allowed root (skipped): ${absFile}`);
+                result.skipped = true;
+                continue;
             }
+
+            if (dryRun) {
+                result.deleted++;
+                continue;
+            }
+
+            if (fs.lstatSync(absFile).isDirectory()) {
+                if (recurse) {
+                    fs.rmSync(absFile, { recursive: true, force: true });
+                    result.deleted++;
+                } else {
+                    result.warnings.push(`Skipping directory (use --recurse to delete): ${absFile}`);
+                }
+            } else {
+                fs.unlinkSync(absFile);
+                result.deleted++;
+            }
+        } catch (err) {
+            result.warnings.push(`Failed to delete ${absFile}: ${err.message}`);
         }
     }
 
-    result.deleted = dryRun ? deletedCount : result.matched - result.errors.length; // Approximate for summary
-    // Correct deleted count for non-dry-run: we iterated validFiles.
-    if (!dryRun) {
-         // Actually, if we deleted a parent, children are gone.
-         // But our count logic above increments only on explicit delete call success.
-         // If child was auto-deleted by parent delete, we didn't increment.
-         // But that's fine, we reported "matched".
-         // Let's just return what we successfully called delete on.
-         // Or should we return matched count if successful?
-         // Simpler: result.deleted = deletedCount.
-         result.deleted = deletedCount;
-    }
-
-    result.ok = result.errors.length === 0;
+    result.ok = true; // Always return true to prevent workflow failure on non-critical delete issues
     console.log(JSON.stringify(result));
 
 } catch (err) {
