@@ -884,16 +884,11 @@ if ($Mode -eq "Integrate") {
             Write-Host ">>> [RunTask] Step 8.9: AutoPR Pre-Commit" -ForegroundColor Cyan
             $SafeCommitScript = "$RepoRoot\scripts\safe_commit.ps1"
             $CommitMessage = "TraeTask_${TaskId}: integrate evidence"
-            # FIX: Use argument array with call operator '&' to prevent argument splitting
-            # This replaces Invoke-Step to guarantee correct array handling by PowerShell
-            $CommitArgs = @("-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", $SafeCommitScript, "-Message", $CommitMessage)
             
-            try {
-                & powershell $CommitArgs
-                if ($LASTEXITCODE -ne 0) { throw "AutoPR Pre-Commit failed with exit code $LASTEXITCODE" }
-            } catch {
-                Stop-RunTask -Message "AutoPR Pre-Commit Failed" -ErrorClass "AUTOPR_PRECOMMIT_FAIL" -FailReason "SAFE_COMMIT_ARG_SPLIT"
-            }
+            $CommitArgs = @("-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", $SafeCommitScript, "-Message", $CommitMessage)
+            $CommitCmd = @("powershell") + $CommitArgs
+            
+            Invoke-Step -Name "AutoPR Pre-Commit" -Cmd $CommitCmd
         }
     } else {
         Write-Host "AUTOPR_DISABLED=1" -ForegroundColor Yellow
