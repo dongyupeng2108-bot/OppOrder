@@ -883,9 +883,9 @@ if ($Mode -eq "Integrate") {
         if ($DirtyStatus) {
             Write-Host ">>> [RunTask] Step 8.9: AutoPR Pre-Commit" -ForegroundColor Cyan
             $SafeCommitScript = "$RepoRoot\scripts\safe_commit.ps1"
-            $CommitMessage = "TraeTask_${TaskId}:_integrate_evidence"
-            # Start-Process handles quoting for arguments with spaces automatically
-            $CommitMessageArg = $CommitMessage
+            $CommitMessage = "TraeTask_${TaskId}: integrate evidence"
+            # Use explicit double quotes to ensure Start-Process passes it as a single argument to powershell.exe
+            $CommitMessageArg = '"' + $CommitMessage + '"'
             
             $CommitArgs = @("-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", $SafeCommitScript, "-Message", $CommitMessageArg)
             $CommitCmd = @("powershell") + $CommitArgs
