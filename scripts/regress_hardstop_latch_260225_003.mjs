@@ -7,9 +7,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const REPO_ROOT = path.resolve(__dirname, '..');
 
-const taskId = '260225_003';
+const taskId = '999999_999';
 const latchRoot = path.join(REPO_ROOT, '.tmp', 'hardstop_latch_regress');
-const latchFile = path.join(latchRoot, '2026-02', `.hardstop_latch_${taskId}.json`);
+// Note: When HARDSTOP_LATCH_ROOT is set, ops_hardstop_latch.mjs uses it directly,
+// without appending YYYY-MM.
+const latchFile = path.join(latchRoot, `.hardstop_latch_${taskId}.json`);
 
 // Ensure cleanup
 if (fs.existsSync(latchRoot)) {
@@ -41,6 +43,18 @@ if (!staticPass) {
 }
 
 console.log('>>> [Regression] Starting Behavioral Analysis (Dev Mode)...');
+
+// Setup Branch for safe_commit/safe_push (must match task ID regex)
+const originalBranch = execSync('git rev-parse --abbrev-ref HEAD', { cwd: REPO_ROOT }).toString().trim();
+const testBranch = `TraeTask_${taskId}`;
+
+try {
+  console.log(`[Setup] Switching to test branch: ${testBranch}`);
+  execSync(`git checkout -b ${testBranch}`, { cwd: REPO_ROOT, stdio: 'ignore' });
+} catch (e) {
+  // Branch might exist, try checking out
+  execSync(`git checkout ${testBranch}`, { cwd: REPO_ROOT, stdio: 'ignore' });
+}
 
 // Setup Latch
 fs.mkdirSync(path.dirname(latchFile), { recursive: true });
@@ -99,6 +113,9 @@ for (const { name, cmd, expectExit } of commands) {
 }
 
 // Cleanup
+console.log(`[Cleanup] Switching back to original branch: ${originalBranch}`);
+execSync(`git checkout ${originalBranch}`, { cwd: REPO_ROOT, stdio: 'ignore' });
+execSync(`git branch -D ${testBranch}`, { cwd: REPO_ROOT, stdio: 'ignore' });
 fs.rmSync(latchRoot, { recursive: true, force: true });
 
 if (behaviorPass) {

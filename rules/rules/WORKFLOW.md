@@ -254,6 +254,30 @@ To ignore a specific blocking PR (e.g., PR #103), you must explicitly declare it
 - **Rule**: The standard Task Template structure (as defined in `scripts/scaffold_task.js` or equivalent) is **IMMUTABLE** within a normal feature task.
 - **Change Protocol**: Any change to the Task Template must be performed in a dedicated "Workflow Upgrade" task, explicitly titled as such.
 
+## HardStop Latch Mechanism (硬停闩锁机制)
+
+To prevent "zombie" execution, runaway loops, or unauthorized operations after a critical failure:
+
+1.  **Mechanism**:
+    -   **Trigger**: A fatal error (e.g., `HARD_STOP=1`, `LOOP_DETECTED`, `Non-self-healable`) invokes `scripts/ops_hardstop_latch.mjs --action write`.
+    -   **Artifact**: Writes `.hardstop_latch_<task_id>.json` to `rules/task-reports/<YYYY-MM>/`.
+    -   **Content**: JSON with `reason`, `timestamp`, `mode`.
+
+2.  **Enforcement (True Gate)**:
+    -   **Entry Points**: `run_task.ps1`, `safe_commit.ps1`, `safe_push.ps1`.
+    -   **Check**: MUST run `ops_hardstop_latch.mjs --action check` as the **Step 0.0** (first action).
+    -   **Behavior**: If latch exists, process **MUST EXIT IMMEDIATELY (Code 33)**.
+    -   **Output**: Strictly 3 lines:
+        ```text
+        HARD_STOP=1
+        HARD_STOP_REASON=<reason>
+        NEXT_ACTION=STOP_AND_REPORT
+        ```
+
+3.  **Environment Rules**:
+    -   **Dev Mode**: Allows `HARDSTOP_LATCH_ROOT` env var override (for regression testing only).
+    -   **Integrate/CI Mode**: **STRICTLY FORBIDDEN**. If `HARDSTOP_LATCH_ROOT` is detected, the agent treats it as a breach and triggers a HardStop.
+
 ## Hard Rule — Task Release Gate (One-at-a-time) 
 未收到上一任务的正式回报且其中明确写出“DoD 达成/未达成”结论之前，禁止发布任何新的 TraeTask_* 任务。 
 违反该规则的任务视为无效，必须撤回并在上一任务闭环后重新发布。 
