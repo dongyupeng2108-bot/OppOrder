@@ -1,0 +1,11 @@
+﻿{
+    "mode":  "Integrate",
+    "branch":  "feat/evidence-fix-260223_009",
+    "write_allowed":  true,
+    "input_hash_short":  "1d575e59",
+    "header":  "TraeTask_260223_009",
+    "commit":  "4d8facc8",
+    "task_id":  "260223_009",
+    "header_detected":  true,
+    "timestamp":  "2026-02-25 10:45:16 UTC"
+}

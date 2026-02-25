@@ -1,0 +1,30 @@
+{
+    "mode":  "EnforceClean",
+    "branch":  "feat/evidence-fix-260223_009",
+    "cleaned_paths":  [
+                          "rules/task-reports",
+                          "rules/reports",
+                          "data/opps_ledger",
+                          "rules/task-reports/locks",
+                          "rules/task-reports/runs"
+                      ],
+    "after":  {
+                  "untracked_count":  0,
+                  "tracked_changed_count":  0,
+                  "sample_paths":  {
+
+                                   }
+              },
+    "head_commit":  "4d8facc841902e688e85fbd154c67bafa4320a41",
+    "before":  {
+                   "untracked_count":  0,
+                   "tracked_changed_count":  0,
+                   "sample_paths":  {
+
+                                    }
+               },
+    "repo_root":  "E:/OppRadar",
+    "reason":  null,
+    "result":  "PASS"
+}
+
