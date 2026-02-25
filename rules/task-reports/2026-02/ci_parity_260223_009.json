@@ -1,0 +1,19 @@
+{
+  "task_id": "260223_009",
+  "is_shallow_repo": true,
+  "base": "a43f3876961fa9ea7957d808644610876c1124e9",
+  "head": "13f715e3632cd2c9591e812a78fd5d9c79162c65",
+  "merge_base": "8c4e9caaea5501b825ebeef420eeb23bb6c7889f",
+  "scope_files": [
+    "rules/LATEST.json",
+    "rules/rules/WORKFLOW.md",
+    "rules/task-reports/2026-02/generate_evidence_260223_009.mjs",
+    "rules/task-reports/governance-backlog/GOV_20260225_CONTRACT_SELF_CHECK_FAIL.md",
+    "rules/task-reports/index/error_stats.jsonl",
+    "scripts/assemble_evidence.mjs",
+    "scripts/ops_git_stage_task_evidence.mjs",
+    "scripts/run_task.ps1"
+  ],
+  "scope_count": 8,
+  "generated_at": "2026-02-25T02:22:56.220Z"
+}
