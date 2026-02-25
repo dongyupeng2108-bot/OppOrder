@@ -149,6 +149,15 @@ task_id（任务标识）允许格式：`YYMMDD_NNN` + 可选 1 位字母后缀�
 2. **立即停止**：外层流程立刻停止，不再执行 AutoPR（自动 PR）、AutoFix（自动修复）、Task ID（任务标识）自动变更或重跑。
 3. **HardStop Latch（硬停闩锁）**：
    *   **机制**：一旦硬停触发，系统会在 `rules/task-reports/<YYYY-MM>/.hardstop_latch_<task_id>.json` 写入闩锁文件。
+   *   **实现位置**：`scripts/ops_hardstop_latch.mjs` (Check/Write/Evidence)。
+   *   **入口拦截**：`run_task.ps1` / `safe_commit.ps1` / `safe_push.ps1` 均在第一步调用 `ops_hardstop_latch.mjs --action check`。
+   *   **退出码**：`Exit 33` (Integrate/RunTask), `Exit 1` (SafeCommit/Push)。
+   *   **最短事实块**（三行）：
+       ```text
+       HARD_STOP=1
+       HARD_STOP_REASON=...
+       NEXT_ACTION=STOP_AND_REPORT
+       ```
    *   **作用**：该文件存在期间，禁止该 Task ID 进行任何后续操作（`run_task` 重跑、`safe_commit`、`safe_push`）。
    *   **解除**：Integrate 模式下禁止解除（必须换新 Task ID）；Dev 模式下修复根因后可手动删除。
 4. **最短事实块**：仅输出三行：HARD_STOP=1；HARD_STOP_REASON=...；NEXT_ACTION=STOP_AND_REPORT。
