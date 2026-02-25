@@ -2,7 +2,7 @@
 import fs from 'fs';
 import path from 'path';
 
-const taskId = '260223_009bb';
+const taskId = '260223_009b';
 const evidenceDir = process.argv[2] || process.cwd(); // Usually passed as arg or current dir
 
 console.log(`Generating evidence for task ${taskId} in ${evidenceDir}`);
@@ -25,7 +25,7 @@ fs.writeFileSync(path.join(evidenceDir, `result_${taskId}.json`), JSON.stringify
 // 2. git_meta_{taskId}.json
 const gitMeta = {
     head: "1234567890abcdef",
-    branch: "feat/verification-260223_009bb",
+    branch: "feat/verification-260223_009b",
     timestamp: new Date().toISOString()
 };
 fs.writeFileSync(path.join(evidenceDir, `git_meta_${taskId}.json`), JSON.stringify(gitMeta, null, 2));
