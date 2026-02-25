@@ -34,7 +34,7 @@ try {
     if (fs.existsSync(evidenceDir)) {
         const files = fs.readdirSync(evidenceDir);
         files.forEach(file => {
-            if (file.startsWith(taskId)) {
+            if (file.startsWith(taskId) || file.startsWith(`generate_evidence_${taskId}`)) {
                 filesToStage.push(path.join(evidenceDir, file));
             }
         });
