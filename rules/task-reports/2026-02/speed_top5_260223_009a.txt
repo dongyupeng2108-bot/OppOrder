@@ -1,4 +1,0 @@
-task_id=260223_009a
-generated_at=2026-02-25T11:14:07.0721444+08:00
-total=7230
-wall_total_ms=7230
