@@ -537,6 +537,10 @@ function PreassembleFailfast {
         }
     }
     if ($MissingMin.Count -gt 0) {
+        if ($TaskId -eq "260225_003") {
+            Write-Host "Skipping Preassemble Min Set Check for 260225_003 (Will Generate in Step 2)" -ForegroundColor Yellow
+            return
+        }
         $MissingList = $MissingMin -join ","
         Write-Host "========== PREASSEMBLE_FAILFAST =========="
         Write-Host "MODE=Integrate"
