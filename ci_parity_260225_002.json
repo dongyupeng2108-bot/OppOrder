@@ -1,0 +1,18 @@
+{
+  "task_id": "260225_002",
+  "is_shallow_repo": true,
+  "base": "a43f3876961fa9ea7957d808644610876c1124e9",
+  "head": "a44baaf64da150fe2dfa039fa62d24ce65e81a9d",
+  "merge_base": "0026448f848fd03cee6e5acd650577dfd4e9299e",
+  "scope_files": [
+    "ci_parity_260225_001.json",
+    "dod_evidence_260225_001.txt",
+    "git_meta_260225_001.json",
+    "result_260225_001.json",
+    "rules/LATEST.json",
+    "rules/task-reports/index/error_stats.jsonl",
+    "scripts/ops_delete.mjs"
+  ],
+  "scope_count": 7,
+  "generated_at": "2026-02-25T10:45:47.342Z"
+}
