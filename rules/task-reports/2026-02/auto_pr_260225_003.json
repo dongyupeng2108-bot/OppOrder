@@ -1,0 +1,25 @@
+{
+  "task_id": "260225_003",
+  "branch": "feat/hardstop-latch-260225_003",
+  "pr_number": 180,
+  "pr_url": "https://github.com/dongyupeng2108-bot/OppOrder/pull/180",
+  "head": "feat/hardstop-latch-260225_003",
+  "base": "main",
+  "attempt": 1,
+  "autofix_max": 1,
+  "status": "OPEN",
+  "final_state": "FAIL",
+  "timestamp": "2026-02-25T19:08:41.335Z",
+  "checks_summary": {
+    "total": 1,
+    "success": 0,
+    "failed": 1,
+    "pending": 0,
+    "details": [
+      "gate-light-check: FAILURE"
+    ]
+  },
+  "error": null,
+  "error_class": "GATE_LIGHT_FAILURE",
+  "fail_reason": "CI_CHECK_GATE_LIGHT_FAILED"
+}

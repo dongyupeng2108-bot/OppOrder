@@ -1,0 +1,11 @@
+﻿{
+    "mode":  "Integrate",
+    "branch":  "feat/hardstop-latch-260225_003",
+    "write_allowed":  true,
+    "input_hash_short":  "be82c3df",
+    "header":  "TraeTask_260225_003: hardstop latch guard",
+    "commit":  "f70382e7",
+    "task_id":  "260225_003",
+    "header_detected":  true,
+    "timestamp":  "2026-02-26 03:07:27 UTC"
+}
