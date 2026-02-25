@@ -1,8 +1,0 @@
-Task: 260225_003
-Feature: HardStop Latch Mechanism (Real Gate)
-Verification:
-1. Scope Lock: Validated via git diff (Clean).
-2. Guardrails: Validated via regress_hardstop_latch_260225_003.mjs (All Passed).
-3. Regression: Static + Behavior tests passed.
-4. Evidence: 3-piece set generated.
-5. Submission: Safe commit/push used.

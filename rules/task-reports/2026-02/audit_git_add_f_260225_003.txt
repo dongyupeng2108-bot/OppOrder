@@ -1,4 +1,0 @@
-=== Scan Result ===
-Hits: 0 / 50
-Files: 0 / 200
-Scanned: 1, Skipped: 0
