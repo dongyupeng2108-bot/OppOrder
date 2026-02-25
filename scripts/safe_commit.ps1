@@ -1,13 +1,16 @@
 param(
     [Parameter(Mandatory=$true)]
-    [string]$Message
+    [string]$Message,
+
+    [Parameter(Mandatory=$false)]
+    [string]$Mode = "Dev"
 )
 
 $ErrorActionPreference = "Stop"
 
 Write-Host "Running Safe Commit..."
 
-# --- HardStop Latch Check ---
+# --- HardStop Latch Check (New) ---
 $RepoRoot = "E:\OppRadar"
 $CurrentBranch = git rev-parse --abbrev-ref HEAD
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
@@ -15,16 +18,9 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 $TaskIdMatch = [regex]::Match($CurrentBranch, "\d{6}_\d{3}[a-z]?")
 if ($TaskIdMatch.Success) {
     $TaskId = $TaskIdMatch.Value
-    $LatchYearMonth = Get-Date -Format "yyyy-MM"
-    $LatchPath = "$RepoRoot\rules\task-reports\$LatchYearMonth\.hardstop_latch_$TaskId.json"
-    if (Test-Path $LatchPath) {
-        Write-Host "========== HARD_STOP_LATCH_BLOCK ==========" -ForegroundColor Red
-        Write-Host "BLOCKING: safe_commit"
-        Write-Host "REASON: HardStop Latch exists for $TaskId"
-        Write-Host "FILE: $LatchPath"
-        Write-Host "==========================================="
-        exit 1
-    }
+    Write-Host ">>> [SafeCommit] Checking HardStop Latch for $TaskId..." -ForegroundColor Cyan
+    node "$RepoRoot\scripts\ops_hardstop_latch.mjs" --action check --task_id $TaskId --mode $Mode --entry safe_commit
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 }
 # ----------------------------
 

@@ -57,18 +57,10 @@ $RepoRoot = "E:\OppRadar"
 $HistoryRoot = Join-Path $Env:TEMP "oppradar_history"
 $LatestJsonPath = "$RepoRoot\rules\LATEST.json"
 
-# --- HardStop Latch Check ---
-$LatchYearMonth = Get-Date -Format "yyyy-MM"
-$LatchPath = "$RepoRoot\rules\task-reports\$LatchYearMonth\.hardstop_latch_$TaskId.json"
-if (Test-Path $LatchPath) {
-    Write-Host "========== HARD_STOP_LATCH_BLOCK ==========" -ForegroundColor Red
-    Write-Host "TASK_ID=$TaskId"
-    Write-Host "LATCH_FILE=$LatchPath"
-    Write-Host "ACTION=STOP_AND_REPORT"
-    Write-Host "REASON=Previous execution triggered HardStop. You must fix the root cause and use a NEW task_id (if Integrate) or manually remove the latch (if Dev/Debugging)."
-    Write-Host "==========================================="
-    exit 33
-}
+# --- HardStop Latch Check (New) ---
+Write-Host ">>> [RunTask] Step 0.0: HardStop Latch Check" -ForegroundColor Cyan
+node "$RepoRoot\scripts\ops_hardstop_latch.mjs" --action check --task_id $TaskId --mode $Mode --entry run_task
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 $LatestJsonRaw = $null
 if ($Mode -eq "Dev" -and (Test-Path $LatestJsonPath)) { $LatestJsonRaw = Get-Content $LatestJsonPath -Raw }
 $TimingOutput = $Env:SPEED_TIMING_OUT
@@ -227,33 +219,23 @@ function Stop-RunTask {
         $Script:HardStopTriggered = $true
         Write-HardStopBlock -Reason $HardStop.reason
 
-        # --- HardStop Latch Write ---
-        try {
-            $LatchYearMonth = Get-Date -Format "yyyy-MM"
-            $LatchDir = "$RepoRoot\rules\task-reports\$LatchYearMonth"
-            if (-not (Test-Path $LatchDir)) { New-Item -ItemType Directory -Path $LatchDir -Force | Out-Null }
-            $LatchPath = "$LatchDir\.hardstop_latch_$TaskId.json"
-            
-            $LatchHeadSha = ""
-            try { $LatchHeadSha = (git rev-parse HEAD).Trim() } catch {}
-            
-            $LatchContent = [ordered]@{
-                task_id = $TaskId
-                run_id = $RunId
-                reason = $HardStop.reason
-                error_class = $ErrorClass
-                fail_reason = $FailReason
-                message = $Message
-                head_sha = $LatchHeadSha
-                timestamp = (Get-Date).ToString("o")
-                generated_by = "run_task.ps1"
-            } | ConvertTo-Json -Depth 2
-            
-            Write-LfFile -Path $LatchPath -Content $LatchContent
-            Write-Host "[HardStop] Latch written to: $LatchPath" -ForegroundColor Red
-        } catch {
-            Write-Warning "[HardStop] Failed to write latch file: $_"
-        }
+        # --- HardStop Latch Write (New) ---
+        $LatchExtraPath = Join-Path $Env:TEMP "hardstop_extra_$TaskId.json"
+        $LatchHeadSha = try { (git rev-parse HEAD).Trim() } catch { "" }
+        $LatchExtra = [ordered]@{
+            run_id = $RunId
+            error_class = $ErrorClass
+            fail_reason = $FailReason
+            message = $Message
+            head_sha = $LatchHeadSha
+            generated_by = "run_task.ps1"
+        } | ConvertTo-Json -Depth 2
+        Set-Content -Path $LatchExtraPath -Value $LatchExtra -Encoding UTF8
+
+        Write-Host ">>> [HardStop] Writing Latch..." -ForegroundColor Red
+        node "$RepoRoot\scripts\ops_hardstop_latch.mjs" --action write --task_id $TaskId --mode $Mode --reason $HardStop.reason --extra_json $LatchExtraPath
+        if (Test-Path $LatchExtraPath) { Remove-Item $LatchExtraPath -Force }
+        exit 33
     }
     throw $Message
 }
@@ -886,7 +868,7 @@ if ($Mode -eq "Integrate") {
             $CommitMessage = "TraeTask_${TaskId}: integrate evidence"
             # FIX: Use argument array with call operator '&' to prevent argument splitting
             # This replaces Invoke-Step to guarantee correct array handling by PowerShell
-            $CommitArgs = @("-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", $SafeCommitScript, "-Message", $CommitMessage)
+            $CommitArgs = @("-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", $SafeCommitScript, "-Message", $CommitMessage, "-Mode", $Mode)
             
             try {
                 & powershell $CommitArgs
