@@ -56,6 +56,19 @@ if ($NonInteractive) {
 $RepoRoot = "E:\OppRadar"
 $HistoryRoot = Join-Path $Env:TEMP "oppradar_history"
 $LatestJsonPath = "$RepoRoot\rules\LATEST.json"
+
+# --- HardStop Latch Check ---
+$LatchYearMonth = Get-Date -Format "yyyy-MM"
+$LatchPath = "$RepoRoot\rules\task-reports\$LatchYearMonth\.hardstop_latch_$TaskId.json"
+if (Test-Path $LatchPath) {
+    Write-Host "========== HARD_STOP_LATCH_BLOCK ==========" -ForegroundColor Red
+    Write-Host "TASK_ID=$TaskId"
+    Write-Host "LATCH_FILE=$LatchPath"
+    Write-Host "ACTION=STOP_AND_REPORT"
+    Write-Host "REASON=Previous execution triggered HardStop. You must fix the root cause and use a NEW task_id (if Integrate) or manually remove the latch (if Dev/Debugging)."
+    Write-Host "==========================================="
+    exit 33
+}
 $LatestJsonRaw = $null
 if ($Mode -eq "Dev" -and (Test-Path $LatestJsonPath)) { $LatestJsonRaw = Get-Content $LatestJsonPath -Raw }
 $TimingOutput = $Env:SPEED_TIMING_OUT
@@ -213,6 +226,34 @@ function Stop-RunTask {
     if ($HardStop.active -and -not $Script:HardStopTriggered) {
         $Script:HardStopTriggered = $true
         Write-HardStopBlock -Reason $HardStop.reason
+
+        # --- HardStop Latch Write ---
+        try {
+            $LatchYearMonth = Get-Date -Format "yyyy-MM"
+            $LatchDir = "$RepoRoot\rules\task-reports\$LatchYearMonth"
+            if (-not (Test-Path $LatchDir)) { New-Item -ItemType Directory -Path $LatchDir -Force | Out-Null }
+            $LatchPath = "$LatchDir\.hardstop_latch_$TaskId.json"
+            
+            $LatchHeadSha = ""
+            try { $LatchHeadSha = (git rev-parse HEAD).Trim() } catch {}
+            
+            $LatchContent = [ordered]@{
+                task_id = $TaskId
+                run_id = $RunId
+                reason = $HardStop.reason
+                error_class = $ErrorClass
+                fail_reason = $FailReason
+                message = $Message
+                head_sha = $LatchHeadSha
+                timestamp = (Get-Date).ToString("o")
+                generated_by = "run_task.ps1"
+            } | ConvertTo-Json -Depth 2
+            
+            Write-LfFile -Path $LatchPath -Content $LatchContent
+            Write-Host "[HardStop] Latch written to: $LatchPath" -ForegroundColor Red
+        } catch {
+            Write-Warning "[HardStop] Failed to write latch file: $_"
+        }
     }
     throw $Message
 }
@@ -879,8 +920,17 @@ if ($Mode -eq "Integrate") {
 if ($Mode -eq "Integrate") {
     if ($AutoPR) {
         Write-Host ">>> [RunTask] Step 9: AutoPR Loop" -ForegroundColor Cyan
+
+        # --- Stage Evidence (Node Wrapper) ---
+        Write-Host ">>> [AutoPR] Staging Evidence (Node)..." -ForegroundColor Cyan
+        $StageArgs = @("$RepoRoot\scripts\ops_git_stage_task_evidence.mjs", "--task_id", "$TaskId", "--evidence_dir", "$EvidenceDir")
+        if ($RunId) { $StageArgs += "--run_id"; $StageArgs += "$RunId" }
+        $StageProcess = Start-Process -FilePath "node" -ArgumentList $StageArgs -NoNewWindow -PassThru -Wait
+        if ($StageProcess.ExitCode -ne 0) {
+            Write-Warning "[AutoPR] Failed to stage evidence files via Node tool. Proceeding anyway..."
+        }
     
-    $WatchScript = "$RepoRoot\scripts\ci_watch_pr.mjs"
+        $WatchScript = "$RepoRoot\scripts\ci_watch_pr.mjs"
     $FixScript = "$RepoRoot\scripts\ci_autofix_pack.mjs"
     $Script:DidAutoPr = $true
     

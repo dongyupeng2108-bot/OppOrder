@@ -1,0 +1,36 @@
+{
+  "task_id": "260223_007",
+  "timestamp": "2026-02-24T18:49:01.735Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "smoke_test": "PASS",
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260223_007",
+      "status": "DONE",
+      "metrics": {
+        "tool_verified": true,
+        "workflow_updated": true,
+        "hardstop_latch_implemented": true
+      },
+      "dod_evidence": {
+        "healthcheck": [
+          "HTTP/1.1 200 OK",
+          "HTTP/1.1 200 OK"
+        ],
+        "gate_light_exit": 0
+      },
+      "summary": "Fix PR 171 CI Failure (Evidence Patch) + HardStop Latch",
+      "report_file": "notify_260223_007.txt",
+      "report_sha256_short": "07e5727c"
+    }
+  }
+}

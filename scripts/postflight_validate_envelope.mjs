@@ -626,20 +626,31 @@ async function validate(resultDir, taskId, report) {
         // New Standard (Task 260210_006): Check via Notify References
         if (taskId >= '260210_006') {
             const hcRootMatch = notifyContent.match(/DOD_EVIDENCE_HEALTHCHECK_ROOT:\s*(.*?)(?:\s*=>|$)/);
-            const hcPairsMatch = notifyContent.match(/DOD_EVIDENCE_HEALTHCHECK_PAIRS:\s*(.*?)(?:\s*=>|$)/);
-            
-            if (!hcRootMatch || !hcPairsMatch) {
+        const hcPairsMatch = notifyContent.match(/DOD_EVIDENCE_HEALTHCHECK_PAIRS:\s*(.*?)(?:\s*=>|$)/);
+        
+        console.log(`[DEBUG] Healthcheck Root Match: ${hcRootMatch ? hcRootMatch[0] : 'null'}`);
+        console.log(`[DEBUG] Healthcheck Pairs Match: ${hcPairsMatch ? hcPairsMatch[0] : 'null'}`);
+        
+        if (!hcRootMatch || !hcPairsMatch) {
                 fail(report, ERR.HEALTHCHECK_MISSING, `Notify missing DOD_EVIDENCE_HEALTHCHECK_{ROOT|PAIRS} markers.`);
             } else {
                 const checkEvidenceFile = (refPath, label) => {
+                    console.log(`[DEBUG] Checking Evidence File: Label=${label}, RefPath='${refPath}'`);
                     // Try to resolve path relative to CWD (Repo Root) or resultDir
                     let evPath = path.resolve(refPath.trim());
                     if (!fs.existsSync(evPath)) {
                         evPath = path.join(resultDir, path.basename(refPath.trim()));
                     }
+                    console.log(`[DEBUG] Resolved EvPath: '${evPath}'`);
                     
                     if (!fs.existsSync(evPath)) {
                         fail(report, ERR.HEALTHCHECK_INVALID, `${label} evidence file not found: ${refPath}`);
+                        return false;
+                    }
+                    
+                    // Fail if directory
+                    if (fs.statSync(evPath).isDirectory()) {
+                        fail(report, ERR.HEALTHCHECK_INVALID, `${label} evidence path is a directory: ${evPath}`);
                         return false;
                     }
                     
