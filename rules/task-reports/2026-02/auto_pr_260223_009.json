@@ -5,21 +5,21 @@
   "pr_url": "https://github.com/dongyupeng2108-bot/OppOrder/pull/172",
   "head": "feat/evidence-fix-260223_009",
   "base": "main",
-  "attempt": 1,
+  "attempt": 2,
   "autofix_max": 1,
   "status": "OPEN",
-  "final_state": "FAIL",
-  "timestamp": "2026-02-25T02:22:52.669Z",
+  "final_state": "PASS",
+  "timestamp": "2026-02-25T02:23:47.434Z",
   "checks_summary": {
     "total": 1,
-    "success": 0,
-    "failed": 1,
+    "success": 1,
+    "failed": 0,
     "pending": 0,
     "details": [
-      "gate-light-check: FAILURE"
+      "All Passed"
     ]
   },
   "error": null,
-  "error_class": "GATE_LIGHT_FAILURE",
-  "fail_reason": "CI_CHECK_GATE_LIGHT_FAILED"
+  "error_class": null,
+  "fail_reason": null
 }

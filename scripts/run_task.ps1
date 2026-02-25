@@ -885,11 +885,13 @@ if ($Mode -eq "Integrate") {
             $SafeCommitScript = "$RepoRoot\scripts\safe_commit.ps1"
             $CommitMessage = "TraeTask_${TaskId}: integrate evidence"
             # Quote the message to prevent argument splitting when passing to powershell -File
-            $CommitMessageArg = '"' + $CommitMessage + '"'
+            # Use escaped quotes because Start-Process -ArgumentList joins with spaces and outer PS might consume simple quotes
+            $CommitMessageArg = '\"' + $CommitMessage + '\"'
             
             $CommitArgs = @("-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", $SafeCommitScript, "-Message", $CommitMessageArg)
             $CommitCmd = @("powershell") + $CommitArgs
             
+            Write-Host "DEBUG: CommitCmd = $($CommitCmd -join ' ')" -ForegroundColor Yellow
             Invoke-Step -Name "AutoPR Pre-Commit" -Cmd $CommitCmd
         }
     } else {
