@@ -278,6 +278,11 @@ To prevent "zombie" execution, runaway loops, or unauthorized operations after a
     -   **Dev Mode**: Allows `HARDSTOP_LATCH_ROOT` env var override (for regression testing only).
     -   **Integrate/CI Mode**: **STRICTLY FORBIDDEN**. If `HARDSTOP_LATCH_ROOT` is detected, the agent treats it as a breach and triggers a HardStop.
 
+4.  **Implementation Reference (2026-02-25)**:
+    -   **Central Tool**: `scripts/ops_hardstop_latch.mjs`
+    -   **Exit Code**: 33 (Blocked), 0 (Pass)
+    -   **Latch Path Resolution**: `<YYYY-MM>` derived from `task_id` prefix (e.g., `260225` -> `2026-02`).
+
 ## Hard Rule — Task Release Gate (One-at-a-time) 
 未收到上一任务的正式回报且其中明确写出“DoD 达成/未达成”结论之前，禁止发布任何新的 TraeTask_* 任务。 
 违反该规则的任务视为无效，必须撤回并在上一任务闭环后重新发布。 

@@ -196,6 +196,26 @@ function Write-HardStopBlock {
     Write-Host "NEXT_ACTION=STOP_AND_REPORT"
 }
 
+function Invoke-HardStopLatchWrite {
+    param([string]$Reason, [string]$ErrorClass, [string]$FailReason, [string]$Message)
+    
+    $LatchExtraPath = Join-Path $Env:TEMP "hardstop_extra_$TaskId.json"
+    $LatchHeadSha = try { (git rev-parse HEAD).Trim() } catch { "" }
+    $LatchExtra = [ordered]@{
+        run_id = $RunId
+        error_class = $ErrorClass
+        fail_reason = $FailReason
+        message = $Message
+        head_sha = $LatchHeadSha
+        generated_by = "run_task.ps1"
+    } | ConvertTo-Json -Depth 2
+    Set-Content -Path $LatchExtraPath -Value $LatchExtra -Encoding UTF8
+
+    Write-Host ">>> [HardStop] Writing Latch..." -ForegroundColor Red
+    node "$RepoRoot\scripts\ops_hardstop_latch.mjs" --action write --task_id $TaskId --mode $Mode --reason $Reason --extra_json $LatchExtraPath
+    if (Test-Path $LatchExtraPath) { Remove-Item $LatchExtraPath -Force }
+}
+
 function Get-HardStopReason {
     param([string]$ErrorClass, [string]$FailReason, [string]$Mode)
     if ($Mode -eq "Dev" -and -not [string]::IsNullOrWhiteSpace($Env:HARD_STOP_SIMULATE)) {
@@ -220,21 +240,7 @@ function Stop-RunTask {
         Write-HardStopBlock -Reason $HardStop.reason
 
         # --- HardStop Latch Write (New) ---
-        $LatchExtraPath = Join-Path $Env:TEMP "hardstop_extra_$TaskId.json"
-        $LatchHeadSha = try { (git rev-parse HEAD).Trim() } catch { "" }
-        $LatchExtra = [ordered]@{
-            run_id = $RunId
-            error_class = $ErrorClass
-            fail_reason = $FailReason
-            message = $Message
-            head_sha = $LatchHeadSha
-            generated_by = "run_task.ps1"
-        } | ConvertTo-Json -Depth 2
-        Set-Content -Path $LatchExtraPath -Value $LatchExtra -Encoding UTF8
-
-        Write-Host ">>> [HardStop] Writing Latch..." -ForegroundColor Red
-        node "$RepoRoot\scripts\ops_hardstop_latch.mjs" --action write --task_id $TaskId --mode $Mode --reason $HardStop.reason --extra_json $LatchExtraPath
-        if (Test-Path $LatchExtraPath) { Remove-Item $LatchExtraPath -Force }
+        Invoke-HardStopLatchWrite -Reason $HardStop.reason -ErrorClass $ErrorClass -FailReason $FailReason -Message $Message
         exit 33
     }
     throw $Message
