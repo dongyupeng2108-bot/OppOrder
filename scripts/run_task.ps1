@@ -204,6 +204,21 @@ function Write-HardStopBlock {
     Write-Host "NEXT_ACTION=STOP_AND_REPORT"
 }
 
+function Test-HardStopLatch {
+    $LatchYearMonth = Get-Date -Format "yyyy-MM"
+    $LatchPath = "$RepoRoot\rules\task-reports\$LatchYearMonth\.hardstop_latch_$TaskId.json"
+    if (Test-Path $LatchPath) {
+        Write-Host "========== HARD_STOP_LATCH_BLOCK ==========" -ForegroundColor Red
+        Write-Host "HARD_STOP=1"
+        Write-Host "HARD_STOP_REASON=LATCH_DETECTED_MID_EXECUTION"
+        Write-Host "NEXT_ACTION=STOP_AND_REPORT"
+        Write-Host "LATCH_FILE=$LatchPath"
+        Write-Host "==========================================="
+        return $true
+    }
+    return $false
+}
+
 function Get-HardStopReason {
     param([string]$ErrorClass, [string]$FailReason, [string]$Mode)
     if ($Mode -eq "Dev" -and -not [string]::IsNullOrWhiteSpace($Env:HARD_STOP_SIMULATE)) {
@@ -922,6 +937,10 @@ if ($Mode -eq "Integrate") {
         Write-Host ">>> [RunTask] Step 9: AutoPR Loop" -ForegroundColor Cyan
 
         # --- Stage Evidence (Node Wrapper) ---
+        # --- HardStop Latch Check Before Staging ---
+        if (Test-HardStopLatch) {
+            Stop-RunTask -Message "HARDSTOP_LATCH_MID_EXECUTION" -ErrorClass "HARDSTOP_LATCH_MID_EXECUTION" -FailReason "LATCH_DETECTED_BEFORE_STAGE"
+        }
         Write-Host ">>> [AutoPR] Staging Evidence (Node)..." -ForegroundColor Cyan
         $StageArgs = @("$RepoRoot\scripts\ops_git_stage_task_evidence.mjs", "--task_id", "$TaskId", "--evidence_dir", "$EvidenceDir")
         if ($RunId) { $StageArgs += "--run_id"; $StageArgs += "$RunId" }
@@ -943,6 +962,10 @@ if ($Mode -eq "Integrate") {
         $LoopActive = $true
         
         while ($LoopActive) {
+            # --- HardStop Latch Mid-Execution Check ---
+            if (Test-HardStopLatch) {
+                Stop-RunTask -Message "HARDSTOP_LATCH_MID_EXECUTION" -ErrorClass "HARDSTOP_LATCH_MID_EXECUTION" -FailReason "LATCH_DETECTED_IN_AUTOPR_LOOP"
+            }
             $CurrentAttempt = $CurrentFixCount + 1
             $Script:CiAttempts = $CurrentAttempt
             Write-Host "[AutoPR] Loop Iteration $CurrentAttempt (Max Fixes: $AutoFixMax)..." -ForegroundColor Cyan
@@ -1018,6 +1041,10 @@ if ($Mode -eq "Integrate") {
                     $Script:FixActions += "AutoFix pack for $ErrorClass"
                     Write-Host "[AutoPR] Attempting AutoFix ($CurrentFixCount/$AutoFixMax)..." -ForegroundColor Yellow
                     
+                    # --- HardStop Latch Check Before AutoFix ---
+                    if (Test-HardStopLatch) {
+                        Stop-RunTask -Message "HARDSTOP_LATCH_MID_EXECUTION" -ErrorClass "HARDSTOP_LATCH_MID_EXECUTION" -FailReason "LATCH_DETECTED_BEFORE_AUTOFIX"
+                    }
                     Write-Host ">>> [AutoPR] Running AutoFix..." -ForegroundColor Cyan
                     $FixTimer = [System.Diagnostics.Stopwatch]::StartNew()
                     $FixProcess = Start-Process -FilePath "node" -ArgumentList "$FixScript", "--task_id", "$TaskId" -NoNewWindow -PassThru -Wait
