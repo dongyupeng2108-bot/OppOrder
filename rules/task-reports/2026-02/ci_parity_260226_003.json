@@ -1,0 +1,14 @@
+{
+  "task_id": "260226_003",
+  "is_shallow_repo": false,
+  "base": "e90f4771dd4b84de917a1f20fbe93e0f42f9af81",
+  "head": "542a5953f635d606dbfe25b55b7d57ec816e0397",
+  "merge_base": "aec25e44eced96e6097944ffd6c015909cd07186",
+  "scope_files": [
+    "rules/LATEST.json",
+    "scripts/dev_batch_mode.ps1",
+    "scripts/ops_write_file.mjs"
+  ],
+  "scope_count": 3,
+  "generated_at": "2026-02-26T05:43:02.074Z"
+}
