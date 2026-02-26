@@ -423,6 +423,9 @@ jobs:
           # assemble_evidence.mjs will look for files in EVIDENCE_DIR and generate manifest
           node scripts/assemble_evidence.mjs --task_id="$TASK_ID" --evidence_dir="$EVIDENCE_DIR"
 
+      - name: Protected Files Check
+        run: node scripts/check_protected.mjs
+
       - name: Run Gate Light CI
         run: |
           git fetch origin main

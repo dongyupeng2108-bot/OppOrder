@@ -31,3 +31,8 @@ reports/
 rules/task-reports/envelopes/
 
 *.log.*
+
+# Task Artifacts
+artifacts/
+facts.txt
+evidence.json
