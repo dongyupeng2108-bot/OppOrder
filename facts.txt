@@ -1,0 +1,4 @@
+=== Fail Scenario ===
+[PROTECTED] 浠ヤ笅鏂囦欢鍦ㄤ繚鎶ゅ尯锛屼笉寰楀湪鏅€氫换鍔′腑淇敼锛?- scripts/run_task.ps1
+=== Pass Scenario ===
+[PROTECTED CHECK] PASS
