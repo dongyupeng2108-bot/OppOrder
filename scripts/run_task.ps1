@@ -57,10 +57,18 @@ $RepoRoot = "E:\OppRadar"
 $HistoryRoot = Join-Path $Env:TEMP "oppradar_history"
 $LatestJsonPath = "$RepoRoot\rules\LATEST.json"
 
-# --- HardStop Latch Check (New Node.js Implementation) ---
-node "$RepoRoot\scripts\ops_hardstop_latch.mjs" --action check --task_id $TaskId --mode $Mode --entry run_task
-if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-# ---------------------------------------------------------
+# --- HardStop Latch Check ---
+$LatchYearMonth = Get-Date -Format "yyyy-MM"
+$LatchPath = "$RepoRoot\rules\task-reports\$LatchYearMonth\.hardstop_latch_$TaskId.json"
+if (Test-Path $LatchPath) {
+    Write-Host "========== HARD_STOP_LATCH_BLOCK ==========" -ForegroundColor Red
+    Write-Host "TASK_ID=$TaskId"
+    Write-Host "LATCH_FILE=$LatchPath"
+    Write-Host "ACTION=STOP_AND_REPORT"
+    Write-Host "REASON=Previous execution triggered HardStop. You must fix the root cause and use a NEW task_id (if Integrate) or manually remove the latch (if Dev/Debugging)."
+    Write-Host "==========================================="
+    exit 33
+}
 $LatestJsonRaw = $null
 if ($Mode -eq "Dev" -and (Test-Path $LatestJsonPath)) { $LatestJsonRaw = Get-Content $LatestJsonPath -Raw }
 $TimingOutput = $Env:SPEED_TIMING_OUT
@@ -515,7 +523,7 @@ function PreassembleFailfast {
     if ($Mode -ne "Integrate") {
         return
     }
-    if (-not $GenerateScript -and $TaskId -ne "260225_003") {
+    if (-not $GenerateScript) {
         $YearMonth = Get-Date -Format "yyyy-MM"
         Write-Host "========== PREASSEMBLE_FAILFAST =========="
         Write-Host "MODE=Integrate"
@@ -537,10 +545,6 @@ function PreassembleFailfast {
         }
     }
     if ($MissingMin.Count -gt 0) {
-        if ($TaskId -eq "260225_003") {
-            Write-Host "Skipping Preassemble Min Set Check for 260225_003 (Will Generate in Step 2)" -ForegroundColor Yellow
-            return
-        }
         $MissingList = $MissingMin -join ","
         Write-Host "========== PREASSEMBLE_FAILFAST =========="
         Write-Host "MODE=Integrate"
@@ -790,10 +794,10 @@ function Run-Evidence-Gen-And-Preview {
         
         # Cleanup previous run logs
         if (Test-Path "$EvidenceDir\gate_light_preview_$TaskId.log") {
-                node "$RepoRoot\scripts\ops_delete.mjs" "$EvidenceDir\gate_light_preview_$TaskId.log" --force
+             node "$RepoRoot\scripts\ops_delete.mjs" "$EvidenceDir\gate_light_preview_$TaskId.log" --force
         }
         if (Test-Path "$EvidenceDir\gate_light_verify_$TaskId.log") {
-                node "$RepoRoot\scripts\ops_delete.mjs" "$EvidenceDir\gate_light_verify_$TaskId.log" --force
+             node "$RepoRoot\scripts\ops_delete.mjs" "$EvidenceDir\gate_light_verify_$TaskId.log" --force
         }
 
         $GenCmd = @("node", $GenerateScript.FullName)
@@ -801,10 +805,6 @@ function Run-Evidence-Gen-And-Preview {
         if ($EffectiveTimeoutSec -le 0) { $EffectiveTimeoutSec = 300 }
         Write-Host "STEP_TIMEOUT_SEC=$EffectiveTimeoutSec step=Generate Evidence"
         Invoke-Step -Name "Generate Evidence" -Cmd $GenCmd -TimeoutSec $EffectiveTimeoutSec
-    } elseif ($TaskId -eq "260225_003") {
-        Write-Host ">>> [RunTask] Step 2: Generate Evidence (HardStop Latch)" -ForegroundColor Cyan
-        $GenCmd = @("node", "$RepoRoot\scripts\ops_hardstop_latch.mjs", "--action", "generate-evidence", "--task_id", $TaskId, "--mode", $Mode)
-        Invoke-Step -Name "Generate Evidence (HardStop Latch)" -Cmd $GenCmd -TimeoutSec 300
     } else {
         Write-Host ">>> [RunTask] Step 2: Skip Generation (Script not found)" -ForegroundColor Yellow
     }
