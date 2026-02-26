@@ -308,11 +308,19 @@ if (fs.existsSync(speedWallPath) || fs.existsSync(gateLightProfilePath)) {
 
 // DoD Block
 let dodBlock = dodEvidence;
+
+// 260226_001 FIX: Strip existing/bad healthcheck lines (e.g. from CI env var failures) to prevent duplicates/errors
+dodBlock = dodBlock.split('\n')
+    .filter(line => !line.match(/DOD_EVIDENCE_HEALTHCHECK_(ROOT|PAIRS):/))
+    .filter(line => !line.match(/DOD_EVIDENCE_SITE_HEALTH_(ROOT|PAIRS)_53122:/))
+    .join('\n');
+
 if (!dodBlock.includes('=== DOD_EVIDENCE_STDOUT ===')) {
-    dodBlock = `=== DOD_EVIDENCE_STDOUT ===\n${dodEvidence}\n===========================`;
+    dodBlock = `=== DOD_EVIDENCE_STDOUT ===\n${dodBlock}\n===========================`;
 }
 
 // Add Healthcheck Evidence to DoD Block (Required by Gate Light)
+// 260226_001 FIX: Use taskId-based hardcoded filenames, NOT env vars
 const hcRoot = resolvePath(`${taskId}_healthcheck_53122_root.txt`);
 const hcPairs = resolvePath(`${taskId}_healthcheck_53122_pairs.txt`);
 
