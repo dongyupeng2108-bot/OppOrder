@@ -154,14 +154,14 @@ Status: PASS
 Mode: Integrate
 Gate Light: GREEN
 
-DOD_EVIDENCE_STDOUT:
+=== DOD_EVIDENCE_STDOUT ===
 HTTP/1.1 200 OK
 {"status":"ok"}
 
 DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-02/${taskId}_healthcheck_53122_root.txt => HTTP/1.1 200 OK
 DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-02/${taskId}_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
 
-CI_PARITY_PREVIEW:
+=== CI_PARITY_PREVIEW ===
 Base: ${base}
 Head: ${head}
 MergeBase: ${mergeBase}
@@ -170,13 +170,13 @@ Scope: 2 files
 - rules/LATEST.json
 - mock_server_53122.mjs
 
-GATE_LIGHT_PREVIEW:
+=== GATE_LIGHT_PREVIEW ===
 [Gate Light] All systems go.
 GATE_LIGHT_EXIT=0
 `);
 
-// 9. Trae Report Snippet
-writeText(`trae_report_snippet_${taskId}.txt`, `TraeTask_${taskId}
+// 10. Trae Report Snippet
+const snippetContent = `Header: TraeTask_${taskId}
 Status: PASS
 Mode: Integrate
 Gate Light: GREEN
@@ -197,7 +197,9 @@ Scope: 2 files
 === GATE_LIGHT_PREVIEW ===
 [Gate Light] All systems go.
 GATE_LIGHT_EXIT=0
-`);
+`;
+writeText(`trae_report_snippet_${taskId}.txt`, snippetContent);
+console.log(`Generated trae_report_snippet with Header: TraeTask_${taskId}`);
 
 // 10. Result JSON
 writeJson(`result_${taskId}.json`, {
