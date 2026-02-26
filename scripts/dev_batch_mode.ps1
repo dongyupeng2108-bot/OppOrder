@@ -190,9 +190,14 @@ elseif ($Mode -eq 'Integrate') {
     if ($TaskId -ge "260209_004") {
         Write-Host "1.6. Running Concurrent Scan Smoke Test..."
         $ConcurrentSmokeFile = Join-Path $ReportsDir "M4_PR2_concurrent_log_${TaskId}.txt"
-        # Use cmd /c to ensure UTF-8/ASCII output without BOM
-        cmd /c "node scripts/smoke_concurrent_scan.mjs > ""$ConcurrentSmokeFile"""
-        Check-LastExitCode
+        # Use ops_write_file to capture output safely
+        # Run node script and capture stdout
+        $Output = node scripts/smoke_concurrent_scan.mjs
+        if ($LASTEXITCODE -ne 0) { Write-Error "Smoke concurrent scan failed"; exit $LASTEXITCODE }
+        
+        node scripts/ops_write_file.mjs "$ConcurrentSmokeFile" "$Output"
+        if ($LASTEXITCODE -ne 0) { Write-Error "Failed to write smoke output"; exit $LASTEXITCODE }
+        
         Write-Host "   Saved to $ConcurrentSmokeFile"
     }
 
@@ -224,7 +229,7 @@ elseif ($Mode -eq 'Integrate') {
         Write-Host "1.8. Running Opps Run Filter Smoke Test..."
         $OppsRunFilterSmokeFile = Join-Path $ReportsDir "opps_run_filter_smoke_${TaskId}.txt"
         # Script handles file writing internally (supports custom output path now)
-        cmd /c "node scripts/smoke_opps_run_filter.mjs ""$OppsRunFilterSmokeFile"""
+        node scripts/smoke_opps_run_filter.mjs "$OppsRunFilterSmokeFile"
         Check-LastExitCode
         
         Write-Host "   Saved to $OppsRunFilterSmokeFile"
@@ -235,7 +240,7 @@ elseif ($Mode -eq 'Integrate') {
         Write-Host "1.9. Running Opps Top By Run Smoke Test..."
         $OppsTopByRunSmokeFile = Join-Path $ReportsDir "opps_top_by_run_smoke_${TaskId}.txt"
         # Script handles file writing internally
-        cmd /c "node scripts/smoke_opps_top_by_run.mjs ""$OppsTopByRunSmokeFile"""
+        node scripts/smoke_opps_top_by_run.mjs "$OppsTopByRunSmokeFile"
         Check-LastExitCode
         Write-Host "   Saved to $OppsTopByRunSmokeFile"
     }
@@ -703,8 +708,8 @@ if (gateLogPath && fs.existsSync(gateLogPath) && fs.existsSync(snippetFile)) {
         let filteredContent = logContent;
         if (startIndex !== -1) {
             filteredContent = lines.slice(startIndex).join('\n');
-        } else if (lines.length > 150) {
-            filteredContent = lines.slice(-150).join('\n');
+        } else if (lines.length > 50) {
+            filteredContent = lines.slice(-50).join('\n');
         }
         
         let snippet = fs.readFileSync(snippetFile, 'utf8');
@@ -778,13 +783,22 @@ if (fs.existsSync(indexFile) && newHash) {
         
         # 6.2 Run Gate Light (Save to file)
     $GateLogFile = Join-Path $ReportsDir "gate_light_ci_${TaskId}.txt"
-    Write-Host "   Executing gate_light_ci.mjs > $GateLogFile ..."
-    # Use cmd /c to ensure redirection works as expected in all PS versions
+    Write-Host "   Executing gate_light_ci.mjs and saving to $GateLogFile ..."
+    # Use ops_write_file to capture output safely
+    # Run node script and capture stdout/stderr
     # Set GATE_LIGHT_MODE=INTEGRATE to bypass strict preview content check during generation
     $env:GATE_LIGHT_MODE = "INTEGRATE"
-    cmd /c "node scripts/gate_light_ci.mjs --task_id $TaskId > `"$GateLogFile`" 2>&1"
+    $Output = node scripts/gate_light_ci.mjs --task_id $TaskId 2>&1
     $GateExitCode = $LASTEXITCODE
-        $env:GATE_LIGHT_MODE = $null
+    $env:GATE_LIGHT_MODE = $null
+    
+    if ($GateExitCode -ne 0) {
+        # If CI fails, we still want to save the log, but we should note the failure
+        Write-Host "   Gate Light CI failed with exit code $GateExitCode" -ForegroundColor Red
+    }
+    
+    node scripts/ops_write_file.mjs "$GateLogFile" "$Output"
+    if ($LASTEXITCODE -ne 0) { Write-Error "Failed to write gate log"; exit $LASTEXITCODE }
         
         Write-Host "   Gate Light Exit Code: $GateExitCode"
         
