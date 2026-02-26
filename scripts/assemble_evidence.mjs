@@ -921,6 +921,15 @@ if (strictSelfCheck && currentSelfCheckExit === 1) {
 
 console.log(`[Assembler] SUCCESS: Assembled evidence for Task ${taskId}.`);
 
+// 260226_005: 验证证据完整性
+const evidencePath = path.join(evidenceDir, `evidence_${taskId}.json`);
+try {
+    execSync(`node scripts/validate_evidence.mjs "${evidencePath}"`, { stdio: 'inherit' });
+} catch (e) {
+    console.error(`[Assembler] FAIL: Evidence validation failed.`);
+    process.exit(1);
+}
+
 // --- 9. Archive & Lock (Integrate Mode Only) ---
 if (mode === 'Integrate' && phase === 'archive') {
     const verifyLogPath = resolvePath(`gate_light_verify_${taskId}.log`);
