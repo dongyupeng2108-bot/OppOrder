@@ -425,3 +425,51 @@ task_id（任务标识）允许格式：`YYMMDD_NNN` + 可选 1 位字母后缀�
 - **Constraint**: Manual status edits are **STRICTLY FORBIDDEN**.
 - **Principle**: Engineering state must be **derived**, never declared.
 - **Enforcement**: `sync_plan_status.js` is the ONLY allowed writer for the Snapshot sections.
+
+---
+
+## Hard Gate / Soft Gate 分层
+
+### Hard Gate（必须阻断，不通过则禁止合并）
+- Scope Lock：Files changed必须在范围锁白名单内
+- CI gate-light-check：必须PASS
+- LATEST.json一致性：task_id必须与当前任务匹配
+- PROTECTED区完整性：PROTECTED文件不得被修改
+- Evidence验证：证据文件必需字段完整（validate_evidence.mjs）
+- HardStop Latch：闩锁存在期间禁止该Task ID操作
+
+### Soft Gate（不阻断但必须出报告）
+- 行为测试覆盖率
+- 文档完整性检查
+- 长耗时质量检查
+
+原则：Hard Gate保障底线安全，Soft Gate追踪质量趋势。
+不得为了通过Hard Gate而削弱检查项。
+
+---
+
+## 版本策略（Version Strategy）
+
+### 分层管理
+
+L1 对外契约层（最稳定）：
+  - /opportunities/rank_v2 的请求参数、响应schema、排序语义
+  - OpportunityCard字段定义与约束
+  - 变更需版本号升级（rank_v3等）
+
+L2 数据与Mock层：
+  - 确定性Mock契约：同一input_fingerprint + provider=mock必须返回完全一致的输出
+  - 测试fixtures与record集
+  - 变更需回归验证
+
+L3 评分算法层：
+  - score_v2计算逻辑与权重
+  - 允许频繁迭代，但不得破坏L1输出语义
+
+L4 流程规则层（最易变）：
+  - WORKFLOW、Gate、Evidence等治理规则
+  - 变更通过文档治理任务落盘
+
+### 核心原则
+- L1不轻易变；L3/L4的变化必须在L2上通过回归验证
+- 确定性优先：同输入同输出，支撑回归与版本对齐
