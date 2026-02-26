@@ -922,7 +922,7 @@ if (strictSelfCheck && currentSelfCheckExit === 1) {
 console.log(`[Assembler] SUCCESS: Assembled evidence for Task ${taskId}.`);
 
 // 260226_005: 验证证据完整性
-const evidencePath = path.join(evidenceDir, `evidence_${taskId}.json`);
+const evidencePath = resultPath;
 try {
     execSync(`node scripts/validate_evidence.mjs "${evidencePath}"`, { stdio: 'inherit' });
 } catch (e) {

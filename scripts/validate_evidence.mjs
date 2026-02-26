@@ -15,14 +15,17 @@ try {
 }
 
 const errors = [];
-if (!evidence.task_id) errors.push('缺少task_id');
-if (!evidence.timestamp) errors.push('缺少timestamp');
-if (!['PASS','FAIL'].includes(evidence.result)) 
-  errors.push(`result无效: ${evidence.result}`);
-if (!evidence.healthcheck_root?.status) 
-  errors.push('healthcheck_root.status缺失');
-if (!evidence.healthcheck_pairs?.pairs) 
-  errors.push('healthcheck_pairs.pairs缺失');
+// result_*.json validation
+if (!evidence.status) errors.push('status缺失');
+if (evidence.status !== 'DONE') errors.push(`status无效: ${evidence.status}`);
+
+if (!evidence.dod_evidence) errors.push('dod_evidence缺失');
+else {
+    if (typeof evidence.dod_evidence.gate_light_exit === 'undefined') 
+        errors.push('dod_evidence.gate_light_exit缺失');
+    if (!Array.isArray(evidence.dod_evidence.healthcheck)) 
+        errors.push('dod_evidence.healthcheck不是数组');
+}
 
 if (errors.length > 0) {
   console.error('[ValidateEvidence] FAIL:');
