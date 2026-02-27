@@ -22,6 +22,19 @@ const RUNTIME_DIR = path.join(__dirname, '../data/runtime');
 const RUNTIME_STORE = path.join(RUNTIME_DIR, 'store.json');
 const OPPS_RUNS_DIR = path.join(__dirname, '../data/opps_runs');
 
+// --- rank_v2 Business Evidence Writer ---
+function writeRankV2Evidence(ev) {
+    try {
+        const dir = path.join('rules', 'task-reports', 'rank_v2_evidence');
+        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+        const filename = `${ev.run_id}_${ev.called_at.replace(/[:.]/g, '-')}.evidence.json`;
+        fs.writeFileSync(path.join(dir, filename), JSON.stringify(ev, null, 2), 'utf8');
+    } catch (writeErr) {
+        console.error('[rank_v2 evidence write error]', writeErr.message);
+        // 写入失败不影响主流程
+    }
+}
+
 // Initialize LLM Provider
 const llmProvider = getProvider(process.env.LLM_PROVIDER || 'mock');
 console.log(`LLM Provider initialized: ${process.env.LLM_PROVIDER || 'mock'}`);
@@ -1428,6 +1441,27 @@ const server = http.createServer(async (req, res) => {
                         const fixtureData = JSON.parse(fs.readFileSync(fixturePath, 'utf8'));
                         // Respect limit
                         const result = fixtureData.slice(0, limit);
+                        const inputFingerprint = crypto.createHash('sha256')
+                            .update(JSON.stringify({ run_id: runId, limit, provider }))
+                            .digest('hex').slice(0, 16);
+                        const outputFingerprint = crypto.createHash('sha256')
+                            .update(JSON.stringify(result))
+                            .digest('hex').slice(0, 16);
+                        writeRankV2Evidence({
+                            task_schema_version: '1.0',
+                            run_id: runId,
+                            called_at: new Date().toISOString(),
+                            provider,
+                            source: 'fixture',
+                            limit_requested: limit,
+                            limit_returned: result.length,
+                            input_fingerprint: inputFingerprint,
+                            output_fingerprint: outputFingerprint,
+                            score_v2_range: {
+                                min: Math.min(...result.map(r => r.score_v2)),
+                                max: Math.max(...result.map(r => r.score_v2))
+                            }
+                        });
                         res.writeHead(200, { 'Content-Type': 'application/json' });
                         res.end(JSON.stringify(result));
                         return;
@@ -1525,6 +1559,29 @@ const server = http.createServer(async (req, res) => {
 
             // Sort by score_v2 desc
             ranked.sort((a, b) => b.score_v2 - a.score_v2);
+
+            const inputFingerprint = crypto.createHash('sha256')
+                .update(JSON.stringify({ run_id: runId, limit, provider }))
+                .digest('hex').slice(0, 16);
+            const outputFingerprint = crypto.createHash('sha256')
+                .update(JSON.stringify(ranked))
+                .digest('hex').slice(0, 16);
+            writeRankV2Evidence({
+                task_schema_version: '1.0',
+                run_id: runId,
+                called_at: new Date().toISOString(),
+                provider,
+                source: 'dynamic',
+                limit_requested: limit,
+                limit_returned: ranked.length,
+                input_fingerprint: inputFingerprint,
+                output_fingerprint: outputFingerprint,
+                score_v2_range: {
+                    min: Math.min(...ranked.map(r => r.score_v2)),
+                    max: Math.max(...ranked.map(r => r.score_v2))
+                },
+                score_v2_formula: '0.45*p_hat + 0.55*p_llm - 0.10*(p_ci.high-p_ci.low)'
+            });
 
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify(ranked));
