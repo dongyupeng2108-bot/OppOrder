@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import url from 'url';
 import { fileURLToPath } from 'url';
+import { applyHardFilter } from './scan_filter.mjs';
 import { validateArray } from './validate_schema.mjs';
 import { readFileSync } from 'fs';
 import crypto from 'crypto';
@@ -277,6 +278,23 @@ async function runScanCore(params) {
     });
     logStage('score_baseline', tScoreStart, {}, { scored: newOpps.length }, [], []);
 
+    // 3.3 Stage: hard_filter (M1-T4)
+    const tFilterStart = Date.now();
+    const filterOpts = {
+      min_score: params.min_score !== undefined ? parseFloat(params.min_score) : undefined,
+      require_tradeable: params.require_tradeable === 'true' || params.require_tradeable === true
+    };
+    const filterResult = applyHardFilter(newOpps, filterOpts);
+    // 用过滤后的数组替换newOpps（注意：newOpps是let声明才可重赋值）
+    // 如果newOpps是const，改用splice: newOpps.splice(0, newOpps.length, ...filterResult.passed)
+    newOpps.splice(0, newOpps.length, ...filterResult.passed);
+    logStage('hard_filter', tFilterStart,
+      { min_score: filterOpts.min_score, require_tradeable: filterOpts.require_tradeable },
+      { input: filterResult.filter_log.total_input, passed: filterResult.filter_log.passed, filtered: filterResult.filter_log.filtered_count },
+      [],
+      filterResult.filter_log.filtered_ids.map(id => `filtered: ${id}`)
+    );
+
     // DB: Append Snapshots (Fail-soft)
     for (const opp of newOpps) {
         try {
@@ -393,6 +411,7 @@ async function runScanCore(params) {
         mode: mode,
         topic_key: topic_key,
         opp_ids: newOpps.map(o => o.opp_id),
+        filter_log: filterResult.filter_log,
         stage_logs: [...stageLogs], // Copy current logs
         metrics: metrics
     };
