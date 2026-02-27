@@ -1,0 +1,8 @@
+{
+  "task_id": "260228_001",
+  "status": "success",
+  "metrics": {
+    "files_deleted": 16,
+    "root_dirty_files_cleaned": true
+  }
+}

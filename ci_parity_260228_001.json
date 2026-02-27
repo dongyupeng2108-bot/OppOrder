@@ -1,0 +1,28 @@
+{
+  "task_id": "260228_001",
+  "is_shallow_repo": false,
+  "base": "8cc4edf2e96aa84c19028102d1d6a9638d50d8c1",
+  "head": "c0ac4c96c927882765ba33a057634ac71eb2594d",
+  "merge_base": "8cc4edf2e96aa84c19028102d1d6a9638d50d8c1",
+  "scope_files": [
+    "ci_parity_260227_010.json",
+    "ci_parity_260227_011.json",
+    "ci_parity_260227_012a.json",
+    "ci_parity_260227_012b.json",
+    "dod_evidence_260227_010.txt",
+    "dod_evidence_260227_011.txt",
+    "dod_evidence_260227_012a.txt",
+    "dod_evidence_260227_012b.txt",
+    "git_meta_260227_010.json",
+    "git_meta_260227_011.json",
+    "git_meta_260227_012a.json",
+    "git_meta_260227_012b.json",
+    "result_260227_010.json",
+    "result_260227_011.json",
+    "result_260227_012a.json",
+    "result_260227_012b.json",
+    "rules/LATEST.json"
+  ],
+  "scope_count": 17,
+  "generated_at": "2026-02-27T17:08:44.621Z"
+}
