@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import url from 'url';
 import { fileURLToPath } from 'url';
+import { runStrategy, listStrategies } from './strategy_registry.mjs';
 import { applyHardFilter } from './scan_filter.mjs';
 import { validateArray } from './validate_schema.mjs';
 import { readFileSync } from 'fs';
@@ -295,6 +296,25 @@ async function runScanCore(params) {
       filterResult.filter_log.filtered_ids.map(id => `filtered: ${id}`)
     );
 
+    // 3.4 Stage: strategy_run (M1-T5)
+    const tStrategyStart = Date.now();
+    const strategyId = params.strategy_id || 'mock_strategy';
+    const inputFingerprint = crypto.createHash('sha256')
+      .update(JSON.stringify({ seed, n_opps: n_opps_actual, strategy_id: strategyId }))
+      .digest('hex').slice(0, 16);
+    const ctx = {
+      strategy_id: strategyId,
+      run_id: scanId,
+      provider_mode: params.llm_provider || 'mock',
+      input_fingerprint: inputFingerprint
+    };
+    const strategyCards = runStrategy(strategyId, {}, newOpps, ctx);
+    logStage('strategy_run', tStrategyStart,
+      { strategy_id: strategyId, input_fingerprint: inputFingerprint },
+      { candidates_in: newOpps.length, cards_out: strategyCards.length },
+      [], []
+    );
+
     // DB: Append Snapshots (Fail-soft)
     for (const opp of newOpps) {
         try {
@@ -411,14 +431,16 @@ async function runScanCore(params) {
         mode: mode,
         topic_key: topic_key,
         opp_ids: newOpps.map(o => o.opp_id),
+        strategy_id: strategyId,
+        strategy_cards_count: strategyCards.length,
         filter_log: filterResult.filter_log,
         stage_logs: [...stageLogs], // Copy current logs
         metrics: metrics
     };
     
     inMemoryScans.push(scan);
-    // Also push opps to inMemoryOpps
-    newOpps.forEach(o => inMemoryOpps.push(o));
+    // Push strategy cards to inMemoryOpps (T5: cards replace raw opps)
+    strategyCards.forEach(o => inMemoryOpps.push(o));
     
     // 5. Persist
     const tPersist = Date.now();
