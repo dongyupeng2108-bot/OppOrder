@@ -1,9 +1,0 @@
-
-DOD Evidence for 260228_001
-- 16 root-level evidence files deleted: PASS
-- ci_parity_260227_010/011/012a/012b.json removed from root: PASS
-- dod_evidence_260227_010/011/012a/012b.txt removed from root: PASS
-- git_meta_260227_010/011/012a/012b.json removed from root: PASS
-- result_260227_010/011/012a/012b.json removed from root: PASS
-- Correct copies preserved in rules/task-reports/2026-02/: PASS
-- Root dirty file count = 0 (for 260227_01x pattern): PASS
