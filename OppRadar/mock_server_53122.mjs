@@ -466,6 +466,29 @@ async function runScanCore(params) {
             const runOutputDir = path.join(__dirname, '..', 'data', 'runs', scanId);
             writeRunOutput(scanId, oppsToWrite, runOutputDir);
 
+            // T6b: 写入SQLite，打通by_run链路
+            for (const card of oppsToWrite) {
+                await DB.appendOpportunity({
+                    id: card.id || card.opp_id,
+                    ts: card.created_at ? new Date(card.created_at).getTime() : Date.now(),
+                    topic_key: card.meta?.topic_key || params.topic_key || 'default_topic',
+                    score: card.score || 0,
+                    score_breakdown: { score_v2: card.score_v2, score_baseline: card.score },
+                    features: { title: card.title, strategy_id: card.strategy_id },
+                    snapshot_ref: card.meta?.snapshot_id || null,
+                    llm_ref: null,
+                    news_refs: [],
+                    build_run_id: scanId,
+                    refs: {
+                        score_v2: card.score_v2,
+                        strategy_id: card.strategy_id,
+                        tradeable_state: card.meta?.tradeable_state,
+                        provider_mode: card.meta?.provider_mode,
+                        input_fingerprint: card.meta?.input_fingerprint
+                    }
+                });
+            }
+
             // Update store.json
             const storePath = path.join(RUNTIME_DIR, 'store.json');
             const storeData = {
@@ -1399,16 +1422,13 @@ const server = http.createServer(async (req, res) => {
     // GET /opportunities/by_run (Task 260209_008)
     if (pathname === '/opportunities/by_run') {
         const runId = parsedUrl.query.run_id;
-        const limit = parsedUrl.query.limit ? parseInt(parsedUrl.query.limit) : 20;
+        const limitRaw = parsedUrl.query.limit ? parseInt(parsedUrl.query.limit) : 20;
+        // Limit Contract: Clamp to 50
+        const limit = Math.min(limitRaw, 50);
         
         if (!runId) {
             res.writeHead(400, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ error: 'Missing run_id parameter' }));
-            return;
-        }
-        if (limit > 50) {
-            res.writeHead(400, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: 'Limit cannot exceed 50' }));
             return;
         }
 
@@ -1492,7 +1512,7 @@ const server = http.createServer(async (req, res) => {
     // GET /opportunities/rank_v2 (Task 260214_009)
     if (pathname === '/opportunities/rank_v2') {
         const runId = parsedUrl.query.run_id;
-        let limit = parsedUrl.query.limit ? parseInt(parsedUrl.query.limit) : 20;
+        const limitRaw = parsedUrl.query.limit ? parseInt(parsedUrl.query.limit) : 20;
         const provider = parsedUrl.query.provider || 'mock';
         const model = parsedUrl.query.model;
 
@@ -1502,12 +1522,8 @@ const server = http.createServer(async (req, res) => {
             res.end(JSON.stringify({ error: 'Missing run_id parameter' }));
             return;
         }
-        // Limit Clamp (Fail-fast)
-        if (limit > 50) {
-            res.writeHead(400, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: 'Limit cannot exceed 50' }));
-            return;
-        }
+        // Limit Contract: Clamp to 50
+        const limit = Math.min(limitRaw, 50);
 
         try {
             // FIXTURE MODE CHECK (Task 260215_011)
@@ -1516,8 +1532,11 @@ const server = http.createServer(async (req, res) => {
                 if (fs.existsSync(fixturePath)) {
                     try {
                         const fixtureData = JSON.parse(fs.readFileSync(fixturePath, 'utf8'));
-                        // Respect limit
-                        const result = fixtureData.slice(0, limit);
+                        // Respect limit + Sort by score_v2 desc
+                        const result = fixtureData
+                            .sort((a, b) => b.score_v2 - a.score_v2)
+                            .slice(0, limit);
+
                         const inputFingerprint = crypto.createHash('sha256')
                             .update(JSON.stringify({ run_id: runId, limit, provider }))
                             .digest('hex').slice(0, 16);
