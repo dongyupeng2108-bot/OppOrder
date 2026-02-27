@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ReplayResponse",
+  "description": "Response schema for GET /replay",
+  "type": "object",
+  "required": ["scan_id", "snapshot_fingerprint", "replay_events"],
+  "additionalProperties": false,
+  "properties": {
+    "scan_id": {
+      "type": "string",
+      "description": "The scan run ID that was replayed"
+    },
+    "snapshot_fingerprint": {
+      "type": "string",
+      "description": "Snapshot reference fingerprint for the scan (empty string if unavailable)"
+    },
+    "replay_events": {
+      "type": "array",
+      "description": "Ordered list of opportunity events for replay",
+      "items": {
+        "type": "object",
+        "required": ["opp_id", "score", "title"],
+        "additionalProperties": false,
+        "properties": {
+          "opp_id": {
+            "type": "string",
+            "description": "Opportunity ID"
+          },
+          "score": {
+            "type": "number",
+            "description": "Opportunity score"
+          },
+          "title": {
+            "type": "string",
+            "description": "Human-readable label (topic_key)"
+          }
+        }
+      }
+    }
+  }
+}

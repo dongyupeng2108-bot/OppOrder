@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DiffResponse",
+  "description": "Response schema for GET /diff",
+  "type": "object",
+  "required": ["from_scan", "to_scan", "added_opp_ids", "removed_opp_ids", "changed"],
+  "additionalProperties": false,
+  "properties": {
+    "from_scan": {
+      "type": "string",
+      "description": "Source scan ID"
+    },
+    "to_scan": {
+      "type": "string",
+      "description": "Target scan ID"
+    },
+    "added_opp_ids": {
+      "type": "array",
+      "description": "Opportunity IDs present in to_scan but not in from_scan",
+      "items": { "type": "string" }
+    },
+    "removed_opp_ids": {
+      "type": "array",
+      "description": "Opportunity IDs present in from_scan but not in to_scan",
+      "items": { "type": "string" }
+    },
+    "changed": {
+      "type": "array",
+      "description": "Opportunities present in both scans but with differing field values",
+      "items": {
+        "type": "object",
+        "required": ["opp_id", "from", "to"],
+        "additionalProperties": false,
+        "properties": {
+          "opp_id": { "type": "string" },
+          "from":   { "type": "object", "description": "Field values in from_scan" },
+          "to":     { "type": "object", "description": "Field values in to_scan" }
+        }
+      }
+    }
+  }
+}
