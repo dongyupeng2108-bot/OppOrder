@@ -36,3 +36,9 @@ rules/task-reports/envelopes/
 artifacts/
 facts.txt
 evidence.json
+
+# Claude Code worktree
+.claude/
+
+# Scan run data
+data/runs/

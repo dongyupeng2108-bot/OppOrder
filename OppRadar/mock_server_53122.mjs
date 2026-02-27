@@ -3,7 +3,18 @@ import fs from 'fs';
 import path from 'path';
 import url from 'url';
 import { fileURLToPath } from 'url';
+import { writeRunOutput } from './run_output.mjs';
+import { runStrategy, listStrategies } from './strategy_registry.mjs';
+import { applyHardFilter } from './scan_filter.mjs';
+import { validateArray } from './validate_schema.mjs';
+import { readFileSync } from 'fs';
 import crypto from 'crypto';
+
+// OpportunityCard schema（启动时加载一次）
+const OPPORTUNITY_CARD_SCHEMA = JSON.parse(
+  readFileSync(new URL('../contracts/opportunity_card.schema.json', import.meta.url), 'utf8')
+);
+import { getRankV2Score } from './rank_v2_provider.mjs';
 import { getProvider } from './llm_provider.mjs';
 import { getProvider as getNewsProvider } from './news_provider.mjs';
 import { NewsStore } from './news_store.mjs';
@@ -21,6 +32,19 @@ const FIXTURES_DIR = path.join(__dirname, '../data/fixtures');
 const RUNTIME_DIR = path.join(__dirname, '../data/runtime');
 const RUNTIME_STORE = path.join(RUNTIME_DIR, 'store.json');
 const OPPS_RUNS_DIR = path.join(__dirname, '../data/opps_runs');
+
+// --- rank_v2 Business Evidence Writer ---
+function writeRankV2Evidence(ev) {
+    try {
+        const dir = path.join('rules', 'task-reports', 'rank_v2_evidence');
+        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+        const filename = `${ev.run_id}_${ev.called_at.replace(/[:.]/g, '-')}.evidence.json`;
+        fs.writeFileSync(path.join(dir, filename), JSON.stringify(ev, null, 2), 'utf8');
+    } catch (writeErr) {
+        console.error('[rank_v2 evidence write error]', writeErr.message);
+        // 写入失败不影响主流程
+    }
+}
 
 // Initialize LLM Provider
 const llmProvider = getProvider(process.env.LLM_PROVIDER || 'mock');
@@ -256,6 +280,42 @@ async function runScanCore(params) {
     });
     logStage('score_baseline', tScoreStart, {}, { scored: newOpps.length }, [], []);
 
+    // 3.3 Stage: hard_filter (M1-T4)
+    const tFilterStart = Date.now();
+    const filterOpts = {
+      min_score: params.min_score !== undefined ? parseFloat(params.min_score) : undefined,
+      require_tradeable: params.require_tradeable === 'true' || params.require_tradeable === true
+    };
+    const filterResult = applyHardFilter(newOpps, filterOpts);
+    // 用过滤后的数组替换newOpps（注意：newOpps是let声明才可重赋值）
+    // 如果newOpps是const，改用splice: newOpps.splice(0, newOpps.length, ...filterResult.passed)
+    newOpps.splice(0, newOpps.length, ...filterResult.passed);
+    logStage('hard_filter', tFilterStart,
+      { min_score: filterOpts.min_score, require_tradeable: filterOpts.require_tradeable },
+      { input: filterResult.filter_log.total_input, passed: filterResult.filter_log.passed, filtered: filterResult.filter_log.filtered_count },
+      [],
+      filterResult.filter_log.filtered_ids.map(id => `filtered: ${id}`)
+    );
+
+    // 3.4 Stage: strategy_run (M1-T5)
+    const tStrategyStart = Date.now();
+    const strategyId = params.strategy_id || 'mock_strategy';
+    const inputFingerprint = crypto.createHash('sha256')
+      .update(JSON.stringify({ seed, n_opps: n_opps_actual, strategy_id: strategyId }))
+      .digest('hex').slice(0, 16);
+    const ctx = {
+      strategy_id: strategyId,
+      run_id: scanId,
+      provider_mode: params.llm_provider || 'mock',
+      input_fingerprint: inputFingerprint
+    };
+    const strategyCards = runStrategy(strategyId, {}, newOpps, ctx);
+    logStage('strategy_run', tStrategyStart,
+      { strategy_id: strategyId, input_fingerprint: inputFingerprint },
+      { candidates_in: newOpps.length, cards_out: strategyCards.length },
+      [], []
+    );
+
     // DB: Append Snapshots (Fail-soft)
     for (const opp of newOpps) {
         try {
@@ -372,13 +432,16 @@ async function runScanCore(params) {
         mode: mode,
         topic_key: topic_key,
         opp_ids: newOpps.map(o => o.opp_id),
+        strategy_id: strategyId,
+        strategy_cards_count: strategyCards.length,
+        filter_log: filterResult.filter_log,
         stage_logs: [...stageLogs], // Copy current logs
         metrics: metrics
     };
     
     inMemoryScans.push(scan);
-    // Also push opps to inMemoryOpps
-    newOpps.forEach(o => inMemoryOpps.push(o));
+    // Push strategy cards to inMemoryOpps (T5: cards replace raw opps)
+    strategyCards.forEach(o => inMemoryOpps.push(o));
     
     // 5. Persist
     const tPersist = Date.now();
@@ -392,11 +455,40 @@ async function runScanCore(params) {
 
             // Write scan
             fs.writeFileSync(path.join(RUNTIME_DIR, `scan_${scanId}.json`), JSON.stringify(scan, null, 2));
-            // Write opps
-            newOpps.forEach(o => {
-                fs.writeFileSync(path.join(RUNTIME_DIR, `${o.opp_id}.json`), JSON.stringify(o, null, 2));
+            // Write opps（T6a: 使用strategyCards）
+            const oppsToWrite = typeof strategyCards !== 'undefined' ? strategyCards : newOpps;
+            oppsToWrite.forEach(o => {
+                const oppId = o.id || o.opp_id;
+                fs.writeFileSync(path.join(RUNTIME_DIR, `${oppId}.json`), JSON.stringify(o, null, 2));
             });
             
+            // T6a: 生成闭环输出（opportunities.json + report.md）
+            const runOutputDir = path.join(__dirname, '..', 'data', 'runs', scanId);
+            writeRunOutput(scanId, oppsToWrite, runOutputDir);
+
+            // T6b: 写入SQLite，打通by_run链路
+            for (const card of oppsToWrite) {
+                await DB.appendOpportunity({
+                    id: card.id || card.opp_id,
+                    ts: card.created_at ? new Date(card.created_at).getTime() : Date.now(),
+                    topic_key: card.meta?.topic_key || params.topic_key || 'default_topic',
+                    score: card.score || 0,
+                    score_breakdown: { score_v2: card.score_v2, score_baseline: card.score },
+                    features: { title: card.title, strategy_id: card.strategy_id },
+                    snapshot_ref: card.meta?.snapshot_id || null,
+                    llm_ref: null,
+                    news_refs: [],
+                    build_run_id: scanId,
+                    refs: {
+                        score_v2: card.score_v2,
+                        strategy_id: card.strategy_id,
+                        tradeable_state: card.meta?.tradeable_state,
+                        provider_mode: card.meta?.provider_mode,
+                        input_fingerprint: card.meta?.input_fingerprint
+                    }
+                });
+            }
+
             // Update store.json
             const storePath = path.join(RUNTIME_DIR, 'store.json');
             const storeData = {
@@ -497,7 +589,7 @@ async function runScanCore(params) {
     // Return Result
     return {
         scan: scan,
-        opportunities: newOpps,
+        opportunities: typeof strategyCards !== 'undefined' ? strategyCards : newOpps,
         from_scan_id: fromScanId,
         to_scan_id: scanId,
         metrics: metrics,
@@ -1305,8 +1397,21 @@ const server = http.createServer(async (req, res) => {
         }
         try {
             const runs = await DB.getRuns(limit);
+            // T6a: Enrich runs with consistent fields
+            const enrichedRuns = runs.map(r => ({
+                run_id: r.run_id || r.scan_id, // Normalize
+                ts: r.ts || new Date(r.timestamp).getTime(),
+                jobs_total: r.jobs_total || r.n_opps_requested || 0,
+                jobs_ok: r.jobs_ok || r.n_opps_actual || 0,
+                jobs_failed: r.jobs_failed || 0,
+                inserted_count: r.inserted_count || r.n_opps_actual || 0,
+                concurrency: r.concurrency || (r.mode === 'fast' ? 5 : 2),
+                meta_json: r.meta_json || JSON.stringify({ started_at: r.timestamp }),
+                meta: r.meta || { started_at: r.timestamp }
+            }));
+            
             res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify(runs));
+            res.end(JSON.stringify(enrichedRuns));
         } catch (e) {
             res.writeHead(500, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ error: e.message }));
@@ -1317,21 +1422,26 @@ const server = http.createServer(async (req, res) => {
     // GET /opportunities/by_run (Task 260209_008)
     if (pathname === '/opportunities/by_run') {
         const runId = parsedUrl.query.run_id;
-        const limit = parsedUrl.query.limit ? parseInt(parsedUrl.query.limit) : 20;
+        const limitRaw = parsedUrl.query.limit ? parseInt(parsedUrl.query.limit) : 20;
+        // Limit Contract: Clamp to 50
+        const limit = Math.min(limitRaw, 50);
         
         if (!runId) {
             res.writeHead(400, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ error: 'Missing run_id parameter' }));
             return;
         }
-        if (limit > 50) {
-            res.writeHead(400, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: 'Limit cannot exceed 50' }));
-            return;
-        }
 
         try {
             const opps = await DB.getOpportunitiesByRun(runId, limit);
+
+            // Schema Gate: OpportunityCard contract
+            const gateResult = validateArray(opps, OPPORTUNITY_CARD_SCHEMA);
+            if (!gateResult.valid) {
+              console.warn('[OpportunityCard gate] by_run validation failed:', gateResult.errors);
+              // 警告模式：记录但不阻断，M1后期改为强制
+            }
+
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify(opps));
         } catch (e) {
@@ -1402,7 +1512,7 @@ const server = http.createServer(async (req, res) => {
     // GET /opportunities/rank_v2 (Task 260214_009)
     if (pathname === '/opportunities/rank_v2') {
         const runId = parsedUrl.query.run_id;
-        let limit = parsedUrl.query.limit ? parseInt(parsedUrl.query.limit) : 20;
+        const limitRaw = parsedUrl.query.limit ? parseInt(parsedUrl.query.limit) : 20;
         const provider = parsedUrl.query.provider || 'mock';
         const model = parsedUrl.query.model;
 
@@ -1412,12 +1522,8 @@ const server = http.createServer(async (req, res) => {
             res.end(JSON.stringify({ error: 'Missing run_id parameter' }));
             return;
         }
-        // Limit Clamp (Fail-fast)
-        if (limit > 50) {
-            res.writeHead(400, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: 'Limit cannot exceed 50' }));
-            return;
-        }
+        // Limit Contract: Clamp to 50
+        const limit = Math.min(limitRaw, 50);
 
         try {
             // FIXTURE MODE CHECK (Task 260215_011)
@@ -1426,9 +1532,39 @@ const server = http.createServer(async (req, res) => {
                 if (fs.existsSync(fixturePath)) {
                     try {
                         const fixtureData = JSON.parse(fs.readFileSync(fixturePath, 'utf8'));
-                        // Respect limit
-                        const result = fixtureData.slice(0, limit);
+                        // Respect limit + Sort by score_v2 desc
+                        const result = fixtureData
+                            .sort((a, b) => b.score_v2 - a.score_v2)
+                            .slice(0, limit);
+
+                        const inputFingerprint = crypto.createHash('sha256')
+                            .update(JSON.stringify({ run_id: runId, limit, provider }))
+                            .digest('hex').slice(0, 16);
+                        const outputFingerprint = crypto.createHash('sha256')
+                            .update(JSON.stringify(result))
+                            .digest('hex').slice(0, 16);
+                        writeRankV2Evidence({
+                            task_schema_version: '1.0',
+                            run_id: runId,
+                            called_at: new Date().toISOString(),
+                            provider,
+                            source: 'fixture',
+                            limit_requested: limit,
+                            limit_returned: result.length,
+                            input_fingerprint: inputFingerprint,
+                            output_fingerprint: outputFingerprint,
+                            score_v2_range: {
+                                min: Math.min(...result.map(r => r.score_v2)),
+                                max: Math.max(...result.map(r => r.score_v2))
+                            }
+                        });
                         res.writeHead(200, { 'Content-Type': 'application/json' });
+                        
+                        // Schema Gate: OpportunityCard contract（rank_v2输出结构不同，验证opp_id存在性）
+                        if (!result.every(r => r.opp_id)) {
+                          console.warn('[OpportunityCard gate] rank_v2 missing opp_id in results');
+                        }
+
                         res.end(JSON.stringify(result));
                         return;
                     } catch (e) {
@@ -1451,35 +1587,11 @@ const server = http.createServer(async (req, res) => {
                 let provider_used = provider;
                 let fallback = false;
 
-                // Deterministic Logic Helper
-                const getDeterministicP = (id) => {
-                    const hash = crypto.createHash('sha256').update(id).digest('hex');
-                    const intVal = parseInt(hash.substring(0, 8), 16);
-                    return parseFloat((intVal / 0xFFFFFFFF).toFixed(4));
-                };
-
-                if (provider === 'mock') {
-                        p_llm = getDeterministicP(o.id);
-                    } else if (provider === 'deepseek') {
-                         if (!process.env.DEEPSEEK_API_KEY) {
-                             // Fallback to mock if key missing
-                             provider_used = 'mock';
-                             fallback = true;
-                             p_llm = getDeterministicP(o.id);
-                         } else {
-                             // TODO: Real DeepSeek Call
-                             // For now, simulate fallback behavior as I don't have the client implemented here
-                             // And requirements say "deepseek下若缺 key 必须 fallback=mock"
-                             // Since I can't guarantee key presence or client code availability in this single file edit,
-                             // I will assume fallback for safety, or replicate deterministic logic if key exists but client fails.
-                             // But strictly, if key exists, we should try. 
-                             // Given the scope, I'll just use the deterministic logic for now to ensure stability.
-                             // In a real scenario, this would call `llmProvider.analyze(...)` or similar.
-                             provider_used = 'mock'; 
-                             fallback = true; 
-                             p_llm = getDeterministicP(o.id);
-                         }
-                    }
+                // Provider Interface (T2)
+                const scoreResult = await getRankV2Score(o.id, provider);
+                p_llm = scoreResult.p_llm;
+                provider_used = scoreResult.provider_used;
+                fallback = scoreResult.fallback;
 
                     // p_ci: Wilson Score Interval (n=50)
                 const n = 50;
@@ -1525,6 +1637,29 @@ const server = http.createServer(async (req, res) => {
 
             // Sort by score_v2 desc
             ranked.sort((a, b) => b.score_v2 - a.score_v2);
+
+            const inputFingerprint = crypto.createHash('sha256')
+                .update(JSON.stringify({ run_id: runId, limit, provider }))
+                .digest('hex').slice(0, 16);
+            const outputFingerprint = crypto.createHash('sha256')
+                .update(JSON.stringify(ranked))
+                .digest('hex').slice(0, 16);
+            writeRankV2Evidence({
+                task_schema_version: '1.0',
+                run_id: runId,
+                called_at: new Date().toISOString(),
+                provider,
+                source: 'dynamic',
+                limit_requested: limit,
+                limit_returned: ranked.length,
+                input_fingerprint: inputFingerprint,
+                output_fingerprint: outputFingerprint,
+                score_v2_range: {
+                    min: Math.min(...ranked.map(r => r.score_v2)),
+                    max: Math.max(...ranked.map(r => r.score_v2))
+                },
+                score_v2_formula: '0.45*p_hat + 0.55*p_llm - 0.10*(p_ci.high-p_ci.low)'
+            });
 
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify(ranked));
