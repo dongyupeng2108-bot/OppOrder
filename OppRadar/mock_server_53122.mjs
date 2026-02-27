@@ -1474,15 +1474,7 @@ const server = http.createServer(async (req, res) => {
             }
 
             // 1. Fetch Opportunities
-            let opps = await DB.getOpportunitiesByRun(runId, limit);
-
-            // [T2 Dev] Fallback for provider testing if DB is empty
-            if (opps.length === 0 && (runId === 'test' || runId === 'test_provider')) {
-                opps = [
-                    { id: 'op_test_1', score: 0.88 },
-                    { id: 'op_test_2', score: 0.45 }
-                ];
-            }
+            const opps = await DB.getOpportunitiesByRun(runId, limit);
 
             // 2. Transform & Rank
             const ranked = await Promise.all(opps.map(async (o) => {
