@@ -1,0 +1,8 @@
+
+DOD Evidence for 260227_009
+- /diff route: PASS (returns added_opp_ids/removed_opp_ids/changed with from/to)
+- /replay route: PASS (returns scan_id/snapshot_fingerprint/replay_events)
+- 400 on missing params: PASS
+- 404 on nonexistent scan_id: PASS
+- replay_fixtures.json generated (<=50 entries): PASS
+- Schema contracts created: diff_response.schema.json, replay_response.schema.json
