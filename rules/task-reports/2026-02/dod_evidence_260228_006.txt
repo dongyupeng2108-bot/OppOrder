@@ -1,0 +1,8 @@
+DOD Evidence for 260228_006
+Generated: 2026-02-27T19:40:11.889Z
+HEAD: ab69e2d23ad8f79028c1efd25e6a8bceb121437c
+
+- run_task.ps1 passes $EvidenceDir to generate_evidence_*.mjs: PASS
+- generate_evidence uses __dirname as fallback: PASS
+- git_meta contains commit field: PASS
+- Root directory not polluted: PASS

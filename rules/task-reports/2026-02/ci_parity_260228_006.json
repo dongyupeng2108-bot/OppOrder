@@ -1,0 +1,16 @@
+{
+  "task_id": "260228_006",
+  "is_shallow_repo": true,
+  "base": "164af6401e13bbd65a303c37649242ccaf730c76",
+  "head": "33fd5fb79e38d429ce43cf0f4a4d58441d26330c",
+  "merge_base": "164af6401e13bbd65a303c37649242ccaf730c76",
+  "scope_files": [
+    "rules/LATEST.json",
+    "rules/task-reports/index/error_stats.jsonl",
+    "rules/task-reports/runs/260228_005/20260228024726_02289a3/preflight_attestation_260228_005.json",
+    "rules/task-reports/runs/260228_005/20260228024726_02289a3/workspace_healer_260228_005.json",
+    "scripts/run_task.ps1"
+  ],
+  "scope_count": 5,
+  "generated_at": "2026-02-27T19:41:28.865Z"
+}

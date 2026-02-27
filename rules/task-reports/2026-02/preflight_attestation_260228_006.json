@@ -1,0 +1,11 @@
+﻿{
+    "mode":  "Integrate",
+    "branch":  "fix/generate-evidence-path-260228_006",
+    "write_allowed":  true,
+    "input_hash_short":  "1d5737d5",
+    "header":  "TraeTask_260228_006",
+    "commit":  "ab69e2d2",
+    "task_id":  "260228_006",
+    "header_detected":  true,
+    "timestamp":  "2026-02-28 03:40:07 UTC"
+}
