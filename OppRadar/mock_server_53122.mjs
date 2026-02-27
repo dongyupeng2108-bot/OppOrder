@@ -3,7 +3,14 @@ import fs from 'fs';
 import path from 'path';
 import url from 'url';
 import { fileURLToPath } from 'url';
+import { validateArray } from './validate_schema.mjs';
+import { readFileSync } from 'fs';
 import crypto from 'crypto';
+
+// OpportunityCard schema（启动时加载一次）
+const OPPORTUNITY_CARD_SCHEMA = JSON.parse(
+  readFileSync(new URL('../contracts/opportunity_card.schema.json', import.meta.url), 'utf8')
+);
 import { getRankV2Score } from './rank_v2_provider.mjs';
 import { getProvider } from './llm_provider.mjs';
 import { getProvider as getNewsProvider } from './news_provider.mjs';
@@ -1346,6 +1353,14 @@ const server = http.createServer(async (req, res) => {
 
         try {
             const opps = await DB.getOpportunitiesByRun(runId, limit);
+
+            // Schema Gate: OpportunityCard contract
+            const gateResult = validateArray(opps, OPPORTUNITY_CARD_SCHEMA);
+            if (!gateResult.valid) {
+              console.warn('[OpportunityCard gate] by_run validation failed:', gateResult.errors);
+              // 警告模式：记录但不阻断，M1后期改为强制
+            }
+
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify(opps));
         } catch (e) {
@@ -1464,6 +1479,12 @@ const server = http.createServer(async (req, res) => {
                             }
                         });
                         res.writeHead(200, { 'Content-Type': 'application/json' });
+                        
+                        // Schema Gate: OpportunityCard contract（rank_v2输出结构不同，验证opp_id存在性）
+                        if (!result.every(r => r.opp_id)) {
+                          console.warn('[OpportunityCard gate] rank_v2 missing opp_id in results');
+                        }
+
                         res.end(JSON.stringify(result));
                         return;
                     } catch (e) {
