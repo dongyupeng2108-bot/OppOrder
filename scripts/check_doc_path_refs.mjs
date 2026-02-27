@@ -3,7 +3,7 @@ import path from 'path';
 
 // Configuration
 const TARGET_EXTENSIONS = ['.md', '.mjs', '.js', '.ts', '.ps1', '.yml', '.yaml', '.json'];
-const EXCLUDED_DIRS = ['node_modules', 'rules/task-reports', 'data', '.git'];
+const EXCLUDED_DIRS = ['node_modules', 'rules/task-reports', 'data', '.git', '.claude'];
 const EXCLUDED_FILES = [
     'scripts/check_doc_path_refs.mjs',
     'scripts/gate_light_ci.mjs'
