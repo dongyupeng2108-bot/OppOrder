@@ -1,0 +1,11 @@
+﻿{
+    "mode":  "Integrate",
+    "branch":  "chore/cleanup-260228_005",
+    "write_allowed":  true,
+    "input_hash_short":  "1d5737d4",
+    "header":  "TraeTask_260228_005",
+    "commit":  "02289a39",
+    "task_id":  "260228_005",
+    "header_detected":  true,
+    "timestamp":  "2026-02-28 02:47:05 UTC"
+}
