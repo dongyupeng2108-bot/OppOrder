@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import url from 'url';
 import { fileURLToPath } from 'url';
+import { writeRunOutput } from './run_output.mjs';
 import { runStrategy, listStrategies } from './strategy_registry.mjs';
 import { applyHardFilter } from './scan_filter.mjs';
 import { validateArray } from './validate_schema.mjs';
@@ -454,11 +455,17 @@ async function runScanCore(params) {
 
             // Write scan
             fs.writeFileSync(path.join(RUNTIME_DIR, `scan_${scanId}.json`), JSON.stringify(scan, null, 2));
-            // Write opps
-            newOpps.forEach(o => {
-                fs.writeFileSync(path.join(RUNTIME_DIR, `${o.opp_id}.json`), JSON.stringify(o, null, 2));
+            // Write opps（T6a: 使用strategyCards）
+            const oppsToWrite = typeof strategyCards !== 'undefined' ? strategyCards : newOpps;
+            oppsToWrite.forEach(o => {
+                const oppId = o.id || o.opp_id;
+                fs.writeFileSync(path.join(RUNTIME_DIR, `${oppId}.json`), JSON.stringify(o, null, 2));
             });
             
+            // T6a: 生成闭环输出（opportunities.json + report.md）
+            const runOutputDir = path.join(__dirname, '..', 'data', 'runs', scanId);
+            writeRunOutput(scanId, oppsToWrite, runOutputDir);
+
             // Update store.json
             const storePath = path.join(RUNTIME_DIR, 'store.json');
             const storeData = {
@@ -559,7 +566,7 @@ async function runScanCore(params) {
     // Return Result
     return {
         scan: scan,
-        opportunities: newOpps,
+        opportunities: typeof strategyCards !== 'undefined' ? strategyCards : newOpps,
         from_scan_id: fromScanId,
         to_scan_id: scanId,
         metrics: metrics,
@@ -1367,8 +1374,21 @@ const server = http.createServer(async (req, res) => {
         }
         try {
             const runs = await DB.getRuns(limit);
+            // T6a: Enrich runs with consistent fields
+            const enrichedRuns = runs.map(r => ({
+                run_id: r.run_id || r.scan_id, // Normalize
+                ts: r.ts || new Date(r.timestamp).getTime(),
+                jobs_total: r.jobs_total || r.n_opps_requested || 0,
+                jobs_ok: r.jobs_ok || r.n_opps_actual || 0,
+                jobs_failed: r.jobs_failed || 0,
+                inserted_count: r.inserted_count || r.n_opps_actual || 0,
+                concurrency: r.concurrency || (r.mode === 'fast' ? 5 : 2),
+                meta_json: r.meta_json || JSON.stringify({ started_at: r.timestamp }),
+                meta: r.meta || { started_at: r.timestamp }
+            }));
+            
             res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify(runs));
+            res.end(JSON.stringify(enrichedRuns));
         } catch (e) {
             res.writeHead(500, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ error: e.message }));
