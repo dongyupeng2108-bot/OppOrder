@@ -4,7 +4,7 @@
 
 $Port = 53122
 $Url = "http://localhost:$Port/"
-$ServerScript = "scripts/mock_server.mjs"
+$ServerScript = "OppRadar/mock_server_53122.mjs"
 $RuntimeDir = "runtime"
 
 # Ensure runtime directory exists
