@@ -4,6 +4,10 @@
     "sqlite3": "^5.1.7"
   },
   "scripts": {
-    "test": "node tests/behavior/run_tests.mjs"
+    "test": "node tests/behavior/run_tests.mjs",
+    "test:promptfoo": "node tests/test_promptfoo_replay.mjs"
+  },
+  "devDependencies": {
+    "promptfoo": "^0.120.25"
   }
 }
