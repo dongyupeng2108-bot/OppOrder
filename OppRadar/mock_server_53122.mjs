@@ -3362,6 +3362,21 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    // M4-T1: GET /eligible/scan (dynamic import — node-fetch not loaded at startup)
+    if (pathname === '/eligible/scan' && req.method === 'GET') {
+        try {
+            const { runEligibleScan } = await import('./scripts/run_eligible_scan.mjs');
+            const result = await runEligibleScan();
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(result));
+        } catch (err) {
+            console.error('[/eligible/scan error]', err.message);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: err.message }));
+        }
+        return;
+    }
+
     // 404
     res.writeHead(404, { 'Content-Type': 'text/plain' });
     res.end('Not Found');
