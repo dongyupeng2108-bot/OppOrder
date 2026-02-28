@@ -1,0 +1,27 @@
+description: OppRadar replay fixtures structure regression
+
+prompts:
+  - "Replay fixture: {{input}}"
+
+providers:
+  - id: replay
+    config:
+      type: local
+      script: tests/test_promptfoo_replay.mjs
+
+tests:
+  - vars:
+      fixture_file: data/replay_fixtures.json
+    assert:
+      - type: javascript
+        value: |
+          const fixtures = JSON.parse(require('fs').readFileSync(vars.fixture_file, 'utf8'));
+          return fixtures.every(f =>
+            f.scan_id &&
+            Array.isArray(f.replay_events) &&
+            f.replay_events.every(e =>
+              typeof e.opp_id === 'string' &&
+              typeof e.score === 'number' &&
+              typeof e.title === 'string'
+            )
+          );
