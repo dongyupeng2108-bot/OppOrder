@@ -1,13 +1,182 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OppRadar UI</title>
-    <link rel="stylesheet" href="/ui/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OppRadar — Acceptance Tests</title>
+  <link rel="stylesheet" href="/ui/styles.css">
 </head>
 <body>
-    <div id="app"></div>
-    <script src="/ui/app.js"></script>
+<header>
+  <h1>OppRadar <span class="tag">Acceptance Tests</span></h1>
+  <p id="status-bar">Connecting to server…</p>
+</header>
+
+<main>
+
+  <!-- ── Section 0: Server Status ─────────────────────────── -->
+  <section id="sec-health">
+    <h2>Server Health</h2>
+    <button onclick="testHealth()">Check Health</button>
+    <pre id="out-health"></pre>
+  </section>
+
+  <!-- ── Section 1: Rank V2 ─────────────────────────────── -->
+  <section id="sec-rank">
+    <h2>rank_v2 — Opportunity Scoring</h2>
+    <label>run_id: <input id="rank-run-id" type="text" placeholder="auto-filled from /runs" style="width:260px"></label>
+    <label>provider: <select id="rank-provider"><option value="mock">mock</option><option value="live">live</option></select></label>
+    <button onclick="testRankV2()">Test rank_v2</button>
+    <div class="hint">GET /opportunities/rank_v2?run_id=…&amp;provider=…</div>
+    <pre id="out-rank"></pre>
+  </section>
+
+  <!-- ── Section 2: Diff ────────────────────────────────── -->
+  <section id="sec-diff">
+    <h2>diff — Scan Comparison (M2-T7)</h2>
+    <label>from_scan: <input id="diff-from" type="text" placeholder="scan_id A" style="width:260px"></label>
+    <label>to_scan: <input id="diff-to" type="text" placeholder="scan_id B" style="width:260px"></label>
+    <button onclick="testDiff()">Test /diff</button>
+    <div class="hint">GET /diff?from_scan=…&amp;to_scan=…</div>
+    <pre id="out-diff"></pre>
+  </section>
+
+  <!-- ── Section 3: Replay ──────────────────────────────── -->
+  <section id="sec-replay">
+    <h2>replay — Scan Replay (M2-T7)</h2>
+    <label>scan_id: <input id="replay-scan-id" type="text" placeholder="scan_id" style="width:260px"></label>
+    <button onclick="testReplay()">Test /replay</button>
+    <div class="hint">GET /replay?scan_id=…</div>
+    <pre id="out-replay"></pre>
+  </section>
+
+  <!-- ── Section 4: Gateway Meta ───────────────────────── -->
+  <section id="sec-gateway">
+    <h2>LLM Gateway — meta fields (M3-T9)</h2>
+    <label>run_id: <input id="gw-run-id" type="text" placeholder="auto-filled" style="width:260px"></label>
+    <button onclick="testGateway()">Test provider=mock meta</button>
+    <div class="hint">GET /opportunities/rank_v2?provider=mock — shows provider_used / prompt_hash / fallback</div>
+    <pre id="out-gateway"></pre>
+  </section>
+
+  <!-- ── Section 5: Recent Runs ─────────────────────────── -->
+  <section id="sec-runs">
+    <h2>Recent Runs</h2>
+    <button onclick="loadRuns()">Load Runs</button>
+    <pre id="out-runs"></pre>
+  </section>
+
+</main>
+
+<script>
+const BASE = '';  // same-origin
+
+function show(id, data, ok) {
+  const el = document.getElementById(id);
+  el.textContent = JSON.stringify(data, null, 2);
+  el.className = ok ? 'ok' : 'err';
+}
+
+async function api(path) {
+  const res = await fetch(BASE + path);
+  const body = await res.json().catch(() => res.text());
+  return { status: res.status, body };
+}
+
+// ── Health ───────────────────────────────────────────────
+async function testHealth() {
+  try {
+    const res = await fetch('/');
+    const text = await res.text();
+    show('out-health', { status: res.status, body: text }, res.ok);
+    document.getElementById('status-bar').textContent =
+      res.ok ? '✅ Server healthy (' + res.status + ')' : '❌ Server error';
+  } catch (e) {
+    show('out-health', { error: e.message }, false);
+    document.getElementById('status-bar').textContent = '❌ Cannot reach server';
+  }
+}
+
+// ── Rank V2 ──────────────────────────────────────────────
+async function testRankV2() {
+  const runId = document.getElementById('rank-run-id').value.trim();
+  const provider = document.getElementById('rank-provider').value;
+  if (!runId) { show('out-rank', { error: 'run_id required — load Runs first' }, false); return; }
+  try {
+    const { status, body } = await api(`/opportunities/rank_v2?run_id=${encodeURIComponent(runId)}&provider=${provider}&limit=5`);
+    show('out-rank', { status, count: Array.isArray(body) ? body.length : '?', items: body }, status === 200);
+  } catch (e) { show('out-rank', { error: e.message }, false); }
+}
+
+// ── Diff ─────────────────────────────────────────────────
+async function testDiff() {
+  const from = document.getElementById('diff-from').value.trim();
+  const to   = document.getElementById('diff-to').value.trim();
+  if (!from || !to) { show('out-diff', { error: 'Both scan IDs required' }, false); return; }
+  try {
+    const { status, body } = await api(`/diff?from_scan=${encodeURIComponent(from)}&to_scan=${encodeURIComponent(to)}`);
+    show('out-diff', { status, body }, status === 200);
+  } catch (e) { show('out-diff', { error: e.message }, false); }
+}
+
+// ── Replay ───────────────────────────────────────────────
+async function testReplay() {
+  const scanId = document.getElementById('replay-scan-id').value.trim();
+  if (!scanId) { show('out-replay', { error: 'scan_id required' }, false); return; }
+  try {
+    const { status, body } = await api(`/replay?scan_id=${encodeURIComponent(scanId)}`);
+    show('out-replay', { status, body }, status === 200);
+  } catch (e) { show('out-replay', { error: e.message }, false); }
+}
+
+// ── Gateway ──────────────────────────────────────────────
+async function testGateway() {
+  const runId = document.getElementById('gw-run-id').value.trim();
+  if (!runId) { show('out-gateway', { error: 'run_id required — load Runs first' }, false); return; }
+  try {
+    const { status, body } = await api(`/opportunities/rank_v2?run_id=${encodeURIComponent(runId)}&provider=mock&limit=3`);
+    if (Array.isArray(body)) {
+      const metas = body.map(item => ({
+        opp_id: item.opp_id,
+        score_v2: item.score_v2,
+        meta: item.meta
+      }));
+      show('out-gateway', { status, meta_sample: metas }, status === 200);
+    } else {
+      show('out-gateway', { status, body }, status === 200);
+    }
+  } catch (e) { show('out-gateway', { error: e.message }, false); }
+}
+
+// ── Load Runs ────────────────────────────────────────────
+async function loadRuns() {
+  try {
+    const { status, body } = await api('/opportunities/runs?limit=5');
+    show('out-runs', { status, body }, status === 200);
+    if (Array.isArray(body) && body.length > 0) {
+      const firstId = body[0].run_id || body[0].id || body[0];
+      if (firstId) {
+        document.getElementById('rank-run-id').value = firstId;
+        document.getElementById('gw-run-id').value = firstId;
+      }
+      // Try to auto-fill scan IDs for diff/replay
+      const scans = body.map(r => r.run_id || r.id || r).filter(Boolean);
+      if (scans.length >= 2) {
+        document.getElementById('diff-from').value = scans[1];
+        document.getElementById('diff-to').value = scans[0];
+      }
+      if (scans.length >= 1) {
+        document.getElementById('replay-scan-id').value = scans[0];
+      }
+    }
+  } catch (e) { show('out-runs', { error: e.message }, false); }
+}
+
+// ── Auto-init ────────────────────────────────────────────
+window.onload = async () => {
+  await testHealth();
+  await loadRuns();
+};
+</script>
 </body>
 </html>
