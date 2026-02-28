@@ -1,0 +1,11 @@
+{
+  "queried_at": "2026-02-28T16:25:25.661Z",
+  "mode": "Integrate",
+  "open_prs": [],
+  "ignored_pr_numbers": [],
+  "supersede_task_ids": [],
+  "blocking_prs": [],
+  "decision": "PASS",
+  "exit_code": 0,
+  "open_prs_blocking_count": 0
+}

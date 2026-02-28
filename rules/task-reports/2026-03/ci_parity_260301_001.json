@@ -1,0 +1,13 @@
+{
+  "task_id": "260301_001",
+  "is_shallow_repo": true,
+  "base": "7217aec76bf79780eef80438d01c3864f32258d5",
+  "head": "87173d329388b750828670659499d556063ef4fa",
+  "merge_base": "7217aec76bf79780eef80438d01c3864f32258d5",
+  "scope_files": [
+    "rules/LATEST.json",
+    "rules/task-reports/index/error_stats.jsonl"
+  ],
+  "scope_count": 2,
+  "generated_at": "2026-02-28T16:26:24.145Z"
+}
