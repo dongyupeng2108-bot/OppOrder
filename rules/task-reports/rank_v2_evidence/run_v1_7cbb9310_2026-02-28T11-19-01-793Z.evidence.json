@@ -1,0 +1,15 @@
+{
+  "task_schema_version": "1.0",
+  "run_id": "run_v1_7cbb9310",
+  "called_at": "2026-02-28T11:19:01.793Z",
+  "provider": "mock",
+  "source": "fixture",
+  "limit_requested": 5,
+  "limit_returned": 3,
+  "input_fingerprint": "5124579fa9311ab7",
+  "output_fingerprint": "1282717608ada2b9",
+  "score_v2_range": {
+    "min": 0.58,
+    "max": 0.93
+  }
+}
