@@ -1,0 +1,11 @@
+﻿{
+    "mode":  "Integrate",
+    "branch":  "260301_004",
+    "write_allowed":  true,
+    "input_hash_short":  "f206f8f1",
+    "header":  "TraeTask_260301_004",
+    "commit":  "7b1a21e1",
+    "task_id":  "260301_004",
+    "header_detected":  true,
+    "timestamp":  "2026-03-01 02:24:43 UTC"
+}

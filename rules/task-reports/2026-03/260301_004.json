@@ -1,0 +1,51 @@
+{
+  "task_id": "260301_004",
+  "timestamp": "2026-02-28T18:26:07.688Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "smoke_test": "PASS",
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260301_004",
+      "status": "DONE",
+      "metrics": {
+        "deliverables": [
+          "OppRadar/providers/polymarket_provider.mjs",
+          "OppRadar/polymarket_eligible_filter.mjs",
+          "OppRadar/scripts/run_eligible_scan.mjs",
+          "route GET /eligible/scan"
+        ],
+        "scan_stats_schema_verified": true,
+        "candidates_capped_at_50": true,
+        "filter_breakdown_fields": [
+          "no_numeric_threshold",
+          "no_event_time",
+          "ttl_exceeded",
+          "price_out_of_range"
+        ],
+        "ttl_window_days": 30,
+        "price_range": "(0.05, 0.95)",
+        "sort_by": "yes_price proximity to 0.5"
+      },
+      "summary": "Automation Pack V1 Validation for Task 260301_004",
+      "report_file": "notify_260301_004.txt",
+      "report_sha256_short": "df995f8e",
+      "mode": "Integrate",
+      "dod_evidence": {
+        "gate_light_exit": 0,
+        "healthcheck": [
+          "rules/task-reports/2026-02/260301_004_healthcheck_53122_root.txt",
+          "rules/task-reports/2026-02/260301_004_healthcheck_53122_pairs.txt"
+        ]
+      }
+    }
+  }
+}

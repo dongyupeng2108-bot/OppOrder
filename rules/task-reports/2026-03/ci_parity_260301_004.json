@@ -1,0 +1,17 @@
+{
+  "task_id": "260301_004",
+  "is_shallow_repo": true,
+  "base": "c7593cf4edb48bbc603d3443d048264fbfe06727",
+  "head": "c688e26166621fd12494345350dede07e13ee213",
+  "merge_base": "c7593cf4edb48bbc603d3443d048264fbfe06727",
+  "scope_files": [
+    "OppRadar/mock_server_53122.mjs",
+    "OppRadar/polymarket_eligible_filter.mjs",
+    "OppRadar/providers/polymarket_provider.mjs",
+    "OppRadar/scripts/run_eligible_scan.mjs",
+    "rules/LATEST.json",
+    "rules/task-reports/index/error_stats.jsonl"
+  ],
+  "scope_count": 6,
+  "generated_at": "2026-02-28T18:26:03.997Z"
+}

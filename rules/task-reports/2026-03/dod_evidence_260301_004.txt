@@ -1,0 +1,23 @@
+DOD Evidence for 260301_004 — M4-T1: Polymarket Eligible Scan + TTL30d Filter
+===
+[PROVIDER] OppRadar/providers/polymarket_provider.mjs:
+  - fetchMarkets({ limit, maxPages }) → NormalizedMarket[]
+  - Polymarket Gamma API: https://gamma-api.polymarket.com/markets
+  - Pagination: limit=100, maxPages=5 (500 max)
+  - Normalized fields: opp_id, title, market_url, yes_price, event_time, question, raw
+  - Network failure → throws explicit Error (no silent swallow)
+[FILTER] OppRadar/polymarket_eligible_filter.mjs:
+  - applyEligibleFilter(markets) → { candidates, scan_stats }
+  - Filter 1: numeric threshold proposition (regex on title/question)
+  - Filter 2: valid ISO8601 event_time
+  - Filter 3: TTL30d window (event_time - now <= 30 days)
+  - Filter 4: yes_price ∈ (0.05, 0.95)
+  - Filter 5: cap at 50, sorted by |yes_price - 0.5| ascending
+  - scan_stats.filter_breakdown: no_numeric_threshold, no_event_time, ttl_exceeded, price_out_of_range
+[SCAN] OppRadar/scripts/run_eligible_scan.mjs:
+  - runEligibleScan() → { scan_date, scan_stats, candidates }
+  - Writes to data/scans/eligible_<YYYYMMDD>.json via fs.writeFileSync
+  - Can run as: node OppRadar/scripts/run_eligible_scan.mjs
+[ROUTE] GET /eligible/scan → HTTP 200 + { scan_date, scan_stats, candidates }
+         Error → HTTP 500 + { error: "..." }
+[STATUS] PASS — all 5 filters verified, scan_stats schema correct, candidates <= 50
