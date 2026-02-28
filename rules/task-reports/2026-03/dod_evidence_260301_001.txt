@@ -1,0 +1,12 @@
+DOD Evidence for 260301_001
+- M2+M3 Acceptance Test (P9, inherited from 260228_017): PASS
+  - Total checks: 11
+  - Passed: 11
+  - Failed: 0
+  - Pass rate: 100%
+- M2-T7 (diff/replay/fixtures): PASS
+- M2-T8 (promptfoo report + test): PASS
+- M3-T9 (llm_gateway + rank_v2 meta): PASS
+- UI (/ui HTTP 200): PASS
+- DB (SQLite accessible): PASS
+- Acceptance report: acceptance_report_260228_017.json
