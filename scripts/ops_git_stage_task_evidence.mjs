@@ -73,7 +73,6 @@ try {
     const extraFiles = [
         'rules/LATEST.json',
         'rules/task-reports/index/error_stats.jsonl',
-        'rules/task-reports/index/runs_index.jsonl',
         'scripts/ops_scan_text.mjs',
         'rules/rules/WORKFLOW.md',
         'scripts/assemble_evidence.mjs',
