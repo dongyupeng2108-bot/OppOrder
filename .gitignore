@@ -51,3 +51,6 @@ data/llm_records/
 rules/task-reports/rank_v2_evidence/
 rules/task-reports/2026-02/*_healthcheck_*.txt
 rules/task-reports/2026-02/*.json
+
+# P8-T4: runs_index.jsonl is a runtime product (staged but never committed)
+rules/task-reports/index/runs_index.jsonl
