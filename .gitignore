@@ -3,8 +3,8 @@ rules/task-reports/20??-??/**
 rules/reports/**
 
 # Allowed Persistent Artifacts
-!rules/task-reports/runs/
-!rules/task-reports/runs/**
+rules/task-reports/runs/
+rules/task-reports/runs/**
 !rules/task-reports/locks/
 !rules/task-reports/locks/**
 !rules/task-reports/index/
@@ -18,7 +18,6 @@ node_modules/
 *.log
 runtime/
 runtime
-!rules/task-reports/runs/**/*.log
 
 # Data
 OppRadar/data/
