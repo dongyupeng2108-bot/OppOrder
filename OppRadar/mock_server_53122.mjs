@@ -1587,11 +1587,13 @@ const server = http.createServer(async (req, res) => {
                 let provider_used = provider;
                 let fallback = false;
 
-                // Provider Interface (T2)
+                // Provider Interface (M3-T9: via LLM Gateway)
                 const scoreResult = await getRankV2Score(o.id, provider);
                 p_llm = scoreResult.p_llm;
                 provider_used = scoreResult.provider_used;
                 fallback = scoreResult.fallback;
+                const model_used_gw = scoreResult.model_used || model || 'default';
+                const prompt_hash_gw = scoreResult.prompt_hash || null;
 
                     // p_ci: Wilson Score Interval (n=50)
                 const n = 50;
@@ -1629,7 +1631,8 @@ const server = http.createServer(async (req, res) => {
                     score_v2: score_v2,
                     meta: {
                         provider_used: provider_used,
-                        model_used: model || 'default',
+                        model_used: model_used_gw,
+                        prompt_hash: prompt_hash_gw,
                         fallback: fallback
                     }
                 };

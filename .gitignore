@@ -43,3 +43,7 @@ evidence.json
 
 # Scan run data
 data/runs/
+
+# LLM Gateway cache and records (M3-T9)
+data/llm_cache/
+data/llm_records/

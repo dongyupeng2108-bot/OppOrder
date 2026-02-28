@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Opportunity Card",
+  "description": "Central contract for LLM-generated opportunity cards. Required by llm_gateway.mjs for schema validation.",
+  "type": "object",
+  "required": ["id", "title", "score", "run_id", "created_at"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique opportunity ID"
+    },
+    "title": {
+      "type": "string",
+      "description": "Human-readable opportunity title"
+    },
+    "score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Opportunity score in [0,1]"
+    },
+    "run_id": {
+      "type": "string",
+      "description": "Associated run/scan ID"
+    },
+    "created_at": {
+      "type": "string",
+      "description": "ISO8601 creation timestamp"
+    },
+    "summary": {
+      "type": "string",
+      "description": "Optional LLM-generated summary"
+    },
+    "provider": {
+      "type": "string",
+      "description": "Provider that generated this card"
+    }
+  }
+}

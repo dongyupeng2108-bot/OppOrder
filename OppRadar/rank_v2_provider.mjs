@@ -1,15 +1,16 @@
 /**
  * rank_v2_provider.mjs
- * Stage0-T2: Provider Interface骨架
+ * M3-T9: Integrate LLM Gateway for rank_v2 scoring.
  *
- * 对外暴露统一接口 getRankV2Score(oppId, provider)
- * 返回 { p_llm, provider_used, fallback }
+ * Exposes getRankV2Score(oppId, mode) → { p_llm, provider_used, model_used, prompt_hash, fallback }
+ * mode maps to llm_gateway modes: 'mock' | 'cache' | 'live'
  */
 
 import crypto from 'crypto';
+import { callLLM } from './llm_gateway.mjs';
 
 /**
- * 确定性mock评分（同oppId必出同结果）
+ * Deterministic fallback score (legacy, used when gateway result.score is unavailable).
  */
 function getDeterministicP(id) {
     const hash = crypto.createHash('sha256').update(id).digest('hex');
@@ -18,48 +19,31 @@ function getDeterministicP(id) {
 }
 
 /**
- * mock provider
- */
-async function scoreMock(oppId) {
-    return {
-        p_llm: getDeterministicP(oppId),
-        provider_used: 'mock',
-        fallback: false,
-    };
-}
-
-/**
- * deepseek provider（当前为fallback骨架，TODO: 接入真实API）
- */
-async function scoreDeepseek(oppId) {
-    if (!process.env.DEEPSEEK_API_KEY) {
-        return {
-            p_llm: getDeterministicP(oppId),
-            provider_used: 'mock',
-            fallback: true,
-        };
-    }
-    // TODO: 真实DeepSeek调用
-    // 暂时fallback到mock
-    return {
-        p_llm: getDeterministicP(oppId),
-        provider_used: 'mock',
-        fallback: true,
-    };
-}
-
-/**
- * 统一入口
+ * Get rank_v2 score for an opportunity via the LLM Gateway.
  * @param {string} oppId
- * @param {string} provider - 'mock' | 'deepseek'
- * @returns {{ p_llm: number, provider_used: string, fallback: boolean }}
+ * @param {string} [mode] - 'mock' | 'cache' | 'live' (default: 'mock')
+ * @returns {Promise<{ p_llm: number, provider_used: string, model_used: string, prompt_hash: string, fallback: boolean }>}
  */
-export async function getRankV2Score(oppId, provider = 'mock') {
-    switch (provider) {
-        case 'deepseek':
-            return scoreDeepseek(oppId);
-        case 'mock':
-        default:
-            return scoreMock(oppId);
-    }
+export async function getRankV2Score(oppId, mode = 'mock') {
+    const prompt = `Rate trading opportunity ${oppId}. Return a probability score between 0 and 1.`;
+
+    const { result, meta } = await callLLM({
+        prompt,
+        model: 'mock-v1',
+        mode,
+        taskId: 'rank_v2'
+    });
+
+    // Use result.score from gateway; fall back to deterministic if missing
+    const p_llm = (typeof result.score === 'number' && result.score >= 0 && result.score <= 1)
+        ? result.score
+        : getDeterministicP(oppId);
+
+    return {
+        p_llm,
+        provider_used: meta.provider_used,
+        model_used: meta.model_used,
+        prompt_hash: meta.prompt_hash,
+        fallback: meta.fallback
+    };
 }
