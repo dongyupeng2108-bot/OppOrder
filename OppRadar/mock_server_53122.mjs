@@ -22,6 +22,7 @@ import { generateCacheKey as generateNewsCacheKey, getFromCache as getFromNewsCa
 import { generateCacheKey as generateScanCacheKey, getFromCache as getFromScanCache, setInCache as setInScanCache } from './scan_cache.mjs';
 import { appendToLedger, queryLedger } from './ledger/opps_ledger_v0.mjs';
 import DB from './db.mjs';
+import { runEligibleScan } from './scripts/run_eligible_scan.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -3356,6 +3357,20 @@ const server = http.createServer(async (req, res) => {
             res.writeHead(200, { 'Content-Type': 'application/jsonl; charset=utf-8' });
             res.end(content);
         } catch (err) {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: err.message }));
+        }
+        return;
+    }
+
+    // M4-T1: GET /eligible/scan
+    if (pathname === '/eligible/scan' && req.method === 'GET') {
+        try {
+            const result = await runEligibleScan();
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(result));
+        } catch (err) {
+            console.error('[/eligible/scan error]', err.message);
             res.writeHead(500, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ error: err.message }));
         }
