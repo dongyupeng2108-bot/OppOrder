@@ -34,6 +34,81 @@
     "provider": {
       "type": "string",
       "description": "Provider that generated this card"
+    },
+    "opp_id": {
+      "type": "string",
+      "description": "Opportunity unique identifier for cross-snapshot tracking (M4)"
+    },
+    "snapshot_type": {
+      "type": "string",
+      "enum": ["draft", "deep"],
+      "description": "Whether this card is a draft scan or a deep-dive snapshot (M4)"
+    },
+    "model_used": {
+      "type": "string",
+      "description": "LLM model identifier used to generate this card (M4)"
+    },
+    "p_range": {
+      "type": "object",
+      "description": "Probability range [low, high] ∈ [0,1]. Constraint: low ≤ high (JSON Schema draft-07 does not support cross-field validation; enforced at application layer).",
+      "properties": {
+        "low": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Lower bound of probability estimate"
+        },
+        "high": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Upper bound of probability estimate"
+        }
+      },
+      "required": ["low", "high"]
+    },
+    "confidence": {
+      "type": "string",
+      "enum": ["High", "Med", "Low"],
+      "description": "Information quality assessment for this opportunity (M4)"
+    },
+    "risk_triggers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 3,
+      "description": "Risk trigger labels (max 3) flagged during evaluation (M4)"
+    },
+    "veto": {
+      "type": "object",
+      "description": "Hard gate veto decision for this opportunity (M4)",
+      "properties": {
+        "decision": {
+          "type": "string",
+          "enum": ["ALLOW", "DEGRADE", "BLOCK"],
+          "description": "Veto decision outcome"
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 3,
+          "description": "Labels explaining the veto decision"
+        },
+        "rule_facts": {
+          "type": "object",
+          "description": "Key-value facts from the rule engine that triggered this decision"
+        }
+      }
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Evidence pointer references (URLs, file paths, or IDs) supporting this opportunity (M4)"
     }
   }
 }
