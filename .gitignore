@@ -46,3 +46,8 @@ data/runs/
 # LLM Gateway cache and records (M3-T9)
 data/llm_cache/
 data/llm_records/
+
+# P8-T3: runtime-generated dirs that must not be tracked
+rules/task-reports/rank_v2_evidence/
+rules/task-reports/2026-02/*_healthcheck_*.txt
+rules/task-reports/2026-02/*.json
