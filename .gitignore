@@ -54,3 +54,7 @@ rules/task-reports/2026-02/*.json
 
 # P8-T4: runs_index.jsonl is a runtime product (staged but never committed)
 rules/task-reports/index/runs_index.jsonl
+
+# Environment secrets — NEVER commit
+.env
+.env.*

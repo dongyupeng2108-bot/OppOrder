@@ -3362,6 +3362,64 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    // M4-T2: GET /drafts/generate (dynamic import — live_provider loaded on demand)
+    if (pathname === '/drafts/generate' && req.method === 'GET') {
+        try {
+            const { generateDrafts } = await import('./draft_generator.mjs');
+            const result = await generateDrafts();
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(result));
+        } catch (err) {
+            console.error('[/drafts/generate error]', err.message);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: err.message }));
+        }
+        return;
+    }
+
+    // M4-T2: GET /drafts/list — enumerate all draft snapshots
+    if (pathname === '/drafts/list' && req.method === 'GET') {
+        try {
+            const snapshotsDir = path.join(__dirname, '../data/snapshots');
+            if (!fs.existsSync(snapshotsDir)) {
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify([]));
+                return;
+            }
+            const drafts = [];
+            const oppDirs = fs.readdirSync(snapshotsDir, { withFileTypes: true })
+                .filter(d => d.isDirectory())
+                .map(d => d.name);
+            for (const oppId of oppDirs) {
+                const oppDir = path.join(snapshotsDir, oppId);
+                const files = fs.readdirSync(oppDir)
+                    .filter(f => f.startsWith('draft_') && f.endsWith('.json'));
+                for (const file of files) {
+                    try {
+                        const snap = JSON.parse(fs.readFileSync(path.join(oppDir, file), 'utf8'));
+                        drafts.push({
+                            opp_id: snap.opp_id || oppId,
+                            snapshot_type: snap.snapshot_type || 'draft',
+                            model_used: snap.model_used || 'unknown',
+                            created_at: snap.created_at || null,
+                            title: snap.title || '',
+                            confidence: snap.confidence || null,
+                            file: path.join(oppId, file)
+                        });
+                    } catch (_) { /* skip malformed */ }
+                }
+            }
+            drafts.sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(drafts));
+        } catch (err) {
+            console.error('[/drafts/list error]', err.message);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: err.message }));
+        }
+        return;
+    }
+
     // M4-T1: GET /eligible/scan (dynamic import — node-fetch not loaded at startup)
     if (pathname === '/eligible/scan' && req.method === 'GET') {
         try {
