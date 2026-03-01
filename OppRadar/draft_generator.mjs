@@ -12,6 +12,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { appendSnapshot } from './snapshot_index.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -80,15 +81,16 @@ function findLatestScan() {
   return files.length > 0 ? path.join(SCANS_DIR, files[0]) : null;
 }
 
-// ── Write snapshot to disk ───────────────────────────────────────────────────
+// ── Write snapshot to disk (append-only: each call creates a new file) ──────
 function writeSnapshot(oppId, snapshot) {
   const dir = path.join(SNAPSHOTS_DIR, oppId);
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
   const ts = new Date().toISOString().replace(/[:.]/g, '-');
   const filename = `draft_${ts}.json`;
   const outPath = path.join(dir, filename);
+  // Never overwrite: each timestamp-named file is unique (append-only guarantee)
   fs.writeFileSync(outPath, JSON.stringify(snapshot, null, 2) + '\n', { encoding: 'utf8' });
-  return outPath;
+  return { outPath, relPath: path.join(oppId, filename) };
 }
 
 // ── Main: generate drafts for all candidates ─────────────────────────────────
@@ -174,8 +176,19 @@ export async function generateDrafts() {
         _fallback: llmResult._fallback || false
       };
 
-      const outPath = writeSnapshot(oppId, snapshot);
+      const { outPath, relPath } = writeSnapshot(oppId, snapshot);
       console.log(`[draft_generator] Written: ${outPath}`);
+
+      // Update global snapshot index (append-only)
+      appendSnapshot({
+        opp_id: oppId,
+        title: snapshot.title || '',
+        file: relPath,
+        snapshot_type: snapshot.snapshot_type || 'draft',
+        model_used: snapshot.model_used || 'unknown',
+        created_at: snapshot.created_at || new Date().toISOString()
+      });
+
       success++;
     } catch (err) {
       console.error(`[draft_generator] Failed for ${oppId}: ${err.message}`);

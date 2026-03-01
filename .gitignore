@@ -43,6 +43,9 @@ evidence.json
 # Scan run data
 data/runs/
 
+# M4-T3: snapshot runtime data (append-only, never committed)
+data/snapshots/
+
 # LLM Gateway cache and records (M3-T9)
 data/llm_cache/
 data/llm_records/
