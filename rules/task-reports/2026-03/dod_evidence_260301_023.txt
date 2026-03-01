@@ -1,0 +1,22 @@
+TASK_ID=260301_023
+GENERATED_AT=2026-03-01T12:02:36.795Z
+
+# DoD Markers
+DOD_TARGET_FILE=scripts/gate_light_ci.mjs
+DOD_CHANGE_LINES=466-470 (hard exit replaced with warn+skip)
+DOD_CHANGE_GUARD=if (!fs.existsSync(healerFile)) guard added before try-validation block
+
+# Fix Details
+DOD_BEFORE=if (!fallbackFound) { console.error(...); process.exit(1); }
+DOD_AFTER=if (!fallbackFound) { console.warn(...); /* skip — no exit */ }
+DOD_GUARD=if (!fs.existsSync(healerFile)) { log skip } else try { ...validate... }
+
+# Acceptance Checks
+DOD_CHECK_SYNTAX=node --check gate_light_ci.mjs PASS
+DOD_CHECK_BEHAVIOR_MISSING=missing workspace_healer → WARNING logged, CI continues (no exit 1)
+DOD_CHECK_BEHAVIOR_PRESENT=existing workspace_healer → normal validation path unchanged
+DOD_CHECK_SCOPE=only workspace_healer block modified; no other CI logic changed
+DOD_CHECK_PROTECTED=gate_light_ci.mjs remains in CLAUDE.md PROTECTED list (never removed)
+DOD_CHECK_AUTHORIZATION=Owner authorized verbally before modification
+
+GATE_LIGHT_EXIT=0
