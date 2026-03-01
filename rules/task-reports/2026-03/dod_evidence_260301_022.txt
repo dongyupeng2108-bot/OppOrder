@@ -1,0 +1,35 @@
+TASK_ID=260301_022
+GENERATED_AT=2026-03-01T11:25:13.638Z
+
+# DoD Markers
+DOD_DELIVERABLE_SCHEMA=OppRadar/contracts/opportunity_card.schema.json
+DOD_DELIVERABLE_DRAFT_GENERATOR=OppRadar/draft_generator.mjs
+DOD_DELIVERABLE_GEMINI_PROVIDER=OppRadar/providers/gemini_provider.mjs
+DOD_DELIVERABLE_STYLES_CSS=ui/styles.css
+DOD_DELIVERABLE_LIST_HTML=ui/list.html
+DOD_DELIVERABLE_DETAIL_HTML=ui/detail.html
+
+# New Schema Fields (9 optional)
+DOD_SCHEMA_FIELD_1=p_mid
+DOD_SCHEMA_FIELD_2=dev_signed
+DOD_SCHEMA_FIELD_3=dev_abs
+DOD_SCHEMA_FIELD_4=dev_flag
+DOD_SCHEMA_FIELD_5=mispricing_type
+DOD_SCHEMA_FIELD_6=why_1_liner
+DOD_SCHEMA_FIELD_7=what_to_check
+DOD_SCHEMA_FIELD_8=model_role
+DOD_SCHEMA_FIELD_9=latency_ms
+
+# Acceptance Checks
+DOD_CHECK_SCHEMA_ALL_OPTIONAL=All 9 new fields have no required constraint
+DOD_CHECK_DRAFT_GENERATOR_OFFSET=p_mid/dev_signed/dev_abs/dev_flag computed from p_range + yes_price
+DOD_CHECK_DRAFT_GENERATOR_LATENCY=latency_ms measured around callLLM(); model_role=scan
+DOD_CHECK_GEMINI_PROVIDER_LATENCY=t0 recorded before fetch; latency_ms = Date.now()-t0; model_role=core
+DOD_CHECK_GEMINI_PROVIDER_DIAGNOSTIC=mispricing_type/why_1_liner/what_to_check surfaced from parsed JSON
+DOD_CHECK_STYLES_BG=#0d0d0d body background applied
+DOD_CHECK_LIST_COLUMNS=dev_signed + dev_flag columns added; sort by dev_abs desc; BLOCK rows to bottom
+DOD_CHECK_DETAIL_SECTION_45=Section 4.5 偏差分析 added with 8 fields
+DOD_CHECK_DEEP_BTN_FIXED=onclick uses single-quote escaping instead of JSON.stringify double-quotes
+DOD_CHECK_TESTS=19/19 passed (6+5+5 unit + 3 behavior)
+
+GATE_LIGHT_EXIT=0

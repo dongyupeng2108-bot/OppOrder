@@ -109,6 +109,53 @@
         "type": "string"
       },
       "description": "Evidence pointer references (URLs, file paths, or IDs) supporting this opportunity (M4)"
+    },
+    "p_mid": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Midpoint of p_range: (low + high) / 2 (M4 offset sorting)"
+    },
+    "dev_signed": {
+      "type": "number",
+      "minimum": -1,
+      "maximum": 1,
+      "description": "Signed deviation: p_mid - yes_price. Positive = model thinks market underprices (M4 offset sorting)"
+    },
+    "dev_abs": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Absolute deviation: |dev_signed|. Used for sorting by signal strength (M4 offset sorting)"
+    },
+    "dev_flag": {
+      "type": "string",
+      "enum": ["OVER", "UNDER", "FAIR"],
+      "description": "Direction flag: OVER if dev_signed < -0.05 (market overprices), UNDER if > 0.05 (underprices), FAIR otherwise (M4 offset sorting)"
+    },
+    "mispricing_type": {
+      "type": "string",
+      "description": "LLM-identified mispricing category (e.g. 'sentiment_lag', 'info_gap', 'recency_bias') (M4 offset diagnostic)"
+    },
+    "why_1_liner": {
+      "type": "string",
+      "maxLength": 120,
+      "description": "One-liner explanation of why the model disagrees with market price (M4 offset diagnostic)"
+    },
+    "what_to_check": {
+      "type": "string",
+      "maxLength": 200,
+      "description": "Suggested verification step or data source to validate the edge (M4 offset diagnostic)"
+    },
+    "model_role": {
+      "type": "string",
+      "enum": ["scan", "core"],
+      "description": "Model role: 'scan' for draft_generator pass, 'core' for gemini deep-dive pass (M4 model source)"
+    },
+    "latency_ms": {
+      "type": "number",
+      "minimum": 0,
+      "description": "LLM call round-trip latency in milliseconds (M4 model source)"
     }
   }
 }
