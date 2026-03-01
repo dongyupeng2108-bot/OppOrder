@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OppRadar — 预测对比</title>
+  <link rel="stylesheet" href="/ui/styles.css">
+  <style>
+    .compare-grid     { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2em; margin: 1em 0; }
+    @media (max-width: 640px) { .compare-grid { grid-template-columns: 1fr; } }
+    .panel            { padding: 1em; border: 1px solid #ddd; border-radius: 4px; background: #fafafa; }
+    .panel h2         { margin: 0 0 0.7em; font-size: 1.05em; color: #444;
+                        border-bottom: 1px solid #eee; padding-bottom: 0.4em; }
+    .field            { display: flex; gap: 0.8em; margin: 0.35em 0; font-size: 0.95em; }
+    .field label      { font-weight: bold; min-width: 90px; color: #555; flex-shrink: 0; }
+    .outcome-yes      { color: green;  font-weight: bold; font-size: 1.6em; }
+    .outcome-no       { color: #c00;   font-weight: bold; font-size: 1.6em; }
+    .calibration      { margin: 1em 0; padding: 1em; border: 1px solid #ddd; border-radius: 4px; }
+    .calibration h2   { margin: 0 0 0.5em; font-size: 1.05em; color: #444; }
+    .calib-accurate   { color: green;  font-weight: bold; }
+    .calib-high       { color: #b8860b; font-weight: bold; }
+    .calib-low        { color: #2a6496; font-weight: bold; }
+    .calib-out        { color: #888;   font-style: italic; }
+    .form-section     { margin: 1em 0; padding: 1em; border: 1px solid #c8e0f0; border-radius: 4px;
+                        background: #f0f8ff; }
+    .form-section h2  { margin: 0 0 0.7em; font-size: 1.05em; }
+    .form-row         { margin: 0.5em 0; display: flex; align-items: center; gap: 0.7em; flex-wrap: wrap; }
+    .form-row label   { font-weight: bold; min-width: 90px; color: #555; }
+    .form-row select,
+    .form-row input   { padding: 4px 8px; border: 1px solid #ccc; border-radius: 3px; font-size: 0.95em; }
+    .submit-btn       { background: #2a6496; color: #fff; border: none; padding: 0.5em 1.4em;
+                        border-radius: 4px; cursor: pointer; font-size: 1em; margin-top: 0.5em; }
+    .submit-btn:disabled { opacity: 0.5; cursor: default; }
+    .modify-btn       { background: #888; color: #fff; border: none; padding: 4px 12px;
+                        border-radius: 3px; cursor: pointer; font-size: 0.9em; }
+    .err-msg          { color: #c00; font-size: 0.9em; margin-top: 0.3em; }
+    .ok-msg           { color: green;  font-size: 0.9em; margin-top: 0.3em; }
+    .list-table       { width: 100%; border-collapse: collapse; margin-top: 1em; }
+    .list-table th,
+    .list-table td    { padding: 8px 12px; border: 1px solid #ddd; text-align: left; }
+    .list-table th    { background: #f4f4f4; }
+    .list-table tr:hover { background: #f0f8ff; cursor: pointer; }
+    .tags             { display: flex; gap: 5px; flex-wrap: wrap; }
+    .tag-item         { background: #e8e8e8; border-radius: 3px; padding: 1px 7px; font-size: 0.85em; }
+    .veto-allow       { color: green;   font-weight: bold; }
+    .veto-degrade     { color: #b8860b; font-weight: bold; }
+    .veto-block       { color: #c00; }
+    nav               { font-size: 0.9em; margin-top: 0.3em; }
+    .not-found        { padding: 2em; text-align: center; color: #666; }
+    ul.triggers       { margin: 0; padding-left: 1.2em; font-size: 0.95em; }
+  </style>
+</head>
+<body>
+<header>
+  <h1>OppRadar <span class="tag">预测对比</span></h1>
+  <nav>
+    <a href="/ui/list.html">📋 候选列表</a> |
+    <a href="/ui/compare.html">📊 对比页</a> |
+    <a href="/ui/">验收面板</a>
+  </nav>
+</header>
+
+<main>
+  <div id="content"><p>加载中…</p></div>
+</main>
+
+<script>
+var BASE = '';
+var currentOppId = null;
+var currentSnap  = null;
+var currentOutcome = null;
+var formVisible = false;
+
+function getParam(name) {
+  return new URLSearchParams(window.location.search).get(name);
+}
+
+function esc(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function fmtTime(iso) {
+  if (!iso) return '—';
+  return iso.slice(0, 19).replace('T', ' ');
+}
+
+function fmtPercent(val) {
+  if (val == null) return '—';
+  return (val * 100).toFixed(1) + '%';
+}
+
+function fmtPRange(pr) {
+  if (!pr || typeof pr !== 'object') return '—';
+  var lo = pr.low  != null ? (pr.low  * 100).toFixed(0) : '?';
+  var hi = pr.high != null ? (pr.high * 100).toFixed(0) : '?';
+  return lo + '–' + hi + '%';
+}
+
+function vetoClass(decision) {
+  if (decision === 'ALLOW')   return 'veto-allow';
+  if (decision === 'DEGRADE') return 'veto-degrade';
+  if (decision === 'BLOCK')   return 'veto-block';
+  return '';
+}
+
+function field(label, value) {
+  var safeVal = (value != null && value !== '') ? value : '—';
+  return '<div class="field"><label>' + esc(label) + '</label><span>' + safeVal + '</span></div>';
+}
+
+// ── Calibration analysis ───────────────────────────────────────────────────
+function calibrationText(snap, outcome) {
+  if (!snap || !outcome) return null;
+  var pr = snap.p_range;
+  var actual = parseFloat(outcome.actual_price);
+  if (!pr || pr.low == null || pr.high == null) {
+    return { cls: 'calib-out', text: '无预测区间，无法对比' };
+  }
+  if (isNaN(actual)) {
+    return { cls: 'calib-out', text: '实际价格无效' };
+  }
+  if (actual >= pr.low && actual <= pr.high) {
+    return { cls: 'calib-accurate', text: '预测准确（实际价格在预测区间内）' };
+  } else if (actual < pr.low) {
+    return { cls: 'calib-high', text: '预测偏高（实际价格低于预测下限）' };
+  } else {
+    return { cls: 'calib-low', text: '预测偏低（实际价格高于预测上限）' };
+  }
+}
+
+// ── Render the full compare view for one opp ──────────────────────────────
+function renderCompare(oppId, snap, outcome) {
+  var el = document.getElementById('content');
+  var html = '<a href="/ui/compare.html" style="font-size:0.9em;">← 返回列表</a>';
+
+  var snapTitle = snap ? (snap.title || oppId) : oppId;
+  html += '<h2 style="margin:0.6em 0 0.2em">' + esc(snapTitle) + '</h2>';
+  html += '<p style="color:#666;font-size:0.9em">opp_id: ' + esc(oppId) + '</p>';
+
+  // ── Form: record outcome (if not yet recorded, or if "modify" clicked) ──
+  if (!outcome || formVisible) {
+    html += '<div class="form-section" id="form-section">';
+    html += '<h2>' + (outcome ? '修改结果' : '录入结果') + '</h2>';
+    html += '<div class="form-row"><label>结果</label>' +
+      '<select id="f-outcome"><option value="YES">YES（是）</option><option value="NO">NO（否）</option></select>' +
+      '</div>';
+    html += '<div class="form-row"><label>结算时间</label>' +
+      '<input type="datetime-local" id="f-settled-at" value="' +
+      (outcome ? esc(outcome.settled_at ? outcome.settled_at.slice(0,16) : '') : new Date().toISOString().slice(0,16)) +
+      '"></div>';
+    html += '<div class="form-row"><label>结算价格</label>' +
+      '<input type="number" id="f-actual-price" step="0.01" min="0" max="1" placeholder="0 或 1" ' +
+      'value="' + (outcome ? esc(String(outcome.actual_price)) : '') + '" style="width:120px"></div>';
+    html += '<div class="form-row"><label>备注</label>' +
+      '<input type="text" id="f-notes" placeholder="可选" value="' +
+      (outcome ? esc(outcome.notes || '') : '') + '" style="width:260px"></div>';
+    html += '<button class="submit-btn" id="submit-btn" onclick="submitOutcome(' + JSON.stringify(oppId) + ')">提交</button>';
+    html += '<div id="form-msg"></div>';
+    html += '</div>';
+  } else {
+    html += '<div style="margin:0.5em 0"><button class="modify-btn" onclick="showModify()">✏️ 修改结果</button></div>';
+  }
+
+  // ── Compare grid: prediction | actual ──────────────────────────────────
+  html += '<div class="compare-grid">';
+
+  // Left: prediction snapshot
+  html += '<div class="panel">';
+  html += '<h2>📊 最新快照预测</h2>';
+  if (!snap) {
+    html += '<p style="color:#999">暂无快照数据</p>';
+  } else {
+    html += field('快照类型', esc(snap.snapshot_type));
+    html += field('模型',     esc(snap.model_used));
+    html += field('预测区间', fmtPRange(snap.p_range));
+    html += field('置信度',   esc(snap.confidence));
+    var decision = snap.veto ? (snap.veto.decision || '—') : '—';
+    html += field('否决决定', '<span class="' + vetoClass(decision) + '">' + esc(decision) + '</span>');
+    var triggers = Array.isArray(snap.risk_triggers) ? snap.risk_triggers.slice(0, 3) : [];
+    if (triggers.length > 0) {
+      html += '<div class="field"><label>风险触发</label><ul class="triggers">' +
+        triggers.map(function(t){ return '<li>' + esc(t) + '</li>'; }).join('') +
+        '</ul></div>';
+    } else {
+      html += field('风险触发', '—');
+    }
+    html += field('更新时间', fmtTime(snap.created_at));
+  }
+  html += '</div>';
+
+  // Right: actual result
+  html += '<div class="panel">';
+  html += '<h2>✅ 实际结果</h2>';
+  if (!outcome) {
+    html += '<p style="color:#999">尚未录入实际结果</p>';
+  } else {
+    var outCls = outcome.outcome === 'YES' ? 'outcome-yes' : 'outcome-no';
+    html += '<div class="field"><label>结果</label><span class="' + outCls + '">' + esc(outcome.outcome) + '</span></div>';
+    html += field('结算价格', fmtPercent(outcome.actual_price));
+    html += field('结算时间', fmtTime(outcome.settled_at));
+    html += field('录入时间', fmtTime(outcome.recorded_at));
+    html += field('备注',     esc(outcome.notes) || '—');
+  }
+  html += '</div>';
+
+  html += '</div>'; // end compare-grid
+
+  // ── Calibration analysis ─────────────────────────────────────────────
+  if (snap && outcome) {
+    var calib = calibrationText(snap, outcome);
+    html += '<div class="calibration">';
+    html += '<h2>🎯 校准分析</h2>';
+    var midVal = '—';
+    if (snap.p_range && snap.p_range.low != null && snap.p_range.high != null) {
+      var mid = (snap.p_range.low + snap.p_range.high) / 2;
+      midVal = fmtPercent(mid);
+    }
+    html += '<div class="field"><label>预测中位数</label><span>' + midVal + '</span></div>';
+    html += '<div class="field"><label>实际价格</label><span>' + fmtPercent(outcome.actual_price) + '</span></div>';
+    if (calib) {
+      html += '<div style="margin-top:0.6em;font-size:1.05em" class="' + calib.cls + '">' + esc(calib.text) + '</div>';
+    }
+    html += '</div>';
+  }
+
+  el.innerHTML = html;
+
+  // Restore form outcome value if editing
+  if (outcome && formVisible) {
+    var selEl = document.getElementById('f-outcome');
+    if (selEl) selEl.value = outcome.outcome;
+  }
+}
+
+// ── Render the list of all outcomes ───────────────────────────────────────
+function renderList(outcomes) {
+  var el = document.getElementById('content');
+  var html = '<h2 style="margin:0.5em 0">已录入结果列表</h2>';
+  if (!outcomes || outcomes.length === 0) {
+    html += '<p class="not-found">暂无已录入结果。请从 <a href="/ui/list.html">候选列表</a> 进入机会详情并录入。</p>';
+    el.innerHTML = html;
+    return;
+  }
+  html += '<table class="list-table"><thead><tr>' +
+    '<th>机会 ID</th><th>标题</th><th>结果</th><th>结算时间</th><th>录入时间</th><th>操作</th>' +
+    '</tr></thead><tbody>';
+  for (var i = 0; i < outcomes.length; i++) {
+    var o = outcomes[i];
+    var cls = o.outcome === 'YES' ? 'outcome-yes' : 'outcome-no';
+    html += '<tr onclick="gotoCompare(\'' + encodeURIComponent(o.opp_id) + '\')" style="cursor:pointer">' +
+      '<td>' + esc(o.opp_id) + '</td>' +
+      '<td>' + esc((o.title || '').slice(0, 50)) + '</td>' +
+      '<td class="' + cls + '">' + esc(o.outcome) + '</td>' +
+      '<td>' + fmtTime(o.settled_at) + '</td>' +
+      '<td>' + fmtTime(o.recorded_at) + '</td>' +
+      '<td><a href="/ui/compare.html?opp_id=' + encodeURIComponent(o.opp_id) + '" onclick="event.stopPropagation()">对比</a></td>' +
+      '</tr>';
+  }
+  html += '</tbody></table>';
+  el.innerHTML = html;
+}
+
+function gotoCompare(encodedOppId) {
+  window.location.href = '/ui/compare.html?opp_id=' + encodedOppId;
+}
+
+function showModify() {
+  formVisible = true;
+  renderCompare(currentOppId, currentSnap, currentOutcome);
+}
+
+async function submitOutcome(oppId) {
+  var btn     = document.getElementById('submit-btn');
+  var msgEl   = document.getElementById('form-msg');
+  var outcome = document.getElementById('f-outcome').value;
+  var settled = document.getElementById('f-settled-at').value;
+  var price   = document.getElementById('f-actual-price').value;
+  var notes   = document.getElementById('f-notes').value;
+
+  if (!settled) { msgEl.className = 'err-msg'; msgEl.textContent = '请填写结算时间'; return; }
+  if (price === '' || price == null) { msgEl.className = 'err-msg'; msgEl.textContent = '请填写结算价格'; return; }
+
+  var priceNum = parseFloat(price);
+  if (isNaN(priceNum) || priceNum < 0 || priceNum > 1) {
+    msgEl.className = 'err-msg'; msgEl.textContent = '结算价格应在 0~1 之间'; return;
+  }
+
+  // Normalize settled_at to ISO8601
+  var settledIso = settled.includes('T') ? settled + ':00' : settled + 'T00:00:00';
+
+  btn.disabled = true;
+  btn.textContent = '提交中…';
+  msgEl.className = ''; msgEl.textContent = '';
+
+  try {
+    var res = await fetch(BASE + '/outcomes/' + encodeURIComponent(oppId), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ outcome: outcome, settled_at: settledIso, actual_price: priceNum, notes: notes })
+    });
+    var data = await res.json();
+    if (res.ok) {
+      msgEl.className = 'ok-msg'; msgEl.textContent = '✅ 录入成功！';
+      formVisible = false;
+      // Reload outcome and re-render
+      var rec = await fetch(BASE + '/outcomes/' + encodeURIComponent(oppId));
+      if (rec.ok) currentOutcome = await rec.json();
+      setTimeout(function() { renderCompare(oppId, currentSnap, currentOutcome); }, 600);
+    } else {
+      msgEl.className = 'err-msg'; msgEl.textContent = '提交失败: ' + (data.error || JSON.stringify(data));
+      btn.disabled = false; btn.textContent = '提交';
+    }
+  } catch (e) {
+    msgEl.className = 'err-msg'; msgEl.textContent = '请求失败: ' + e.message;
+    btn.disabled = false; btn.textContent = '提交';
+  }
+}
+
+// ── Main load logic ────────────────────────────────────────────────────────
+async function load() {
+  var oppId = getParam('opp_id');
+  var el    = document.getElementById('content');
+
+  if (!oppId) {
+    // No opp_id: show list of all outcomes
+    try {
+      var r = await fetch(BASE + '/outcomes');
+      var outcomes = r.ok ? await r.json() : [];
+      renderList(outcomes);
+    } catch (e) {
+      el.innerHTML = '<p class="not-found">加载失败: ' + esc(e.message) + '</p>';
+    }
+    return;
+  }
+
+  currentOppId = oppId;
+  el.innerHTML = '<p>加载中…</p>';
+
+  // Load snapshot (latest)
+  try {
+    var sr = await fetch(BASE + '/snapshots/' + encodeURIComponent(oppId) + '/latest');
+    if (sr.ok) currentSnap = await sr.json();
+  } catch (e) { /* ignore */ }
+
+  // Load existing outcome
+  try {
+    var or2 = await fetch(BASE + '/outcomes/' + encodeURIComponent(oppId));
+    if (or2.ok) currentOutcome = await or2.json();
+  } catch (e) { /* ignore */ }
+
+  renderCompare(oppId, currentSnap, currentOutcome);
+}
+
+window.onload = load;
+</script>
+</body>
+</html>

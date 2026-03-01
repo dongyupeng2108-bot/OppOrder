@@ -3485,6 +3485,97 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    // M4-T6 (260301_019): GET /outcomes — list all outcome records
+    if (pathname === '/outcomes' && req.method === 'GET') {
+        try {
+            const { listOutcomes } = await import('./outcome_store.mjs');
+            const records = listOutcomes();
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(records));
+        } catch (err) {
+            console.error('[/outcomes GET error]', err.message);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: err.message }));
+        }
+        return;
+    }
+
+    // M4-T6 (260301_019): POST /outcomes/:opp_id — record outcome
+    if (pathname.startsWith('/outcomes/') && req.method === 'POST') {
+        const oppId = pathname.slice('/outcomes/'.length);
+        if (!oppId) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'opp_id is required' }));
+            return;
+        }
+        try {
+            const bodyData = await new Promise((resolve) => {
+                let raw = '';
+                req.on('data', chunk => { raw += chunk; });
+                req.on('end', () => {
+                    try { resolve(JSON.parse(raw || '{}')); }
+                    catch (_) { resolve({}); }
+                });
+            });
+            const { outcome, settled_at, actual_price, notes } = bodyData;
+            const missing = [];
+            if (!outcome)             missing.push('outcome');
+            if (!settled_at)          missing.push('settled_at');
+            if (actual_price == null) missing.push('actual_price');
+            if (missing.length > 0) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Missing required fields: ' + missing.join(', ') }));
+                return;
+            }
+            if (outcome !== 'YES' && outcome !== 'NO') {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'outcome must be YES or NO' }));
+                return;
+            }
+            let title = '';
+            try {
+                const { getByOppId } = await import('./snapshot_index.mjs');
+                const entry = getByOppId(oppId);
+                if (entry) title = entry.title || '';
+            } catch (_) { /* ignore */ }
+            const { saveOutcome } = await import('./outcome_store.mjs');
+            const record = saveOutcome({ opp_id: oppId, title, outcome, settled_at, actual_price, notes });
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ opp_id: record.opp_id, outcome: record.outcome, recorded_at: record.recorded_at }));
+        } catch (err) {
+            console.error('[/outcomes/:opp_id POST error]', err.message);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: err.message }));
+        }
+        return;
+    }
+
+    // M4-T6 (260301_019): GET /outcomes/:opp_id — get outcome for a specific opp
+    if (pathname.startsWith('/outcomes/') && req.method === 'GET') {
+        const oppId = pathname.slice('/outcomes/'.length);
+        if (!oppId) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'opp_id is required' }));
+            return;
+        }
+        try {
+            const { getOutcome } = await import('./outcome_store.mjs');
+            const record = getOutcome(oppId);
+            if (!record) {
+                res.writeHead(404, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'outcome not found for opp_id: ' + oppId }));
+                return;
+            }
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(record));
+        } catch (err) {
+            console.error('[/outcomes/:opp_id GET error]', err.message);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: err.message }));
+        }
+        return;
+    }
+
     // M4-T5 (260301_018): POST /snapshots/:opp_id/deep — Gemini deep-dive snapshot
     if (pathname.startsWith('/snapshots/') && pathname.endsWith('/deep') && req.method === 'POST') {
         const oppId = pathname.slice('/snapshots/'.length, -'/deep'.length);
