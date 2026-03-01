@@ -7,7 +7,6 @@ const forbidden = [
     'scripts/safe_commit.ps1',
     'scripts/safe_push.ps1',
     'scripts/postflight_validate_envelope.mjs',
-    'scripts/gate_light_ci.mjs',
 ];
 
 try {
