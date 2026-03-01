@@ -150,7 +150,7 @@ function renderTable(rows) {
 
   var html = '<table>' +
     '<thead><tr>' +
-    '<th>标题</th><th>Market%</th><th>P范围</th><th>置信度</th><th>否决</th><th>更新时间</th>' +
+    '<th>标题</th><th>Market%</th><th>P范围</th><th>置信度</th><th>否决</th><th>更新时间</th><th>操作</th>' +
     '</tr></thead><tbody>';
 
   for (var i = 0; i < rows.length; i++) {
@@ -158,13 +158,17 @@ function renderTable(rows) {
     var decision = (row.veto && row.veto.decision) ? row.veto.decision : '—';
     var cls      = vetoClass(decision);
     var titleEsc = (row.title || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
-    html += '<tr data-opp="' + row.opp_id + '" onclick="gotoDetail(\'' + encodeURIComponent(row.opp_id) + '\')">' +
+    var encId = encodeURIComponent(row.opp_id);
+    html += '<tr data-opp="' + row.opp_id + '" onclick="gotoDetail(\'' + encId + '\')">' +
       '<td title="' + titleEsc + '">' + truncate(row.title, 60) + '</td>' +
       '<td>' + fmtPercent(row.yes_price)  + '</td>' +
       '<td>' + fmtPRange(row.p_range)     + '</td>' +
       '<td>' + (row.confidence || '—')    + '</td>' +
       '<td class="' + cls + '">' + decision + '</td>' +
       '<td>' + fmtTime(row.updated_at)    + '</td>' +
+      '<td onclick="event.stopPropagation()">' +
+        '<a href="/ui/compare.html?opp_id=' + encId + '">对比</a>' +
+      '</td>' +
       '</tr>';
   }
 
