@@ -1,0 +1,31 @@
+TASK_ID=260301_021
+GENERATED_AT=2026-03-01T10:07:45.090Z
+
+# DoD Markers
+DOD_DELIVERABLE_GATE_LIGHT_YML=.github/workflows/gate-light.yml
+
+# Fixed Steps (9 total)
+DOD_FIXED_STEP_1=Generate CI Parity Evidence
+DOD_FIXED_STEP_2=Verify CI Parity Evidence
+DOD_FIXED_STEP_3=Generate Error Digest Evidence
+DOD_FIXED_STEP_4=Verify Error Digest Evidence
+DOD_FIXED_STEP_5=Generate Healthcheck Evidence
+DOD_FIXED_STEP_6=Generate Gate Light Preview Evidence
+DOD_FIXED_STEP_7=Verify Healthcheck Evidence
+DOD_FIXED_STEP_8=Generate Trae Report Snippet Evidence
+DOD_FIXED_STEP_9=Generate Evidence Manifest
+
+# Already-Defended Steps (skipped)
+DOD_SKIP_1=Generate Workspace Healer Evidence
+DOD_SKIP_2=Persist Workspace Healer Evidence
+DOD_SKIP_3=Verify Workspace Healer Evidence
+DOD_SKIP_4=Generate DoD Notify Result Evidence
+
+# Defense Pattern Applied
+DOD_PATTERN=if [ -z "$TASK_ID" ]; then echo "No task_id detected. Skipping." exit 0 fi
+
+# Acceptance Checks
+DOD_CHECK_ONLY_DEFENSE_CHANGES=git diff confirms only +4 lines per step, no other changes
+DOD_CHECK_9_STEPS_PATCHED=All 9 steps have empty-guard before YEAR/MONTH computation
+
+GATE_LIGHT_EXIT=0

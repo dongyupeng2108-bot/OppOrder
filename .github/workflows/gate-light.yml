@@ -123,6 +123,10 @@ jobs:
         run: |
           TASK_REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
           TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}[A-Za-z]?' | head -n 1 || true)
+          if [ -z "$TASK_ID" ]; then
+            echo "No task_id detected. Skipping."
+            exit 0
+          fi
           YEAR="20${TASK_ID:0:2}"
           MONTH="${TASK_ID:2:2}"
           EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
@@ -134,6 +138,10 @@ jobs:
         run: |
           TASK_REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
           TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}[A-Za-z]?' | head -n 1 || true)
+          if [ -z "$TASK_ID" ]; then
+            echo "No task_id detected. Skipping."
+            exit 0
+          fi
           YEAR="20${TASK_ID:0:2}"
           MONTH="${TASK_ID:2:2}"
           EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
@@ -150,6 +158,10 @@ jobs:
         run: |
           TASK_REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
           TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}[A-Za-z]?' | head -n 1 || true)
+          if [ -z "$TASK_ID" ]; then
+            echo "No task_id detected. Skipping."
+            exit 0
+          fi
           YEAR="20${TASK_ID:0:2}"
           MONTH="${TASK_ID:2:2}"
           EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
@@ -162,6 +174,10 @@ jobs:
         run: |
           TASK_REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
           TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}[A-Za-z]?' | head -n 1 || true)
+          if [ -z "$TASK_ID" ]; then
+            echo "No task_id detected. Skipping."
+            exit 0
+          fi
           YEAR="20${TASK_ID:0:2}"
           MONTH="${TASK_ID:2:2}"
           EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
@@ -178,6 +194,10 @@ jobs:
         run: |
           TASK_REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
           TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}[A-Za-z]?' | head -n 1 || true)
+          if [ -z "$TASK_ID" ]; then
+            echo "No task_id detected. Skipping."
+            exit 0
+          fi
           YEAR="20${TASK_ID:0:2}"
           MONTH="${TASK_ID:2:2}"
           EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
@@ -212,6 +232,10 @@ jobs:
         run: |
           TASK_REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
           TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}[A-Za-z]?' | head -n 1 || true)
+          if [ -z "$TASK_ID" ]; then
+            echo "No task_id detected. Skipping."
+            exit 0
+          fi
           YEAR="20${TASK_ID:0:2}"
           MONTH="${TASK_ID:2:2}"
           EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
@@ -234,6 +258,10 @@ jobs:
         run: |
           TASK_REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
           TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}[A-Za-z]?' | head -n 1 || true)
+          if [ -z "$TASK_ID" ]; then
+            echo "No task_id detected. Skipping."
+            exit 0
+          fi
           YEAR="20${TASK_ID:0:2}"
           MONTH="${TASK_ID:2:2}"
           EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
@@ -341,6 +369,10 @@ jobs:
         run: |
           TASK_REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
           TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}[A-Za-z]?' | head -n 1 || true)
+          if [ -z "$TASK_ID" ]; then
+            echo "No task_id detected. Skipping."
+            exit 0
+          fi
           YEAR="20${TASK_ID:0:2}"
           MONTH="${TASK_ID:2:2}"
           EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
@@ -373,12 +405,16 @@ jobs:
         run: |
           TASK_REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
           TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}[A-Za-z]?' | head -n 1 || true)
+          if [ -z "$TASK_ID" ]; then
+            echo "No task_id detected. Skipping."
+            exit 0
+          fi
           YEAR="20${TASK_ID:0:2}"
           MONTH="${TASK_ID:2:2}"
           EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
           echo "TASK_ID=${TASK_ID}"
           echo "EVIDENCE_DIR=${EVIDENCE_DIR}"
-          
+
           # 1. Generate git_meta
           GIT_SHA=$(git rev-parse HEAD)
           # Escape double quotes in commit message to prevent JSON breakage
