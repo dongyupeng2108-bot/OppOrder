@@ -2,7 +2,7 @@
   "task_id": "260301_023",
   "is_shallow_repo": true,
   "base": "9e6faad18fd2959813e7d5efc8d3dbca0a96caae",
-  "head": "7539e80b93cfa117d6701146d9d71ec929ed43b4",
+  "head": "20c7c0c8ea90b6d27fec115df73025b988ffa05f",
   "merge_base": "9e6faad18fd2959813e7d5efc8d3dbca0a96caae",
   "scope_files": [
     "rules/task-reports/2026-03/ci_parity_260301_023.json",
@@ -10,5 +10,5 @@
     "scripts/gate_light_ci.mjs"
   ],
   "scope_count": 3,
-  "generated_at": "2026-03-01T23:32:34.037Z"
+  "generated_at": "2026-03-01T23:40:28.985Z"
 }
