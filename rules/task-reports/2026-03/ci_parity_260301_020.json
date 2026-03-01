@@ -1,0 +1,12 @@
+{
+  "task_id": "260301_020",
+  "parity": "PASS",
+  "base": "1eccfcdc1729fdc758b6f9ea69bc45f8ca2a431b",
+  "head": "768e825e045cc3ac522e1a320de300fa83b22120",
+  "merge_base": "1eccfcdc1729fdc758b6f9ea69bc45f8ca2a431b",
+  "scope_files": [
+    "start_with_proxy.mjs"
+  ],
+  "scope_count": 1,
+  "generated_at": "2026-03-01T08:59:47.393Z"
+}
