@@ -1,0 +1,12 @@
+{
+  "id": "draft_test_opp_001",
+  "title": "Test Opp",
+  "score": 0.75,
+  "run_id": "draft_2026-03-01",
+  "created_at": "2026-03-01T01:00:00Z",
+  "opp_id": "test_opp_001",
+  "snapshot_type": "draft",
+  "model_used": "mock",
+  "confidence": "High",
+  "summary": "Test snapshot for acceptance verification"
+}

@@ -3435,6 +3435,77 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    // M4-T3: GET /snapshots/index — return full snapshot index
+    if (pathname === '/snapshots/index' && req.method === 'GET') {
+        try {
+            const { getIndex } = await import('./snapshot_index.mjs');
+            const index = getIndex();
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(index));
+        } catch (err) {
+            console.error('[/snapshots/index error]', err.message);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: err.message }));
+        }
+        return;
+    }
+
+    // M4-T3: GET /snapshots/:opp_id/latest — return full content of latest snapshot
+    if (pathname.startsWith('/snapshots/') && pathname.endsWith('/latest') && req.method === 'GET') {
+        const oppId = pathname.slice('/snapshots/'.length, -'/latest'.length);
+        if (!oppId) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Missing opp_id' }));
+            return;
+        }
+        try {
+            const { getByOppId } = await import('./snapshot_index.mjs');
+            const entry = getByOppId(oppId);
+            if (!entry || !entry.snapshots || entry.snapshots.length === 0) {
+                res.writeHead(404, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'opp_id not found' }));
+                return;
+            }
+            const latest = entry.snapshots[entry.snapshots.length - 1];
+            const snapshotsDir = path.join(__dirname, '../data/snapshots');
+            const filePath = path.join(snapshotsDir, latest.file);
+            if (!fs.existsSync(filePath)) {
+                res.writeHead(404, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Snapshot file not found on disk' }));
+                return;
+            }
+            const content = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(content));
+        } catch (err) {
+            console.error('[/snapshots/:opp_id/latest error]', err.message);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: err.message }));
+        }
+        return;
+    }
+
+    // M4-T3: GET /snapshots/:opp_id — return snapshot list for opp_id
+    if (pathname.startsWith('/snapshots/') && pathname.length > '/snapshots/'.length && req.method === 'GET') {
+        const oppId = pathname.slice('/snapshots/'.length);
+        try {
+            const { getByOppId } = await import('./snapshot_index.mjs');
+            const entry = getByOppId(oppId);
+            if (!entry) {
+                res.writeHead(404, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'opp_id not found' }));
+                return;
+            }
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(entry));
+        } catch (err) {
+            console.error('[/snapshots/:opp_id error]', err.message);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: err.message }));
+        }
+        return;
+    }
+
     // 404
     res.writeHead(404, { 'Content-Type': 'text/plain' });
     res.end('Not Found');
