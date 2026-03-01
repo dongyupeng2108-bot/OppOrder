@@ -43,6 +43,9 @@ function buildUserPrompt(candidate) {
     "labels": ["label1"],
     "rule_facts": {}
   },
+  "mispricing_type": "sentiment_lag|info_gap|recency_bias|liquidity_gap|other",
+  "why_1_liner": "一句话解释为什么模型认为市场定价有偏差（≤120字符）",
+  "what_to_check": "建议验证步骤或数据来源（≤200字符）",
   "summary": "一句话分析"
 }`;
 }
@@ -67,7 +70,10 @@ async function callLLM({ prompt, model, mode }) {
     p_range: { low: 0.4, high: 0.6 },
     confidence: 'Low',
     risk_triggers: [],
-    veto: { decision: 'ALLOW', labels: [], rule_facts: {} }
+    veto: { decision: 'ALLOW', labels: [], rule_facts: {} },
+    mispricing_type: 'other',
+    why_1_liner: '[mock] Insufficient data to assess mispricing',
+    what_to_check: '[mock] Verify with live data'
   };
 }
 
@@ -142,11 +148,21 @@ export async function generateDrafts() {
 
     try {
       const userPrompt = buildUserPrompt(candidate);
+      const t0 = Date.now();
       const llmResult = await callLLM({
         prompt: userPrompt,
         model: 'deepseek-reasoner',
         mode: 'live'
       });
+      const latency_ms = Date.now() - t0;
+
+      // Compute offset fields from p_range and yes_price
+      const p_range = llmResult.p_range || { low: 0.3, high: 0.7 };
+      const yes_price = candidate.yes_price != null ? candidate.yes_price : 0.5;
+      const p_mid = parseFloat(((p_range.low + p_range.high) / 2).toFixed(4));
+      const dev_signed = parseFloat((p_mid - yes_price).toFixed(4));
+      const dev_abs = parseFloat(Math.abs(dev_signed).toFixed(4));
+      const dev_flag = dev_signed > 0.05 ? 'UNDER' : dev_signed < -0.05 ? 'OVER' : 'FAIR';
 
       // Build full OpportunityCard-compatible draft snapshot
       const snapshot = {
@@ -161,11 +177,26 @@ export async function generateDrafts() {
         opp_id: oppId,
         snapshot_type: 'draft',
         model_used: llmResult.model_used || 'deepseek-reasoner',
-        p_range: llmResult.p_range || { low: 0.3, high: 0.7 },
+        p_range,
         confidence: llmResult.confidence || 'Low',
         risk_triggers: llmResult.risk_triggers || [],
         veto: llmResult.veto || { decision: 'ALLOW', labels: [], rule_facts: {} },
         evidence_refs: [path.basename(scanFile)],
+
+        // M4 offset sorting fields
+        p_mid,
+        dev_signed,
+        dev_abs,
+        dev_flag,
+
+        // M4 offset diagnostic fields
+        mispricing_type: llmResult.mispricing_type || '',
+        why_1_liner: llmResult.why_1_liner || '',
+        what_to_check: llmResult.what_to_check || '',
+
+        // M4 model source fields
+        model_role: 'scan',
+        latency_ms,
 
         // Extra context
         summary: llmResult.summary || '',

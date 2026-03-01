@@ -30,13 +30,19 @@ function mockDeepSnapshot(prompt) {
   const hash = crypto.createHash('sha256').update(prompt).digest('hex');
   const conf = 0.5 + (parseInt(hash.slice(0, 4), 16) / 0xffff) * 0.49;
   return {
-    snapshot_type: 'deep',
-    model_used:    GEMINI_MODEL,
-    summary:       `[Mock Deep] ${prompt.slice(0, 80)}…`,
-    confidence:    parseFloat(conf.toFixed(2)),
-    risk_triggers: ['mock_trigger_1', 'mock_trigger_2'],
-    _fallback:     true,
-    created_at:    new Date().toISOString()
+    snapshot_type:   'deep',
+    model_used:      GEMINI_MODEL,
+    summary:         `[Mock Deep] ${prompt.slice(0, 80)}…`,
+    confidence:      parseFloat(conf.toFixed(2)),
+    risk_triggers:   ['mock_trigger_1', 'mock_trigger_2'],
+    p_range:         { low: 0.4, high: 0.6 },
+    mispricing_type: 'other',
+    why_1_liner:     '[mock] Insufficient data for deep analysis',
+    what_to_check:   '[mock] Verify with live Gemini data',
+    model_role:      'core',
+    latency_ms:      0,
+    _fallback:       true,
+    created_at:      new Date().toISOString()
   };
 }
 
@@ -56,6 +62,7 @@ export async function callGemini({ prompt, model: _model } = {}) {
     throw new Error('callGemini: prompt must be a non-empty string');
   }
 
+  const t0 = Date.now();
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), GEMINI_TIMEOUT);
 
@@ -108,15 +115,20 @@ export async function callGemini({ prompt, model: _model } = {}) {
   }
 
   return {
-    snapshot_type: 'deep',
-    model_used:    GEMINI_MODEL,
-    summary:       parsed.summary     || rawText.slice(0, 300),
-    confidence:    parsed.confidence  ?? null,
-    risk_triggers: Array.isArray(parsed.risk_triggers) ? parsed.risk_triggers : [],
-    p_range:       parsed.p_range     || null,
-    yes_price:     parsed.yes_price   ?? null,
-    _fallback:     false,
-    created_at:    new Date().toISOString(),
-    _raw:          parsed
+    snapshot_type:   'deep',
+    model_used:      GEMINI_MODEL,
+    summary:         parsed.summary          || rawText.slice(0, 300),
+    confidence:      parsed.confidence       ?? null,
+    risk_triggers:   Array.isArray(parsed.risk_triggers) ? parsed.risk_triggers : [],
+    p_range:         parsed.p_range          || null,
+    yes_price:       parsed.yes_price        ?? null,
+    mispricing_type: parsed.mispricing_type  || '',
+    why_1_liner:     parsed.why_1_liner      || '',
+    what_to_check:   parsed.what_to_check    || '',
+    model_role:      'core',
+    latency_ms:      Date.now() - t0,
+    _fallback:       false,
+    created_at:      new Date().toISOString(),
+    _raw:            parsed
   };
 }

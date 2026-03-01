@@ -4,8 +4,8 @@
 body {
   font-family: system-ui, -apple-system, sans-serif;
   font-size: 14px;
-  background: #0f1117;
-  color: #e0e0e0;
+  background: #0d0d0d;
+  color: #f0f0f0;
   min-height: 100vh;
 }
 
@@ -105,3 +105,17 @@ pre {
 }
 pre.ok  { border-color: #2a5c3a; color: #7ddc97; }
 pre.err { border-color: #5c2a2a; color: #dc7d7d; }
+
+/* ── Veto decision label classes (shared by list.html + detail.html) ── */
+.veto-allow   { color: #4caf50; font-weight: bold; }
+.veto-degrade { color: #f0c040; font-weight: bold; }
+.veto-block   { color: #ff6b6b; background: rgba(200,0,0,0.12);
+                border-radius: 3px; padding: 1px 5px; }
+
+/* ── Deviation flag classes ── */
+.dev-under { color: #4caf50; font-weight: bold; }   /* UNDER = model > market, bullish edge */
+.dev-over  { color: #ff6b6b; font-weight: bold; }   /* OVER  = model < market, bearish edge */
+.dev-fair  { color: #8888a0; }                      /* FAIR  = no significant edge */
+
+/* ── BLOCK row dim styling ── */
+tr.row-block { opacity: 0.45; background: #1a1a1a !important; }

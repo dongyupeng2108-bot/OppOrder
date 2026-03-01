@@ -1,0 +1,27 @@
+{
+  "task_id": "260301_022",
+  "parity": "PASS",
+  "base": "1eccfcdc1729fdc758b6f9ea69bc45f8ca2a431b",
+  "head": "f51e8f398dd91b75479a277cfc0e976d9c462372",
+  "merge_base": "1eccfcdc1729fdc758b6f9ea69bc45f8ca2a431b",
+  "scope_files": [
+    ".github/workflows/gate-light.yml",
+    "rules/LATEST.json",
+    "rules/task-reports/2026-03/ci_parity_260301_020.json",
+    "rules/task-reports/2026-03/ci_parity_260301_021.json",
+    "rules/task-reports/2026-03/dod_evidence_260301_020.txt",
+    "rules/task-reports/2026-03/dod_evidence_260301_021.txt",
+    "rules/task-reports/2026-03/generate_evidence_260301_020.mjs",
+    "rules/task-reports/2026-03/generate_evidence_260301_021.mjs",
+    "rules/task-reports/2026-03/git_meta_260301_020.json",
+    "rules/task-reports/2026-03/git_meta_260301_021.json",
+    "rules/task-reports/2026-03/result_260301_020.json",
+    "rules/task-reports/2026-03/result_260301_021.json",
+    "start_with_proxy.mjs",
+    "tests/test_eligible_filter.mjs",
+    "tests/test_outcome_store.mjs",
+    "tests/test_snapshot_index.mjs"
+  ],
+  "scope_count": 16,
+  "generated_at": "2026-03-01T11:25:13.638Z"
+}

@@ -7,14 +7,11 @@
   <link rel="stylesheet" href="/ui/styles.css">
   <style>
     table { width: 100%; border-collapse: collapse; margin-top: 1em; }
-    th, td { padding: 8px 12px; border: 1px solid #ddd; text-align: left; vertical-align: middle; }
-    th { background: #f4f4f4; font-weight: bold; }
-    tr[data-opp]:hover { background: #f0f8ff; cursor: pointer; }
-    .veto-allow  { color: green;    font-weight: bold; }
-    .veto-degrade{ color: #b8860b;  font-weight: bold; }
-    .veto-block  { color: #888;     background: #fee; }
-    .empty-msg   { padding: 2em; text-align: center; color: #666; font-size: 1.1em; }
-    .status-line { color: #666; font-size: 0.9em; margin: 0.3em 0 0; }
+    th, td { padding: 8px 12px; border: 1px solid #2d3048; text-align: left; vertical-align: middle; }
+    th { background: #1a1d27; font-weight: bold; color: #a0a8ff; }
+    tr[data-opp]:hover { background: #252840; cursor: pointer; }
+    .empty-msg   { padding: 2em; text-align: center; color: #8888a0; font-size: 1.1em; }
+    .status-line { color: #8888a0; font-size: 0.9em; margin: 0.3em 0 0; }
     #scan-btn    { margin-left: 1em; padding: 4px 12px; }
     nav          { margin-top: 0.3em; font-size: 0.9em; }
   </style>
@@ -54,6 +51,18 @@ function fmtTime(iso) {
 function fmtPercent(val) {
   if (val == null) return '—';
   return (val * 100).toFixed(1) + '%';
+}
+
+function fmtDevSigned(val) {
+  if (val == null) return '—';
+  var pct = (val * 100).toFixed(1);
+  return (val >= 0 ? '+' : '') + pct + '%';
+}
+
+function devFlagClass(flag) {
+  if (flag === 'UNDER') return 'dev-under';
+  if (flag === 'OVER')  return 'dev-over';
+  return 'dev-fair';
 }
 
 function fmtPRange(pr) {
@@ -114,6 +123,9 @@ async function loadData() {
                 p_range:    snap.p_range,
                 confidence: snap.confidence,
                 veto:       snap.veto,
+                dev_signed: snap.dev_signed != null ? snap.dev_signed : null,
+                dev_abs:    snap.dev_abs    != null ? snap.dev_abs    : null,
+                dev_flag:   snap.dev_flag   || null,
                 updated_at: entry.snapshots.length > 0
                   ? entry.snapshots[entry.snapshots.length - 1].created_at
                   : null
@@ -127,6 +139,9 @@ async function loadData() {
             p_range:    null,
             confidence: null,
             veto:       null,
+            dev_signed: null,
+            dev_abs:    null,
+            dev_flag:   null,
             updated_at: entry.snapshots.length > 0
               ? entry.snapshots[entry.snapshots.length - 1].created_at
               : null
@@ -136,6 +151,16 @@ async function loadData() {
       }
     }
   } catch (e) { /* index not available */ }
+
+  // Sort: BLOCK rows to bottom, then by dev_abs descending
+  rows.sort(function(a, b) {
+    var aBlock = (a.veto && a.veto.decision === 'BLOCK') ? 1 : 0;
+    var bBlock = (b.veto && b.veto.decision === 'BLOCK') ? 1 : 0;
+    if (aBlock !== bBlock) return aBlock - bBlock;
+    var aAbs = a.dev_abs != null ? a.dev_abs : -1;
+    var bAbs = b.dev_abs != null ? b.dev_abs : -1;
+    return bAbs - aAbs;
+  });
 
   setStatus('');
   renderTable(rows);
@@ -150,22 +175,29 @@ function renderTable(rows) {
 
   var html = '<table>' +
     '<thead><tr>' +
-    '<th>标题</th><th>Market%</th><th>P范围</th><th>置信度</th><th>否决</th><th>更新时间</th><th>操作</th>' +
+    '<th>标题</th><th>Market%</th><th>P范围</th><th>置信度</th><th>否决</th>' +
+    '<th title="p_mid - yes_price，正=低估">偏差</th><th title="偏差方向">方向</th>' +
+    '<th>更新时间</th><th>操作</th>' +
     '</tr></thead><tbody>';
 
   for (var i = 0; i < rows.length; i++) {
     var row = rows[i];
-    var decision = (row.veto && row.veto.decision) ? row.veto.decision : '—';
-    var cls      = vetoClass(decision);
-    var titleEsc = (row.title || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
-    var encId = encodeURIComponent(row.opp_id);
-    html += '<tr data-opp="' + row.opp_id + '" onclick="gotoDetail(\'' + encId + '\')">' +
+    var decision   = (row.veto && row.veto.decision) ? row.veto.decision : '—';
+    var vetoCls    = vetoClass(decision);
+    var rowCls     = (decision === 'BLOCK') ? ' class="row-block"' : '';
+    var devFlagVal = row.dev_flag || '—';
+    var devCls     = row.dev_flag ? devFlagClass(row.dev_flag) : '';
+    var titleEsc   = (row.title || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+    var encId      = encodeURIComponent(row.opp_id);
+    html += '<tr data-opp="' + row.opp_id + '"' + rowCls + ' onclick="gotoDetail(\'' + encId + '\')">' +
       '<td title="' + titleEsc + '">' + truncate(row.title, 60) + '</td>' +
-      '<td>' + fmtPercent(row.yes_price)  + '</td>' +
-      '<td>' + fmtPRange(row.p_range)     + '</td>' +
-      '<td>' + (row.confidence || '—')    + '</td>' +
-      '<td class="' + cls + '">' + decision + '</td>' +
-      '<td>' + fmtTime(row.updated_at)    + '</td>' +
+      '<td>' + fmtPercent(row.yes_price)         + '</td>' +
+      '<td>' + fmtPRange(row.p_range)             + '</td>' +
+      '<td>' + (row.confidence || '—')            + '</td>' +
+      '<td class="' + vetoCls + '">' + decision   + '</td>' +
+      '<td>' + fmtDevSigned(row.dev_signed)       + '</td>' +
+      '<td class="' + devCls + '">' + devFlagVal  + '</td>' +
+      '<td>' + fmtTime(row.updated_at)            + '</td>' +
       '<td onclick="event.stopPropagation()">' +
         '<a href="/ui/compare.html?opp_id=' + encId + '">对比</a>' +
       '</td>' +

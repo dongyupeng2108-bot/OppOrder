@@ -6,19 +6,16 @@
   <title>OppRadar — 快照详情</title>
   <link rel="stylesheet" href="/ui/styles.css">
   <style>
-    .section       { margin: 1.2em 0; padding: 1em; border: 1px solid #ddd; border-radius: 4px; }
-    .section h2    { margin: 0 0 0.7em; font-size: 1.05em; color: #444; border-bottom: 1px solid #eee; padding-bottom: 0.4em; }
+    .section       { margin: 1.2em 0; padding: 1em; border: 1px solid #2d3048; border-radius: 4px; background: #1a1d27; }
+    .section h2    { margin: 0 0 0.7em; font-size: 1.05em; color: #a0a8ff; border-bottom: 1px solid #2d3048; padding-bottom: 0.4em; }
     .field         { display: flex; gap: 0.8em; margin: 0.35em 0; font-size: 0.95em; }
-    .field label   { font-weight: bold; min-width: 100px; color: #555; flex-shrink: 0; }
-    .veto-allow    { color: green;   font-weight: bold; }
-    .veto-degrade  { color: #b8860b; font-weight: bold; }
-    .veto-block    { color: #c00; }
+    .field label   { font-weight: bold; min-width: 120px; color: #8888a0; flex-shrink: 0; }
     .tags          { display: flex; gap: 5px; flex-wrap: wrap; }
-    .tag-item      { background: #e8e8e8; border-radius: 3px; padding: 1px 7px; font-size: 0.85em; }
+    .tag-item      { background: #2d3048; color: #c0c8ff; border-radius: 3px; padding: 1px 7px; font-size: 0.85em; }
     ul.triggers    { margin: 0; padding-left: 1.2em; font-size: 0.95em; }
     .timeline      { list-style: none; padding: 0; margin: 0; }
-    .timeline li   { padding: 3px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.88em; color: #555; }
-    .not-found     { padding: 2em; text-align: center; color: #666; }
+    .timeline li   { padding: 3px 0; border-bottom: 1px solid #2d3048; font-size: 0.88em; color: #8888a0; }
+    .not-found     { padding: 2em; text-align: center; color: #8888a0; }
     a.back-link    { display: inline-block; margin-bottom: 0.8em; font-size: 0.95em; }
     nav            { font-size: 0.9em; margin-top: 0.3em; }
     .deep-section  { margin: 1.2em 0; }
@@ -26,8 +23,8 @@
                      border-radius: 4px; cursor: pointer; font-size: 1em; }
     .deep-btn:disabled { opacity: 0.5; cursor: default; }
     #deep-out      { margin-top: 0.8em; white-space: pre-wrap; font-size: 0.88em;
-                     background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px;
-                     padding: 0.8em; display: none; }
+                     background: #0a0c12; border: 1px solid #2a2d40; border-radius: 4px;
+                     padding: 0.8em; display: none; color: #ccc; }
   </style>
 </head>
 <body>
@@ -147,11 +144,38 @@ async function load() {
   html += field('置信度',   esc(snap.confidence));
   html += field('模型',     esc(snap.model_used));
   html += field('快照类型', esc(snap.snapshot_type));
+  html += field('模型角色 (model_role)', esc(snap.model_role));
+  html += field('延迟 (latency_ms)', snap.latency_ms != null ? snap.latency_ms + ' ms' : null);
+  html += '</div>';
+
+  // ── Section 4.5: 偏差分析 ────────────────────────────────
+  var devFlagVal = snap.dev_flag || null;
+  var devFlagCls = devFlagVal === 'UNDER' ? 'dev-under' : devFlagVal === 'OVER' ? 'dev-over' : 'dev-fair';
+  var devSignedFmt = snap.dev_signed != null
+    ? (snap.dev_signed >= 0 ? '+' : '') + (snap.dev_signed * 100).toFixed(1) + '%'
+    : null;
+  var devAbsFmt = snap.dev_abs != null
+    ? (snap.dev_abs * 100).toFixed(1) + '%'
+    : null;
+  var pMidFmt = snap.p_mid != null
+    ? (snap.p_mid * 100).toFixed(1) + '%'
+    : null;
+  html += '<div class="section"><h2>4.5 偏差分析</h2>';
+  html += field('p_mid（模型中值）', pMidFmt);
+  html += field('dev_signed（偏差）', devSignedFmt);
+  html += field('dev_abs（绝对偏差）', devAbsFmt);
+  html += field('dev_flag（方向）',
+    devFlagVal ? '<span class="' + devFlagCls + '">' + esc(devFlagVal) + '</span>' : null);
+  html += field('mispricing_type', esc(snap.mispricing_type));
+  html += field('why_1_liner', esc(snap.why_1_liner));
+  html += field('what_to_check', esc(snap.what_to_check));
   html += '</div>';
 
   // ── 深挖 button ──────────────────────────────────────────
+  // Use data attribute to avoid double-quote conflict in onclick HTML attribute
+  var safeOppId = (oppId || '').replace(/'/g, "\\'");
   html += '<div class="deep-section">' +
-    '<button class="deep-btn" id="deep-btn" onclick="triggerDeep(' + JSON.stringify(oppId) + ')">🔬 深挖</button>' +
+    '<button class="deep-btn" id="deep-btn" onclick="triggerDeep(\'' + safeOppId + '\')">🔬 深挖</button>' +
     '<pre id="deep-out"></pre>' +
     '</div>';
 
