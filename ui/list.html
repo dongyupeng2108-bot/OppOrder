@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OppRadar — 候选列表</title>
+  <link rel="stylesheet" href="/ui/styles.css">
+  <style>
+    table { width: 100%; border-collapse: collapse; margin-top: 1em; }
+    th, td { padding: 8px 12px; border: 1px solid #ddd; text-align: left; vertical-align: middle; }
+    th { background: #f4f4f4; font-weight: bold; }
+    tr[data-opp]:hover { background: #f0f8ff; cursor: pointer; }
+    .veto-allow  { color: green;    font-weight: bold; }
+    .veto-degrade{ color: #b8860b;  font-weight: bold; }
+    .veto-block  { color: #888;     background: #fee; }
+    .empty-msg   { padding: 2em; text-align: center; color: #666; font-size: 1.1em; }
+    .status-line { color: #666; font-size: 0.9em; margin: 0.3em 0 0; }
+    #scan-btn    { margin-left: 1em; padding: 4px 12px; }
+    nav          { margin-top: 0.3em; font-size: 0.9em; }
+  </style>
+</head>
+<body>
+<header>
+  <h1>OppRadar <span class="tag">候选列表</span></h1>
+  <nav><a href="/ui/">← 验收面板</a></nav>
+  <button id="scan-btn" onclick="triggerScan()">🔄 触发全盘扫描</button>
+  <p id="status-line" class="status-line"></p>
+</header>
+
+<main>
+  <div id="content"></div>
+</main>
+
+<script>
+const BASE = '';
+
+function truncate(text, maxLen) {
+  if (!text) return '—';
+  return text.length > maxLen ? text.slice(0, maxLen) + '\u2026' : text;
+}
+
+function vetoClass(decision) {
+  if (decision === 'ALLOW')   return 'veto-allow';
+  if (decision === 'DEGRADE') return 'veto-degrade';
+  if (decision === 'BLOCK')   return 'veto-block';
+  return '';
+}
+
+function fmtTime(iso) {
+  if (!iso) return '—';
+  return iso.slice(0, 19).replace('T', ' ');
+}
+
+function fmtPercent(val) {
+  if (val == null) return '—';
+  return (val * 100).toFixed(1) + '%';
+}
+
+function fmtPRange(pr) {
+  if (!pr) return '—';
+  if (typeof pr === 'object' && pr !== null) {
+    const lo = pr.low  != null ? (pr.low  * 100).toFixed(0) : '?';
+    const hi = pr.high != null ? (pr.high * 100).toFixed(0) : '?';
+    return lo + '\u2013' + hi + '%';
+  }
+  return String(pr);
+}
+
+function setStatus(msg) {
+  document.getElementById('status-line').textContent = msg;
+}
+
+async function loadData() {
+  setStatus('加载中\u2026');
+  let rows = [];
+
+  // 1. Try /eligible/scan for fresh candidates
+  try {
+    const resp = await fetch(BASE + '/eligible/scan');
+    if (resp.ok) {
+      const data = await resp.json();
+      if (Array.isArray(data.candidates) && data.candidates.length > 0) {
+        rows = data.candidates.map(function(c) {
+          return {
+            opp_id:     c.opp_id,
+            title:      c.title,
+            yes_price:  c.yes_price,
+            p_range:    null,
+            confidence: null,
+            veto:       null,
+            updated_at: c.created_at || null
+          };
+        });
+      }
+    }
+  } catch (e) { /* eligible/scan not yet available */ }
+
+  // 2. Load snapshot index (enriches or replaces eligible data)
+  try {
+    const resp = await fetch(BASE + '/snapshots/index');
+    if (resp.ok) {
+      const idx  = await resp.json();
+      const entries = Array.isArray(idx.entries) ? idx.entries : [];
+      if (entries.length > 0) {
+        const details = await Promise.all(entries.map(async function(entry) {
+          try {
+            const r = await fetch(BASE + '/snapshots/' + encodeURIComponent(entry.opp_id) + '/latest');
+            if (r.ok) {
+              const snap = await r.json();
+              return {
+                opp_id:     entry.opp_id,
+                title:      snap.title || entry.title,
+                yes_price:  snap.yes_price,
+                p_range:    snap.p_range,
+                confidence: snap.confidence,
+                veto:       snap.veto,
+                updated_at: entry.snapshots.length > 0
+                  ? entry.snapshots[entry.snapshots.length - 1].created_at
+                  : null
+              };
+            }
+          } catch (e2) { /* ignore */ }
+          return {
+            opp_id:     entry.opp_id,
+            title:      entry.title,
+            yes_price:  null,
+            p_range:    null,
+            confidence: null,
+            veto:       null,
+            updated_at: entry.snapshots.length > 0
+              ? entry.snapshots[entry.snapshots.length - 1].created_at
+              : null
+          };
+        }));
+        rows = details;
+      }
+    }
+  } catch (e) { /* index not available */ }
+
+  setStatus('');
+  renderTable(rows);
+}
+
+function renderTable(rows) {
+  var el = document.getElementById('content');
+  if (!rows || rows.length === 0) {
+    el.innerHTML = '<div class="empty-msg">暂无数据，请先执行 Eligible 扫描</div>';
+    return;
+  }
+
+  var html = '<table>' +
+    '<thead><tr>' +
+    '<th>标题</th><th>Market%</th><th>P范围</th><th>置信度</th><th>否决</th><th>更新时间</th>' +
+    '</tr></thead><tbody>';
+
+  for (var i = 0; i < rows.length; i++) {
+    var row = rows[i];
+    var decision = (row.veto && row.veto.decision) ? row.veto.decision : '—';
+    var cls      = vetoClass(decision);
+    var titleEsc = (row.title || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+    html += '<tr data-opp="' + row.opp_id + '" onclick="gotoDetail(\'' + encodeURIComponent(row.opp_id) + '\')">' +
+      '<td title="' + titleEsc + '">' + truncate(row.title, 60) + '</td>' +
+      '<td>' + fmtPercent(row.yes_price)  + '</td>' +
+      '<td>' + fmtPRange(row.p_range)     + '</td>' +
+      '<td>' + (row.confidence || '—')    + '</td>' +
+      '<td class="' + cls + '">' + decision + '</td>' +
+      '<td>' + fmtTime(row.updated_at)    + '</td>' +
+      '</tr>';
+  }
+
+  html += '</tbody></table>';
+  el.innerHTML = html;
+}
+
+function gotoDetail(encodedOppId) {
+  window.location.href = '/ui/detail.html?opp_id=' + encodedOppId;
+}
+
+async function triggerScan() {
+  var btn = document.getElementById('scan-btn');
+  btn.disabled = true;
+  btn.textContent = '扫描中\u2026';
+  setStatus('正在执行全盘扫描\u2026');
+  try {
+    await fetch(BASE + '/eligible/scan');
+    await loadData();
+    setStatus('扫描完成');
+  } catch (e) {
+    setStatus('扫描失败: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '\uD83D\uDD04 触发全盘扫描';
+  }
+}
+
+window.onload = loadData;
+</script>
+</body>
+</html>

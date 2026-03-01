@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OppRadar — 快照详情</title>
+  <link rel="stylesheet" href="/ui/styles.css">
+  <style>
+    .section       { margin: 1.2em 0; padding: 1em; border: 1px solid #ddd; border-radius: 4px; }
+    .section h2    { margin: 0 0 0.7em; font-size: 1.05em; color: #444; border-bottom: 1px solid #eee; padding-bottom: 0.4em; }
+    .field         { display: flex; gap: 0.8em; margin: 0.35em 0; font-size: 0.95em; }
+    .field label   { font-weight: bold; min-width: 100px; color: #555; flex-shrink: 0; }
+    .veto-allow    { color: green;   font-weight: bold; }
+    .veto-degrade  { color: #b8860b; font-weight: bold; }
+    .veto-block    { color: #c00; }
+    .tags          { display: flex; gap: 5px; flex-wrap: wrap; }
+    .tag-item      { background: #e8e8e8; border-radius: 3px; padding: 1px 7px; font-size: 0.85em; }
+    ul.triggers    { margin: 0; padding-left: 1.2em; font-size: 0.95em; }
+    .timeline      { list-style: none; padding: 0; margin: 0; }
+    .timeline li   { padding: 3px 0; border-bottom: 1px solid #f0f0f0; font-size: 0.88em; color: #555; }
+    .not-found     { padding: 2em; text-align: center; color: #666; }
+    a.back-link    { display: inline-block; margin-bottom: 0.8em; font-size: 0.95em; }
+    nav            { font-size: 0.9em; margin-top: 0.3em; }
+  </style>
+</head>
+<body>
+<header>
+  <h1>OppRadar <span class="tag">快照详情</span></h1>
+  <nav><a href="/ui/list.html">📋 候选列表</a> | <a href="/ui/">验收面板</a></nav>
+</header>
+
+<main>
+  <a class="back-link" href="/ui/list.html">\u2190 返回列表</a>
+  <div id="content"></div>
+</main>
+
+<script>
+function getParam(name) {
+  return new URLSearchParams(window.location.search).get(name);
+}
+
+function fmtPercent(val) {
+  if (val == null) return '—';
+  return (val * 100).toFixed(1) + '%';
+}
+
+function fmtTime(iso) {
+  if (!iso) return '—';
+  return iso.slice(0, 19).replace('T', ' ');
+}
+
+function vetoClass(decision) {
+  if (decision === 'ALLOW')   return 'veto-allow';
+  if (decision === 'DEGRADE') return 'veto-degrade';
+  if (decision === 'BLOCK')   return 'veto-block';
+  return '';
+}
+
+function esc(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function field(label, value) {
+  var safeVal = (value != null && value !== '') ? value : '—';
+  return '<div class="field"><label>' + esc(label) + '</label><span>' + safeVal + '</span></div>';
+}
+
+async function load() {
+  var oppId = getParam('opp_id');
+  var el    = document.getElementById('content');
+
+  if (!oppId) {
+    el.innerHTML = '<div class="not-found">机会不存在或暂无快照</div>';
+    return;
+  }
+
+  var snapList   = null;
+  var latestSnap = null;
+
+  try {
+    var r1 = await fetch('/snapshots/' + encodeURIComponent(oppId));
+    if (r1.ok) snapList = await r1.json();
+  } catch (e) { /* ignore */ }
+
+  try {
+    var r2 = await fetch('/snapshots/' + encodeURIComponent(oppId) + '/latest');
+    if (r2.ok) latestSnap = await r2.json();
+  } catch (e) { /* ignore */ }
+
+  if (!latestSnap && !snapList) {
+    el.innerHTML = '<div class="not-found">机会不存在或暂无快照</div>';
+    return;
+  }
+
+  var snap     = latestSnap || {};
+  var veto     = snap.veto || {};
+  var triggers = Array.isArray(snap.risk_triggers) ? snap.risk_triggers : [];
+  var allSnaps = (snapList && Array.isArray(snapList.snapshots)) ? snapList.snapshots : [];
+
+  var html = '';
+
+  // ── Section 1: 机会 ──────────────────────────────────────
+  html += '<div class="section"><h2>1. 机会</h2>';
+  html += field('标题', esc(snap.title));
+  var urlVal = snap.market_url
+    ? '<a href="' + esc(snap.market_url) + '" target="_blank">' + esc(snap.market_url) + '</a>'
+    : null;
+  html += field('市场链接', urlVal);
+  html += field('结算时间', esc(snap.event_time));
+  html += field('YES 价格 (Market%)', fmtPercent(snap.yes_price));
+  html += '</div>';
+
+  // ── Section 2: 触发 ──────────────────────────────────────
+  var topTriggers = triggers.slice(0, 3);
+  html += '<div class="section"><h2>2. 触发</h2>';
+  if (topTriggers.length === 0) {
+    html += '<p style="margin:0;color:#999">—</p>';
+  } else {
+    html += '<ul class="triggers">' +
+      topTriggers.map(function(t){ return '<li>' + esc(t) + '</li>'; }).join('') +
+      '</ul>';
+  }
+  html += '</div>';
+
+  // ── Section 3: 否决 ──────────────────────────────────────
+  var decision = veto.decision || '—';
+  var labels   = Array.isArray(veto.labels) ? veto.labels : [];
+  html += '<div class="section"><h2>3. 否决</h2>';
+  html += field('决定', '<span class="' + vetoClass(decision) + '">' + esc(decision) + '</span>');
+  html += '<div class="field"><label>标签</label><div class="tags">' +
+    (labels.length > 0
+      ? labels.map(function(l){ return '<span class="tag-item">' + esc(l) + '</span>'; }).join('')
+      : '<span>—</span>') +
+    '</div></div>';
+  html += '</div>';
+
+  // ── Section 4: 置信 ──────────────────────────────────────
+  html += '<div class="section"><h2>4. 置信</h2>';
+  html += field('置信度',   esc(snap.confidence));
+  html += field('模型',     esc(snap.model_used));
+  html += field('快照类型', esc(snap.snapshot_type));
+  html += '</div>';
+
+  // ── Section 5: 快照时间线 ────────────────────────────────
+  html += '<div class="section"><h2>5. 快照时间线</h2>';
+  if (allSnaps.length === 0) {
+    html += '<p style="margin:0;color:#999">—</p>';
+  } else {
+    html += '<ul class="timeline">';
+    var rev = allSnaps.slice().reverse();
+    for (var i = 0; i < rev.length; i++) {
+      var s = rev[i];
+      html += '<li>' +
+        fmtTime(s.created_at) + ' &nbsp;|&nbsp; ' +
+        esc(s.snapshot_type || '—') + ' &nbsp;|&nbsp; ' +
+        esc(s.model_used    || '—') +
+        '</li>';
+    }
+    html += '</ul>';
+  }
+  html += '</div>';
+
+  el.innerHTML = html;
+}
+
+window.onload = load;
+</script>
+</body>
+</html>
