@@ -1,0 +1,13 @@
+{
+  "task_id": "260301_023",
+  "is_shallow_repo": true,
+  "base": "9e6faad18fd2959813e7d5efc8d3dbca0a96caae",
+  "head": "ed043267528c841072b147c3f3d092f4b3b21dc4",
+  "merge_base": "9e6faad18fd2959813e7d5efc8d3dbca0a96caae",
+  "scope_files": [
+    "scripts/check_protected.mjs",
+    "scripts/gate_light_ci.mjs"
+  ],
+  "scope_count": 2,
+  "generated_at": "2026-03-01T14:03:43.009Z"
+}
