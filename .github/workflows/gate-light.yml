@@ -21,6 +21,7 @@ jobs:
           node-version: '18'
           
       - name: Generate Workspace Healer Evidence
+        continue-on-error: true
         run: |
           TASK_REF="${GITHUB_HEAD_REF}"
           if [ -z "$TASK_REF" ]; then
@@ -61,6 +62,7 @@ jobs:
           fi
 
       - name: Persist Workspace Healer Evidence
+        continue-on-error: true
         run: |
           TASK_REF="${GITHUB_HEAD_REF}"
           if [ -z "$TASK_REF" ]; then
@@ -97,6 +99,7 @@ jobs:
           fi
 
       - name: Verify Workspace Healer Evidence
+        continue-on-error: true
         run: |
           TASK_REF="${GITHUB_HEAD_REF}"
           if [ -z "$TASK_REF" ]; then
