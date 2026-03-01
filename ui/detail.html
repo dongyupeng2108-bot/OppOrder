@@ -21,6 +21,13 @@
     .not-found     { padding: 2em; text-align: center; color: #666; }
     a.back-link    { display: inline-block; margin-bottom: 0.8em; font-size: 0.95em; }
     nav            { font-size: 0.9em; margin-top: 0.3em; }
+    .deep-section  { margin: 1.2em 0; }
+    .deep-btn      { background: #2a6496; color: #fff; border: none; padding: 0.55em 1.4em;
+                     border-radius: 4px; cursor: pointer; font-size: 1em; }
+    .deep-btn:disabled { opacity: 0.5; cursor: default; }
+    #deep-out      { margin-top: 0.8em; white-space: pre-wrap; font-size: 0.88em;
+                     background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px;
+                     padding: 0.8em; display: none; }
   </style>
 </head>
 <body>
@@ -142,6 +149,12 @@ async function load() {
   html += field('快照类型', esc(snap.snapshot_type));
   html += '</div>';
 
+  // ── 深挖 button ──────────────────────────────────────────
+  html += '<div class="deep-section">' +
+    '<button class="deep-btn" id="deep-btn" onclick="triggerDeep(' + JSON.stringify(oppId) + ')">🔬 深挖</button>' +
+    '<pre id="deep-out"></pre>' +
+    '</div>';
+
   // ── Section 5: 快照时间线 ────────────────────────────────
   html += '<div class="section"><h2>5. 快照时间线</h2>';
   if (allSnaps.length === 0) {
@@ -162,6 +175,36 @@ async function load() {
   html += '</div>';
 
   el.innerHTML = html;
+}
+
+async function triggerDeep(oppId) {
+  var btn = document.getElementById('deep-btn');
+  var out = document.getElementById('deep-out');
+  if (!btn || !out) return;
+  btn.disabled = true;
+  btn.textContent = '⏳ 深挖中…';
+  out.style.display = 'block';
+  out.textContent = '正在调用 Gemini 2.0 Flash，请稍候（最多 60 秒）…';
+  try {
+    var res = await fetch('/snapshots/' + encodeURIComponent(oppId) + '/deep', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({})
+    });
+    var data = await res.json();
+    if (res.ok) {
+      out.textContent = JSON.stringify(data, null, 2);
+      btn.textContent = '✅ 深挖完成';
+    } else {
+      out.textContent = '错误 ' + res.status + ': ' + (data.error || JSON.stringify(data));
+      btn.textContent = '❌ 深挖失败';
+      btn.disabled = false;
+    }
+  } catch (e) {
+    out.textContent = '请求失败: ' + e.message;
+    btn.textContent = '❌ 深挖失败';
+    btn.disabled = false;
+  }
 }
 
 window.onload = load;

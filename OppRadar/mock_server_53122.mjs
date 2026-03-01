@@ -3485,6 +3485,97 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    // M4-T5 (260301_018): POST /snapshots/:opp_id/deep — Gemini deep-dive snapshot
+    if (pathname.startsWith('/snapshots/') && pathname.endsWith('/deep') && req.method === 'POST') {
+        const oppId = pathname.slice('/snapshots/'.length, -'/deep'.length);
+        if (!oppId) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'opp_id is required' }));
+            return;
+        }
+        try {
+            // Read request body (optional: { prompt })
+            const bodyData = await new Promise((resolve) => {
+                let raw = '';
+                req.on('data', chunk => { raw += chunk; });
+                req.on('end', () => {
+                    try { resolve(JSON.parse(raw || '{}')); }
+                    catch (_) { resolve({}); }
+                });
+            });
+
+            // Load existing latest snapshot for context (best-effort)
+            let latestSnap = null;
+            try {
+                const { getByOppId: _gboi } = await import('./snapshot_index.mjs');
+                const entry = _gboi(oppId);
+                if (entry && entry.snapshots && entry.snapshots.length > 0) {
+                    const lat = entry.snapshots[entry.snapshots.length - 1];
+                    const snapshotsDir = path.join(__dirname, '../data/snapshots');
+                    const fp = path.join(snapshotsDir, lat.file);
+                    if (fs.existsSync(fp)) {
+                        latestSnap = JSON.parse(fs.readFileSync(fp, 'utf8'));
+                    }
+                }
+            } catch (_e2) { /* ignore */ }
+
+            // Build prompt
+            const userPrompt = bodyData.prompt || null;
+            let prompt = userPrompt;
+            if (!prompt) {
+                const title   = latestSnap?.title   || oppId;
+                const summary = latestSnap?.summary  || '';
+                const score   = latestSnap?.score    || '';
+                prompt = [
+                    `Deep-dive analysis for opportunity: ${title}`,
+                    score   ? `Current score: ${score}` : '',
+                    summary ? `Summary: ${summary}` : '',
+                    'Respond in JSON with keys: summary (string), confidence (0-1 float), risk_triggers (string[]), p_range ({low,high} floats), yes_price (float).'
+                ].filter(Boolean).join('\n');
+            }
+
+            // Call Gemini provider (dynamic import so env changes are reflected)
+            const { callGemini } = await import('./providers/gemini_provider.mjs');
+            const deepResult = await callGemini({ prompt });
+
+            // Persist deep snapshot to data/snapshots/{opp_id}/
+            const snapshotsDir = path.join(__dirname, '../data/snapshots');
+            const oppDir = path.join(snapshotsDir, oppId);
+            if (!fs.existsSync(oppDir)) fs.mkdirSync(oppDir, { recursive: true });
+
+            const ts   = new Date().toISOString().replace(/[:.]/g, '-');
+            const file = `${oppId}/deep_${ts}.json`;
+            const full = {
+                opp_id:    oppId,
+                title:     latestSnap?.title || oppId,
+                run_id:    latestSnap?.run_id || '',
+                score:     latestSnap?.score  || 0,
+                created_at: deepResult.created_at || new Date().toISOString(),
+                ...deepResult
+            };
+            fs.writeFileSync(path.join(snapshotsDir, file), JSON.stringify(full, null, 2) + '\n', { encoding: 'utf8' });
+
+            // Register in snapshot_index (append-only)
+            const { appendSnapshot } = await import('./snapshot_index.mjs');
+            appendSnapshot({
+                opp_id:        oppId,
+                title:         full.title,
+                file,
+                snapshot_type: 'deep',
+                model_used:    deepResult.model_used || 'gemini-2.0-flash',
+                created_at:    full.created_at
+            });
+
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(full));
+        } catch (err) {
+            console.error('[/snapshots/:opp_id/deep error]', err.message);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: err.message }));
+        }
+        return;
+    }
+
     // M4-T3: GET /snapshots/:opp_id — return snapshot list for opp_id
     if (pathname.startsWith('/snapshots/') && pathname.length > '/snapshots/'.length && req.method === 'GET') {
         const oppId = pathname.slice('/snapshots/'.length);
