@@ -67,6 +67,10 @@ jobs:
             TASK_REF="${GITHUB_REF_NAME}"
           fi
           PR_TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}[A-Za-z]?' | head -n 1 || true)
+          if [ -z "$PR_TASK_ID" ]; then
+            echo "No task_id detected. Skipping."
+            exit 0
+          fi
           YEAR="20${PR_TASK_ID:0:2}"
           MONTH="${PR_TASK_ID:2:2}"
           EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
@@ -99,6 +103,10 @@ jobs:
             TASK_REF="${GITHUB_REF_NAME}"
           fi
           PR_TASK_ID=$(echo "$TASK_REF" | grep -oE '[0-9]{6}_[0-9]{3}[A-Za-z]?' | head -n 1 || true)
+          if [ -z "$PR_TASK_ID" ]; then
+            echo "No task_id detected. Skipping."
+            exit 0
+          fi
           YEAR="20${PR_TASK_ID:0:2}"
           MONTH="${PR_TASK_ID:2:2}"
           EVIDENCE_DIR="rules/task-reports/${YEAR}-${MONTH}"
