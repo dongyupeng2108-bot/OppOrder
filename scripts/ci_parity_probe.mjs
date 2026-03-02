@@ -77,7 +77,7 @@ const scopeCount = scopeFiles.length;
 const evidence = {
     task_id: taskId,
     is_shallow_repo: isShallow,
-    base: originMain,
+    base: mergeBase,
     head: head,
     merge_base: mergeBase,
     scope_files: scopeFiles,
