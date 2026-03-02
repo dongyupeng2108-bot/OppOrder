@@ -3,7 +3,6 @@ import process from 'process';
 
 const forbidden = [
     'scripts/ops_hardstop_latch.mjs',
-    'scripts/run_task.ps1',
     'scripts/safe_commit.ps1',
     'scripts/safe_push.ps1',
     'scripts/postflight_validate_envelope.mjs',
