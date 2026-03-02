@@ -431,6 +431,26 @@ fs.writeFileSync(indexPath, JSON.stringify({
 }, null, 2));
 console.log(`[Assembler] Wrote index: ${indexPath}`);
 
+// --- 8.5. Generate Evidence Manifest (required by smoke test) ---
+const manifestPath = resolvePath(`evidence_manifest_${taskId}.json`);
+const manifestRequiredFiles = filesToIndex.map(f => path.basename(f));
+// Add healthchecks and workspace_healer by basename (smoke test mandates them)
+if (fs.existsSync(hcRoot) && !manifestRequiredFiles.includes(path.basename(hcRoot)))
+    manifestRequiredFiles.push(path.basename(hcRoot));
+if (fs.existsSync(hcPairs) && !manifestRequiredFiles.includes(path.basename(hcPairs)))
+    manifestRequiredFiles.push(path.basename(hcPairs));
+if (fs.existsSync(inputs.workspaceHealer) && !manifestRequiredFiles.includes(path.basename(inputs.workspaceHealer)))
+    manifestRequiredFiles.push(path.basename(inputs.workspaceHealer));
+
+fs.writeFileSync(manifestPath, JSON.stringify({
+    task_id: taskId,
+    mode: resolvedMode,
+    generated_at: new Date().toISOString(),
+    evidence_dir: evidenceDir,
+    required_files: manifestRequiredFiles
+}, null, 2));
+console.log(`[Assembler] Wrote manifest: ${manifestPath}`);
+
 // --- 9. Postflight (Integrate mode) ---
 if (resolvedMode === 'Integrate') {
     try {
