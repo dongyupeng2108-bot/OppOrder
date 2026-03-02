@@ -1,0 +1,15 @@
+{
+  "task_id": "260301_028",
+  "is_shallow_repo": true,
+  "base": "f4b785c26136028e13f2f4d862dfe23e5a1c7443",
+  "head": "90a5768a71a4914dcb14a3411472682241ad1634",
+  "merge_base": "f4b785c26136028e13f2f4d862dfe23e5a1c7443",
+  "scope_files": [
+    ".gitignore",
+    "rules/LATEST.json",
+    "rules/task-reports/index/error_stats.jsonl",
+    "scripts/gate_light_ci.mjs"
+  ],
+  "scope_count": 4,
+  "generated_at": "2026-03-02T07:51:06.423Z"
+}

@@ -62,6 +62,7 @@ rules/task-reports/index/runs_index.jsonl
 
 # Backup scripts (not for CI)
 scripts/gate_light_ci_0301*.mjs
+scripts/gate_light_ci_backup_*.mjs
 
 # Environment secrets — NEVER commit
 .env
