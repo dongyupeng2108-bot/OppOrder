@@ -1,0 +1,91 @@
+{
+  "task_id": "260301_031",
+  "generated_at": "2026-03-02T08:35:54.830Z",
+  "files": [
+    {
+      "name": "result_260301_031.json",
+      "size": 513,
+      "sha256_short": "e15162de"
+    },
+    {
+      "name": "run_260301_031.log",
+      "size": 11034,
+      "sha256_short": "5bb73a87"
+    },
+    {
+      "name": "notify_260301_031.txt",
+      "size": 8553,
+      "sha256_short": "bcc54da7"
+    },
+    {
+      "name": "gate_light_preview_260301_031.log",
+      "size": 3877,
+      "sha256_short": "7fadf34e"
+    },
+    {
+      "name": "dod_evidence_260301_031.txt",
+      "size": 189,
+      "sha256_short": "644a96e0"
+    },
+    {
+      "name": "git_meta_260301_031.json",
+      "size": 234,
+      "sha256_short": "8040ca70"
+    },
+    {
+      "name": "trae_report_snippet_260301_031.txt",
+      "size": 3864,
+      "sha256_short": "666c7ad5"
+    },
+    {
+      "name": "manual_verification_260301_031.json",
+      "size": 99,
+      "sha256_short": "2c2b8ea6"
+    },
+    {
+      "name": "ci_parity_260301_031.json",
+      "size": 697,
+      "sha256_short": "bc24d383"
+    },
+    {
+      "name": "preflight_attestation_260301_031.json",
+      "size": 307,
+      "sha256_short": "5bb9288c"
+    },
+    {
+      "name": "workspace_healer_260301_031.json",
+      "size": 922,
+      "sha256_short": "49ca06a0"
+    },
+    {
+      "name": "errors_260301_031.jsonl",
+      "size": 296,
+      "sha256_short": "4ebc49ce"
+    },
+    {
+      "name": "errors_summary_260301_031.txt",
+      "size": 230,
+      "sha256_short": "03f9da89"
+    },
+    {
+      "name": "open_pr_guard_260301_031.json",
+      "size": 237,
+      "sha256_short": "0830840b"
+    },
+    {
+      "name": "auto_pr_260301_031.json",
+      "size": 568,
+      "sha256_short": "e75315b1"
+    },
+    {
+      "name": "260301_031_healthcheck_53122_root.txt",
+      "size": 159,
+      "sha256_short": "9b5dde66"
+    },
+    {
+      "name": "260301_031_healthcheck_53122_pairs.txt",
+      "size": 159,
+      "sha256_short": "9b5dde66"
+    }
+  ]
+}
