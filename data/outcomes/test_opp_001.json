@@ -1,9 +1,0 @@
-{
-  "opp_id": "test_opp_001",
-  "title": "",
-  "outcome": "YES",
-  "settled_at": "2026-03-01T12:00:00Z",
-  "actual_price": 1,
-  "notes": "smoke test",
-  "recorded_at": "2026-03-01T05:36:00.022Z"
-}
