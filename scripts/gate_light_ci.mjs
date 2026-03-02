@@ -186,6 +186,7 @@ if (detectionSource === 'ARGUMENT' || detectionSource === 'BRANCH_NAME' || detec
          console.error(`  LATEST_TASK_ID: ${latestJson.task_id}`);
          console.error(`  PR_TASK_ID: ${task_id}`);
          console.error(`  ACTION: update rules/LATEST.json to PR task_id`);
+         console.error(`FIX_CMD: node -e "const fs=require('fs');fs.writeFileSync('rules/LATEST.json',JSON.stringify({task_id:'${task_id}',timestamp:new Date().toISOString().slice(0,19).replace('T',' ')},null,4)+'\\n')"`);
          process.exit(1);
     }
     console.log('[Gate Light] LATEST.json consistency verified.');
@@ -345,6 +346,7 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
              console.error(`[Gate Light] FAILED: Preflight Attestation missing in Integrate mode.`);
              console.error(`  File: ${attestationFile}`);
              console.error(`  ACTION: Run 'preflight.ps1' before gate checks.`);
+             console.error(`FIX_CMD: powershell -ExecutionPolicy Bypass -File scripts\\preflight.ps1 -TaskId ${task_id} -Mode Integrate -Header "TraeTask_${task_id}"`);
              process.exit(1);
         }
         try {
@@ -384,6 +386,7 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                 console.error(`[Gate Light] FAILED: Open PR Guard blocked execution (Evidence).`);
                 console.error(`  Blocking PRs Count: ${openPrData.open_prs_blocking_count}`);
                 console.error(`  ACTION: Close unrelated open PRs before running Integrate.`);
+                console.error(`FIX_CMD: gh pr list --state open --json number,title,headRefName`);
                 console.log('FAIL_ROOT_CAUSE_BLOCK');
                 console.log('ERROR_CLASS=OPEN_PR_GUARD_BLOCKED');
                 console.log('ROOT_CAUSE_HINT=Open PR Guard blocked execution due to existing Open PRs.');
@@ -477,6 +480,7 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
             if (healerData.result !== 'PASS') {
                 console.error(`[Gate Light] FAILED: Workspace Healer result is ${healerData.result}`);
                 console.error(`  Reason: ${healerData.reason || 'Unknown'}`);
+                console.error(`FIX_CMD: git status && git add -A && git commit -m "chore: clean workspace for ${task_id}"`);
                 process.exit(1);
             }
             
@@ -488,6 +492,7 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                 console.error(`[Gate Light] FAILED: Workspace Healer detected dirty state AFTER clean.`);
                 console.error(`  Tracked Changed: ${tracked} (Expected: 0)`);
                 console.error(`  Untracked: ${untracked} (Expected: 0)`);
+                console.error(`FIX_CMD: git status && git add -A && git commit -m "chore: clean workspace for ${task_id}"`);
                 process.exit(1);
             }
             
@@ -506,6 +511,7 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         if (!fs.existsSync(autoPrFile)) {
             console.error(`[Gate Light] FAILED: AutoPR evidence missing: ${autoPrFile}`);
             console.error(`  ACTION: Ensure 'run_task.ps1' Step 9 (AutoPR Loop) executed. AutoPR is MANDATORY for Integrate mode.`);
+            console.error(`FIX_CMD: .\\scripts\\run_task.ps1 -TaskId ${task_id} -Mode Integrate -Header "TraeTask_${task_id}"`);
             process.exit(1);
         }
         
@@ -565,6 +571,7 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         console.error(`[Gate Light] FAILED: Missing canonical documents in rules/rules/:`);
         missingDocs.forEach(d => console.error(`  - ${d}`));
         console.error(`Fix Suggestion: Move these documents to rules/rules/ and update references.`);
+        console.error(`FIX_CMD: git checkout origin/main -- ${missingDocs.join(' ')}`);
         process.exit(1);
     }
 
@@ -724,6 +731,7 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
     } catch (e) {
         console.error(`[Gate Light] Healthcheck Verification FAILED: ${e.message}`);
         console.error('Fix Suggestion: Use `curl.exe -s -i ... --output <path>` to generate readable ASCII text evidence.');
+        console.error(`FIX_CMD: curl.exe -s -i http://localhost:53122/ --output ${path.join(result_dir, task_id + '_healthcheck_53122_root.txt')} && curl.exe -s -i http://localhost:53122/pairs --output ${path.join(result_dir, task_id + '_healthcheck_53122_pairs.txt')}`);
         process.exit(1);
     }
     // -------------------------------------------------------
@@ -1249,6 +1257,7 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                 console.error(`[Gate Light] FAILED: NoHistoricalEvidenceTouch violation. Found modifications to historical evidence:`);
                 forbiddenModifications.forEach(m => console.error(`  - ${m}`));
                 console.error(`Fix Suggestion: Use 'git restore --source=origin/main -- <path>' to revert, or ensure new files contain '${task_id}'.`);
+                console.error(`FIX_CMD: git restore --source=origin/main -- ${forbiddenModifications.map(m => m.split(' ').slice(1).join(' ')).join(' ')}`);
                 process.exit(1);
             }
             console.log('[Gate Light] NoHistoricalEvidenceTouch verified.');
@@ -1353,12 +1362,13 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                              console.error(`Changed code files:`);
                             diffFiles.filter(f => {
                                const n = f.replace(/\\/g, '/');
-                               return !n.startsWith('rules/task-reports/') && 
-                                      !n.startsWith('rules/rules/') && 
+                               return !n.startsWith('rules/task-reports/') &&
+                                      !n.startsWith('rules/rules/') &&
                                       !n.startsWith('rules/reports/') &&
                                       n !== 'rules/LATEST.json';
                             }).forEach(f => console.error(`  - ${f}`));
                              console.error(`Fix Suggestion: Re-run Integrate/Build Snippet to align with latest code.`);
+                             console.error(`FIX_CMD: .\\scripts\\run_task.ps1 -TaskId ${task_id} -Mode Integrate -Header "TraeTask_${task_id}"`);
                              process.exit(1);
                          }
                      } else {
@@ -1626,6 +1636,7 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
             console.log('FAIL_ROOT_CAUSE_BLOCK');
             console.log('ERROR_CLASS=ERROR_STATS_INDEX_MISSING');
             console.log('ROOT_CAUSE_HINT=Global error_stats.jsonl must exist and be appended to.');
+            console.error(`FIX_CMD: node scripts/error_stats_append.mjs --task_id ${task_id} --run_id ${argRunId} --commit $(git rev-parse HEAD) --mode ${argMode} --source_errors ${result_dir}/errors_${task_id}.jsonl`);
             process.exit(1);
         }
 
