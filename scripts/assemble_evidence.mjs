@@ -434,6 +434,8 @@ console.log(`[Assembler] Wrote index: ${indexPath}`);
 // --- 8.5. Generate Evidence Manifest (required by smoke test) ---
 const manifestPath = resolvePath(`evidence_manifest_${taskId}.json`);
 const manifestRequiredFiles = filesToIndex.map(f => path.basename(f));
+// Add deliverables_index itself (written above, smoke test mandates it)
+manifestRequiredFiles.push(`deliverables_index_${taskId}.json`);
 // Add healthchecks and workspace_healer by basename (smoke test mandates them)
 if (fs.existsSync(hcRoot) && !manifestRequiredFiles.includes(path.basename(hcRoot)))
     manifestRequiredFiles.push(path.basename(hcRoot));
