@@ -681,11 +681,12 @@ try {
     Measure-Step -Key "preflight" -Action { Invoke-Step -Name "Preflight" -Cmd $PreflightCmd }
 } catch {
     Write-Host ""
-    Write-Host "[修复指引] 失败原因：Preflight 检查未通过（工作区不干净或 Header 无效）" -ForegroundColor Yellow
-    Write-Host "[修复指引] 下一步命令：" -ForegroundColor Yellow
-    Write-Host "  git status" -ForegroundColor White
-    Write-Host "  git restore ." -ForegroundColor White
-    Write-Host "  git clean -fd" -ForegroundColor White
+    Write-Host "=== FIX_GUIDE: Preflight Failed ===" -ForegroundColor Yellow
+    Write-Host "CAUSE: Workspace dirty or Header invalid" -ForegroundColor Yellow
+    Write-Host "FIX_CMD: git status" -ForegroundColor White
+    Write-Host "FIX_CMD: git restore ." -ForegroundColor White
+    Write-Host "FIX_CMD: git clean -fd" -ForegroundColor White
+    Write-Host "===================================" -ForegroundColor Yellow
     Write-Host ""
     throw $_
 }
@@ -739,10 +740,11 @@ if ($Mode -eq "Dev") {
         Write-Host ""
         $NextNum = [int]($TaskId.Split('_')[1]) + 1
         $NextTaskId = "$($TaskId.Split('_')[0])_$($NextNum.ToString('000'))"
-        Write-Host "[修复指引] 失败原因：Dev 模式只允许 2 次执行，预算已用尽" -ForegroundColor Yellow
-        Write-Host "[修复指引] 下一步命令：" -ForegroundColor Yellow
-        Write-Host "  # 使用新 Task ID: $NextTaskId" -ForegroundColor White
-        Write-Host "  .\scripts\run_task.ps1 -TaskId $NextTaskId -Mode Dev -Header 'TraeTask_$NextTaskId'" -ForegroundColor White
+        Write-Host "=== FIX_GUIDE: Dev Budget Exceeded ===" -ForegroundColor Yellow
+        Write-Host "CAUSE: Dev mode allows max 2 attempts, budget exhausted" -ForegroundColor Yellow
+        Write-Host "NEXT_TASK_ID: $NextTaskId" -ForegroundColor White
+        Write-Host "FIX_CMD: .\scripts\run_task.ps1 -TaskId $NextTaskId -Mode Dev -Header 'TraeTask_$NextTaskId'" -ForegroundColor White
+        Write-Host "========================================" -ForegroundColor Yellow
         Write-Host ""
         $Budget | ConvertTo-Json | Set-Content $BudgetFile
         Stop-RunTask -Message "FAIL_BUDGET_EXCEEDED_DEV" -ErrorClass "FAIL_BUDGET_EXCEEDED_DEV" -FailReason "DEV_FAIL_BUDGET_EXCEEDED"
@@ -756,11 +758,13 @@ if ($Mode -eq "Dev") {
         Write-Host ""
         $NextNum = [int]($TaskId.Split('_')[1]) + 1
         $NextTaskId = "$($TaskId.Split('_')[0])_$($NextNum.ToString('000'))"
-        Write-Host "[修复指引] 失败原因：Integrate 模式只允许 1 次执行，预算已用尽" -ForegroundColor Yellow
-        Write-Host "[修复指引] 下一步命令：" -ForegroundColor Yellow
-        Write-Host "  git checkout main && git pull origin main" -ForegroundColor White
-        Write-Host "  # 使用新 Task ID: $NextTaskId" -ForegroundColor White
-        Write-Host "  .\scripts\run_task.ps1 -TaskId $NextTaskId -Mode Integrate -Header 'TraeTask_$NextTaskId'" -ForegroundColor White
+        Write-Host "=== FIX_GUIDE: Integrate Budget Exceeded ===" -ForegroundColor Yellow
+        Write-Host "CAUSE: Integrate mode allows max 1 attempt, budget exhausted" -ForegroundColor Yellow
+        Write-Host "NEXT_TASK_ID: $NextTaskId" -ForegroundColor White
+        Write-Host "FIX_CMD: git checkout main" -ForegroundColor White
+        Write-Host "FIX_CMD: git pull origin main" -ForegroundColor White
+        Write-Host "FIX_CMD: .\scripts\run_task.ps1 -TaskId $NextTaskId -Mode Integrate -Header 'TraeTask_$NextTaskId'" -ForegroundColor White
+        Write-Host "==============================================" -ForegroundColor Yellow
         Write-Host ""
         $Budget | ConvertTo-Json | Set-Content $BudgetFile
         Stop-RunTask -Message "FAIL_BUDGET_EXCEEDED_INTEGRATE" -ErrorClass "FAIL_BUDGET_EXCEEDED_INTEGRATE" -FailReason "INTEGRATE_FAIL_BUDGET_EXCEEDED"
@@ -863,13 +867,14 @@ function Run-Evidence-Gen-And-Preview {
         Measure-Step -Key "pass1_preview" -Action { Invoke-Step -Name "Pass 1 - Gate Light Preview" -Cmd $Pass1Cmd -RedirectTo $PreviewLog }
     } catch {
         Write-Host ""
-        Write-Host "[修复指引] 失败原因：Gate Light CI 检查未通过" -ForegroundColor Yellow
-        Write-Host "[修复指引] 查看详细日志：" -ForegroundColor Yellow
-        Write-Host "  cat $EvidenceDir\gate_light_preview_$TaskId.log | Select-String 'FAILED|FIX_CMD'" -ForegroundColor White
-        Write-Host "[修复指引] 常见修复：" -ForegroundColor Yellow
-        Write-Host "  1. 缺少证据文件 → node rules/task-reports/2026-03/generate_evidence_$TaskId.mjs" -ForegroundColor White
-        Write-Host "  2. LATEST.json 不同步 → 更新 rules/LATEST.json 的 task_id 为 $TaskId" -ForegroundColor White
-        Write-Host "  3. Healthcheck 失败 → 确认 mock_server_53122 正在运行" -ForegroundColor White
+        Write-Host "=== FIX_GUIDE: Gate Light CI Failed ===" -ForegroundColor Yellow
+        Write-Host "CAUSE: Gate Light CI check did not pass" -ForegroundColor Yellow
+        Write-Host "CHECK_LOG: Select-String -Path '$EvidenceDir\gate_light_preview_$TaskId.log' -Pattern 'FAILED|FIX_CMD'" -ForegroundColor White
+        Write-Host "COMMON_FIXES:" -ForegroundColor Yellow
+        Write-Host "  1. Missing evidence files: node rules/task-reports/2026-03/generate_evidence_$($TaskId).mjs" -ForegroundColor White
+        Write-Host "  2. LATEST.json out of sync: update rules/LATEST.json task_id to $TaskId" -ForegroundColor White
+        Write-Host "  3. Healthcheck fail: ensure mock_server_53122 is running" -ForegroundColor White
+        Write-Host "========================================" -ForegroundColor Yellow
         Write-Host ""
         throw $_
     }
@@ -949,11 +954,12 @@ if ($Mode -eq "Integrate") {
                 if ($LASTEXITCODE -ne 0) { throw "AutoPR Pre-Commit failed with exit code $LASTEXITCODE" }
             } catch {
                 Write-Host ""
-                Write-Host "[修复指引] 失败原因：AutoPR Pre-Commit 失败（safe_commit.ps1 返回非零）" -ForegroundColor Yellow
-                Write-Host "[修复指引] 下一步命令：" -ForegroundColor Yellow
-                Write-Host "  gh auth status" -ForegroundColor White
-                Write-Host "  git status" -ForegroundColor White
-                Write-Host "  gh pr create --title 'TraeTask_$TaskId' --body 'Manual PR'" -ForegroundColor White
+                Write-Host "=== FIX_GUIDE: AutoPR Pre-Commit Failed ===" -ForegroundColor Yellow
+                Write-Host "CAUSE: safe_commit.ps1 returned non-zero exit code" -ForegroundColor Yellow
+                Write-Host "FIX_CMD: gh auth status" -ForegroundColor White
+                Write-Host "FIX_CMD: git status" -ForegroundColor White
+                Write-Host "FIX_CMD: gh pr create --title 'TraeTask_$TaskId' --body 'Manual PR'" -ForegroundColor White
+                Write-Host "============================================" -ForegroundColor Yellow
                 Write-Host ""
                 Stop-RunTask -Message "AutoPR Pre-Commit Failed" -ErrorClass "AUTOPR_PRECOMMIT_FAIL" -FailReason "SAFE_COMMIT_ARG_SPLIT"
             }
@@ -1045,11 +1051,12 @@ if ($Mode -eq "Integrate") {
             } elseif ($ExitCode -eq 1) {
                 Write-Error "[AutoPR] CI Watch failed with Infra/Critical Error (Exit Code 1)."
                 Write-Host ""
-                Write-Host "[修复指引] 失败原因：AutoPR CI Watch 基础设施错误" -ForegroundColor Yellow
-                Write-Host "[修复指引] 下一步命令：" -ForegroundColor Yellow
-                Write-Host "  gh auth status" -ForegroundColor White
-                Write-Host "  gh pr list --state open --head $BranchName" -ForegroundColor White
-                Write-Host "  gh pr create --title 'TraeTask_$TaskId' --body 'Manual PR after CI infra fail'" -ForegroundColor White
+                Write-Host "=== FIX_GUIDE: AutoPR CI Watch Infra Error ===" -ForegroundColor Yellow
+                Write-Host "CAUSE: CI Watch infrastructure or critical error" -ForegroundColor Yellow
+                Write-Host "FIX_CMD: gh auth status" -ForegroundColor White
+                Write-Host "FIX_CMD: gh pr list --state open --head $BranchName" -ForegroundColor White
+                Write-Host "FIX_CMD: gh pr create --title 'TraeTask_$TaskId' --body 'Manual PR after CI infra fail'" -ForegroundColor White
+                Write-Host "===============================================" -ForegroundColor Yellow
                 Write-Host ""
                 $AutoPrInfo = Get-AutoPrInfo -EvidenceDir $EvidenceDir -TaskId $TaskId
                 $ErrorClass = if ($AutoPrInfo.error_class) { $AutoPrInfo.error_class } else { "AUTO_PR_INFRA_FAIL" }
