@@ -103,7 +103,6 @@ Absolute prohibition (requires Owner authorization):
 - `scripts/safe_commit.ps1`
 - `scripts/safe_push.ps1`
 - `scripts/postflight_validate_envelope.mjs`
-- `scripts/gate_light_ci.mjs`
 - `PROTECTED.md`
 
 Require PR justification:
