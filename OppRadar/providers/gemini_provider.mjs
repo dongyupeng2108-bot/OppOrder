@@ -14,6 +14,40 @@
  */
 
 import crypto from 'crypto';
+import { readFileSync, existsSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
+import { fetch as undiciFetch, ProxyAgent } from 'undici';
+
+// ── .env loader (mirrors live_provider.mjs) ─────────────────────────────────
+const __dir = dirname(fileURLToPath(import.meta.url));
+const ENV_PATH = resolve(__dir, '..', '..', '.env');
+if (existsSync(ENV_PATH)) {
+  try {
+    const lines = readFileSync(ENV_PATH, 'utf8').split('\n');
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith('#')) continue;
+      const eqIdx = trimmed.indexOf('=');
+      if (eqIdx < 1) continue;
+      const key = trimmed.slice(0, eqIdx).trim();
+      const val = trimmed.slice(eqIdx + 1).trim();
+      if (key && val && !process.env[key]) {
+        process.env[key] = val;
+      }
+    }
+  } catch (_) { /* non-fatal */ }
+}
+
+// ── Proxy-aware fetch ────────────────────────────────────────────────────────
+const PROXY_URL = process.env.HTTPS_PROXY || process.env.https_proxy || '';
+const proxyDispatcher = PROXY_URL ? new ProxyAgent(PROXY_URL) : undefined;
+if (PROXY_URL) console.log(`[gemini_provider] Using proxy: ${PROXY_URL}`);
+
+function pfetch(url, opts = {}) {
+  if (proxyDispatcher) opts.dispatcher = proxyDispatcher;
+  return undiciFetch(url, opts);
+}
 
 const GEMINI_MODEL   = 'gemini-2.0-flash';
 const GEMINI_TIMEOUT = 60_000; // ms
@@ -72,7 +106,7 @@ export async function callGemini({ prompt, model: _model } = {}) {
 
   let rawText = null;
   try {
-    const res = await globalThis.fetch(
+    const res = await pfetch(
       `${GEMINI_ENDPOINT}?key=${encodeURIComponent(apiKey)}`,
       {
         method:  'POST',
