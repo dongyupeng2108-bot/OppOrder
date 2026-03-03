@@ -3,7 +3,7 @@
   "updated_at": "2026-03-04",
   "profiles": {
     "SCAN": {
-      "model_key": "MODEL_SCAN",
+      "model_key": "deepseek-chat",
       "max_tokens": 1000,
       "claims_min": 0,
       "claims_max": 3,
@@ -12,16 +12,16 @@
       "note": "批量扫描档，低成本，允许claims为空"
     },
     "CORE": {
-      "model_key": "MODEL_CORE",
-      "max_tokens": 3000,
+      "model_key": "deepseek-reasoner",
+      "max_tokens": 4096,
       "claims_min": 3,
       "claims_max": 5,
       "temperature": 0,
       "snapshot_type": "deep",
-      "note": "深挖档，高质量，claims必须>=3条"
+      "note": "深挖档，高质量，claims必须>=3条。deepseek-reasoner的reasoning_tokens与content共享max_tokens预算，1000不够用，实测需4096"
     }
   },
   "b5_selection_rule": "same opp_id有DEEP快照则优先用DEEP，否则用DRAFT",
   "deep_must_ref_draft": true,
-  "algo_note": "MODEL_SCAN/MODEL_CORE为占位符，待A3 Bakeoff后填入具体模型名"
+  "algo_note": "A3 Bakeoff结果：SCAN=deepseek-chat(V3), CORE=deepseek-reasoner(R1). V3扫描速度快4.3x、token少65%；R1深挖质量高但需4096 max_tokens预算"
 }

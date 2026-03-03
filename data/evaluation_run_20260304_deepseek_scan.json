@@ -1,0 +1,1350 @@
+{
+  "run_id": "20260304_deepseek_scan",
+  "model": "deepseek-reasoner",
+  "profile": "SCAN",
+  "generated_at": "2026-03-03T20:27:34.141Z",
+  "results": [
+    {
+      "market_id": "0x28a1883267fbae3ecb536c0476e3477b744428e9ae50a106d1702cade00794c1",
+      "input": {
+        "question": "Will F1 win Best Picture at the 98th Academy Awards?",
+        "categories": [
+          "Tech",
+          "Culture"
+        ],
+        "end_date": "2026-03-15T00:00:00.000Z",
+        "volume_24h": 106837.47
+      },
+      "output": {
+        "p_range": {
+          "low": 0,
+          "mid": 0.05,
+          "high": 0.2
+        },
+        "confidence": "Low",
+        "claims": [
+          {
+            "claim_text": "F1 is a film eligible for the 98th Academy Awards.",
+            "basis_type": "UNVERIFIED_FACT",
+            "claim_impact": "MAJOR"
+          },
+          {
+            "claim_text": "The 98th Academy Awards will occur as scheduled in 2026.",
+            "basis_type": "PRIOR",
+            "claim_impact": "MINOR"
+          }
+        ],
+        "risk_triggers": [
+          "Unclear definition of 'F1'",
+          "Film release delays",
+          "Changes in Academy voting rules"
+        ],
+        "rules_text": "This market resolves based on the official outcome of the Best Picture category at the 98th Academy Awards. If a film titled 'F1' wins the award, it resolves to 'Yes'; otherwise 'No'. Resolution will occur after the ceremony using authoritative sources like the Academy's announcement, ensuring clarity and reliability.",
+        "rules_unknown": false,
+        "bullshit_score": 30,
+        "why_1_liner": "Uncertainty due to unknown film 'F1' and competitive Oscar category; low estimated probability.",
+        "mispricing_type": "THIN"
+      },
+      "system_computed": {
+        "estimator_trust_score": 70,
+        "estimator_trust_level": "GREEN",
+        "range_width": 0.2,
+        "p_valid": true,
+        "bullshit_score": 30,
+        "rules_penalty": 0,
+        "rules_unknown": false
+      },
+      "latency_ms": 59306,
+      "tokens_used": 2456
+    },
+    {
+      "market_id": "0xe0266da952c7be95f42d76770972075b57ac3823f876a4967b9a696bf7f77cb3",
+      "input": {
+        "question": "Will Train Dreams win Best Picture at the 98th Academy Awards?",
+        "categories": [
+          "Tech",
+          "Culture"
+        ],
+        "end_date": "2026-03-15T00:00:00.000Z",
+        "volume_24h": 98892.75
+      },
+      "output": {
+        "p_range": {
+          "low": 0,
+          "mid": 0.05,
+          "high": 0.2
+        },
+        "confidence": "Low",
+        "claims": [
+          {
+            "claim_text": "Train Dreams has not been publicly announced as a film competing in the 98th Academy Awards.",
+            "basis_type": "UNVERIFIED_FACT",
+            "claim_impact": "MAJOR"
+          },
+          {
+            "claim_text": "Best Picture winners are typically selected from a pool of 8-10 nominees, with each having a low base probability.",
+            "basis_type": "PRIOR",
+            "claim_impact": "MINOR"
+          }
+        ],
+        "risk_triggers": [
+          "Uncertainty about film production and release",
+          "Potential changes in Oscar eligibility or voting"
+        ],
+        "rules_text": "This market will settle based on the official result of the 98th Academy Awards for the Best Picture category. If 'Train Dreams' is announced as the winner, the market resolves to 'Yes'; otherwise, it resolves to 'No'. The settlement source should be the Academy's official announcement or a reliable news outlet confirming the outcome. Disputes may arise if the film name is ambiguous or if there are multiple films with similar titles.",
+        "rules_unknown": false,
+        "bullshit_score": 40,
+        "why_1_liner": "Low estimated probability due to lack of confirmed information about the film and high competitiveness of the Oscars.",
+        "mispricing_type": "THIN"
+      },
+      "system_computed": {
+        "estimator_trust_score": 60,
+        "estimator_trust_level": "YELLOW",
+        "range_width": 0.2,
+        "p_valid": true,
+        "bullshit_score": 40,
+        "rules_penalty": 0,
+        "rules_unknown": false
+      },
+      "latency_ms": 51987,
+      "tokens_used": 2154
+    },
+    {
+      "market_id": "0x7054a1f29cbe11e526e47da0ebe9d84c4be6c8231279dde76229f8425a94a995",
+      "input": {
+        "question": "Will Michael B. Jordan win Best Actor at the 98th Academy Awards?",
+        "categories": [
+          "Tech",
+          "Culture"
+        ],
+        "end_date": "2026-03-15T00:00:00.000Z",
+        "volume_24h": 77258.18
+      },
+      "output": {
+        "p_range": {
+          "low": 0.05,
+          "mid": 0.1,
+          "high": 0.2
+        },
+        "confidence": "Med",
+        "claims": [
+          {
+            "claim_text": "Michael B. Jordan has never won an Oscar Best Actor award.",
+            "basis_type": "PRIOR",
+            "claim_impact": "MAJOR"
+          },
+          {
+            "claim_text": "The nominees for the 98th Academy Awards are not yet announced as of 2025.",
+            "basis_type": "INPUT",
+            "claim_impact": "MINOR"
+          }
+        ],
+        "risk_triggers": [
+          "Uncertainty about film releases and nominations",
+          "Subjectivity of award decisions"
+        ],
+        "rules_text": "This market resolves based on whether Michael B. Jordan wins the Best Actor award at the 98th Academy Awards. The outcome will be determined by official announcements from the Academy of Motion Picture Arts and Sciences or reliable news sources confirming the result. The market will settle to YES if he wins, NO otherwise.",
+        "rules_unknown": false,
+        "bullshit_score": 0,
+        "why_1_liner": "Probability is low due to high competition and unknown nominees, but Michael B. Jordan's talent gives some chance.",
+        "mispricing_type": "UNKNOWN"
+      },
+      "system_computed": {
+        "estimator_trust_score": 100,
+        "estimator_trust_level": "GREEN",
+        "range_width": 0.15,
+        "p_valid": true,
+        "bullshit_score": 0,
+        "rules_penalty": 0,
+        "rules_unknown": false
+      },
+      "latency_ms": 60768,
+      "tokens_used": 2472
+    },
+    {
+      "market_id": "0x4d594c1480eab1db09f6c04c089f92d0a45844bdfae32a6f3f8391f99a1ea081",
+      "input": {
+        "question": "Will Frankenstein win Best Picture at the 98th Academy Awards?",
+        "categories": [
+          "Tech",
+          "Culture"
+        ],
+        "end_date": "2026-03-15T00:00:00.000Z",
+        "volume_24h": 66159.63
+      },
+      "output": {
+        "p_range": {
+          "low": 0.05,
+          "mid": 0.15,
+          "high": 0.3
+        },
+        "confidence": "Med",
+        "claims": [
+          {
+            "claim_text": "该市场24小时成交量达到$66,159.63，表明存在一定的市场关注度和信息流，可能反映了部分参与者对新改编或参选影片的早期预期。",
+            "basis_type": "INPUT",
+            "claim_impact": "MAJOR"
+          },
+          {
+            "claim_text": "基于历史模式，奥斯卡最佳影片奖更青睐于具有重大社会议题、艺术创新或奖项季期间获得广泛影评人支持的影片，而《弗兰肯斯坦》改编作品，除非有突破性表现，通常被视为该奖项的次要竞争者。",
+            "basis_type": "PRIOR",
+            "claim_impact": "MAJOR"
+          },
+          {
+            "claim_text": "市场问题假设一部名为《弗兰肯斯坦》的影片将参与第98届奥斯卡奖角逐，但目前（2025年中期）尚无该届具体参赛影片或提名名单的确切信息，影片的制作、发行及参选状态高度不确定。",
+            "basis_type": "UNVERIFIED_FACT",
+            "claim_impact": "MINOR"
+          }
+        ],
+        "risk_triggers": [
+          "影片可能尚未制作或确定不会参赛",
+          "奥斯卡评委口味及竞争格局在未来一年可能变化"
+        ],
+        "rules_text": "该市场将在第98届奥斯卡金像奖颁奖典礼结束后，依据奥斯卡官方公布的获奖结果进行结算。若名为《弗兰肯斯坦》的影片（通常指其主要官方标题为此名的真人电影）赢得‘最佳影片’奖项，则支付1；否则支付0。结算应基于奥斯卡官网（oscars.org）或公认的权威媒体公告。市场到期时间（2026-03-15）设定在颁奖典礼之后，为结果确认和结算提供了时间窗口。",
+        "rules_unknown": false,
+        "bullshit_score": 20,
+        "why_1_liner": "市场交易活跃反映早期预期，但《弗兰肯斯坦》作为类型片在奥斯卡最佳影片竞争中历史胜率极低，且目前（2025年中）其具体参赛项目状态不明，概率偏低。",
+        "mispricing_type": "SLOW"
+      },
+      "system_computed": {
+        "estimator_trust_score": 80,
+        "estimator_trust_level": "GREEN",
+        "range_width": 0.25,
+        "p_valid": true,
+        "bullshit_score": 20,
+        "rules_penalty": 0,
+        "rules_unknown": false
+      },
+      "latency_ms": 35144,
+      "tokens_used": 1479
+    },
+    {
+      "market_id": "0xf6447769c6c2a6931470176868cfa58162dd72f1028d7df7f2dcc0f260c0668c",
+      "input": {
+        "question": "UFC 326: Charles Oliveira vs. Max Holloway (Lightweight, Main Card)",
+        "categories": [
+          "Tech"
+        ],
+        "end_date": "2026-03-08T04:59:59.999Z",
+        "volume_24h": 62552.83
+      },
+      "output": {
+        "p_range": {
+          "low": 0.4,
+          "mid": 0.65,
+          "high": 0.85
+        },
+        "confidence": "Med",
+        "claims": [
+          {
+            "claim_text": "Charles Oliveira has a significant grappling advantage in the lightweight division.",
+            "basis_type": "PRIOR",
+            "claim_impact": "MAJOR"
+          },
+          {
+            "claim_text": "Max Holloway is moving up from featherweight, which may reduce his power and endurance.",
+            "basis_type": "PRIOR",
+            "claim_impact": "MINOR"
+          },
+          {
+            "claim_text": "High 24h volume of $62,552.83 indicates active market participation and liquidity.",
+            "basis_type": "INPUT",
+            "claim_impact": "MINOR"
+          }
+        ],
+        "risk_triggers": [
+          "Fighter injury or withdrawal before the fight",
+          "Event postponement or cancellation"
+        ],
+        "rules_text": "该市场结算基于UFC 326主赛中Charles Oliveira与Max Holloway轻量级比赛的官方结果。若Oliveira被UFC官方宣布为胜者，则答案为'是'；若Holloway获胜、比赛平局、无结果或取消，则答案为'否'。结算将遵循预测平台规则和赛事组织者的最终裁决。",
+        "rules_unknown": false,
+        "bullshit_score": 0,
+        "why_1_liner": "Oliveira在轻量级的地面优势和Holloway升级后的适应性问题使其胜率更高。",
+        "mispricing_type": "UNKNOWN"
+      },
+      "system_computed": {
+        "estimator_trust_score": 100,
+        "estimator_trust_level": "GREEN",
+        "range_width": 0.45,
+        "p_valid": true,
+        "bullshit_score": 0,
+        "rules_penalty": 0,
+        "rules_unknown": false
+      },
+      "latency_ms": 56731,
+      "tokens_used": 2289
+    },
+    {
+      "market_id": "0x25aa90b3cd98305e849189b4e8b770fc77fe89bccb7cf9656468414e01145d38",
+      "input": {
+        "question": "Will the Fed increase interest rates by 25+ bps after the March 2026 meeting?",
+        "categories": [
+          "Politics",
+          "Economics"
+        ],
+        "end_date": "2026-03-18T00:00:00.000Z",
+        "volume_24h": 2111066.52
+      },
+      "output": {
+        "p_range": {
+          "low": 0.2,
+          "mid": 0.3,
+          "high": 0.4
+        },
+        "confidence": "Med",
+        "claims": [
+          {
+            "claim_text": "当前（2025年）的通胀和经济放缓趋势使得美联储到2026年3月更可能处于降息周期，而非加息周期。",
+            "basis_type": "PRIOR",
+            "claim_impact": "MAJOR"
+          },
+          {
+            "claim_text": "市场成交量巨大表明价格发现活跃，但到期时间遥远，历史先例（如点阵图预测）的长期准确性有限。",
+            "basis_type": "INPUT",
+            "claim_impact": "MINOR"
+          }
+        ],
+        "risk_triggers": [
+          "通胀在2025-26年意外且持续地加速",
+          "美国经济表现远超当前预期",
+          "美联储因政治或财政压力被迫维持高利率"
+        ],
+        "rules_text": "该市场结算应基于美联储在2026年3月FOMC会议后官方宣布的利率决定。\"25+ bps\"意味着联邦基金利率目标上限较会议前水平上调至少0.25个百分点。结算将依据美联储、FOMC声明或可信的官方新闻源（如路透社、彭博社）的确认。如果会议后未立即宣布，则以会议后首个官方利率变动为准。",
+        "rules_unknown": false,
+        "bullshit_score": 15,
+        "why_1_liner": "当前经济周期和远期利率期货定价均暗示2026年3月加息概率较低，但遥远的预测期限和潜在的通胀反复带来显著不确定性。",
+        "mispricing_type": "SLOW"
+      },
+      "system_computed": {
+        "estimator_trust_score": 85,
+        "estimator_trust_level": "GREEN",
+        "range_width": 0.2,
+        "p_valid": true,
+        "bullshit_score": 15,
+        "rules_penalty": 0,
+        "rules_unknown": false
+      },
+      "latency_ms": 30628,
+      "tokens_used": 1386
+    },
+    {
+      "market_id": "0xdeb615a52cd114e5aa27d8344ae506a72bea81f6ed13f5915f050b615a193c20",
+      "input": {
+        "question": "Will the Fed decrease interest rates by 50+ bps after the March 2026 meeting?",
+        "categories": [
+          "Politics",
+          "Economics"
+        ],
+        "end_date": "2026-03-18T00:00:00.000Z",
+        "volume_24h": 1407284.57
+      },
+      "output": {
+        "p_range": {
+          "low": 0.1,
+          "mid": 0.25,
+          "high": 0.4
+        },
+        "confidence": "Med",
+        "claims": [
+          {
+            "claim_text": "美联储当前维持高利率以抑制通胀，但经济预测显示2026年可能面临放缓，增加降息可能性。",
+            "basis_type": "PRIOR",
+            "claim_impact": "MAJOR"
+          }
+        ],
+        "risk_triggers": [
+          "意外通胀反弹",
+          "经济衰退提前到来",
+          "地缘政治冲击"
+        ],
+        "rules_text": "该市场结算将基于美联储在2026年3月会议后官方公布的利率变化。若会议后宣布的利率较前次会议下降50个基点或更多（即0.5%或以上），则市场结算为'是'（价值1）；否则为'否'（价值0）。结算数据应来自权威来源如美联储声明或主流财经媒体。",
+        "rules_unknown": false,
+        "bullshit_score": 0,
+        "why_1_liner": "基于美联储渐进式政策历史及当前经济周期，2026年3月前大幅降息概率中等偏低，但不确定性高。",
+        "mispricing_type": "SLOW"
+      },
+      "system_computed": {
+        "estimator_trust_score": 100,
+        "estimator_trust_level": "GREEN",
+        "range_width": 0.3,
+        "p_valid": true,
+        "bullshit_score": 0,
+        "rules_penalty": 0,
+        "rules_unknown": false
+      },
+      "latency_ms": 60419,
+      "tokens_used": 2429
+    },
+    {
+      "market_id": "0x257b18205f908aef01ef2d1d50e6fea7d29cf5486fe04031d8b101394476faed",
+      "input": {
+        "question": "Will there be no change in Fed interest rates after the March 2026 meeting?",
+        "categories": [
+          "Politics",
+          "Economics"
+        ],
+        "end_date": "2026-03-18T00:00:00.000Z",
+        "volume_24h": 693283.9
+      },
+      "output": {
+        "p_range": {
+          "low": 0.4,
+          "mid": 0.5,
+          "high": 0.6
+        },
+        "confidence": "Med",
+        "claims": [
+          {
+            "claim_text": "美联储利率决策主要基于通胀和失业率数据，到2026年这些指标可能趋于稳定。",
+            "basis_type": "PRIOR",
+            "claim_impact": "MAJOR"
+          },
+          {
+            "claim_text": "2026年3月会议的具体经济状况未知，增加了预测不确定性。",
+            "basis_type": "UNVERIFIED_FACT",
+            "claim_impact": "MINOR"
+          }
+        ],
+        "risk_triggers": [
+          "经济数据意外变化",
+          "全球事件影响美联储决策"
+        ],
+        "rules_text": "该市场结算将基于美联储在2026年3月会议后官方公布的利率决定。如果利率与会议前相比没有变化，则市场结算为YES（1）；否则为NO（0）。结算应依赖美联储声明或权威新闻来源的确认，以确保客观性和准确性。",
+        "rules_unknown": false,
+        "bullshit_score": 0,
+        "why_1_liner": "远期利率预测不确定性高，但基于历史模式，美联储在无重大经济冲击时倾向于维持利率稳定。",
+        "mispricing_type": "THIN"
+      },
+      "system_computed": {
+        "estimator_trust_score": 100,
+        "estimator_trust_level": "GREEN",
+        "range_width": 0.2,
+        "p_valid": true,
+        "bullshit_score": 0,
+        "rules_penalty": 0,
+        "rules_unknown": false
+      },
+      "latency_ms": 49234,
+      "tokens_used": 2065
+    },
+    {
+      "market_id": "0xd19d790ae7e1779d7b3c80dbd3c60caf680dcee0830cc2baabc69eb83222f45e",
+      "input": {
+        "question": "Will Elon Musk post 220-239 tweets from February 24 to March 3, 2026?",
+        "categories": [
+          "Politics",
+          "Culture"
+        ],
+        "end_date": "2026-03-03T17:00:00.000Z",
+        "volume_24h": 659398.51
+      },
+      "output": {
+        "p_range": {
+          "low": 0.1,
+          "mid": 0.3,
+          "high": 0.6
+        },
+        "confidence": "Low",
+        "claims": [
+          {
+            "claim_text": "Elon Musk's historical tweet volume rarely reaches 220-239 tweets in an 8-day period.",
+            "basis_type": "PRIOR",
+            "claim_impact": "MAJOR"
+          },
+          {
+            "claim_text": "The prediction timeframe is far in the future (2026), adding significant uncertainty.",
+            "basis_type": "INPUT",
+            "claim_impact": "MINOR"
+          }
+        ],
+        "risk_triggers": [
+          "Elon Musk's unpredictable tweeting behavior"
+        ],
+        "rules_text": "该市场将根据Elon Musk在2026年2月24日至3月3日期间（ inclusive）发布的推文数量进行结算。如果推文数量在220到239条之间（含边界），则结果为“是”，否则为“否”。结算数据应来自可靠来源，如Twitter官方API或公认的跟踪服务，以确保客观性。",
+        "rules_unknown": false,
+        "bullshit_score": 10,
+        "why_1_liner": "Elon Musk's tweet frequency is volatile, and 220-239 tweets in 8 days is above his typical range, making it unlikely but possible.",
+        "mispricing_type": "SLOW"
+      },
+      "system_computed": {
+        "estimator_trust_score": 90,
+        "estimator_trust_level": "GREEN",
+        "range_width": 0.5,
+        "p_valid": true,
+        "bullshit_score": 10,
+        "rules_penalty": 0,
+        "rules_unknown": false
+      },
+      "latency_ms": 51337,
+      "tokens_used": 2203
+    },
+    {
+      "market_id": "0x26fa23187c3d1666d6d63e28f4f405ccfaa57c2edd6cdb8354c91dfe770134cc",
+      "input": {
+        "question": "Will Elon Musk post 240-259 tweets from February 24 to March 3, 2026?",
+        "categories": [
+          "Politics",
+          "Culture"
+        ],
+        "end_date": "2026-03-03T17:00:00.000Z",
+        "volume_24h": 604489.28
+      },
+      "output": {
+        "p_range": {
+          "low": 0.2,
+          "mid": 0.4,
+          "high": 0.6
+        },
+        "confidence": "Low",
+        "claims": [
+          {
+            "claim_text": "Elon Musk's tweet frequency is highly variable, making precise predictions difficult.",
+            "basis_type": "PRIOR",
+            "claim_impact": "MINOR"
+          },
+          {
+            "claim_text": "The market settlement will rely on publicly verifiable tweet counts from Musk's official account.",
+            "basis_type": "INPUT",
+            "claim_impact": "MAJOR"
+          },
+          {
+            "claim_text": "Unforeseen events in 2026 could drastically change Musk's tweeting habits.",
+            "basis_type": "UNVERIFIED_FACT",
+            "claim_impact": "MINOR"
+          }
+        ],
+        "risk_triggers": [
+          "Twitter/X platform changes affecting data accessibility"
+        ],
+        "rules_text": "该市场的结算将基于埃隆·马斯克在2026年2月24日00:00至3月3日17:00 UTC期间于Twitter/X平台发布的推文总数。计数需通过可验证的公开数据，包括原创推文和转推，排除回复和广告。结算时需确保数据来源可靠且无争议，以避免争议。",
+        "rules_unknown": false,
+        "bullshit_score": 10,
+        "why_1_liner": "目标推文数范围窄、时间远，且马斯克行为多变，导致概率中等偏低。",
+        "mispricing_type": "SLOW"
+      },
+      "system_computed": {
+        "estimator_trust_score": 90,
+        "estimator_trust_level": "GREEN",
+        "range_width": 0.4,
+        "p_valid": true,
+        "bullshit_score": 10,
+        "rules_penalty": 0,
+        "rules_unknown": false
+      },
+      "latency_ms": 57229,
+      "tokens_used": 2293
+    },
+    {
+      "market_id": "0xd6c49a94948e365aa74c09eef54d907b7ca534b243c387c375305d5cdd1afef3",
+      "input": {
+        "question": "Will the Fed decrease interest rates by 25 bps after the March 2026 meeting?",
+        "categories": [
+          "Politics",
+          "Economics"
+        ],
+        "end_date": "2026-03-18T00:00:00.000Z",
+        "volume_24h": 581388.74
+      },
+      "output": {
+        "p_range": {
+          "low": 0.3,
+          "mid": 0.6,
+          "high": 0.9
+        },
+        "confidence": "Med",
+        "claims": [
+          {
+            "claim_text": "24小时成交量高达581,388.74美元，表明市场参与者活跃，流动性较好。",
+            "basis_type": "INPUT",
+            "claim_impact": "MINOR"
+          },
+          {
+            "claim_text": "美联储利率决策高度依赖未来经济数据，2026年3月的预测存在显著不确定性。",
+            "basis_type": "PRIOR",
+            "claim_impact": "MAJOR"
+          }
+        ],
+        "risk_triggers": [
+          "通胀数据偏离预期",
+          "美联储政策意外转向",
+          "宏观经济衰退风险"
+        ],
+        "rules_text": "该市场结算以美联储在2026年3月会议后是否正式宣布将联邦基金利率目标下调25个基点为标准。若权威新闻或美联储官方声明确认降息25个基点，则答案为'是'，否则为'否'。结算应在到期时间后基于实际事件进行，确保结果客观。",
+        "rules_unknown": false,
+        "bullshit_score": 0,
+        "why_1_liner": "长期经济预测不确定性高，导致概率估计范围较宽。",
+        "mispricing_type": "UNKNOWN"
+      },
+      "system_computed": {
+        "estimator_trust_score": 100,
+        "estimator_trust_level": "GREEN",
+        "range_width": 0.6,
+        "p_valid": true,
+        "bullshit_score": 0,
+        "rules_penalty": 0,
+        "rules_unknown": false
+      },
+      "latency_ms": 66395,
+      "tokens_used": 2619
+    },
+    {
+      "market_id": "0xe7f239d76b59c4e614f0bdb80467026da833083e38a31a27fde8e0907417ea12",
+      "input": {
+        "question": "Fed rate cut by March 2026 meeting?",
+        "categories": [
+          "Economics",
+          "Finance"
+        ],
+        "end_date": "2026-03-18T00:00:00.000Z",
+        "volume_24h": 17679.83
+      },
+      "output": {
+        "p_range": {
+          "low": 0.4,
+          "mid": 0.6,
+          "high": 0.8
+        },
+        "confidence": "Med",
+        "claims": [
+          {
+            "claim_text": "美联储政策转向取决于通胀回落到2%目标，这是历史先例。",
+            "basis_type": "PRIOR",
+            "claim_impact": "MAJOR"
+          },
+          {
+            "claim_text": "经济增长放缓可能促使美联储在2026年前降息，但此预测未经验证。",
+            "basis_type": "UNVERIFIED_FACT",
+            "claim_impact": "MINOR"
+          },
+          {
+            "claim_text": "地缘政治风险可能扰动经济前景，增加利率路径不确定性。",
+            "basis_type": "UNVERIFIED_FACT",
+            "claim_impact": "MINOR"
+          }
+        ],
+        "risk_triggers": [
+          "Economic recession",
+          "Inflation surprise"
+        ],
+        "rules_text": "该市场结算基于美联储官方利率决策。如果截至2026年3月会议（包括该会议）美联储宣布降低联邦基金利率，则市场结算为'是'（价格1），否则为'否'（价格0）。具体以可信新闻源或美联储公告为准，到期日为2026年3月18日。",
+        "rules_unknown": false,
+        "bullshit_score": 0,
+        "why_1_liner": "基于当前经济展望和美联储政策路径，到2026年3月降息概率中等偏高，但远期不确定性高。",
+        "mispricing_type": "THIN"
+      },
+      "system_computed": {
+        "estimator_trust_score": 100,
+        "estimator_trust_level": "GREEN",
+        "range_width": 0.4,
+        "p_valid": true,
+        "bullshit_score": 0,
+        "rules_penalty": 0,
+        "rules_unknown": false
+      },
+      "latency_ms": 53034,
+      "tokens_used": 2222
+    },
+    {
+      "market_id": "0xa2a78c483df6515981a6d2b77230a7d0804104e7e198783729f25be0369a2c68",
+      "input": {
+        "question": "Will the Fed Cut–Pause–Cut in the next three decisions (Dec–Jan–Mar)?",
+        "categories": [
+          "Economics",
+          "Finance"
+        ],
+        "end_date": "2026-03-18T00:00:00.000Z",
+        "volume_24h": 5564.64
+      },
+      "output": {
+        "p_range": {
+          "low": 0.1,
+          "mid": 0.3,
+          "high": 0.5
+        },
+        "confidence": "Med",
+        "claims": [
+          {
+            "claim_text": "美联储当前处于紧缩周期，但通胀预期下降可能促使未来转向降息，支持'削减-暂停-削减'序列的可能性。",
+            "basis_type": "PRIOR",
+            "claim_impact": "MAJOR"
+          },
+          {
+            "claim_text": "经济衰退风险增加，可能影响美联储决策的时机和顺序，但具体序列不确定。",
+            "basis_type": "PRIOR",
+            "claim_impact": "MINOR"
+          }
+        ],
+        "risk_triggers": [
+          "通胀数据意外变化",
+          "美联储官员政策信号",
+          "经济衰退指标发布"
+        ],
+        "rules_text": "该市场结算取决于美联储在接下来三次决策会议（12月、1月、3月）中的利率行动序列。如果序列为降息（利率下调）、暂停（利率不变）、降息（利率下调），则结果为是；否则为否。决策基于FOMC会议后的官方公告，需明确'降息'定义为利率下调，'暂停'定义为利率不变。市场到期时将根据实际事件结算。",
+        "rules_unknown": false,
+        "bullshit_score": 0,
+        "why_1_liner": "基于当前经济前景，美联储可能在未来降息，但'削减-暂停-削减'具体序列的概率适中，受通胀和增长数据影响。",
+        "mispricing_type": "THIN"
+      },
+      "system_computed": {
+        "estimator_trust_score": 100,
+        "estimator_trust_level": "GREEN",
+        "range_width": 0.4,
+        "p_valid": true,
+        "bullshit_score": 0,
+        "rules_penalty": 0,
+        "rules_unknown": false
+      },
+      "latency_ms": 61421,
+      "tokens_used": 2536
+    },
+    {
+      "market_id": "0xce0d783de3f4dc446a0afd6cc800b79b817a5f5e7bb25f196daff8572b0782f7",
+      "input": {
+        "question": "Will monthly inflation increase by 0.0% or less in February?",
+        "categories": [
+          "Economics"
+        ],
+        "end_date": "2026-03-11T00:00:00.000Z",
+        "volume_24h": 4189.67
+      },
+      "output": {
+        "p_range": {
+          "low": 0.45,
+          "mid": 0.55,
+          "high": 0.65
+        },
+        "confidence": "Med",
+        "claims": [
+          {
+            "claim_text": "Inflation in early 2026 will be influenced by ongoing monetary policy tightening.",
+            "basis_type": "PRIOR",
+            "claim_impact": "MAJOR"
+          },
+          {
+            "claim_text": "February historically shows subdued inflation due to post-holiday seasonal adjustments.",
+            "basis_type": "PRIOR",
+            "claim_impact": "MINOR"
+          }
+        ],
+        "risk_triggers": [
+          "Unexpected economic shocks",
+          "Data release delays or revisions"
+        ],
+        "rules_text": "This market resolves based on the official monthly inflation rate (e.g., CPI) for February 2026 compared to January 2026. If the inflation rate increases by 0.0% or less (i.e., no increase or a decrease), the outcome is YES; otherwise, NO. Settlement relies on authoritative sources like the U.S. Bureau of Labor Statistics or equivalent agencies.",
+        "rules_unknown": false,
+        "bullshit_score": 0,
+        "why_1_liner": "Moderate probability as inflation trends may stay controlled, but future economic uncertainty limits confidence.",
+        "mispricing_type": "THIN"
+      },
+      "system_computed": {
+        "estimator_trust_score": 100,
+        "estimator_trust_level": "GREEN",
+        "range_width": 0.2,
+        "p_valid": true,
+        "bullshit_score": 0,
+        "rules_penalty": 0,
+        "rules_unknown": false
+      },
+      "latency_ms": 42722,
+      "tokens_used": 1912
+    },
+    {
+      "market_id": "0x7de3925925f05e8a35931166f0446ad22084262145ffa467b4e37c80d2b6e7bc",
+      "input": {
+        "question": "Will annual inflation increase by 2.4% in February?",
+        "categories": [
+          "Economics"
+        ],
+        "end_date": "2026-03-11T00:00:00.000Z",
+        "volume_24h": 3982.38
+      },
+      "output": {
+        "p_range": {
+          "low": 0.3,
+          "mid": 0.45,
+          "high": 0.6
+        },
+        "confidence": "Med",
+        "claims": [
+          {
+            "claim_text": "The market will settle based on the annual inflation rate for February 2026, typically using CPI year-over-year percentage change.",
+            "basis_type": "PRIOR",
+            "claim_impact": "MAJOR"
+          }
+        ],
+        "risk_triggers": [
+          "Unclear definition of 'increase by 2.4%' for settlement, as no benchmark period is specified"
+        ],
+        "rules_text": "This market likely settles on whether the annual inflation rate for February 2026, reported by an official source like the US BLS, meets or exceeds 2.4%. However, the phrase 'increase by 2.4%' is ambiguous—it could refer to a change from a prior period or a level, which may cause disputes. The expiration date aligns with typical data release schedules.",
+        "rules_unknown": false,
+        "bullshit_score": 20,
+        "why_1_liner": "Ambiguity in 'increase by 2.4%' and long-term inflation uncertainty result in a wide probability range around 45%.",
+        "mispricing_type": "RULE"
+      },
+      "system_computed": {
+        "estimator_trust_score": 80,
+        "estimator_trust_level": "GREEN",
+        "range_width": 0.3,
+        "p_valid": true,
+        "bullshit_score": 20,
+        "rules_penalty": 0,
+        "rules_unknown": false
+      },
+      "latency_ms": 72268,
+      "tokens_used": 2843
+    },
+    {
+      "market_id": "0xd1720604f14c92b7ce05fc77ed57d4a0f13385588cca1e160abdcbd01ad4320d",
+      "input": {
+        "question": "S&P 500 (SPX) Opens Up or Down on March 3?",
+        "categories": [
+          "Finance"
+        ],
+        "end_date": "2026-03-03T21:00:00.000Z",
+        "volume_24h": 520432.05
+      },
+      "output": {
+        "p_range": {
+          "low": 0.45,
+          "mid": 0.5,
+          "high": 0.55
+        },
+        "confidence": "Med",
+        "claims": [
+          {
+            "claim_text": "S&P 500 是广泛追踪的市值加权指数，其未来单日表现预测具有高度不确定性，但市场长期趋向半强有效。",
+            "basis_type": "PRIOR",
+            "claim_impact": "MAJOR"
+          },
+          {
+            "claim_text": "美联储的货币政策路径（加息/降息）是2026年股市开盘表现的关键驱动因素，但目前尚未确定。",
+            "basis_type": "UNVERIFIED_FACT",
+            "claim_impact": "MAJOR"
+          },
+          {
+            "claim_text": "技术分析和短期市场情绪可能在到期日前一周内对预测产生较大影响，但两年期预测中此效应目前可以忽略。",
+            "basis_type": "PRIOR",
+            "claim_impact": "MINOR"
+          }
+        ],
+        "risk_triggers": [
+          "美联储在到期日前意外调整货币政策"
+        ],
+        "rules_text": "该市场将根据标普500指数在2026年3月3日美东时间常规交易时段的开盘价是否高于或低于2026年3月2日的收盘价进行结算。应使用权威金融数据源（如彭博、路透）公布的官方价格。结算结果为二元结果：若开盘价高于前日收盘价，则答案为'Up'，对应‘是’的结果；反之则为‘Down’，对应‘否’的结果。",
+        "rules_unknown": false,
+        "bullshit_score": 0,
+        "why_1_liner": "长期市场开盘预测受多重宏观因素（如货币政策、经济数据）影响，当前信息有限，价格接近公平估值，无明显方向性偏差。",
+        "mispricing_type": "SLOW"
+      },
+      "system_computed": {
+        "estimator_trust_score": 100,
+        "estimator_trust_level": "GREEN",
+        "range_width": 0.1,
+        "p_valid": true,
+        "bullshit_score": 0,
+        "rules_penalty": 0,
+        "rules_unknown": false
+      },
+      "latency_ms": 24703,
+      "tokens_used": 1212
+    },
+    {
+      "market_id": "0x20c4eda4774b73eabc94cf4b2abab9fe7f1b510b1620f0f04a9f2fecd5bf8f76",
+      "input": {
+        "question": "S&P 500 (SPX) Up or Down on March 3?",
+        "categories": [
+          "Finance"
+        ],
+        "end_date": "2026-03-03T21:00:00.000Z",
+        "volume_24h": 170521.25
+      },
+      "output": {
+        "p_range": {
+          "low": 0.3,
+          "mid": 0.55,
+          "high": 0.8
+        },
+        "confidence": "Low",
+        "claims": [
+          {
+            "claim_text": "从长期历史数据看，标普500指数在两年时间跨度内上涨的概率显著高于下跌。",
+            "basis_type": "PRIOR",
+            "claim_impact": "MINOR"
+          },
+          {
+            "claim_text": "当前市场24小时成交量为$170,521.25，表明存在一定流动性但不完全成熟。",
+            "basis_type": "INPUT",
+            "claim_impact": "MINOR"
+          },
+          {
+            "claim_text": "2026年3月3日当天的具体涨跌受届时无法预知的事件和短期情绪驱动。",
+            "basis_type": "UNVERIFIED_FACT",
+            "claim_impact": "MAJOR"
+          }
+        ],
+        "risk_triggers": [
+          "全球经济衰退",
+          "重大地缘政治冲突",
+          "美国货币政策剧烈转向",
+          "黑天鹅事件"
+        ],
+        "rules_text": "该市场结算基于2026年3月3日（UTC时间21:00，即美国东部时间下午4:00收盘时）标普500指数（SPX）的收盘价。若收盘价高于2026年3月2日的收盘价，则结果为“Up”，对应份额结算为1；若低于，则结果为“Down”，对应份额结算为0。若恰好相等（罕见），预计按平局规则处理（如各付0.5），但需以平台最终规则为准。",
+        "rules_unknown": false,
+        "bullshit_score": 10,
+        "why_1_liner": "长期市场方向可粗略估计，但预测具体遥远日期（2026-03-03）的单日涨跌本质上近乎随机，不确定性极高。",
+        "mispricing_type": "SLOW"
+      },
+      "system_computed": {
+        "estimator_trust_score": 90,
+        "estimator_trust_level": "GREEN",
+        "range_width": 0.5,
+        "p_valid": true,
+        "bullshit_score": 10,
+        "rules_penalty": 0,
+        "rules_unknown": false
+      },
+      "latency_ms": 23595,
+      "tokens_used": 1166
+    },
+    {
+      "market_id": "0xf77558a055686cd06157e18110267fb343519aaf5b552d9251927f1e8d31f842",
+      "input": {
+        "question": "NYA (NYA) Up or Down on March 3?",
+        "categories": [
+          "Finance"
+        ],
+        "end_date": "2026-03-03T21:00:00.000Z",
+        "volume_24h": 22133.81
+      },
+      "output": {
+        "p_range": {
+          "low": 0.45,
+          "mid": 0.5,
+          "high": 0.55
+        },
+        "confidence": "Low",
+        "claims": [
+          {
+            "claim_text": "市场到期日为2026年3月3日，距离当前时间遥远，缺乏实时信息或事件进行准确预测。",
+            "basis_type": "PRIOR",
+            "claim_impact": "MAJOR"
+          },
+          {
+            "claim_text": "24小时成交量较低（约2.2万美元），表明市场流动性有限，可能影响价格效率和概率估计的可靠性。",
+            "basis_type": "INPUT",
+            "claim_impact": "MINOR"
+          }
+        ],
+        "risk_triggers": [
+          "低流动性导致价格偏差风险"
+        ],
+        "rules_text": "该市场预测NYA（NYSE Composite Index）在2026年3月3日的涨跌方向。结算规则应基于权威数据源（如纽约证券交易所）发布的当日收盘价与前一交易日（2026年3月2日）收盘价的比较。若3月3日收盘价高于3月2日收盘价，则结果为'Up'，对应支付1；否则为'Down'，对应支付0。但具体规则需参考市场创建者的详细定义和数据源指定。",
+        "rules_unknown": false,
+        "bullshit_score": 10,
+        "why_1_liner": "市场预测遥远未来指数涨跌，信息有限且不确定性高，概率估计接近公平值，信心较低。",
+        "mispricing_type": "THIN"
+      },
+      "system_computed": {
+        "estimator_trust_score": 90,
+        "estimator_trust_level": "GREEN",
+        "range_width": 0.1,
+        "p_valid": true,
+        "bullshit_score": 10,
+        "rules_penalty": 0,
+        "rules_unknown": false
+      },
+      "latency_ms": 68287,
+      "tokens_used": 2784
+    },
+    {
+      "market_id": "0x7e2a5c1cfeaae6ba0cfa33022a5934b8bbc6de24f3aaa6b98a844689bcd3d1ba",
+      "input": {
+        "question": "Will NVIDIA (NVDA) close above $175 on March 3?",
+        "categories": [
+          "Finance"
+        ],
+        "end_date": "2026-03-03T21:00:00.000Z",
+        "volume_24h": 19197.47
+      },
+      "output": {
+        "p_range": {
+          "low": 0.45,
+          "mid": 0.55,
+          "high": 0.65
+        },
+        "confidence": "Med",
+        "claims": [
+          {
+            "claim_text": "NVIDIA在AI芯片市场占据领先地位，需求持续增长，可能推动股价上涨。",
+            "basis_type": "PRIOR",
+            "claim_impact": "MAJOR"
+          },
+          {
+            "claim_text": "全球经济环境和利率变化可能影响科技股估值。",
+            "basis_type": "INPUT",
+            "claim_impact": "MINOR"
+          },
+          {
+            "claim_text": "竞争加剧或技术突破可能带来不确定性，但具体影响未经验证。",
+            "basis_type": "UNVERIFIED_FACT",
+            "claim_impact": "MINOR"
+          }
+        ],
+        "risk_triggers": [
+          "经济衰退风险",
+          "地缘政治紧张",
+          "NVIDIA财报不及预期"
+        ],
+        "rules_text": "该市场将在到期时间2026年3月3日21:00:00 UTC结算，基于NVIDIA (NVDA)股票在该日期的官方收盘价。如果收盘价严格高于$175.00，则市场结算为‘是’；否则为‘否’。结算应使用权威金融数据源（如纳斯达克或雅虎财经）的确认价格，确保透明公正。",
+        "rules_unknown": false,
+        "bullshit_score": 5,
+        "why_1_liner": "基于NVIDIA强劲增长前景和当前股价趋势，预计有中等概率收盘高于$175，但受市场波动和宏观因素影响。",
+        "mispricing_type": "UNKNOWN"
+      },
+      "system_computed": {
+        "estimator_trust_score": 95,
+        "estimator_trust_level": "GREEN",
+        "range_width": 0.2,
+        "p_valid": true,
+        "bullshit_score": 5,
+        "rules_penalty": 0,
+        "rules_unknown": false
+      },
+      "latency_ms": 68039,
+      "tokens_used": 2708
+    },
+    {
+      "market_id": "0x937139bc376611d063ad24f59ce41d0088a2c00940e6d5569af7d9326f9493ce",
+      "input": {
+        "question": "Russell 2000 (RUT) Up or Down on March 3?",
+        "categories": [
+          "Finance"
+        ],
+        "end_date": "2026-03-03T21:00:00.000Z",
+        "volume_24h": 12928.02
+      },
+      "output": {
+        "p_range": {
+          "low": 0,
+          "mid": 0.5,
+          "high": 1
+        },
+        "confidence": "Low",
+        "claims": [
+          {
+            "claim_text": "市场结算将基于Russell 2000在2026年3月3日收盘价相对于前一个交易日收盘价的变化。",
+            "basis_type": "UNVERIFIED_FACT",
+            "claim_impact": "MAJOR"
+          }
+        ],
+        "risk_triggers": [
+          "结算规则未明确指定",
+          "到期日遥远导致预测不确定性高"
+        ],
+        "rules_text": "该市场预计在到期时间2026年3月3日21:00 UTC结算，可能基于Russell 2000指数当日收盘价与前一个交易日收盘价的比较。若收盘价上涨，则'Up'结果胜出；若下跌，则'Down'胜出。持平情况处理未明确，需参考市场创建者的具体规则或平台默认设置。",
+        "rules_unknown": false,
+        "bullshit_score": 0,
+        "why_1_liner": "到期日远在2026年，股市短期方向难以预测，因此概率范围宽泛且置信度低。",
+        "mispricing_type": "RULE"
+      },
+      "system_computed": {
+        "estimator_trust_score": 100,
+        "estimator_trust_level": "GREEN",
+        "range_width": 1,
+        "p_valid": true,
+        "bullshit_score": 0,
+        "rules_penalty": 0,
+        "rules_unknown": false
+      },
+      "latency_ms": 70834,
+      "tokens_used": 2918
+    },
+    {
+      "market_id": "0xbc0c2be2a0b23f24cb2a9ad3e19d1d35297ec1455c03e88844b3e39a0a3b7acc",
+      "input": {
+        "question": "Will Elon Musk post 200-219 tweets from February 24 to March 3, 2026?",
+        "categories": [
+          "Politics",
+          "Culture"
+        ],
+        "end_date": "2026-03-03T17:00:00.000Z",
+        "volume_24h": 544110.35
+      },
+      "output": {
+        "p_range": {
+          "low": 0.05,
+          "mid": 0.15,
+          "high": 0.3
+        },
+        "confidence": "Med",
+        "claims": [
+          {
+            "claim_text": "Elon Musk's historical average tweet frequency is around 5-10 per day.",
+            "basis_type": "PRIOR",
+            "claim_impact": "MAJOR"
+          },
+          {
+            "claim_text": "The period from February 24 to March 3, 2026, spans 8 days.",
+            "basis_type": "INPUT",
+            "claim_impact": "MINOR"
+          },
+          {
+            "claim_text": "Sustained tweet rates of 25+ per day for 8 days are rare for Musk, based on past behavior.",
+            "basis_type": "PRIOR",
+            "claim_impact": "MAJOR"
+          }
+        ],
+        "risk_triggers": [
+          "Unpredictable spikes in Musk's tweet activity due to personal or business events"
+        ],
+        "rules_text": "This market resolves to YES if Elon Musk posts between 200 and 219 tweets (inclusive) from February 24 to March 3, 2026, based on verifiable public data from his official Twitter/X account. Otherwise, it resolves to NO. The count includes all tweets within the date range, and settlement relies on reliable sources for tallying.",
+        "rules_unknown": false,
+        "bullshit_score": 10,
+        "why_1_liner": "Musk's typical tweet volume is much lower than 200-219 over 8 days, making this unlikely but possible given his erratic posting habits.",
+        "mispricing_type": "UNKNOWN"
+      },
+      "system_computed": {
+        "estimator_trust_score": 90,
+        "estimator_trust_level": "GREEN",
+        "range_width": 0.25,
+        "p_valid": true,
+        "bullshit_score": 10,
+        "rules_penalty": 0,
+        "rules_unknown": false
+      },
+      "latency_ms": 67209,
+      "tokens_used": 2790
+    },
+    {
+      "market_id": "0x2993560bd6596d059fdc63d2cd454283ee6bd3556346db6c421c4ef0d953cde2",
+      "input": {
+        "question": "Will Elon Musk post 260-279 tweets from February 24 to March 3, 2026?",
+        "categories": [
+          "Politics",
+          "Culture"
+        ],
+        "end_date": "2026-03-03T17:00:00.000Z",
+        "volume_24h": 396021.03
+      },
+      "output": {
+        "p_range": {
+          "low": 0.35,
+          "mid": 0.5,
+          "high": 0.65
+        },
+        "confidence": "Med",
+        "claims": [
+          {
+            "claim_text": "马斯克在2023-2025年平均每日发推约15-40条，260-279条（8日平均32.5-34.9条/日）接近其活跃期上限",
+            "basis_type": "PRIOR",
+            "claim_impact": "MAJOR"
+          },
+          {
+            "claim_text": "2026年可能存在重大事件（如 SpaceX 发射、特斯拉财报）刺激其推文量短期激增",
+            "basis_type": "UNVERIFIED_FACT",
+            "claim_impact": "MINOR"
+          },
+          {
+            "claim_text": "推特平台政策或马斯克个人事务可能影响其发推频率，但无法预测两年后的变化",
+            "basis_type": "UNVERIFIED_FACT",
+            "claim_impact": "MAJOR"
+          }
+        ],
+        "risk_triggers": [
+          "马斯克突然改变社交媒体习惯",
+          "平台规则重大调整",
+          "期间出现重大公关危机"
+        ],
+        "rules_text": "该市场结算应基于推特官方可验证数据，统计从2026年2月24日00:00 UTC至3月3日23:59 UTC期间由 @elonmusk 账号发布的所有原创推文（含投票、图片、视频），不包括转推、引用推文及已删除推文。需使用可信第三方数据源（如 Twitter API 或存档服务）验证数量是否落入260-279区间。",
+        "rules_unknown": false,
+        "bullshit_score": 20,
+        "why_1_liner": "基于历史行为，该区间处于其活跃期上限，但两年后行为不确定且平台环境可能变化，故概率适中。",
+        "mispricing_type": "RULE"
+      },
+      "system_computed": {
+        "estimator_trust_score": 80,
+        "estimator_trust_level": "GREEN",
+        "range_width": 0.3,
+        "p_valid": true,
+        "bullshit_score": 20,
+        "rules_penalty": 0,
+        "rules_unknown": false
+      },
+      "latency_ms": 24706,
+      "tokens_used": 1238
+    },
+    {
+      "market_id": "0xcc13952621419105f803374a9c05ee8e79b14fcb4918d4638c3dc38d9326e2e7",
+      "input": {
+        "question": "Will Elon Musk post 0-19 tweets from March 3 to March 10, 2026?",
+        "categories": [
+          "Politics",
+          "Culture"
+        ],
+        "end_date": "2026-03-10T16:00:00.000Z",
+        "volume_24h": 304468
+      },
+      "output": {
+        "p_range": {
+          "low": 0.1,
+          "mid": 0.25,
+          "high": 0.4
+        },
+        "confidence": "Med",
+        "claims": [
+          {
+            "claim_text": "Elon Musk has historically tweeted frequently, averaging over 5 tweets per day in recent years.",
+            "basis_type": "PRIOR",
+            "claim_impact": "MAJOR"
+          },
+          {
+            "claim_text": "The market covers a 7-day period from March 3 to March 10, 2026, which may include events influencing his tweeting behavior.",
+            "basis_type": "INPUT",
+            "claim_impact": "MINOR"
+          }
+        ],
+        "risk_triggers": [
+          "Unforeseen personal or external events affecting Musk's tweeting frequency"
+        ],
+        "rules_text": "该市场结算将基于Elon Musk在2026年3月3日00:00 UTC至2026年3月10日16:00 UTC期间发布的推文数量。如果推文数量在0到19条之间（包括0和19），则市场结算为'是'，否则为'否'。推文需来自他的已验证账户，并在到期时间前可公开验证。",
+        "rules_unknown": false,
+        "bullshit_score": 10,
+        "why_1_liner": "Elon Musk通常每周发推超过19条，但2026年行为可能变化，因此概率较低但不确定。",
+        "mispricing_type": "UNKNOWN"
+      },
+      "system_computed": {
+        "estimator_trust_score": 90,
+        "estimator_trust_level": "GREEN",
+        "range_width": 0.3,
+        "p_valid": true,
+        "bullshit_score": 10,
+        "rules_penalty": 0,
+        "rules_unknown": false
+      },
+      "latency_ms": 56997,
+      "tokens_used": 2435
+    },
+    {
+      "market_id": "0xe764eb501f5e8464df0faee2e33684431ee0e84691d511e4457250a3d28ee935",
+      "input": {
+        "question": "Will Elon Musk post 280-299 tweets from February 24 to March 3, 2026?",
+        "categories": [
+          "Politics",
+          "Culture"
+        ],
+        "end_date": "2026-03-03T17:00:00.000Z",
+        "volume_24h": 260047.58
+      },
+      "output": {
+        "p_range": {
+          "low": 0.05,
+          "mid": 0.15,
+          "high": 0.3
+        },
+        "confidence": "Med",
+        "claims": [
+          {
+            "claim_text": "Elon Musk's historical tweet frequency averages below 20 per day, making 280-299 tweets in 8 days statistically unlikely.",
+            "basis_type": "PRIOR",
+            "claim_impact": "MAJOR"
+          },
+          {
+            "claim_text": "Musk's tweet activity can spike during major events, which could increase the probability.",
+            "basis_type": "PRIOR",
+            "claim_impact": "MINOR"
+          },
+          {
+            "claim_text": "The 8-day period from Feb 24 to Mar 3, 2026, includes no known fixed events that guarantee high activity.",
+            "basis_type": "UNVERIFIED_FACT",
+            "claim_impact": "MINOR"
+          }
+        ],
+        "risk_triggers": [
+          "Potential changes in Twitter platform or Musk's personal behavior affecting tweet frequency"
+        ],
+        "rules_text": "该市场结算将基于Elon Musk在2026年2月24日00:00 UTC至2026年3月3日23:59 UTC期间发布的推文总数。如果计数在280到299之间（包括280和299），则市场结算为‘是’；否则为‘否’。数据来源应为推特官方API或公认的第三方追踪服务，争议需通过治理或预言机解决。",
+        "rules_unknown": false,
+        "bullshit_score": 0,
+        "why_1_liner": "Elon Musk历史推文率低于所需水平，但不可预测性留有可能，因此概率较低。",
+        "mispricing_type": "UNKNOWN"
+      },
+      "system_computed": {
+        "estimator_trust_score": 100,
+        "estimator_trust_level": "GREEN",
+        "range_width": 0.25,
+        "p_valid": true,
+        "bullshit_score": 0,
+        "rules_penalty": 0,
+        "rules_unknown": false
+      },
+      "latency_ms": 77920,
+      "tokens_used": 3140
+    },
+    {
+      "market_id": "0xb3ad44e703969173f6fda7aeeae42c778a87be91abf72d0f108fe4f6f00e8e02",
+      "input": {
+        "question": "Will Elon Musk post 300-319 tweets from February 24 to March 3, 2026?",
+        "categories": [
+          "Politics",
+          "Culture"
+        ],
+        "end_date": "2026-03-03T17:00:00.000Z",
+        "volume_24h": 196612.83
+      },
+      "output": {
+        "p_range": {
+          "low": 0.1,
+          "mid": 0.3,
+          "high": 0.5
+        },
+        "confidence": "Med",
+        "claims": [
+          {
+            "claim_text": "埃隆·马斯克历史发推频率高，但持续8天每天发布37-40条推文不常见。",
+            "basis_type": "PRIOR",
+            "claim_impact": "MAJOR"
+          },
+          {
+            "claim_text": "24小时成交量高表明市场活跃，但可能不反映准确概率。",
+            "basis_type": "INPUT",
+            "claim_impact": "MINOR"
+          }
+        ],
+        "risk_triggers": [
+          "行为不可预测性",
+          "数据源可靠性"
+        ],
+        "rules_text": "该市场结算规则为：在2026年2月24日00:00 UTC至2026年3月3日23:59 UTC期间，埃隆·马斯克发布的推文总数若在300至319条之间（含），则结算为'是'，否则为'否'。推文定义通常指原始推文，不包括转推，需基于可验证数据源如Twitter API。",
+        "rules_unknown": false,
+        "bullshit_score": 10,
+        "why_1_liner": "基于历史发推模式，8天内发300-319条推文可能性中等偏低，但存在不确定性。",
+        "mispricing_type": "SLOW"
+      },
+      "system_computed": {
+        "estimator_trust_score": 90,
+        "estimator_trust_level": "GREEN",
+        "range_width": 0.4,
+        "p_valid": true,
+        "bullshit_score": 10,
+        "rules_penalty": 0,
+        "rules_unknown": false
+      },
+      "latency_ms": 69933,
+      "tokens_used": 2849
+    }
+  ],
+  "summary": {
+    "total": 25,
+    "success": 25,
+    "failed": 0,
+    "estimator_missing_rate": 0,
+    "trust_level_dist": {
+      "GREEN": 24,
+      "YELLOW": 1,
+      "RED": 0
+    },
+    "avg_range_width": 0.326,
+    "avg_latency_ms": 54434,
+    "avg_tokens_used": 2264
+  }
+}
