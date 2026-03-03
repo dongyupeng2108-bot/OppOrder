@@ -237,3 +237,48 @@ cross_reference:
       source: "本字典新增枚举"
       values: ["THIN", "RULE", "SLOW", "UNKNOWN"]
     conclusion: "本字典枚举为更高层级分类；现有自由文本可作为子类映射"
+
+# ============================================================
+# EVALUATION RUN — 验收集回归输出规范
+# ============================================================
+evaluation_run:
+  description: "每次对验收集跑回归的输出规范"
+  filename_pattern: "evaluation_run_<YYYYMMDD>_<commit7>.json"
+  fields:
+    run_id:
+      type: string
+      note: "<YYYYMMDD>_<commit7>"
+    profile:
+      type: enum
+      values: [SCAN, CORE]
+    generated_at:
+      type: string
+      format: ISO8601
+    commit:
+      type: string
+      note: "git commit短hash，7位"
+    results:
+      type: array
+      note: "每条市场的四模块输出，含opp_id/estimator/risk/veto/filter"
+    summary:
+      type: object
+      fields:
+        total: number
+        estimator_missing_rate: number
+        trust_level_dist: object
+        risk_level_dist: object
+        veto_light_dist: object
+        top5_opp_ids: array
+
+# ============================================================
+# EVALUATION SET ALGO — 验收集抽样算法版本
+# ============================================================
+evaluation_set_algo:
+  version: "quota_v1"
+  description: "验收集抽样算法版本，变更需升级版本号"
+  rules:
+    category_order: [Tech, Politics, Economics, Finance, Culture]
+    k_per_category: 5
+    dedup: "同一market_id只取一次"
+    backfill: "分类不足K条时从全池volume_24h降序补齐"
+    total_fixed: 25
