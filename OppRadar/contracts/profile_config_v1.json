@@ -1,0 +1,27 @@
+{
+  "version": "1",
+  "updated_at": "2026-03-04",
+  "profiles": {
+    "SCAN": {
+      "model_key": "MODEL_SCAN",
+      "max_tokens": 1000,
+      "claims_min": 0,
+      "claims_max": 3,
+      "temperature": 0,
+      "snapshot_type": "draft",
+      "note": "批量扫描档，低成本，允许claims为空"
+    },
+    "CORE": {
+      "model_key": "MODEL_CORE",
+      "max_tokens": 3000,
+      "claims_min": 3,
+      "claims_max": 5,
+      "temperature": 0,
+      "snapshot_type": "deep",
+      "note": "深挖档，高质量，claims必须>=3条"
+    }
+  },
+  "b5_selection_rule": "same opp_id有DEEP快照则优先用DEEP，否则用DRAFT",
+  "deep_must_ref_draft": true,
+  "algo_note": "MODEL_SCAN/MODEL_CORE为占位符，待A3 Bakeoff后填入具体模型名"
+}
