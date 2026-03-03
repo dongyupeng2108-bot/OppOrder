@@ -222,3 +222,19 @@ From https://github.com/dongyupeng2108-bot/OppOrder
 [AutoPR] CI Failed (Exit Code 2).
 [AutoPR] Attempting AutoFix (1/1)...
 >>> [AutoPR] Running AutoFix...
+[AutoPR] Loop Iteration 2 (Max Fixes: 1)...
+>>> [AutoPR] Running CI Watch...
+[AutoPR] CI Failed (Exit Code 2).
+HARD_STOP=1
+HARD_STOP_REASON=LOOP_DETECTED
+NEXT_ACTION=STOP_AND_REPORT
+[HardStop] Latch written to: E:\OppRadar\rules\task-reports\2026-03\.hardstop_latch_260301_031.json
+PS>TerminatingError():“LOOP_DETECTED”
+>> TerminatingError():“LOOP_DETECTED”
+>> TerminatingError():“LOOP_DETECTED”
+[RunTask] FAILED: Script execution error: LOOP_DETECTED
+Escalation report generated: E:\OppRadar\rules\task-reports\2026-03\escalation_260301_031.md
+**********************
+Windows PowerShell 脚本结束
+结束时间: 20260302163625
+**********************

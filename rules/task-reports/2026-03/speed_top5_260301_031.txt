@@ -1,4 +1,7 @@
 task_id=260301_031
-generated_at=2026-03-02T16:33:55.8158225+08:00
-wall_total_ms=8173
-total=8173
+generated_at=2026-03-02T16:36:25.0918642+08:00
+assemble_evidence=2365
+total=121049
+wall_total_ms=121049
+preflight=4574
+workspace_healer=4785

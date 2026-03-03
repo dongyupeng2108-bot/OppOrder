@@ -1,0 +1,335 @@
+{
+  "task_id": "260301_002",
+  "scanned_at": "2026-03-02T10:42:25.966Z",
+  "total_fetched": 500,
+  "total_after_exclusion_filter": 46,
+  "total_after_liquidity_filter": 45,
+  "liquidity_data_available": true,
+  "markets": [
+    {
+      "id": "0xb48621f7eba07b0a3eeabc6afb09ae42490239903997b9d412b0f69aeb040c8b",
+      "question": "BitBoy convicted?",
+      "end_date": "2026-03-31T12:00:00Z",
+      "volume_24h": 4141.88,
+      "spread": 0.06
+    },
+    {
+      "id": "0x9c1a953fe92c8357f1b646ba25d983aa83e90c525992db14fb726fa895cb5763",
+      "question": "Russia-Ukraine Ceasefire before GTA VI?",
+      "end_date": "2026-07-31T12:00:00Z",
+      "volume_24h": 883.81,
+      "spread": 0.03
+    },
+    {
+      "id": "0x1fad72fae204143ff1c3035e99e7c0f65ea8d5cd9bd1070987bd1a3316f772be",
+      "question": "New Rihanna Album before GTA VI?",
+      "end_date": "2026-07-31T12:00:00Z",
+      "volume_24h": 643.83,
+      "spread": 0.01
+    },
+    {
+      "id": "0x50ddb9cd80d5c271664a2ebb7fcaed1d0a148d82c8e8d314d830f75a944c3dcc",
+      "question": "New Playboi Carti Album before GTA VI?",
+      "end_date": "2026-07-31T12:00:00Z",
+      "volume_24h": 314.95,
+      "spread": 0.02
+    },
+    {
+      "id": "0x32b09f6390252b37d674501527e709016d55581b2c1e544bd4b8167f5f732f4c",
+      "question": "Will Jesus Christ return before GTA VI?",
+      "end_date": "2026-07-31T12:00:00Z",
+      "volume_24h": 93273.15,
+      "spread": 0.01
+    },
+    {
+      "id": "0x84f8b70331323c2fba97d7ceaa9a35fb645a0770d0dbff169d07f24f376766e9",
+      "question": "Trump out as President before GTA VI?",
+      "end_date": "2026-07-31T12:00:00Z",
+      "volume_24h": 1140.88,
+      "spread": 0.01
+    },
+    {
+      "id": "0x7b49b9bacb5f435bc10f3b100ff59e2fdd346f7f92a9001881bc9825a0af0f11",
+      "question": "Will China invades Taiwan before GTA VI?",
+      "end_date": "2026-07-31T12:00:00Z",
+      "volume_24h": 2987.47,
+      "spread": 0.01
+    },
+    {
+      "id": "0xcccb7e7613a087c132b69cbf3a02bece3fdcb824c1da54ae79acc8d4a562d902",
+      "question": "GTA VI released before June 2026?",
+      "end_date": "2026-05-31T12:00:00Z",
+      "volume_24h": 292018.27,
+      "spread": 0.002
+    },
+    {
+      "id": "0xf398b0e5016eeaee9b0885ed84012b6dc91269ac10d3b59d60722859c2e30b2f",
+      "question": "Will Harvey Weinstein be sentenced to no prison time?",
+      "end_date": "2025-12-31T12:00:00Z",
+      "volume_24h": 241.57,
+      "spread": 0.129
+    },
+    {
+      "id": "0xe2b48e3b44de9658ee9c8b37354301763e33c0b502fd966839d644b4c0a9dea8",
+      "question": "Will Harvey Weinstein be sentenced to less than 5 years in prison?",
+      "end_date": "2025-12-31T12:00:00Z",
+      "volume_24h": 290.17,
+      "spread": 0.043
+    },
+    {
+      "id": "0x3209617364a0d598435806b59d0d056b606022dc9028c466ad7912df94fc170c",
+      "question": "Will Harvey Weinstein be sentenced to between 5 and 10 years in prison?",
+      "end_date": "2025-12-31T12:00:00Z",
+      "volume_24h": 118.09,
+      "spread": 0.015
+    },
+    {
+      "id": "0x3d495a3e05eaffe438bb1c2ab97ed57a79b0a6ab18a2ca6fa5b448e20ce70082",
+      "question": "Will Harvey Weinstein be sentenced to between 10 and 20 years in prison?",
+      "end_date": "2025-12-31T12:00:00Z",
+      "volume_24h": 124.06,
+      "spread": 0.021
+    },
+    {
+      "id": "0xdee5db5410b362783a1405b66b9aa08a7d050ae1f99e8da85b9d1ae7962dad3b",
+      "question": "Will Harvey Weinstein be sentenced to between 20 and 30 years in prison?",
+      "end_date": "2025-12-31T12:00:00Z",
+      "volume_24h": 216.91,
+      "spread": 0.052
+    },
+    {
+      "id": "0x2499928ffbe6022444543dcd940075259cecb5e41e346284b578cb64e1404d32",
+      "question": "Will Harvey Weinstein be sentenced to more than 30 years in prison?",
+      "end_date": "2025-12-31T12:00:00Z",
+      "volume_24h": 128.95,
+      "spread": 0.001
+    },
+    {
+      "id": "0xe9674aadfabfa7171bcee4e38b66f1a7d7e0af538d3718301e7b3cf111e9b5dd",
+      "question": "Will OpenAI launch a new consumer hardware product by March 31, 2026?",
+      "end_date": "",
+      "volume_24h": 519.01,
+      "spread": 0.007
+    },
+    {
+      "id": "0xd8c3fff562711af557abca5e7367dbb892b1d79419b039b6f185e49f21ec6f71",
+      "question": "Will Italy qualify for the 2026 FIFA World Cup?",
+      "end_date": "2026-04-12T00:00:00Z",
+      "volume_24h": 464.15,
+      "spread": 0.05
+    },
+    {
+      "id": "0x61eb9153c67924f13fd102a324be284f335672ea1fdb07d48af27a8cd03536be",
+      "question": "Will Sweden qualify for the 2026 FIFA World Cup?",
+      "end_date": "2026-04-12T00:00:00Z",
+      "volume_24h": 763.88,
+      "spread": 0.05
+    },
+    {
+      "id": "0xfef0954af0d43ea46c1ac246ac009dbcd0f76d36fd93b78d3586b23b386028ef",
+      "question": "Will Ukraine qualify for the 2026 FIFA World Cup?",
+      "end_date": "2026-04-12T00:00:00Z",
+      "volume_24h": 402.9,
+      "spread": 0.1
+    },
+    {
+      "id": "0xa467b14d51f01b957109d9cbb1d6c124fab2a089d52ed8f471d23c2812e743b7",
+      "question": "Xi Jinping out before 2027?",
+      "end_date": "2026-12-31T00:00:00Z",
+      "volume_24h": 42638.75,
+      "spread": 0.001
+    },
+    {
+      "id": "0x6bd56627aa21311850825edb27e53434a0e17a4f782be0086bc07f71eee00d0d",
+      "question": "Putin out as President of Russia by end of 2026?",
+      "end_date": "2026-12-31T18:30:00Z",
+      "volume_24h": 12609.76,
+      "spread": 0.01
+    },
+    {
+      "id": "0x1d54eb5eac2cee8f595f3097c65da7d07f8ab5dee63d7c0c6883eb70e1e9af30",
+      "question": "Russia x Ukraine ceasefire by March 31, 2026?",
+      "end_date": "2026-03-31T00:00:00Z",
+      "volume_24h": 367951.45,
+      "spread": 0.001
+    },
+    {
+      "id": "0x307a1ed89d60b61002dd5bbf00e1408c5ed2ab3fcdb056191ca7ef9bc34d38f3",
+      "question": "Will the Democratic Party control the Senate after the 2026 Midterm elections?",
+      "end_date": "2026-11-03T00:00:00Z",
+      "volume_24h": 3485.05,
+      "spread": 0.02
+    },
+    {
+      "id": "0x86bfb53af7250a40928975c551d12c185b762fa4ce0b40c6a64a50c946d72587",
+      "question": "Will the Republican Party control the Senate after the 2026 Midterm elections?",
+      "end_date": "2026-11-03T00:00:00Z",
+      "volume_24h": 16629.24,
+      "spread": 0.01
+    },
+    {
+      "id": "0xd5d9fc47718bd553592d126b1fa5e87183d27f3936975b0c04cc0f2dec1f1bb4",
+      "question": "Will the Democratic Party control the House after the 2026 Midterm elections?",
+      "end_date": "2026-11-03T00:00:00Z",
+      "volume_24h": 28968.65,
+      "spread": 0.01
+    },
+    {
+      "id": "0x4e4f77e7dbf4cab666e9a1943674d7ae66348e862df03ea6f44b11eb95731928",
+      "question": "Will the Republican Party control the House after the 2026 Midterm elections?",
+      "end_date": "2026-11-03T00:00:00Z",
+      "volume_24h": 49688.73,
+      "spread": 0.01
+    },
+    {
+      "id": "0x16c63b7cc37f012b9f59ee164ec03877914c701d06d48291ae8d6fc08a088b0d",
+      "question": "2026 Balance of Power: D Senate, D House",
+      "end_date": "2026-11-03T00:00:00Z",
+      "volume_24h": 8892.61,
+      "spread": 0.02
+    },
+    {
+      "id": "0x0808de4f0cfd47947f2d1be51f9a9c52ea0fec76f73a75cfbe79ddec98d8a908",
+      "question": "2026 Balance of Power: D Senate, R House",
+      "end_date": "2026-11-03T00:00:00Z",
+      "volume_24h": 826.62,
+      "spread": 0.003
+    },
+    {
+      "id": "0x998bc71817b2d76921d1999ce0f3431cfd5945583667a371280ca2b430b0c06e",
+      "question": "2026 Balance of Power: R Senate, D House",
+      "end_date": "2026-11-03T00:00:00Z",
+      "volume_24h": 4378.51,
+      "spread": 0.01
+    },
+    {
+      "id": "0xc5eae79d1ffe716572353962eb926b1e3964c500a4880a7a94f58408218ee76b",
+      "question": "2026 Balance of Power: R Senate, R House",
+      "end_date": "2026-11-03T00:00:00Z",
+      "volume_24h": 2699.1,
+      "spread": 0.02
+    },
+    {
+      "id": "0x7987a821b8032824f1805ee39eb5dfb8f64603e4e9e673259eb76f82b439fd3d",
+      "question": "2026 Balance of Power: Other",
+      "end_date": "2026-11-03T00:00:00Z",
+      "volume_24h": 44994.51,
+      "spread": 0.002
+    },
+    {
+      "id": "0x139ba0e7f931f09466c0fb27fc8ddb5e77ce9d1e2bdc953a5f22765bf779452f",
+      "question": "SCOTUS accepts sports event contract case by July 31, 2026?     ",
+      "end_date": "2026-07-31T00:00:00Z",
+      "volume_24h": 102.34,
+      "spread": 0.01
+    },
+    {
+      "id": "0x0dc45815251ab7d5c3cbde5d7eee5bc96eac3d924c0a4c4f10175049e068fe20",
+      "question": "Will Trump pardon Ghislaine Maxwell by end of 2026?",
+      "end_date": "2026-12-31T00:00:00Z",
+      "volume_24h": 1167.07,
+      "spread": 0.01
+    },
+    {
+      "id": "0x5ec80dc407457301f282a2b44341947afc700dfaa7923d14c8894e04bc63b03f",
+      "question": "Will the next Prime Minister of Hungary be Viktor Orbán?",
+      "end_date": "2026-04-12T00:00:00Z",
+      "volume_24h": 38307.85,
+      "spread": 0.01
+    },
+    {
+      "id": "0x1480b819d03d4b6388d70e848b0384adf38c38d955cb783cdbcf6d4a436dee14",
+      "question": "Will the next Prime Minister of Hungary be Péter Magyar?",
+      "end_date": "2026-04-12T00:00:00Z",
+      "volume_24h": 22942.99,
+      "spread": 0.01
+    },
+    {
+      "id": "0x5599856587ed77cf40cf20608448180f6abdcc512027016bcdd68ad73fca3e9f",
+      "question": "Will the next Prime Minister of Hungary be Klára Dobrev?",
+      "end_date": "2026-04-12T00:00:00Z",
+      "volume_24h": 37120.22,
+      "spread": 0.001
+    },
+    {
+      "id": "0x73e39c98045179951b7c527b749118771c10a15a32eee5ebc98f9e3650a69fe1",
+      "question": "Will the next Prime Minister of Hungary be László Toroczkai?",
+      "end_date": "2026-04-12T00:00:00Z",
+      "volume_24h": 90408.32,
+      "spread": 0.002
+    },
+    {
+      "id": "0x068d4f079da544e312b1a7b86e2c5dd39d3fc6a0f5a21b0ec866d1ff34767839",
+      "question": "Will the next Prime Minister of Hungary be István Kapitány?",
+      "end_date": "2026-04-12T00:00:00Z",
+      "volume_24h": 46572.6,
+      "spread": 0.001
+    },
+    {
+      "id": "0x0e16a806a7d079ad19a18599e800bae595eb99b640c5922e1398e30244a0ea43",
+      "question": "Will the next Prime Minister of Hungary be János Lázár?",
+      "end_date": "2026-04-12T00:00:00Z",
+      "volume_24h": 52328.89,
+      "spread": 0.001
+    },
+    {
+      "id": "0xd9fb1184af0064e5e34b129f5b79afa5a17b7e32f2953ab05efed82315fee6d4",
+      "question": "Will China invade Taiwan by end of 2026?",
+      "end_date": "2026-12-31T00:00:00Z",
+      "volume_24h": 180978.04,
+      "spread": 0.001
+    },
+    {
+      "id": "0xaeea5f917fc5746387b5f9c0a4263dba035dbb3f0ac6ad72bf92183d21e26739",
+      "question": "Russia x Ukraine ceasefire by end of 2026?",
+      "end_date": "2026-12-31T00:00:00Z",
+      "volume_24h": 67704.34,
+      "spread": 0.01
+    },
+    {
+      "id": "0xd1796c09d0d6f876f8580086ae9808ec991784e3a74b25a1830a25de71a78c96",
+      "question": "Netanyahu out by end of 2026?",
+      "end_date": "2026-12-31T00:00:00Z",
+      "volume_24h": 6469.94,
+      "spread": 0.05
+    },
+    {
+      "id": "0x51f624dbbf14f9edb575fef1be6f7a303751de70783fa144fce27b957452c803",
+      "question": "Zelenskyy out as Ukraine president by end of 2026?",
+      "end_date": "2026-12-31T00:00:00Z",
+      "volume_24h": 17345.15,
+      "spread": 0.01
+    },
+    {
+      "id": "0x14501df0ca5ec395792b0614b18133b72e702a9a2615dd0a4b3f0c6e097de081",
+      "question": "Erdoğan out by end of 2026?",
+      "end_date": "2026-12-31T00:00:00Z",
+      "volume_24h": 8236.23,
+      "spread": 0.01
+    },
+    {
+      "id": "0x4c8ceef9b9c0a27b6b4efa7c398ece4a5eeda76502f722de398c232abefe2ede",
+      "question": "Trump impeached by end of 2026?",
+      "end_date": "2026-12-31T00:00:00Z",
+      "volume_24h": 6136.69,
+      "spread": 0.02
+    },
+    {
+      "id": "0x448f73e89890ae9d0e42ad0b592f63b53c0ae05d1ca3fa8d80b30027781f1be7",
+      "question": "Will Trump resign by December 31, 2026?",
+      "end_date": "2026-12-31T00:00:00Z",
+      "volume_24h": 3458.45,
+      "spread": 0.01
+    }
+  ],
+  "_excluded_samples": [
+    {
+      "question": "Will bitcoin hit $1m before GTA VI?",
+      "reason": "keyword hit: \"\\$1m\""
+    },
+    {
+      "question": "Will Poland qualify for the 2026 FIFA World Cup?",
+      "reason": "vol 88 < 100"
+    }
+  ]
+}

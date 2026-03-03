@@ -1,0 +1,239 @@
+# schema_dict.yaml — 口径字典 (Field & Enum Dictionary)
+# Version: v1
+# Task: 260302_001
+# Date: 2026-03-04
+# Scope: 跨模块公共枚举、结构体、约束的统一定义
+# Note: 本文件为规范参考文档，不修改任何现有 schema / 代码
+
+# ============================================================
+# ENUMS — 公共枚举定义
+# ============================================================
+enums:
+
+  basis_type:
+    description: "断言/风险项的依据来源类型"
+    used_by: ["Claim", "RiskItem"]
+    values:
+      INPUT:           "来自用户输入或市场原始数据"
+      PRIOR:           "来自历史先验知识或已验证事实"
+      UNVERIFIED_FACT: "来自 LLM 推理或未经验证的声明"
+
+  claim_impact:
+    description: "Claim 结构中的影响级别（二档）"
+    used_by: ["Claim"]
+    values:
+      MAJOR: "对估值结论有决定性影响的关键断言"
+      MINOR: "辅助性断言，影响有限"
+
+  impact:
+    description: "RiskItem 结构中的风险影响级别（三档）"
+    used_by: ["RiskItem"]
+    values:
+      LOW:  "低影响 — 不影响核心判断"
+      MED:  "中等影响 — 可能改变置信区间"
+      HIGH: "高影响 — 可能颠覆结论"
+
+  trust_level:
+    description: "系统计算的可信度等级（基于证据链完整性、数据源质量等系统指标）"
+    note: "与 confidence 不同：confidence 是模型自评信息质量（High/Med/Low），trust_level 是系统后处理计算结果"
+    used_by: ["系统后处理层"]
+    values:
+      GREEN:  "证据链完整、多源交叉验证通过"
+      YELLOW: "部分证据缺失或单源依赖"
+      RED:    "关键证据缺失或数据源不可信"
+
+  veto_light:
+    description: "整体否决信号灯（系统级汇总）"
+    note: "与现有 veto.decision (ALLOW/DEGRADE/BLOCK) 的关系：veto.decision 是 per-opportunity 硬门禁裁定，veto_light 是系统级汇总信号灯"
+    used_by: ["系统级决策层"]
+    values:
+      GREEN:  "无否决风险，可正常输出"
+      YELLOW: "存在警示，降级处理"
+      RED:    "触发否决，阻止输出"
+
+  veto_code:
+    description: "否决原因代码（可组合）"
+    used_by: ["veto 引擎"]
+    values:
+      RULE_AMBIGUITY:         "规则文本模糊，无法确定性解析"
+      QUESTION_RULE_MISMATCH: "问题设置与规则条件不匹配"
+      DATA_UNVERIFIABLE:      "关键数据无法验证"
+      MULTI_CONDITION_TRAP:   "多条件组合导致歧义或陷阱"
+      TIME_TOO_CLOSE:         "距结算时间过近，信息变动风险高"
+      EVIDENCE_GAP:           "证据链存在关键缺口"
+      THIN_MARKET_RISK:       "市场深度不足，流动性风险"
+      KNOWN_BAD_CLASS:        "属于已知高风险类别"
+      PASS:                   "无否决理由，放行"
+
+  mispricing_type:
+    description: "LLM 识别的定价偏差类型"
+    note: "现有 opportunity_card.schema.json 中 mispricing_type 为自由文本（sentiment_lag/info_gap 等），本枚举为更高层级的分类"
+    used_by: ["draft_generator", "gemini_provider", "估值模块"]
+    values:
+      THIN: "薄市场 — 流动性不足导致的定价偏差"
+      RULE: "规则解读 — 对规则/条件的解读差异导致的偏差"
+      SLOW: "信息滞后 — 市场尚未反映最新信息"
+      UNKNOWN: "无法归类的定价偏差"
+
+  risk_type:
+    description: "风险项类型分类"
+    used_by: ["RiskItem"]
+    values:
+      RULE_AMBIGUITY:      "规则模糊性风险"
+      RESOLUTION_DISPUTE:  "结算争议风险"
+      INFO_CHANGE:         "信息变化风险（新信息可能颠覆判断）"
+      MANIPULATION_THIN:   "市场操纵/薄市场风险"
+      DATA_DEPENDENCY:     "数据依赖风险（依赖特定数据源的可用性）"
+      TIMING_VOLATILITY:   "时间相关波动风险"
+      OTHER:               "其他未分类风险"
+
+  evidence_basis:
+    description: "证据判断的方法论来源"
+    used_by: ["估值器输出"]
+    values:
+      RULE:   "纯规则引擎推理"
+      LLM:    "纯 LLM 推理"
+      HYBRID: "规则 + LLM 混合推理"
+
+# ============================================================
+# STRUCTURES — 公共结构体定义
+# ============================================================
+structures:
+
+  Claim:
+    description: "估值断言 — 支撑或反对某个估值结论的单条论据"
+    fields:
+      claim_text:
+        type: string
+        required: true
+        description: "断言内容文本"
+      basis_type:
+        type: enum(basis_type)
+        required: true
+        description: "依据来源类型"
+      claim_impact:
+        type: enum(claim_impact)
+        required: true
+        description: "该断言对估值结论的影响级别"
+      time_sensitive:
+        type: boolean
+        required: false
+        default: false
+        description: "是否具有时效性（true 表示断言的有效性会随时间衰减）"
+      input_ref:
+        type: string
+        required: false
+        description: "引用的输入数据来源标识（URL、字段路径或 ID）"
+      prior_scope:
+        type: string
+        required: false
+        description: "当 basis_type=PRIOR 时，标明先验知识的适用范围或来源"
+      need_evidence:
+        type: boolean
+        required: false
+        default: false
+        description: "是否需要补充证据才能确认该断言（true 表示证据不足）"
+
+  RiskItem:
+    description: "风险项 — 单条已识别的风险因素及其量化评估"
+    fields:
+      risk_type:
+        type: enum(risk_type)
+        required: true
+        description: "风险类型分类"
+      p_risk:
+        type: number
+        required: true
+        constraints: "0 ≤ p_risk ≤ 1"
+        description: "该风险发生的概率估计"
+      impact:
+        type: enum(impact)
+        required: true
+        description: "风险发生后的影响级别"
+      why_1_liner:
+        type: string
+        required: true
+        constraints: "maxLength: 160"
+        description: "一句话说明该风险的核心逻辑"
+      basis_type:
+        type: enum(basis_type)
+        required: true
+        description: "该风险判断的依据来源类型"
+      need_evidence:
+        type: boolean
+        required: false
+        default: false
+        description: "是否需要补充证据来验证该风险评估"
+
+# ============================================================
+# CONSTRAINTS — 跨模块约束规则
+# ============================================================
+constraints:
+
+  why_1_liner_max_length:
+    field: why_1_liner
+    rule: "maxLength: 160 chars"
+    conflict: |
+      现有 opportunity_card.schema.json 定义 maxLength: 120。
+      本字典定义 160 是面向新模块（Claim/RiskItem）的规范。
+      待后续统一：要么全部升至 160，要么 OpportunityCard 保持 120 而新结构用 160。
+    status: CONFLICT_PENDING
+
+  p_range_validity:
+    field: p_range
+    rule: "0 ≤ p_low ≤ p_mid ≤ p_high ≤ 1"
+    note: "JSON Schema draft-07 不支持跨字段校验，由应用层（rank_v2_provider.mjs）强制"
+    existing_ref: "opportunity_card.schema.json:51-68, metric_dictionary_v1.md"
+
+  smart_money_alert_passthrough:
+    field: smart_money_alert
+    rule: "只透传不参与主输出计算"
+    note: "smart_money_alert 作为辅助信号透传至 UI，不影响 score / p_range / veto 等主路径字段"
+
+  claims_empty_default_bullshit_score:
+    field: bullshit_score
+    condition: "claims 数组为空"
+    rule: "默认值 50"
+    note: "当 LLM 未产出任何 Claim 时，bullshit_score 取中位值 50 表示无法判断"
+
+  rules_min_chars:
+    field: rules_text
+    rule: "最小长度 80 chars"
+    default: 80
+    note: "规则文本低于 80 字符时视为信息不足，触发警告或降级"
+
+# ============================================================
+# CROSS-REFERENCE — 与现有 schema 的对照
+# ============================================================
+cross_reference:
+
+  confidence_vs_trust_level:
+    confidence:
+      source: "opportunity_card.schema.json:70-73"
+      values: ["High", "Med", "Low"]
+      semantics: "模型自评的信息质量等级 — 反映 LLM 对自身输出的信心"
+    trust_level:
+      source: "本字典新增"
+      values: ["GREEN", "YELLOW", "RED"]
+      semantics: "系统计算的可信度等级 — 基于证据链完整性、数据源质量等客观指标"
+    conclusion: "两者为不同概念，分别保留"
+
+  veto_decision_vs_veto_light:
+    veto_decision:
+      source: "opportunity_card.schema.json:87-90"
+      values: ["ALLOW", "DEGRADE", "BLOCK"]
+      semantics: "per-opportunity 硬门禁裁定"
+    veto_light:
+      source: "本字典新增"
+      values: ["GREEN", "YELLOW", "RED"]
+      semantics: "系统级汇总信号灯"
+    conclusion: "veto.decision 为单条机会裁定，veto_light 为全局信号汇总，层级不同"
+
+  mispricing_type_alignment:
+    existing:
+      source: "opportunity_card.schema.json:136-138"
+      type: "free-text (示例: sentiment_lag, info_gap, recency_bias, liquidity_gap)"
+    dict:
+      source: "本字典新增枚举"
+      values: ["THIN", "RULE", "SLOW", "UNKNOWN"]
+    conclusion: "本字典枚举为更高层级分类；现有自由文本可作为子类映射"

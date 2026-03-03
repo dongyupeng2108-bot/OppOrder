@@ -1,7 +1,8 @@
 {
   "dependencies": {
     "node-fetch": "^3.3.2",
-    "sqlite3": "^5.1.7"
+    "sqlite3": "^5.1.7",
+    "undici": "^7.22.0"
   },
   "scripts": {
     "test": "node tests/behavior/run_tests.mjs",
