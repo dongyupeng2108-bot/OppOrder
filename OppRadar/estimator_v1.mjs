@@ -255,7 +255,7 @@ export function mockEstimatorOutput(market) {
     claims: [],
     risk_triggers: [],
     veto: { decision: 'ALLOW', labels: [], rule_facts: {} },
-    rules_text: `[mock] Settlement rules derived from market ${id.slice(0, 16)}`,
+    rules_text: `[mock] Settlement rules derived from market ${id.slice(0, 16)}. The market resolves YES if the stated condition is met before the expiration date.`,
     rules_unknown: rulesUnknown,
     bullshit_score: bullshitScore,
     why_1_liner: '[mock] Deterministic estimator output',
