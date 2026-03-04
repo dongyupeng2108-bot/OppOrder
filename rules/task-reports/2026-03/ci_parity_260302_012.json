@@ -1,0 +1,15 @@
+{
+  "task_id": "260302_012",
+  "parity": "PASS",
+  "base": "c12ea781a21a65abfe6fe493b0310d1f36a5ae53",
+  "head": "16a279bd8b43e62fd595631d6b373cf6c4045075",
+  "merge_base": "c12ea781a21a65abfe6fe493b0310d1f36a5ae53",
+  "scope_files": [
+    "OppRadar/polymarket_eligible_filter.mjs",
+    "rules/LATEST.json",
+    "rules/task-reports/2026-03/generate_evidence_260302_012.mjs",
+    "scripts/run_pipeline_b1_b5.mjs"
+  ],
+  "scope_count": 4,
+  "generated_at": "2026-03-04T13:13:31.532Z"
+}
