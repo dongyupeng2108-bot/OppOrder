@@ -1,7 +1,7 @@
 /**
  * draft_generator.mjs
  * Reads the latest Polymarket eligible scan and generates draft snapshots
- * for each candidate using DeepSeek deepseek-reasoner via live_provider.
+ * for each candidate. Uses EstimatorV1 for system-computed fields.
  *
  * Output: data/snapshots/<opp_id>/draft_<timestamp>.json
  *
@@ -13,6 +13,13 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { appendSnapshot } from './snapshot_index.mjs';
+import {
+  buildEstimatorPrompt,
+  normalizeLLMOutput,
+  computeSystemFields,
+  assembleEstimatorOutput,
+  mockEstimatorOutput,
+} from './estimator_v1.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,59 +29,28 @@ const PROJECT_ROOT = path.resolve(__dirname, '..');
 const SCANS_DIR = path.join(PROJECT_ROOT, 'data', 'scans');
 const SNAPSHOTS_DIR = path.join(PROJECT_ROOT, 'data', 'snapshots');
 
-// ── User prompt template (filled per candidate) ──────────────────────────────
-function buildUserPrompt(candidate) {
-  const title = candidate.title || '';
-  const question = candidate.question || candidate.title || '';
-  const yes_price = candidate.yes_price != null ? String(candidate.yes_price) : '未知';
-  const event_time = candidate.event_time || '未知';
-
-  return `市场标题：${title}
-市场问题：${question}
-当前 YES 价格：${yes_price}
-结算时间：${event_time}
-请返回以下 JSON 结构：
-{
-  "p_range": { "low": 0.0, "high": 1.0 },
-  "confidence": "High|Med|Low",
-  "risk_triggers": ["trigger1", "trigger2"],
-  "veto": {
-    "decision": "ALLOW|DEGRADE|BLOCK",
-    "labels": ["label1"],
-    "rule_facts": {}
-  },
-  "mispricing_type": "sentiment_lag|info_gap|recency_bias|liquidity_gap|other",
-  "why_1_liner": "一句话解释为什么模型认为市场定价有偏差（≤120字符）",
-  "what_to_check": "建议验证步骤或数据来源（≤200字符）",
-  "summary": "一句话分析"
-}`;
+// ── LLM JSON parser ────────────────────────────────────────────────────────
+function parseLLMJSON(content) {
+  if (!content || typeof content !== 'string') return null;
+  let jsonStr = content;
+  const fenceMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
+  if (fenceMatch) jsonStr = fenceMatch[1].trim();
+  else {
+    const braceMatch = jsonStr.match(/\{[\s\S]*\}/);
+    if (braceMatch) jsonStr = braceMatch[0];
+  }
+  try { return JSON.parse(jsonStr); }
+  catch { return null; }
 }
 
 // ── callLLM wrapper ──────────────────────────────────────────────────────────
-async function callLLM({ prompt, model, mode }) {
+async function callLLM({ prompt, model, mode, candidate }) {
   if (mode === 'live') {
     const { callLive } = await import('./providers/live_provider.mjs');
-    return callLive({ prompt, model });
+    return { raw: await callLive({ prompt, model }), source: 'live' };
   }
-  // Mock fallback
-  return {
-    id: `mock_${Date.now()}`,
-    title: 'Mock Draft',
-    score: 0.5,
-    run_id: 'mock_run',
-    created_at: new Date().toISOString(),
-    summary: '[mock] No live mode',
-    provider: 'mock',
-    snapshot_type: 'draft',
-    model_used: model,
-    p_range: { low: 0.4, high: 0.6 },
-    confidence: 'Low',
-    risk_triggers: [],
-    veto: { decision: 'ALLOW', labels: [], rule_facts: {} },
-    mispricing_type: 'other',
-    why_1_liner: '[mock] Insufficient data to assess mispricing',
-    what_to_check: '[mock] Verify with live data'
-  };
+  // Mock: deterministic via EstimatorV1
+  return { estimatorOutput: mockEstimatorOutput(candidate), source: 'mock' };
 }
 
 // ── Find latest eligible scan file ──────────────────────────────────────────
@@ -82,7 +58,7 @@ function findLatestScan() {
   if (!fs.existsSync(SCANS_DIR)) return null;
   const files = fs.readdirSync(SCANS_DIR)
     .filter(f => f.startsWith('eligible_') && f.endsWith('.json'))
-    .sort() // lexicographic → latest date last
+    .sort()
     .reverse();
   return files.length > 0 ? path.join(SCANS_DIR, files[0]) : null;
 }
@@ -94,7 +70,6 @@ function writeSnapshot(oppId, snapshot) {
   const ts = new Date().toISOString().replace(/[:.]/g, '-');
   const filename = `draft_${ts}.json`;
   const outPath = path.join(dir, filename);
-  // Never overwrite: each timestamp-named file is unique (append-only guarantee)
   fs.writeFileSync(outPath, JSON.stringify(snapshot, null, 2) + '\n', { encoding: 'utf8' });
   return { outPath, relPath: path.join(oppId, filename) };
 }
@@ -102,13 +77,12 @@ function writeSnapshot(oppId, snapshot) {
 // ── Main: generate drafts for all candidates ─────────────────────────────────
 
 /**
- * Read the latest eligible scan, call DeepSeek for each candidate,
+ * Read the latest eligible scan, generate EstimatorV1 output for each candidate,
  * and write draft snapshots to data/snapshots/.
  *
- * @returns {Promise<{ total, success, failed, skipped, scan_date, snapshots_dir }>}
+ * @returns {Promise<{ total, success, failed, skipped, scan_date, snapshots_dir, estimator_v1 }>}
  */
 export async function generateDrafts() {
-  // Ensure snapshots dir
   if (!fs.existsSync(SNAPSHOTS_DIR)) {
     fs.mkdirSync(SNAPSHOTS_DIR, { recursive: true });
   }
@@ -117,12 +91,8 @@ export async function generateDrafts() {
   if (!scanFile) {
     console.warn('[draft_generator] No eligible scan files found in', SCANS_DIR);
     return {
-      total: 0,
-      success: 0,
-      failed: 0,
-      skipped: 0,
-      scan_date: null,
-      snapshots_dir: SNAPSHOTS_DIR,
+      total: 0, success: 0, failed: 0, skipped: 0,
+      scan_date: null, snapshots_dir: SNAPSHOTS_DIR,
       error: 'No scan files found. Run GET /eligible/scan first.'
     };
   }
@@ -142,75 +112,105 @@ export async function generateDrafts() {
   let success = 0;
   let failed = 0;
   let skipped = 0;
+  const trustDist = { GREEN: 0, YELLOW: 0, RED: 0 };
 
   for (const candidate of candidates) {
     const oppId = candidate.opp_id || `opp_${Date.now()}_${Math.random().toString(36).slice(2)}`;
 
     try {
-      const userPrompt = buildUserPrompt(candidate);
+      const prompt = buildEstimatorPrompt(candidate);
       const t0 = Date.now();
-      const llmResult = await callLLM({
-        prompt: userPrompt,
+      const llmResponse = await callLLM({
+        prompt,
         model: 'deepseek-reasoner',
-        mode: 'live'
+        mode: 'live',
+        candidate,
       });
       const latency_ms = Date.now() - t0;
 
-      // Compute offset fields from p_range and yes_price
-      const p_range = llmResult.p_range || { low: 0.3, high: 0.7 };
-      const yes_price = candidate.yes_price != null ? candidate.yes_price : 0.5;
-      const p_mid = parseFloat(((p_range.low + p_range.high) / 2).toFixed(4));
-      const dev_signed = parseFloat((p_mid - yes_price).toFixed(4));
-      const dev_abs = parseFloat(Math.abs(dev_signed).toFixed(4));
-      const dev_flag = dev_signed > 0.05 ? 'UNDER' : dev_signed < -0.05 ? 'OVER' : 'FAIR';
+      // Build EstimatorV1 output
+      let estOutput;
+      if (llmResponse.source === 'mock') {
+        estOutput = llmResponse.estimatorOutput;
+      } else {
+        // Live mode: parse raw LLM response, normalize, compute system fields
+        const rawContent = typeof llmResponse.raw === 'string'
+          ? llmResponse.raw
+          : (llmResponse.raw?.content || llmResponse.raw?.summary || '');
+        const parsed = typeof llmResponse.raw === 'object' && llmResponse.raw.p_range
+          ? llmResponse.raw
+          : parseLLMJSON(rawContent);
+        const llmFields = normalizeLLMOutput(parsed);
+        const yesPrice = candidate.yes_price != null ? candidate.yes_price : 0.5;
+        const systemFields = computeSystemFields(llmFields, yesPrice);
+        estOutput = assembleEstimatorOutput({
+          llmFields, systemFields,
+          model: 'deepseek-reasoner',
+          latency_ms,
+          provider: 'live',
+          fallback: !parsed,
+        });
+      }
+
+      trustDist[estOutput.estimator_trust_level]++;
 
       // Build full OpportunityCard-compatible draft snapshot
       const snapshot = {
         // Required OpportunityCard fields
-        id: llmResult.id || `draft_${oppId}_${Date.now()}`,
-        title: candidate.title || llmResult.title || '',
-        score: llmResult.score != null ? llmResult.score : (candidate.yes_price || 0.5),
+        id: `draft_${oppId}_${Date.now()}`,
+        title: candidate.title || candidate.question || '',
+        score: candidate.yes_price || 0.5,
         run_id: `draft_${new Date().toISOString().slice(0, 10)}`,
-        created_at: llmResult.created_at || new Date().toISOString(),
+        created_at: new Date().toISOString(),
 
-        // M4 fields
+        // M4 identity
         opp_id: oppId,
         snapshot_type: 'draft',
-        model_used: llmResult.model_used || 'deepseek-reasoner',
-        p_range,
-        confidence: llmResult.confidence || 'Low',
-        risk_triggers: llmResult.risk_triggers || [],
-        veto: llmResult.veto || { decision: 'ALLOW', labels: [], rule_facts: {} },
+        model_used: estOutput.model_used,
         evidence_refs: [path.basename(scanFile)],
 
-        // M4 offset sorting fields
-        p_mid,
-        dev_signed,
-        dev_abs,
-        dev_flag,
+        // EstimatorV1 LLM fields
+        p_range: estOutput.p_range,
+        confidence: estOutput.confidence,
+        claims: estOutput.claims,
+        risk_triggers: estOutput.risk_triggers,
+        veto: estOutput.veto,
+        rules_text: estOutput.rules_text,
+        rules_unknown: estOutput.rules_unknown,
+        bullshit_score: estOutput.bullshit_score,
+        why_1_liner: estOutput.why_1_liner,
+        mispricing_type: estOutput.mispricing_type,
 
-        // M4 offset diagnostic fields
-        mispricing_type: llmResult.mispricing_type || '',
-        why_1_liner: llmResult.why_1_liner || '',
-        what_to_check: llmResult.what_to_check || '',
+        // EstimatorV1 system-computed fields
+        estimator_v1: {
+          trust_score: estOutput.estimator_trust_score,
+          trust_level: estOutput.estimator_trust_level,
+          rules_penalty: estOutput.rules_penalty,
+          range_width: estOutput.range_width,
+          p_valid: estOutput.p_valid,
+        },
 
-        // M4 model source fields
+        // Offset fields (system-computed)
+        p_mid: estOutput.p_mid,
+        dev_signed: estOutput.dev_signed,
+        dev_abs: estOutput.dev_abs,
+        dev_flag: estOutput.dev_flag,
+
+        // M4 model source
         model_role: 'scan',
-        latency_ms,
+        latency_ms: estOutput.latency_ms,
 
         // Extra context
-        summary: llmResult.summary || '',
         market_url: candidate.market_url || '',
         yes_price: candidate.yes_price,
-        event_time: candidate.event_time,
-        provider: llmResult.provider || 'live',
-        _fallback: llmResult._fallback || false
+        event_time: candidate.event_time || candidate.end_date,
+        provider: estOutput.provider,
+        _fallback: estOutput._fallback,
       };
 
       const { outPath, relPath } = writeSnapshot(oppId, snapshot);
       console.log(`[draft_generator] Written: ${outPath}`);
 
-      // Update global snapshot index (append-only)
       appendSnapshot({
         opp_id: oppId,
         title: snapshot.title || '',
@@ -233,10 +233,13 @@ export async function generateDrafts() {
     failed,
     skipped,
     scan_date,
-    snapshots_dir: SNAPSHOTS_DIR
+    snapshots_dir: SNAPSHOTS_DIR,
+    estimator_v1: {
+      trust_dist: { ...trustDist },
+    },
   };
 
-  console.log(`[draft_generator] Done. total=${candidates.length} success=${success} failed=${failed}`);
+  console.log(`[draft_generator] Done. total=${candidates.length} success=${success} failed=${failed} trust: GREEN=${trustDist.GREEN} YELLOW=${trustDist.YELLOW} RED=${trustDist.RED}`);
   return summary;
 }
 
