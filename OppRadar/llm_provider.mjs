@@ -406,7 +406,8 @@ export function getProvider(type) {
     // If type is explicitly provided, respect it
     if (type) {
         switch (type.toLowerCase()) {
-            case 'deepseek': return new DeepSeekProvider();
+            case 'deepseek':
+            case 'live': return new DeepSeekProvider();
             case 'ollama': return new OllamaProvider();
             case 'openrouter': return new OpenRouterProvider();
             case 'mock': return new MockProvider();

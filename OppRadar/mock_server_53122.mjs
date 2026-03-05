@@ -75,7 +75,7 @@ let monitorState = {};
 
 // Helper: Run Scan Core Logic (Decoupled from HTTP)
 async function runScanCore(params) {
-    let { seed, n_opps, mode, persist, max_n_opps, llm_provider, topic_key, dedup_window_sec, dedup_mode, cache_ttl_sec, batch_id, with_news } = params;
+    let { seed, n_opps, mode, persist, max_n_opps, llm_provider, provider, topic_key, dedup_window_sec, dedup_mode, cache_ttl_sec, batch_id, with_news } = params;
 
     // Defaults
     seed = (seed === undefined || seed === null || seed === '') ? 111 : parseInt(seed, 10);
@@ -83,15 +83,15 @@ async function runScanCore(params) {
     mode = (mode === undefined || mode === null || mode === '') ? 'fast' : mode;
     persist = (persist === undefined || persist === null || persist === '') ? true : (String(persist) === 'true');
     max_n_opps = (max_n_opps === undefined || max_n_opps === null || max_n_opps === '') ? 50 : parseInt(max_n_opps, 10);
-    
+
     topic_key = topic_key || 'default_topic';
     dedup_window_sec = (dedup_window_sec === undefined || dedup_window_sec === null || dedup_window_sec === '') ? 0 : parseInt(dedup_window_sec, 10);
     dedup_mode = (dedup_mode === undefined || dedup_mode === null || dedup_mode === '') ? 'run' : dedup_mode;
     cache_ttl_sec = (cache_ttl_sec === undefined || cache_ttl_sec === null || cache_ttl_sec === '') ? 900 : parseInt(cache_ttl_sec, 10);
     with_news = (with_news === undefined || with_news === null || with_news === '') ? false : (String(with_news) === 'true');
 
-    // Resolve LLM Provider for this run
-    const runLLMProviderName = llm_provider || process.env.LLM_PROVIDER || 'mock';
+    // Resolve LLM Provider for this run (accept both "provider" and "llm_provider" param names)
+    const runLLMProviderName = llm_provider || provider || process.env.LLM_PROVIDER || 'mock';
     const runLLMProvider = getProvider(runLLMProviderName);
 
     // Validation & Cap
