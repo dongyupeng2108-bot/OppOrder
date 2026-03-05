@@ -2,7 +2,7 @@
   "task_id": "260305_003",
   "parity": "PASS",
   "base": "42220d96dc508bda34db17749626452b59698c14",
-  "head": "0f7fc532491c8bc12d8f8677e6b4b94f50cba5ce",
+  "head": "3f6938cfcc3ac5340c5e5ff93b6212f9b6f3b1de",
   "merge_base": "42220d96dc508bda34db17749626452b59698c14",
   "scope_files": [
     "OppRadar/db.mjs",
@@ -10,8 +10,13 @@
     "OppRadar/scanner_service.mjs",
     "OppRadar/snapshot_store.mjs",
     "rules/LATEST.json",
+    "rules/task-reports/2026-03/ci_parity_260305_003.json",
+    "rules/task-reports/2026-03/dod_evidence_260305_003.txt",
+    "rules/task-reports/2026-03/generate_evidence_260305_003.mjs",
+    "rules/task-reports/2026-03/git_meta_260305_003.json",
+    "rules/task-reports/2026-03/result_260305_003.json",
     "tests/scanner_service.test.mjs"
   ],
-  "scope_count": 6,
-  "generated_at": "2026-03-05T13:59:12.654Z"
+  "scope_count": 11,
+  "generated_at": "2026-03-05T13:59:45.897Z"
 }
