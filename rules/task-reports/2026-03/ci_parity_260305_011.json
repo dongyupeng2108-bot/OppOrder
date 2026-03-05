@@ -2,13 +2,18 @@
   "task_id": "260305_011",
   "parity": "PASS",
   "base": "b398c3adfa2883e3f64ce710a39e09377d6dc969",
-  "head": "dae1ce78c73cbc1934a596dccf1de10850c9a33f",
+  "head": "6ae5e73f10230613a47bc4c3cc3a87fc41fb1541",
   "merge_base": "b398c3adfa2883e3f64ce710a39e09377d6dc969",
   "scope_files": [
     "rules/LATEST.json",
+    "rules/task-reports/2026-03/ci_parity_260305_011.json",
+    "rules/task-reports/2026-03/dod_evidence_260305_011.txt",
+    "rules/task-reports/2026-03/generate_evidence_260305_011.mjs",
+    "rules/task-reports/2026-03/git_meta_260305_011.json",
+    "rules/task-reports/2026-03/result_260305_011.json",
     "ui/oppradar_v2.html",
     "ui/scanner.html"
   ],
-  "scope_count": 3,
-  "generated_at": "2026-03-05T20:04:47.614Z"
+  "scope_count": 8,
+  "generated_at": "2026-03-05T20:05:31.339Z"
 }
