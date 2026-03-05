@@ -162,11 +162,66 @@ function initSchema() {
         db.run(`CREATE INDEX IF NOT EXISTS idx_opp_ts_score ON opportunity_event(ts, score)`);
         db.run(`CREATE INDEX IF NOT EXISTS idx_opp_run_id ON opportunity_event(build_run_id)`);
         
+        // Postmortem Table (M6-A1)
+        db.run(`CREATE TABLE IF NOT EXISTS postmortem (
+            postmortem_id TEXT PRIMARY KEY,
+            opp_id TEXT NOT NULL,
+            outcome TEXT NOT NULL,
+            outcome_ts DATETIME NOT NULL,
+            market_price_at_scan REAL NOT NULL,
+            market_price_at_settlement REAL,
+            p_baseline_low REAL NOT NULL,
+            p_baseline_mid REAL NOT NULL,
+            p_baseline_high REAL NOT NULL,
+            confidence TEXT NOT NULL,
+            veto_status TEXT NOT NULL,
+            veto_reason TEXT,
+            risk_level TEXT NOT NULL,
+            risk_reason TEXT,
+            filter_type TEXT,
+            filter_reason TEXT,
+            edge_buy_net REAL,
+            edge_sell_net REAL,
+            edge_net REAL,
+            predicted_direction TEXT,
+            direction_correct INTEGER,
+            pnl_simulated REAL,
+            snapshot_draft_id TEXT,
+            snapshot_deep_id TEXT,
+            active_snapshot_type TEXT NOT NULL,
+            decision_snapshot_id TEXT NOT NULL,
+            decision_b5_run_id TEXT,
+            strategy_id TEXT,
+            is_topn INTEGER NOT NULL,
+            topn_rank REAL,
+            attribution_label TEXT,
+            attribution_reason TEXT,
+            attribution_confirmed INTEGER,
+            actual REAL NOT NULL,
+            virtual_notional REAL NOT NULL,
+            revision INTEGER NOT NULL DEFAULT 0,
+            is_latest INTEGER NOT NULL DEFAULT 1,
+            created_at DATETIME NOT NULL
+        )`);
+
+        // Postmortem Notes Table (M6-A1)
+        db.run(`CREATE TABLE IF NOT EXISTS postmortem_notes (
+            note_id TEXT PRIMARY KEY,
+            opp_id TEXT NOT NULL,
+            note_text TEXT NOT NULL,
+            created_at DATETIME NOT NULL
+        )`);
+
         // Unique Index for News Deduplication (Provider-Aware)
         // Drop old restrictive index if exists (migration from v21)
         db.run(`DROP INDEX IF EXISTS idx_news_content_hash`);
         // Create new provider-aware unique index
         db.run(`CREATE UNIQUE INDEX IF NOT EXISTS idx_news_content_hash_provider ON news_stub(topic_key, content_hash, provider)`);
+
+        // Postmortem Indices (M6-A1)
+        db.run(`CREATE INDEX IF NOT EXISTS idx_pm_opp_id ON postmortem(opp_id)`);
+        db.run(`CREATE INDEX IF NOT EXISTS idx_pm_is_latest ON postmortem(is_latest)`);
+        db.run(`CREATE INDEX IF NOT EXISTS idx_pm_notes_opp_id ON postmortem_notes(opp_id)`);
     });
 }
 
