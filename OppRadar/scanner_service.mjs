@@ -1,3 +1,4 @@
+import './proxy_agent.mjs';
 /**
  * scanner_service.mjs
  * M5.5-S3: Scanner service — fetches CoreSnapshots for each market in a UniverseRun.
