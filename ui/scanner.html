@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scanner — OppRadar</title>
+  <link rel="stylesheet" href="/ui/styles.css">
+  <style>
+    body { font-family: 'JetBrains Mono', 'Courier New', monospace; }
+    header { flex-wrap: wrap; }
+    nav { font-size: 0.9em; }
+    nav a { margin-right: 1em; }
+    main { max-width: 1100px; }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 0.6em; }
+    th, td { padding: 5px 10px; border: 1px solid #2d3048; text-align: left; font-size: 0.85em; }
+    th { background: #1a1d27; color: #a0a8ff; font-weight: 600; position: sticky; top: 0; }
+    tr:hover { background: #252840; }
+
+    .btn { background: #4c50b6; color: #fff; border: none; padding: 8px 18px; border-radius: 4px;
+           cursor: pointer; font-size: 0.9em; font-family: inherit; }
+    .btn:hover { background: #5c60d0; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .status-msg { margin-left: 12px; font-size: 0.85em; color: #8888a0; }
+    .config-grid { display: grid; grid-template-columns: 160px 1fr; gap: 4px 12px; font-size: 0.88em; }
+    .config-grid .label { color: #8888a0; font-weight: 600; }
+    .config-grid .value { color: #e0e0e0; word-break: break-all; }
+    .empty-msg { padding: 1.5em; text-align: center; color: #8888a0; }
+    .badge { display: inline-block; background: #2d3048; color: #a0a8ff; padding: 1px 6px; border-radius: 3px; font-size: 0.8em; }
+  </style>
+</head>
+<body>
+<header>
+  <h1>OppRadar <span class="tag">Scanner</span></h1>
+  <nav>
+    <a href="/ui/oppradar_v2.html">📡 OppRadar</a>
+    <a href="/ui/scanner.html">🔍 Scanner</a>
+  </nav>
+</header>
+
+<main>
+  <!-- 1. 触发扫描 -->
+  <section id="trigger-section">
+    <h2>触发扫描</h2>
+    <button class="btn" id="btn-run-scan" onclick="triggerScan()">▶ Run Scanner</button>
+    <span class="status-msg" id="scan-status"></span>
+    <div id="scan-result" style="margin-top:0.8em; display:none;">
+      <div class="config-grid" id="scan-result-grid"></div>
+    </div>
+  </section>
+
+  <!-- 2. Scanner 运行历史 -->
+  <section id="scanner-history-section">
+    <h2>Scanner 运行历史</h2>
+    <div id="scanner-history-body">
+      <p class="empty-msg">加载中...</p>
+    </div>
+  </section>
+
+  <!-- 3. Universe 运行历史 -->
+  <section id="universe-history-section">
+    <h2>Universe 运行历史</h2>
+    <div id="universe-history-body">
+      <p class="empty-msg">加载中...</p>
+    </div>
+  </section>
+
+  <!-- 4. 当前配置 -->
+  <section id="config-section">
+    <h2>当前配置</h2>
+    <div id="config-body">
+      <p class="empty-msg">加载中...</p>
+    </div>
+  </section>
+</main>
+
+<script>
+const API = '';
+
+async function triggerScan() {
+  const btn = document.getElementById('btn-run-scan');
+  const status = document.getElementById('scan-status');
+  const resultDiv = document.getElementById('scan-result');
+  const resultGrid = document.getElementById('scan-result-grid');
+
+  btn.disabled = true;
+  status.textContent = '扫描中...';
+  resultDiv.style.display = 'none';
+
+  try {
+    const res = await fetch(API + '/scanner/run', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
+
+    status.textContent = '完成';
+    status.style.color = '#4caf50';
+    resultGrid.innerHTML = [
+      kv('Run ID', data.scanner_run_id),
+      kv('成功', data.core_success_count),
+      kv('失败', data.core_fail_count),
+      kv('耗时', data.wall_time_ms + ' ms'),
+    ].join('');
+    resultDiv.style.display = 'block';
+
+    loadScannerHistory();
+    loadUniverseHistory();
+  } catch (err) {
+    status.textContent = '失败: ' + err.message;
+    status.style.color = '#ff6b6b';
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function kv(label, value) {
+  return `<span class="label">${esc(label)}</span><span class="value">${esc(String(value))}</span>`;
+}
+
+function esc(s) {
+  const d = document.createElement('div'); d.textContent = s; return d.innerHTML;
+}
+
+function fmtTime(iso) {
+  if (!iso) return '-';
+  const d = new Date(iso);
+  return d.toLocaleString('zh-CN', { hour12: false });
+}
+
+async function loadScannerHistory() {
+  const el = document.getElementById('scanner-history-body');
+  try {
+    const res = await fetch(API + '/scanner/runs?limit=20');
+    const data = await res.json();
+    if (!data.runs || data.runs.length === 0) {
+      el.innerHTML = '<p class="empty-msg">暂无 Scanner 运行记录</p>';
+      return;
+    }
+    el.innerHTML = `<table>
+      <thead><tr><th>Run ID</th><th>时间</th><th>耗时(ms)</th><th>成功</th><th>失败</th><th>Packs</th></tr></thead>
+      <tbody>${data.runs.map(r => `<tr>
+        <td><code>${esc(r.scanner_run_id)}</code></td>
+        <td>${fmtTime(r.ts_start)}</td>
+        <td>${r.wall_time_ms}</td>
+        <td>${r.core_success_count}</td>
+        <td>${r.core_fail_count}</td>
+        <td>${Object.entries(r.pack_coverage || {}).map(([k,v]) => `<span class="badge">${esc(k)}:${esc(v)}</span>`).join(' ')}</td>
+      </tr>`).join('')}</tbody></table>`;
+  } catch (err) {
+    el.innerHTML = `<p class="empty-msg">加载失败: ${esc(err.message)}</p>`;
+  }
+}
+
+async function loadUniverseHistory() {
+  const el = document.getElementById('universe-history-body');
+  try {
+    const res = await fetch(API + '/universe/runs?limit=20');
+    const data = await res.json();
+    if (!data.runs || data.runs.length === 0) {
+      el.innerHTML = '<p class="empty-msg">暂无 Universe 运行记录</p>';
+      return;
+    }
+    el.innerHTML = `<table>
+      <thead><tr><th>Run ID</th><th>Universe</th><th>时间</th><th>Market数</th><th>前3</th></tr></thead>
+      <tbody>${data.runs.map(r => `<tr>
+        <td><code>${esc(r.universe_run_id)}</code></td>
+        <td>${esc(r.universe_id || '-')}</td>
+        <td>${fmtTime(r.ts_start)}</td>
+        <td>${r.market_count}</td>
+        <td>${(r.list_digest?.first3 || []).map(m => `<span class="badge">${esc(m)}</span>`).join(' ')}</td>
+      </tr>`).join('')}</tbody></table>`;
+  } catch (err) {
+    el.innerHTML = `<p class="empty-msg">加载失败: ${esc(err.message)}</p>`;
+  }
+}
+
+async function loadConfig() {
+  const el = document.getElementById('config-body');
+  try {
+    // Extract config from latest universe run
+    const uRes = await fetch(API + '/universe/runs?limit=1');
+    const uData = await uRes.json();
+    const latest = uData.runs?.[0];
+
+    // Also get latest scanner run for pack info
+    const sRes = await fetch(API + '/scanner/runs?limit=1');
+    const sData = await sRes.json();
+    const latestScan = sData.runs?.[0];
+
+    let html = '<div class="config-grid">';
+    if (latest) {
+      html += kv('Universe ID', latest.universe_id || '-');
+      html += kv('Config Hash', (latest.config_hash || '-').substring(0, 16) + '...');
+      html += kv('Market Count', latest.market_count || '-');
+      html += kv('List Hash', (latest.list_digest?.list_hash || '-').substring(0, 16) + '...');
+    }
+    if (latestScan) {
+      html += kv('Scan Profile', latestScan.scan_profile_id || '-');
+      const packs = latestScan.pack_coverage || {};
+      for (const [k, v] of Object.entries(packs)) {
+        html += kv('Pack: ' + k, v);
+      }
+      html += kv('API Calls', latestScan.api_calls_count ?? '-');
+      html += kv('Rate Limiter Sleep', (latestScan.rate_limiter_sleep_ms ?? '-') + ' ms');
+    }
+    if (!latest && !latestScan) {
+      html += '<span class="label" style="grid-column:1/-1">暂无运行记录，无法展示配置</span>';
+    }
+    html += '</div>';
+    el.innerHTML = html;
+  } catch (err) {
+    el.innerHTML = `<p class="empty-msg">加载配置失败: ${esc(err.message)}</p>`;
+  }
+}
+
+// Init
+loadScannerHistory();
+loadUniverseHistory();
+loadConfig();
+</script>
+</body>
+</html>
