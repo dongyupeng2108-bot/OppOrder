@@ -1,0 +1,14 @@
+TASK_ID=260302_016
+GENERATED_AT=2026-03-05T10:35:24.916Z
+
+# DoD Markers
+DOD_STATS_MODULE=OppRadar/postmortem_stats.mjs (GROUP BY + null safety)
+DOD_SCHEMA=OppRadar/contracts/postmortem_stats.schema.json
+DOD_ENDPOINT=GET /postmortem/stats (group_by, time_range, strategy_id)
+DOD_HR2=hit_rate denominator = COUNT(direction_correct)
+DOD_HR4=group_by enum values = postmortem table field names
+DOD_HR7=count/sum empty=0, rate/avg empty=null
+DOD_HR5=stats only count is_latest=1
+DOD_TESTS=tests/postmortem_stats.test.mjs (9/9 pass)
+
+GATE_LIGHT_EXIT=0

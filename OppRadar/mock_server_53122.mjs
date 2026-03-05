@@ -3593,6 +3593,26 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    // M6-A3 (260302_016): GET /postmortem/stats — aggregated postmortem statistics
+    if (pathname === '/postmortem/stats' && req.method === 'GET') {
+        try {
+            const { getStats } = await import('./postmortem_stats.mjs');
+            const result = await getStats({
+                group_by: params.get('group_by') || undefined,
+                time_range: params.get('time_range') || undefined,
+                strategy_id: params.get('strategy_id') || undefined,
+            });
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(result));
+        } catch (err) {
+            const status = err.message.startsWith('Invalid group_by') ? 400 : 500;
+            console.error('[/postmortem/stats GET error]', err.message);
+            res.writeHead(status, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: err.message }));
+        }
+        return;
+    }
+
     // M4-T5 (260301_018): POST /snapshots/:opp_id/deep — Gemini deep-dive snapshot
     if (pathname.startsWith('/snapshots/') && pathname.endsWith('/deep') && req.method === 'POST') {
         const oppId = pathname.slice('/snapshots/'.length, -'/deep'.length);

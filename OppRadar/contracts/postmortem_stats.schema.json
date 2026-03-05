@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Postmortem Stats Response",
+  "description": "M6-A3 aggregated postmortem statistics response. group_by enum values match postmortem table field names exactly.",
+  "type": "object",
+  "required": ["groups", "total", "meta"],
+  "properties": {
+    "groups": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["key", "count_total", "count_predicted", "sum_pnl_simulated"],
+        "properties": {
+          "key": { "type": "string", "description": "Group key value (e.g. GREEN, HIGH, DRAFT)" },
+          "count_total": { "type": "integer", "minimum": 0 },
+          "count_predicted": { "type": "integer", "minimum": 0 },
+          "pred_coverage": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+          "avg_edge_net": { "type": ["number", "null"] },
+          "hit_rate": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+          "sum_pnl_simulated": { "type": "number" },
+          "avg_abs_deviation": { "type": ["number", "null"], "minimum": 0, "maximum": 1 }
+        }
+      }
+    },
+    "total": {
+      "type": "object",
+      "required": ["count_total", "count_predicted", "sum_pnl_simulated"],
+      "properties": {
+        "count_total": { "type": "integer", "minimum": 0 },
+        "count_predicted": { "type": "integer", "minimum": 0 },
+        "pred_coverage": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+        "avg_edge_net": { "type": ["number", "null"] },
+        "hit_rate": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+        "sum_pnl_simulated": { "type": "number" },
+        "avg_abs_deviation": { "type": ["number", "null"], "minimum": 0, "maximum": 1 }
+      }
+    },
+    "meta": {
+      "type": "object",
+      "required": ["group_by", "filter", "generated_at"],
+      "properties": {
+        "group_by": {
+          "type": ["string", "null"],
+          "enum": [
+            "strategy_id", "time_bucket", "veto_status", "risk_level",
+            "confidence", "active_snapshot_type", "is_topn", "filter_type",
+            null
+          ]
+        },
+        "time_range": { "type": ["string", "null"] },
+        "strategy_id": { "type": ["string", "null"] },
+        "filter": { "type": "string" },
+        "generated_at": { "type": "string" }
+      }
+    }
+  }
+}
