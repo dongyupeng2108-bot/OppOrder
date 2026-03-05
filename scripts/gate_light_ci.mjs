@@ -450,7 +450,7 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
     if (task_id >= '260216_002') {
         console.log('[Gate Light] Checking Workspace Healer Evidence...');
         let healerFile = path.join(result_dir, `workspace_healer_${task_id}.json`);
-        
+
         if (!fs.existsSync(healerFile)) {
             let fallbackFound = false;
             const match = task_id.match(/^(\d{2})(\d{2})\d{2}_/);
@@ -465,41 +465,50 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                      fallbackFound = true;
                  }
             }
-            
+
             if (!fallbackFound) {
-                console.error(`[Gate Light] FAILED: Workspace Healer evidence missing: ${healerFile}`);
-                console.error(`  ACTION: run gate-light workflow step Generate Workspace Healer Evidence or commit run archive`);
-                process.exit(1);
+                // On push-to-main (no PR context), workspace healer evidence is not generated
+                // by earlier CI steps because TASK_ID cannot be detected from branch name.
+                // Warn and skip instead of hard-failing.
+                if (detectionSource === 'LATEST_JSON') {
+                    console.warn(`[Gate Light] WARNING: Workspace Healer evidence missing (push-to-main, no PR context). Skipping check.`);
+                } else {
+                    console.error(`[Gate Light] FAILED: Workspace Healer evidence missing: ${healerFile}`);
+                    console.error(`  ACTION: run gate-light workflow step Generate Workspace Healer Evidence or commit run archive`);
+                    process.exit(1);
+                }
             }
         }
         
-        try {
-            const healerData = JSON.parse(fs.readFileSync(healerFile, 'utf8'));
-            
-            // Check result
-            if (healerData.result !== 'PASS') {
-                console.error(`[Gate Light] FAILED: Workspace Healer result is ${healerData.result}`);
-                console.error(`  Reason: ${healerData.reason || 'Unknown'}`);
-                console.error(`FIX_CMD: git status && git add -A && git commit -m "chore: clean workspace for ${task_id}"`);
+        if (fs.existsSync(healerFile)) {
+            try {
+                const healerData = JSON.parse(fs.readFileSync(healerFile, 'utf8'));
+
+                // Check result
+                if (healerData.result !== 'PASS') {
+                    console.error(`[Gate Light] FAILED: Workspace Healer result is ${healerData.result}`);
+                    console.error(`  Reason: ${healerData.reason || 'Unknown'}`);
+                    console.error(`FIX_CMD: git status && git add -A && git commit -m "chore: clean workspace for ${task_id}"`);
+                    process.exit(1);
+                }
+
+                // Check cleanliness (Double Check)
+                const tracked = healerData.after?.tracked_changed_count ?? -1;
+                const untracked = healerData.after?.untracked_count ?? -1;
+
+                if (tracked !== 0 || untracked !== 0) {
+                    console.error(`[Gate Light] FAILED: Workspace Healer detected dirty state AFTER clean.`);
+                    console.error(`  Tracked Changed: ${tracked} (Expected: 0)`);
+                    console.error(`  Untracked: ${untracked} (Expected: 0)`);
+                    console.error(`FIX_CMD: git status && git add -A && git commit -m "chore: clean workspace for ${task_id}"`);
+                    process.exit(1);
+                }
+
+                console.log('[Gate Light] Workspace Healer verified (Clean Environment).');
+            } catch (e) {
+                console.error(`[Gate Light] FAILED: Invalid Workspace Healer JSON: ${e.message}`);
                 process.exit(1);
             }
-            
-            // Check cleanliness (Double Check)
-            const tracked = healerData.after?.tracked_changed_count ?? -1;
-            const untracked = healerData.after?.untracked_count ?? -1;
-            
-            if (tracked !== 0 || untracked !== 0) {
-                console.error(`[Gate Light] FAILED: Workspace Healer detected dirty state AFTER clean.`);
-                console.error(`  Tracked Changed: ${tracked} (Expected: 0)`);
-                console.error(`  Untracked: ${untracked} (Expected: 0)`);
-                console.error(`FIX_CMD: git status && git add -A && git commit -m "chore: clean workspace for ${task_id}"`);
-                process.exit(1);
-            }
-            
-            console.log('[Gate Light] Workspace Healer verified (Clean Environment).');
-        } catch (e) {
-            console.error(`[Gate Light] FAILED: Invalid Workspace Healer JSON: ${e.message}`);
-            process.exit(1);
         }
     }
 

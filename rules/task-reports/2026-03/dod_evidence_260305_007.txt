@@ -1,0 +1,10 @@
+TASK_ID=260305_007
+GENERATED_AT=2026-03-05T17:56:04.336Z
+
+# DoD Markers
+DOD_HEALER_SKIP=detectionSource===LATEST_JSON => warn+skip (not hard-fail)
+DOD_HEALER_GUARD=fs.existsSync(healerFile) before JSON.parse
+DOD_PR_STILL_HARD=--task_id or BRANCH_NAME detection still hard-fails on missing healer
+DOD_OTHER_CHECKS=all other hard guards unaffected
+
+GATE_LIGHT_EXIT=0
