@@ -3608,6 +3608,22 @@ const server = http.createServer(async (req, res) => {
         }
     }
 
+    // M5.5-S4 (260305_004): Scanner/Universe routes
+    if (pathname === '/scanner/run' || pathname === '/scanner/runs' ||
+        pathname === '/universe/runs' || pathname.startsWith('/snapshots/core/')) {
+        try {
+            const { handleScannerRoute } = await import('./scanner_routes.mjs');
+            const qsParams = new URLSearchParams(parsedUrl.search || '');
+            const handled = await handleScannerRoute(pathname, req.method, qsParams, req, res);
+            if (handled) return;
+        } catch (err) {
+            console.error('[scanner route error]', err.message);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: err.message }));
+            return;
+        }
+    }
+
     // M4-T5 (260301_018): POST /snapshots/:opp_id/deep — Gemini deep-dive snapshot
     if (pathname.startsWith('/snapshots/') && pathname.endsWith('/deep') && req.method === 'POST') {
         const oppId = pathname.slice('/snapshots/'.length, -'/deep'.length);

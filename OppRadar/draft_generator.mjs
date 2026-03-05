@@ -20,6 +20,9 @@ import {
   assembleEstimatorOutput,
   mockEstimatorOutput,
 } from './estimator_v1.mjs';
+import { runUniverse } from './universe_service.mjs';
+import { runScanner } from './scanner_service.mjs';
+import { getLatestCoreSnapshot } from './snapshot_store.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -87,25 +90,85 @@ export async function generateDrafts() {
     fs.mkdirSync(SNAPSHOTS_DIR, { recursive: true });
   }
 
-  const scanFile = findLatestScan();
-  if (!scanFile) {
-    console.warn('[draft_generator] No eligible scan files found in', SCANS_DIR);
-    return {
-      total: 0, success: 0, failed: 0, skipped: 0,
-      scan_date: null, snapshots_dir: SNAPSHOTS_DIR,
-      error: 'No scan files found. Run GET /eligible/scan first.'
-    };
-  }
-
-  let scanData;
+  // M5.5-S4: Universe → Scanner → CoreSnapshot pipeline
+  let eligibleMarkets = null;
+  let universeRun = null;
+  let scannerRun = null;
   try {
-    scanData = JSON.parse(fs.readFileSync(scanFile, 'utf8'));
+    universeRun = await runUniverse();
+    scannerRun = await runScanner({ universeRun });
+
+    // Build candidate list from CoreSnapshot (only markets with successful snapshots)
+    eligibleMarkets = [];
+    for (const marketId of universeRun.market_list) {
+      const snap = await getLatestCoreSnapshot(marketId);
+      if (snap && snap.mid_price != null) {
+        eligibleMarkets.push({
+          marketId,
+          mid_price: snap.mid_price,
+          core_snapshot_id: snap.snapshot_id,
+        });
+      }
+      // No CoreSnapshot → skip (hard rule: no price substitution)
+    }
+    console.log(`[draft_generator] CoreSnapshot pipeline: ${eligibleMarkets.length} eligible markets (from ${universeRun.market_count} universe)`);
   } catch (err) {
-    throw new Error(`[draft_generator] Failed to read scan file: ${err.message}`);
+    console.warn('[draft_generator] CoreSnapshot pipeline failed, falling back to scan file:', err.message);
+    eligibleMarkets = null;
   }
 
-  const candidates = Array.isArray(scanData.candidates) ? scanData.candidates : [];
-  const scan_date = scanData.scan_date || null;
+  // Load candidates: prefer CoreSnapshot pipeline, fallback to scan file
+  let candidates;
+  let scan_date;
+
+  if (eligibleMarkets && eligibleMarkets.length > 0) {
+    // Use CoreSnapshot-backed candidates
+    // Reconstruct candidate objects compatible with existing LLM estimation
+    const scanFile = findLatestScan();
+    let scanCandidatesMap = {};
+    if (scanFile) {
+      try {
+        const scanData = JSON.parse(fs.readFileSync(scanFile, 'utf8'));
+        for (const c of (scanData.candidates || [])) {
+          scanCandidatesMap[c.opp_id] = c;
+        }
+      } catch (_) {}
+    }
+
+    candidates = eligibleMarkets.map(em => {
+      const existing = scanCandidatesMap[em.marketId] || {};
+      return {
+        ...existing,
+        opp_id: em.marketId,
+        yes_price: em.mid_price,
+        _core_snapshot_id: em.core_snapshot_id,
+        title: existing.title || em.marketId,
+        question: existing.question || em.marketId,
+      };
+    });
+    scan_date = new Date().toISOString();
+  } else {
+    // Fallback: original scan file path
+    const scanFile = findLatestScan();
+    if (!scanFile) {
+      console.warn('[draft_generator] No eligible scan files found in', SCANS_DIR);
+      return {
+        total: 0, success: 0, failed: 0, skipped: 0,
+        scan_date: null, snapshots_dir: SNAPSHOTS_DIR,
+        error: 'No scan files found. Run GET /eligible/scan first.'
+      };
+    }
+
+    let scanData;
+    try {
+      scanData = JSON.parse(fs.readFileSync(scanFile, 'utf8'));
+    } catch (err) {
+      throw new Error(`[draft_generator] Failed to read scan file: ${err.message}`);
+    }
+
+    candidates = Array.isArray(scanData.candidates) ? scanData.candidates : [];
+    scan_date = scanData.scan_date || null;
+  }
 
   console.log(`[draft_generator] Processing ${candidates.length} candidates from ${path.basename(scanFile)}`);
 
