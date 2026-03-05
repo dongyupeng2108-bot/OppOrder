@@ -1,0 +1,12 @@
+TASK_ID=260305_001
+GENERATED_AT=2026-03-05T12:54:29.540Z
+
+# DoD Markers
+DOD_UNIVERSE_SPEC=config/universe_specs/main.json
+DOD_SCAN_PROFILE=config/scan_profiles/default.json
+DOD_FEATURE_PACK=config/feature_pack_registry.json
+DOD_CORE_SNAPSHOT_SCHEMA=OppRadar/contracts/core_snapshot.schema.json
+DOD_UNIVERSE_RUN_SCHEMA=OppRadar/contracts/universe_run.schema.json
+DOD_SCANNER_RUN_SCHEMA=OppRadar/contracts/scanner_run.schema.json
+
+GATE_LIGHT_EXIT=0
