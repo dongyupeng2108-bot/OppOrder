@@ -1199,13 +1199,17 @@ if ($Mode -eq "Integrate") {
     # === 回报提示 ===
     $LockExists = Test-Path "$RepoRoot\rules\task-reports\locks\$TaskId.lock.json"
     $LockStatus = if ($LockExists) { "✅ 存在" } else { "❌ 未找到" }
-    $RptAutoPrPath = "$EvidenceDir\auto_pr_$TaskId.json"
-    $RptAutoPrJson = Read-JsonSafe -Path $RptAutoPrPath
-    $PrNumber = ""
-    if ($RptAutoPrJson -and $RptAutoPrJson.PSObject.Properties.Name -contains "number" -and $RptAutoPrJson.number) {
-        $PrNumber = $RptAutoPrJson.number.ToString()
+    $ReportPrPath = "$EvidenceDir\auto_pr_$TaskId.json"
+    $ReportPrJson = if (Test-Path $ReportPrPath) { Get-Content $ReportPrPath -Raw | ConvertFrom-Json } else { $null }
+    $ReportPrNum = ""
+    if ($ReportPrJson) {
+        if ($ReportPrJson.PSObject.Properties.Name -contains "number" -and $ReportPrJson.number) {
+            $ReportPrNum = $ReportPrJson.number.ToString()
+        } elseif ($ReportPrJson.PSObject.Properties.Name -contains "pr_number" -and $ReportPrJson.pr_number) {
+            $ReportPrNum = $ReportPrJson.pr_number.ToString()
+        }
     }
-    $PrDisplay = if ($PrNumber) { "#$PrNumber" } else { "（未创建）" }
+    $PrDisplay = if ($ReportPrNum) { "#$ReportPrNum" } else { "（未创建）" }
     $ReportPrompt = @"
 
 ========================================
