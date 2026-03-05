@@ -1,0 +1,14 @@
+{
+  "task_id": "260305_011",
+  "parity": "PASS",
+  "base": "b398c3adfa2883e3f64ce710a39e09377d6dc969",
+  "head": "dae1ce78c73cbc1934a596dccf1de10850c9a33f",
+  "merge_base": "b398c3adfa2883e3f64ce710a39e09377d6dc969",
+  "scope_files": [
+    "rules/LATEST.json",
+    "ui/oppradar_v2.html",
+    "ui/scanner.html"
+  ],
+  "scope_count": 3,
+  "generated_at": "2026-03-05T20:04:47.614Z"
+}

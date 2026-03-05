@@ -1,0 +1,12 @@
+TASK_ID=260305_011
+GENERATED_AT=2026-03-05T20:04:47.614Z
+
+# DoD Markers
+DOD_SCANNER_HTML=ui/scanner.html created with 4 section blocks
+DOD_TRIGGER_BTN=Run Scanner button triggers POST /scanner/run
+DOD_SCANNER_TABLE=Scanner history table from GET /scanner/runs
+DOD_UNIVERSE_TABLE=Universe history table from GET /universe/runs
+DOD_CONFIG_SECTION=Config displays latest run metadata
+DOD_NAV_LINK=oppradar_v2.html nav contains scanner.html link
+
+GATE_LIGHT_EXIT=0
