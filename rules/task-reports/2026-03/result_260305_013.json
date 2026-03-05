@@ -1,7 +1,17 @@
 {
   "task_id": "260305_013",
   "gate_light_exit": 0,
-  "report_file": "rules/task-reports/2026-03/260305_013.json",
-  "report_sha256_short": "ac917df0",
-  "generated_at": "2026-03-05T20:43:14.017Z"
+  "report_file": "notify_260305_013.txt",
+  "report_sha256_short": "63c98e70",
+  "generated_at": "2026-03-05T20:43:44.785Z",
+  "status": "DONE",
+  "summary": "Automation Pack V1 Validation for Task 260305_013",
+  "mode": "Integrate",
+  "dod_evidence": {
+    "gate_light_exit": 0,
+    "healthcheck": [
+      "rules/task-reports/2026-03/260305_013_healthcheck_53122_root.txt",
+      "rules/task-reports/2026-03/260305_013_healthcheck_53122_pairs.txt"
+    ]
+  }
 }
