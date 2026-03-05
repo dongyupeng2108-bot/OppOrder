@@ -1,0 +1,10 @@
+TASK_ID=260305_010
+GENERATED_AT=2026-03-05T19:41:27.888Z
+
+# DoD Markers
+DOD_DUAL_FIELD=checks both number and pr_number in auto_pr JSON
+DOD_GET_CONTENT=uses Get-Content | ConvertFrom-Json (not Read-JsonSafe)
+DOD_SYNTAX_OK=PowerShell PSParser returns 0 errors
+DOD_NO_BREAK=existing pipeline unaffected
+
+GATE_LIGHT_EXIT=0
