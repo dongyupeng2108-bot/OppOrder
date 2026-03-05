@@ -40,12 +40,18 @@ if (existsSync(ENV_PATH)) {
 
 // ── Constants ────────────────────────────────────────────────────────────────
 const DEEPSEEK_API_URL = 'https://api.deepseek.com/chat/completions';
-const DEFAULT_MODEL = 'deepseek-reasoner';
+const DEFAULT_MODEL = 'deepseek-chat';
 const TIMEOUT_MS = 30_000;
 
 // ── Prompt templates (hardcoded) ─────────────────────────────────────────────
 const SYSTEM_PROMPT =
-  '你是一个预测市场概率分析师。请对以下市场机会进行结构化分析，严格返回 JSON，不要有任何其他文字。';
+  '你是一个预测市场概率分析师。请对以下市场机会进行结构化分析，严格返回 JSON，不要有任何其他文字。' +
+  ' JSON 必须包含以下字段：' +
+  ' p_range (含 low 和 high，0到1之间的数字),' +
+  ' confidence ("High"/"Med"/"Low"),' +
+  ' risk_triggers (字符串数组，最多3个),' +
+  ' veto (含 decision: "ALLOW"/"DEGRADE"/"BLOCK", labels: 字符串数组, rule_facts: 对象),' +
+  ' summary (一段分析摘要字符串)。';
 
 // ── Mock fallback for M4 fields ──────────────────────────────────────────────
 function mockM4Fallback(reason) {
@@ -178,7 +184,7 @@ function mapM4Fields(parsed, model) {
  *
  * @param {{ prompt: string, model?: string }} opts
  *   prompt - Pre-formatted user message (built by caller with market data)
- *   model  - LLM model name (default: 'deepseek-reasoner')
+ *   model  - LLM model name (default: 'deepseek-chat')
  * @returns {Promise<object>} OpportunityCard-compatible result with M4 fields
  */
 export async function callLive({ prompt, model = DEFAULT_MODEL }) {
@@ -190,8 +196,9 @@ export async function callLive({ prompt, model = DEFAULT_MODEL }) {
     return mockM4Fallback(err.message);
   }
 
-  // Extract content from choices[0].message.content
-  const rawContent = apiResult?.choices?.[0]?.message?.content || '';
+  // Extract content from choices[0].message.content (or reasoning_content for deepseek-reasoner)
+  const msg = apiResult?.choices?.[0]?.message || {};
+  const rawContent = msg.content || msg.reasoning_content || '';
   const parsed = extractJson(rawContent);
 
   if (!parsed) {
