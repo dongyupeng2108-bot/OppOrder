@@ -2,7 +2,7 @@
   "task_id": "260305_001",
   "parity": "PASS",
   "base": "9c5b93690d836a826039c7c1963e1041035d4ce5",
-  "head": "658621abba465b3f723832054bf85805756c3372",
+  "head": "a1d9e5c0b7a4099c83ae3566f738ef4e68350035",
   "merge_base": "9c5b93690d836a826039c7c1963e1041035d4ce5",
   "scope_files": [
     "OppRadar/contracts/core_snapshot.schema.json",
@@ -11,8 +11,13 @@
     "config/feature_pack_registry.json",
     "config/scan_profiles/default.json",
     "config/universe_specs/main.json",
-    "rules/LATEST.json"
+    "rules/LATEST.json",
+    "rules/task-reports/2026-03/ci_parity_260305_001.json",
+    "rules/task-reports/2026-03/dod_evidence_260305_001.txt",
+    "rules/task-reports/2026-03/generate_evidence_260305_001.mjs",
+    "rules/task-reports/2026-03/git_meta_260305_001.json",
+    "rules/task-reports/2026-03/result_260305_001.json"
   ],
-  "scope_count": 7,
-  "generated_at": "2026-03-05T12:54:29.540Z"
+  "scope_count": 12,
+  "generated_at": "2026-03-05T12:55:07.369Z"
 }
