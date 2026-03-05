@@ -1,0 +1,28 @@
+{
+  "task_id": "260302_017",
+  "parity": "PASS",
+  "base": "02c343fa0e3b36f6012f4c834f2b3eecc84402ec",
+  "head": "be70879c7f84d5976315c6ac92c4b68226139f24",
+  "merge_base": "2a5c765d7cf2df835e3e857db35e76f96c68a4b5",
+  "scope_files": [
+    "OppRadar/contracts/postmortem_stats.schema.json",
+    "OppRadar/mock_server_53122.mjs",
+    "OppRadar/postmortem_routes.mjs",
+    "OppRadar/postmortem_stats.mjs",
+    "rules/LATEST.json",
+    "rules/task-reports/2026-03/260302_015.json",
+    "rules/task-reports/2026-03/260302_015_healthcheck_53122_pairs.txt",
+    "rules/task-reports/2026-03/260302_015_healthcheck_53122_root.txt",
+    "rules/task-reports/2026-03/ci_parity_260302_016.json",
+    "rules/task-reports/2026-03/dod_evidence_260302_016.txt",
+    "rules/task-reports/2026-03/generate_evidence_260302_016.mjs",
+    "rules/task-reports/2026-03/git_meta_260302_016.json",
+    "rules/task-reports/2026-03/result_260302_016.json",
+    "rules/task-reports/index/error_stats.jsonl",
+    "rules/task-reports/locks/260302_015.lock.json",
+    "tests/postmortem_routes.test.mjs",
+    "tests/postmortem_stats.test.mjs"
+  ],
+  "scope_count": 17,
+  "generated_at": "2026-03-05T10:47:52.373Z"
+}

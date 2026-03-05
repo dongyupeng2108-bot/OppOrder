@@ -1,0 +1,13 @@
+TASK_ID=260302_017
+GENERATED_AT=2026-03-05T10:47:52.373Z
+
+# DoD Markers
+DOD_ROUTES_MODULE=OppRadar/postmortem_routes.mjs (handlePostmortemRoute dispatcher)
+DOD_ENDPOINT_PENDING=GET /postmortem/pending (paginated, limit/offset)
+DOD_ENDPOINT_STATS=GET /postmortem/stats (group_by, time_range, strategy_id)
+DOD_ENDPOINT_CARD=GET /postmortem/:opp_id (postmortem+outcome+notes)
+DOD_ENDPOINT_NOTE=POST /postmortem/:opp_id/note (400 on empty text)
+DOD_SERVER_INTEGRATION=mock_server_53122.mjs registers postmortem route dispatcher
+DOD_TESTS=tests/postmortem_routes.test.mjs (10/10 pass)
+
+GATE_LIGHT_EXIT=0
