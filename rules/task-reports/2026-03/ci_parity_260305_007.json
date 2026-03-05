@@ -1,0 +1,13 @@
+{
+  "task_id": "260305_007",
+  "parity": "PASS",
+  "base": "0571778abf896c471e50bfb87736f22435e77474",
+  "head": "20681a76741dad0f6e200a4b208fd9719bf07752",
+  "merge_base": "0571778abf896c471e50bfb87736f22435e77474",
+  "scope_files": [
+    "rules/LATEST.json",
+    "scripts/gate_light_ci.mjs"
+  ],
+  "scope_count": 2,
+  "generated_at": "2026-03-05T17:55:32.800Z"
+}
