@@ -1,4 +1,4 @@
-param (
+﻿param (
     [Parameter(Mandatory=$true)]
     [string]$TaskId,
 
@@ -1195,6 +1195,34 @@ if ($Mode -eq "Integrate") {
     $ArchiveCmd = @("node", "$RepoRoot\scripts\assemble_evidence.mjs", "--task_id=$TaskId", "--evidence_dir=$EvidenceDir", "--mode=$Mode", "--phase=archive", "--run_id=$RunId")
     Invoke-Step -Name "Archive & Lock" -Cmd $ArchiveCmd
     Write-Host "    Archived evidence and locked task." -ForegroundColor Gray
+
+    # === 回报提示 ===
+    $LockExists = Test-Path "$RepoRoot\rules\task-reports\locks\$TaskId.lock.json"
+    $LockStatus = if ($LockExists) { "✅ 存在" } else { "❌ 未找到" }
+    $RptAutoPrPath = "$EvidenceDir\auto_pr_$TaskId.json"
+    $RptAutoPrJson = Read-JsonSafe -Path $RptAutoPrPath
+    $PrNumber = ""
+    if ($RptAutoPrJson -and $RptAutoPrJson.PSObject.Properties.Name -contains "number" -and $RptAutoPrJson.number) {
+        $PrNumber = $RptAutoPrJson.number.ToString()
+    }
+    $PrDisplay = if ($PrNumber) { "#$PrNumber" } else { "（未创建）" }
+    $ReportPrompt = @"
+
+========================================
+⚠  任务完成 — 必须填写以下回报模板
+========================================
+Task ID   : $TaskId
+PR 号     : $PrDisplay
+Lock 文件 : $LockStatus
+----------------------------------------
+请逐行填写胶囊验收 CheckList 各项（✅ 或 ❌），
+然后将完整回报输出给 Owner。
+========================================
+"@
+    Write-Host $ReportPrompt -ForegroundColor Yellow
+    $ReportPromptPath = "$EvidenceDir\report_prompt_$TaskId.txt"
+    $Utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+    [System.IO.File]::WriteAllText($ReportPromptPath, $ReportPrompt, $Utf8NoBom)
 
 }
 

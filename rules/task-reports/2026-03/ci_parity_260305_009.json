@@ -1,0 +1,18 @@
+{
+  "task_id": "260305_009",
+  "parity": "PASS",
+  "base": "a586cfacea3fe35586fc015c37a1a6ca613b14c3",
+  "head": "99ad7c4812575a1963a2ed5710897960eb117f3a",
+  "merge_base": "a586cfacea3fe35586fc015c37a1a6ca613b14c3",
+  "scope_files": [
+    "rules/LATEST.json",
+    "rules/task-reports/2026-03/ci_parity_260305_009.json",
+    "rules/task-reports/2026-03/dod_evidence_260305_009.txt",
+    "rules/task-reports/2026-03/generate_evidence_260305_009.mjs",
+    "rules/task-reports/2026-03/git_meta_260305_009.json",
+    "rules/task-reports/2026-03/result_260305_009.json",
+    "scripts/run_task.ps1"
+  ],
+  "scope_count": 7,
+  "generated_at": "2026-03-05T19:25:51.106Z"
+}
