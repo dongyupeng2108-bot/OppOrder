@@ -1,0 +1,14 @@
+TASK_ID=260305_002
+GENERATED_AT=2026-03-05T13:13:44.613Z
+
+# DoD Markers
+DOD_UNIVERSE_SERVICE=OppRadar/universe_service.mjs (runUniverse + getUniverseRuns)
+DOD_DB_TABLE=OppRadar/db.mjs universe_runs table in initSchema
+DOD_FILTER_REUSE=Reuses applyEligibleFilter from polymarket_eligible_filter.mjs
+DOD_FILTER_COUNTS=filter_counts: total, after_settled, after_numeric_threshold, after_event_time, after_ttl, after_price, final
+DOD_CONFIG_HASH=SHA256 of sorted filters JSON
+DOD_LIST_DIGEST=first3, last3, count, list_hash (SHA256)
+DOD_DIFF_CHECK=0% diff vs eligible_filter output (< 5% threshold)
+DOD_TESTS=tests/universe_service.test.mjs (8/8 pass)
+
+GATE_LIGHT_EXIT=0
