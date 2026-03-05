@@ -67,6 +67,9 @@ rules/task-reports/index/runs_index.jsonl
 scripts/gate_light_ci_0301*.mjs
 scripts/gate_light_ci_backup_*.mjs
 
+# Design documents (binary, not for version control)
+*.docx
+
 # Environment secrets — NEVER commit
 .env
 .env.*
