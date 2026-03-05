@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["scanner_run_id","universe_run_id","scan_profile_id",
+               "ts_start","ts_end","wall_time_ms","core_success_count","core_fail_count"],
+  "properties": {
+    "scanner_run_id":           { "type": "string" },
+    "universe_run_id":          { "type": "string" },
+    "scan_profile_id":          { "type": "string" },
+    "effective_packs":          { "type": "array" },
+    "ts_start":                 { "type": "string" },
+    "ts_end":                   { "type": "string" },
+    "wall_time_ms":             { "type": "number" },
+    "universe_fetch_ms":        { "type": ["number","null"] },
+    "snapshot_core_ms":         { "type": ["number","null"] },
+    "rate_limiter_sleep_ms":    { "type": ["number","null"] },
+    "core_success_count":       { "type": "integer" },
+    "core_fail_count":          { "type": "integer" },
+    "pack_coverage":            { "type": "object" }
+  }
+}

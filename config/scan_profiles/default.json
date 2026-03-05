@@ -1,0 +1,13 @@
+{
+  "scan_profile_id": "default",
+  "concurrency": 5,
+  "interval_seconds": 86400,
+  "timeout_seconds": 300,
+  "rate_limiter": {
+    "max_requests_per_10s": 500,
+    "batch_interval_ms": 500,
+    "max_concurrent": 5,
+    "retry_max": 3,
+    "retry_backoff_base_ms": 1000
+  }
+}

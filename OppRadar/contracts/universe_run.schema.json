@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["universe_run_id","universe_id","config_hash","ts_start","ts_end",
+               "market_count","market_list","filter_counts","list_digest"],
+  "properties": {
+    "universe_run_id": { "type": "string" },
+    "universe_id":     { "type": "string" },
+    "config_hash":     { "type": "string" },
+    "ts_start":        { "type": "string" },
+    "ts_end":          { "type": "string" },
+    "market_count":    { "type": "integer" },
+    "market_list":     { "type": "array", "items": { "type": "string" } },
+    "filter_counts":   { "type": "object" },
+    "list_digest":     { "type": "object" }
+  }
+}
