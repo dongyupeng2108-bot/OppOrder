@@ -1,8 +1,8 @@
 {
   "task_id": "260305_012",
-  "parity": "PASS",
+  "is_shallow_repo": true,
   "base": "e554bbc74df614ddbca3217ee86ad34497f54b09",
-  "head": "a4fce2a5878d49de7a5f86abcde8cd48b249b9a0",
+  "head": "a775f9b5d80e37466b6ab0ceeedcfa34bb29ce67",
   "merge_base": "e554bbc74df614ddbca3217ee86ad34497f54b09",
   "scope_files": [
     "OppRadar/mock_server_53122.mjs",
@@ -14,8 +14,9 @@
     "rules/task-reports/2026-03/dod_evidence_260305_012.txt",
     "rules/task-reports/2026-03/generate_evidence_260305_012.mjs",
     "rules/task-reports/2026-03/git_meta_260305_012.json",
-    "rules/task-reports/2026-03/result_260305_012.json"
+    "rules/task-reports/2026-03/result_260305_012.json",
+    "rules/task-reports/index/error_stats.jsonl"
   ],
-  "scope_count": 10,
-  "generated_at": "2026-03-05T20:36:24.126Z"
+  "scope_count": 11,
+  "generated_at": "2026-03-05T20:37:38.786Z"
 }
