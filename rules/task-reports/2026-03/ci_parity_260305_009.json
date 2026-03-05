@@ -1,0 +1,13 @@
+{
+  "task_id": "260305_009",
+  "parity": "PASS",
+  "base": "a586cfacea3fe35586fc015c37a1a6ca613b14c3",
+  "head": "451ea374edb5567e8be7cbe0c0b44e77f8a94b4b",
+  "merge_base": "a586cfacea3fe35586fc015c37a1a6ca613b14c3",
+  "scope_files": [
+    "rules/LATEST.json",
+    "scripts/run_task.ps1"
+  ],
+  "scope_count": 2,
+  "generated_at": "2026-03-05T19:25:02.687Z"
+}

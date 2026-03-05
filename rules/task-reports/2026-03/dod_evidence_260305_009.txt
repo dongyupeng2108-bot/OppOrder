@@ -1,0 +1,11 @@
+TASK_ID=260305_009
+GENERATED_AT=2026-03-05T19:25:02.687Z
+
+# DoD Markers
+DOD_SYNTAX_OK=PowerShell PSParser tokenize returns 0 errors
+DOD_YELLOW_PROMPT=Write-Host $ReportPrompt -ForegroundColor Yellow after Archive & Lock
+DOD_PR_LOCK_DISPLAY=Task ID, PR#, Lock status displayed in prompt
+DOD_REPORT_FILE=report_prompt_<task_id>.txt written to evidence dir (UTF-8 no BOM)
+DOD_NO_BREAK=existing pipeline flow unaffected
+
+GATE_LIGHT_EXIT=0
