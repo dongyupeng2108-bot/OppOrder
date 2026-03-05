@@ -3688,6 +3688,31 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    // GET /pipeline/latest — return top_n from newest baseline_init_*.json or pipeline_run_*.json
+    if (pathname === '/pipeline/latest' && req.method === 'GET') {
+        try {
+            const dataDir = path.join(__dirname, '../data');
+            const files = fs.readdirSync(dataDir)
+                .filter(f => (f.startsWith('baseline_init') || f.startsWith('pipeline_run')) && f.endsWith('.json'))
+                .map(f => ({ name: f, mtime: fs.statSync(path.join(dataDir, f)).mtimeMs }))
+                .sort((a, b) => b.mtime - a.mtime);
+            if (files.length === 0) {
+                res.writeHead(404, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'no pipeline files found' }));
+                return;
+            }
+            const content = fs.readFileSync(path.join(dataDir, files[0].name), 'utf8');
+            const data = JSON.parse(content);
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify(data));
+        } catch (err) {
+            console.error('[/pipeline/latest error]', err.message);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: err.message }));
+        }
+        return;
+    }
+
     // 404
     res.writeHead(404, { 'Content-Type': 'text/plain' });
     res.end('Not Found');
