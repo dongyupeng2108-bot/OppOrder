@@ -222,6 +222,21 @@ function initSchema() {
         db.run(`CREATE INDEX IF NOT EXISTS idx_pm_opp_id ON postmortem(opp_id)`);
         db.run(`CREATE INDEX IF NOT EXISTS idx_pm_is_latest ON postmortem(is_latest)`);
         db.run(`CREATE INDEX IF NOT EXISTS idx_pm_notes_opp_id ON postmortem_notes(opp_id)`);
+
+        // Universe Runs Table (M5.5-S2)
+        db.run(`CREATE TABLE IF NOT EXISTS universe_runs (
+            universe_run_id TEXT PRIMARY KEY,
+            universe_id     TEXT NOT NULL,
+            config_hash     TEXT NOT NULL,
+            ts_start        TEXT NOT NULL,
+            ts_end          TEXT NOT NULL,
+            source          TEXT,
+            filter_counts   TEXT NOT NULL,
+            market_list     TEXT NOT NULL,
+            market_count    INTEGER NOT NULL,
+            list_digest     TEXT NOT NULL
+        )`);
+        db.run(`CREATE INDEX IF NOT EXISTS idx_universe_runs_universe_ts ON universe_runs(universe_id, ts_start)`);
     });
 }
 
