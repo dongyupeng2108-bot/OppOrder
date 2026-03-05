@@ -1,0 +1,20 @@
+{
+  "task_id": "260305_002",
+  "parity": "PASS",
+  "base": "3cb7ae7444a6bb13fbed19ca6c86d47137001dca",
+  "head": "13c0a748ec73a278b8c0c53a4283e4027f79d826",
+  "merge_base": "3cb7ae7444a6bb13fbed19ca6c86d47137001dca",
+  "scope_files": [
+    "OppRadar/db.mjs",
+    "OppRadar/universe_service.mjs",
+    "rules/LATEST.json",
+    "rules/task-reports/2026-03/ci_parity_260305_002.json",
+    "rules/task-reports/2026-03/dod_evidence_260305_002.txt",
+    "rules/task-reports/2026-03/generate_evidence_260305_002.mjs",
+    "rules/task-reports/2026-03/git_meta_260305_002.json",
+    "rules/task-reports/2026-03/result_260305_002.json",
+    "tests/universe_service.test.mjs"
+  ],
+  "scope_count": 9,
+  "generated_at": "2026-03-05T13:14:16.515Z"
+}
