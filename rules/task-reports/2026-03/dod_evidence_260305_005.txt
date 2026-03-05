@@ -1,0 +1,12 @@
+TASK_ID=260305_005
+GENERATED_AT=2026-03-05T16:25:52.165Z
+
+# DoD Markers
+DOD_INDEX_REFRESH=ui/index.html meta refresh → /ui/oppradar_v2.html
+DOD_LIST_REFRESH=ui/list.html meta refresh → /ui/oppradar_v2.html
+DOD_COMPARE_REFRESH=ui/compare.html meta refresh → /ui/oppradar_v2.html
+DOD_V2_NAV=ui/oppradar_v2.html nav cleaned (no 验收面板, no V1 列表)
+DOD_DETAIL_NAV=ui/detail.html nav + back-link → oppradar_v2.html
+DOD_DETAIL_NO_LEGACY=detail.html no 验收面板, no href="/ui/", no href="/ui/list.html"
+
+GATE_LIGHT_EXIT=0

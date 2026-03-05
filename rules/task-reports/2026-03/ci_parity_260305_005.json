@@ -1,0 +1,22 @@
+{
+  "task_id": "260305_005",
+  "parity": "PASS",
+  "base": "56f25b8e0ab9c2e901951c1f2eefc973acd839ed",
+  "head": "2f30293d5c89a7b6c7502b2110e238f1c278be07",
+  "merge_base": "56f25b8e0ab9c2e901951c1f2eefc973acd839ed",
+  "scope_files": [
+    "rules/LATEST.json",
+    "rules/task-reports/2026-03/ci_parity_260305_005.json",
+    "rules/task-reports/2026-03/dod_evidence_260305_005.txt",
+    "rules/task-reports/2026-03/generate_evidence_260305_005.mjs",
+    "rules/task-reports/2026-03/git_meta_260305_005.json",
+    "rules/task-reports/2026-03/result_260305_005.json",
+    "ui/compare.html",
+    "ui/detail.html",
+    "ui/index.html",
+    "ui/list.html",
+    "ui/oppradar_v2.html"
+  ],
+  "scope_count": 11,
+  "generated_at": "2026-03-05T16:25:52.165Z"
+}
