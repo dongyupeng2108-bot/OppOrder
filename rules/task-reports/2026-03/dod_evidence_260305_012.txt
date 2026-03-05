@@ -1,0 +1,12 @@
+TASK_ID=260305_012
+GENERATED_AT=2026-03-05T20:35:25.008Z
+
+# DoD Markers
+DOD_PROXY_AGENT=proxy_agent.mjs created with undici ProxyAgent + setGlobalDispatcher
+DOD_ENV_VARS=reads HTTPS_PROXY, HTTP_PROXY, https_proxy, http_proxy
+DOD_IMPORT_SERVER=mock_server_53122.mjs imports proxy_agent
+DOD_IMPORT_UNIVERSE=universe_service.mjs imports proxy_agent
+DOD_IMPORT_SCANNER=scanner_service.mjs imports proxy_agent
+DOD_API_REACHABLE=Polymarket gamma-api returns real market data via proxy
+
+GATE_LIGHT_EXIT=0
