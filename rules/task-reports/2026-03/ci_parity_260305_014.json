@@ -2,15 +2,20 @@
   "task_id": "260305_014",
   "parity": "PASS",
   "base": "e554bbc74df614ddbca3217ee86ad34497f54b09",
-  "head": "2ca0bcbbea4f08ec37d93e8f1c8e6f076155cd55",
+  "head": "1830fc04dfe1eef515192b3f7eb74aa08c33f629",
   "merge_base": "e554bbc74df614ddbca3217ee86ad34497f54b09",
   "scope_files": [
     "OppRadar/mock_server_53122.mjs",
     "OppRadar/proxy_agent.mjs",
     "OppRadar/scanner_service.mjs",
     "OppRadar/universe_service.mjs",
-    "rules/LATEST.json"
+    "rules/LATEST.json",
+    "rules/task-reports/2026-03/ci_parity_260305_014.json",
+    "rules/task-reports/2026-03/dod_evidence_260305_014.txt",
+    "rules/task-reports/2026-03/generate_evidence_260305_014.mjs",
+    "rules/task-reports/2026-03/git_meta_260305_014.json",
+    "rules/task-reports/2026-03/result_260305_014.json"
   ],
-  "scope_count": 5,
-  "generated_at": "2026-03-05T20:49:30.627Z"
+  "scope_count": 10,
+  "generated_at": "2026-03-05T20:51:11.372Z"
 }
