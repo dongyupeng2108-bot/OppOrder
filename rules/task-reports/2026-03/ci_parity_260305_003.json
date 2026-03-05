@@ -1,0 +1,17 @@
+{
+  "task_id": "260305_003",
+  "parity": "PASS",
+  "base": "42220d96dc508bda34db17749626452b59698c14",
+  "head": "0f7fc532491c8bc12d8f8677e6b4b94f50cba5ce",
+  "merge_base": "42220d96dc508bda34db17749626452b59698c14",
+  "scope_files": [
+    "OppRadar/db.mjs",
+    "OppRadar/rate_limiter.mjs",
+    "OppRadar/scanner_service.mjs",
+    "OppRadar/snapshot_store.mjs",
+    "rules/LATEST.json",
+    "tests/scanner_service.test.mjs"
+  ],
+  "scope_count": 6,
+  "generated_at": "2026-03-05T13:59:12.654Z"
+}
