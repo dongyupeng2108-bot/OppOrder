@@ -1,3 +1,4 @@
+import './proxy_agent.mjs';
 /**
  * universe_service.mjs
  * M5.5-S2: Universe extraction service.
