@@ -3540,8 +3540,25 @@ const server = http.createServer(async (req, res) => {
             } catch (_) { /* ignore */ }
             const { saveOutcome } = await import('./outcome_store.mjs');
             const record = saveOutcome({ opp_id: oppId, title, outcome, settled_at, actual_price, notes });
+
+            // M6-A2 (260302_015): Auto-generate postmortem card
+            let postmortem_result = null;
+            try {
+                const { generatePostmortem } = await import('./postmortem_generator.mjs');
+                postmortem_result = await generatePostmortem({
+                    opp_id: oppId, outcome, settled_at, actual_price, title
+                });
+            } catch (pmErr) {
+                console.error('[/outcomes/:opp_id POST] postmortem generation failed:', pmErr.message);
+            }
+
             res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ opp_id: record.opp_id, outcome: record.outcome, recorded_at: record.recorded_at }));
+            res.end(JSON.stringify({
+                opp_id: record.opp_id,
+                outcome: record.outcome,
+                recorded_at: record.recorded_at,
+                postmortem: postmortem_result
+            }));
         } catch (err) {
             console.error('[/outcomes/:opp_id POST error]', err.message);
             res.writeHead(500, { 'Content-Type': 'application/json' });

@@ -81,6 +81,19 @@ export async function insertPostmortem(record) {
 
   const newRevision = existing ? existing.revision + 1 : 0;
 
+  // M6-A2 (260302_015): Frozen fields — decision_snapshot_id and decision_b5_run_id
+  // are immutable once set in revision 0. Carry forward from earliest revision.
+  if (existing) {
+    const first = await getAsync(
+      `SELECT decision_snapshot_id, decision_b5_run_id FROM postmortem WHERE opp_id = ? ORDER BY revision ASC LIMIT 1`,
+      [record.opp_id]
+    );
+    if (first) {
+      record.decision_snapshot_id = first.decision_snapshot_id;
+      record.decision_b5_run_id = first.decision_b5_run_id;
+    }
+  }
+
   // Mark old revisions as not latest
   if (existing) {
     await runAsync(
