@@ -1,0 +1,10 @@
+TASK_ID=260305_006
+GENERATED_AT=2026-03-05T17:31:06.677Z
+
+# DoD Markers
+DOD_DEFAULT_MODEL=deepseek-chat (was deepseek-reasoner)
+DOD_SCHEMA_PROMPT=SYSTEM_PROMPT includes M4 field schema (p_range, confidence, risk_triggers, veto, summary)
+DOD_REASONING_CONTENT=msg.content || msg.reasoning_content fallback for deepseek-reasoner
+DOD_NO_FALLBACK=callLive returns provider=live (not live_fallback)
+
+GATE_LIGHT_EXIT=0
