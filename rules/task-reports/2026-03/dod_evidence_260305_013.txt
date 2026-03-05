@@ -1,0 +1,10 @@
+TASK_ID=260305_013
+GENERATED_AT=2026-03-05T20:43:14.017Z
+
+# DoD Markers
+DOD_PROXY_AGENT=proxy_agent.mjs with dynamic import undici + try/catch
+DOD_NODE18_COMPAT=graceful fallback when undici unavailable
+DOD_IMPORT_3FILES=server, universe_service, scanner_service all import proxy_agent
+DOD_API_REACHABLE=Polymarket gamma-api returns real data via proxy
+
+GATE_LIGHT_EXIT=0
