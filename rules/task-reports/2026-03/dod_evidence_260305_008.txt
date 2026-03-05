@@ -1,0 +1,10 @@
+TASK_ID=260305_008
+GENERATED_AT=2026-03-05T18:18:16.897Z
+
+# DoD Markers
+DOD_PROVIDER_PARAM=provider added to runScanCore destructure + fallback chain
+DOD_LIVE_CASE=getProvider switch includes case live → DeepSeekProvider
+DOD_VERIFIED=POST /scans/run {provider:live} returns provider=live model=deepseek-chat
+DOD_NO_FALLBACK=fallback_count=0 (no mock fallback)
+
+GATE_LIGHT_EXIT=0

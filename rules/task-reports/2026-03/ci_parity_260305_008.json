@@ -1,0 +1,14 @@
+{
+  "task_id": "260305_008",
+  "parity": "PASS",
+  "base": "d4a99fbc4e584a31cd3b5b7286b50a6e8a5daac4",
+  "head": "c0f36344f2deb1ded2b69c5aa85968c1c99831db",
+  "merge_base": "d4a99fbc4e584a31cd3b5b7286b50a6e8a5daac4",
+  "scope_files": [
+    "OppRadar/llm_provider.mjs",
+    "OppRadar/mock_server_53122.mjs",
+    "rules/LATEST.json"
+  ],
+  "scope_count": 3,
+  "generated_at": "2026-03-05T18:18:16.897Z"
+}
