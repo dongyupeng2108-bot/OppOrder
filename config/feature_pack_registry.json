@@ -1,0 +1,6 @@
+{
+  "packs": [
+    { "pack_id": "ORDERBOOK_L10", "enabled": false, "description": "深度挂单 top10" },
+    { "pack_id": "TRADE_STATS",   "enabled": false, "description": "近期成交统计" }
+  ]
+}

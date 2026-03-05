@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["snapshot_id","ts","scanner_run_id","market_id","token_id",
+               "best_bid","best_ask","mid_price","spread","accepting_orders"],
+  "properties": {
+    "snapshot_id":      { "type": "string" },
+    "ts":               { "type": "string" },
+    "scanner_run_id":   { "type": "string" },
+    "market_id":        { "type": "string" },
+    "token_id":         { "type": "string" },
+    "best_bid":         { "type": "number" },
+    "best_ask":         { "type": "number" },
+    "mid_price":        { "type": "number" },
+    "spread":           { "type": "number" },
+    "tick_size":        { "type": ["number","null"] },
+    "accepting_orders": { "type": "boolean" },
+    "end_time":         { "type": ["string","null"] },
+    "volume_24h":       { "type": ["number","null"] },
+    "neg_risk":         { "type": ["boolean","null"] },
+    "min_order_size":   { "type": ["number","null"] }
+  }
+}

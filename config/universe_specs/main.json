@@ -1,0 +1,13 @@
+{
+  "universe_id": "main",
+  "source": "polymarket_api",
+  "filters": {
+    "accepting_orders": true,
+    "max_days_to_expiry": 30,
+    "price_range": [0.05, 0.95],
+    "numeric_threshold_required": true,
+    "exclude_settled": true
+  },
+  "candidate_limit": 50,
+  "ttl_days": 30
+}
