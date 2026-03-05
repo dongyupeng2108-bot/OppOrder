@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OppRadar V2 — Pipeline Viewer</title>
+  <link rel="stylesheet" href="/ui/styles.css">
+  <style>
+    body { font-family: 'JetBrains Mono', 'Courier New', monospace; }
+    header { flex-wrap: wrap; }
+    header h1 { font-family: 'JetBrains Mono', monospace; }
+    nav { font-size: 0.9em; }
+    main { max-width: 1100px; }
+
+    /* List view */
+    #list-view table { width: 100%; border-collapse: collapse; margin-top: 0.8em; }
+    #list-view th, #list-view td { padding: 6px 10px; border: 1px solid #2d3048; text-align: left; font-size: 0.88em; }
+    #list-view th { background: #1a1d27; color: #a0a8ff; font-weight: 600; position: sticky; top: 0; }
+    #list-view tr[data-idx]:hover { background: #252840; cursor: pointer; }
+    .meta-bar { font-size: 0.82em; color: #8888a0; margin-bottom: 0.5em; }
+    .meta-bar span { margin-right: 1.2em; }
+
+    /* Tags */
+    .tag-veto, .tag-risk, .tag-filter {
+      display: inline-block; border-radius: 3px; padding: 1px 6px; font-size: 0.8em; margin-right: 3px;
+    }
+    .tag-veto   { border: 1px solid #f0c040; color: #f0c040; }
+    .tag-risk   { border: 1px solid #ff6b6b; color: #ff6b6b; }
+    .tag-filter { border: 1px solid #64b5f6; color: #64b5f6; }
+    .tag-veto.green   { border-color: #4caf50; color: #4caf50; }
+    .tag-veto.yellow  { border-color: #f0c040; color: #f0c040; }
+    .tag-veto.red     { border-color: #ff6b6b; color: #ff6b6b; }
+    .tag-risk.low     { border-color: #4caf50; color: #4caf50; }
+    .tag-risk.med     { border-color: #f0c040; color: #f0c040; }
+    .tag-risk.high    { border-color: #ff6b6b; color: #ff6b6b; }
+
+    /* Detail view */
+    #detail-view { display: none; }
+    .detail-back { font-size: 0.9em; cursor: pointer; color: #7c83ff; margin-bottom: 1em; display: inline-block; }
+    .detail-back:hover { text-decoration: underline; }
+    .detail-section { background: #1a1d27; border: 1px solid #2d3048; border-radius: 6px; padding: 14px; margin-bottom: 12px; }
+    .detail-section h2 { font-size: 0.95em; color: #a0a8ff; margin: 0 0 0.7em; border-bottom: 1px solid #2d3048; padding-bottom: 0.4em; }
+    .detail-field { display: flex; gap: 0.8em; margin: 0.3em 0; font-size: 0.9em; }
+    .detail-field .label { font-weight: bold; min-width: 140px; color: #8888a0; flex-shrink: 0; }
+    .detail-field .value { color: #e0e0e0; word-break: break-word; }
+    .reasoning-block { background: #0a0c12; border: 1px solid #2a2d40; border-radius: 4px; padding: 10px; margin-top: 0.5em;
+      font-size: 0.85em; white-space: pre-wrap; color: #ccc; max-height: 300px; overflow: auto; }
+
+    .empty-msg { padding: 2em; text-align: center; color: #8888a0; }
+    .score-bar { display: inline-block; height: 14px; background: #4caf50; border-radius: 2px; vertical-align: middle; }
+  </style>
+</head>
+<body>
+<header>
+  <h1>OppRadar <span class="tag">V2 Pipeline</span></h1>
+  <nav>
+    <a href="/ui/">验收面板</a> |
+    <a href="/ui/list.html">V1 列表</a>
+  </nav>
+</header>
+
+<main>
+  <!-- LIST VIEW -->
+  <div id="list-view">
+    <div id="meta-bar" class="meta-bar"></div>
+    <div id="list-content"></div>
+  </div>
+
+  <!-- DETAIL VIEW -->
+  <div id="detail-view">
+    <span class="detail-back" onclick="showList()">&larr; 返回列表</span>
+    <div id="detail-content"></div>
+  </div>
+</main>
+
+<script>
+var DATA = null;       // full pipeline JSON
+var ITEMS = [];        // top_n array
+
+function esc(s) {
+  if (s == null) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function fmtPct(v) { return v != null ? (v * 100).toFixed(1) + '%' : '\u2014'; }
+function fmtTime(iso) { return iso ? iso.slice(0, 19).replace('T', ' ') : '\u2014'; }
+function truncQ(q, n) { return q && q.length > n ? q.slice(0, n) + '\u2026' : (q || '\u2014'); }
+
+function vetoTagClass(light) {
+  if (light === 'GREEN') return 'green';
+  if (light === 'YELLOW') return 'yellow';
+  if (light === 'RED') return 'red';
+  return '';
+}
+function riskTagClass(level) {
+  if (level === 'LOW') return 'low';
+  if (level === 'MED') return 'med';
+  if (level === 'HIGH') return 'high';
+  return '';
+}
+
+function profileLabel(profile) {
+  if (!profile) return 'UNKNOWN';
+  var p = profile.toUpperCase();
+  if (p === 'DRAFT' || p === 'DEEP') return 'BASELINE';
+  return p;
+}
+
+async function loadData() {
+  document.getElementById('list-content').innerHTML = '<div class="empty-msg">Loading...</div>';
+  try {
+    var resp = await fetch('/pipeline/latest');
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    DATA = await resp.json();
+    ITEMS = Array.isArray(DATA.top_n) ? DATA.top_n : [];
+    renderMeta();
+    renderList();
+  } catch (e) {
+    document.getElementById('list-content').innerHTML = '<div class="empty-msg">Failed: ' + esc(e.message) + '</div>';
+  }
+}
+
+function renderMeta() {
+  var el = document.getElementById('meta-bar');
+  var profile = profileLabel(DATA.profile);
+  var model = DATA.model || '\u2014';
+  if (model === 'deepseek-reasoner') model = 'RECOMPUTE';
+  var html = '<span>Profile: <b>' + esc(profile) + '</b></span>';
+  html += '<span>Model: <b>' + esc(model) + '</b></span>';
+  html += '<span>Run: ' + fmtTime(DATA.run_at) + '</span>';
+  html += '<span>Items: ' + ITEMS.length + '</span>';
+  if (DATA.success != null) html += '<span>Success: ' + DATA.success + '</span>';
+  if (DATA.failed != null && DATA.failed > 0) html += '<span style="color:#ff6b6b">Failed: ' + DATA.failed + '</span>';
+  el.innerHTML = html;
+}
+
+function renderList() {
+  var el = document.getElementById('list-content');
+  if (ITEMS.length === 0) {
+    el.innerHTML = '<div class="empty-msg">top_n is empty</div>';
+    return;
+  }
+  var html = '<table><thead><tr>';
+  html += '<th>#</th><th>Question</th><th>Score</th><th>Dev</th><th>Tags</th><th>Rank Reason</th>';
+  html += '</tr></thead><tbody>';
+
+  for (var i = 0; i < ITEMS.length; i++) {
+    var it = ITEMS[i];
+    var veto = it.veto || {};
+    var risk = it.risk || {};
+    var filter = it.filter || {};
+
+    // Tags
+    var tags = '';
+    if (veto.veto_light) {
+      var codes = Array.isArray(veto.veto_codes) ? veto.veto_codes.join(',') : '';
+      tags += '<span class="tag-veto ' + vetoTagClass(veto.veto_light) + '" title="' + esc(codes) + '">' + esc(veto.veto_light) + '</span>';
+    }
+    if (risk.risk_level) {
+      tags += '<span class="tag-risk ' + riskTagClass(risk.risk_level) + '" title="' + esc(risk.reason || '') + '">' + esc(risk.risk_level) + '</span>';
+    }
+    if (filter.label && filter.label !== 'UNKNOWN') {
+      tags += '<span class="tag-filter" title="' + esc(filter.why_1_liner || '') + '">' + esc(filter.label) + '</span>';
+    }
+
+    // Score bar
+    var scoreVal = it.score != null ? it.score : 0;
+    var barW = Math.max(2, Math.round(scoreVal * 100));
+    var scoreHtml = '<span class="score-bar" style="width:' + barW + 'px"></span> ' + fmtPct(it.score);
+
+    // Dev
+    var est = it.estimator || {};
+    var devStr = est.dev_abs != null ? fmtPct(est.dev_abs) : '\u2014';
+
+    html += '<tr data-idx="' + i + '" onclick="showDetail(' + i + ')">';
+    html += '<td>' + (it.rank || (i + 1)) + '</td>';
+    html += '<td title="' + esc(it.question) + '">' + truncQ(it.question, 60) + '</td>';
+    html += '<td>' + scoreHtml + '</td>';
+    html += '<td>' + devStr + '</td>';
+    html += '<td>' + (tags || '\u2014') + '</td>';
+    html += '<td style="font-size:0.8em;color:#999">' + esc(truncQ(it.rank_reason, 50)) + '</td>';
+    html += '</tr>';
+  }
+  html += '</tbody></table>';
+  el.innerHTML = html;
+}
+
+function showList() {
+  document.getElementById('list-view').style.display = '';
+  document.getElementById('detail-view').style.display = 'none';
+}
+
+function showDetail(idx) {
+  var it = ITEMS[idx];
+  if (!it) return;
+  document.getElementById('list-view').style.display = 'none';
+  document.getElementById('detail-view').style.display = '';
+
+  var est = it.estimator || {};
+  var veto = it.veto || {};
+  var risk = it.risk || {};
+  var filter = it.filter || {};
+  var html = '';
+
+  // Section 1: Opportunity
+  html += '<div class="detail-section"><h2>1. Opportunity</h2>';
+  html += dfield('Rank', it.rank);
+  html += dfield('Question', it.question);
+  html += dfield('Opp ID', it.opp_id);
+  html += dfield('Score', fmtPct(it.score));
+  html += dfield('Rank Reason', it.rank_reason);
+  html += '</div>';
+
+  // Section 2: Estimator
+  html += '<div class="detail-section"><h2>2. Estimator</h2>';
+  if (est.p_range) {
+    html += dfield('P Range', fmtPct(est.p_range.low) + ' \u2013 ' + fmtPct(est.p_range.mid) + ' \u2013 ' + fmtPct(est.p_range.high));
+  }
+  html += dfield('Dev (abs)', fmtPct(est.dev_abs));
+  html += dfield('Range Width', est.range_width != null ? est.range_width : null);
+  html += dfield('P Mid', fmtPct(est.p_mid));
+  html += dfield('Confidence', est.confidence);
+  html += dfield('Trust Level', est.trust_level || est.estimator_trust_level);
+  html += dfield('Mispricing Type', est.mispricing_type);
+  html += dfield('Why (1-liner)', est.why_1_liner);
+  html += dfield('Model', est.model_used);
+  html += dfield('Latency', est.latency_ms != null ? est.latency_ms + ' ms' : null);
+  if (est.bullshit_score != null) html += dfield('BS Score', est.bullshit_score);
+  html += '</div>';
+
+  // Section 3: Veto / Risk / Filter
+  html += '<div class="detail-section"><h2>3. Veto / Risk / Filter</h2>';
+  var vetoLight = veto.veto_light || '\u2014';
+  var vetoCodes = Array.isArray(veto.veto_codes) ? veto.veto_codes.join(', ') : '\u2014';
+  html += dfield('Veto Light', '<span class="tag-veto ' + vetoTagClass(veto.veto_light) + '">' + esc(vetoLight) + '</span>');
+  html += dfield('Veto Codes', vetoCodes);
+  html += dfield('Risk Level', '<span class="tag-risk ' + riskTagClass(risk.risk_level) + '">' + esc(risk.risk_level || '\u2014') + '</span>');
+  html += dfield('Risk Penalty', risk.penalty != null ? risk.penalty : null);
+  html += dfield('Risk Reason', risk.reason);
+  html += dfield('Filter Label', filter.label);
+  html += dfield('Filter Skip', filter.skip != null ? String(filter.skip) : null);
+  html += dfield('Filter Why', filter.why_1_liner);
+  html += '</div>';
+
+  // Section 4: Reasoning (claims, risk_triggers, rules_text)
+  html += '<div class="detail-section"><h2>4. Reasoning</h2>';
+  if (Array.isArray(est.claims) && est.claims.length > 0) {
+    html += '<div style="margin-bottom:0.6em"><b style="color:#8888a0">Claims:</b></div>';
+    for (var c = 0; c < est.claims.length; c++) {
+      var cl = est.claims[c];
+      html += '<div style="margin:0.3em 0 0.3em 1em;font-size:0.88em">';
+      html += '<span style="color:#64b5f6">[' + esc(cl.basis_type) + '/' + esc(cl.claim_impact) + ']</span> ';
+      html += esc(cl.claim_text);
+      html += '</div>';
+    }
+  }
+  if (Array.isArray(est.risk_triggers) && est.risk_triggers.length > 0) {
+    html += '<div style="margin:0.6em 0 0.3em"><b style="color:#8888a0">Risk Triggers:</b></div>';
+    html += '<ul style="margin:0;padding-left:1.2em;font-size:0.88em">';
+    for (var r = 0; r < est.risk_triggers.length; r++) {
+      html += '<li>' + esc(est.risk_triggers[r]) + '</li>';
+    }
+    html += '</ul>';
+  }
+  if (est.rules_text) {
+    html += '<div style="margin:0.6em 0 0.3em"><b style="color:#8888a0">Rules Text:</b></div>';
+    html += '<div class="reasoning-block">' + esc(est.rules_text) + '</div>';
+  }
+  // Fallback: if estimator has nested veto with rule_facts
+  if (est.veto && est.veto.rule_facts && Object.keys(est.veto.rule_facts).length > 0) {
+    html += '<div style="margin:0.6em 0 0.3em"><b style="color:#8888a0">Rule Facts:</b></div>';
+    html += '<div class="reasoning-block">' + esc(JSON.stringify(est.veto.rule_facts, null, 2)) + '</div>';
+  }
+  if (!est.claims && !est.risk_triggers && !est.rules_text) {
+    html += '<div style="color:#666;font-size:0.88em">No detailed reasoning available for this item.</div>';
+  }
+  html += '</div>';
+
+  document.getElementById('detail-content').innerHTML = html;
+  window.scrollTo(0, 0);
+}
+
+function dfield(label, value) {
+  var v = (value != null && value !== '') ? value : '\u2014';
+  return '<div class="detail-field"><span class="label">' + esc(label) + '</span><span class="value">' + v + '</span></div>';
+}
+
+window.onload = loadData;
+</script>
+</body>
+</html>
