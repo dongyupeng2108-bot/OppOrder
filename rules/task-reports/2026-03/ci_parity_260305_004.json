@@ -1,0 +1,18 @@
+{
+  "task_id": "260305_004",
+  "parity": "PASS",
+  "base": "56f25b8e0ab9c2e901951c1f2eefc973acd839ed",
+  "head": "92266e6e754f496f9b6b1a29dc28ff01d6cfe0c1",
+  "merge_base": "56f25b8e0ab9c2e901951c1f2eefc973acd839ed",
+  "scope_files": [
+    "OppRadar/draft_generator.mjs",
+    "OppRadar/mock_server_53122.mjs",
+    "OppRadar/postmortem_generator.mjs",
+    "OppRadar/scanner_routes.mjs",
+    "rules/LATEST.json",
+    "scripts/gate_light_ci.mjs",
+    "tests/scanner_routes.test.mjs"
+  ],
+  "scope_count": 7,
+  "generated_at": "2026-03-05T14:16:57.047Z"
+}
