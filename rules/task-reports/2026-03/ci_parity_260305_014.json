@@ -1,0 +1,16 @@
+{
+  "task_id": "260305_014",
+  "parity": "PASS",
+  "base": "e554bbc74df614ddbca3217ee86ad34497f54b09",
+  "head": "2ca0bcbbea4f08ec37d93e8f1c8e6f076155cd55",
+  "merge_base": "e554bbc74df614ddbca3217ee86ad34497f54b09",
+  "scope_files": [
+    "OppRadar/mock_server_53122.mjs",
+    "OppRadar/proxy_agent.mjs",
+    "OppRadar/scanner_service.mjs",
+    "OppRadar/universe_service.mjs",
+    "rules/LATEST.json"
+  ],
+  "scope_count": 5,
+  "generated_at": "2026-03-05T20:49:30.627Z"
+}

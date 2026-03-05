@@ -1,0 +1,12 @@
+TASK_ID=260305_014
+GENERATED_AT=2026-03-05T20:49:30.627Z
+
+# DoD Markers
+DOD_PROXY_AGENT=OppRadar/proxy_agent.mjs created with undici ProxyAgent
+DOD_DYNAMIC_IMPORT=await import("undici") with try/catch for Node 18 compat
+DOD_SERVER_IMPORT=mock_server_53122.mjs imports proxy_agent.mjs
+DOD_UNIVERSE_IMPORT=universe_service.mjs imports proxy_agent.mjs
+DOD_SCANNER_IMPORT=scanner_service.mjs imports proxy_agent.mjs
+DOD_ENV_VARS=reads HTTPS_PROXY, HTTP_PROXY, https_proxy, http_proxy
+
+GATE_LIGHT_EXIT=0
