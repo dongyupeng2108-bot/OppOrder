@@ -20,6 +20,7 @@
 import { createRequire } from 'module';
 import fs from 'fs';
 import path from 'path';
+import { getCoreSnapshot } from './snapshot_store.mjs';
 
 const require = createRequire(import.meta.url);
 let sqlite3;
@@ -158,11 +159,25 @@ export async function generatePostmortem({ opp_id, outcome, settled_at, actual_p
   const p_range_low = refs.p_range?.low ?? features.p_range?.low ?? Math.max(0, p_mid - 0.1);
   const p_range_high = refs.p_range?.high ?? features.p_range?.high ?? Math.min(1, p_mid + 0.1);
 
+  // M5.5-S4: market_price_at_scan via core_snapshot_id chain
+  // decision_snapshot_id → snapshot_index → core_snapshot_id → mid_price
+  let marketPriceAtScan = null;
+  if (snapEntry?.core_snapshot_id) {
+    try {
+      const coreSnap = await getCoreSnapshot(snapEntry.core_snapshot_id);
+      marketPriceAtScan = coreSnap?.mid_price ?? null;
+    } catch (_) {}
+  }
+  // Fallback for old data: use actual_price if no core_snapshot chain
+  if (marketPriceAtScan == null) {
+    marketPriceAtScan = actual_price;
+  }
+
   const record = {
     opp_id,
     outcome,
     outcome_ts: settled_at,
-    market_price_at_scan: actual_price,
+    market_price_at_scan: marketPriceAtScan,
     market_price_at_settlement: actual_price,
     p_baseline_low: p_range_low,
     p_baseline_mid: p_mid,

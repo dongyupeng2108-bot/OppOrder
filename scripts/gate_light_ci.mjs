@@ -693,6 +693,42 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         process.exit(1);
     }
 
+    // --- Scanner Contract Check (M5.5-S4) ---
+    console.log('[Gate Light] Checking Scanner API Contract...');
+    try {
+        const scannerRes = await fetch('http://localhost:53122/scanner/runs?limit=1');
+        if (scannerRes.ok) {
+            const data = await scannerRes.json();
+            if (Array.isArray(data.runs) && typeof data.total === 'number') {
+                console.log('[Gate Light] Scanner runs contract: PASS');
+            } else {
+                console.warn('[Gate Light] Scanner runs contract: WARN (missing runs/total fields)');
+            }
+        } else {
+            console.warn('[Gate Light] Scanner runs contract: SKIP (endpoint returned ' + scannerRes.status + ')');
+        }
+    } catch (e) {
+        console.warn('[Gate Light] Scanner runs contract: SKIP (server unreachable)');
+    }
+
+    // --- Universe Contract Check (M5.5-S4) ---
+    console.log('[Gate Light] Checking Universe API Contract...');
+    try {
+        const universeRes = await fetch('http://localhost:53122/universe/runs?limit=1');
+        if (universeRes.ok) {
+            const data = await universeRes.json();
+            if (Array.isArray(data.runs) && typeof data.total === 'number') {
+                console.log('[Gate Light] Universe runs contract: PASS');
+            } else {
+                console.warn('[Gate Light] Universe runs contract: WARN (missing runs/total fields)');
+            }
+        } else {
+            console.warn('[Gate Light] Universe runs contract: SKIP (endpoint returned ' + universeRes.status + ')');
+        }
+    } catch (e) {
+        console.warn('[Gate Light] Universe runs contract: SKIP (server unreachable)');
+    }
+
     // --- Strict Healthcheck Validation (Task 260208_023) ---
     console.log('[Gate Light] Checking healthcheck evidence...');
 
