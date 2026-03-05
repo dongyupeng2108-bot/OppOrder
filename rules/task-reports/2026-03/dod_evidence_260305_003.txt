@@ -1,0 +1,14 @@
+TASK_ID=260305_003
+GENERATED_AT=2026-03-05T13:59:45.897Z
+
+# DoD Markers
+DOD_SCANNER_SERVICE=OppRadar/scanner_service.mjs (runScanner)
+DOD_SNAPSHOT_STORE=OppRadar/snapshot_store.mjs (insertCoreSnapshot, getLatestCoreSnapshot, getScannerRuns)
+DOD_RATE_LIMITER=OppRadar/rate_limiter.mjs (singleton, concurrency+window+retry)
+DOD_DB_TABLES=scanner_runs, core_snapshots, feature_pack_records
+DOD_MID_PRICE_FORMULA=mid_price = (best_bid + best_ask) / 2 (frozen)
+DOD_PACK_FRAMEWORK=feature_pack_records with SKIPPED status for disabled packs
+DOD_MOCK_FALLBACK=Network probe (3s timeout) + deterministic mock core data
+DOD_TESTS=tests/scanner_service.test.mjs (10/10 pass)
+
+GATE_LIGHT_EXIT=0

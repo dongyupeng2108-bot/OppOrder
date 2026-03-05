@@ -237,6 +237,60 @@ function initSchema() {
             list_digest     TEXT NOT NULL
         )`);
         db.run(`CREATE INDEX IF NOT EXISTS idx_universe_runs_universe_ts ON universe_runs(universe_id, ts_start)`);
+
+        // Scanner Runs Table (M5.5-S3)
+        db.run(`CREATE TABLE IF NOT EXISTS scanner_runs (
+            scanner_run_id           TEXT PRIMARY KEY,
+            universe_run_id          TEXT,
+            scan_profile_id          TEXT NOT NULL,
+            effective_packs          TEXT,
+            ts_start                 TEXT NOT NULL,
+            ts_end                   TEXT,
+            wall_time_ms             REAL,
+            universe_fetch_ms        REAL,
+            snapshot_core_ms         REAL,
+            rate_limiter_sleep_ms    REAL,
+            core_success_count       INTEGER DEFAULT 0,
+            core_fail_count          INTEGER DEFAULT 0,
+            per_market_timeout_count INTEGER DEFAULT 0,
+            retry_count              INTEGER DEFAULT 0,
+            pack_coverage            TEXT,
+            api_calls_count          INTEGER DEFAULT 0
+        )`);
+        db.run(`CREATE INDEX IF NOT EXISTS idx_scanner_runs_universe_ts ON scanner_runs(universe_run_id, ts_start)`);
+
+        // Core Snapshots Table (M5.5-S3)
+        db.run(`CREATE TABLE IF NOT EXISTS core_snapshots (
+            snapshot_id      TEXT PRIMARY KEY,
+            ts               TEXT NOT NULL,
+            scanner_run_id   TEXT NOT NULL,
+            market_id        TEXT NOT NULL,
+            token_id         TEXT NOT NULL,
+            best_bid         REAL NOT NULL,
+            best_ask         REAL NOT NULL,
+            mid_price        REAL NOT NULL,
+            spread           REAL NOT NULL,
+            tick_size        REAL,
+            accepting_orders INTEGER NOT NULL,
+            end_time         TEXT,
+            volume_24h       REAL,
+            neg_risk         INTEGER,
+            min_order_size   REAL
+        )`);
+        db.run(`CREATE INDEX IF NOT EXISTS idx_core_snapshots_market_ts ON core_snapshots(market_id, ts)`);
+        db.run(`CREATE INDEX IF NOT EXISTS idx_core_snapshots_scanner_run ON core_snapshots(scanner_run_id)`);
+
+        // Feature Pack Records Table (M5.5-S3)
+        db.run(`CREATE TABLE IF NOT EXISTS feature_pack_records (
+            id               TEXT PRIMARY KEY,
+            pack_id          TEXT NOT NULL,
+            snapshot_id      TEXT NOT NULL,
+            scanner_run_id   TEXT NOT NULL,
+            status           TEXT NOT NULL,
+            ts               TEXT NOT NULL,
+            data             TEXT
+        )`);
+        db.run(`CREATE INDEX IF NOT EXISTS idx_fpr_snapshot ON feature_pack_records(snapshot_id)`);
     });
 }
 
