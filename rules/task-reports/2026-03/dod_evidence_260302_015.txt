@@ -1,0 +1,12 @@
+TASK_ID=260302_015
+GENERATED_AT=2026-03-05T09:52:38.298Z
+
+# DoD Markers
+DOD_AUTO_POSTMORTEM=POST /outcomes/:opp_id auto-generates postmortem card
+DOD_FROZEN_FIELDS=decision_snapshot_id/decision_b5_run_id frozen from rev 0
+DOD_ACTUAL_MAPPING=YES→1.0, NO→0.0
+DOD_IDEMPOTENT=same outcome skips duplicate postmortem
+DOD_BACKFILL=scripts/backfill_postmortems.mjs (idempotent)
+DOD_TESTS=tests/postmortem_generator.test.mjs (6/6 pass)
+
+GATE_LIGHT_EXIT=0
