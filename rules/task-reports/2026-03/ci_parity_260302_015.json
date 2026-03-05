@@ -1,28 +1,26 @@
 {
   "task_id": "260302_015",
   "parity": "PASS",
-  "base": "bbc6a1124e4ff681c645ac0eaf5cc7e067fdf563",
-  "head": "44560ea0afdadf729e851b3442f22b1e181dc371",
-  "merge_base": "22c32599d7c84b8ca5b4ac0c1aa0ffaf26b5be7c",
+  "base": "6718d23c251939d961598c78a0ff3eac0c0716d0",
+  "head": "bd51f7979e557db9d035096120e0e18c058ed5dc",
+  "merge_base": "6594f833b7b610dadafd0ca8d1f50a02e4c29e14",
   "scope_files": [
-    ".gitignore",
-    "OppRadar/contracts/postmortem.schema.json",
-    "OppRadar/db.mjs",
     "OppRadar/mock_server_53122.mjs",
     "OppRadar/postmortem_generator.mjs",
     "OppRadar/postmortem_store.mjs",
     "rules/LATEST.json",
-    "rules/task-reports/2026-03/260302_013.json",
-    "rules/task-reports/2026-03/260302_013_healthcheck_53122_pairs.txt",
-    "rules/task-reports/2026-03/260302_013_healthcheck_53122_root.txt",
     "rules/task-reports/2026-03/260302_014.json",
     "rules/task-reports/2026-03/260302_014_healthcheck_53122_pairs.txt",
     "rules/task-reports/2026-03/260302_014_healthcheck_53122_root.txt",
-    "rules/task-reports/index/error_stats.jsonl",
+    "rules/task-reports/2026-03/ci_parity_260302_015.json",
+    "rules/task-reports/2026-03/dod_evidence_260302_015.txt",
+    "rules/task-reports/2026-03/generate_evidence_260302_015.mjs",
+    "rules/task-reports/2026-03/git_meta_260302_015.json",
+    "rules/task-reports/2026-03/result_260302_015.json",
+    "rules/task-reports/locks/260302_014.lock.json",
     "scripts/backfill_postmortems.mjs",
-    "tests/postmortem_generator.test.mjs",
-    "tests/postmortem_store.test.mjs"
+    "tests/postmortem_generator.test.mjs"
   ],
-  "scope_count": 17,
-  "generated_at": "2026-03-05T09:52:38.298Z"
+  "scope_count": 15,
+  "generated_at": "2026-03-05T10:00:06.751Z"
 }
