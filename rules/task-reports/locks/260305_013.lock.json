@@ -1,0 +1,6 @@
+{
+  "task_id": "260305_013",
+  "locked_at": "2026-03-06T05:31:00Z",
+  "locked_by": "claude-code",
+  "reason": "Remove numeric threshold filter from eligible_filter — filter was killing 99.6% of Polymarket markets"
+}
