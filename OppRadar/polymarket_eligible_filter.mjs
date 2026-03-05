@@ -3,6 +3,7 @@
  * Applies five hard eligibility filters to a list of normalized Polymarket markets.
  *
  * Five hard filters (ALL must pass to be a candidate):
+ *  0. Settled market exclusion — yes_price === 0 or yes_price === 1 (market already resolved)
  *  1. Numeric threshold proposition — title or question matches number + comparison word
  *  2. Has explicit settlement time — event_time exists and is valid ISO8601
  *  3. TTL30d window — event_time - now <= 30 days
@@ -43,6 +44,7 @@ export function applyEligibleFilter(markets) {
   const fetched_total = markets.length;
 
   const breakdown = {
+    settled_market: 0,
     no_numeric_threshold: 0,
     no_event_time: 0,
     ttl_exceeded: 0,
@@ -52,6 +54,13 @@ export function applyEligibleFilter(markets) {
   const passed = [];
 
   for (const market of markets) {
+    // Filter 0: Exclude settled markets (yes_price === 0 or === 1)
+    const price = market.yes_price;
+    if (price === 0 || price === 1) {
+      breakdown.settled_market++;
+      continue;
+    }
+
     const text = `${market.title || ''} ${market.question || ''}`;
 
     // Filter 1: Numeric threshold proposition
@@ -74,7 +83,6 @@ export function applyEligibleFilter(markets) {
     }
 
     // Filter 4: yes_price ∈ (0.05, 0.95)
-    const price = market.yes_price;
     if (price === null || price === undefined || isNaN(price) || price <= 0.05 || price >= 0.95) {
       breakdown.price_out_of_range++;
       continue;

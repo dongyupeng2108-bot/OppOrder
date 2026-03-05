@@ -1,0 +1,9 @@
+TASK_ID=260302_012
+GENERATED_AT=2026-03-04T13:14:55.747Z
+
+# DoD Markers
+DOD_ELIGIBLE_FILTER=OppRadar/polymarket_eligible_filter.mjs
+DOD_PIPELINE_FILTER=scripts/run_pipeline_b1_b5.mjs
+DOD_VERIFY=25 total -> 14 active (11 settled excluded)
+
+GATE_LIGHT_EXIT=0
