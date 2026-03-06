@@ -2,6 +2,7 @@
 
 import { DB } from './db.mjs';
 import * as killSwitch from './trading_kill_switch.mjs';
+import { safeLog, sanitizeError } from './trading_log_sanitizer.mjs';
 
 const MAX_FAILURES = 3;
 
@@ -34,7 +35,7 @@ export function getStatus() {
 
 export async function pingLive() {
   // stub: P4 Live integration will replace with real order status check
-  console.log('[Heartbeat] ping stub — OK');
+  safeLog('info', '[Heartbeat] ping stub — OK');
   return true;
 }
 
@@ -53,7 +54,7 @@ async function tick() {
     _failCount = 0;
   } catch (err) {
     _failCount++;
-    console.error(`[Heartbeat] ping failed (${_failCount}/${MAX_FAILURES}):`, err.message);
+    safeLog('error', `[Heartbeat] ping failed (${_failCount}/${MAX_FAILURES}):`, sanitizeError(err));
     if (_failCount >= MAX_FAILURES) {
       killSwitch.activate();
       stopHeartbeat();
