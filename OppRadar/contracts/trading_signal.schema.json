@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TradingSignal",
+  "type": "object",
+  "required": [
+    "signal_id", "opp_id", "market_id", "token_id",
+    "side", "order_type", "price_target",
+    "recommended_shares", "context",
+    "decision_snapshot_id", "core_snapshot_id", "ts"
+  ],
+  "properties": {
+    "signal_id": { "type": "string", "minLength": 1 },
+    "opp_id": { "type": "string", "minLength": 1 },
+    "market_id": { "type": "string", "minLength": 1 },
+    "token_id": { "type": "string", "minLength": 1 },
+    "side": { "type": "string", "enum": ["BUY", "SELL"] },
+    "order_type": { "type": "string", "enum": ["GTC", "GTD", "FOK", "FAK"] },
+    "price_target": { "type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1 },
+    "recommended_shares": { "type": "number", "exclusiveMinimum": 0 },
+    "context": {
+      "type": "object",
+      "required": ["p_baseline_mid", "edge_net", "confidence", "veto_status", "risk_level"],
+      "properties": {
+        "p_baseline_mid": { "type": "number" },
+        "edge_net": { "type": "number" },
+        "confidence": { "type": "string", "enum": ["HIGH", "MEDIUM", "LOW"] },
+        "veto_status": { "type": "string", "enum": ["RED", "YELLOW", "GREEN"] },
+        "risk_level": { "type": "string", "enum": ["HIGH", "MEDIUM", "LOW"] }
+      }
+    },
+    "decision_snapshot_id": { "type": "string", "minLength": 1 },
+    "core_snapshot_id": { "type": "string", "minLength": 1 },
+    "b5_run_id": { "type": ["string", "null"] },
+    "strategy_id": { "type": ["string", "null"] },
+    "ts": { "type": "string", "format": "date-time" }
+  },
+  "additionalProperties": false
+}
