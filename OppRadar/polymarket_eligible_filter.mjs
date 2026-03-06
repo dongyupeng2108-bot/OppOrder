@@ -45,7 +45,7 @@ export function applyEligibleFilter(markets) {
 
   const breakdown = {
     settled_market: 0,
-    no_numeric_threshold: 0,
+    has_numeric_threshold: 0,
     no_event_time: 0,
     ttl_exceeded: 0,
     price_out_of_range: 0,
@@ -64,8 +64,8 @@ export function applyEligibleFilter(markets) {
     const text = `${market.title || ''} ${market.question || ''}`;
 
     // Filter 1: Numeric threshold proposition
-    if (!NUMERIC_THRESHOLD_RE.test(text)) {
-      breakdown.no_numeric_threshold++;
+    if (NUMERIC_THRESHOLD_RE.test(text)) {
+      breakdown.has_numeric_threshold++;
       continue;
     }
 
