@@ -6,6 +6,7 @@ import { DB } from './db.mjs';
 import { getFeeRate, calculateFee } from './trading_fee_model.mjs';
 import { isActivated } from './trading_kill_switch.mjs';
 import { startHeartbeat } from './trading_heartbeat.mjs';
+import { safeLog, sanitizeError } from './trading_log_sanitizer.mjs';
 
 const MAX_POSITION_USD = 10;
 const SIGNER_URL = 'http://127.0.0.1:53199';
@@ -25,7 +26,7 @@ export async function checkSignerHealth() {
     const data = await res.json();
     return data.status === 'ok';
   } catch (err) {
-    console.warn('[LiveExecutor] signer health check failed:', err.message);
+    safeLog('warn', '[LiveExecutor] signer health check failed:', sanitizeError(err));
     return false;
   }
 }
@@ -77,7 +78,7 @@ export async function executeLive(order, _deps = {}) {
   let signerHeaders = signResult.headers;
   // TODO M8-P4-LIVE: replace stub with polymarket-cli / py-clob-client call
   // Requires: CLOB API endpoint, proxy_agent
-  console.log('[LiveExecutor] would submit to CLOB:', order.order_id);
+  safeLog('info', '[LiveExecutor] would submit to CLOB:', order.order_id);
   signerHeaders = null; // LG-5: release reference
 
   // 6. Generate fill (simulated for now)
@@ -155,7 +156,7 @@ async function signOrder(order) {
     if (!res.ok) return { signed: false };
     return await res.json();
   } catch (err) {
-    console.warn('[LiveExecutor] sign request failed:', err.message);
+    safeLog('warn', '[LiveExecutor] sign request failed:', sanitizeError(err));
     return null;
   }
 }
@@ -176,9 +177,9 @@ export async function signCancelOrder(orderId) {
     });
     clearTimeout(timer);
     if (res.ok) {
-      console.log('[LiveExecutor] cancel signed:', orderId);
+      safeLog('info', '[LiveExecutor] cancel signed:', orderId);
     }
   } catch (err) {
-    console.warn('[LiveExecutor] sign-cancel failed for', orderId, ':', err.message);
+    safeLog('warn', '[LiveExecutor] sign-cancel failed:', sanitizeError(err));
   }
 }

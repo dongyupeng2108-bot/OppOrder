@@ -5,6 +5,7 @@ import { processSignal } from './trading_order_engine.mjs';
 import { executePaper } from './trading_executor_paper.mjs';
 import { DB } from './db.mjs';
 import * as killSwitch from './trading_kill_switch.mjs';
+import { safeLog, sanitizeError } from './trading_log_sanitizer.mjs';
 
 function parseBody(req) {
   return new Promise((resolve, reject) => {
@@ -58,6 +59,7 @@ export async function handleTradingRoute(req, res, pathname, query) {
       if (err.message && (err.message.includes('is required') || err.message.includes('must be') || err.message.includes('invalid JSON'))) {
         return json(res, 400, { error: 'validation failed', detail: err.message });
       }
+      safeLog('error', '[TradingRoutes] signal error:', sanitizeError(err));
       return json(res, 500, { error: 'internal error', detail: err.message });
     }
   }
@@ -79,6 +81,7 @@ export async function handleTradingRoute(req, res, pathname, query) {
         snapshot: snapshots.length > 0 ? snapshots[0] : null,
       });
     } catch (err) {
+      safeLog('error', '[TradingRoutes] order lookup error:', sanitizeError(err));
       return json(res, 500, { error: 'internal error', detail: err.message });
     }
   }
@@ -106,6 +109,7 @@ export async function handleTradingRoute(req, res, pathname, query) {
       );
       return json(res, 200, { orders, total, limit, offset });
     } catch (err) {
+      safeLog('error', '[TradingRoutes] orders list error:', sanitizeError(err));
       return json(res, 500, { error: 'internal error', detail: err.message });
     }
   }
