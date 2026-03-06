@@ -64,8 +64,8 @@ export function applyEligibleFilter(markets) {
     const text = `${market.title || ''} ${market.question || ''}`;
 
     // Filter 1: Numeric threshold proposition
-    if (!NUMERIC_THRESHOLD_RE.test(text)) {
-      breakdown.no_numeric_threshold++;
+    if (NUMERIC_THRESHOLD_RE.test(text)) {
+      breakdown.has_numeric_threshold++;
       continue;
     }
 
