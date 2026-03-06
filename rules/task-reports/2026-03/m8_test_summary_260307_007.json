@@ -1,0 +1,8 @@
+{
+  "task_id": "260307_007",
+  "ts": "2026-03-07T12:00:00.000Z",
+  "l1_unit": { "total": 53, "pass": 53, "fail": 0 },
+  "l2_e2e": { "scenarios": 4, "pass": 4 },
+  "l3_http": { "endpoints": 7, "pass": 5, "not_implemented": 2, "notes": "/trading/account and /trading/virtual_deposit not implemented (404)" },
+  "l4_manual": { "paths": 4, "pass": 4 }
+}

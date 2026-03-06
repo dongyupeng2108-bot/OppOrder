@@ -1,0 +1,16 @@
+{
+  "task_id": "260307_007",
+  "allowed_files": [
+    "tests/trading_signal.test.mjs",
+    "tests/trading_order_engine.test.mjs",
+    "tests/trading_executor_paper.test.mjs",
+    "tests/trading_routes.test.mjs",
+    "tests/trading_executor_live.test.mjs",
+    "tests/trading_log_sanitizer.test.mjs"
+  ],
+  "auto_exempt": [
+    "rules/LATEST.json",
+    "rules/task-reports/index/error_stats.jsonl"
+  ],
+  "created_at": "2026-03-06T23:34:05.698Z"
+}
