@@ -76,23 +76,21 @@ describe('trading_signal', () => {
     assert.throws(() => validateSignal(signal), /recommended_shares/);
   });
 
-  it('9. SignalRouter stub returns STUB status', async () => {
+  it('9. SignalRouter routes via processSignal (P2 integration)', async () => {
+    // P2 replaced stub with real processSignal; router now returns ACCEPTED
+    await new Promise(resolve => setTimeout(resolve, 500)); // wait for DB init
     const router = new SignalRouter();
     const signal = createSignal(makeValidFields());
     const result = await router.route(signal);
-    assert.equal(result.status, 'STUB');
+    assert.equal(result.status, 'ACCEPTED');
     assert.equal(result.signal_id, signal.signal_id);
   });
 
-  it('10. SignalRouter with orderEngine calls process', async () => {
-    let captured = null;
-    const mockEngine = {
-      process: async (sig) => { captured = sig; return { status: 'OK', signal_id: sig.signal_id }; }
-    };
-    const router = new SignalRouter(mockEngine);
+  it('10. SignalRouter route returns signal_id in result', async () => {
+    const router = new SignalRouter();
     const signal = createSignal(makeValidFields());
     const result = await router.route(signal);
-    assert.equal(captured.signal_id, signal.signal_id);
-    assert.equal(result.status, 'OK');
+    assert.ok(result.signal_id);
+    assert.equal(result.signal_id, signal.signal_id);
   });
 });

@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TradingOrder",
+  "type": "object",
+  "required": [
+    "order_id", "signal_id", "opp_id", "market_id", "token_id",
+    "side", "order_type", "price", "shares", "status",
+    "executor_type", "created_at", "updated_at"
+  ],
+  "properties": {
+    "order_id": { "type": "string", "minLength": 1 },
+    "signal_id": { "type": "string", "minLength": 1 },
+    "opp_id": { "type": "string", "minLength": 1 },
+    "market_id": { "type": "string", "minLength": 1 },
+    "token_id": { "type": "string", "minLength": 1 },
+    "side": { "type": "string", "enum": ["BUY", "SELL"] },
+    "order_type": { "type": "string", "enum": ["GTC", "GTD", "FOK", "FAK"] },
+    "price": { "type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1 },
+    "shares": { "type": "number", "exclusiveMinimum": 0 },
+    "status": { "type": "string", "enum": ["PENDING", "FILLED", "PARTIALLY_FILLED", "CANCELLED", "REJECTED"] },
+    "reject_reason": { "type": ["string", "null"] },
+    "executor_type": { "type": "string", "enum": ["PAPER", "LIVE"] },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" }
+  },
+  "additionalProperties": false
+}
