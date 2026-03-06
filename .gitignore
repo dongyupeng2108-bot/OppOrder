@@ -76,3 +76,24 @@ scripts/gate_light_ci_backup_*.mjs
 
 # Task capsule files (PM generated, not versioned)
 taskfiles/
+
+# ============================================
+# Security: prevent accidental key commits
+# OppRadar Security Architecture v1.1
+# ============================================
+*.key
+*.secret
+*.pem
+*.p12
+.env
+.env.*
+.env.local
+.oppradar-secrets/
+signer-agent/
+
+# Polymarket credential patterns
+polymarket_*.txt
+*_private_key.txt
+*_api_key.txt
+*_api_secret.txt
+*_passphrase.txt
