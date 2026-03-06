@@ -77,7 +77,7 @@ export function applyEligibleFilter(markets) {
 
     // Filter 3: TTL30d — event_time must be within 30 days from now
     const eventDate = new Date(market.event_time);
-    if (eventDate > ttlCutoff) {
+    if (eventDate < now || eventDate > ttlCutoff) {
       breakdown.ttl_exceeded++;
       continue;
     }
