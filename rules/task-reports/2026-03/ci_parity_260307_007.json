@@ -1,0 +1,15 @@
+{
+  "task_id": "260307_007",
+  "parity": "PASS",
+  "base": "48136038f70b39837310e0a94fc34be6396b4eef",
+  "head": "8920b104a41caf1e1d85abeb26e97f3e61348222",
+  "merge_base": "48136038f70b39837310e0a94fc34be6396b4eef",
+  "scope_files": [
+    "rules/LATEST.json",
+    "rules/task-reports/2026-03/generate_evidence_260307_007.mjs",
+    "rules/task-reports/2026-03/m8_test_summary_260307_007.json",
+    "rules/task-reports/2026-03/scope_lock_260307_007.json"
+  ],
+  "scope_count": 4,
+  "generated_at": "2026-03-06T23:41:37.749Z"
+}
