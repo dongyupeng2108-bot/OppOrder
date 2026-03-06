@@ -4,6 +4,7 @@ import { validateSignal } from './trading_signal.mjs';
 import { processSignal } from './trading_order_engine.mjs';
 import { executePaper } from './trading_executor_paper.mjs';
 import { DB } from './db.mjs';
+import * as killSwitch from './trading_kill_switch.mjs';
 
 function parseBody(req) {
   return new Promise((resolve, reject) => {
@@ -111,7 +112,13 @@ export async function handleTradingRoute(req, res, pathname, query) {
 
   // POST /trading/kill
   if (pathname === '/trading/kill' && req.method === 'POST') {
-    return json(res, 200, { status: 'KILL_SWITCH_ACTIVATED', message: 'stub: LiveExecutor not yet implemented' });
+    killSwitch.activate();
+    const result = await killSwitch.cancelAllPending();
+    return json(res, 200, {
+      status: 'KILL_SWITCH_ACTIVATED',
+      cancelled_orders: result.cancelled,
+      message: 'Kill switch activated, all pending orders cancelled',
+    });
   }
 
   return false; // no route matched

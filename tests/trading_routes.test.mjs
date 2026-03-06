@@ -8,6 +8,7 @@ import { createSignal } from '../OppRadar/trading_signal.mjs';
 import { processSignal } from '../OppRadar/trading_order_engine.mjs';
 import { clearCache } from '../OppRadar/trading_market_rules.mjs';
 import { DB } from '../OppRadar/db.mjs';
+import * as killSwitch from '../OppRadar/trading_kill_switch.mjs';
 
 // Mock req/res for testing route handlers without starting a server
 function mockReq(method, pathname, query = {}, body = null) {
@@ -170,5 +171,36 @@ describe('trading_routes', () => {
     // backfill_pnl runs on import; re-running needs fresh import
     // Since module caching, we verify the first run is already idempotent
     assert.equal(result1.updated, 0);
+  });
+
+  it('9. POST /trading/kill → activated=true, isActivated() returns true', async () => {
+    killSwitch.reset(); // clean state
+    assert.equal(killSwitch.isActivated(), false);
+    const res = await callRoute('POST', '/trading/kill', {});
+    assert.equal(res.status, 200);
+    const data = res.json;
+    assert.equal(data.status, 'KILL_SWITCH_ACTIVATED');
+    assert.equal(typeof data.cancelled_orders, 'number');
+    assert.equal(killSwitch.isActivated(), true);
+    killSwitch.reset(); // cleanup
+  });
+
+  it('10. POST /trading/kill cancels all PENDING orders', async () => {
+    killSwitch.reset();
+    // Create a PENDING order
+    const signal = makeValidSignal();
+    const procResult = await processSignal(signal);
+    assert.equal(procResult.status, 'ACCEPTED');
+    // Verify it's PENDING
+    const before = await DB.allSql("SELECT COUNT(*) as cnt FROM trading_orders WHERE status = 'PENDING'");
+    assert.ok(before[0].cnt > 0);
+    // Kill switch
+    const res = await callRoute('POST', '/trading/kill', {});
+    assert.equal(res.status, 200);
+    // Wait for async cancelAllPending in activate()
+    await new Promise(r => setTimeout(r, 200));
+    const after = await DB.allSql("SELECT COUNT(*) as cnt FROM trading_orders WHERE status = 'PENDING'");
+    assert.equal(after[0].cnt, 0);
+    killSwitch.reset(); // cleanup
   });
 });
