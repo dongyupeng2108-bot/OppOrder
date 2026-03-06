@@ -73,3 +73,6 @@ scripts/gate_light_ci_backup_*.mjs
 # Environment secrets — NEVER commit
 .env
 .env.*
+
+# Task capsule files (PM generated, not versioned)
+taskfiles/
