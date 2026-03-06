@@ -8,6 +8,11 @@
     "batch_interval_ms": 500,
     "max_concurrent": 5,
     "retry_max": 3,
-    "retry_backoff_base_ms": 1000
+    "retry_backoff_base_ms": 1000,
+    "buckets": {
+      "trading_order_post":   { "limit": 3500, "window_ms": 10000 },
+      "trading_order_delete": { "limit": 3500, "window_ms": 10000 },
+      "trading_order_get":    { "limit": 3500, "window_ms": 10000 }
+    }
   }
 }
