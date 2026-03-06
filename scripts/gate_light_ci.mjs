@@ -738,6 +738,43 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         console.warn('[Gate Light] Universe runs contract: SKIP (server unreachable)');
     }
 
+    // --- Trading Routes Contract Check (M8-P6) ---
+    console.log('[Gate Light] Checking Trading Routes API Contract...');
+    try {
+        const tradingOrdersRes = await fetch('http://localhost:53122/trading/orders');
+        if (tradingOrdersRes.ok) {
+            const data = await tradingOrdersRes.json();
+            if (Array.isArray(data.orders) && typeof data.total === 'number') {
+                console.log('[Gate Light] Trading orders contract: PASS');
+            } else {
+                console.warn('[Gate Light] Trading orders contract: WARN (missing orders/total fields)');
+            }
+        } else {
+            console.warn('[Gate Light] Trading orders contract: SKIP (endpoint returned ' + tradingOrdersRes.status + ')');
+        }
+
+        const trading404Res = await fetch('http://localhost:53122/trading/orders/nonexistent_id');
+        if (trading404Res.status === 404) {
+            console.log('[Gate Light] Trading orders 404 contract: PASS');
+        } else {
+            console.warn('[Gate Light] Trading orders 404 contract: WARN (expected 404, got ' + trading404Res.status + ')');
+        }
+
+        const tradingKillRes = await fetch('http://localhost:53122/trading/kill', { method: 'POST' });
+        if (tradingKillRes.ok) {
+            const killData = await tradingKillRes.json();
+            if (typeof killData.status === 'string') {
+                console.log('[Gate Light] Trading kill contract: PASS');
+            } else {
+                console.warn('[Gate Light] Trading kill contract: WARN (missing status field)');
+            }
+        } else {
+            console.warn('[Gate Light] Trading kill contract: SKIP (endpoint returned ' + tradingKillRes.status + ')');
+        }
+    } catch (e) {
+        console.warn('[Gate Light] Trading routes contract: SKIP (server unreachable)');
+    }
+
     // --- Strict Healthcheck Validation (Task 260208_023) ---
     console.log('[Gate Light] Checking healthcheck evidence...');
 

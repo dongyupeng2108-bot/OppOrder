@@ -23,6 +23,7 @@ import { generateCacheKey as generateNewsCacheKey, getFromCache as getFromNewsCa
 import { generateCacheKey as generateScanCacheKey, getFromCache as getFromScanCache, setInCache as setInScanCache } from './scan_cache.mjs';
 import { appendToLedger, queryLedger } from './ledger/opps_ledger_v0.mjs';
 import DB from './db.mjs';
+import { handleTradingRoute } from './trading_routes.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -3760,6 +3761,12 @@ const server = http.createServer(async (req, res) => {
             res.end(JSON.stringify({ error: err.message }));
         }
         return;
+    }
+
+    // Trading routes (M8-P6)
+    if (pathname.startsWith('/trading/')) {
+        const result = await handleTradingRoute(req, res, pathname, parsedUrl.query || {});
+        if (result !== false) return;
     }
 
     // 404

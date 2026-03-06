@@ -1,0 +1,39 @@
+{
+  "POST /trading/signal": {
+    "type": "object",
+    "required": ["signal_id", "order_id", "order_status", "fill_status"],
+    "properties": {
+      "signal_id": { "type": "string" },
+      "order_id": { "type": ["string", "null"] },
+      "order_status": { "type": "string" },
+      "fill_status": { "type": ["string", "null"] }
+    }
+  },
+  "GET /trading/orders": {
+    "type": "object",
+    "required": ["orders", "total", "limit", "offset"],
+    "properties": {
+      "orders": { "type": "array" },
+      "total": { "type": "number" },
+      "limit": { "type": "number" },
+      "offset": { "type": "number" }
+    }
+  },
+  "GET /trading/orders/:order_id": {
+    "type": "object",
+    "required": ["order"],
+    "properties": {
+      "order": { "type": "object" },
+      "fill": { "type": ["object", "null"] },
+      "snapshot": { "type": ["object", "null"] }
+    }
+  },
+  "POST /trading/kill": {
+    "type": "object",
+    "required": ["status", "message"],
+    "properties": {
+      "status": { "type": "string" },
+      "message": { "type": "string" }
+    }
+  }
+}
