@@ -125,5 +125,36 @@ export async function handleTradingRoute(req, res, pathname, query) {
     });
   }
 
+  // GET /trading/account
+  if (pathname === '/trading/account' && req.method === 'GET') {
+    try {
+      await DB.runSql(`CREATE TABLE IF NOT EXISTS global_config (key TEXT PRIMARY KEY, value TEXT, updated_at TEXT)`);
+      const rows = await DB.allSql("SELECT value FROM global_config WHERE key = 'virtual_notional'");
+      const balance = rows.length > 0 ? parseFloat(rows[0].value) : 100;
+      return json(res, 200, { mode: 'paper', balance, currency: 'USD' });
+    } catch (err) {
+      return json(res, 200, { mode: 'paper', balance: 100, currency: 'USD' });
+    }
+  }
+
+  // POST /trading/virtual_deposit
+  if (pathname === '/trading/virtual_deposit' && req.method === 'POST') {
+    try {
+      const body = await parseBody(req);
+      const amount = parseFloat(body.amount);
+      if (!amount || amount <= 0 || amount > 1000000) {
+        return json(res, 400, { error: 'amount must be a positive number up to 1000000' });
+      }
+      await DB.runSql(`CREATE TABLE IF NOT EXISTS global_config (key TEXT PRIMARY KEY, value TEXT, updated_at TEXT)`);
+      await DB.runSql(
+        `INSERT OR REPLACE INTO global_config (key, value, updated_at) VALUES ('virtual_notional', ?, ?)`,
+        [String(amount), new Date().toISOString()]
+      );
+      return json(res, 200, { ok: true, balance: amount });
+    } catch (err) {
+      return json(res, 500, { error: 'internal error', detail: err.message });
+    }
+  }
+
   return false; // no route matched
 }
