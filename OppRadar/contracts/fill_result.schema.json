@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "FillResult",
+  "description": "Result of executing an order (paper or live)",
+  "type": "object",
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": ["FILLED", "PENDING"]
+    },
+    "order_id": {
+      "type": "string"
+    },
+    "fill_id": {
+      "type": "string"
+    },
+    "fill_price": {
+      "type": "number"
+    },
+    "fill_shares": {
+      "type": "number"
+    },
+    "executor_type": {
+      "type": "string",
+      "enum": ["PAPER", "LIVE"]
+    },
+    "fees_paid_asset": {
+      "type": "string",
+      "enum": ["USDC", "SHARES"]
+    },
+    "fees_paid_amount": {
+      "type": "number"
+    },
+    "pnl_settlement": {
+      "type": ["number", "null"]
+    },
+    "pnl_reversion": {
+      "type": ["number", "null"]
+    },
+    "sim_seed": {
+      "type": "string"
+    },
+    "filled_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": ["status", "order_id"],
+  "if": {
+    "properties": { "status": { "const": "FILLED" } }
+  },
+  "then": {
+    "required": ["status", "order_id", "fill_id", "fill_price", "fill_shares", "fees_paid_asset", "fees_paid_amount", "sim_seed", "filled_at"]
+  }
+}
