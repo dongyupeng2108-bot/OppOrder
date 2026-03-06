@@ -30,6 +30,7 @@ if (sqlite3) {
             console.error('Could not connect to database', err);
         } else {
             console.log('Connected to SQLite database at', DB_PATH);
+            db.run('PRAGMA busy_timeout = 5000');
             initSchema();
         }
     });
@@ -291,6 +292,62 @@ function initSchema() {
             data             TEXT
         )`);
         db.run(`CREATE INDEX IF NOT EXISTS idx_fpr_snapshot ON feature_pack_records(snapshot_id)`);
+
+        // Trading Orders Table (M8-P2)
+        db.run(`CREATE TABLE IF NOT EXISTS trading_orders (
+            order_id         TEXT PRIMARY KEY,
+            signal_id        TEXT NOT NULL,
+            opp_id           TEXT NOT NULL,
+            market_id        TEXT NOT NULL,
+            token_id         TEXT NOT NULL,
+            side             TEXT NOT NULL CHECK(side IN ('BUY','SELL')),
+            order_type       TEXT NOT NULL CHECK(order_type IN ('GTC','GTD','FOK','FAK')),
+            price            REAL NOT NULL,
+            shares           REAL NOT NULL,
+            status           TEXT NOT NULL DEFAULT 'PENDING'
+                               CHECK(status IN ('PENDING','FILLED','PARTIALLY_FILLED','CANCELLED','REJECTED')),
+            reject_reason    TEXT,
+            executor_type    TEXT NOT NULL CHECK(executor_type IN ('PAPER','LIVE')),
+            created_at       TEXT NOT NULL,
+            updated_at       TEXT NOT NULL
+        )`);
+
+        // Trading Fills Table (M8-P2)
+        db.run(`CREATE TABLE IF NOT EXISTS trading_fills (
+            fill_id           TEXT PRIMARY KEY,
+            order_id          TEXT NOT NULL REFERENCES trading_orders(order_id),
+            executor_type     TEXT NOT NULL CHECK(executor_type IN ('PAPER','LIVE')),
+            fill_price        REAL NOT NULL,
+            fill_shares       REAL NOT NULL,
+            fees_paid_asset   TEXT NOT NULL CHECK(fees_paid_asset IN ('USDC','SHARES')),
+            fees_paid_amount  REAL NOT NULL,
+            pnl_settlement    REAL,
+            pnl_reversion     REAL,
+            sim_seed          TEXT,
+            filled_at         TEXT NOT NULL
+        )`);
+
+        // Trading Snapshots Table (M8-P2)
+        db.run(`CREATE TABLE IF NOT EXISTS trading_snapshots (
+            snapshot_id           TEXT PRIMARY KEY,
+            order_id              TEXT NOT NULL REFERENCES trading_orders(order_id),
+            core_snapshot_id      TEXT NOT NULL,
+            decision_snapshot_id  TEXT NOT NULL,
+            p_baseline_mid        REAL,
+            edge_buy_net          REAL,
+            edge_sell_net         REAL,
+            veto_status           TEXT,
+            risk_level            TEXT,
+            confidence            TEXT,
+            ts                    TEXT NOT NULL
+        )`);
+
+        // Trading Indices (M8-P2)
+        db.run(`CREATE INDEX IF NOT EXISTS idx_trading_orders_opp_id     ON trading_orders(opp_id)`);
+        db.run(`CREATE INDEX IF NOT EXISTS idx_trading_orders_status     ON trading_orders(status)`);
+        db.run(`CREATE INDEX IF NOT EXISTS idx_trading_orders_created_at ON trading_orders(created_at)`);
+        db.run(`CREATE INDEX IF NOT EXISTS idx_trading_fills_order_id    ON trading_fills(order_id)`);
+        db.run(`CREATE INDEX IF NOT EXISTS idx_trading_snapshots_order_id ON trading_snapshots(order_id)`);
     });
 }
 
@@ -316,6 +373,14 @@ function allAsync(sql, params = []) {
 // --- Public API ---
 
 export const DB = {
+    // Low-level SQL access (M8-P2)
+    async runSql(sql, params = []) {
+        return runAsync(sql, params);
+    },
+    async allSql(sql, params = []) {
+        return allAsync(sql, params);
+    },
+
     // Write Methods
     async appendTopic(topic_key, meta = {}) {
         try {

@@ -7,6 +7,7 @@
 //   - 手动触发（POST /trading/signal，P6 实现）
 
 import { validateSignal } from './trading_signal.mjs';
+import { processSignal } from './trading_order_engine.mjs';
 
 export class SignalRouter {
   constructor(orderEngine = null) {
@@ -16,14 +17,18 @@ export class SignalRouter {
   async route(signal) {
     validateSignal(signal);
 
-    if (this.orderEngine) {
-      const result = await this.orderEngine.process(signal);
-      console.log(`[SignalRouter] routed signal_id=${signal.signal_id} opp_id=${signal.opp_id} side=${signal.side}`);
-      return result;
-    }
-
-    console.log(`[SignalRouter] stub: signal ${signal.signal_id} received`);
+    const result = await processSignal(signal);
     console.log(`[SignalRouter] routed signal_id=${signal.signal_id} opp_id=${signal.opp_id} side=${signal.side}`);
-    return { status: 'STUB', signal_id: signal.signal_id };
+    return result;
+
+    // --- P1 stub (retained as comment) ---
+    // if (this.orderEngine) {
+    //   const result = await this.orderEngine.process(signal);
+    //   console.log(`[SignalRouter] routed signal_id=${signal.signal_id} opp_id=${signal.opp_id} side=${signal.side}`);
+    //   return result;
+    // }
+    // console.log(`[SignalRouter] stub: signal ${signal.signal_id} received`);
+    // console.log(`[SignalRouter] routed signal_id=${signal.signal_id} opp_id=${signal.opp_id} side=${signal.side}`);
+    // return { status: 'STUB', signal_id: signal.signal_id };
   }
 }
