@@ -2,23 +2,29 @@
     "mode":  "EnforceClean",
     "branch":  "260307_015",
     "cleaned_paths":  [
-
+                          "rules/task-reports",
+                          "rules/reports",
+                          "data/opps_ledger",
+                          "rules/task-reports/locks",
+                          "rules/task-reports/runs"
                       ],
-    "after":  null,
-    "head_commit":  "35f2299b8a0dc5f1f78047ea78aa4f6e0182e23f",
+    "after":  {
+                  "untracked_count":  0,
+                  "tracked_changed_count":  0,
+                  "sample_paths":  {
+
+                                   }
+              },
+    "head_commit":  "201b3a7ef11d8cca21ee148f52d3f96158db4d20",
     "before":  {
                    "untracked_count":  0,
-                   "tracked_changed_count":  13,
-                   "sample_paths":  [
-                                        "rules/task-reports/2026-03/.budget_260307_015.json",
-                                        "rules/task-reports/2026-03/260307_015_healthcheck_53122_pairs.txt",
-                                        "rules/task-reports/2026-03/260307_015_healthcheck_53122_root.txt",
-                                        "rules/task-reports/2026-03/ci_parity_260307_015.json",
-                                        "rules/task-reports/2026-03/dod_evidence_260307_015.txt"
-                                    ]
+                   "tracked_changed_count":  0,
+                   "sample_paths":  {
+
+                                    }
                },
     "repo_root":  "E:/OppRadar",
-    "reason":  "Tracked changes detected. Please commit, stash, or run with -Mode Heal.",
-    "result":  "FAIL"
+    "reason":  null,
+    "result":  "PASS"
 }
 

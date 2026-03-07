@@ -1,12 +1,12 @@
 ﻿**********************
 Windows PowerShell 脚本开始
-开始时间: 20260307150550
+开始时间: 20260307150728
 用户名: DESKTOP-BOHP945\ypdong
 RunAs 用户: DESKTOP-BOHP945\ypdong
 配置名称: 
 计算机: DESKTOP-BOHP945 (Microsoft Windows NT 10.0.19045.0)
-主机应用程序: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -Command .\scripts\run_task.ps1 -TaskId 260307_015 -Mode Dev -Header 'TraeTask_260307_015'
-进程 ID: 52024
+主机应用程序: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -Command .\scripts\run_task.ps1 -TaskId 260307_015 -Mode Integrate -Header 'TraeTask_260307_015'
+进程 ID: 55076
 PSVersion: 5.1.19041.6456
 PSEdition: Desktop
 PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1.19041.6456
@@ -19,7 +19,7 @@ SerializationVersion: 1.1.0.1
 已启动脚本，输出文件为 E:\OppRadar\rules\task-reports\2026-03\run_260307_015.log
 >>> [RunTask] Step 1: Preflight
 >>> [RunTask] Step: Preflight
-[Preflight] Starting checks for TaskId: 260307_015 | Mode: Dev | Header: TraeTask_260307_015
+[Preflight] Starting checks for TaskId: 260307_015 | Mode: Integrate | Header: TraeTask_260307_015
 [Preflight] Header 'TraeTask_260307_015' => Execution Allowed.
 [Preflight] Git Status: Clean | Branch: 260307_015
 [Preflight] Git Status: Clean | Branch: 260307_015
@@ -27,12 +27,20 @@ SerializationVersion: 1.1.0.1
 [Preflight] WARNING: Artifact 'result_260307_015.json' already exists. Overwriting allowed in Dev/Integrate flow, but ensure this is intentional.
 [Preflight] WARNING: Artifact 'trae_report_snippet_260307_015.txt' already exists. Overwriting allowed in Dev/Integrate flow, but ensure this is intentional.
 [Preflight] WARNING: Artifact 'preflight_attestation_260307_015.json' already exists. Overwriting allowed in Dev/Integrate flow, but ensure this is intentional.
+[Preflight] Checking Port 53122 Health...
+[Preflight] Port 53122 is Healthy.
 [Preflight] Attestation generated at: E:\OppRadar\rules\task-reports\2026-03\preflight_attestation_260307_015.json
 [Preflight] PASS
 
 
 >>> [RunTask] Step 1.1: Update LATEST.json
     Updated rules/LATEST.json to 260307_015
+>>> [RunTask] Step 1.2: Open PR Guard
+>>> [RunTask] Step: Open PR Guard
+Wrote Open PR Guard evidence to E:\OppRadar\rules\task-reports\2026-03\open_pr_guard_260307_015.json
+
+
+    Open PR Guard PASS. Output: E:\OppRadar\rules\task-reports\2026-03\open_pr_guard_260307_015.json
 >>> [RunTask] Step 1.3: Contract Verification First
 >>> [RunTask] Step: Contract Verification
 [Contract First] Starting Early Contract Verification...
@@ -168,7 +176,7 @@ Validation PASSED.
 [Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...
 [Gate Light] Immutable Integrate & SafeCmd Enforcement verified.
 [Gate Light] Checking Scope Lock...
-[Gate Light] Scope Lock verified (22 files, all within scope).
+[Gate Light] Scope Lock verified (27 files, all within scope).
 [Gate Light] BTCQDD Healthcheck: PASS
 [Gate Light] Skipping Postflight Envelope Validation (Preview Mode).
 [Gate Light] PASS
@@ -177,16 +185,21 @@ GATE_LIGHT_EXIT=0
 
     Preview Log: E:\OppRadar\rules\task-reports\2026-03\gate_light_preview_260307_015.log
 >>> [RunTask] Step 3.5: Error Digest (Pass 1)
->>> [RunTask] Generated Run ID: 20260307150607_35f2299
+>>> [RunTask] Generated Run ID: 20260307150747_201b3a7
 >>> [RunTask] Step: Error Digest (Pass 1)
 [ErrorDigest] Wrote NO_ERROR record to E:\OppRadar\rules\task-reports\2026-03\errors_260307_015.jsonl
 [ErrorDigest] Wrote summary to E:\OppRadar\rules\task-reports\2026-03\errors_summary_260307_015.txt
 
 
->>> [RunTask] Step 4: Skip Assemble Evidence (Dev Mode)
->>> [RunTask] Step 5: Skip Pass 2 Verify (Dev Mode)
->>> [RunTask] SUCCESS: Task 260307_015 (Dev) Completed.
-**********************
-Windows PowerShell 脚本结束
-结束时间: 20260307150608
-**********************
+>>> [RunTask] Step 3.6: Append Error Stats (Pass 1)
+>>> [RunTask] Step: Append Error Stats
+Appended 1 records to rules/task-reports/index/error_stats.jsonl
+
+
+>>> [RunTask] Step 3.7: Three-Strike Governance
+>>> [RunTask] Step: Three-Strike Governance
+[ThreeStrike] No triggers detected (max count < 3).
+
+
+>>> [RunTask] Step 4: Assemble Evidence
+>>> [RunTask] Step: Assemble Evidence
