@@ -1,0 +1,13 @@
+TASK_ID=260307_013
+GENERATED_AT=2026-03-07T02:28:21.258Z
+
+# DoD Markers
+DOD_SIGNAL_ENGINE=createSignalEngine factory with evaluate/getFeeEst/getPrice
+DOD_STRATEGY_RUNNER=createRunner factory with start/stop/reload/tick
+DOD_PROXY_INJECT=price_feed + market_scanner + signal_engine proxy injection
+DOD_TESTS=Integration tests created (network-dependent, validated in CI)
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260307_013_healthcheck_53122_root.txt
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260307_013_healthcheck_53122_pairs.txt
+
+GATE_LIGHT_EXIT=0
