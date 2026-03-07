@@ -1,0 +1,10 @@
+TASK_ID=260307_008
+GENERATED_AT=2026-03-07T00:13:12.361Z
+
+# DoD Markers
+DOD_ACCOUNT_ENDPOINT=GET /trading/account returns {mode:"paper",balance:number,currency:"USD"}
+DOD_DEPOSIT_ENDPOINT=POST /trading/virtual_deposit upserts global_config and returns {ok:true,balance:number}
+DOD_VALIDATION=amount validation rejects negative and >1000000 with 400
+DOD_TESTS=6/6 PASS in tests/trading_account.test.mjs
+
+GATE_LIGHT_EXIT=0
