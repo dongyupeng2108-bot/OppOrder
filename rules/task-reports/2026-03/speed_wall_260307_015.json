@@ -1,0 +1,12 @@
+{
+    "task_id":  "260307_015",
+    "generated_at":  "2026-03-07T15:06:27.0318011+08:00",
+    "wall_total_ms":  8027,
+    "ci_watch_ms":  0,
+    "ci_pass_at":  "",
+    "attempts":  1,
+    "failure_penalty_total_ms":  0,
+    "first_ci_fail_watch_ms":  0,
+    "autofix_apply_ms":  0,
+    "second_ci_pass_watch_ms":  0
+}

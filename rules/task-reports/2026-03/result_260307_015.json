@@ -4,6 +4,6 @@
   "summary": "B2-a: postmortem.mjs + PaperExecutor + strategy_runner integration. 11/11 tests pass.",
   "gate_light_exit": 0,
   "report_file": "notify_260307_015.txt",
-  "report_sha256_short": "c3af2c0d",
-  "generated_at": "2026-03-07T07:04:34.578Z"
+  "report_sha256_short": "9813f342",
+  "generated_at": "2026-03-07T07:05:57.633Z"
 }
