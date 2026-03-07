@@ -1,11 +1,11 @@
 ﻿{
-    "mode":  "Dev",
+    "mode":  "Integrate",
     "branch":  "260307_014",
     "write_allowed":  true,
     "input_hash_short":  "94ae6512",
     "header":  "TraeTask_260307_014",
-    "commit":  "351ddc22",
+    "commit":  "ef335a35",
     "task_id":  "260307_014",
     "header_detected":  true,
-    "timestamp":  "2026-03-07 14:44:05 UTC"
+    "timestamp":  "2026-03-07 14:50:33 UTC"
 }

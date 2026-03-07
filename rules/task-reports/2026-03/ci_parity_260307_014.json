@@ -2,7 +2,7 @@
   "task_id": "260307_014",
   "parity": "PASS",
   "base": "d6328dcaafa461cc8e0e09fa0446a8592c6aaedc",
-  "head": "2ed6ba4ee4f65ccb42d046f4d6c0ceb667fea6d8",
+  "head": "ef335a351c08e4f28e32931fe1ba66d55366fd39",
   "merge_base": "d6328dcaafa461cc8e0e09fa0446a8592c6aaedc",
   "scope_files": [
     "GOVERNANCE.md",
@@ -22,7 +22,6 @@
     "rules/task-reports/2026-03/preflight_attestation_260307_014.json",
     "rules/task-reports/2026-03/result_260307_014.json",
     "rules/task-reports/2026-03/run_260307_014.log",
-    "rules/task-reports/2026-03/run_chain_260307_014.jsonl",
     "rules/task-reports/2026-03/scope_lock_260307_014.json",
     "rules/task-reports/2026-03/speed_top5_260307_014.txt",
     "rules/task-reports/2026-03/speed_wall_260307_014.json",
@@ -30,6 +29,6 @@
     "rules/task-reports/2026-03/workspace_healer_260307_014.json",
     "rules/task-reports/locks/260307_013.lock.json"
   ],
-  "scope_count": 24,
-  "generated_at": "2026-03-07T06:49:39.303Z"
+  "scope_count": 23,
+  "generated_at": "2026-03-07T06:50:37.753Z"
 }
