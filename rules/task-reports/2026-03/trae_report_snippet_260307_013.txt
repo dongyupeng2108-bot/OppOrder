@@ -1,7 +1,7 @@
 Header: TraeTask_260307_013
 TASK: 260307_013
 BRANCH: 260307_013
-COMMIT: db4477d3
+COMMIT: ebd2560d
 STATUS: DONE
 SUMMARY: B1-c signal_engine + strategy_runner full chain
 
