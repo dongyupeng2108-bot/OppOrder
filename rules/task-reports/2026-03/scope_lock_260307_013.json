@@ -1,0 +1,15 @@
+{
+  "task_id": "260307_013",
+  "allowed_files": [
+    "strategies/crypto_binary/price_feed.mjs",
+    "strategies/crypto_binary/market_scanner.mjs",
+    "strategies/crypto_binary/signal_engine.mjs",
+    "strategies/crypto_binary/strategy_runner.mjs",
+    "tests/btcqdd_signal.test.mjs"
+  ],
+  "auto_exempt": [
+    "rules/LATEST.json",
+    "rules/task-reports/index/error_stats.jsonl"
+  ],
+  "created_at": "2026-03-07T02:24:23.563Z"
+}

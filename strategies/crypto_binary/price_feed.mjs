@@ -1,6 +1,8 @@
 // price_feed.mjs — Binance REST 价格数据（config 驱动）
 // 工厂函数模式：createPriceFeed(config)
 
+import '../../OppRadar/proxy_agent.mjs'; // 全局注入代理，覆盖整个进程的所有 fetch
+
 const BINANCE_BASE = 'https://api.binance.com';
 
 /**
