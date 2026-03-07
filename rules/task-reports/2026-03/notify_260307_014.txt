@@ -2,7 +2,7 @@
 Header: TraeTask_260307_014
 task_id: 260307_014
 mode: LOCAL
-commit: a3c5c3fe37ca4bcfc81def5dd0b0f35a8d6bbd5b
+commit: 2ed6ba4ee4f65ccb42d046f4d6c0ceb667fea6d8
 
 RESULT_JSON
 {"task_id":"260307_014","status":"DONE","summary":"GOVERNANCE.md v1.6: replace root GOVERNANCE.md with latest version from taskfiles."}
@@ -10,8 +10,8 @@ RESULT_JSON
 LOG_HEAD
 [260307_014] GOVERNANCE.md v1.6
 Branch: 260307_014
-Commit: a3c5c3fe
-Generated: 2026-03-07T06:49:00.264Z
+Commit: 2ed6ba4e
+Generated: 2026-03-07T06:49:39.303Z
 
 LOG_TAIL
 Task 260307_014 completed successfully.
