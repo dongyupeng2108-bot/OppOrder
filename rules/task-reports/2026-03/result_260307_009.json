@@ -1,0 +1,9 @@
+{
+  "task_id": "260307_009",
+  "status": "DONE",
+  "summary": "B0 BTCQDD: directory skeleton, multi-instance configs, server.mjs hot reload, shared module stubs, gate_light_ci.mjs BTCQDD healthcheck, GOVERNANCE.md v1.3",
+  "gate_light_exit": 0,
+  "report_file": "notify_260307_009.txt",
+  "report_sha256_short": "965dd9ed",
+  "generated_at": "2026-03-07T01:38:01.281Z"
+}

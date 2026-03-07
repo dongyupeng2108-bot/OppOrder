@@ -1,0 +1,12 @@
+TASK_ID=260307_009
+GENERATED_AT=2026-03-07T01:38:01.281Z
+
+# DoD Markers
+DOD_B0_SKELETON=strategies/crypto_binary/ directory created with server.mjs, instances/, shared/
+DOD_B0_GATE_LIGHT=gate_light_ci.mjs BTCQDD healthcheck appended (conditional, warn-only)
+DOD_B0_GOVERNANCE=GOVERNANCE.md v1.3 added to repo
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260307_009_healthcheck_53122_root.txt
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260307_009_healthcheck_53122_pairs.txt
+
+GATE_LIGHT_EXIT=0
