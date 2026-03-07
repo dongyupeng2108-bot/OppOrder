@@ -1,0 +1,33 @@
+{
+  "task_id": "260307_009",
+  "parity": "PASS",
+  "base": "dd46385d5c22c3952c627d169a759ae13266a01f",
+  "head": "d27d3fa4b649b27e8e8eed61a880ef58d165c767",
+  "merge_base": "dd46385d5c22c3952c627d169a759ae13266a01f",
+  "scope_files": [
+    "GOVERNANCE.md",
+    "data/crypto_binary/logs/.gitkeep",
+    "rules/LATEST.json",
+    "rules/task-reports/2026-03/gate_light_preview_260307_009.log",
+    "scripts/gate_light_ci.mjs",
+    "shared/data/db.mjs",
+    "shared/platform/polymarket_client.mjs",
+    "shared/platform/rate_limiter.mjs",
+    "shared/trading/paper_executor.mjs",
+    "shared/trading/trading_engine.mjs",
+    "strategies/crypto_binary/bs_pricer.mjs",
+    "strategies/crypto_binary/instances/btc_15m.json",
+    "strategies/crypto_binary/instances/eth_15m.json",
+    "strategies/crypto_binary/instances/sol_15m.json",
+    "strategies/crypto_binary/instances/xrp_15m.json",
+    "strategies/crypto_binary/market_scanner.mjs",
+    "strategies/crypto_binary/postmortem.mjs",
+    "strategies/crypto_binary/price_feed.mjs",
+    "strategies/crypto_binary/server.mjs",
+    "strategies/crypto_binary/signal_engine.mjs",
+    "strategies/crypto_binary/strategy_runner.mjs",
+    "strategies/crypto_binary/volatility_engine.mjs"
+  ],
+  "scope_count": 22,
+  "generated_at": "2026-03-07T01:37:30.760Z"
+}

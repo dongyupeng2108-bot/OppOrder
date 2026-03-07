@@ -1,0 +1,31 @@
+=== HEADER ===
+Header: TraeTask_260307_009
+task_id: 260307_009
+mode: LOCAL
+commit: d27d3fa4b649b27e8e8eed61a880ef58d165c767
+
+RESULT_JSON
+{"task_id":"260307_009","status":"DONE","summary":"B0 BTCQDD: directory skeleton, multi-instance configs, server.mjs hot reload, shared module stubs, gate_light_ci.mjs BTCQDD healthcheck, GOVERNANCE.md v1.3"}
+
+LOG_HEAD
+[260307_009] B0 BTCQDD skeleton + gate_light_ci.mjs + GOVERNANCE.md v1.3
+Branch: 260307_009
+Commit: d27d3fa4
+Generated: 2026-03-07T01:37:30.760Z
+
+LOG_TAIL
+Task 260307_009 completed successfully.
+
+=== DOD_EVIDENCE_STDOUT ===
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260307_009_healthcheck_53122_root.txt
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260307_009_healthcheck_53122_pairs.txt
+
+INDEX
+notify_260307_009.txt
+result_260307_009.json
+git_meta_260307_009.json
+dod_evidence_260307_009.txt
+trae_report_snippet_260307_009.txt
+gate_light_preview_260307_009.log
+
+GATE_LIGHT_EXIT=0
