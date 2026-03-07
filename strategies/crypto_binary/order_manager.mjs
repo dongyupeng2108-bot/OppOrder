@@ -1,7 +1,7 @@
 // order_manager.mjs — 挂单生命周期管理
 // 工厂函数模式：createOrderManager(config)
 
-import '../../OppRadar/proxy_agent.mjs';
+import './proxy_agent.mjs';
 import { floorToTick } from './orderbook_monitor.mjs';
 import crypto from 'crypto';
 

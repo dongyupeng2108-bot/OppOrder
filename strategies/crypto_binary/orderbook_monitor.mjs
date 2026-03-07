@@ -1,7 +1,7 @@
 // orderbook_monitor.mjs — Polymarket 盘口 + tick_size 追踪
 // 工厂函数模式：createOrderbookMonitor(config)
 
-import '../../OppRadar/proxy_agent.mjs';
+import './proxy_agent.mjs';
 
 const CLOB_BASE = 'https://clob.polymarket.com';
 

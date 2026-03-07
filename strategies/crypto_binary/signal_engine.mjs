@@ -1,7 +1,7 @@
 // signal_engine.mjs — 信号生成（config 驱动）
 // 工厂函数模式：createSignalEngine(config)
 
-import '../../OppRadar/proxy_agent.mjs'; // 全局注入代理
+import './proxy_agent.mjs'; // 全局注入代理
 
 const CLOB_BASE = 'https://clob.polymarket.com';
 
