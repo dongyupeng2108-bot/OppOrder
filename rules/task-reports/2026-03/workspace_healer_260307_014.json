@@ -2,29 +2,17 @@
     "mode":  "EnforceClean",
     "branch":  "260307_014",
     "cleaned_paths":  [
-                          "rules/task-reports",
-                          "rules/reports",
-                          "data/opps_ledger",
-                          "rules/task-reports/locks",
-                          "rules/task-reports/runs"
-                      ],
-    "after":  {
-                  "untracked_count":  0,
-                  "tracked_changed_count":  0,
-                  "sample_paths":  {
 
-                                   }
-              },
-    "head_commit":  "351ddc22d857fad48b3a5bf1bb2337d4bc1686d1",
+                      ],
+    "after":  null,
+    "head_commit":  "b16e65e514aa51a32d2042e9daf3126acfb5a38a",
     "before":  {
                    "untracked_count":  0,
-                   "tracked_changed_count":  0,
-                   "sample_paths":  {
-
-                                    }
+                   "tracked_changed_count":  1,
+                   "sample_paths":  "rules/task-reports/2026-03/run_chain_260307_014.jsonl"
                },
     "repo_root":  "E:/OppRadar",
-    "reason":  null,
-    "result":  "PASS"
+    "reason":  "Tracked changes detected. Please commit, stash, or run with -Mode Heal.",
+    "result":  "FAIL"
 }
 
