@@ -1,9 +1,17 @@
 {
   "task_id": "260307_012",
   "status": "DONE",
-  "summary": "B1-b: price_feed (Binance REST getCurrentPrice/getKlines/polling) + market_scanner (Polymarket Gamma API findCurrentWindow/findNextWindow). Integration tests created.",
+  "summary": "Automation Pack V1 Validation for Task 260307_012",
   "gate_light_exit": 0,
   "report_file": "notify_260307_012.txt",
-  "report_sha256_short": "c13cd9c4",
-  "generated_at": "2026-03-07T02:10:32.014Z"
+  "report_sha256_short": "e89a71bc",
+  "generated_at": "2026-03-07T02:11:11.705Z",
+  "mode": "Integrate",
+  "dod_evidence": {
+    "gate_light_exit": 0,
+    "healthcheck": [
+      "rules/task-reports/2026-03/260307_012_healthcheck_53122_root.txt",
+      "rules/task-reports/2026-03/260307_012_healthcheck_53122_pairs.txt"
+    ]
+  }
 }
