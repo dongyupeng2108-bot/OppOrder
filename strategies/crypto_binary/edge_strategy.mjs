@@ -1,4 +1,4 @@
-// signal_engine.mjs — 信号生成（config 驱动）
+// edge_strategy.mjs — BS 方向性策略（原 signal_engine，保留作对比）
 // 工厂函数模式：createSignalEngine(config)
 
 import './proxy_agent.mjs'; // 全局注入代理
