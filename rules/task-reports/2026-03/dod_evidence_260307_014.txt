@@ -1,0 +1,13 @@
+TASK_ID=260307_014
+GENERATED_AT=2026-03-07T06:46:30.226Z
+
+# DoD Markers
+DOD_GOVERNANCE_REPLACED=GOVERNANCE.md replaced with v1.6 from taskfiles
+DOD_PIT11_EXISTS=坑11 Node.js fetch proxy record present
+DOD_SCOPE_LOCK_EXISTS=write_scope_lock usage documented
+DOD_V16_EXISTS=v1.6 changelog entry present
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260307_014_healthcheck_53122_root.txt
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260307_014_healthcheck_53122_pairs.txt
+
+GATE_LIGHT_EXIT=0

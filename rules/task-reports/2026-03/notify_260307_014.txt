@@ -1,0 +1,35 @@
+=== HEADER ===
+Header: TraeTask_260307_014
+task_id: 260307_014
+mode: LOCAL
+commit: e179e7e01fb1a896b55db8d2b1f84859741544b4
+
+RESULT_JSON
+{"task_id":"260307_014","status":"DONE","summary":"GOVERNANCE.md v1.6: replace root GOVERNANCE.md with latest version from taskfiles."}
+
+LOG_HEAD
+[260307_014] GOVERNANCE.md v1.6
+Branch: 260307_014
+Commit: e179e7e0
+Generated: 2026-03-07T06:46:30.226Z
+
+LOG_TAIL
+Task 260307_014 completed successfully.
+
+=== DOD_EVIDENCE_STDOUT ===
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260307_014_healthcheck_53122_root.txt
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260307_014_healthcheck_53122_pairs.txt
+
+=== GATE_LIGHT_PREVIEW ===
+GATE_LIGHT_EXIT=0
+==========================
+
+INDEX
+notify_260307_014.txt
+result_260307_014.json
+git_meta_260307_014.json
+dod_evidence_260307_014.txt
+trae_report_snippet_260307_014.txt
+gate_light_preview_260307_014.log
+
+GATE_LIGHT_EXIT=0
