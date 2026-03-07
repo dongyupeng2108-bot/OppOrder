@@ -4,6 +4,6 @@
   "summary": "GOVERNANCE.md v1.6: replace root GOVERNANCE.md with latest version from taskfiles.",
   "gate_light_exit": 0,
   "report_file": "notify_260307_014.txt",
-  "report_sha256_short": "4840cac7",
-  "generated_at": "2026-03-07T06:46:30.226Z"
+  "report_sha256_short": "6865e70a",
+  "generated_at": "2026-03-07T06:47:47.678Z"
 }
