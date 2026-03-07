@@ -35,6 +35,13 @@ export async function initPostmortem() {
       paper_fill_price REAL,
       paper_pnl REAL,
       sigma REAL,
+      regime_score REAL,
+      pair_cost REAL,
+      cancel_latency_ms REAL,
+      strategy_type TEXT,
+      balance_ratio REAL,
+      config_hash TEXT,
+      config_snapshot_json TEXT,
       created_at TEXT NOT NULL
     )
   `);
@@ -77,6 +84,13 @@ export async function recordPostmortem(params) {
     paper_fill_price, // PaperExecutor 成交价
     paper_pnl,        // 本窗口模拟 PnL
     symbol,           // Binance symbol，用于获取结算价
+    regime_score,
+    pair_cost,
+    cancel_latency_ms,
+    strategy_type,
+    balance_ratio,
+    config_hash,
+    config_snapshot_json,
   } = params;
 
   // 获取结算时刻的 Binance 价格
@@ -98,8 +112,10 @@ export async function recordPostmortem(params) {
       strategy_id, event_id, window_start, window_end,
       direction, signal_edge_net, p_theory, ask_at_signal, fee_est,
       K_strike, K_binance, basis, S_at_signal, S_at_settlement,
-      settled_outcome, paper_fill_price, paper_pnl, sigma, created_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      settled_outcome, paper_fill_price, paper_pnl, sigma,
+      regime_score, pair_cost, cancel_latency_ms, strategy_type,
+      balance_ratio, config_hash, config_snapshot_json, created_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `, [
     strategy_id, event_id,
     window_start instanceof Date ? window_start.toISOString() : window_start,
@@ -118,6 +134,13 @@ export async function recordPostmortem(params) {
     paper_fill_price ?? null,
     paper_pnl ?? null,
     sigma ?? null,
+    regime_score ?? null,
+    pair_cost ?? null,
+    cancel_latency_ms ?? null,
+    strategy_type ?? null,
+    balance_ratio ?? null,
+    config_hash ?? null,
+    config_snapshot_json ?? null,
     new Date().toISOString(),
   ]);
 
