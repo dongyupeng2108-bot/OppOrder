@@ -1,0 +1,35 @@
+=== HEADER ===
+Header: TraeTask_260307_015
+task_id: 260307_015
+mode: LOCAL
+commit: d9ec9aac92f50468f9d0c9b29caa8eb871e4b12c
+
+RESULT_JSON
+{"task_id":"260307_015","status":"DONE","summary":"B2-a: postmortem.mjs + PaperExecutor + strategy_runner integration. 11/11 tests pass."}
+
+LOG_HEAD
+[260307_015] B2-a postmortem + PaperExecutor
+Branch: 260307_015
+Commit: d9ec9aac
+Generated: 2026-03-07T07:03:31.133Z
+
+LOG_TAIL
+Task 260307_015 completed successfully.
+
+=== DOD_EVIDENCE_STDOUT ===
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260307_015_healthcheck_53122_root.txt
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260307_015_healthcheck_53122_pairs.txt
+
+=== GATE_LIGHT_PREVIEW ===
+GATE_LIGHT_EXIT=0
+==========================
+
+INDEX
+notify_260307_015.txt
+result_260307_015.json
+git_meta_260307_015.json
+dod_evidence_260307_015.txt
+trae_report_snippet_260307_015.txt
+gate_light_preview_260307_015.log
+
+GATE_LIGHT_EXIT=0

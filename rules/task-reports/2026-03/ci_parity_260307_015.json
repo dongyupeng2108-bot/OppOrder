@@ -1,0 +1,17 @@
+{
+  "task_id": "260307_015",
+  "parity": "PASS",
+  "base": "f345ca1fe8ca23171eaa6941cc52503f029ec613",
+  "head": "d9ec9aac92f50468f9d0c9b29caa8eb871e4b12c",
+  "merge_base": "f345ca1fe8ca23171eaa6941cc52503f029ec613",
+  "scope_files": [
+    "rules/task-reports/locks/260307_014.lock.json",
+    "shared/data/db.mjs",
+    "shared/trading/paper_executor.mjs",
+    "strategies/crypto_binary/postmortem.mjs",
+    "strategies/crypto_binary/strategy_runner.mjs",
+    "tests/btcqdd_postmortem.test.mjs"
+  ],
+  "scope_count": 6,
+  "generated_at": "2026-03-07T07:03:31.133Z"
+}
