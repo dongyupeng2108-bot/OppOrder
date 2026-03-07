@@ -1,0 +1,37 @@
+{
+  "strategy_id": "eth_15m",
+  "display_name": "ETH 15-Min Up/Down",
+  "enabled": false,
+  "market": {
+    "slug_prefix": "eth-updown-15m-",
+    "window_minutes": 15,
+    "settlement_source": "chainlink"
+  },
+  "price_feed": {
+    "exchange": "binance",
+    "symbol": "ETHUSDT",
+    "poll_sec": 2,
+    "kline_interval": "15m",
+    "kline_limit": 96
+  },
+  "model": {
+    "type": "black_scholes_binary",
+    "risk_free_rate": 0,
+    "vol_window_periods": 96
+  },
+  "signal": {
+    "edge_net_threshold": 0.04,
+    "max_spread": 0.12,
+    "stop_signal_before_end_sec": 60,
+    "basis_buffer": 0.015,
+    "slippage_est": 0.008,
+    "polymarket_poll_sec": 5,
+    "fee_source": "dynamic",
+    "fee_cache_ttl_sec": 30
+  },
+  "risk": {
+    "max_position_usd": 5,
+    "max_open_orders": 1,
+    "consecutive_loss_stop": 5
+  }
+}
