@@ -1,0 +1,13 @@
+TASK_ID=260307_015
+GENERATED_AT=2026-03-07T07:07:37.058Z
+
+# DoD Markers
+DOD_PAPER_EXECUTOR=createPaperExecutor with execute/settle
+DOD_POSTMORTEM=initPostmortem/recordPostmortem/queryPostmortem cb_postmortem table
+DOD_RUNNER_INTEGRATION=strategy_runner PaperExecutor + postmortem window settlement
+DOD_TESTS=11/11 pass (btcqdd_postmortem.test.mjs)
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260307_015_healthcheck_53122_root.txt
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260307_015_healthcheck_53122_pairs.txt
+
+GATE_LIGHT_EXIT=0

@@ -6,6 +6,8 @@ import { createPriceFeed } from './price_feed.mjs';
 import { calcVolatility } from './volatility_engine.mjs';
 import { calcBSPrices } from './bs_pricer.mjs';
 import { createSignalEngine } from './signal_engine.mjs';
+import { createPaperExecutor } from '../../shared/trading/paper_executor.mjs';
+import { initPostmortem, recordPostmortem } from './postmortem.mjs';
 
 export function createRunner(config) {
   const scanner = createScanner(config);
@@ -13,6 +15,10 @@ export function createRunner(config) {
   const signalEngine = createSignalEngine(config);
 
   let currentWindow = null;
+  let paperExecutor = createPaperExecutor(config);
+  let currentFill = null;        // 当前窗口的模拟持仓
+  let currentSignalData = null;  // 记录信号时的数据，供 postmortem 使用
+  let lastWindowId = null;       // 上一个窗口的 event_id，用于触发结算
   let running = false;
   let priceTimer = null;
   let marketTimer = null;
@@ -35,6 +41,35 @@ export function createRunner(config) {
         latestKlines = await priceFeed.getKlines();
       }
 
+      // 窗口切换 → 结算上一个窗口
+      if (lastWindowId && lastWindowId !== currentWindow?.event_id) {
+        if (currentFill?.filled) {
+          // 获取结算结果（用当前价格估算，实际应等 Chainlink）
+          const S_now = latestPrice;
+          const settled = S_now >= (currentSignalData?.K_strike || S_now) ? 'UP' : 'DOWN';
+          const pnl = paperExecutor.settle(currentFill, settled);
+          await recordPostmortem({
+            ...currentSignalData,
+            paper_fill_price: currentFill.fill_price,
+            paper_pnl: pnl,
+            symbol: config.price_feed.symbol,
+          });
+        } else {
+          // 无信号窗口也记录
+          if (currentSignalData) {
+            await recordPostmortem({
+              ...currentSignalData,
+              paper_fill_price: null,
+              paper_pnl: null,
+              symbol: config.price_feed.symbol,
+            });
+          }
+        }
+        currentFill = null;
+        currentSignalData = null;
+      }
+      lastWindowId = currentWindow?.event_id || lastWindowId;
+
       if (!latestPrice) return;
 
       // 2. 计算波动率
@@ -55,17 +90,37 @@ export function createRunner(config) {
       const signal = await signalEngine.evaluate(bsResult, currentWindow);
       if (signal) {
         console.log(`[Runner] *** SIGNAL: ${signal.direction} edge_net=${signal.edge_net.toFixed(4)} ***`);
-        // TODO B2: 接入 PaperExecutor 执行
+      }
+      if (signal && !currentFill) {
+        // 每窗口只执行一次
+        currentFill = paperExecutor.execute(signal);
+        currentSignalData = {
+          strategy_id: config.strategy_id,
+          event_id: currentWindow.event_id,
+          window_start: currentWindow.window_start,
+          window_end: currentWindow.window_end,
+          direction: signal.direction,
+          signal_edge_net: signal.edge_net,
+          p_theory: signal.p_theory,
+          ask_at_signal: signal.ask,
+          fee_est: signal.fee_est,
+          K_strike: currentWindow.strike_price,
+          K_binance: latestKlines[latestKlines.length - 1] || null,
+          S_at_signal: latestPrice,
+          sigma,
+        };
       }
     } catch (e) {
       console.error(`[Runner] tick error: ${e.message}`);
     }
   }
 
-  function start() {
+  async function start() {
     if (running) return;
     running = true;
     console.log(`[Runner] Starting strategy: ${config.strategy_id}`);
+
+    await initPostmortem();
 
     // 价格轮询
     priceFeed.startPolling((price) => {
