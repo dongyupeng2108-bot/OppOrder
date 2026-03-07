@@ -1,0 +1,12 @@
+TASK_ID=260307_011
+GENERATED_AT=2026-03-07T01:58:06.661Z
+
+# DoD Markers
+DOD_VOLATILITY_ENGINE=calcVolatility implemented (rolling window, log returns, sample variance, annualized)
+DOD_BS_PRICER=calcBSPrices implemented (normCDF A&S 26.2.17, d2 formula, pUp/pDown)
+DOD_TESTS=16/16 unit tests passing (volatility 5 + bs_pricer 11)
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260307_011_healthcheck_53122_root.txt
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260307_011_healthcheck_53122_pairs.txt
+
+GATE_LIGHT_EXIT=0

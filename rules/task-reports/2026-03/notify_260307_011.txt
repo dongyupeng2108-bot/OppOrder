@@ -1,0 +1,224 @@
+Trae Task Report
+Task ID: 260307_011
+Header: TraeTask_260307_011
+Date: 2026-03-07T01:58:17.632Z
+Branch: 260307_011
+Commit: faf1e7be9f8c485b898ba109e6bd3e09260183c3
+
+
+=== RESULT_JSON ===
+(See result_260307_011.json)
+
+=== LOG_HEAD ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260307_011
+PR_TASK_ID_DETECTED=260307_011
+TARGET_TASK_ID=260307_011
+LATEST_TASK_ID=260307_011
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] Verifying task_id: 260307_011
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Report Block Check Passed: notify_260307_011.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260307_011.txt
+[Gate Light] Header Check Passed: TraeTask_260307_011
+[Gate Light] Checking Workspace Healer Evidence...
+[Gate Light] Workspace Healer verified (Clean Environment).
+[Gate Light] Skipping Error Digest Validation (Preview Mode).
+[Gate Light] Checking doc path standards...
+[Gate Light] Doc path standards verified.
+[Gate Light] Checking for legacy doc path references...
+[CheckDocPathRefs] Scanning for legacy doc path references...
+[CheckDocPathRefs] PASS: No legacy doc path references found.
+[Gate Light] Checking for banned cmd syntax in PowerShell scripts...
+...
+
+=== LOG_TAIL ===
+...
+[Gate Light] Checking Deletion Audit (Locks & Runs)...
+[Gate Light] Deletion Audit: No lock/index yet (Assuming Pre-Integrate or First Run in progress).
+[Gate Light] Checking No Auto-Merge (Git Forbidden Commands)...
+[Gate Light] No Auto-Merge verified.
+[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
+[Gate Light] Fetching origin/main history for diff context...
+[Gate Light] Allowed legacy task_id (transition): 260307_009
+[Gate Light] NoHistoricalEvidenceTouch verified.
+[Gate Light] Skipping SnippetCommitMustMatch check (Preview Mode).
+[Gate Light] Checking Rank V2 Contract Version Guard...
+[Gate Light] Base Commit: 0d12a3f34ee40e468ab5fc996dc03b381df0a795
+[Gate Light] Schema Unchanged (3bd83a08). Version check skipped.
+[Gate Light] Rank V2 Contract Version Guard PASS
+[Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...
+[Gate Light] Immutable Integrate & SafeCmd Enforcement verified.
+[Gate Light] Checking Scope Lock...
+[Gate Light] WARN: No scope_lock file found. Skipping scope lock check (backward compatible).
+[Gate Light] BTCQDD Healthcheck: PASS
+[Gate Light] Skipping Postflight Envelope Validation (Preview Mode).
+[Gate Light] PASS
+
+=== DOD_EVIDENCE_STDOUT ===
+TASK_ID=260307_011
+GENERATED_AT=2026-03-07T01:58:06.661Z
+
+# DoD Markers
+DOD_VOLATILITY_ENGINE=calcVolatility implemented (rolling window, log returns, sample variance, annualized)
+DOD_BS_PRICER=calcBSPrices implemented (normCDF A&S 26.2.17, d2 formula, pUp/pDown)
+DOD_TESTS=16/16 unit tests passing (volatility 5 + bs_pricer 11)
+
+
+GATE_LIGHT_EXIT=0
+===========================
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260307_011_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_SITE_HEALTH_ROOT_53122: 260307_011_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260307_011_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_SITE_HEALTH_PAIRS_53122: 260307_011_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+
+=== CI_PARITY_PREVIEW ===
+Base: 0d12a3f34ee40e468ab5fc996dc03b381df0a795
+Head: faf1e7be9f8c485b898ba109e6bd3e09260183c3
+MergeBase: 0d12a3f34ee40e468ab5fc996dc03b381df0a795
+Source: JSON (Evidence-as-Code)
+Scope: 11 files
+Files (Top 3):
+  - rules/LATEST.json
+  - rules/task-reports/2026-03/ci_parity_260307_011.json
+  - rules/task-reports/2026-03/dod_evidence_260307_011.txt
+...
+=========================
+
+=== WORKSPACE_HEALER ===
+Result: PASS
+Mode: EnforceClean
+Tracked Changed: 0
+Untracked: 0
+========================
+
+=== OPEN_PR_GUARD ===
+Status: PASS
+Blocking PRs: 0
+(None)
+=====================
+
+
+
+=== GATE_LIGHT_PREVIEW ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260307_011
+PR_TASK_ID_DETECTED=260307_011
+TARGET_TASK_ID=260307_011
+LATEST_TASK_ID=260307_011
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] Verifying task_id: 260307_011
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Report Block Check Passed: notify_260307_011.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260307_011.txt
+[Gate Light] Header Check Passed: TraeTask_260307_011
+[Gate Light] Checking Workspace Healer Evidence...
+[Gate Light] Workspace Healer verified (Clean Environment).
+[Gate Light] Skipping Error Digest Validation (Preview Mode).
+[Gate Light] Checking doc path standards...
+[Gate Light] Doc path standards verified.
+[Gate Light] Checking for legacy doc path references...
+[CheckDocPathRefs] Scanning for legacy doc path references...
+[CheckDocPathRefs] PASS: No legacy doc path references found.
+[Gate Light] Checking for banned cmd syntax in PowerShell scripts...
+Starting static scan for banned cmd syntax in .ps1 files...
+Scanning targets: scripts/run_task.ps1, scripts/test_fail_budget.ps1, scripts/ps/Invoke-Step.ps1
+Static scan PASSED.
+[Gate Light] Checking for global healthcheck artifacts...
+[Gate Light] Global Artifact Guard verified.
+[Gate Light] Checking News Pull API Contract...
+[Contract Check] Loading schema from: E:\OppRadar\OppRadar\contracts\news_pull_response.schema.json
+[Contract Check] Validating Success Sample...
+PASS
+[Contract Check] Validating Error Sample...
+PASS
+[Contract Check] All samples validated against schema.
+[Gate Light] Checking Rank V2 API Contract...
+=== Rank V2 Contract Verification ===
+Schema loaded.
+Server already running.
+Fetching http://localhost:53122/opportunities/rank_v2?provider=mock&limit=5&run_id=verify_rank_v2...
+Received 3 items.
+Validating against schema...
+Schema Validation PASSED.
+Response Hash: 12827176
+::set-output name=rank_v2_hash::12827176
+VERIFICATION_SUCCESS
+[Gate Light] Checking Export V1 API Contract...
+=== Export V1 Contract Verification ===
+Schema loaded.
+Server already running.
+Generating Run assets via http://localhost:53122/scans/run...
+Run assets generated. Run ID: sc_1ec07237
+Fetching Export: http://localhost:53122/opportunities/runs/export_v1?run_id=sc_1ec07237...
+Received Export JSON.
+Validating against schema...
+Export Schema Validation PASSED.
+Export Hash: 45c5f0f8
+::set-output name=export_v1_hash::45c5f0f8
+EXPORT_CONTRACT_VERIFICATION_SUCCESS
+[Gate Light] Checking Ledger V0 API Contract...
+=== Ledger V0 Contract Verification ===
+Schema loaded.
+Server already running.
+Fetching /opportunities/ledger/query_v0?limit=1...
+Validating against schema...
+Validation PASSED.
+[Gate Light] Checking Scanner API Contract...
+[Gate Light] Scanner runs contract: PASS
+[Gate Light] Checking Universe API Contract...
+[Gate Light] Universe runs contract: PASS
+[Gate Light] Checking Trading Routes API Contract...
+[Gate Light] Trading orders contract: PASS
+[Gate Light] Trading orders 404 contract: PASS
+[Gate Light] Trading kill contract: PASS
+[Gate Light] Checking healthcheck evidence...
+[Gate Light] Using evidence directory: E:\OppRadar\rules\task-reports\2026-03
+[Gate Light] Healthcheck evidence verified (Path + Content).
+[Gate Light] Skipping DoD Evidence Excerpt Check (Preview Mode).
+[Gate Light] Checking Deletion Audit (Locks & Runs)...
+[Gate Light] Deletion Audit: No lock/index yet (Assuming Pre-Integrate or First Run in progress).
+[Gate Light] Checking No Auto-Merge (Git Forbidden Commands)...
+[Gate Light] No Auto-Merge verified.
+[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
+[Gate Light] Fetching origin/main history for diff context...
+[Gate Light] Allowed legacy task_id (transition): 260307_009
+[Gate Light] NoHistoricalEvidenceTouch verified.
+[Gate Light] Skipping SnippetCommitMustMatch check (Preview Mode).
+[Gate Light] Checking Rank V2 Contract Version Guard...
+[Gate Light] Base Commit: 0d12a3f34ee40e468ab5fc996dc03b381df0a795
+[Gate Light] Schema Unchanged (3bd83a08). Version check skipped.
+[Gate Light] Rank V2 Contract Version Guard PASS
+[Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...
+[Gate Light] Immutable Integrate & SafeCmd Enforcement verified.
+[Gate Light] Checking Scope Lock...
+[Gate Light] WARN: No scope_lock file found. Skipping scope lock check (backward compatible).
+[Gate Light] BTCQDD Healthcheck: PASS
+[Gate Light] Skipping Postflight Envelope Validation (Preview Mode).
+[Gate Light] PASS
+==========================
+
+=== ERROR_STATS_INDEX ===
+{"task_id":"260307_011","run_id":"20260307095816_faf1e7b","commit":"faf1e7be9f8c485b898ba109e6bd3e09260183c3","ts":"2026-03-07T01:58:16.968Z","mode":"Integrate","error_class":"NO_ERROR","severity":"INFO","message":"No errors found.","hint":""}
+=========================
+
+=== ERROR_SUMMARY ===
+TASK_ID: 260307_011
+COMMIT: faf1e7be9f8c485b898ba109e6bd3e09260183c3
+TOTAL_ERRORS: 0
+MODE: Integrate
+CONTRACT_SELF_CHECK_EXIT: N/A
+CONTRACT_SELF_CHECK_LINES: N/A
+
+TOP ERROR CLASSES:
+None
+
+TOP ERROR TIERS:
+None
+
+Errors (First 5):
+=====================
+
+GATE_LIGHT_EXIT=0
+[Generated by scripts/assemble_evidence.mjs]
