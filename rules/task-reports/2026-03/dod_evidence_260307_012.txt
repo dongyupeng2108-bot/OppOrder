@@ -1,0 +1,12 @@
+TASK_ID=260307_012
+GENERATED_AT=2026-03-07T02:10:32.014Z
+
+# DoD Markers
+DOD_PRICE_FEED=createPriceFeed factory with getCurrentPrice/getKlines/startPolling/stopPolling
+DOD_MARKET_SCANNER=createScanner factory with findCurrentWindow/findNextWindow
+DOD_TESTS=Integration tests created (network-dependent, validated in CI)
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260307_012_healthcheck_53122_root.txt
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260307_012_healthcheck_53122_pairs.txt
+
+GATE_LIGHT_EXIT=0

@@ -1,0 +1,9 @@
+{
+  "task_id": "260307_012",
+  "status": "DONE",
+  "summary": "B1-b: price_feed (Binance REST getCurrentPrice/getKlines/polling) + market_scanner (Polymarket Gamma API findCurrentWindow/findNextWindow). Integration tests created.",
+  "gate_light_exit": 0,
+  "report_file": "notify_260307_012.txt",
+  "report_sha256_short": "c13cd9c4",
+  "generated_at": "2026-03-07T02:10:32.014Z"
+}

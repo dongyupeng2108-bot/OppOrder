@@ -1,0 +1,14 @@
+{
+  "task_id": "260307_012",
+  "parity": "PASS",
+  "base": "3bfc5779dcc199f3a92ed19252ff6f3239f51e00",
+  "head": "dda36be8a6271a82c5e1a704636227b93b59f29d",
+  "merge_base": "3bfc5779dcc199f3a92ed19252ff6f3239f51e00",
+  "scope_files": [
+    "strategies/crypto_binary/market_scanner.mjs",
+    "strategies/crypto_binary/price_feed.mjs",
+    "tests/btcqdd_feeds.test.mjs"
+  ],
+  "scope_count": 3,
+  "generated_at": "2026-03-07T02:10:32.014Z"
+}
