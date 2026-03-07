@@ -7,6 +7,7 @@ import { calcVolatility } from './volatility_engine.mjs';
 import { calcBSPrices } from './bs_pricer.mjs';
 import { createSignalEngine } from './signal_engine.mjs';
 import { createPaperExecutor } from '../../shared/trading/paper_executor.mjs';
+import { createLiveExecutor } from '../../shared/trading/live_executor.mjs';
 import { initPostmortem, recordPostmortem } from './postmortem.mjs';
 
 export function createRunner(config) {
@@ -15,7 +16,14 @@ export function createRunner(config) {
   const signalEngine = createSignalEngine(config);
 
   let currentWindow = null;
-  let paperExecutor = createPaperExecutor(config);
+  const executorMode = config.executor_mode || 'paper'; // 'paper' | 'live'
+  const executor = executorMode === 'live'
+    ? createLiveExecutor(config)
+    : createPaperExecutor(config);
+  console.log(`[Runner] Executor mode: ${executorMode}`);
+
+  let consecutiveLosses = 0;
+  const maxConsecutiveLosses = config.risk.consecutive_loss_stop;
   let currentFill = null;        // 当前窗口的模拟持仓
   let currentSignalData = null;  // 记录信号时的数据，供 postmortem 使用
   let lastWindowId = null;       // 上一个窗口的 event_id，用于触发结算
@@ -47,7 +55,19 @@ export function createRunner(config) {
           // 获取结算结果（用当前价格估算，实际应等 Chainlink）
           const S_now = latestPrice;
           const settled = S_now >= (currentSignalData?.K_strike || S_now) ? 'UP' : 'DOWN';
-          const pnl = paperExecutor.settle(currentFill, settled);
+          const pnl = executor.settle(currentFill, settled);
+          // 连续亏损停机
+          if (pnl < 0) {
+            consecutiveLosses++;
+            console.warn(`[Runner] Consecutive losses: ${consecutiveLosses}/${maxConsecutiveLosses}`);
+            if (consecutiveLosses >= maxConsecutiveLosses) {
+              console.error(`[Runner] STOP: consecutive_loss_stop triggered (${consecutiveLosses} losses)`);
+              stop();
+              return;
+            }
+          } else {
+            consecutiveLosses = 0; // 盈利则重置
+          }
           await recordPostmortem({
             ...currentSignalData,
             paper_fill_price: currentFill.fill_price,
@@ -93,7 +113,7 @@ export function createRunner(config) {
       }
       if (signal && !currentFill) {
         // 每窗口只执行一次
-        currentFill = paperExecutor.execute(signal);
+        currentFill = await executor.execute(signal);
         currentSignalData = {
           strategy_id: config.strategy_id,
           event_id: currentWindow.event_id,
