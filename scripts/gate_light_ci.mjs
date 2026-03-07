@@ -1821,6 +1821,29 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         }
     }
 
+    // ===== BTCQDD Healthcheck（条件启用）=====
+    // 仅当 strategies/crypto_binary/server.mjs 存在时检查，否则 skip
+    {
+      const btcqddServerPath = path.resolve(process.cwd(), 'strategies/crypto_binary/server.mjs');
+
+      if (fs.existsSync(btcqddServerPath)) {
+        try {
+          const resp = await fetch('http://localhost:53123/');
+          if (resp.status !== 200) {
+            console.warn('[Gate Light] BTCQDD Healthcheck: WARN — GET localhost:53123/ returned', resp.status);
+            console.warn('FIX_CMD: node strategies/crypto_binary/server.mjs --strategy=btc_15m');
+          } else {
+            console.log('[Gate Light] BTCQDD Healthcheck: PASS');
+          }
+        } catch (e) {
+          console.warn('[Gate Light] BTCQDD Healthcheck: WARN — service not running —', e.message);
+          console.warn('FIX_CMD: node strategies/crypto_binary/server.mjs --strategy=btc_15m');
+        }
+      } else {
+        console.log('[Gate Light] SKIP BTCQDD_HEALTHCHECK (server.mjs not found)');
+      }
+    }
+
     // Construct postflight command
     // Note: Assuming scripts/postflight_validate_envelope.mjs exists relative to CWD
     const isPreviewMode = process.env.GENERATE_PREVIEW === '1' || process.env.GATE_LIGHT_GENERATE_PREVIEW === '1';
