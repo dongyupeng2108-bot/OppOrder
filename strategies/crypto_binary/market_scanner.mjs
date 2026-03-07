@@ -1,7 +1,7 @@
 // market_scanner.mjs — Polymarket Gamma API 市场发现（config 驱动）
 // 工厂函数模式：createScanner(config)
 
-import '../../OppRadar/proxy_agent.mjs'; // 全局注入代理
+import './proxy_agent.mjs'; // 全局注入代理
 
 const GAMMA_BASE = 'https://gamma-api.polymarket.com';
 

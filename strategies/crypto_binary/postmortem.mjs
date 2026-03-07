@@ -1,12 +1,11 @@
 // postmortem.mjs — 窗口复盘（按 strategy_id 隔离）
 // 表名：cb_postmortem（cb = crypto binary）
 
-import '../../OppRadar/proxy_agent.mjs';
+import './proxy_agent.mjs';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 
-// 复用 OppRadar 的 SQLite 数据库连接
-import { getDb } from '../../shared/data/db.mjs';
+import { getDb } from './db.mjs';
 
 const BINANCE_BASE = 'https://api.binance.com';
 
