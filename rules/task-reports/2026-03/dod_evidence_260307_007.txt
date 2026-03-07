@@ -1,0 +1,12 @@
+TASK_ID=260307_007
+GENERATED_AT=2026-03-06T23:42:39.271Z
+
+# DoD Markers
+DOD_L1_UNIT=53/53 PASS (trading_signal 10, order_engine 12, executor_paper 10, routes 10, executor_live 5, log_sanitizer 6)
+DOD_L2_E2E=4/4 scenarios passed (BUY, HR-reject, SELL, idempotent)
+DOD_L3_HTTP=5/7 endpoints verified (account + virtual_deposit not implemented)
+DOD_L4_KILL=Kill switch activates, rejects new orders, cancels pending
+DOD_L4_HEARTBEAT=Heartbeat module correct, stops on kill switch via indirect linkage
+DOD_L4_SAFELOG=safeLog redacts headers, private keys, POLY-SIGNATURE fields
+
+GATE_LIGHT_EXIT=0
