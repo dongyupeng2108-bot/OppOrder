@@ -1,0 +1,23 @@
+{
+  "task_id": "260307_012",
+  "parity": "PASS",
+  "base": "3bfc5779dcc199f3a92ed19252ff6f3239f51e00",
+  "head": "abf61b05e7e7c16705ad36b2fcb6c9916f665045",
+  "merge_base": "3bfc5779dcc199f3a92ed19252ff6f3239f51e00",
+  "scope_files": [
+    "rules/LATEST.json",
+    "rules/task-reports/2026-03/ci_parity_260307_012.json",
+    "rules/task-reports/2026-03/dod_evidence_260307_012.txt",
+    "rules/task-reports/2026-03/generate_evidence_260307_012.mjs",
+    "rules/task-reports/2026-03/git_meta_260307_012.json",
+    "rules/task-reports/2026-03/notify_260307_012.txt",
+    "rules/task-reports/2026-03/result_260307_012.json",
+    "rules/task-reports/2026-03/scope_lock_260307_012.json",
+    "rules/task-reports/2026-03/trae_report_snippet_260307_012.txt",
+    "strategies/crypto_binary/market_scanner.mjs",
+    "strategies/crypto_binary/price_feed.mjs",
+    "tests/btcqdd_feeds.test.mjs"
+  ],
+  "scope_count": 12,
+  "generated_at": "2026-03-07T02:11:11.705Z"
+}
