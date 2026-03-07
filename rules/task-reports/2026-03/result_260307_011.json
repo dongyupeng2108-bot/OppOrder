@@ -1,0 +1,9 @@
+{
+  "task_id": "260307_011",
+  "status": "DONE",
+  "summary": "B1-a: volatility_engine calcVolatility (rolling window annualized HV) + bs_pricer calcBSPrices (Black-Scholes binary option pricing with normCDF A&S 26.2.17). 16/16 unit tests passing.",
+  "gate_light_exit": 0,
+  "report_file": "notify_260307_011.txt",
+  "report_sha256_short": "3651cf36",
+  "generated_at": "2026-03-07T01:57:26.871Z"
+}

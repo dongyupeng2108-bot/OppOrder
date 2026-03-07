@@ -1,0 +1,14 @@
+Header: TraeTask_260307_011
+TASK: 260307_011
+BRANCH: 260307_011
+COMMIT: c7d9f7d9
+STATUS: DONE
+SUMMARY: B1-a volatility_engine + bs_pricer (16/16 tests)
+
+=== DOD_EVIDENCE_STDOUT ===
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260307_011_healthcheck_53122_root.txt
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260307_011_healthcheck_53122_pairs.txt
+
+=== GATE_LIGHT_PREVIEW ===
+GATE_LIGHT_EXIT=0
+==========================

@@ -1,0 +1,15 @@
+{
+  "task_id": "260307_011",
+  "parity": "PASS",
+  "base": "0d12a3f34ee40e468ab5fc996dc03b381df0a795",
+  "head": "c7d9f7d908466150a1426124c8cf598686e79ce7",
+  "merge_base": "0d12a3f34ee40e468ab5fc996dc03b381df0a795",
+  "scope_files": [
+    "rules/LATEST.json",
+    "strategies/crypto_binary/bs_pricer.mjs",
+    "strategies/crypto_binary/volatility_engine.mjs",
+    "tests/btcqdd_pricer.test.mjs"
+  ],
+  "scope_count": 4,
+  "generated_at": "2026-03-07T01:57:26.871Z"
+}
