@@ -123,46 +123,52 @@ export async function recordPostmortem(params) {
     ? K_strike - K_binance
     : null;
 
-  const db = await getDb();
-  await db.run(`
-    INSERT INTO cb_postmortem (
-      strategy_id, event_id, window_start, window_end,
-      direction, signal_edge_net, p_theory, ask_at_signal, fee_est,
-      K_strike, K_binance, basis, S_at_signal, S_at_settlement,
-      settled_outcome, paper_fill_price, paper_pnl, sigma,
-      regime_score, pair_cost, cancel_latency_ms, strategy_type,
-      balance_ratio, config_hash, config_snapshot_json, volume_ratio, created_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `, [
-    strategy_id, event_id,
-    window_start instanceof Date ? window_start.toISOString() : window_start,
-    window_end instanceof Date ? window_end.toISOString() : window_end,
-    direction ?? null,
-    signal_edge_net ?? null,
-    p_theory ?? null,
-    ask_at_signal ?? null,
-    fee_est ?? null,
-    K_strike ?? null,
-    K_binance ?? null,
-    basis,
-    S_at_signal ?? null,
-    S_at_settlement,
-    settled_outcome,
-    paper_fill_price ?? null,
-    paper_pnl ?? null,
-    sigma ?? null,
-    regime_score ?? null,
-    pair_cost ?? null,
-    cancel_latency_ms ?? null,
-    strategy_type ?? null,
-    balance_ratio ?? null,
-    config_hash ?? null,
-    config_snapshot_json ?? null,
-    volume_ratio ?? null,
-    new Date().toISOString(),
-  ]);
+  try {
+    const db = await getDb();
+    await db.run(`
+      INSERT INTO cb_postmortem (
+        strategy_id, event_id, window_start, window_end,
+        direction, signal_edge_net, p_theory, ask_at_signal, fee_est,
+        K_strike, K_binance, basis, S_at_signal, S_at_settlement,
+        settled_outcome, paper_fill_price, paper_pnl, sigma,
+        regime_score, pair_cost, cancel_latency_ms, strategy_type,
+        balance_ratio, config_hash, config_snapshot_json, volume_ratio, created_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `, [
+      strategy_id, event_id,
+      window_start instanceof Date ? window_start.toISOString() : window_start,
+      window_end instanceof Date ? window_end.toISOString() : window_end,
+      direction ?? null,
+      signal_edge_net ?? null,
+      p_theory ?? null,
+      ask_at_signal ?? null,
+      fee_est ?? null,
+      K_strike ?? null,
+      K_binance ?? null,
+      basis,
+      S_at_signal ?? null,
+      S_at_settlement,
+      settled_outcome,
+      paper_fill_price ?? null,
+      paper_pnl ?? null,
+      sigma ?? null,
+      regime_score ?? null,
+      pair_cost ?? null,
+      cancel_latency_ms ?? null,
+      strategy_type ?? null,
+      balance_ratio ?? null,
+      config_hash ?? null,
+      config_snapshot_json ?? null,
+      volume_ratio ?? null,
+      new Date().toISOString(),
+    ]);
 
-  console.log(`[Postmortem] Recorded: ${strategy_id} ${event_id} outcome=${settled_outcome} pnl=${paper_pnl ?? 'N/A'}`);
+    console.log(`[Postmortem] Recorded: ${strategy_id} ${event_id} outcome=${settled_outcome} pnl=${paper_pnl ?? 'N/A'}`);
+  } catch (err) {
+    console.error(`[Postmortem] recordPostmortem FAILED: ${err.message}`);
+    console.error(`[Postmortem] params: strategy_id=${strategy_id} event_id=${event_id} window_start=${window_start} window_end=${window_end}`);
+    console.error(err.stack);
+  }
 }
 
 /**
