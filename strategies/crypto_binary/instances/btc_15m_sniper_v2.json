@@ -1,6 +1,6 @@
 {
-  "strategy_id": "btc_15m_sniper",
-  "display_name": "BTC 15-Min Sniper (S2)",
+  "strategy_id": "btc_15m_sniper_v2",
+  "display_name": "BTC 15-Min Sniper V2 (S2 corrected regime)",
   "enabled": true,
   "executor_mode": "paper",
   "market": {
@@ -46,8 +46,7 @@
     "max_position_usd": 5,
     "max_open_orders": 2,
     "consecutive_loss_stop": 10,
-    "max_drawdown_pct": 0.25,
-    "blackout_windows": []
+    "max_drawdown_pct": 0.25
   },
   "paper": {
     "fill_model": "conservative",

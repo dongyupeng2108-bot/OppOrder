@@ -39,10 +39,15 @@
     "max_score": 1.0
   },
   "regime_detector": {
-    "sigma_trend_weight": 0.5,
-    "alternation_weight": 0.5,
-    "sigma_window": 4,
-    "alternation_window": 4
+    "sigma_weight": 0.33,
+    "alternation_weight": 0.33,
+    "volume_weight": 0.34,
+    "sigma_window": 8,
+    "alternation_window": 4,
+    "volume_baseline_minutes": 60,
+    "volume_recent_minutes": 3,
+    "volume_calm_ratio": 1.5,
+    "volume_surge_ratio": 3.0
   },
   "risk": {
     "max_position_usd": 5,
