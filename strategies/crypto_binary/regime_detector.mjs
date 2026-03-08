@@ -21,6 +21,7 @@ export function createRegimeDetector(config) {
 
   // 最新 volume_ratio（由外部通过 updateVolumeRatio 传入）
   let latestVolumeRatio = null;
+  let lastUpdatedAt = null;
 
   // ─── sigma_trend 维度 ────────────────────────────────────
   // sigma 平稳 → 高分（震荡），sigma 加速 → 低分（趋势）
@@ -28,6 +29,7 @@ export function createRegimeDetector(config) {
   function updateSigma(sigma) {
     sigmaHistory.push(sigma);
     if (sigmaHistory.length > sigmaWindow) sigmaHistory.shift();
+    lastUpdatedAt = new Date().toISOString();
   }
 
   function calcSigmaTrendScore() {
@@ -83,6 +85,18 @@ export function createRegimeDetector(config) {
     return Math.min(1, Math.max(0, score));
   }
 
+  function getRegimeState() {
+    return {
+      score: getScore(),
+      dimensions: {
+        sigma_trend: calcSigmaTrendScore(),
+        alternation: calcAlternationScore(),
+        volume: calcVolumeScore(latestVolumeRatio),
+      },
+      updated_at: lastUpdatedAt || new Date().toISOString(),
+    };
+  }
+
   function getDebugInfo() {
     return {
       sigma_history:      [...sigmaHistory],
@@ -100,6 +114,7 @@ export function createRegimeDetector(config) {
     updateOutcome,
     updateVolumeRatio,
     getScore,
+    getRegimeState,
     getDebugInfo,
     // 向后兼容（旧代码可能直接调用这些）
     calcVolumeScore,

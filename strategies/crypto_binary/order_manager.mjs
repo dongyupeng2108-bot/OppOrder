@@ -175,6 +175,23 @@ export function createOrderManager(config) {
   }
 
   /**
+   * 获取所有活跃挂单（UI 格式化版本）
+   */
+  function getActiveOrders() {
+    return [...orders.values()]
+      .filter(o => o.status === 'OPEN')
+      .map(o => ({
+        order_id: o.order_id,
+        strategy_id: o.strategy_id,
+        side: o.side,
+        price: o.price,
+        size: o.size,
+        age_ms: Date.now() - o.created_at,
+        status: o.status,
+      }));
+  }
+
+  /**
    * 获取所有 OPEN 挂单
    */
   function getOpenOrders() {
@@ -206,6 +223,7 @@ export function createOrderManager(config) {
     markAllStale,
     simulateFills,
     getOpenOrders,
+    getActiveOrders,
     getAllOrders,
     clearSettled,
     calcTranches, // 暴露供测试

@@ -26,6 +26,8 @@ export function createCancelEngine(config, orderManager) {
   let lastSigma = null;
   let timer = null;
   const cancelLog = []; // 记录每次撤单原因，供 postmortem 分析
+  const latencyHistory = []; // 滚动最近 100 条撤单延迟
+  const MAX_LATENCY_HISTORY = 100;
 
   /**
    * 触发器 1：sigma 跳变检查
@@ -41,8 +43,12 @@ export function createCancelEngine(config, orderManager) {
 
     if (change > sigma_threshold) {
       console.warn(`[CancelEngine] SIGMA trigger: change=${(change*100).toFixed(1)}% > ${(sigma_threshold*100).toFixed(0)}%`);
+      const t0 = Date.now();
       const cancelled = orderManager.cancelAll(CANCEL_REASONS.SIGMA);
-      if (cancelled.length > 0) logCancel(CANCEL_REASONS.SIGMA, cancelled.length);
+      if (cancelled.length > 0) {
+        recordLatency(Date.now() - t0);
+        logCancel(CANCEL_REASONS.SIGMA, cancelled.length);
+      }
       return true;
     }
     return false;
@@ -59,8 +65,12 @@ export function createCancelEngine(config, orderManager) {
       const openOrders = orderManager.getOpenOrders();
       if (openOrders.length > 0) {
         console.warn(`[CancelEngine] TAU trigger: ${secsToEnd.toFixed(0)}s to end < ${tau_min_sec}s`);
+        const t0 = Date.now();
         const cancelled = orderManager.cancelAll(CANCEL_REASONS.TAU);
-        if (cancelled.length > 0) logCancel(CANCEL_REASONS.TAU, cancelled.length);
+        if (cancelled.length > 0) {
+          recordLatency(Date.now() - t0);
+          logCancel(CANCEL_REASONS.TAU, cancelled.length);
+        }
         return true;
       }
     }
@@ -81,7 +91,9 @@ export function createCancelEngine(config, orderManager) {
       const ageSec = ageMs / 1000;
       if (ageSec > order_age_max_sec) {
         console.warn(`[CancelEngine] AGE trigger: order ${order.order_id.slice(0,8)} age=${ageSec.toFixed(0)}s > ${order_age_max_sec}s`);
+        const t0 = Date.now();
         orderManager.cancelOrder(order.order_id);
+        recordLatency(Date.now() - t0);
         logCancel(CANCEL_REASONS.AGE, 1);
         triggered = true;
       }
@@ -96,8 +108,10 @@ export function createCancelEngine(config, orderManager) {
   function onTickSizeChange(snapshot) {
     if (!snapshot.tick_size_changed) return false;
     console.warn(`[CancelEngine] TICK_SIZE trigger: tick_size changed, marking all stale`);
+    const t0 = Date.now();
     orderManager.markAllStale();
     orderManager.cancelAll(CANCEL_REASONS.TICK_SIZE);
+    recordLatency(Date.now() - t0);
     logCancel(CANCEL_REASONS.TICK_SIZE, orderManager.getAllOrders().length);
     return true;
   }
@@ -125,6 +139,38 @@ export function createCancelEngine(config, orderManager) {
     cancelLog.push({ reason, count, at: new Date() });
   }
 
+  function recordLatency(ms) {
+    latencyHistory.push(ms);
+    if (latencyHistory.length > MAX_LATENCY_HISTORY) latencyHistory.shift();
+  }
+
+  function calcPercentile(arr, p) {
+    if (arr.length === 0) return 0;
+    const sorted = [...arr].sort((a, b) => a - b);
+    const idx = Math.ceil(p * sorted.length) - 1;
+    return sorted[Math.max(0, idx)];
+  }
+
+  function getCancelStats() {
+    const byReason = { sigma: 0, tau: 0, age: 0, tick_size_change: 0 };
+    let total = 0;
+    for (const entry of cancelLog) {
+      total += entry.count;
+      if (entry.reason === CANCEL_REASONS.SIGMA) byReason.sigma += entry.count;
+      else if (entry.reason === CANCEL_REASONS.TAU) byReason.tau += entry.count;
+      else if (entry.reason === CANCEL_REASONS.AGE) byReason.age += entry.count;
+      else if (entry.reason === CANCEL_REASONS.TICK_SIZE) byReason.tick_size_change += entry.count;
+    }
+    return {
+      total,
+      by_reason: byReason,
+      latency_ms: {
+        p50: calcPercentile(latencyHistory, 0.50),
+        p95: calcPercentile(latencyHistory, 0.95),
+      },
+    };
+  }
+
   /**
    * 获取撤单日志（供 postmortem 统计）
    */
@@ -139,5 +185,5 @@ export function createCancelEngine(config, orderManager) {
     lastSigma = null;
   }
 
-  return { check, checkSigma, checkTau, checkAge, onTickSizeChange, getCancelLog, resetSigma };
+  return { check, checkSigma, checkTau, checkAge, onTickSizeChange, getCancelLog, getCancelStats, resetSigma };
 }

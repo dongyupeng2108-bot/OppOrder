@@ -94,6 +94,60 @@ const server = createServer((req, res) => {
     return;
   }
 
+  // ── UI 专用端点（B1 控制面板）──────────────────────────
+
+  // GET /ui/regime — 当前市场状态评分
+  if (req.method === 'GET' && req.url === '/ui/regime') {
+    try {
+      const state = runner.getRegimeState();
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ ok: true, data: state }));
+    } catch (e) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ ok: false, error: e.message }));
+    }
+    return;
+  }
+
+  // GET /ui/instances — 所有策略实例当前状态
+  if (req.method === 'GET' && req.url === '/ui/instances') {
+    try {
+      const stats = runner.getInstanceStats();
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ ok: true, data: stats }));
+    } catch (e) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ ok: false, error: e.message }));
+    }
+    return;
+  }
+
+  // GET /ui/cancel-stats — 撤单引擎统计
+  if (req.method === 'GET' && req.url === '/ui/cancel-stats') {
+    try {
+      const stats = runner.getCancelStats();
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ ok: true, data: stats }));
+    } catch (e) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ ok: false, error: e.message }));
+    }
+    return;
+  }
+
+  // GET /ui/active-orders — 当前活跃挂单
+  if (req.method === 'GET' && req.url === '/ui/active-orders') {
+    try {
+      const orders = runner.getActiveOrders();
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ ok: true, data: orders }));
+    } catch (e) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ ok: false, error: e.message }));
+    }
+    return;
+  }
+
   // 404
   res.writeHead(404, { 'Content-Type': 'application/json' });
   res.end(JSON.stringify({ status: 'not_found' }));
