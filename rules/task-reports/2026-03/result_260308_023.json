@@ -4,6 +4,6 @@
   "summary": "Fix: findCurrentWindow calculates slug from current time instead of listing events.",
   "gate_light_exit": 0,
   "report_file": "notify_260308_023.txt",
-  "report_sha256_short": "659f5242",
-  "generated_at": "2026-03-08T14:01:21.642Z"
+  "report_sha256_short": "a0508419",
+  "generated_at": "2026-03-08T14:02:14.774Z"
 }
