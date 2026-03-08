@@ -40,6 +40,18 @@ let runner = createRunner(config);
 });
 
 const server = createServer((req, res) => {
+  // CORS headers for local UI (file:// → localhost)
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  // OPTIONS preflight
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204);
+    res.end();
+    return;
+  }
+
   // GET / — 健康检查
   if (req.method === 'GET' && req.url === '/') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
