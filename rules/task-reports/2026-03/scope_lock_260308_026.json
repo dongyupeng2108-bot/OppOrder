@@ -1,0 +1,11 @@
+{
+  "task_id": "260308_026",
+  "allowed_files": [
+    "strategies/crypto_binary/postmortem.mjs"
+  ],
+  "auto_exempt": [
+    "rules/LATEST.json",
+    "rules/task-reports/index/error_stats.jsonl"
+  ],
+  "created_at": "2026-03-08T16:53:50.611Z"
+}
