@@ -72,6 +72,10 @@
   .inst-active { color:var(--green); font-weight:700; }
   .inst-sleep { color:var(--text3); }
   .pnl-pos { color:var(--green); } .pnl-neg { color:var(--red); }
+  .countdown { font-size:11px; margin-left:6px; transition:color .15s; }
+  .countdown.warn { color:var(--amber); }
+  .countdown.crit { color:var(--red); animation:pulse 1s infinite; }
+  .pair-ok { color:var(--green); } .pair-over { color:var(--red); }
 
   .reload-btn {
     margin-top:10px; background:none; border:1px solid var(--border2); color:var(--text2);
@@ -215,6 +219,26 @@ function scoreLabel(s) {
   return 'TRENDING';
 }
 
+// ── Window countdown ──
+function getWindowCountdown(windowTimestamp) {
+  if (!windowTimestamp) return { text: '\u2014', remaining: Infinity };
+  const windowEnd = parseInt(windowTimestamp) + 300;
+  const remaining = windowEnd - Math.floor(Date.now() / 1000);
+  if (remaining <= 0) return { text: 'SETTLING', remaining: 0 };
+  const m = Math.floor(remaining / 60);
+  const s = remaining % 60;
+  return { text: m + ':' + String(s).padStart(2, '0'), remaining };
+}
+
+// ── Countdown ticker (1s) ──
+setInterval(() => {
+  document.querySelectorAll('[data-window]').forEach(el => {
+    const cd = getWindowCountdown(el.dataset.window);
+    el.textContent = '[' + cd.text + ']';
+    el.className = cd.remaining <= 15 ? 'countdown crit' : cd.remaining <= 60 ? 'countdown warn' : 'countdown';
+  });
+}, 1000);
+
 // ── Regime polling (2s) ──
 async function pollRegime() {
   try {
@@ -262,6 +286,14 @@ async function pollInstances() {
         pnlTxt = (inst.paper_pnl >= 0 ? '+' : '') + inst.paper_pnl.toFixed(2);
         pnlCls = inst.paper_pnl >= 0 ? 'pnl-pos' : 'pnl-neg';
       }
+      const cd = getWindowCountdown(inst.current_window);
+      const cdCls = cd.remaining <= 15 ? 'countdown crit' : cd.remaining <= 60 ? 'countdown warn' : 'countdown';
+      let pairTxt = '\u2014', pairCls = '';
+      if (inst.pair_cost !== null && inst.pair_cost !== undefined) {
+        pairTxt = '$' + inst.pair_cost.toFixed(4);
+        pairCls = inst.pair_cost < 1.0 ? 'pair-ok' : 'pair-over';
+      }
+      const volTxt = inst.volume_score !== null && inst.volume_score !== undefined ? inst.volume_score.toFixed(2) : '\u2014';
       return `<div class="inst-card">
         <div class="inst-header">
           <span class="inst-id">${inst.strategy_id}</span>
@@ -269,9 +301,11 @@ async function pollInstances() {
         </div>
         <hr class="inst-sep">
         <div class="inst-row"><span class="inst-label">REGIME</span><span class="inst-val">${(inst.regime_score ?? 0).toFixed(3)} <span class="${actCls}">${actTxt}</span></span></div>
-        <div class="inst-row"><span class="inst-label">WINDOW</span><span class="inst-val">${inst.current_window || '\u2014'}</span></div>
+        <div class="inst-row"><span class="inst-label">WINDOW</span><span class="inst-val">${inst.current_window || '\u2014'} <span class="${cdCls}" data-window="${inst.current_window || ''}">[${cd.text}]</span></span></div>
         <div class="inst-row"><span class="inst-label">PnL</span><span class="inst-val ${pnlCls}">${pnlTxt}</span></div>
         <div class="inst-row"><span class="inst-label">ORDERS</span><span class="inst-val">${inst.open_orders} open</span></div>
+        <div class="inst-row"><span class="inst-label">PAIR COST</span><span class="inst-val ${pairCls}">${pairTxt}</span></div>
+        <div class="inst-row"><span class="inst-label">VOL SCORE</span><span class="inst-val">${volTxt}</span></div>
         <button class="reload-btn" onclick="reloadConfig(this)">&#x21BA; RELOAD CONFIG</button>
         <div class="reload-msg" id="reload-msg-${inst.strategy_id}"></div>
       </div>`;

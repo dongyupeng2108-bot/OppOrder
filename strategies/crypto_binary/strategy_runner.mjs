@@ -339,6 +339,8 @@ export function createRunner(config) {
   }
 
   function getInstanceStats() {
+    const ptState = pairTracker ? pairTracker.getState() : null;
+    const regimeState = regimeDetector ? regimeDetector.getRegimeState() : null;
     return [{
       strategy_id: config.strategy_id,
       enabled: running,
@@ -347,6 +349,8 @@ export function createRunner(config) {
       current_window: currentWindow?.event_id || null,
       paper_pnl: null,
       open_orders: orderManager ? orderManager.getOpenOrders().length : 0,
+      pair_cost: ptState ? ptState.pair_cost : null,
+      volume_score: regimeState ? regimeState.dimensions.volume : null,
     }];
   }
 
