@@ -1,0 +1,12 @@
+TASK_ID=260308_024
+GENERATED_AT=2026-03-08T14:29:15.922Z
+
+# DoD Markers
+DOD_SETTLE_ON_EXPIRY=settleWindow called when window_end <= now
+DOD_POSTMORTEM_RECORD=recordPostmortem writes to cb_postmortem table
+DOD_NO_SKIP=settle happens even when no new window found
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260308_024_healthcheck_53122_root.txt
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260308_024_healthcheck_53122_pairs.txt
+
+GATE_LIGHT_EXIT=0
