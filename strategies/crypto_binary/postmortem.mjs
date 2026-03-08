@@ -46,6 +46,21 @@ export async function initPostmortem() {
       created_at TEXT NOT NULL
     )
   `);
+
+  // 迁移：为旧数据库补充缺失列（ALTER TABLE ADD COLUMN 对已存在列会报错，逐列 try/catch）
+  const newColumns = [
+    'ALTER TABLE cb_postmortem ADD COLUMN pair_cost REAL',
+    'ALTER TABLE cb_postmortem ADD COLUMN regime_score REAL',
+    'ALTER TABLE cb_postmortem ADD COLUMN cancel_latency_ms REAL',
+    'ALTER TABLE cb_postmortem ADD COLUMN strategy_type TEXT',
+    'ALTER TABLE cb_postmortem ADD COLUMN balance_ratio REAL',
+    'ALTER TABLE cb_postmortem ADD COLUMN config_hash TEXT',
+    'ALTER TABLE cb_postmortem ADD COLUMN config_snapshot_json TEXT',
+    'ALTER TABLE cb_postmortem ADD COLUMN volume_ratio REAL',
+  ];
+  for (const sql of newColumns) {
+    try { await db.run(sql); } catch (e) { /* 列已存在，忽略 */ }
+  }
 }
 
 /**
