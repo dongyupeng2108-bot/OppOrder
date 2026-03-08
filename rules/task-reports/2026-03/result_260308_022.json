@@ -1,0 +1,9 @@
+{
+  "task_id": "260308_022",
+  "status": "DONE",
+  "summary": "Fix: findCurrentWindow parses slug timestamp instead of endDate for 5m window.",
+  "gate_light_exit": 0,
+  "report_file": "notify_260308_022.txt",
+  "report_sha256_short": "b99ef7a2",
+  "generated_at": "2026-03-08T13:16:40.199Z"
+}
