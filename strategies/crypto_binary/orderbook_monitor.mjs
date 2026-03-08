@@ -4,6 +4,7 @@
 
 import './proxy_agent.mjs';
 import { createPmWsClient } from './pm_ws_client.mjs';
+import { logger, EVENTS } from './logger.mjs';
 
 const PM_CLOB = 'https://clob.polymarket.com';
 const VERIFY_INTERVAL_MS = 5 * 60_000; // 每 5 分钟 REST 全量校验
@@ -65,7 +66,7 @@ export function createOrderbookMonitor(config) {
       const [upBook, downBook] = await Promise.all([upRes.json(), downRes.json()]);
       return _parseBooks(upBook, downBook, upTokenId, downTokenId);
     } catch (e) {
-      console.error('[OrderbookMonitor] REST fetch error:', e.message);
+      logger.error(EVENTS.ERROR_UNHANDLED_PATH, { module: 'orderbook_monitor', err: e.message, msg: 'REST fetch error' });
       return null;
     }
   }
@@ -99,11 +100,11 @@ export function createOrderbookMonitor(config) {
     state = { ...snapshot };
     if (!firstSnapshotLogged) {
       firstSnapshotLogged = true;
-      console.log(`[OrderbookMonitor] snapshot ready: mid_up=${snapshot.mid_up?.toFixed(4)} mid_down=${snapshot.mid_down?.toFixed(4)}`);
+      logger.info(EVENTS.SUBSCRIBE_OK, { module: 'orderbook_monitor', msg: `snapshot ready: mid_up=${snapshot.mid_up?.toFixed(4)} mid_down=${snapshot.mid_down?.toFixed(4)}` });
     }
     if (state.tick_size !== prevTick) {
       state.tick_size_changed = true;
-      console.log(`[OrderbookMonitor] tick_size_change: ${prevTick} → ${state.tick_size}`);
+      logger.info(EVENTS.SUBSCRIBE_OK, { module: 'orderbook_monitor', msg: `tick_size_change: ${prevTick} → ${state.tick_size}` });
     } else {
       state.tick_size_changed = false;
     }
@@ -177,7 +178,7 @@ export function createOrderbookMonitor(config) {
     wsClient.on('tick_size_change', (msg) => {
       const newTick = parseFloat(msg.new_tick_size || msg.tick_size);
       if (newTick && newTick !== state.tick_size) {
-        console.log(`[OrderbookMonitor] tick_size_change event: ${state.tick_size} → ${newTick}`);
+        logger.info(EVENTS.SUBSCRIBE_OK, { module: 'orderbook_monitor', msg: `tick_size_change event: ${state.tick_size} → ${newTick}` });
         state.tick_size         = newTick;
         state.tick_size_changed = true;
         _notify();
@@ -242,7 +243,7 @@ export function createOrderbookMonitor(config) {
       const upDiff   = Math.abs((fresh.bid_up   - state.bid_up)   ?? 0);
       const downDiff = Math.abs((fresh.bid_down - state.bid_down) ?? 0);
       if (upDiff > 0.02 || downDiff > 0.02) {
-        console.warn('[OrderbookMonitor] State inconsistency detected, reinitializing...');
+        logger.warn(EVENTS.WS_RECONNECT_ATTEMPT, { module: 'orderbook_monitor', msg: 'state inconsistency detected, reinitializing' });
         _applySnapshot(fresh);
       }
     }, VERIFY_INTERVAL_MS);
@@ -280,7 +281,7 @@ export function createOrderbookMonitor(config) {
     currentUpTokenId   = upTokenId   || null;
     currentDownTokenId = downTokenId || null;
 
-    console.log(`[OrderbookMonitor] Starting in ${mode} mode`);
+    logger.info(EVENTS.WS_CONNECT_START, { module: 'orderbook_monitor', msg: `starting in ${mode} mode` });
     if (mode === 'ws') {
       _startWs();
     } else {

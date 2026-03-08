@@ -8,6 +8,7 @@ import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { createRunner } from './strategy_runner.mjs';
 import { initPostmortem } from './postmortem.mjs';
+import { logger, EVENTS } from './logger.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -27,7 +28,13 @@ function loadConfig(strategyId) {
 }
 
 let config = loadConfig(STRATEGY_ID);
-console.log(`[BTCQDD] Loaded config: ${config.display_name} (strategy_id: ${config.strategy_id})`);
+logger.info(EVENTS.SERVER_START, {
+  module: 'server',
+  log_level: process.env.LOG_LEVEL || 'info',
+  port: PORT,
+  strategy: STRATEGY_ID,
+  display_name: config.display_name,
+});
 
 // 启动策略运行器（先确保 DB 迁移完成）
 let runner = createRunner(config);
@@ -36,7 +43,7 @@ let runner = createRunner(config);
   console.log('[BTCQDD] DB migration completed (initPostmortem)');
   await runner.start();
 })().catch(err => {
-  console.error('[BTCQDD] Runner failed to start:', err.message);
+  logger.error(EVENTS.ERROR_UNHANDLED_PATH, { module: 'server', err: err.message, msg: 'runner failed to start' });
 });
 
 const server = createServer((req, res) => {
@@ -166,5 +173,5 @@ const server = createServer((req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`[BTCQDD] Server running on http://localhost:${PORT} (strategy: ${STRATEGY_ID})`);
+  logger.info(EVENTS.SERVER_START, { module: 'server', msg: `listening on http://localhost:${PORT}`, strategy: STRATEGY_ID });
 });

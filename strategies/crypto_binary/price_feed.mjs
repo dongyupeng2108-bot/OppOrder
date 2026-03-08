@@ -3,6 +3,7 @@
 // rest 模式：纯 REST 轮询（向后兼容）
 
 import './proxy_agent.mjs';
+import { logger, EVENTS } from './logger.mjs';
 
 const BINANCE_REST = 'https://api.binance.com';
 const BINANCE_WS   = 'wss://stream.binance.com:9443/ws';
@@ -143,13 +144,13 @@ export function createPriceFeed(config) {
       const wsModule = await import('ws');
       WebSocket = wsModule.default;
     } catch (e) {
-      console.error('[PriceFeed] ws module not available, falling back to REST');
+      logger.error(EVENTS.WS_CONNECT_FAIL, { module: 'price_feed', msg: 'ws module not available, falling back to REST' });
       startRest();
       return;
     }
 
     const streamUrl = `${BINANCE_WS}/${symbol}@aggTrade`;
-    console.log(`[PriceFeed] Connecting WebSocket: ${streamUrl}`);
+    logger.info(EVENTS.WS_CONNECT_START, { module: 'price_feed', market_id: symbol.toUpperCase(), msg: streamUrl });
 
     // 尝试裸连，5s 超时后切换代理模式
     let agent = null;
@@ -175,7 +176,7 @@ export function createPriceFeed(config) {
 
     connectTimeout = setTimeout(() => {
       if (!wsConnected) {
-        console.warn('[PriceFeed] Bare connect timed out, retrying with proxy...');
+        logger.warn(EVENTS.WS_RECONNECT_ATTEMPT, { module: 'price_feed', msg: 'bare connect timed out, retrying with proxy' });
         ws.terminate();
         ws = createWs(true); // 切换代理模式
         attachWsHandlers();
@@ -189,7 +190,7 @@ export function createPriceFeed(config) {
         wsRetryDelay     = 1000;
         wsFallbackActive = false;
         stopRest(); // WebSocket 连通后停止 REST 兜底
-        console.log('[PriceFeed] WebSocket connected');
+        logger.info(EVENTS.WS_CONNECT_OK, { module: 'price_feed', market_id: symbol.toUpperCase() });
       });
 
       ws.on('message', (data) => {
@@ -202,14 +203,14 @@ export function createPriceFeed(config) {
           recordTrade(price, quantity, tradeTs);
           notify(price, 'ws');
         } catch (e) {
-          console.error('[PriceFeed] WS message parse error:', e.message);
+          logger.error(EVENTS.ERROR_PARSE_FAIL, { module: 'price_feed', err: e.message });
         }
       });
 
       ws.on('close', () => {
         clearTimeout(connectTimeout);
         wsConnected = false;
-        console.warn('[PriceFeed] WebSocket closed, starting REST fallback...');
+        logger.warn(EVENTS.WS_DISCONNECT, { module: 'price_feed', market_id: symbol.toUpperCase(), msg: 'starting REST fallback' });
         if (!wsFallbackActive) {
           wsFallbackActive = true;
           startRest();
@@ -218,7 +219,7 @@ export function createPriceFeed(config) {
       });
 
       ws.on('error', (err) => {
-        console.error('[PriceFeed] WebSocket error:', err.message);
+        logger.error(EVENTS.WS_CONNECT_FAIL, { module: 'price_feed', market_id: symbol.toUpperCase(), err: err.message });
         // error 后会紧接着触发 close，close handler 里处理重连
       });
     }
@@ -228,7 +229,7 @@ export function createPriceFeed(config) {
 
   function scheduleReconnect() {
     if (wsRetryTimer) return;
-    console.log(`[PriceFeed] Reconnecting in ${wsRetryDelay / 1000}s...`);
+    logger.info(EVENTS.WS_RECONNECT_SCHEDULED, { module: 'price_feed', delay_ms: wsRetryDelay });
     wsRetryTimer = setTimeout(() => {
       wsRetryTimer = null;
       connectWs();
