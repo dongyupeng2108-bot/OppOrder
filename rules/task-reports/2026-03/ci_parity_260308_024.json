@@ -2,9 +2,11 @@
   "task_id": "260308_024",
   "parity": "PASS",
   "base": "8a43feab20d7ad008e280c6c74b1a9fd4f7b814d",
-  "head": "09c8d97cab6f857547243c0662fc407b9b3e40f9",
+  "head": "77503b7200e27ec20f19613577ea6f638e8c9682",
   "merge_base": "8a43feab20d7ad008e280c6c74b1a9fd4f7b814d",
   "scope_files": [
+    "rules/task-reports/2026-03/260308_024_healthcheck_53122_pairs.txt",
+    "rules/task-reports/2026-03/260308_024_healthcheck_53122_root.txt",
     "rules/task-reports/2026-03/ci_parity_260308_024.json",
     "rules/task-reports/2026-03/dod_evidence_260308_024.txt",
     "rules/task-reports/2026-03/generate_evidence_260308_024.mjs",
@@ -15,6 +17,6 @@
     "rules/task-reports/2026-03/trae_report_snippet_260308_024.txt",
     "strategies/crypto_binary/strategy_runner.mjs"
   ],
-  "scope_count": 9,
-  "generated_at": "2026-03-08T14:28:05.936Z"
+  "scope_count": 11,
+  "generated_at": "2026-03-08T14:29:15.922Z"
 }
