@@ -4,6 +4,7 @@
 
 import './proxy_agent.mjs';
 import { logger, EVENTS } from './logger.mjs';
+import { randomUUID } from 'crypto';
 
 const BINANCE_REST = 'https://api.binance.com';
 const BINANCE_WS   = 'wss://stream.binance.com:9443/ws';
@@ -12,6 +13,16 @@ const BINANCE_WS   = 'wss://stream.binance.com:9443/ws';
 const BUCKET_SIZE_MS   = 30_000;
 // 最大保留桶数：保留 2 小时的桶（240 桶）
 const MAX_BUCKETS      = 240;
+
+// 有界重连配置
+const RECONNECT_CONFIG = {
+  maxAttempts: 5,
+  baseDelayMs: 1000,
+  maxDelayMs: 30000,
+  backoffFactor: 2,
+  heartbeatIntervalMs: 20000,
+  pongTimeoutMs: 5000,
+};
 
 export function createPriceFeed(config) {
   const symbol    = (config.price_feed?.symbol || 'BTCUSDT').toLowerCase();
@@ -35,10 +46,14 @@ export function createPriceFeed(config) {
   // WebSocket 状态
   let ws            = null;
   let wsConnected   = false;
-  let wsRetryDelay  = 1000;   // 初始重试间隔 1s
-  const WS_MAX_DELAY = 30_000;
   let wsRetryTimer  = null;
   let wsFallbackActive = false; // REST 兜底是否激活
+
+  // 单活连接：activeSessionId
+  let activeSessionId = null;
+
+  // 有界重连状态
+  let reconnectAttempts = 0;
 
   // 订阅者列表
   const subscribers = [];
@@ -137,6 +152,23 @@ export function createPriceFeed(config) {
 
   // ─── WebSocket ─────────────────────────────────────────
 
+  function startHeartbeat(wsConn, sessionId) {
+    const interval = setInterval(() => {
+      if (sessionId !== activeSessionId) { clearInterval(interval); return; }
+      if (wsConn.readyState !== 1 /* OPEN */) { clearInterval(interval); return; }
+      if (typeof wsConn.ping === 'function') wsConn.ping();
+      logger.debug(EVENTS.WS_PING_SENT, { module: 'price_feed', session_id: sessionId });
+
+      const pongTimeout = setTimeout(() => {
+        if (sessionId !== activeSessionId) return;
+        logger.warn(EVENTS.WS_PONG_TIMEOUT, { module: 'price_feed', session_id: sessionId });
+        if (typeof wsConn.terminate === 'function') wsConn.terminate();
+      }, RECONNECT_CONFIG.pongTimeoutMs);
+
+      wsConn.once('pong', () => clearTimeout(pongTimeout));
+    }, RECONNECT_CONFIG.heartbeatIntervalMs);
+  }
+
   async function connectWs() {
     // 动态 import ws（避免在 rest 模式下强依赖）
     let WebSocket;
@@ -149,14 +181,18 @@ export function createPriceFeed(config) {
       return;
     }
 
+    // 单活连接：生成新 sessionId，废弃旧连接
+    const sessionId = randomUUID();
+    activeSessionId = sessionId;
+
     const streamUrl = `${BINANCE_WS}/${symbol}@aggTrade`;
-    logger.info(EVENTS.WS_CONNECT_START, { module: 'price_feed', market_id: symbol.toUpperCase(), msg: streamUrl });
+    logger.info(EVENTS.WS_CONNECT_START, { module: 'price_feed', market_id: symbol.toUpperCase(), session_id: sessionId, msg: streamUrl });
 
     // 尝试裸连，5s 超时后切换代理模式
     let agent = null;
     const proxyUrl = process.env.HTTPS_PROXY || process.env.HTTP_PROXY;
 
-    function createWs(useProxy) {
+    function createWsConn(useProxy) {
       if (useProxy && proxyUrl) {
         try {
           const { HttpsProxyAgent } = require('https-proxy-agent');
@@ -172,13 +208,13 @@ export function createPriceFeed(config) {
     }
 
     let connectTimeout = null;
-    ws = createWs(false); // 先裸连
+    ws = createWsConn(false); // 先裸连
 
     connectTimeout = setTimeout(() => {
-      if (!wsConnected) {
-        logger.warn(EVENTS.WS_RECONNECT_ATTEMPT, { module: 'price_feed', msg: 'bare connect timed out, retrying with proxy' });
+      if (!wsConnected && sessionId === activeSessionId) {
+        logger.warn(EVENTS.WS_RECONNECT_ATTEMPT, { module: 'price_feed', session_id: sessionId, msg: 'bare connect timed out, retrying with proxy' });
         ws.terminate();
-        ws = createWs(true); // 切换代理模式
+        ws = createWsConn(true); // 切换代理模式
         attachWsHandlers();
       }
     }, 5000);
@@ -186,14 +222,21 @@ export function createPriceFeed(config) {
     function attachWsHandlers() {
       ws.on('open', () => {
         clearTimeout(connectTimeout);
+        if (sessionId !== activeSessionId) return; // 旧连接打开，忽略
         wsConnected      = true;
-        wsRetryDelay     = 1000;
+        reconnectAttempts = 0; // 连接成功，重置计数
         wsFallbackActive = false;
         stopRest(); // WebSocket 连通后停止 REST 兜底
-        logger.info(EVENTS.WS_CONNECT_OK, { module: 'price_feed', market_id: symbol.toUpperCase() });
+        logger.info(EVENTS.WS_CONNECT_OK, { module: 'price_feed', market_id: symbol.toUpperCase(), session_id: sessionId });
+        startHeartbeat(ws, sessionId);
       });
 
       ws.on('message', (data) => {
+        // 单活连接检查：旧 session 消息丢弃
+        if (sessionId !== activeSessionId) {
+          logger.debug(EVENTS.WS_MESSAGE_DROPPED_STALE, { module: 'price_feed', session_id: sessionId, active_session_id: activeSessionId });
+          return;
+        }
         try {
           const msg = JSON.parse(data.toString());
           if (msg.e !== 'aggTrade') return;
@@ -209,17 +252,19 @@ export function createPriceFeed(config) {
 
       ws.on('close', () => {
         clearTimeout(connectTimeout);
+        if (sessionId !== activeSessionId) return; // 旧连接关闭，忽略
         wsConnected = false;
-        logger.warn(EVENTS.WS_DISCONNECT, { module: 'price_feed', market_id: symbol.toUpperCase(), msg: 'starting REST fallback' });
+        logger.warn(EVENTS.WS_DISCONNECT, { module: 'price_feed', market_id: symbol.toUpperCase(), session_id: sessionId, msg: 'starting REST fallback' });
         if (!wsFallbackActive) {
           wsFallbackActive = true;
           startRest();
         }
-        scheduleReconnect();
+        scheduleReconnect('ws_close');
       });
 
       ws.on('error', (err) => {
-        logger.error(EVENTS.WS_CONNECT_FAIL, { module: 'price_feed', market_id: symbol.toUpperCase(), err: err.message });
+        if (sessionId !== activeSessionId) return;
+        logger.error(EVENTS.WS_CONNECT_FAIL, { module: 'price_feed', market_id: symbol.toUpperCase(), session_id: sessionId, err: err.message });
         // error 后会紧接着触发 close，close handler 里处理重连
       });
     }
@@ -227,14 +272,32 @@ export function createPriceFeed(config) {
     attachWsHandlers();
   }
 
-  function scheduleReconnect() {
+  function scheduleReconnect(reason) {
     if (wsRetryTimer) return;
-    logger.info(EVENTS.WS_RECONNECT_SCHEDULED, { module: 'price_feed', delay_ms: wsRetryDelay });
+
+    if (reconnectAttempts >= RECONNECT_CONFIG.maxAttempts) {
+      logger.error(EVENTS.WS_RECONNECT_EXHAUSTED, {
+        module: 'price_feed',
+        attempt: reconnectAttempts,
+        msg: 'max reconnect attempts reached, entering degraded mode (REST fallback)'
+      });
+      // 确保 REST 兜底已激活
+      if (!wsFallbackActive) { wsFallbackActive = true; startRest(); }
+      return;
+    }
+
+    const delay = Math.min(
+      RECONNECT_CONFIG.baseDelayMs * Math.pow(RECONNECT_CONFIG.backoffFactor, reconnectAttempts),
+      RECONNECT_CONFIG.maxDelayMs
+    );
+    reconnectAttempts++;
+
+    logger.info(EVENTS.WS_RECONNECT_SCHEDULED, { module: 'price_feed', attempt: reconnectAttempts, delay_ms: delay, reason });
     wsRetryTimer = setTimeout(() => {
       wsRetryTimer = null;
+      logger.info(EVENTS.WS_RECONNECT_ATTEMPT, { module: 'price_feed', attempt: reconnectAttempts });
       connectWs();
-    }, wsRetryDelay);
-    wsRetryDelay = Math.min(wsRetryDelay * 2, WS_MAX_DELAY);
+    }, delay);
   }
 
   // ─── 公开接口 ──────────────────────────────────────────

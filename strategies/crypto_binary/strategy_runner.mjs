@@ -36,6 +36,9 @@ export function createRunner(config) {
   let latestPrice = null;
   let lastWindowId = null;
 
+  // 代际护栏：窗口切换防竞态
+  let currentGeneration = 0;
+
   // --- Edge strategy state (original BS flow) ---
   let signalEngine = null;
   let executor = null;
@@ -196,12 +199,25 @@ export function createRunner(config) {
           lastWindowId = null;
         }
 
+        // 代际护栏：递增 generation，异步回调落地前校验
+        const generation = ++currentGeneration;
+        logger.info(EVENTS.WINDOW_SWITCH_START, { module: 'strategy_runner', generation_id: generation, strategy_id: config.strategy_id });
+
         console.log('[Runner] Refreshing window...');
         currentWindow = await scanner.findCurrentWindow();
+
+        // 代际检查：如果在 await 期间又发生了切换，丢弃本次结果
+        if (generation !== currentGeneration) {
+          logger.warn(EVENTS.WINDOW_SWITCH_ABORT, { module: 'strategy_runner', generation_id: generation, current_generation: currentGeneration, msg: 'window switch aborted: newer generation exists' });
+          return;
+        }
+
         if (!currentWindow) {
           console.log('[Runner] No active window, waiting...');
           return;
         }
+
+        logger.info(EVENTS.WINDOW_SWITCH_COMMIT, { module: 'strategy_runner', generation_id: generation, window_id: currentWindow.slug, strategy_id: config.strategy_id });
         console.log(`[Runner] Window: ${currentWindow.event_id}, end: ${currentWindow.window_end.toISOString()}`);
         lastWindowId = currentWindow.event_id;
         latestKlines = await priceFeed.getKlines();
