@@ -97,3 +97,6 @@ polymarket_*.txt
 *_api_key.txt
 *_api_secret.txt
 *_passphrase.txt
+data/crypto_binary/*.sqlite
+data/crypto_binary/*.sqlite-shm
+data/crypto_binary/*.sqlite-wal
