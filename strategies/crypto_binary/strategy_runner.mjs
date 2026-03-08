@@ -188,6 +188,13 @@ export function createRunner(config) {
     try {
       // 1. Check/refresh window
       if (!currentWindow || new Date() >= currentWindow.window_end) {
+        // 窗口过期 → 立即落盘旧窗口（不等新窗口）
+        if (lastWindowId && currentWindow) {
+          console.log(`[Runner] Window expired: ${currentWindow.event_id}, settling postmortem...`);
+          await settleWindow();
+          lastWindowId = null;
+        }
+
         console.log('[Runner] Refreshing window...');
         currentWindow = await scanner.findCurrentWindow();
         if (!currentWindow) {
@@ -195,6 +202,7 @@ export function createRunner(config) {
           return;
         }
         console.log(`[Runner] Window: ${currentWindow.event_id}, end: ${currentWindow.window_end.toISOString()}`);
+        lastWindowId = currentWindow.event_id;
         latestKlines = await priceFeed.getKlines();
 
         // 首次启动 orderbook 监控
@@ -208,7 +216,7 @@ export function createRunner(config) {
         }
       }
 
-      // Window switch → settle previous window
+      // Window switch mid-window (e.g. event_id changed without expiry)
       if (lastWindowId && lastWindowId !== currentWindow?.event_id) {
         await settleWindow();
       }
