@@ -197,9 +197,14 @@ export function createRunner(config) {
         console.log(`[Runner] Window: ${currentWindow.event_id}, end: ${currentWindow.window_end.toISOString()}`);
         latestKlines = await priceFeed.getKlines();
 
-        // Start orderbook polling for maker/sniper
-        if (orderbookMonitor && currentWindow.up_token_id) {
+        // 首次启动 orderbook 监控
+        if (orderbookMonitor && !orderbookMonitor._started) {
           orderbookMonitor.start(currentWindow.up_token_id, currentWindow.down_token_id);
+          orderbookMonitor._started = true;
+        } else if (orderbookMonitor && currentWindow.up_token_id) {
+          // 窗口切换时更新 token（不重新 start，只更新订阅）
+          orderbookMonitor.setTokenIds(currentWindow.up_token_id, currentWindow.down_token_id);
+          console.log(`[Runner] OrderbookMonitor token updated for new window: ${currentWindow.slug}`);
         }
       }
 
