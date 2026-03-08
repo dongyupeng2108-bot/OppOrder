@@ -323,5 +323,32 @@ export function createRunner(config) {
     return createRunner(newConfig);
   }
 
-  return { start, stop, reload };
+  function getRegimeState() {
+    if (!regimeDetector) return null;
+    return regimeDetector.getRegimeState();
+  }
+
+  function getCancelStats() {
+    if (!cancelEngine) return null;
+    return cancelEngine.getCancelStats();
+  }
+
+  function getActiveOrders() {
+    if (!orderManager) return [];
+    return orderManager.getActiveOrders();
+  }
+
+  function getInstanceStats() {
+    return [{
+      strategy_id: config.strategy_id,
+      enabled: running,
+      regime_score: regimeDetector ? regimeDetector.getScore() : null,
+      is_active: running,
+      current_window: currentWindow?.event_id || null,
+      paper_pnl: null,
+      open_orders: orderManager ? orderManager.getOpenOrders().length : 0,
+    }];
+  }
+
+  return { start, stop, reload, getRegimeState, getCancelStats, getActiveOrders, getInstanceStats };
 }
