@@ -1,0 +1,14 @@
+Header: TraeTask_260308_025
+TASK: 260308_025
+BRANCH: 260308_025
+COMMIT: ca8646a0
+STATUS: DONE
+SUMMARY: Fix — cb_postmortem ALTER TABLE migration for new columns
+
+=== DOD_EVIDENCE_STDOUT ===
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260308_025_healthcheck_53122_root.txt
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260308_025_healthcheck_53122_pairs.txt
+
+=== GATE_LIGHT_PREVIEW ===
+GATE_LIGHT_EXIT=0
+==========================

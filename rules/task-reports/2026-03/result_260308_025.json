@@ -1,0 +1,9 @@
+{
+  "task_id": "260308_025",
+  "status": "DONE",
+  "summary": "Fix: cb_postmortem ALTER TABLE migration for new columns.",
+  "gate_light_exit": 0,
+  "report_file": "notify_260308_025.txt",
+  "report_sha256_short": "8daf4acd",
+  "generated_at": "2026-03-08T16:02:41.414Z"
+}

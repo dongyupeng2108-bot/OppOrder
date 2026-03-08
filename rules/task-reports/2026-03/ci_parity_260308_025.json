@@ -1,0 +1,12 @@
+{
+  "task_id": "260308_025",
+  "parity": "PASS",
+  "base": "89728daa8073370889c20afc51ab48e8c2ae1852",
+  "head": "ca8646a091190272a659d9a2ccc92b18a8c3eb98",
+  "merge_base": "89728daa8073370889c20afc51ab48e8c2ae1852",
+  "scope_files": [
+    "strategies/crypto_binary/postmortem.mjs"
+  ],
+  "scope_count": 1,
+  "generated_at": "2026-03-08T16:02:41.414Z"
+}
