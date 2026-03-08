@@ -1,0 +1,12 @@
+TASK_ID=260308_022
+GENERATED_AT=2026-03-08T13:18:18.392Z
+
+# DoD Markers
+DOD_SLUG_PARSE=findCurrentWindow parses slug timestamp
+DOD_WINDOW_DURATION=getWindowDurationMs infers from slug_prefix
+DOD_SECS_LEFT=secs_left < 300 for active window
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260308_022_healthcheck_53122_root.txt
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260308_022_healthcheck_53122_pairs.txt
+
+GATE_LIGHT_EXIT=0

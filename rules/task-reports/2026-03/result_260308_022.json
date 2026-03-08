@@ -1,0 +1,17 @@
+{
+  "task_id": "260308_022",
+  "status": "DONE",
+  "summary": "Automation Pack V1 Validation for Task 260308_022",
+  "gate_light_exit": 0,
+  "report_file": "notify_260308_022.txt",
+  "report_sha256_short": "7eb31f98",
+  "generated_at": "2026-03-08T13:18:18.392Z",
+  "mode": "Integrate",
+  "dod_evidence": {
+    "gate_light_exit": 0,
+    "healthcheck": [
+      "rules/task-reports/2026-03/260308_022_healthcheck_53122_root.txt",
+      "rules/task-reports/2026-03/260308_022_healthcheck_53122_pairs.txt"
+    ]
+  }
+}
