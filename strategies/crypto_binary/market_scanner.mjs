@@ -20,32 +20,60 @@ export function createScanner(config) {
   }
 
   // 解析 event 为 Window 对象
+  // 实际结构：1 个 market，clobTokenIds[0]=Up，clobTokenIds[1]=Down
   function parseWindow(event) {
     const markets = event.markets || [];
-    if (markets.length < 2) return null;
+    if (markets.length === 0) return null;
 
     let upTokenId   = null;
     let downTokenId = null;
 
-    for (const m of markets) {
-      const outcome = (m.outcome || m.outcomeName || '').toLowerCase();
-      if (outcome.includes('up') || outcome.includes('higher')) {
-        upTokenId = m.clobTokenIds?.[0] || m.conditionId;
-      } else if (outcome.includes('down') || outcome.includes('lower')) {
-        downTokenId = m.clobTokenIds?.[0] || m.conditionId;
+    // 优先处理单 market + 双 clobTokenIds 结构（实际 Polymarket 格式）
+    const firstMarket = markets[0];
+    const tokenIds = firstMarket?.clobTokenIds;
+    let parsedIds = [];
+    if (typeof tokenIds === 'string') {
+      try { parsedIds = JSON.parse(tokenIds); } catch (e) { parsedIds = []; }
+    } else if (Array.isArray(tokenIds)) {
+      parsedIds = tokenIds;
+    }
+
+    if (parsedIds.length >= 2) {
+      // index 0 = Up，index 1 = Down（Polymarket 约定）
+      upTokenId   = parsedIds[0];
+      downTokenId = parsedIds[1];
+    } else if (markets.length >= 2) {
+      // 回退：多 market 结构，通过 outcome 字段识别
+      for (const m of markets) {
+        const outcome = (m.outcome || m.outcomeName || '').toLowerCase();
+        const ids = (() => {
+          if (typeof m.clobTokenIds === 'string') {
+            try { return JSON.parse(m.clobTokenIds); } catch (e) { return []; }
+          }
+          return Array.isArray(m.clobTokenIds) ? m.clobTokenIds : [];
+        })();
+        const tokenId = ids[0] || m.conditionId;
+        if (outcome.includes('up') || outcome.includes('higher')) {
+          upTokenId = tokenId;
+        } else if (outcome.includes('down') || outcome.includes('lower')) {
+          downTokenId = tokenId;
+        }
       }
     }
 
-    if (!upTokenId || !downTokenId) return null;
+    if (!upTokenId || !downTokenId) {
+      console.log(`[Scanner] parseWindow failed: upTokenId=${upTokenId} downTokenId=${downTokenId} slug=${event.slug}`);
+      return null;
+    }
 
     return {
-      event_id:     event.id,
-      slug:         event.slug,
-      up_token_id:  upTokenId,
+      event_id:      event.id,
+      slug:          event.slug,
+      up_token_id:   upTokenId,
       down_token_id: downTokenId,
-      window_start: new Date(event.startDate || event.startTime),
-      window_end:   new Date(event.endDate   || event.endTime),
-      strike_price: event.strikePrice ? parseFloat(event.strikePrice) : null,
+      window_start:  new Date(event.startDate || event.startTime),
+      window_end:    new Date(event.endDate   || event.endTime),
+      strike_price:  event.strikePrice ? parseFloat(event.strikePrice) : null,
     };
   }
 
