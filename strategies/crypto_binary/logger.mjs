@@ -43,6 +43,33 @@ function log(level, event, fields = {}) {
   }
 }
 
+// 脱敏工具函数
+export function redactUrl(url) {
+  try {
+    const u = new URL(url);
+    const sensitiveParams = ['token', 'apiKey', 'api_key', 'secret', 'key', 'auth'];
+    sensitiveParams.forEach(param => {
+      if (u.searchParams.has(param)) {
+        u.searchParams.set(param, '[REDACTED]');
+      }
+    });
+    return u.toString();
+  } catch {
+    return '[REDACTED_URL]';
+  }
+}
+
+export function redactHeaders(headers) {
+  const sensitiveKeys = ['authorization', 'x-api-key', 'api-key', 'cookie', 'x-auth-token'];
+  const result = { ...headers };
+  Object.keys(result).forEach(k => {
+    if (sensitiveKeys.includes(k.toLowerCase())) {
+      result[k] = '[REDACTED]';
+    }
+  });
+  return result;
+}
+
 // 便捷方法
 export const logger = {
   debug: (event, fields) => log('debug', event, fields),
