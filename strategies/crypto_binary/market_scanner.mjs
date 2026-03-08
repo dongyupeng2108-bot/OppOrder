@@ -19,9 +19,17 @@ export function createScanner(config) {
     return all.filter(e => e.slug && e.slug.startsWith(slug_prefix));
   }
 
-  // 解析 event 为 Window 对象
-  // 实际结构：1 个 market，clobTokenIds[0]=Up，clobTokenIds[1]=Down
-  function parseWindow(event) {
+  // 根据 slug_prefix 推断窗口时长
+  function getWindowDurationMs() {
+    if (slug_prefix.includes('5m'))   return 5  * 60 * 1000;
+    if (slug_prefix.includes('15m'))  return 15 * 60 * 1000;
+    if (slug_prefix.includes('1h'))   return 60 * 60 * 1000;
+    if (slug_prefix.includes('4h'))   return 4  * 60 * 60 * 1000;
+    return 5 * 60 * 1000; // 默认 5 分钟
+  }
+
+  // 解析 event 的 token IDs（Up/Down）
+  function parseTokenIds(event) {
     const markets = event.markets || [];
     if (markets.length === 0) return null;
 
@@ -62,17 +70,40 @@ export function createScanner(config) {
     }
 
     if (!upTokenId || !downTokenId) {
-      console.log(`[Scanner] parseWindow failed: upTokenId=${upTokenId} downTokenId=${downTokenId} slug=${event.slug}`);
+      console.log(`[Scanner] parseTokenIds failed: upTokenId=${upTokenId} downTokenId=${downTokenId} slug=${event.slug}`);
       return null;
     }
+    return { upTokenId, downTokenId };
+  }
+
+  // 解析 event 为 Window 对象（从 slug 解析时间戳确定窗口）
+  function parseWindow(event) {
+    const tokens = parseTokenIds(event);
+    if (!tokens) return null;
+
+    // 从 slug 末尾提取 Unix 时间戳（秒）
+    // slug 格式：btc-updown-5m-1773060600
+    const parts = event.slug.split('-');
+    const tsStr = parts[parts.length - 1];
+    const ts = parseInt(tsStr, 10);
+    if (!ts || isNaN(ts)) {
+      console.log(`[Scanner] parseWindow: cannot parse timestamp from slug=${event.slug}`);
+      return null;
+    }
+
+    const windowStart = ts * 1000;
+    const windowEnd   = windowStart + getWindowDurationMs();
 
     return {
       event_id:      event.id,
       slug:          event.slug,
-      up_token_id:   upTokenId,
-      down_token_id: downTokenId,
-      window_start:  new Date(event.startDate || event.startTime),
-      window_end:    new Date(event.endDate   || event.endTime),
+      up_token_id:   tokens.upTokenId,
+      down_token_id: tokens.downTokenId,
+      start_time:    windowStart,
+      end_time:      windowEnd,
+      end_date:      new Date(windowEnd).toISOString(),
+      window_start:  new Date(windowStart),
+      window_end:    new Date(windowEnd),
       strike_price:  event.strikePrice ? parseFloat(event.strikePrice) : null,
     };
   }
