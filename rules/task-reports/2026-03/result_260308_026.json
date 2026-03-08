@@ -1,0 +1,9 @@
+{
+  "task_id": "260308_026",
+  "status": "DONE",
+  "summary": "Fix: add try/catch error logging to recordPostmortem instead of silently swallowing errors.",
+  "gate_light_exit": 0,
+  "report_file": "notify_260308_026.txt",
+  "report_sha256_short": "4ad7972c",
+  "generated_at": "2026-03-08T16:54:53.695Z"
+}

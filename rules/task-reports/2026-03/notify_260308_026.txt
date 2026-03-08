@@ -1,0 +1,35 @@
+=== HEADER ===
+Header: TraeTask_260308_026
+task_id: 260308_026
+mode: LOCAL
+commit: 905fe8f463e3b3e51df564dc57d394c60e29d95b
+
+RESULT_JSON
+{"task_id":"260308_026","status":"DONE","summary":"Fix: add try/catch error logging to recordPostmortem instead of silently swallowing errors."}
+
+LOG_HEAD
+[260308_026] Add error logging to recordPostmortem
+Branch: 260308_026
+Commit: 905fe8f4
+Generated: 2026-03-08T16:54:53.695Z
+
+LOG_TAIL
+Task 260308_026 completed successfully.
+
+=== DOD_EVIDENCE_STDOUT ===
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260308_026_healthcheck_53122_root.txt
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260308_026_healthcheck_53122_pairs.txt
+
+=== GATE_LIGHT_PREVIEW ===
+GATE_LIGHT_EXIT=0
+==========================
+
+INDEX
+notify_260308_026.txt
+result_260308_026.json
+git_meta_260308_026.json
+dod_evidence_260308_026.txt
+trae_report_snippet_260308_026.txt
+gate_light_preview_260308_026.log
+
+GATE_LIGHT_EXIT=0
