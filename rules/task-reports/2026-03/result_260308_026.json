@@ -1,9 +1,17 @@
 {
   "task_id": "260308_026",
   "status": "DONE",
-  "summary": "Fix: add try/catch error logging to recordPostmortem instead of silently swallowing errors.",
+  "summary": "Automation Pack V1 Validation for Task 260308_026",
   "gate_light_exit": 0,
   "report_file": "notify_260308_026.txt",
-  "report_sha256_short": "a2e53eba",
-  "generated_at": "2026-03-08T16:55:38.960Z"
+  "report_sha256_short": "05224e96",
+  "generated_at": "2026-03-08T16:56:32.030Z",
+  "mode": "Integrate",
+  "dod_evidence": {
+    "gate_light_exit": 0,
+    "healthcheck": [
+      "rules/task-reports/2026-03/260308_026_healthcheck_53122_root.txt",
+      "rules/task-reports/2026-03/260308_026_healthcheck_53122_pairs.txt"
+    ]
+  }
 }
