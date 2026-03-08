@@ -19,13 +19,13 @@ export function createScanner(config) {
     return all.filter(e => e.slug && e.slug.startsWith(slug_prefix));
   }
 
-  // 根据 slug_prefix 推断窗口时长
-  function getWindowDurationMs() {
-    if (slug_prefix.includes('5m'))   return 5  * 60 * 1000;
-    if (slug_prefix.includes('15m'))  return 15 * 60 * 1000;
-    if (slug_prefix.includes('1h'))   return 60 * 60 * 1000;
-    if (slug_prefix.includes('4h'))   return 4  * 60 * 60 * 1000;
-    return 5 * 60 * 1000; // 默认 5 分钟
+  // 根据 slug_prefix 推断窗口时长（秒）
+  function getWindowDurationSec() {
+    if (slug_prefix.includes('5m'))   return 5  * 60;
+    if (slug_prefix.includes('15m'))  return 15 * 60;
+    if (slug_prefix.includes('1h'))   return 60 * 60;
+    if (slug_prefix.includes('4h'))   return 4  * 60 * 60;
+    return 5 * 60; // 默认 5 分钟
   }
 
   // 解析 event 的 token IDs（Up/Down）
@@ -92,7 +92,7 @@ export function createScanner(config) {
     }
 
     const windowStart = ts * 1000;
-    const windowEnd   = windowStart + getWindowDurationMs();
+    const windowEnd   = windowStart + getWindowDurationSec() * 1000;
 
     return {
       event_id:      event.id,
@@ -108,20 +108,34 @@ export function createScanner(config) {
     };
   }
 
-  // 找到 start <= now < end 的当前窗口
+  // 根据当前时间计算 slug，精确查询当前窗口
   async function findCurrentWindow() {
-    const events = await fetchEvents();
-    const now = new Date();
-    for (const event of events) {
-      const win = parseWindow(event);
-      if (!win) continue;
-      if (win.window_start <= now && now < win.window_end) {
-        console.log(`[Scanner] Found current window: ${win.slug} end=${win.window_end.toISOString()}`);
-        return win;
+    try {
+      const now = Math.floor(Date.now() / 1000);
+      const durationSec = getWindowDurationSec();
+      const windowStart = Math.floor(now / durationSec) * durationSec;
+      const slug = slug_prefix + windowStart;
+      const secsLeft = windowStart + durationSec - now;
+
+      const url = `${GAMMA_BASE}/events?slug=${slug}`;
+      const resp = await fetch(url);
+      const data = await resp.json();
+
+      if (!data || data.length === 0) {
+        console.log(`[Scanner] No active window found (slug=${slug}, secsLeft=${secsLeft})`);
+        return null;
       }
+
+      const event = data[0];
+      const win = parseWindow(event);
+      if (!win) return null;
+
+      console.log(`[Scanner] Found current window: ${win.slug} end=${win.window_end.toISOString()} secsLeft=${secsLeft}`);
+      return win;
+    } catch (err) {
+      console.error('[Scanner] findCurrentWindow error:', err.message);
+      return null;
     }
-    console.log(`[Scanner] No active window found (slug_prefix=${slug_prefix})`);
-    return null;
   }
 
   // 找到 start > now 且最近的下一个窗口
