@@ -83,14 +83,14 @@ export function createRunner(config) {
     // Original BS edge strategy tick
     if (!latestPrice) return;
 
-    const { vol_window_periods } = config.model;
+    const { vol_window_periods } = config.model || {};
     const periodsPerYear = (365 * 24 * 60) / config.market.window_minutes;
     const sigma = calcVolatility(latestKlines, vol_window_periods, periodsPerYear);
 
     const S = latestPrice;
     const K = currentWindow.strike_price || S;
     const T = Math.max((currentWindow.window_end - new Date()) / (1000 * 365 * 24 * 3600), 1e-6);
-    const r = config.model.risk_free_rate;
+    const r = (config.model || {}).risk_free_rate;
     const bsResult = calcBSPrices(S, K, T, sigma, r);
 
     console.log(`[Runner] S=${S.toFixed(2)} K=${K.toFixed(2)} T=${(T*365*24*60).toFixed(1)}min sigma=${sigma.toFixed(4)} pUp=${bsResult.pUp.toFixed(4)}`);
@@ -124,7 +124,7 @@ export function createRunner(config) {
   async function tickRouter() {
     if (!latestPrice) return;
 
-    const { vol_window_periods } = config.model;
+    const { vol_window_periods } = config.model || {};
     const periodsPerYear = (365 * 24 * 60) / config.market.window_minutes;
     const sigma = calcVolatility(latestKlines, vol_window_periods, periodsPerYear);
 
@@ -195,7 +195,7 @@ export function createRunner(config) {
 
         // Start orderbook polling for maker/sniper
         if (orderbookMonitor && currentWindow.up_token_id) {
-          orderbookMonitor.startPolling(currentWindow.up_token_id, currentWindow.down_token_id);
+          orderbookMonitor.start(currentWindow.up_token_id, currentWindow.down_token_id);
         }
       }
 
@@ -297,7 +297,7 @@ export function createRunner(config) {
     running = false;
     priceFeed.stopPolling();
     if (priceTimer) { clearInterval(priceTimer); priceTimer = null; }
-    if (orderbookMonitor) orderbookMonitor.stopPolling();
+    if (orderbookMonitor) orderbookMonitor.stop();
     console.log(`[Runner] Stopped: ${config.strategy_id}`);
   }
 
