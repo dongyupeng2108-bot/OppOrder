@@ -6,6 +6,7 @@ import { createServer } from 'http';
 import { readFileSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { createRunner } from './strategy_runner.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -15,7 +16,6 @@ const args = Object.fromEntries(
     .filter(a => a.startsWith('--'))
     .map(a => a.slice(2).split('='))
 );
-
 const STRATEGY_ID = args.strategy || 'btc_15m';
 const PORT = parseInt(args.port || '53123', 10);
 
@@ -28,9 +28,11 @@ function loadConfig(strategyId) {
 let config = loadConfig(STRATEGY_ID);
 console.log(`[BTCQDD] Loaded config: ${config.display_name} (strategy_id: ${config.strategy_id})`);
 
-// TODO: B1 实现 — strategy_runner 初始化
-// import { createRunner } from './strategy_runner.mjs';
-// let runner = createRunner(config);
+// 启动策略运行器
+let runner = createRunner(config);
+runner.start().catch(err => {
+  console.error('[BTCQDD] Runner failed to start:', err.message);
+});
 
 const server = createServer((req, res) => {
   // GET / — 健康检查
@@ -52,9 +54,9 @@ const server = createServer((req, res) => {
       const oldConfig = JSON.parse(JSON.stringify(config));
       config = loadConfig(STRATEGY_ID);
 
-      // 计算 diff（只对比 signal / risk / model 可热更新部分）
+      // 计算 diff
       const diff = {};
-      for (const section of ['signal', 'risk', 'model']) {
+      for (const section of ['signal', 'risk', 'model', 'strategy', 'cancel']) {
         const oldSec = oldConfig[section] || {};
         const newSec = config[section] || {};
         const sectionDiff = {};
@@ -66,11 +68,12 @@ const server = createServer((req, res) => {
         if (Object.keys(sectionDiff).length > 0) diff[section] = sectionDiff;
       }
 
-      // TODO: B1 实现 — 通知 runner 使用新配置重建模块
-      // runner.reload(config);
+      // 通知 runner 使用新配置
+      if (typeof runner.reload === 'function') {
+        runner.reload(config);
+      }
 
       console.log(`[BTCQDD] Config reloaded. Diff:`, JSON.stringify(diff));
-
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
         status: 'reloaded',
