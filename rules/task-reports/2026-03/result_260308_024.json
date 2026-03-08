@@ -4,6 +4,6 @@
   "summary": "Fix: postmortem settle triggers on window expiry before finding new window.",
   "gate_light_exit": 0,
   "report_file": "notify_260308_024.txt",
-  "report_sha256_short": "c2804ee8",
-  "generated_at": "2026-03-08T14:27:13.876Z"
+  "report_sha256_short": "10bc4ef9",
+  "generated_at": "2026-03-08T14:28:05.936Z"
 }

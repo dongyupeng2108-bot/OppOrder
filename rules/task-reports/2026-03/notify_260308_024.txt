@@ -2,7 +2,7 @@
 Header: TraeTask_260308_024
 task_id: 260308_024
 mode: LOCAL
-commit: b6d4058a8d92f39c661359fcd577be62e95d620c
+commit: 09c8d97cab6f857547243c0662fc407b9b3e40f9
 
 RESULT_JSON
 {"task_id":"260308_024","status":"DONE","summary":"Fix: postmortem settle triggers on window expiry before finding new window."}
@@ -10,8 +10,8 @@ RESULT_JSON
 LOG_HEAD
 [260308_024] Fix postmortem settle on window expiry
 Branch: 260308_024
-Commit: b6d4058a
-Generated: 2026-03-08T14:27:13.876Z
+Commit: 09c8d97c
+Generated: 2026-03-08T14:28:05.936Z
 
 LOG_TAIL
 Task 260308_024 completed successfully.
