@@ -1,0 +1,12 @@
+{
+  "task_id": "260308_023",
+  "parity": "PASS",
+  "base": "3e003d210705ae17cfc8babe838baabf940415c1",
+  "head": "e65bde8768342da72231c3735d5cb2d8afdcc40d",
+  "merge_base": "3e003d210705ae17cfc8babe838baabf940415c1",
+  "scope_files": [
+    "strategies/crypto_binary/market_scanner.mjs"
+  ],
+  "scope_count": 1,
+  "generated_at": "2026-03-08T14:01:21.642Z"
+}

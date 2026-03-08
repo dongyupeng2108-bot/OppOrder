@@ -1,0 +1,12 @@
+TASK_ID=260308_023
+GENERATED_AT=2026-03-08T14:01:21.642Z
+
+# DoD Markers
+DOD_SLUG_CALC=findCurrentWindow calculates slug from current time
+DOD_WINDOW_DURATION_SEC=getWindowDurationSec returns seconds
+DOD_SECS_LEFT=secsLeft < 300 for active window
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260308_023_healthcheck_53122_root.txt
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260308_023_healthcheck_53122_pairs.txt
+
+GATE_LIGHT_EXIT=0
