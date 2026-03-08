@@ -71,10 +71,16 @@ export function createOrderbookMonitor(config) {
   }
 
   function _parseBooks(upBook, downBook, upTokenId, downTokenId) {
-    const bid_up  = parseFloat(upBook.bids?.[0]?.price  ?? 0);
-    const ask_up  = parseFloat(upBook.asks?.[0]?.price  ?? 1);
-    const bid_down = parseFloat(downBook.bids?.[0]?.price ?? 0);
-    const ask_down = parseFloat(downBook.asks?.[0]?.price ?? 1);
+    // Polymarket /book bids 升序（最优在最后），asks 降序（最优在最后）
+    const upBids   = upBook.bids   || [];
+    const upAsks   = upBook.asks   || [];
+    const downBids = downBook.bids || [];
+    const downAsks = downBook.asks || [];
+
+    const bid_up   = parseFloat(upBids[upBids.length - 1]?.price     ?? 0);
+    const ask_up   = parseFloat(upAsks[upAsks.length - 1]?.price     ?? 1);
+    const bid_down = parseFloat(downBids[downBids.length - 1]?.price ?? 0);
+    const ask_down = parseFloat(downAsks[downAsks.length - 1]?.price ?? 1);
     const mid_up   = (bid_up + ask_up) / 2;
     const mid_down = (bid_down + ask_down) / 2;
     const tick_size = inferTickSize(mid_up);
