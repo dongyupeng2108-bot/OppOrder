@@ -1,0 +1,14 @@
+Header: TraeTask_260308_024
+TASK: 260308_024
+BRANCH: 260308_024
+COMMIT: b6d4058a
+STATUS: DONE
+SUMMARY: Fix — postmortem settle on window expiry before new window lookup
+
+=== DOD_EVIDENCE_STDOUT ===
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260308_024_healthcheck_53122_root.txt
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260308_024_healthcheck_53122_pairs.txt
+
+=== GATE_LIGHT_PREVIEW ===
+GATE_LIGHT_EXIT=0
+==========================

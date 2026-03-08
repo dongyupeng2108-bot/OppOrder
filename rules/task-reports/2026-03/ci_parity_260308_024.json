@@ -1,0 +1,12 @@
+{
+  "task_id": "260308_024",
+  "parity": "PASS",
+  "base": "8a43feab20d7ad008e280c6c74b1a9fd4f7b814d",
+  "head": "b6d4058a8d92f39c661359fcd577be62e95d620c",
+  "merge_base": "8a43feab20d7ad008e280c6c74b1a9fd4f7b814d",
+  "scope_files": [
+    "strategies/crypto_binary/strategy_runner.mjs"
+  ],
+  "scope_count": 1,
+  "generated_at": "2026-03-08T14:27:13.876Z"
+}
