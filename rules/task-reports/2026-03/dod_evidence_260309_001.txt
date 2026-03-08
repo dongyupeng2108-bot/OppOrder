@@ -1,0 +1,12 @@
+TASK_ID=260309_001
+GENERATED_AT=2026-03-08T18:23:59.466Z
+
+# DoD Markers
+DOD_INIT_AWAIT=initPostmortem() awaited in server.mjs before runner.start()
+DOD_MIGRATION=ALTER TABLE columns added on startup
+DOD_IDEMPOTENT=try/catch skips existing columns
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260309_001_healthcheck_53122_root.txt
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260309_001_healthcheck_53122_pairs.txt
+
+GATE_LIGHT_EXIT=0

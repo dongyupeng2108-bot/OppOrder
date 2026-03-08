@@ -1,0 +1,35 @@
+=== HEADER ===
+Header: TraeTask_260309_001
+task_id: 260309_001
+mode: LOCAL
+commit: d3e84625251541242d675e36a4e7da8d60d31366
+
+RESULT_JSON
+{"task_id":"260309_001","status":"DONE","summary":"Fix: await initPostmortem() in server.mjs startup before runner.start()."}
+
+LOG_HEAD
+[260309_001] Fix DB migration auto-execute on server startup
+Branch: 260309_001
+Commit: d3e84625
+Generated: 2026-03-08T18:23:59.466Z
+
+LOG_TAIL
+Task 260309_001 completed successfully.
+
+=== DOD_EVIDENCE_STDOUT ===
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260309_001_healthcheck_53122_root.txt
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260309_001_healthcheck_53122_pairs.txt
+
+=== GATE_LIGHT_PREVIEW ===
+GATE_LIGHT_EXIT=0
+==========================
+
+INDEX
+notify_260309_001.txt
+result_260309_001.json
+git_meta_260309_001.json
+dod_evidence_260309_001.txt
+trae_report_snippet_260309_001.txt
+gate_light_preview_260309_001.log
+
+GATE_LIGHT_EXIT=0

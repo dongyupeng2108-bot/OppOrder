@@ -1,0 +1,24 @@
+{
+  "task_id": "260309_001",
+  "parity": "PASS",
+  "base": "8d589f959227a5d1a6c7ee379a15a2df897b3729",
+  "head": "d3e84625251541242d675e36a4e7da8d60d31366",
+  "merge_base": "8d589f959227a5d1a6c7ee379a15a2df897b3729",
+  "scope_files": [
+    "rules/LATEST.json",
+    "rules/task-reports/2026-03/260309_001_healthcheck_53122_pairs.txt",
+    "rules/task-reports/2026-03/260309_001_healthcheck_53122_root.txt",
+    "rules/task-reports/2026-03/ci_parity_260309_001.json",
+    "rules/task-reports/2026-03/dod_evidence_260309_001.txt",
+    "rules/task-reports/2026-03/generate_evidence_260309_001.mjs",
+    "rules/task-reports/2026-03/git_meta_260309_001.json",
+    "rules/task-reports/2026-03/notify_260309_001.txt",
+    "rules/task-reports/2026-03/result_260309_001.json",
+    "rules/task-reports/2026-03/scope_lock_260309_001.json",
+    "rules/task-reports/2026-03/trae_report_snippet_260309_001.txt",
+    "rules/task-reports/index/error_stats.jsonl",
+    "strategies/crypto_binary/server.mjs"
+  ],
+  "scope_count": 13,
+  "generated_at": "2026-03-08T18:23:59.466Z"
+}

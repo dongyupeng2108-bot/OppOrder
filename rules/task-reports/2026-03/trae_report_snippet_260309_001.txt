@@ -1,0 +1,14 @@
+Header: TraeTask_260309_001
+TASK: 260309_001
+BRANCH: 260309_001
+COMMIT: d3e84625
+STATUS: DONE
+SUMMARY: Fix — await initPostmortem in server.mjs startup
+
+=== DOD_EVIDENCE_STDOUT ===
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260309_001_healthcheck_53122_root.txt
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260309_001_healthcheck_53122_pairs.txt
+
+=== GATE_LIGHT_PREVIEW ===
+GATE_LIGHT_EXIT=0
+==========================
