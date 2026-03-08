@@ -7,6 +7,7 @@ import { readFileSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { createRunner } from './strategy_runner.mjs';
+import { initPostmortem } from './postmortem.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -28,9 +29,13 @@ function loadConfig(strategyId) {
 let config = loadConfig(STRATEGY_ID);
 console.log(`[BTCQDD] Loaded config: ${config.display_name} (strategy_id: ${config.strategy_id})`);
 
-// 启动策略运行器
+// 启动策略运行器（先确保 DB 迁移完成）
 let runner = createRunner(config);
-runner.start().catch(err => {
+(async () => {
+  await initPostmortem();
+  console.log('[BTCQDD] DB migration completed (initPostmortem)');
+  await runner.start();
+})().catch(err => {
   console.error('[BTCQDD] Runner failed to start:', err.message);
 });
 
