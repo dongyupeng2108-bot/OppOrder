@@ -2,7 +2,7 @@
 Header: TraeTask_260309_001
 task_id: 260309_001
 mode: LOCAL
-commit: 53edad56c5b266bfed2efd751ec17cff17be6672
+commit: ce63e650d5982a42c8664e68ce105587ae8009a5
 
 RESULT_JSON
 {"task_id":"260309_001","status":"DONE","summary":"Fix: await initPostmortem() in server.mjs startup before runner.start()."}
@@ -10,8 +10,8 @@ RESULT_JSON
 LOG_HEAD
 [260309_001] Fix DB migration auto-execute on server startup
 Branch: 260309_001
-Commit: 53edad56
-Generated: 2026-03-08T18:14:14.336Z
+Commit: ce63e650
+Generated: 2026-03-08T18:14:58.033Z
 
 LOG_TAIL
 Task 260309_001 completed successfully.

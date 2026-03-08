@@ -4,6 +4,6 @@
   "summary": "Fix: await initPostmortem() in server.mjs startup before runner.start().",
   "gate_light_exit": 0,
   "report_file": "notify_260309_001.txt",
-  "report_sha256_short": "1b50be6a",
-  "generated_at": "2026-03-08T18:14:14.336Z"
+  "report_sha256_short": "a91e7fe1",
+  "generated_at": "2026-03-08T18:14:58.033Z"
 }
