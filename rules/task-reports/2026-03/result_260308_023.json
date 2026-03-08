@@ -1,9 +1,17 @@
 {
   "task_id": "260308_023",
   "status": "DONE",
-  "summary": "Fix: findCurrentWindow calculates slug from current time instead of listing events.",
+  "summary": "Automation Pack V1 Validation for Task 260308_023",
   "gate_light_exit": 0,
   "report_file": "notify_260308_023.txt",
-  "report_sha256_short": "a0508419",
-  "generated_at": "2026-03-08T14:02:14.774Z"
+  "report_sha256_short": "2299ec56",
+  "generated_at": "2026-03-08T14:03:46.416Z",
+  "mode": "Integrate",
+  "dod_evidence": {
+    "gate_light_exit": 0,
+    "healthcheck": [
+      "rules/task-reports/2026-03/260308_023_healthcheck_53122_root.txt",
+      "rules/task-reports/2026-03/260308_023_healthcheck_53122_pairs.txt"
+    ]
+  }
 }
