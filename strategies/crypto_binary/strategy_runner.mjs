@@ -131,8 +131,12 @@ export function createRunner(config) {
     regimeDetector.updateSigma(sigma);
     const regime_score = regimeDetector.getScore();
 
-    // Build snapshot from orderbook monitor or synthetic
-    const snapshot = orderbookMonitor.getLatestSnapshot() || buildSyntheticSnapshot();
+    // Build snapshot from orderbook monitor — skip tick if not ready yet
+    const snapshot = orderbookMonitor ? orderbookMonitor.getLatestSnapshot() : null;
+    if (!snapshot || snapshot.mid_up === null) {
+      console.warn(`[Runner] [${config.strategy_id}] orderbook not ready, skipping tick...`);
+      return;
+    }
     const windowEnd = currentWindow.window_end;
 
     const { results } = router.dispatch({ snapshot, regime_score, sigma, windowEnd });
@@ -168,7 +172,7 @@ export function createRunner(config) {
   }
 
   function buildSyntheticSnapshot() {
-    // Fallback when orderbook monitor hasn't fetched yet
+    console.warn(`[Runner] WARNING: using synthetic snapshot (orderbook not ready)`);
     return {
       bid_up: 0.49, ask_up: 0.51, mid_up: 0.50,
       bid_down: 0.49, ask_down: 0.51, mid_down: 0.50,

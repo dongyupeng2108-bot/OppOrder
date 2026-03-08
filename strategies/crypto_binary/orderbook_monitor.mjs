@@ -23,6 +23,7 @@ export function floorToTick(price, tickSize) {
 export function createOrderbookMonitor(config) {
   const pollSec = config.polymarket_poll_sec || 2;
   const mode    = config.polymarket_mode || 'rest';
+  let firstSnapshotLogged = false;
 
   // 当前盘口状态
   let state = _emptyState();
@@ -90,6 +91,10 @@ export function createOrderbookMonitor(config) {
   function _applySnapshot(snapshot) {
     const prevTick = state.tick_size;
     state = { ...snapshot };
+    if (!firstSnapshotLogged) {
+      firstSnapshotLogged = true;
+      console.log(`[OrderbookMonitor] snapshot ready: mid_up=${snapshot.mid_up?.toFixed(4)} mid_down=${snapshot.mid_down?.toFixed(4)}`);
+    }
     if (state.tick_size !== prevTick) {
       state.tick_size_changed = true;
       console.log(`[OrderbookMonitor] tick_size_change: ${prevTick} → ${state.tick_size}`);
