@@ -2,7 +2,7 @@
 Header: TraeTask_260308_025
 task_id: 260308_025
 mode: LOCAL
-commit: ca8646a091190272a659d9a2ccc92b18a8c3eb98
+commit: c03600d69f48608b8f66c96e9cac5bda59a31dad
 
 RESULT_JSON
 {"task_id":"260308_025","status":"DONE","summary":"Fix: cb_postmortem ALTER TABLE migration for new columns."}
@@ -10,8 +10,8 @@ RESULT_JSON
 LOG_HEAD
 [260308_025] Fix cb_postmortem table migration
 Branch: 260308_025
-Commit: ca8646a0
-Generated: 2026-03-08T16:02:41.414Z
+Commit: c03600d6
+Generated: 2026-03-08T16:03:36.645Z
 
 LOG_TAIL
 Task 260308_025 completed successfully.

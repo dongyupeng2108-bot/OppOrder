@@ -4,6 +4,6 @@
   "summary": "Fix: cb_postmortem ALTER TABLE migration for new columns.",
   "gate_light_exit": 0,
   "report_file": "notify_260308_025.txt",
-  "report_sha256_short": "8daf4acd",
-  "generated_at": "2026-03-08T16:02:41.414Z"
+  "report_sha256_short": "c4f16352",
+  "generated_at": "2026-03-08T16:03:36.645Z"
 }
