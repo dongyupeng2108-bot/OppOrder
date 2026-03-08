@@ -1,6 +1,6 @@
 {
-  "strategy_id": "btc_15m_sniper",
-  "display_name": "BTC 15-Min Sniper (S2)",
+  "strategy_id": "btc_15m_maker_dyn_a",
+  "display_name": "BTC 15-Min Maker DynA (base=0.02 factor=0.5)",
   "enabled": true,
   "executor_mode": "paper",
   "market": {
@@ -14,21 +14,26 @@
   },
   "polymarket_poll_sec": 2,
   "strategy": {
-    "type": "low_price_sniper",
-    "sniper_max_price": 0.12,
-    "sniper_offset": 0.02,
-    "opposite_min_price": 0.85,
+    "type": "pair_cost_maker",
+    "vol_adjust_enabled": true,
+    "entry_offset_base": 0.02,
+    "vol_adjust_factor": 0.5,
     "order_tranches": 1,
     "tranche_spread": 0.5,
-    "tranche_weights": [1.0]
+    "tranche_weights": [1.0],
+    "price_zone_filter": [[0, 0.35], [0.65, 1.0]],
+    "pair_cost_target": 0.97,
+    "min_price_deviation": 0.05,
+    "balance_max_ratio": 1.5,
+    "requote_threshold": 0.01
   },
   "cancel": {
     "sigma_threshold": 0.30,
     "tau_min_sec": 60,
-    "order_age_max_sec": 30
+    "order_age_max_sec": 20
   },
   "regime": {
-    "min_score": 0.6,
+    "min_score": 0.5,
     "max_score": 1.0
   },
   "regime_detector": {
@@ -43,11 +48,10 @@
     "volume_surge_ratio": 3.0
   },
   "risk": {
-    "max_position_usd": 5,
-    "max_open_orders": 2,
-    "consecutive_loss_stop": 10,
-    "max_drawdown_pct": 0.25,
-    "blackout_windows": []
+    "max_position_usd": 10,
+    "max_open_orders": 6,
+    "consecutive_loss_stop": 5,
+    "max_drawdown_pct": 0.25
   },
   "paper": {
     "fill_model": "conservative",

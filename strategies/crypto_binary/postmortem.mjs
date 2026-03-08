@@ -42,6 +42,7 @@ export async function initPostmortem() {
       balance_ratio REAL,
       config_hash TEXT,
       config_snapshot_json TEXT,
+      volume_ratio REAL,
       created_at TEXT NOT NULL
     )
   `);
@@ -91,6 +92,7 @@ export async function recordPostmortem(params) {
     balance_ratio,
     config_hash,
     config_snapshot_json,
+    volume_ratio,
   } = params;
 
   // 获取结算时刻的 Binance 价格
@@ -114,8 +116,8 @@ export async function recordPostmortem(params) {
       K_strike, K_binance, basis, S_at_signal, S_at_settlement,
       settled_outcome, paper_fill_price, paper_pnl, sigma,
       regime_score, pair_cost, cancel_latency_ms, strategy_type,
-      balance_ratio, config_hash, config_snapshot_json, created_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      balance_ratio, config_hash, config_snapshot_json, volume_ratio, created_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `, [
     strategy_id, event_id,
     window_start instanceof Date ? window_start.toISOString() : window_start,
@@ -141,6 +143,7 @@ export async function recordPostmortem(params) {
     balance_ratio ?? null,
     config_hash ?? null,
     config_snapshot_json ?? null,
+    volume_ratio ?? null,
     new Date().toISOString(),
   ]);
 

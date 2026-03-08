@@ -83,13 +83,13 @@ console.log('\n=== strategy_router 广播测试 ===');
 
   const router = createStrategyRouter({ btc_15m_maker: maker, btc_15m_sniper: sniper });
 
-  // score=0.7：maker 激活（[0.5,1.0]），sniper 休眠（[0.0,0.6]）
+  // score=0.7：maker 激活（[0.5,1.0]），sniper 激活（[0.6,1.0]）
   const { results } = router.dispatch({ snapshot: oscillatingSnapshot, regime_score: 0.7, sigma: 0.3, windowEnd });
   const makerResult  = results.find(r => r.strategy_id === 'btc_15m_maker');
   const sniperResult = results.find(r => r.strategy_id === 'btc_15m_sniper');
 
   assert(makerResult  && !makerResult.actions[0].startsWith('SLEEP'),  `score=0.7: maker 激活`);
-  assert(sniperResult && sniperResult.actions[0].startsWith('SLEEP'),  `score=0.7: sniper 休眠`);
+  assert(sniperResult && !sniperResult.actions[0].startsWith('SLEEP'), `score=0.7: sniper 激活`);
 }
 
 {
@@ -103,13 +103,13 @@ console.log('\n=== strategy_router 广播测试 ===');
   const sniper = createSniperStrategy(sniperConfig, { orderManager: sniperMgr, cancelEngine: sniperCE });
   const router = createStrategyRouter({ btc_15m_maker: maker, btc_15m_sniper: sniper });
 
-  // score=0.3：maker 休眠（< 0.5），sniper 激活（<= 0.6）
+  // score=0.3：maker 休眠（< 0.5），sniper 休眠（< 0.6）
   const { results } = router.dispatch({ snapshot: extremeSnapshot, regime_score: 0.3, sigma: 0.3, windowEnd });
   const makerResult  = results.find(r => r.strategy_id === 'btc_15m_maker');
   const sniperResult = results.find(r => r.strategy_id === 'btc_15m_sniper');
 
-  assert(makerResult  && makerResult.actions[0].startsWith('SLEEP'),   `score=0.3: maker 休眠`);
-  assert(sniperResult && !sniperResult.actions[0].startsWith('SLEEP'), `score=0.3: sniper 激活`);
+  assert(makerResult  && makerResult.actions[0].startsWith('SLEEP'),  `score=0.3: maker 休眠`);
+  assert(sniperResult && sniperResult.actions[0].startsWith('SLEEP'), `score=0.3: sniper 休眠`);
 }
 
 console.log('\n=== router.resetAll 测试 ===');
@@ -133,7 +133,7 @@ console.log('\n=== 新配置文件结构验证 ===');
   assert(makerConfig.regime.min_score === 0.5,              'btc_15m_maker.json regime.min_score=0.5');
   assert(makerConfig.cancel.sigma_threshold === 0.30,       'btc_15m_maker.json cancel 字段存在');
   assert(sniperConfig.strategy.type === 'low_price_sniper', 'btc_15m_sniper.json type 正确');
-  assert(sniperConfig.regime.max_score === 0.6,             'btc_15m_sniper.json regime.max_score=0.6');
+  assert(sniperConfig.regime.max_score === 1.0,             'btc_15m_sniper.json regime.max_score=1.0');
   assert(sniperConfig.cancel.sigma_threshold === 0.30,      'btc_15m_sniper.json cancel 字段存在');
 }
 
