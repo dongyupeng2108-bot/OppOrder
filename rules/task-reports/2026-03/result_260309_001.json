@@ -1,17 +1,9 @@
 {
   "task_id": "260309_001",
   "status": "DONE",
-  "summary": "Automation Pack V1 Validation for Task 260309_001",
+  "summary": "Fix: await initPostmortem() in server.mjs startup before runner.start().",
   "gate_light_exit": 0,
   "report_file": "notify_260309_001.txt",
-  "report_sha256_short": "cade437c",
-  "generated_at": "2026-03-08T18:15:51.885Z",
-  "mode": "Integrate",
-  "dod_evidence": {
-    "gate_light_exit": 0,
-    "healthcheck": [
-      "rules/task-reports/2026-03/260309_001_healthcheck_53122_root.txt",
-      "rules/task-reports/2026-03/260309_001_healthcheck_53122_pairs.txt"
-    ]
-  }
+  "report_sha256_short": "ad65406d",
+  "generated_at": "2026-03-08T18:23:59.466Z"
 }

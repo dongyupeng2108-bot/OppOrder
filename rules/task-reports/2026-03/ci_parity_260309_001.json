@@ -1,10 +1,11 @@
 {
   "task_id": "260309_001",
   "parity": "PASS",
-  "base": "5df39f696a9f91e0c3f67d23dad34abf7662238d",
-  "head": "17b44f8e2609bf4ba3351d4f8a8134f0dc2f8500",
-  "merge_base": "5df39f696a9f91e0c3f67d23dad34abf7662238d",
+  "base": "8d589f959227a5d1a6c7ee379a15a2df897b3729",
+  "head": "d3e84625251541242d675e36a4e7da8d60d31366",
+  "merge_base": "8d589f959227a5d1a6c7ee379a15a2df897b3729",
   "scope_files": [
+    "rules/LATEST.json",
     "rules/task-reports/2026-03/260309_001_healthcheck_53122_pairs.txt",
     "rules/task-reports/2026-03/260309_001_healthcheck_53122_root.txt",
     "rules/task-reports/2026-03/ci_parity_260309_001.json",
@@ -15,8 +16,9 @@
     "rules/task-reports/2026-03/result_260309_001.json",
     "rules/task-reports/2026-03/scope_lock_260309_001.json",
     "rules/task-reports/2026-03/trae_report_snippet_260309_001.txt",
+    "rules/task-reports/index/error_stats.jsonl",
     "strategies/crypto_binary/server.mjs"
   ],
-  "scope_count": 11,
-  "generated_at": "2026-03-08T18:15:51.885Z"
+  "scope_count": 13,
+  "generated_at": "2026-03-08T18:23:59.466Z"
 }
