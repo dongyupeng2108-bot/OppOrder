@@ -1,6 +1,8 @@
 // cancel_engine.mjs — 四重撤单引擎（独立底层模块）
 // 工厂函数模式：createCancelEngine(config, orderManager)
 
+import { logger, EVENTS } from './logger.mjs';
+
 /**
  * 四个触发器：
  *   SIGMA      — sigma 跳变超过阈值
@@ -42,7 +44,7 @@ export function createCancelEngine(config, orderManager) {
     lastSigma = newSigma;
 
     if (change > sigma_threshold) {
-      console.warn(`[CancelEngine] SIGMA trigger: change=${(change*100).toFixed(1)}% > ${(sigma_threshold*100).toFixed(0)}%`);
+      logger.warn(EVENTS.ORDER_CANCEL_SUBMIT, { module: 'cancel_engine', msg: `SIGMA trigger: change=${(change*100).toFixed(1)}% > ${(sigma_threshold*100).toFixed(0)}%` });
       const t0 = Date.now();
       const cancelled = orderManager.cancelAll(CANCEL_REASONS.SIGMA);
       if (cancelled.length > 0) {
@@ -64,7 +66,7 @@ export function createCancelEngine(config, orderManager) {
     if (secsToEnd < tau_min_sec && secsToEnd > 0) {
       const openOrders = orderManager.getOpenOrders();
       if (openOrders.length > 0) {
-        console.warn(`[CancelEngine] TAU trigger: ${secsToEnd.toFixed(0)}s to end < ${tau_min_sec}s`);
+        logger.warn(EVENTS.ORDER_CANCEL_SUBMIT, { module: 'cancel_engine', msg: `TAU trigger: ${secsToEnd.toFixed(0)}s to end < ${tau_min_sec}s` });
         const t0 = Date.now();
         const cancelled = orderManager.cancelAll(CANCEL_REASONS.TAU);
         if (cancelled.length > 0) {
@@ -90,7 +92,7 @@ export function createCancelEngine(config, orderManager) {
       const ageMs = now - order.created_at;
       const ageSec = ageMs / 1000;
       if (ageSec > order_age_max_sec) {
-        console.warn(`[CancelEngine] AGE trigger: order ${order.order_id.slice(0,8)} age=${ageSec.toFixed(0)}s > ${order_age_max_sec}s`);
+        logger.warn(EVENTS.ORDER_CANCEL_SUBMIT, { module: 'cancel_engine', order_id: order.order_id.slice(0,8), msg: `AGE trigger: age=${ageSec.toFixed(0)}s > ${order_age_max_sec}s` });
         const t0 = Date.now();
         orderManager.cancelOrder(order.order_id);
         recordLatency(Date.now() - t0);
@@ -107,7 +109,7 @@ export function createCancelEngine(config, orderManager) {
    */
   function onTickSizeChange(snapshot) {
     if (!snapshot.tick_size_changed) return false;
-    console.warn(`[CancelEngine] TICK_SIZE trigger: tick_size changed, marking all stale`);
+    logger.warn(EVENTS.ORDER_CANCEL_SUBMIT, { module: 'cancel_engine', msg: 'TICK_SIZE trigger: tick_size changed, marking all stale' });
     const t0 = Date.now();
     orderManager.markAllStale();
     orderManager.cancelAll(CANCEL_REASONS.TICK_SIZE);

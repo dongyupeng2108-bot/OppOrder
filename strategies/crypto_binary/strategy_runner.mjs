@@ -19,6 +19,7 @@ import { createPairTracker } from './pair_tracker.mjs';
 import { createMakerStrategy } from './maker_strategy.mjs';
 import { createSniperStrategy } from './sniper_strategy.mjs';
 import crypto from 'crypto';
+import { logger, EVENTS } from './logger.mjs';
 
 export function createRunner(config) {
   const scanner = createScanner(config);
@@ -229,7 +230,7 @@ export function createRunner(config) {
         await tickRouter();
       }
     } catch (e) {
-      console.error(`[Runner] tick error: ${e.message}`);
+      logger.error(EVENTS.ERROR_UNHANDLED_PATH, { module: 'strategy_runner', strategy_id: config.strategy_id, err: e.message, msg: 'tick error' });
     }
   }
 

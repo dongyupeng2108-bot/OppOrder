@@ -2,6 +2,7 @@
 // 修复：slug 格式为 btc-updown-15m-<timestamp>，需要前缀搜索
 
 import './proxy_agent.mjs';
+import { logger, EVENTS } from './logger.mjs';
 
 const GAMMA_BASE = 'https://gamma-api.polymarket.com';
 
@@ -133,7 +134,7 @@ export function createScanner(config) {
       console.log(`[Scanner] Found current window: ${win.slug} end=${win.window_end.toISOString()} secsLeft=${secsLeft}`);
       return win;
     } catch (err) {
-      console.error('[Scanner] findCurrentWindow error:', err.message);
+      logger.error(EVENTS.ERROR_UNHANDLED_PATH, { module: 'market_scanner', err: err.message, msg: 'findCurrentWindow error' });
       return null;
     }
   }
