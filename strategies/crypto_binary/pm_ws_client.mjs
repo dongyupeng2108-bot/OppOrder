@@ -4,17 +4,28 @@
 // 代理策略：裸连 5s 超时后切换 HttpsProxyAgent
 
 import './proxy_agent.mjs';
+import { randomUUID } from 'crypto';
+import { logger, EVENTS } from './logger.mjs';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 
 const PM_WS_URL = 'wss://ws-subscriptions-clob.polymarket.com/ws/market';
 const CONNECT_TIMEOUT_MS = 5000;
-const MAX_RETRY_DELAY_MS = 30_000;
+
+const RECONNECT_CONFIG = {
+  maxAttempts: 5,
+  baseDelayMs: 1000,
+  maxDelayMs: 30_000,
+  backoffFactor: 2,
+};
 
 export function createPmWsClient() {
   let ws              = null;
   let connected       = false;
-  let retryDelay      = 1000;
   let retryTimer      = null;
+  let reconnectAttempts = 0;
   let subscribedAssets = [];  // 当前订阅的 token IDs
+  let activeSessionId  = null;
 
   // 事件订阅者
   const handlers = {
@@ -33,7 +44,7 @@ export function createPmWsClient() {
   function emit(event, data) {
     (handlers[event] || []).forEach(h => {
       try { h(data); } catch (e) {
-        console.error(`[PmWsClient] Handler error (${event}):`, e.message);
+        logger.error(EVENTS.ERROR_UNHANDLED_PATH, { module: 'pm_ws_client', err: e.message, handler_event: event });
       }
     });
   }
@@ -41,12 +52,15 @@ export function createPmWsClient() {
   async function connect(assetIds) {
     subscribedAssets = assetIds || [];
 
+    const sessionId = randomUUID();
+    activeSessionId = sessionId;
+
     let WebSocket;
     try {
       const m = await import('ws');
       WebSocket = m.default;
     } catch (e) {
-      console.error('[PmWsClient] ws module not available');
+      logger.error(EVENTS.WS_CONNECT_FAIL, { module: 'pm_ws_client', session_id: sessionId, err: 'ws module not available' });
       return;
     }
 
@@ -55,16 +69,15 @@ export function createPmWsClient() {
     function createWs(useProxy) {
       if (useProxy && proxyUrl) {
         try {
-          // dynamic require for CommonJS compat
           const { HttpsProxyAgent } = require('https-proxy-agent');
           const agent = new HttpsProxyAgent(proxyUrl);
-          console.log(`[PmWsClient] Connecting via proxy: ${proxyUrl}`);
+          logger.info(EVENTS.WS_CONNECT_START, { module: 'pm_ws_client', session_id: sessionId, url: PM_WS_URL, proxy: true });
           return new WebSocket(PM_WS_URL, { agent });
         } catch (e) {
-          console.warn('[PmWsClient] https-proxy-agent unavailable, trying bare');
+          logger.warn(EVENTS.WS_CONNECT_FAIL, { module: 'pm_ws_client', session_id: sessionId, err: 'https-proxy-agent unavailable, trying bare' });
         }
       }
-      console.log(`[PmWsClient] Connecting: ${PM_WS_URL}`);
+      logger.info(EVENTS.WS_CONNECT_START, { module: 'pm_ws_client', session_id: sessionId, url: PM_WS_URL, proxy: false });
       return new WebSocket(PM_WS_URL);
     }
 
@@ -72,8 +85,8 @@ export function createPmWsClient() {
     ws = createWs(false);
 
     connectTimeout = setTimeout(() => {
-      if (!connected) {
-        console.warn('[PmWsClient] Bare connect timed out, retrying with proxy...');
+      if (!connected && sessionId === activeSessionId) {
+        logger.warn(EVENTS.WS_CONNECT_FAIL, { module: 'pm_ws_client', session_id: sessionId, err: 'bare connect timed out, retrying with proxy' });
         ws.terminate();
         ws = createWs(true);
         attachHandlers();
@@ -82,10 +95,12 @@ export function createPmWsClient() {
 
     function attachHandlers() {
       ws.on('open', () => {
+        if (sessionId !== activeSessionId) return;
         clearTimeout(connectTimeout);
         connected   = true;
-        retryDelay  = 1000;
-        console.log('[PmWsClient] Connected');
+        reconnectAttempts = 0;
+
+        logger.info(EVENTS.WS_CONNECT_OK, { module: 'pm_ws_client', session_id: sessionId });
 
         // 订阅当前 asset IDs
         if (subscribedAssets.length > 0) {
@@ -95,6 +110,15 @@ export function createPmWsClient() {
       });
 
       ws.on('message', (data) => {
+        // 单活连接检查：session 已过期则丢弃
+        if (sessionId !== activeSessionId) {
+          logger.debug(EVENTS.WS_MESSAGE_DROPPED_STALE, {
+            module: 'pm_ws_client',
+            session_id: sessionId,
+            active_session_id: activeSessionId
+          });
+          return;
+        }
         try {
           const msgs = JSON.parse(data.toString());
           const arr = Array.isArray(msgs) ? msgs : [msgs];
@@ -104,20 +128,28 @@ export function createPmWsClient() {
             }
           }
         } catch (e) {
-          console.error('[PmWsClient] Parse error:', e.message);
+          logger.error(EVENTS.ERROR_PARSE_FAIL, { module: 'pm_ws_client', session_id: sessionId, err: e.message });
         }
       });
 
-      ws.on('close', () => {
+      ws.on('close', (code, reason) => {
         clearTimeout(connectTimeout);
+        if (sessionId !== activeSessionId) return;
         connected = false;
-        console.warn('[PmWsClient] Disconnected');
+
+        logger.info(EVENTS.WS_DISCONNECT, {
+          module: 'pm_ws_client',
+          session_id: sessionId,
+          code,
+          reason: reason?.toString() || ''
+        });
         emit('disconnected', {});
         scheduleReconnect();
       });
 
       ws.on('error', (err) => {
-        console.error('[PmWsClient] Error:', err.message);
+        if (sessionId !== activeSessionId) return;
+        logger.error(EVENTS.WS_CONNECT_FAIL, { module: 'pm_ws_client', session_id: sessionId, err: err.message });
       });
     }
 
@@ -128,7 +160,7 @@ export function createPmWsClient() {
     if (!ws || !connected) return;
     const msg = JSON.stringify({ type: 'market', assets_ids: assetIds });
     ws.send(msg);
-    console.log(`[PmWsClient] Subscribed to ${assetIds.length} assets`);
+    logger.info(EVENTS.SUBSCRIBE_OK, { module: 'pm_ws_client', asset_count: assetIds.length });
   }
 
   /**
@@ -144,15 +176,32 @@ export function createPmWsClient() {
 
   function scheduleReconnect() {
     if (retryTimer) return;
-    console.log(`[PmWsClient] Reconnecting in ${retryDelay / 1000}s...`);
+
+    if (reconnectAttempts >= RECONNECT_CONFIG.maxAttempts) {
+      logger.error(EVENTS.WS_RECONNECT_EXHAUSTED, {
+        module: 'pm_ws_client',
+        attempt: reconnectAttempts,
+        msg: 'max reconnect attempts reached'
+      });
+      return;
+    }
+
+    const delay = Math.min(
+      RECONNECT_CONFIG.baseDelayMs * Math.pow(RECONNECT_CONFIG.backoffFactor, reconnectAttempts),
+      RECONNECT_CONFIG.maxDelayMs
+    );
+    reconnectAttempts++;
+
+    logger.info(EVENTS.WS_RECONNECT_SCHEDULED, { module: 'pm_ws_client', attempt: reconnectAttempts, delay_ms: delay });
     retryTimer = setTimeout(() => {
       retryTimer = null;
+      logger.info(EVENTS.WS_RECONNECT_ATTEMPT, { module: 'pm_ws_client', attempt: reconnectAttempts });
       connect(subscribedAssets);
-    }, retryDelay);
-    retryDelay = Math.min(retryDelay * 2, MAX_RETRY_DELAY_MS);
+    }, delay);
   }
 
   function disconnect() {
+    activeSessionId = null;
     if (retryTimer) { clearTimeout(retryTimer); retryTimer = null; }
     if (ws) { ws.terminate(); ws = null; connected = false; }
   }
