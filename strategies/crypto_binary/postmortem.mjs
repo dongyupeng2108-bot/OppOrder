@@ -6,6 +6,7 @@ import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 
 import { getDb } from './db.mjs';
+import { logger, EVENTS } from './logger.mjs';
 
 const BINANCE_BASE = 'https://api.binance.com';
 
@@ -165,9 +166,14 @@ export async function recordPostmortem(params) {
 
     console.log(`[Postmortem] Recorded: ${strategy_id} ${event_id} outcome=${settled_outcome} pnl=${paper_pnl ?? 'N/A'}`);
   } catch (err) {
-    console.error(`[Postmortem] recordPostmortem FAILED: ${err.message}`);
-    console.error(`[Postmortem] params: strategy_id=${strategy_id} event_id=${event_id} window_start=${window_start} window_end=${window_end}`);
-    console.error(err.stack);
+    logger.error(EVENTS.ERROR_UNHANDLED_PATH, {
+      module: 'postmortem',
+      err: err.message,
+      strategy_id,
+      event_id,
+      window_start,
+      window_end
+    });
   }
 }
 
