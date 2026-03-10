@@ -3,2484 +3,460 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BTCQDD v1.5</title>
-<script>
-/* ═══════════════════════════════════════════════════
-   STEP 1: Design Tokens — Method A (inline)
-   Source: taskfiles/btcqdd_design_tokens.js
-   ═══════════════════════════════════════════════════ */
-const BG = {
-  base:     "#060612",
-  panel:    "#080814",
-  card:     "#0b0b1a",
-  surface:  "#0a0a18",
-  chart:    "#08081a",
-  elevated: "#0e0e22",
-};
-const BORDER = {
-  default:  "#12122a",
-  subtle:   "#10102a",
-  slider:   "#141428",
-};
-const COLOR = {
-  up:       "#26a69a",
-  down:     "#ef5350",
-  primary:  "#6366f1",
-  accent:   "#0ea5e9",
-  warn:     "#f59e0b",
-  sim:      "#3b82f6",
-};
-const TEXT = {
-  primary:   "#ccc",
-  secondary: "#aaa",
-  body:      "#888",
-  muted:     "#666",
-  dim:       "#555",
-  faint:     "#444",
-  ghost:     "#333",
-  invisible: "#2a2a40",
-  dead:      "#1a1a2e",
-  placeholder:"#12122a",
-};
-const FONT = {
-  mono:  "'JetBrains Mono', 'Fira Code', monospace",
-  body:  "'Noto Sans SC', 'SF Pro Text', -apple-system, sans-serif",
-};
-const SIZE = {
-  hero: 21, title: 18, heading: 17, lg: 16, md: 15,
-  base: 14, sm: 13, xs: 12, xxs: 11, micro: 10,
-};
-const WEIGHT = { black: 800, bold: 700, semi: 600, normal: 400 };
-const LAYOUT = {
-  topbar_h: 36, sidebar_w: 180, orderbook_w: 164,
-};
-const SPACE = {
-  page: 14, card: 12, panel: 10, gap_lg: 12, gap_md: 8, gap_sm: 6, gap_xs: 3,
-};
-const RADIUS = { lg: 8, md: 6, sm: 5, xs: 3, pill: 7, round: 50 };
-const CHART_STYLE = { bg: BG.chart, gridColor: "#0e0e20" };
-const TRANSITION = { toggle: "all 0.15s" };
-
-/* ═══════════════════════════════════════════════════
-   CSS Variable Injection into :root
-   ═══════════════════════════════════════════════════ */
-function initTokens() {
-  const r = document.documentElement;
-  /* backgrounds */
-  r.style.setProperty('--bg-base',     BG.base);
-  r.style.setProperty('--bg-panel',    BG.panel);
-  r.style.setProperty('--bg-card',     BG.card);
-  r.style.setProperty('--bg-surface',  BG.surface);
-  r.style.setProperty('--bg-chart',    BG.chart);
-  r.style.setProperty('--bg-elevated', BG.elevated);
-  /* borders */
-  r.style.setProperty('--border',        BORDER.default);
-  r.style.setProperty('--border-subtle', BORDER.subtle);
-  r.style.setProperty('--border-slider', BORDER.slider);
-  /* semantic colors */
-  r.style.setProperty('--color-up',      COLOR.up);
-  r.style.setProperty('--color-down',    COLOR.down);
-  r.style.setProperty('--color-primary', COLOR.primary);
-  r.style.setProperty('--color-accent',  COLOR.accent);
-  r.style.setProperty('--color-warn',    COLOR.warn);
-  r.style.setProperty('--color-sim',     COLOR.sim);
-  /* text */
-  r.style.setProperty('--text-primary',   TEXT.primary);
-  r.style.setProperty('--text-secondary', TEXT.secondary);
-  r.style.setProperty('--text-body',      TEXT.body);
-  r.style.setProperty('--text-muted',     TEXT.muted);
-  r.style.setProperty('--text-dim',       TEXT.dim);
-  r.style.setProperty('--text-faint',     TEXT.faint);
-  r.style.setProperty('--text-ghost',     TEXT.ghost);
-  r.style.setProperty('--text-invisible', TEXT.invisible);
-  r.style.setProperty('--text-dead',      TEXT.dead);
-  /* fonts */
-  r.style.setProperty('--font-mono', FONT.mono);
-  r.style.setProperty('--font-body', FONT.body);
-  /* sizes */
-  r.style.setProperty('--size-hero',    SIZE.hero    + 'px');
-  r.style.setProperty('--size-title',   SIZE.title   + 'px');
-  r.style.setProperty('--size-heading', SIZE.heading + 'px');
-  r.style.setProperty('--size-lg',      SIZE.lg      + 'px');
-  r.style.setProperty('--size-md',      SIZE.md      + 'px');
-  r.style.setProperty('--size-base',    SIZE.base    + 'px');
-  r.style.setProperty('--size-sm',      SIZE.sm      + 'px');
-  r.style.setProperty('--size-xs',      SIZE.xs      + 'px');
-  r.style.setProperty('--size-xxs',     SIZE.xxs     + 'px');
-  r.style.setProperty('--size-micro',   SIZE.micro   + 'px');
-  /* weights */
-  r.style.setProperty('--weight-black',  WEIGHT.black);
-  r.style.setProperty('--weight-bold',   WEIGHT.bold);
-  r.style.setProperty('--weight-semi',   WEIGHT.semi);
-  r.style.setProperty('--weight-normal', WEIGHT.normal);
-  /* layout */
-  r.style.setProperty('--topbar-h',    LAYOUT.topbar_h    + 'px');
-  r.style.setProperty('--sidebar-w',   LAYOUT.sidebar_w   + 'px');
-  r.style.setProperty('--orderbook-w', LAYOUT.orderbook_w + 'px');
-  /* spacing */
-  r.style.setProperty('--space-page',   SPACE.page   + 'px');
-  r.style.setProperty('--space-card',   SPACE.card   + 'px');
-  r.style.setProperty('--space-panel',  SPACE.panel  + 'px');
-  r.style.setProperty('--space-gap-lg', SPACE.gap_lg + 'px');
-  r.style.setProperty('--space-gap-md', SPACE.gap_md + 'px');
-  r.style.setProperty('--space-gap-sm', SPACE.gap_sm + 'px');
-  r.style.setProperty('--space-gap-xs', SPACE.gap_xs + 'px');
-  /* radii */
-  r.style.setProperty('--radius-lg',   RADIUS.lg   + 'px');
-  r.style.setProperty('--radius-md',   RADIUS.md   + 'px');
-  r.style.setProperty('--radius-sm',   RADIUS.sm   + 'px');
-  r.style.setProperty('--radius-xs',   RADIUS.xs   + 'px');
-  r.style.setProperty('--radius-pill', RADIUS.pill + 'px');
-  /* chart */
-  r.style.setProperty('--chart-bg',   CHART_STYLE.bg);
-  r.style.setProperty('--chart-grid', CHART_STYLE.gridColor);
-  /* transition */
-  r.style.setProperty('--transition-toggle', TRANSITION.toggle);
-}
-initTokens();
-</script>
+<title>BTCQDD v2</title>
 <style>
-/* ═══════════════════════════════════════════════════
-   Base Reset & Layout — all values from CSS vars
-   ═══════════════════════════════════════════════════ */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  background: var(--bg-base);
-  color: var(--text-secondary);
-  font-family: var(--font-body);
-  font-size: var(--size-base);
-  font-weight: var(--weight-normal);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-/* Scrollbar */
-::-webkit-scrollbar { width: 3px; height: 3px; }
-::-webkit-scrollbar-track { background: var(--bg-base); }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: var(--radius-xs); }
-
-/* ─── Top Bar ─────────────────────────────────────── */
-#topbar {
-  height: var(--topbar-h);
-  background: var(--bg-card);
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  padding: 0 var(--space-page);
-  gap: var(--space-gap-md);
-  flex-shrink: 0;
-  z-index: 10;
-}
-
-.topbar-brand {
-  font-size: var(--size-heading);
-  font-weight: var(--weight-black);
-  letter-spacing: 0.5px;
-  flex-shrink: 0;
-}
-.topbar-brand .btc { color: var(--color-primary); }
-.topbar-brand .qdd { color: var(--text-invisible); }
-
-.topbar-divider {
-  width: 1px;
-  height: 14px;
-  background: var(--border);
-}
-
-.topbar-status {
-  display: flex;
-  align-items: center;
-  gap: var(--space-gap-sm);
-  flex: 1;
-  justify-content: center;
-}
-
-#status-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: var(--radius-pill);
-  background: var(--text-ghost);
-  flex-shrink: 0;
-  transition: var(--transition-toggle);
-}
-
-#status-label {
-  font-size: var(--size-xs);
-  color: var(--text-ghost);
-}
-
-.topbar-url {
-  font-size: var(--size-xxs);
-  color: var(--text-invisible);
-  font-family: var(--font-mono);
-}
-
-.topbar-window {
-  display: flex;
-  align-items: center;
-  gap: var(--space-gap-sm);
-  flex-shrink: 0;
-}
-
-.topbar-window-label {
-  font-size: var(--size-xxs);
-  color: var(--text-invisible);
-}
-
-.topbar-window-val {
-  font-family: var(--font-mono);
-  font-size: var(--size-sm);
-  color: var(--text-ghost);
-  font-weight: var(--weight-semi);
-  background: var(--bg-elevated);
-  border-radius: var(--radius-xs);
-  padding: 2px 6px;
-}
-
-.topbar-version {
-  font-size: var(--size-xxs);
-  color: var(--text-invisible);
-  flex-shrink: 0;
-}
-
-/* ─── Main Layout ─────────────────────────────────── */
-#layout {
-  flex: 1;
-  display: flex;
-  overflow: hidden;
-}
-
-/* ─── Sidebar ─────────────────────────────────────── */
-#sidebar {
-  width: var(--sidebar-w);
-  background: var(--bg-panel);
-  border-right: 1px solid var(--border-subtle);
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-  overflow: hidden;
-}
-
-.sidebar-header {
-  padding: var(--space-panel);
-  border-bottom: 1px solid var(--border-subtle);
-  font-size: var(--size-xxs);
-  font-weight: var(--weight-semi);
-  color: var(--text-invisible);
-  letter-spacing: 1px;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: var(--space-gap-sm);
-  padding: 9px var(--space-panel);
-  cursor: pointer;
-  border-left: 3px solid transparent;
-  transition: var(--transition-toggle);
-}
-
-.nav-item:hover {
-  background: var(--bg-elevated);
-}
-
-.nav-item.active {
-  border-left-color: var(--color-primary);
-  background: var(--bg-elevated);
-}
-
-.nav-item.active .nav-label {
-  color: var(--text-primary);
-}
-
-.nav-icon {
-  font-size: var(--size-md);
-  width: 18px;
-  text-align: center;
-}
-
-.nav-label {
-  font-size: var(--size-base);
-  font-weight: var(--weight-semi);
-  color: var(--text-muted);
-}
-
-.sidebar-footer {
-  margin-top: auto;
-  padding: var(--space-panel);
-  border-top: 1px solid var(--border-subtle);
-}
-
-.conn-row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-gap-sm);
-  margin-bottom: 3px;
-}
-
-.conn-dot {
-  width: 4px;
-  height: 4px;
-  border-radius: 2px;
-  background: var(--color-up);
-  flex-shrink: 0;
-}
-
-.conn-name {
-  font-size: var(--size-xxs);
-  color: var(--text-ghost);
-}
-
-.conn-latency {
-  font-family: var(--font-mono);
-  font-size: var(--size-xxs);
-  color: var(--color-up);
-  margin-left: auto;
-}
-
-/* ─── Main Area ───────────────────────────────────── */
-#main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  min-width: 0;
-}
-
-.chart-header {
-  height: 28px;
-  background: var(--bg-surface);
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  padding: 0 var(--space-card);
-  gap: var(--space-gap-md);
-  flex-shrink: 0;
-}
-
-.chart-title {
-  font-size: var(--size-sm);
-  font-weight: var(--weight-semi);
-  color: var(--text-dim);
-}
-
-.chart-price {
-  font-family: var(--font-mono);
-  font-size: var(--size-md);
-  font-weight: var(--weight-bold);
-  color: var(--text-primary);
-}
-
-.chart-price-label {
-  font-size: var(--size-xxs);
-  color: var(--text-invisible);
-}
-
-.chart-spacer { flex: 1; }
-
-.chart-tf-row {
-  height: 24px;
-  background: var(--bg-surface);
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  padding: 0 var(--space-card);
-  gap: 2px;
-  flex-shrink: 0;
-}
-
-.tf-btn {
-  padding: 2px 8px;
-  border-radius: var(--radius-xs);
-  font-size: var(--size-xs);
-  font-weight: var(--weight-semi);
-  font-family: var(--font-mono);
-  color: var(--text-faint);
-  cursor: pointer;
-  background: transparent;
-  border: none;
-}
-
-.tf-btn.active {
-  background: var(--color-primary);
-  color: var(--text-primary);
-}
-
-/* SVG Chart Container */
-.chart-container {
-  flex: 1;
-  background: var(--bg-chart);
-  border-bottom: 1px solid var(--border);
-  min-height: 160px;
-  position: relative;
-  overflow: hidden;
-}
-
-#price-svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-/* Price polyline */
-.price-line {
-  fill: none;
-  stroke: var(--color-accent);
-  stroke-width: 1.5;
-  stroke-linejoin: round;
-  stroke-linecap: round;
-}
-.price-line-area {
-  fill: url(#price-area-grad);
-  stroke: none;
-}
-
-.chart-grid-line { stroke: var(--chart-grid); stroke-width: 0.5; }
-.chart-axis-line { stroke: var(--border);     stroke-width: 1; }
-.chart-label {
-  fill: var(--text-invisible);
-  font-family: var(--font-mono);
-  font-size: var(--size-micro);
-}
-
-/* Win-rate section */
-.winrate-section {
-  flex-shrink: 0;
-  background: var(--bg-panel);
-  border-top: 1px solid var(--border);
-}
-
-.winrate-header {
-  display: flex;
-  align-items: center;
-  padding: 3px var(--space-card);
-  border-bottom: 1px solid var(--border);
-  gap: var(--space-gap-md);
-}
-
-.winrate-chart-wrap {
-  position: relative;
-  overflow: hidden;
-}
-
-#winrate-svg {
-  display: block;
-  width: 100%;
-  height: 64px;
-}
-
-.winrate-placeholder {
-  fill: var(--text-dead);
-  font-family: var(--font-mono);
-  font-size: var(--size-xxs);
-}
-
-.winrate-line {
-  fill: none;
-  stroke: var(--color-sim);
-  stroke-width: 1.5;
-}
-
-/* Bottom log panel */
-.bottom-panel {
-  flex-shrink: 0;
-  background: var(--bg-panel);
-  border-top: 1px solid var(--border);
-}
-
-.bottom-panel-header {
-  display: flex;
-  align-items: center;
-  padding: 4px var(--space-card);
-  border-bottom: 1px solid var(--border);
-  gap: var(--space-gap-md);
-}
-
-.bottom-panel-title {
-  font-size: var(--size-xxs);
-  font-weight: var(--weight-semi);
-  color: var(--text-invisible);
-  letter-spacing: 1px;
-}
-
-.log-area {
-  max-height: 48px;
-  overflow-y: auto;
-  padding: 2px 0;
-}
-
-.log-row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-gap-md);
-  padding: 1px var(--space-card);
-}
-
-.log-ts {
-  font-family: var(--font-mono);
-  font-size: var(--size-xxs);
-  color: var(--text-dead);
-  flex-shrink: 0;
-  width: 52px;
-}
-
-.log-msg {
-  font-size: var(--size-xxs);
-  color: var(--text-faint);
-  flex: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* ─── Info Panel (Right) ──────────────────────────── */
-#info {
-  width: var(--orderbook-w);
-  background: var(--bg-panel);
-  border-left: 1px solid var(--border-subtle);
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-  overflow: auto;
-}
-
-.info-section {
-  padding: var(--space-panel);
-}
-
-.info-section + .info-section {
-  border-top: 1px solid var(--border-subtle);
-}
-
-.info-section-title {
-  font-size: var(--size-xxs);
-  font-weight: var(--weight-semi);
-  color: var(--text-invisible);
-  letter-spacing: 1px;
-  margin-bottom: var(--space-gap-sm);
-}
-
-/* Order book rows */
-.ob-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 2px 0;
-}
-
-.ob-label {
-  font-size: var(--size-xxs);
-  color: var(--text-ghost);
-}
-
-.ob-val {
-  font-family: var(--font-mono);
-  font-size: var(--size-xs);
-  color: var(--text-secondary);
-}
-
-.ob-val.ask { color: var(--color-down); }
-.ob-val.bid { color: var(--color-up); }
-.ob-val.warn { color: var(--color-warn); }
-
-.ob-divider {
-  border-top: 1px solid var(--border-subtle);
-  margin: 4px 0;
-}
-
-/* Regime gauge */
-.regime-bar-wrap {
-  width: 100%;
-  height: 6px;
-  background: var(--border-slider);
-  border-radius: var(--radius-xs);
-  margin-bottom: var(--space-gap-sm);
-  overflow: hidden;
-}
-
-.regime-bar-fill {
-  height: 100%;
-  width: 0%;
-  border-radius: var(--radius-xs);
-  background: var(--color-warn);
-  transition: var(--transition-toggle);
-}
-
-.regime-score-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--space-gap-sm);
-}
-
-.regime-score-val {
-  font-family: var(--font-mono);
-  font-size: var(--size-heading);
-  font-weight: var(--weight-bold);
-  color: var(--text-ghost);
-}
-
-.regime-tag-row {
-  display: flex;
-  gap: var(--space-gap-xs);
-  margin-bottom: var(--space-gap-sm);
-  flex-wrap: wrap;
-}
-
-.regime-tag {
-  font-family: var(--font-mono);
-  font-size: var(--size-micro);
-  padding: 1px 5px;
-  border-radius: var(--radius-xs);
-  border: 1px solid var(--border);
-  color: var(--text-ghost);
-  background: var(--bg-elevated);
-}
-
-.regime-tag.active {
-  border-color: var(--color-up);
-  color: var(--color-up);
-  background: var(--bg-elevated);
-}
-
-/* Book mid display */
-.book-mid-row {
-  text-align: center;
-  padding: 4px 0;
-  border-top: 1px solid var(--border-subtle);
-  border-bottom: 1px solid var(--border-subtle);
-  margin: 3px 0;
-}
-
-.book-mid-val {
-  font-family: var(--font-mono);
-  font-size: var(--size-lg);
-  font-weight: var(--weight-bold);
-  color: var(--text-primary);
-}
-
-/* ─── Order Table ─────────────────────────────── */
-.orders-section {
-  flex-shrink: 0;
-  background: var(--bg-panel);
-  border-top: 1px solid var(--border);
-}
-
-.orders-header {
-  display: flex;
-  align-items: center;
-  padding: 3px var(--space-card);
-  border-bottom: 1px solid var(--border);
-  gap: var(--space-gap-sm);
-}
-
-.tab-bar {
-  display: flex;
-  gap: 0;
-}
-
-.tab-btn {
-  padding: 2px 10px;
-  background: transparent;
-  border: none;
-  border-bottom: 2px solid transparent;
-  color: var(--text-ghost);
-  cursor: pointer;
-  font-size: var(--size-xxs);
-  font-family: var(--font-body);
-  font-weight: var(--weight-semi);
-  transition: var(--transition-toggle);
-}
-
-.tab-btn.active {
-  color: var(--text-primary);
-  border-bottom-color: var(--color-primary);
-}
-
-.order-table-wrap {
-  max-height: 80px;
-  overflow-y: auto;
-}
-
-.order-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: var(--size-micro);
-  font-family: var(--font-mono);
-}
-
-.order-table th {
-  color: var(--text-ghost);
-  font-weight: var(--weight-semi);
-  padding: 2px var(--space-card);
-  border-bottom: 1px solid var(--border);
-  text-align: left;
-  white-space: nowrap;
-  position: sticky;
-  top: 0;
-  background: var(--bg-elevated);
-}
-
-.order-table td {
-  padding: 2px var(--space-card);
-  border-bottom: 1px solid var(--border-subtle);
-  color: var(--text-faint);
-  white-space: nowrap;
-}
-
-.order-table .side-up   { color: var(--color-up); }
-.order-table .side-down { color: var(--color-down); }
-.order-table .no-data {
-  text-align: center;
-  color: var(--text-dead);
-  padding: var(--space-gap-md) 0;
-}
-
-/* ─── Strategy Table (right panel) ───────────── */
-.strategy-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: var(--size-micro);
-  font-family: var(--font-mono);
-}
-
-.strategy-table th {
-  color: var(--text-ghost);
-  font-weight: var(--weight-semi);
-  padding: 2px var(--space-gap-xs);
-  border-bottom: 1px solid var(--border);
-  text-align: left;
-  white-space: nowrap;
-}
-
-.strategy-table td {
-  padding: 2px var(--space-gap-xs);
-  border-bottom: 1px solid var(--border-subtle);
-  color: var(--text-faint);
-  white-space: nowrap;
-  overflow: hidden;
-  max-width: 60px;
-  text-overflow: ellipsis;
-}
-
-.strategy-table .active-yes { color: var(--color-up); }
-.strategy-table .active-no  { color: var(--text-ghost); }
-.strategy-table .no-data {
-  text-align: center;
-  color: var(--text-dead);
-  padding: var(--space-gap-md) 0;
-}
-
-/* ─── Action Log (right panel) ───────────────── */
-.action-log-wrap {
-  max-height: 100px;
-  overflow-y: auto;
-  padding: 2px 0;
-}
-
-.action-log-row {
-  display: flex;
-  gap: var(--space-gap-sm);
-  padding: 1px var(--space-panel);
-  border-bottom: 1px solid var(--border-subtle);
-}
-
-.action-log-time {
-  font-family: var(--font-mono);
-  font-size: var(--size-micro);
-  color: var(--text-dead);
-  flex-shrink: 0;
-  width: 48px;
-}
-
-.action-log-label {
-  font-size: var(--size-micro);
-  color: var(--text-faint);
-  flex: 1;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* ─── Strategy Lab Page ───────────────────────── */
-#page-lab {
-  flex: 1;
-  overflow: auto;
-  padding: var(--space-page);
-  display: none;
-  background: var(--bg-base);
-}
-
-#lab-selector {
-  display: flex;
-  align-items: center;
-  gap: var(--space-gap-md);
-  padding-bottom: var(--space-gap-md);
-  border-bottom: 1px solid var(--border);
-  margin-bottom: var(--space-gap-lg);
-  flex-wrap: wrap;
-}
-
-#lab-selector label {
-  font-size: var(--size-xs);
-  color: var(--text-ghost);
-}
-
-#instance-select {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  color: var(--text-secondary);
-  font-size: var(--size-xs);
-  font-family: var(--font-mono);
-  padding: 3px 6px;
-  border-radius: var(--radius-xs);
-  min-width: 160px;
-}
-
-#lab-reload-btn {
-  background: var(--color-primary);
-  border: none;
-  color: var(--text-primary);
-  font-size: var(--size-xs);
-  font-weight: var(--weight-semi);
-  padding: 3px 10px;
-  border-radius: var(--radius-xs);
-  cursor: pointer;
-}
-
-#reload-status {
-  font-size: var(--size-xs);
-  font-family: var(--font-mono);
-  color: var(--text-ghost);
-}
-
-#lab-params {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-gap-lg);
-}
-
-@media (max-width: 900px) {
-  #lab-params { grid-template-columns: 1fr; }
-}
-
-.param-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: var(--space-card);
-}
-
-.param-card-title {
-  font-size: var(--size-xxs);
-  font-weight: var(--weight-semi);
-  color: var(--text-invisible);
-  letter-spacing: 1px;
-  margin-bottom: var(--space-gap-md);
-  text-transform: uppercase;
-}
-
-.param-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 4px 0;
-  border-bottom: 1px solid var(--border-subtle);
-  gap: var(--space-gap-sm);
-}
-
-.param-row:last-child {
-  border-bottom: none;
-}
-
-.param-row label {
-  font-size: var(--size-xxs);
-  color: var(--text-body);
-  flex: 1;
-}
-
-.param-input {
-  width: 88px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  color: var(--text-primary);
-  font-size: var(--size-xxs);
-  font-family: var(--font-mono);
-  padding: 2px 5px;
-  border-radius: var(--radius-xs);
-  text-align: right;
-}
-
-.param-input:focus {
-  outline: none;
-  border-color: var(--color-primary);
-}
-
-.param-toggle {
-  accent-color: var(--color-primary);
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
-}
-
-.param-readonly {
-  font-family: var(--font-mono);
-  font-size: var(--size-micro);
-  color: var(--text-ghost);
-  text-align: right;
-  max-width: 88px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.lab-instance-stats {
-  margin-bottom: var(--space-gap-lg);
-  padding: var(--space-gap-sm) var(--space-card);
-  background: var(--bg-elevated);
-  border-radius: var(--radius-xs);
-  display: flex;
-  gap: var(--space-gap-lg);
-  flex-wrap: wrap;
-}
-
-.lab-stat {
-  display: flex;
-  gap: var(--space-gap-xs);
-  align-items: center;
-  font-size: var(--size-xxs);
-}
-
-.lab-stat-label { color: var(--text-ghost); }
-.lab-stat-val {
-  font-family: var(--font-mono);
-  color: var(--text-secondary);
-  font-weight: var(--weight-semi);
-}
-
-/* ─── Postmortem Analysis Page ────────────────── */
-#page-postmortem {
-  flex: 1;
-  overflow: auto;
-  padding: var(--space-page);
-  display: none;
-  background: var(--bg-base);
-}
-
-#pm-tabs {
-  border-bottom: 1px solid var(--border);
-  margin-bottom: var(--space-gap-lg);
-}
+*{box-sizing:border-box;margin:0;padding:0}
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-track{background:#060612}
+::-webkit-scrollbar-thumb{background:#12122a;border-radius:2px}
+body{--m:'JetBrains Mono','Fira Code',monospace;min-height:100vh;background:#060612;color:#bbb;font-family:'Noto Sans SC','SF Pro Text',-apple-system,sans-serif;font-size:12px;display:flex;flex-direction:column}
 </style>
 </head>
 <body>
+<div style="display:flex;flex-direction:column;min-height:100vh">
 
-<!-- ══════════════════════════════════════════════
-     TOP BAR
-     ══════════════════════════════════════════════ -->
-<div id="topbar">
-  <div class="topbar-brand">
-    <span class="btc">BTC</span><span class="qdd">QDD</span>
+<!-- Topbar -->
+<div style="height:36px;background:#0b0b1a;border-bottom:1px solid #12122a;display:flex;align-items:center;padding:0 14px;flex-shrink:0">
+  <span style="font-weight:800;font-size:14px;margin-right:14px">
+    <span style="color:#6366f1">BTC</span><span style="color:#2a2a40">QDD</span>
+  </span>
+  <div style="width:1px;height:14px;background:#12122a;margin-right:4px"></div>
+  <div id="tab-hall" onclick="switchTab('hall')" style="padding:0 12px;height:36px;display:flex;align-items:center;cursor:pointer;gap:4px;color:#ccc;font-size:11px;font-weight:600;border-bottom:2px solid #6366f1">
+    <span style="font-size:12px">📈</span>交易大厅
   </div>
-  <div class="topbar-divider"></div>
-  <div class="topbar-status">
-    <div id="status-dot"></div>
-    <span id="status-label">连接中…</span>
-    <span class="topbar-url">localhost:53123</span>
+  <div id="tab-lab" onclick="switchTab('lab')" style="padding:0 12px;height:36px;display:flex;align-items:center;cursor:pointer;gap:4px;color:#444;font-size:11px;font-weight:600;border-bottom:2px solid transparent">
+    <span style="font-size:12px">🧪</span>策略实验室
   </div>
-  <div class="topbar-window">
-    <span class="topbar-window-label">当前窗口</span>
-    <span class="topbar-window-val" id="window-val">等待数据…</span>
+  <div id="tab-set" onclick="switchTab('set')" style="padding:0 12px;height:36px;display:flex;align-items:center;cursor:pointer;gap:4px;color:#444;font-size:11px;font-weight:600;border-bottom:2px solid transparent">
+    <span style="font-size:12px">⚙️</span>通用设置
   </div>
-  <div class="topbar-divider"></div>
-  <span class="topbar-version">v1.5</span>
+  <div style="flex:1"></div>
+  <div style="display:flex;align-items:center;gap:4px;background:#0e0e22;border-radius:3px;padding:2px 8px">
+    <div style="width:5px;height:5px;border-radius:3px;background:#3b82f6"></div>
+    <span style="color:#3b82f6;font-size:9px;font-weight:600">模拟</span>
+  </div>
+  <span style="color:#10b981;font-family:var(--m);font-weight:700;font-size:12px;margin-left:8px">$1,000</span>
+  <span style="color:#444;font-size:10px;cursor:pointer;margin-left:12px">登录</span>
 </div>
 
-<!-- ══════════════════════════════════════════════
-     THREE-COLUMN LAYOUT
-     ══════════════════════════════════════════════ -->
-<div id="layout">
+<!-- Main -->
+<div style="flex:1;overflow:hidden">
 
-  <!-- ── LEFT SIDEBAR NAV ──────────────────────── -->
-  <div id="sidebar">
-    <div class="sidebar-header">导航</div>
-
-    <div class="nav-item active" data-tab="hall" onclick="switchTab('hall');switchPage('trading')">
-      <span class="nav-icon">📈</span>
-      <span class="nav-label">交易大厅</span>
-    </div>
-    <div class="nav-item" data-tab="lab" onclick="switchTab('lab');switchPage('lab')">
-      <span class="nav-icon">🧪</span>
-      <span class="nav-label">策略实验室</span>
-    </div>
-    <div class="nav-item" data-tab="postmortem" onclick="switchTab('postmortem');switchPage('postmortem')">
-      <span class="nav-icon">📋</span>
-      <span class="nav-label">复盘分析</span>
-    </div>
-    <div class="nav-item" data-tab="settings" onclick="switchTab('settings');switchPage('settings')">
-      <span class="nav-icon">⚙️</span>
-      <span class="nav-label">系统设置</span>
-    </div>
-
-    <div class="sidebar-footer">
-      <div class="conn-row">
-        <div class="conn-dot" id="ws-dot"></div>
-        <span class="conn-name">事件流 WS</span>
-        <span class="conn-latency" id="ws-status">--</span>
-      </div>
-      <div class="conn-row">
-        <div class="conn-dot"></div>
-        <span class="conn-name">REST API</span>
-        <span class="conn-latency" id="api-status">--</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- ── MAIN CENTER AREA ──────────────────────── -->
-  <div id="main">
-    <!-- Chart header bar -->
-    <div class="chart-header">
-      <span class="chart-title">BTC/USD · mid</span>
-      <span class="chart-price-label">最新</span>
-      <span class="chart-price" id="current-price">--</span>
-      <div class="chart-spacer"></div>
-    </div>
-
-    <!-- Price polyline SVG (replaces static K-line) -->
-    <div class="chart-container">
-      <svg id="price-svg" viewBox="0 0 800 240" preserveAspectRatio="none">
-        <defs>
-          <linearGradient id="price-area-grad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%"   stop-color="var(--color-accent)" stop-opacity="0.18"/>
-            <stop offset="100%" stop-color="var(--color-accent)" stop-opacity="0"/>
-          </linearGradient>
-        </defs>
-
-        <!-- Chart background -->
-        <rect x="0" y="0" width="800" height="240" fill="var(--bg-chart)"/>
-
-        <!-- Grid lines -->
-        <line class="chart-grid-line" x1="0" y1="48"  x2="800" y2="48"/>
-        <line class="chart-grid-line" x1="0" y1="96"  x2="800" y2="96"/>
-        <line class="chart-grid-line" x1="0" y1="144" x2="800" y2="144"/>
-        <line class="chart-grid-line" x1="0" y1="192" x2="800" y2="192"/>
-
-        <!-- Area fill under line -->
-        <polygon id="price-area" class="price-line-area" points=""/>
-
-        <!-- Price polyline -->
-        <polyline id="price-line" class="price-line" points=""/>
-
-        <!-- Current price label in chart -->
-        <text id="price-chart-label" class="chart-label" x="8" y="20" fill="var(--color-accent)">--</text>
-
-        <!-- Empty state placeholder (hidden when data arrives) -->
-        <text id="price-placeholder" fill="var(--text-placeholder)" font-family="var(--font-mono)"
-              font-size="9" x="400" y="125" text-anchor="middle">等待价格数据…（5s 刷新）</text>
-      </svg>
-    </div>
-
-    <!-- Time-frame selector -->
-    <div class="chart-tf-row">
-      <button class="tf-btn" onclick="setTf(this,'5M')">5M</button>
-      <button class="tf-btn active" onclick="setTf(this,'15M')">15M</button>
-      <button class="tf-btn" onclick="setTf(this,'1H')">1H</button>
-      <button class="tf-btn" onclick="setTf(this,'4H')">4H</button>
-      <button class="tf-btn" onclick="setTf(this,'1D')">1D</button>
-    </div>
-
-    <!-- Win-rate chart section -->
-    <div class="winrate-section">
-      <div class="winrate-header">
-        <span class="bottom-panel-title">胜率曲线</span>
-        <span id="winrate-status" style="font-size:var(--size-micro);color:var(--text-dead);margin-left:auto"></span>
-      </div>
-      <div class="winrate-chart-wrap">
-        <svg id="winrate-svg">
-          <!-- Grid -->
-          <line class="chart-grid-line" x1="0" y1="32" x2="9999" y2="32"/>
-          <!-- Win rate line -->
-          <polyline id="winrate-line" class="winrate-line" points=""/>
-          <!-- Placeholder text (shown when no data) -->
-          <text id="winrate-placeholder" class="winrate-placeholder"
-                x="50%" y="36" text-anchor="middle">
-            数据积累中，至少需要 3 个窗口
-          </text>
-        </svg>
-      </div>
-    </div>
-
-    <!-- Order table section -->
-    <div class="orders-section">
-      <div class="orders-header">
-        <div class="tab-bar">
-          <button class="tab-btn active" id="tab-active" onclick="switchOrderTab('active')">活跃挂单</button>
-          <button class="tab-btn"        id="tab-history" onclick="switchOrderTab('history')">历史成交</button>
+  <!-- 交易大厅 -->
+  <div id="page-hall" style="display:flex;height:100%">
+    <!-- Left panel -->
+    <div style="width:180px;background:#080814;border-right:1px solid #10102a;display:flex;flex-direction:column;flex-shrink:0;overflow:auto">
+      <!-- 手动交易 -->
+      <div style="padding:10px;border-bottom:1px solid #10102a">
+        <div style="color:#333;font-size:8px;font-weight:600;letter-spacing:1px;margin-bottom:6px">手动交易</div>
+        <div style="display:flex;margin-bottom:6px">
+          <div id="side-buy" onclick="setSide('buy')" style="flex:1;text-align:center;padding:4px 0;cursor:pointer;font-size:10px;font-weight:700;color:#26a69a;border-bottom:2px solid #26a69a">Buy</div>
+          <div id="side-sell" onclick="setSide('sell')" style="flex:1;text-align:center;padding:4px 0;cursor:pointer;font-size:10px;font-weight:700;color:#444;border-bottom:2px solid transparent">Sell</div>
         </div>
-        <span id="orders-count" style="margin-left:auto;font-size:var(--size-micro);color:var(--text-dead)">--</span>
+        <div style="display:flex;gap:4px;margin-bottom:6px">
+          <div style="flex:1;text-align:center;padding:3px 0;border-radius:3px;font-size:9px;font-weight:600;background:#26a69a15;color:#26a69a">Up 49¢</div>
+          <div style="flex:1;text-align:center;padding:3px 0;border-radius:3px;font-size:9px;font-weight:600;background:#ef535015;color:#ef5350">Down 51¢</div>
+        </div>
+        <div style="display:flex;align-items:center;background:#0a0a1a;border:1px solid #12122a;border-radius:3px;padding:0 6px;height:28px;margin-bottom:4px">
+          <span style="color:#555;font-size:9px">$</span>
+          <input id="amt-input" value="1" style="flex:1;background:transparent;border:none;outline:none;color:#ddd;font-family:var(--m);font-size:13px;font-weight:700;text-align:right;padding:0 4px">
+        </div>
+        <div style="display:flex;gap:4px;margin-bottom:6px">
+          <div style="flex:1;text-align:center;padding:1px 0;border-radius:2px;background:#12122a;color:#444;font-size:7px;cursor:pointer">$1</div>
+          <div style="flex:1;text-align:center;padding:1px 0;border-radius:2px;background:#12122a;color:#444;font-size:7px;cursor:pointer">$5</div>
+          <div style="flex:1;text-align:center;padding:1px 0;border-radius:2px;background:#12122a;color:#444;font-size:7px;cursor:pointer">+10</div>
+          <div style="flex:1;text-align:center;padding:1px 0;border-radius:2px;background:#12122a;color:#444;font-size:7px;cursor:pointer">Max</div>
+        </div>
+        <div id="buy-btn" style="text-align:center;padding:6px 0;border-radius:3px;font-size:10px;font-weight:700;background:#26a69a;color:#fff;cursor:pointer">Buy</div>
       </div>
-
-      <!-- Active orders panel -->
-      <div id="orders-active-panel" class="order-table-wrap">
-        <table class="order-table">
-          <thead>
-            <tr>
-              <th>ID</th><th>市场</th><th>方向</th><th>价格</th><th>数量</th><th>状态</th><th>时间</th>
-            </tr>
-          </thead>
-          <tbody id="orders-active-body">
-            <tr><td class="no-data" colspan="7">加载中…</td></tr>
-          </tbody>
-        </table>
+      <!-- 手动盈亏 -->
+      <div style="padding:10px;border-bottom:1px solid #10102a">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+          <span style="color:#333;font-size:8px;font-weight:600">手动盈亏</span>
+          <span style="color:#222;font-size:7px;cursor:pointer;background:#12122a;padding:1px 4px;border-radius:2px">重置</span>
+        </div>
+        <div style="text-align:center"><span style="color:#26a69a;font-size:18px;font-weight:800;font-family:var(--m)">+12.50</span></div>
+        <div style="display:flex;justify-content:space-around;font-size:8px;color:#333;margin-top:2px"><span>交易 8</span><span>胜率 63%</span></div>
       </div>
-
-      <!-- History orders panel (hidden by default) -->
-      <div id="orders-history-panel" class="order-table-wrap" style="display:none">
-        <table class="order-table">
-          <thead>
-            <tr>
-              <th>ID</th><th>市场</th><th>方向</th><th>价格</th><th>数量</th><th>状态</th><th>时间</th>
-            </tr>
-          </thead>
-          <tbody id="orders-history-body">
-            <tr><td class="no-data" colspan="7">加载中…</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Bottom log panel -->
-    <div class="bottom-panel">
-      <div class="bottom-panel-header">
-        <span class="bottom-panel-title">实时日志</span>
-      </div>
-      <div class="log-area" id="log-area">
-        <div class="log-row">
-          <span class="log-ts">--:--:--</span>
-          <span class="log-msg">等待服务连接…</span>
+      <!-- 市场状态 -->
+      <div style="padding:10px;border-bottom:1px solid #10102a">
+        <div style="color:#333;font-size:8px;font-weight:600;letter-spacing:1px;margin-bottom:4px">市场状态</div>
+        <div style="text-align:center">
+          <svg width="80" height="48" viewBox="0 0 120 70">
+            <path d="M 10 65 A 50 50 0 0 1 110 65" fill="none" stroke="#141428" stroke-width="8" stroke-linecap="round"/>
+            <path id="gauge-arc" d="M 10 65 A 50 50 0 0 1 110 65" fill="none" stroke="url(#gg)" stroke-width="8" stroke-linecap="round" stroke-dasharray="106.76 157"/>
+            <defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#ef4444"/><stop offset="50%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#10b981"/></linearGradient></defs>
+            <line id="gauge-needle" x1="60" y1="62" x2="82.55" y2="43.45" stroke="#10b981" stroke-width="2" stroke-linecap="round"/>
+            <circle id="gauge-dot" cx="60" cy="62" r="3" fill="#10b981"/>
+          </svg>
+          <div id="regime-score" style="color:#10b981;font-size:14px;font-weight:700;font-family:var(--m);margin-top:-2px">0.68</div>
         </div>
       </div>
-    </div>
-  </div>
-
-  <!-- ── RIGHT INFO PANEL ───────────────────────── -->
-  <div id="info">
-
-    <!-- Order book — real-time -->
-    <div class="info-section">
-      <div class="info-section-title">盘口</div>
-
-      <div class="ob-row">
-        <span class="ob-label">Ask</span>
-        <span class="ob-val ask" id="ob-ask">--</span>
-      </div>
-      <div class="ob-row">
-        <span class="ob-label">Bid</span>
-        <span class="ob-val bid" id="ob-bid">--</span>
-      </div>
-
-      <div class="book-mid-row">
-        <span class="book-mid-val" id="ob-mid">--</span>
-      </div>
-
-      <div class="ob-row">
-        <span class="ob-label">Spread</span>
-        <span class="ob-val warn" id="ob-spread">--</span>
-      </div>
-      <div class="ob-row">
-        <span class="ob-label">Tick</span>
-        <span class="ob-val" id="ob-tick">--</span>
-      </div>
-      <div class="ob-row">
-        <span class="ob-label">更新</span>
-        <span class="ob-val" id="ob-updated" style="color:var(--text-dead)">--</span>
-      </div>
-    </div>
-
-    <!-- Regime gauge — real-time -->
-    <div class="info-section">
-      <div class="info-section-title">市场状态</div>
-
-      <!-- Progress bar -->
-      <div class="regime-bar-wrap">
-        <div class="regime-bar-fill" id="regime-bar"></div>
-      </div>
-
-      <!-- Score value -->
-      <div class="regime-score-row">
-        <span class="ob-label">Score</span>
-        <span class="regime-score-val" id="regime-score-label">--</span>
-      </div>
-
-      <!-- Activation zone tags -->
-      <div class="regime-tag-row">
-        <span class="regime-tag" id="regime-s1-tag">S1 ≥0.5</span>
-        <span class="regime-tag" id="regime-s2-tag">S2 ≥0.6</span>
-      </div>
-
-      <div class="ob-divider"></div>
-
-      <!-- Sub-dimension scores -->
-      <div class="ob-row">
-        <span class="ob-label">Trend</span>
-        <span class="ob-val" id="regime-trend">--</span>
-      </div>
-      <div class="ob-row">
-        <span class="ob-label">Alt</span>
-        <span class="ob-val" id="regime-alt">--</span>
-      </div>
-      <div class="ob-row">
-        <span class="ob-label">Vol</span>
-        <span class="ob-val" id="regime-vol">--</span>
-      </div>
-
-      <div class="ob-divider"></div>
-
-      <!-- Last window info -->
-      <div class="ob-row">
-        <span class="ob-label">窗口</span>
-        <span class="ob-val" id="regime-window" style="color:var(--text-dead)">--</span>
-      </div>
-    </div>
-
-    <!-- Strategy status table -->
-    <div class="info-section">
-      <div class="info-section-title">策略状态</div>
-      <div style="overflow-x:auto">
-        <table class="strategy-table">
-          <thead>
-            <tr><th>策略</th><th>窗口</th><th>胜率</th><th>状态</th></tr>
-          </thead>
-          <tbody id="strategy-table-body">
-            <tr><td class="no-data" colspan="4">加载中…</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Action log -->
-    <div class="info-section">
-      <div class="info-section-title">动作日志</div>
-      <div class="action-log-wrap" id="action-log">
-        <div class="action-log-row">
-          <span class="action-log-time">--:--:--</span>
-          <span class="action-log-label">等待事件…</span>
+      <!-- Connection -->
+      <div style="padding:6px 10px;margin-top:auto;border-top:1px solid #10102a">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:1px">
+          <div style="width:4px;height:4px;border-radius:2px;background:#26a69a"></div>
+          <span style="color:#333;font-size:7px">Binance WS</span>
+          <span style="color:#26a69a;font-size:7px;font-family:var(--m);margin-left:auto">38ms</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:1px">
+          <div style="width:4px;height:4px;border-radius:2px;background:#26a69a"></div>
+          <span style="color:#333;font-size:7px">PM WS</span>
+          <span style="color:#26a69a;font-size:7px;font-family:var(--m);margin-left:auto">105ms</span>
         </div>
       </div>
     </div>
 
-  </div>
-
-  <!-- ── STRATEGY LAB PAGE ─────────────────────── -->
-  <div id="page-lab">
-    <!-- Sub-tab bar -->
-    <div class="tab-bar" id="lab-tabs" style="border-bottom:1px solid var(--border);margin-bottom:var(--space-gap-lg)">
-      <button class="tab-btn active" onclick="switchLabTab('params')">调参面板</button>
-      <button class="tab-btn" onclick="switchLabTab('compare')">策略对比</button>
-    </div>
-
-    <!-- Params view (existing content) -->
-    <div id="lab-params-view">
-      <!-- Instance selector bar -->
-      <div id="lab-selector">
-        <label>实例：</label>
-        <select id="instance-select" onchange="onInstanceChange(this.value)">
-          <option>加载中…</option>
-        </select>
-        <button id="lab-reload-btn" onclick="reloadConfig()">热更新配置</button>
-        <span id="reload-status"></span>
-      </div>
-
-      <!-- Live instance stats bar -->
-      <div class="lab-instance-stats" id="lab-instance-stats"></div>
-
-      <!-- Param cards -->
-      <div id="lab-params">
-        <!-- Strategy params -->
-        <div class="param-card">
-          <div class="param-card-title">策略参数</div>
-          <div id="param-strategy-fields">
-            <div class="param-row"><label style="color:var(--text-dead)">加载实例后显示…</label></div>
+    <!-- Center -->
+    <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0">
+      <!-- Coin selector -->
+      <div style="height:26px;background:#0a0a18;border-bottom:1px solid #12122a;display:flex;align-items:center;padding:0 10px;gap:6px;flex-shrink:0">
+        <span style="color:#444;font-size:10px">交易大厅</span>
+        <div style="flex:1"></div>
+        <div style="position:relative">
+          <div onclick="toggleCoinMenu()" style="display:flex;align-items:center;gap:3px;cursor:pointer;padding:1px 7px;border-radius:3px;background:#12122a">
+            <span id="coin-label" style="font-weight:700;font-size:11px;color:#ddd">BTC</span>
+            <span style="color:#333;font-size:7px">▼</span>
           </div>
-        </div>
-
-        <!-- Cancel engine params -->
-        <div class="param-card">
-          <div class="param-card-title">撤单引擎</div>
-          <div id="param-cancel-fields">
-            <div class="param-row"><label style="color:var(--text-dead)">加载实例后显示…</label></div>
-          </div>
-        </div>
-
-        <!-- Regime detector params -->
-        <div class="param-card">
-          <div class="param-card-title">市场状态检测</div>
-          <div id="param-regime-fields">
-            <div class="param-row"><label style="color:var(--text-dead)">加载实例后显示…</label></div>
+          <div id="coin-menu" style="display:none;position:absolute;top:22px;right:0;background:#0a0a18;border:1px solid #12122a;border-radius:5px;padding:3px;z-index:100;min-width:80px">
+            <div onclick="selectCoin('BTC')" style="padding:3px 7px;border-radius:3px;cursor:pointer;font-size:10px;background:#12122a;color:#ddd">BTC</div>
+            <div onclick="selectCoin('ETH')" style="padding:3px 7px;border-radius:3px;cursor:pointer;font-size:10px;background:transparent;color:#666">ETH</div>
+            <div onclick="selectCoin('SOL')" style="padding:3px 7px;border-radius:3px;cursor:pointer;font-size:10px;background:transparent;color:#666">SOL</div>
+            <div onclick="selectCoin('XRP')" style="padding:3px 7px;border-radius:3px;cursor:pointer;font-size:10px;background:transparent;color:#666">XRP</div>
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Compare view -->
-    <div id="lab-compare-view" style="display:none">
-      <!-- Multi-instance selector -->
-      <div id="compare-selector" style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);margin-bottom:16px">
-        <label style="color:var(--text-muted);font-size:0.85em">选择实例：</label>
-        <div id="compare-checkboxes" style="display:flex;gap:12px;flex-wrap:wrap"></div>
-        <button onclick="loadCompare()" style="margin-left:auto;background:var(--color-primary);border:none;color:var(--text-primary);font-size:var(--size-xs);font-weight:var(--weight-semi);padding:3px 10px;border-radius:var(--radius-xs);cursor:pointer">对比</button>
+      <!-- K-line -->
+      <div style="flex:1;min-height:80px;border-bottom:1px solid #12122a;display:flex;align-items:center;justify-content:center;position:relative;color:#1a1a2e;font-size:11px">
+        <span id="kline-coin" style="position:absolute;top:6px;left:10px;color:#555;font-size:10px;font-weight:600">BTC</span>
+        <span id="kline-tf" style="position:absolute;top:6px;right:10px;color:#333;font-size:9px;font-family:var(--m)">15M</span>
+        BTC K 线图（含成交量柱）
       </div>
+      <!-- TF selector -->
+      <div style="height:24px;background:#0a0a18;border-bottom:1px solid #12122a;display:flex;align-items:center;padding:0 10px;gap:2px;flex-shrink:0">
+        <div id="tf-5M"  onclick="setTf('5M')"  style="padding:2px 8px;border-radius:2px;font-size:9px;font-weight:600;font-family:var(--m);background:transparent;color:#444;cursor:pointer">5M</div>
+        <div id="tf-15M" onclick="setTf('15M')" style="padding:2px 8px;border-radius:2px;font-size:9px;font-weight:600;font-family:var(--m);background:#6366f1;color:#fff;cursor:pointer">15M</div>
+        <div id="tf-1H"  onclick="setTf('1H')"  style="padding:2px 8px;border-radius:2px;font-size:9px;font-weight:600;font-family:var(--m);background:transparent;color:#444;cursor:pointer">1H</div>
+        <div id="tf-4H"  onclick="setTf('4H')"  style="padding:2px 8px;border-radius:2px;font-size:9px;font-weight:600;font-family:var(--m);background:transparent;color:#444;cursor:pointer">4H</div>
+        <div id="tf-1D"  onclick="setTf('1D')"  style="padding:2px 8px;border-radius:2px;font-size:9px;font-weight:600;font-family:var(--m);background:transparent;color:#444;cursor:pointer">1D</div>
+        <div style="flex:1"></div>
+        <span style="color:#2a2a40;font-size:8px">Bitcoin Up or Down – Mar 9, 6:50–6:55 AM ET</span>
+      </div>
+      <!-- PM curve -->
+      <div style="flex:1;min-height:80px;border-bottom:1px solid #12122a;display:flex;align-items:center;justify-content:center;position:relative;color:#1a1a2e;font-size:11px">
+        <span id="pm-coin" style="position:absolute;top:6px;left:10px;color:#555;font-size:10px;font-weight:600">BTC</span>
+        <span id="pm-tf" style="position:absolute;top:6px;right:70px;color:#333;font-size:9px;font-family:var(--m)">15M</span>
+        <div style="position:absolute;top:4px;right:8px;background:#0a0a1a;border-radius:3px;padding:2px 8px;border:1px solid #12122a">
+          <span id="countdown" style="font-family:var(--m);font-size:12px;font-weight:700;color:#888">4:07</span>
+        </div>
+        PM 概率折线图（含成交标记 + 配对连线）
+      </div>
+      <!-- Strategy table + Log -->
+      <div style="flex-shrink:0;background:#080814;border-top:1px solid #12122a">
+        <table style="width:100%;border-collapse:collapse;font-size:10px">
+          <thead><tr style="border-bottom:1px solid #12122a">
+            <th style="padding:4px 6px;text-align:left;color:#2a2a40;font-size:8px;font-weight:600"></th>
+            <th style="padding:4px 6px;text-align:left;color:#2a2a40;font-size:8px;font-weight:600">策略</th>
+            <th style="padding:4px 6px;text-align:left;color:#2a2a40;font-size:8px;font-weight:600">颜色</th>
+            <th style="padding:4px 6px;text-align:left;color:#2a2a40;font-size:8px;font-weight:600">类型</th>
+            <th style="padding:4px 6px;text-align:left;color:#2a2a40;font-size:8px;font-weight:600">运行</th>
+            <th style="padding:4px 6px;text-align:left;color:#2a2a40;font-size:8px;font-weight:600">交易</th>
+            <th style="padding:4px 6px;text-align:left;color:#2a2a40;font-size:8px;font-weight:600">胜率</th>
+            <th style="padding:4px 6px;text-align:left;color:#2a2a40;font-size:8px;font-weight:600">获利</th>
+            <th style="padding:4px 6px;text-align:left;color:#2a2a40;font-size:8px;font-weight:600"></th>
+          </tr></thead>
+          <tbody id="strat-tbody"></tbody>
+        </table>
+        <div style="padding:2px 6px;border-bottom:1px solid #12122a"><span style="font-size:9px;color:#333;cursor:pointer">+ 添加策略</span></div>
+        <div id="log-area" style="max-height:60px;overflow:auto;padding:2px 0"></div>
+      </div>
+    </div>
 
-      <!-- Comparison summary table -->
-      <div id="compare-summary" style="margin-bottom:24px"></div>
-
-      <!-- Cumulative PnL line chart -->
-      <div id="compare-timeseries"></div>
+    <!-- Right panel -->
+    <div style="width:164px;background:#080814;border-left:1px solid #10102a;display:flex;flex-direction:column;flex-shrink:0;overflow:auto">
+      <div style="padding:5px 8px;color:#2a2a40;font-size:8px;font-weight:600;letter-spacing:1px;border-bottom:1px solid #10102a">订单簿</div>
+      <div id="asks-area" style="padding:3px 6px"></div>
+      <div id="mid-price" style="text-align:center;padding:4px 0;border-top:1px solid #10102a;border-bottom:1px solid #10102a">
+        <span style="color:#ddd;font-size:13px;font-weight:700;font-family:var(--m)">0.527</span>
+        <span style="color:#222;font-size:7px;margin-left:4px">spread 0.008</span>
+      </div>
+      <div id="bids-area" style="padding:3px 6px"></div>
+      <div id="orders-area" style="padding:4px 6px;border-top:1px solid #10102a">
+        <div style="color:#2a2a40;font-size:7px;font-weight:600;margin-bottom:2px">我的挂单</div>
+      </div>
+      <div id="strat-legend" style="padding:4px 6px;margin-top:auto;border-top:1px solid #10102a"></div>
     </div>
   </div>
 
-  <!-- ── POSTMORTEM ANALYSIS PAGE ───────────────── -->
-  <div id="page-postmortem">
-    <div class="tab-bar" id="pm-tabs">
-      <button class="tab-btn active" onclick="switchPmTab('attribution')">利润归因</button>
-      <button class="tab-btn" onclick="switchPmTab('lossmodes')">失败模式</button>
-      <button class="tab-btn" onclick="switchPmTab('distribution')">收益分布</button>
-      <button class="tab-btn" onclick="switchPmTab('sensitivity')">参数敏感度</button>
-    </div>
-
-    <div id="pm-attribution"></div>
-    <div id="pm-lossmodes"    style="display:none"></div>
-    <div id="pm-distribution" style="display:none"></div>
-    <div id="pm-sensitivity"  style="display:none"></div>
+  <!-- 策略实验室 -->
+  <div id="page-lab" style="display:none;height:100%;align-items:center;justify-content:center;color:#333;font-size:13px">
+    策略实验室（下个胶囊实现）
   </div>
 
-  <!-- ── SETTINGS PAGE ──────────────────────────── -->
-  <div id="page-settings" style="display:none;flex:1;overflow:auto;padding:var(--space-page);background:var(--bg-base)">
-    <div style="max-width:480px;margin-top:16px">
-
-      <!-- 服务地址 -->
-      <section class="param-card" style="margin-bottom:16px">
-        <h3 style="margin:0 0 12px;font-size:var(--size-heading);color:var(--text-secondary);font-weight:var(--weight-semi)">服务连接</h3>
-        <div class="param-row">
-          <label>服务地址</label>
-          <input type="text" id="setting-base-url" placeholder="http://localhost:53123"
-            style="flex:1;background:var(--bg-elevated);color:var(--text-secondary);border:1px solid var(--border);padding:4px 8px;border-radius:var(--radius-xs);font-size:var(--size-xs);font-family:var(--font-mono)">
-        </div>
-        <div style="margin-top:8px;text-align:right">
-          <button onclick="saveSettings()" style="background:var(--color-primary);border:none;color:var(--text-primary);font-size:var(--size-xs);font-weight:var(--weight-semi);padding:3px 10px;border-radius:var(--radius-xs);cursor:pointer">保存</button>
-          <span id="settings-status" style="margin-left:8px;font-size:0.85em"></span>
-        </div>
-      </section>
-
-      <!-- 主题（预留） -->
-      <section class="param-card">
-        <h3 style="margin:0 0 12px;font-size:var(--size-heading);color:var(--text-secondary);font-weight:var(--weight-semi)">主题</h3>
-        <div class="param-row">
-          <label>当前主题</label>
-          <span style="color:var(--text-muted);font-size:0.85em">深色（唯一可用主题）</span>
-        </div>
-      </section>
-
-    </div>
+  <!-- 通用设置 -->
+  <div id="page-set" style="display:none;height:100%;align-items:center;justify-content:center;color:#333;font-size:13px">
+    通用设置（下个胶囊实现）
   </div>
 
-</div><!-- #layout -->
+</div><!-- /main -->
+</div><!-- /app -->
 
-<!-- ══════════════════════════════════════════════
-     SCRIPTS: Real-time data + Navigation + TF
-     ══════════════════════════════════════════════ -->
 <script>
-let BASE_URL = localStorage.getItem('btcqdd_base_url') || 'http://localhost:53123';
-
-/* ─── Log ────────────────────────────────────── */
-function addLog(msg) {
-  const area = document.getElementById('log-area');
-  if (!area) return;
-  const row = document.createElement('div');
-  row.className = 'log-row';
-  const now = new Date();
-  const ts = now.toTimeString().slice(0, 8);
-  row.innerHTML = `<span class="log-ts">${ts}</span><span class="log-msg">${msg}</span>`;
-  area.insertBefore(row, area.firstChild);
-  while (area.children.length > 20) area.removeChild(area.lastChild);
-}
-
-/* ─── Service Health Polling ─────────────────── */
-function setServiceStatus(status) {
-  const dot   = document.getElementById('status-dot');
-  const label = document.getElementById('status-label');
-  const apiEl = document.getElementById('api-status');
-  const colors = {
-    online:  COLOR.up,
-    offline: COLOR.down,
-    error:   COLOR.warn,
-  };
-  dot.style.background  = colors[status] ?? TEXT.ghost;
-  label.textContent = {
-    online:  '服务正常',
-    offline: '服务离线',
-    error:   '服务异常',
-  }[status] ?? status;
-  label.style.color = colors[status] ?? TEXT.ghost;
-  if (apiEl) {
-    apiEl.textContent = status === 'online' ? 'ok' : status;
-    apiEl.style.color = colors[status] ?? TEXT.ghost;
-  }
-}
-
-async function checkHealth() {
-  try {
-    const t0 = Date.now();
-    const res = await fetch(BASE_URL + '/', { signal: AbortSignal.timeout(3000) });
-    const ms = Date.now() - t0;
-    const apiEl = document.getElementById('api-status');
-    if (apiEl) apiEl.textContent = ms + 'ms';
-    setServiceStatus(res.ok ? 'online' : 'error');
-  } catch {
-    setServiceStatus('offline');
-  }
-}
-
-checkHealth();
-setInterval(checkHealth, 5000);
-
-/* ─── Price Chart ─────────────────────────────── */
-const priceHistory = [];
-const MAX_POINTS = 60;
-
-function updatePriceChart(snapshot) {
-  const price = snapshot.mid ?? snapshot.best_bid ?? null;
-  if (price == null) return;
-  priceHistory.push(price);
-  if (priceHistory.length > MAX_POINTS) priceHistory.shift();
-  renderPriceChart();
-  // Update header price label
-  const el = document.getElementById('current-price');
-  if (el) {
-    el.textContent = price.toFixed(2);
-    el.style.color = priceHistory.length < 2
-      ? TEXT.primary
-      : (price >= priceHistory[priceHistory.length - 2] ? COLOR.up : COLOR.down);
-  }
-}
-
-function renderPriceChart() {
-  if (priceHistory.length < 2) return;
-
-  const svg = document.getElementById('price-svg');
-  const vw = 800, vh = 240; // viewBox dims
-
-  const minP = Math.min(...priceHistory) * 0.999;
-  const maxP = Math.max(...priceHistory) * 1.001;
-  const range = maxP - minP || 1;
-
-  const pts = priceHistory.map((p, i) => {
-    const x = (i / (MAX_POINTS - 1)) * vw;
-    const y = vh - ((p - minP) / range) * (vh - 10) - 5;
-    return [x.toFixed(1), y.toFixed(1)];
-  });
-
-  const pointsStr = pts.map(([x, y]) => `${x},${y}`).join(' ');
-
-  const line = document.getElementById('price-line');
-  if (line) line.setAttribute('points', pointsStr);
-
-  // Area polygon: close down to bottom
-  const areaEl = document.getElementById('price-area');
-  if (areaEl) {
-    const first = pts[0];
-    const last  = pts[pts.length - 1];
-    const area  = pointsStr + ` ${last[0]},${vh} ${first[0]},${vh}`;
-    areaEl.setAttribute('points', area);
-  }
-
-  // Label
-  const labelEl = document.getElementById('price-chart-label');
-  if (labelEl) labelEl.textContent = priceHistory.at(-1).toFixed(2);
-
-  // Hide placeholder once data arrives
-  const ph = document.getElementById('price-placeholder');
-  if (ph) ph.setAttribute('display', 'none');
-}
-
-/* ─── Order Book Update ──────────────────────── */
-function updateOrderBook(snapshot) {
-  const set = (id, val, fixed) => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = val != null ? (fixed != null ? val.toFixed(fixed) : val) : '--';
-  };
-  set('ob-ask',  snapshot.best_ask, 2);
-  set('ob-bid',  snapshot.best_bid, 2);
-  set('ob-mid',  snapshot.mid,      2);
-  set('ob-spread', snapshot.spread, 4);
-  set('ob-tick', snapshot.tick_size, null);
-
-  const updEl = document.getElementById('ob-updated');
-  if (updEl) updEl.textContent = new Date().toTimeString().slice(0, 8);
-}
-
-/* ─── Unified Book Snapshot Poll ─────────────── */
-async function pollBookSnapshot() {
-  try {
-    const snap = await fetch(BASE_URL + '/book/snapshot', { signal: AbortSignal.timeout(4000) })
-      .then(r => r.json());
-    updatePriceChart(snap);
-    updateOrderBook(snap);
-  } catch {
-    /* silent: service status indicator already reflects state */
-  }
-}
-
-pollBookSnapshot();
-setInterval(pollBookSnapshot, 5000);
-
-/* ─── Regime Gauge Update ─────────────────────── */
-function updateRegimeGauge(payload) {
-  const score = payload.regime_score ?? payload.score ?? 0;
-
-  const bar = document.getElementById('regime-bar');
-  if (bar) {
-    const pct = (score * 100).toFixed(1) + '%';
-    bar.style.width = pct;
-    bar.style.background = score >= 0.6 ? COLOR.up : score >= 0.4 ? COLOR.warn : COLOR.down;
-  }
-
-  const label = document.getElementById('regime-score-label');
-  if (label) {
-    label.textContent = score.toFixed(3);
-    label.style.color = score >= 0.6 ? COLOR.up : score >= 0.4 ? COLOR.warn : COLOR.down;
-  }
-
-  const s1Active = score >= 0.5;
-  const s2Active = score >= 0.6;
-  document.getElementById('regime-s1-tag')?.classList.toggle('active', s1Active);
-  document.getElementById('regime-s2-tag')?.classList.toggle('active', s2Active);
-
-  // Sub-dimensions (if provided in payload)
-  if (payload.sigma_trend  != null) {
-    const el = document.getElementById('regime-trend');
-    if (el) el.textContent = payload.sigma_trend.toFixed(3);
-  }
-  if (payload.alternation  != null) {
-    const el = document.getElementById('regime-alt');
-    if (el) el.textContent = payload.alternation.toFixed(3);
-  }
-  if (payload.volume_ratio != null) {
-    const el = document.getElementById('regime-vol');
-    if (el) el.textContent = payload.volume_ratio.toFixed(3);
-  }
-}
-
-function updateWindowInfo(payload) {
-  const el = document.getElementById('window-val');
-  if (el && payload.window_id) el.textContent = payload.window_id;
-  const regimeWin = document.getElementById('regime-window');
-  if (regimeWin && payload.window_id) regimeWin.textContent = payload.window_id;
-}
-
-/* ─── WebSocket /events/stream ───────────────── */
-let _ws = null;
-let _wsRetry = 0;
-
-function connectWS() {
-  if (_ws && (_ws.readyState === WebSocket.OPEN || _ws.readyState === WebSocket.CONNECTING)) return;
-
-  const wsDot  = document.getElementById('ws-dot');
-  const wsStat = document.getElementById('ws-status');
-
-  try {
-    _ws = new WebSocket(BASE_URL.replace(/^http/, 'ws') + '/events/stream');
-  } catch {
-    if (wsStat) wsStat.textContent = 'err';
-    return;
-  }
-
-  _ws.onopen = () => {
-    _wsRetry = 0;
-    if (wsDot)  wsDot.style.background  = COLOR.up;
-    if (wsStat) { wsStat.textContent = 'ok'; wsStat.style.color = COLOR.up; }
-    addLog('WS /events/stream 已连接');
-  };
-
-  _ws.onmessage = (ev) => {
-    try {
-      const event = JSON.parse(ev.data);
-      if (event.type === 'connected') {
-        addLog('WS 握手完成');
-        return;
-      }
-      if (event.type === 'regime.changed') {
-        updateRegimeGauge(event.payload);
-        addLog('regime.changed → score=' + (event.payload.regime_score ?? '?').toFixed?.(3));
-      }
-      if (event.type === 'window.switch') {
-        updateWindowInfo(event.payload);
-        addLog('window.switch → ' + (event.payload.window_id ?? '?'));
-      }
-      // Append all events to action log
-      appendActionLog(event);
-    } catch { /* ignore malformed frames */ }
-  };
-
-  _ws.onclose = () => {
-    if (wsDot)  wsDot.style.background  = COLOR.down;
-    if (wsStat) { wsStat.textContent = 'dc'; wsStat.style.color = COLOR.down; }
-    // Exponential back-off: 2s, 4s, 8s, max 30s
-    const delay = Math.min(2000 * Math.pow(2, _wsRetry++), 30000);
-    setTimeout(connectWS, delay);
-  };
-
-  _ws.onerror = () => {
-    if (wsDot)  wsDot.style.background  = COLOR.warn;
-    if (wsStat) { wsStat.textContent = 'err'; wsStat.style.color = COLOR.warn; }
-  };
-}
-
-connectWS();
-// Attempt reconnect every 30s if still disconnected
-setInterval(connectWS, 30000);
-
-/* ─── Win-rate Chart ─────────────────────────── */
-async function loadWinRateChart() {
-  try {
-    const raw = await fetch(BASE_URL + '/stats', { signal: AbortSignal.timeout(4000) }).then(r => r.json());
-    const data = Array.isArray(raw) ? raw : (raw.data ?? []);
-    renderWinRateChart(data);
-  } catch {
-    // /stats may not exist — show empty state (no crash)
-    renderWinRateChart([]);
-  }
-}
-
-function renderWinRateChart(data) {
-  const ph   = document.getElementById('winrate-placeholder');
-  const line = document.getElementById('winrate-line');
-  const statusEl = document.getElementById('winrate-status');
-
-  if (!data || data.length < 3) {
-    if (ph)   ph.setAttribute('display', '');
-    if (line) line.setAttribute('points', '');
-    if (statusEl) statusEl.textContent = data.length + ' 条';
-    return;
-  }
-
-  if (ph) ph.setAttribute('display', 'none');
-
-  const svg = document.getElementById('winrate-svg');
-  const vw  = svg.clientWidth  || 600;
-  const vh  = 64;
-
-  // Compute win_rate if not present
-  const rows = data.map(r => {
-    const wins  = r.wins  ?? 0;
-    const total = r.total_windows ?? r.total ?? 1;
-    return { ...r, win_rate: r.win_rate ?? (total > 0 ? wins / total : 0) };
-  });
-
-  const pts = rows.map((r, i) => {
-    const x = (i / (rows.length - 1)) * vw;
-    const y = vh - (r.win_rate * (vh - 8)) - 4;
-    return `${x.toFixed(1)},${y.toFixed(1)}`;
-  }).join(' ');
-
-  if (line) line.setAttribute('points', pts);
-  if (statusEl) statusEl.textContent = rows.length + ' 条';
-}
-
-loadWinRateChart();
-setInterval(loadWinRateChart, 30000);
-
-/* ─── Navigation Tab + Page Switching ───────── */
-function switchTab(tabId) {
-  document.querySelectorAll('.nav-item').forEach(el => {
-    el.classList.toggle('active', el.dataset.tab === tabId);
-  });
-}
-
-function switchPage(page) {
-  const main       = document.getElementById('main');
-  const info       = document.getElementById('info');
-  const pageLab    = document.getElementById('page-lab');
-  const pagePm     = document.getElementById('page-postmortem');
-  const pageSet    = document.getElementById('page-settings');
-  if (!main || !info || !pageLab) return;
-
-  // Hide all overlay pages first
-  if (pageLab) pageLab.style.display    = 'none';
-  if (pagePm)  pagePm.style.display     = 'none';
-  if (pageSet) pageSet.style.display    = 'none';
-  main.style.display = 'none';
-  info.style.display = 'none';
-
-  if (page === 'lab') {
-    pageLab.style.display = '';
-    loadInstances();
-  } else if (page === 'postmortem') {
-    if (pagePm) pagePm.style.display = '';
-    loadAttribution();
-  } else if (page === 'settings') {
-    if (pageSet) {
-      pageSet.style.display = '';
-      const urlInput = document.getElementById('setting-base-url');
-      if (urlInput) urlInput.value = BASE_URL;
-    }
-  } else {
-    main.style.display = '';
-    info.style.display = '';
-  }
-}
-
-/* ─── Time-frame Button ──────────────────────── */
-function setTf(btn, tf) {
-  document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-}
-
-/* ═══════════════════════════════════════════════
-   STRATEGY LAB — Instance loader + Param editor
-   ═══════════════════════════════════════════════ */
-
-let _currentInstance = null;
-let _instanceConfig  = {};
-let _allInstances    = [];
-
-/* Load instance list from /ui/instances */
-async function loadInstances() {
-  try {
-    const raw = await fetch(BASE_URL + '/ui/instances', { signal: AbortSignal.timeout(4000) }).then(r => r.json());
-    _allInstances = Array.isArray(raw.data) ? raw.data : (Array.isArray(raw) ? raw : []);
-
-    const sel = document.getElementById('instance-select');
-    if (!sel) return;
-
-    if (_allInstances.length === 0) {
-      sel.innerHTML = '<option value="">无可用实例</option>';
-      return;
-    }
-
-    sel.innerHTML = _allInstances.map(inst => {
-      const id = inst.strategy_id ?? inst.id ?? '?';
-      return `<option value="${id}">${id}</option>`;
-    }).join('');
-
-    // Auto-select first
-    const firstId = _allInstances[0].strategy_id ?? _allInstances[0].id;
-    sel.value = firstId;
-    onInstanceChange(firstId);
-  } catch {
-    const sel = document.getElementById('instance-select');
-    if (sel) sel.innerHTML = '<option value="">无法加载实例</option>';
-    renderLabStats(null);
-  }
-}
-
-/* Called when user picks an instance */
-function onInstanceChange(instanceId) {
-  _currentInstance = instanceId;
-  const inst = _allInstances.find(i => (i.strategy_id ?? i.id) === instanceId);
-  if (!inst) return;
-
-  // Build param config from live stats (available fields)
-  // Note: /ui/instances returns live stats, not full config
-  // Param values shown as read-only with live data where available
-  _instanceConfig = {
-    strategy: {
-      entry_offset:       null,
-      vol_adjust_enabled: null,
-      pair_cost_target:   null,
-    },
-    cancel: {
-      tau_min_sec:       null,
-      order_age_max_sec: null,
-      sigma_threshold:   null,
-    },
-    regime: {
-      min_score: null,
-      max_score: null,
-    },
-    risk: {
-      max_position_usd: null,
-    },
-    _live: inst,
-  };
-
-  renderLabStats(inst);
-  renderParamFields();
-}
-
-/* Render live instance stats bar */
-function renderLabStats(inst) {
-  const el = document.getElementById('lab-instance-stats');
-  if (!el) return;
-  if (!inst) {
-    el.innerHTML = '<span class="lab-stat"><span class="lab-stat-label">无实例数据</span></span>';
-    return;
-  }
-  const scoreColor = (inst.regime_score ?? 0) >= 0.6 ? COLOR.up
-    : (inst.regime_score ?? 0) >= 0.4 ? COLOR.warn : COLOR.down;
-  el.innerHTML = [
-    ['策略', inst.strategy_id ?? '--'],
-    ['运行中', inst.enabled ? '✅' : '⏹'],
-    ['Regime', inst.regime_score != null ? inst.regime_score.toFixed(3) : '--'],
-    ['活跃', inst.is_active ? '是' : '否'],
-    ['挂单', inst.open_orders ?? '--'],
-    ['当前窗口', inst.current_window ?? '--'],
-  ].map(([lbl, val]) => `
-    <div class="lab-stat">
-      <span class="lab-stat-label">${lbl}</span>
-      <span class="lab-stat-val">${val}</span>
-    </div>`).join('');
-}
-
-/* Render param field groups */
-function renderParamFields() {
-  renderFieldGroup('param-strategy-fields', [
-    { key: 'strategy.entry_offset',       label: '挂单偏移 entry_offset',  type: 'number', step: 0.005 },
-    { key: 'strategy.vol_adjust_enabled', label: '动态偏移 vol_adjust',    type: 'toggle' },
-    { key: 'strategy.pair_cost_target',   label: '配对成本上限',            type: 'number', step: 0.01 },
-    { key: 'regime.min_score',            label: 'Regime 激活下限',         type: 'number', step: 0.05 },
-    { key: 'regime.max_score',            label: 'Regime 激活上限',         type: 'number', step: 0.05 },
-    { key: 'risk.max_position_usd',       label: '最大仓位 USD',            type: 'number', step: 1 },
-  ]);
-  renderFieldGroup('param-cancel-fields', [
-    { key: 'cancel.tau_min_sec',        label: '时间撤单阈值（秒）', type: 'number', step: 10 },
-    { key: 'cancel.order_age_max_sec',  label: '老化撤单阈值（秒）', type: 'number', step: 5 },
-    { key: 'cancel.sigma_threshold',    label: 'Sigma 撤单阈值',    type: 'number', step: 0.05 },
-  ]);
-  const regimeEl = document.getElementById('param-regime-fields');
-  if (regimeEl) {
-    regimeEl.innerHTML = `
-      <div class="param-row">
-        <label style="color:var(--text-ghost)">Regime 权重（全局）</label>
-      </div>
-      <div class="param-row">
-        <label>sigma_weight</label>
-        <span class="param-readonly" id="rd-sigma-weight">--</span>
-      </div>
-      <div class="param-row">
-        <label>alternation_weight</label>
-        <span class="param-readonly" id="rd-alt-weight">--</span>
-      </div>
-      <div class="param-row">
-        <label>volume_weight</label>
-        <span class="param-readonly" id="rd-vol-weight">--</span>
-      </div>
-      <div class="param-row">
-        <label style="color:var(--text-invisible);font-size:var(--size-micro)">权重来自实例 JSON，此处只读</label>
-      </div>`;
-  }
-}
-
-function getNestedValue(obj, dotKey) {
-  return dotKey.split('.').reduce((acc, k) => acc?.[k], obj);
-}
-
-function setNestedValue(obj, dotKey, value) {
-  const keys = dotKey.split('.');
-  let cur = obj;
-  for (let i = 0; i < keys.length - 1; i++) {
-    if (cur[keys[i]] == null) cur[keys[i]] = {};
-    cur = cur[keys[i]];
-  }
-  cur[keys[keys.length - 1]] = value;
-}
-
-function renderFieldGroup(containerId, fields) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-  container.innerHTML = fields.map(f => {
-    const val = getNestedValue(_instanceConfig, f.key);
-    const displayVal = val != null ? val : '';
-    const note = val == null
-      ? `<span style="font-size:var(--size-micro);color:var(--text-dead)">(实例 JSON)</span>` : '';
-
-    if (f.type === 'toggle') {
-      return `
-        <div class="param-row">
-          <label>${f.label}${note}</label>
-          <input class="param-toggle" type="checkbox" data-key="${f.key}"
-            ${val ? 'checked' : ''}
-            onchange="onParamChange('${f.key}', this.checked)">
-        </div>`;
-    }
-    return `
-      <div class="param-row">
-        <label>${f.label}${note}</label>
-        <input class="param-input" type="number" step="${f.step ?? 0.01}"
-          value="${displayVal}" placeholder="--"
-          data-key="${f.key}"
-          onchange="onParamChange('${f.key}', parseFloat(this.value))">
-      </div>`;
-  }).join('');
-}
-
-function onParamChange(dotKey, value) {
-  setNestedValue(_instanceConfig, dotKey, value);
-}
-
-/* Hot-reload: POST /config/reload (server re-reads JSON file) */
-async function reloadConfig() {
-  const statusEl = document.getElementById('reload-status');
-  if (statusEl) { statusEl.textContent = '更新中…'; statusEl.style.color = TEXT.muted; }
-  try {
-    const res = await fetch(BASE_URL + '/config/reload', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({}),
-      signal: AbortSignal.timeout(6000),
-    });
-    const data = await res.json();
-    const hasDiff = data.diff && Object.keys(data.diff).length > 0;
-    const msg = res.ok
-      ? (hasDiff ? '热更新成功，有变更' : '热更新成功（无变更）')
-      : ('失败: ' + (data.error ?? data.message ?? res.status));
-    if (statusEl) {
-      statusEl.textContent = msg;
-      statusEl.style.color = res.ok ? COLOR.up : COLOR.down;
-    }
-    addLog('config/reload: ' + msg);
-  } catch (e) {
-    if (statusEl) { statusEl.textContent = '失败: ' + e.message; statusEl.style.color = COLOR.down; }
-  }
-  setTimeout(() => { if (statusEl) statusEl.textContent = ''; }, 4000);
-}
-
-/* ─── Order Table Tab Switch ─────────────────── */
-function switchOrderTab(tab) {
-  document.getElementById('orders-active-panel').style.display  = tab === 'active'  ? '' : 'none';
-  document.getElementById('orders-history-panel').style.display = tab === 'history' ? '' : 'none';
-  document.getElementById('tab-active').classList.toggle('active',  tab === 'active');
-  document.getElementById('tab-history').classList.toggle('active', tab === 'history');
-}
-
-/* ─── Order Table ─────────────────────────────── */
-async function loadOrders() {
-  let list = [];
-  let statsRow = null;
-
-  // Try /trading/orders first (may not exist)
-  try {
-    const raw = await fetch(BASE_URL + '/trading/orders', { signal: AbortSignal.timeout(3000) }).then(r => r.json());
-    list = Array.isArray(raw) ? raw : (raw.data ?? raw.orders ?? []);
-  } catch {
-    // Endpoint absent — try /trading/manual-stats for a summary row
-    try {
-      statsRow = await fetch(BASE_URL + '/trading/manual-stats', { signal: AbortSignal.timeout(3000) }).then(r => r.json());
-    } catch { /* silent */ }
-    list = [];
-  }
-
-  const active  = list.filter(o => o.status === 'open' || o.status === 'pending' || o.status === 'submitted');
-  const history = list.filter(o => !['open','pending','submitted'].includes(o.status));
-
-  renderOrderTable('active',  active,  statsRow);
-  renderOrderTable('history', history, null);
-
-  const cnt = document.getElementById('orders-count');
-  if (cnt) cnt.textContent = `活跃 ${active.length} / 历史 ${history.length}`;
-}
-
-function renderOrderTable(type, orders, statsRow) {
-  const tbody = document.getElementById(`orders-${type}-body`);
-  if (!tbody) return;
-
-  if (orders.length === 0 && !statsRow) {
-    tbody.innerHTML = `<tr><td class="no-data" colspan="7">暂无记录</td></tr>`;
-    return;
-  }
-
-  // If we only have aggregate stats (no list endpoint), show a summary row
-  if (orders.length === 0 && statsRow && type === 'active') {
-    const wr = statsRow.win_rate != null ? (statsRow.win_rate * 100).toFixed(1) + '%' : '--';
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="3" style="color:var(--text-ghost)">手动交易汇总</td>
-        <td>总计 ${statsRow.total_trades ?? '--'}</td>
-        <td>胜 ${statsRow.wins ?? '--'}</td>
-        <td>${wr}</td>
-        <td>--</td>
-      </tr>`;
-    return;
-  }
-
-  tbody.innerHTML = orders.map(o => {
-    const sideClass = (o.side ?? '').toUpperCase() === 'UP' ? 'side-up' : 'side-down';
-    const ts = o.created_at ? new Date(o.created_at).toLocaleTimeString() : '--';
-    const price = o.price != null ? Number(o.price).toFixed(4) : '--';
-    return `
-      <tr>
-        <td>${(o.order_id ?? o.id ?? '').toString().slice(0, 8)}</td>
-        <td>${o.market_id ?? '--'}</td>
-        <td class="${sideClass}">${o.side ?? '--'}</td>
-        <td>${price}</td>
-        <td>${o.size ?? '--'}</td>
-        <td>${o.status ?? '--'}</td>
-        <td>${ts}</td>
-      </tr>`;
-  }).join('');
-}
-
-loadOrders();
-setInterval(loadOrders, 10000);
-
-/* ─── Strategy Status Table ──────────────────── */
-async function loadStrategyTable() {
-  let instances = [];
-  let sensitivity = [];
-
-  // Try /ui/instances for live instance stats
-  try {
-    const raw = await fetch(BASE_URL + '/ui/instances', { signal: AbortSignal.timeout(3000) }).then(r => r.json());
-    instances = Array.isArray(raw.data) ? raw.data : (Array.isArray(raw) ? raw : []);
-  } catch { /* silent */ }
-
-  // Try /postmortem/sensitivity for historical win rates
-  try {
-    const raw = await fetch(BASE_URL + '/postmortem/sensitivity', { signal: AbortSignal.timeout(3000) }).then(r => r.json());
-    sensitivity = Array.isArray(raw) ? raw : [];
-  } catch { /* silent */ }
-
-  // Merge: sensitivity rows enriched with live instance data
-  const rows = sensitivity.length > 0 ? sensitivity : instances;
-  renderStrategyTable(rows, instances);
-}
-
-function renderStrategyTable(rows, instances) {
-  const tbody = document.getElementById('strategy-table-body');
-  if (!tbody) return;
-
-  if (!rows || rows.length === 0) {
-    tbody.innerHTML = `<tr><td class="no-data" colspan="4">暂无策略数据</td></tr>`;
-    return;
-  }
-
-  const currentScore = parseFloat(document.getElementById('regime-score-label')?.textContent ?? '0') || 0;
-
-  tbody.innerHTML = rows.map(s => {
-    const sid = s.strategy_id ?? s.id ?? '--';
-    const wins = s.wins ?? 0;
-    const total = s.total_windows ?? s.total ?? 0;
-    const wr = total > 0 ? (wins / total * 100).toFixed(0) + '%' : '--';
-
-    // Activation: maker strategies → S1 (≥0.5), sniper/taker → S2 (≥0.6)
-    const isMaker  = sid.includes('maker')  || sid.includes('mm');
-    const isSniper = sid.includes('sniper') || sid.includes('taker');
-    const active   = (isMaker && currentScore >= 0.5) || (isSniper && currentScore >= 0.6) || (!isMaker && !isSniper && currentScore >= 0.5);
-    const activeClass = active ? 'active-yes' : 'active-no';
-
-    return `
-      <tr title="${sid}">
-        <td style="max-width:52px;overflow:hidden;text-overflow:ellipsis">${sid.slice(0, 10)}</td>
-        <td>${total || '--'}</td>
-        <td>${wr}</td>
-        <td class="${activeClass}">${active ? '激活' : '休眠'}</td>
-      </tr>`;
-  }).join('');
-}
-
-loadStrategyTable();
-setInterval(loadStrategyTable, 30000);
-
-/* ─── Action Log ─────────────────────────────── */
-const ACTION_LOG_ENTRIES = [];
-const MAX_ACTION_LOG = 50;
-
-function appendActionLog(event) {
-  const time = new Date(event.ts ?? Date.now()).toLocaleTimeString();
-  const typeLabels = {
-    'regime.changed':  'Regime → ' + (event.payload?.regime_score?.toFixed?.(3) ?? '--'),
-    'window.switch':   '窗口 → '   + (event.payload?.window_id ?? event.payload?.to_window ?? '--'),
-    'order.placed':    '挂单 '     + (event.payload?.side ?? '') + ' @' + (event.payload?.price ?? '--'),
-    'order.cancelled': '撤单 '     + (event.payload?.order_id ?? '--').toString().slice(0, 8),
-    'order.filled':    '成交 '     + (event.payload?.side ?? '') + ' @' + (event.payload?.price ?? '--'),
-  };
-  const label = typeLabels[event.type] ?? event.type;
-  ACTION_LOG_ENTRIES.unshift({ time, label });
-  if (ACTION_LOG_ENTRIES.length > MAX_ACTION_LOG) ACTION_LOG_ENTRIES.pop();
-  renderActionLog();
-}
-
-function renderActionLog() {
-  const container = document.getElementById('action-log');
-  if (!container) return;
-  container.innerHTML = ACTION_LOG_ENTRIES.map(e =>
-    `<div class="action-log-row">
-      <span class="action-log-time">${e.time}</span>
-      <span class="action-log-label">${e.label}</span>
-    </div>`
-  ).join('');
-}
-
-/* ═══════════════════════════════════════════════
-   POSTMORTEM ANALYSIS — 复盘分析
-   ═══════════════════════════════════════════════ */
-
-/* ─── Empty State Helper ─────────────────────── */
-function emptyState(label) {
-  return '<div style="padding:40px;text-align:center;color:var(--text-muted);font-size:0.9em">'
-    + (label ? label + ' · ' : '') + '数据积累中，至少需要 10 个窗口'
-    + '</div>';
-}
-
-/* ─── Tab Switch (lazy-load) ─────────────────── */
-function switchPmTab(tab) {
-  ['attribution','lossmodes','distribution','sensitivity'].forEach(function(t) {
-    document.getElementById('pm-' + t).style.display = t === tab ? '' : 'none';
-  });
-  var btns = document.querySelectorAll('#pm-tabs .tab-btn');
-  var order = ['attribution','lossmodes','distribution','sensitivity'];
-  btns.forEach(function(btn, i) {
-    btn.classList.toggle('active', order[i] === tab);
-  });
-  var loaders = {
-    attribution:  loadAttribution,
-    lossmodes:    loadLossModes,
-    distribution: loadDistribution,
-    sensitivity:  loadSensitivity
-  };
-  if (loaders[tab]) loaders[tab]();
-}
-
-/* ─── View 1: 利润归因（水平柱状图）──────────── */
-async function loadAttribution() {
-  var container = document.getElementById('pm-attribution');
-  if (!container) return;
-  try {
-    var data = await fetch(BASE_URL + '/postmortem/attribution').then(function(r) { return r.json(); });
-    var regimeBuckets = data.regime_buckets ?? [];
-    var hourBuckets   = data.hour_buckets   ?? [];
-    if (regimeBuckets.length === 0 && hourBuckets.length === 0) {
-      container.innerHTML = emptyState('利润归因');
-      return;
-    }
-    container.innerHTML =
-      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px">'
-      + '<div>'
-      + '<h4 style="color:var(--text-muted);font-size:0.85em;margin:0 0 8px">Regime 归因</h4>'
-      + renderHBar(regimeBuckets, 'regime_bucket', 'total_pnl')
-      + '</div>'
-      + '<div>'
-      + '<h4 style="color:var(--text-muted);font-size:0.85em;margin:0 0 8px">时段归因</h4>'
-      + renderHBar(hourBuckets, 'hour_bucket', 'total_pnl')
-      + '</div>'
-      + '</div>';
-  } catch (_) {
-    container.innerHTML = emptyState('利润归因');
-  }
-}
-
-function renderHBar(rows, labelKey, valueKey) {
-  if (!rows.length) return emptyState();
-  var maxVal = Math.max.apply(null, rows.map(function(r) { return Math.abs(r[valueKey] ?? 0); }).concat([0.001]));
-  var barH = 28, svgH = rows.length * (barH + 6) + 20, svgW = 320, labelW = 100;
-  var bars = rows.map(function(r, i) {
-    var val  = r[valueKey] ?? 0;
-    var barW = Math.abs(val) / maxVal * (svgW - labelW - 40);
-    var color = val >= 0 ? 'var(--color-up)' : 'var(--color-down)';
-    var y = i * (barH + 6) + 10;
-    return '<text x="' + (labelW - 4) + '" y="' + (y + barH / 2 + 4) + '" text-anchor="end"'
-      + ' font-size="11" fill="var(--text-muted)">' + r[labelKey] + '</text>'
-      + '<rect x="' + labelW + '" y="' + y + '" width="' + Math.max(barW, 2) + '" height="' + barH + '"'
-      + ' fill="' + color + '" opacity="0.8" rx="2"/>'
-      + '<text x="' + (labelW + Math.max(barW, 2) + 4) + '" y="' + (y + barH / 2 + 4) + '"'
-      + ' font-size="11" fill="var(--text-secondary)">' + val.toFixed(3) + '</text>';
-  }).join('');
-  return '<svg width="' + svgW + '" height="' + svgH + '" style="width:100%">' + bars + '</svg>';
-}
-
-/* ─── View 2: 失败模式（饼图 + 案例列表）──────── */
-async function loadLossModes() {
-  var container = document.getElementById('pm-lossmodes');
-  if (!container) return;
-  try {
-    var data  = await fetch(BASE_URL + '/postmortem/loss-modes').then(function(r) { return r.json(); });
-    var modes = data.modes ?? [];
-    if (modes.length === 0) { container.innerHTML = emptyState('失败模式'); return; }
-    container.innerHTML =
-      '<div style="display:grid;grid-template-columns:240px 1fr;gap:24px;margin-top:16px;align-items:start">'
-      + '<div>' + renderPie(modes, 'loss_mode', 'count') + '</div>'
-      + '<div>' + renderModeCards(modes, data.examples ?? {}) + '</div>'
-      + '</div>';
-  } catch (_) {
-    container.innerHTML = emptyState('失败模式');
-  }
-}
-
-function renderPie(slices, labelKey, valueKey) {
-  var total = slices.reduce(function(s, r) { return s + (r[valueKey] ?? 0); }, 0);
-  if (!total) return emptyState();
-  var cx = 100, cy = 100, r = 80;
-  var PALETTE = ['var(--color-down)', 'var(--color-warn)', 'var(--color-accent)', 'var(--text-muted)'];
-  var startAngle = -Math.PI / 2;
-  var paths = slices.map(function(s, i) {
-    var angle = (s[valueKey] / total) * 2 * Math.PI;
-    var x1 = cx + r * Math.cos(startAngle);
-    var y1 = cy + r * Math.sin(startAngle);
-    var x2 = cx + r * Math.cos(startAngle + angle);
-    var y2 = cy + r * Math.sin(startAngle + angle);
-    var large = angle > Math.PI ? 1 : 0;
-    var d = 'M' + cx + ',' + cy + ' L' + x1.toFixed(2) + ',' + y1.toFixed(2)
-      + ' A' + r + ',' + r + ' 0 ' + large + ',1 ' + x2.toFixed(2) + ',' + y2.toFixed(2) + ' Z';
-    startAngle += angle;
-    return '<path d="' + d + '" fill="' + PALETTE[i % PALETTE.length] + '" opacity="0.85"/>';
-  }).join('');
-  var legends = slices.map(function(s, i) {
-    return '<div style="display:flex;align-items:center;gap:6px;font-size:0.8em;margin-bottom:4px">'
-      + '<span style="width:12px;height:12px;background:' + PALETTE[i % PALETTE.length]
-      + ';border-radius:2px;display:inline-block"></span>'
-      + s[labelKey] + ' (' + s[valueKey] + ')</div>';
-  }).join('');
-  return '<svg width="200" height="200" viewBox="0 0 200 200">' + paths + '</svg>'
-    + '<div style="margin-top:8px">' + legends + '</div>';
-}
-
-function renderModeCards(modes, examples) {
-  return modes.map(function(m) {
-    var ex = examples[m.loss_mode];
-    return '<div style="border:1px solid var(--border);border-radius:4px;padding:10px;margin-bottom:8px">'
-      + '<div style="font-weight:600;margin-bottom:4px">' + m.loss_mode
-      + ' <span style="color:var(--text-muted);font-size:0.8em">(' + m.count + ' 次)</span></div>'
-      + '<div style="font-size:0.8em;color:var(--text-muted)">平均成本 '
-      + (m.avg_cost != null ? m.avg_cost.toFixed(4) : '--')
-      + ' · 最差 ' + (m.worst_cost != null ? m.worst_cost.toFixed(4) : '--') + '</div>'
-      + (ex ? '<div style="font-size:0.75em;color:var(--text-muted);margin-top:4px">典型案例：'
-        + ex.strategy_id + ' @ pair_cost=' + (ex.pair_cost != null ? ex.pair_cost.toFixed(4) : '--') + '</div>' : '')
-      + '</div>';
-  }).join('');
-}
-
-/* ─── View 3: 收益分布（垂直柱状图）──────────── */
-async function loadDistribution() {
-  var container = document.getElementById('pm-distribution');
-  if (!container) return;
-  try {
-    var data = await fetch(BASE_URL + '/postmortem/distribution').then(function(r) { return r.json(); });
-    var rows = Array.isArray(data) ? data : [];
-    if (rows.length === 0) { container.innerHTML = emptyState('收益分布'); return; }
-    var maxCount  = Math.max.apply(null, rows.map(function(r) { return r.count ?? 0; }).concat([1]));
-    var svgW      = rows.length * 60 + 40;
-    var svgH      = 200, barMaxH = 150;
-    var profitBuckets = ['gt_10pct', '5_10pct', '0_5pct'];
-    var bars = rows.map(function(r, i) {
-      var bh    = (r.count / maxCount) * barMaxH;
-      var x     = i * 60 + 20;
-      var y     = svgH - bh - 30;
-      var isProfit = profitBuckets.indexOf(r.bucket) >= 0;
-      var color = r.bucket === 'null' ? 'var(--text-muted)'
-        : isProfit ? 'var(--color-up)' : 'var(--color-down)';
-      return '<rect x="' + x + '" y="' + y.toFixed(1) + '" width="44" height="' + Math.max(bh, 2).toFixed(1) + '"'
-        + ' fill="' + color + '" opacity="0.8" rx="2"/>'
-        + '<text x="' + (x + 22) + '" y="' + (svgH - 14) + '" text-anchor="middle"'
-        + ' font-size="9" fill="var(--text-muted)">' + r.bucket + '</text>'
-        + '<text x="' + (x + 22) + '" y="' + (y - 4).toFixed(1) + '" text-anchor="middle"'
-        + ' font-size="11" fill="var(--text-secondary)">' + r.count + '</text>';
-    }).join('');
-    container.innerHTML = '<div style="margin-top:16px;overflow-x:auto">'
-      + '<svg width="' + svgW + '" height="' + svgH + '" style="min-width:' + svgW + 'px">' + bars + '</svg>'
-      + '</div>';
-  } catch (_) {
-    container.innerHTML = emptyState('收益分布');
-  }
-}
-
-/* ─── View 4: 参数敏感度表 ───────────────────── */
-async function loadSensitivity() {
-  var container = document.getElementById('pm-sensitivity');
-  if (!container) return;
-  try {
-    var data = await fetch(BASE_URL + '/postmortem/sensitivity').then(function(r) { return r.json(); });
-    var rows = Array.isArray(data) ? data : [];
-    if (rows.length === 0) { container.innerHTML = emptyState('参数敏感度'); return; }
-    var thead = '<tr><th>策略</th><th>Config Hash</th><th>窗口数</th>'
-      + '<th>胜率</th><th>平均成本</th><th>首次</th><th>最近</th></tr>';
-    var tbody = rows.map(function(r) {
-      var wr    = r.total_windows ? ((r.wins / r.total_windows) * 100).toFixed(1) + '%' : '--';
-      var first = r.first_trade ? new Date(r.first_trade).toLocaleDateString() : '--';
-      var last  = r.last_trade  ? new Date(r.last_trade).toLocaleDateString()  : '--';
-      return '<tr>'
-        + '<td>' + (r.strategy_id ?? '--') + '</td>'
-        + '<td style="font-family:monospace;font-size:0.8em">' + (r.config_hash ?? '').slice(0, 8) + '</td>'
-        + '<td>' + (r.total_windows ?? '--') + '</td>'
-        + '<td>' + wr + '</td>'
-        + '<td>' + (r.avg_cost != null ? r.avg_cost.toFixed(4) : '--') + '</td>'
-        + '<td>' + first + '</td>'
-        + '<td>' + last + '</td>'
-        + '</tr>';
-    }).join('');
-    container.innerHTML = '<div style="margin-top:16px;overflow-x:auto">'
-      + '<table class="order-table"><thead>' + thead + '</thead><tbody>' + tbody + '</tbody></table>'
-      + '</div>';
-  } catch (_) {
-    container.innerHTML = emptyState('参数敏感度');
-  }
-}
-
-/* ═══════════════════════════════════════════════
-   STRATEGY LAB — Compare Sub-Tab
-   ═══════════════════════════════════════════════ */
-
-/* ─── Sub-Tab Switch ─────────────────────────── */
-function switchLabTab(tab) {
-  document.getElementById('lab-params-view').style.display  = tab === 'params'  ? '' : 'none';
-  document.getElementById('lab-compare-view').style.display = tab === 'compare' ? '' : 'none';
-  document.querySelectorAll('#lab-tabs .tab-btn').forEach(function(btn, i) {
-    btn.classList.toggle('active', ['params', 'compare'][i] === tab);
-  });
-  if (tab === 'compare') initCompareSelector();
-}
-
-/* ─── Multi-Instance Checkbox Loader ────────── */
-async function initCompareSelector() {
-  var container = document.getElementById('compare-checkboxes');
-  if (!container || container.children.length > 0) return;
-  try {
-    var data = await fetch(BASE_URL + '/ui/instances').then(function(r) { return r.json(); });
-    var instances = Array.isArray(data) ? data : (data.data ?? []);
-    container.innerHTML = instances.map(function(inst) {
-      var id = inst.strategy_id ?? inst.id ?? '';
-      return '<label style="display:flex;align-items:center;gap:4px;font-size:0.85em;cursor:pointer;color:var(--text-secondary)">'
-        + '<input type="checkbox" value="' + id + '" checked> ' + id + '</label>';
-    }).join('');
-    if (instances.length > 0) loadCompare();
-  } catch (_) {
-    container.innerHTML = '<span style="color:var(--text-muted)">无法加载实例列表</span>';
-  }
-}
-
-/* ─── Load Compare Data ──────────────────────── */
-async function loadCompare() {
-  var checkboxes = document.querySelectorAll('#compare-checkboxes input[type=checkbox]:checked');
-  var ids = Array.from(checkboxes).map(function(c) { return c.value; }).filter(Boolean);
-  var summaryEl    = document.getElementById('compare-summary');
-  var timeseriesEl = document.getElementById('compare-timeseries');
-  if (!summaryEl || !timeseriesEl) return;
-
-  if (ids.length === 0) {
-    summaryEl.innerHTML    = '<p style="color:var(--text-muted)">请至少选择一个实例</p>';
-    timeseriesEl.innerHTML = '';
-    return;
-  }
-
-  try {
-    var data = await fetch(BASE_URL + '/postmortem/compare?ids=' + ids.join(',')).then(function(r) { return r.json(); });
-    var summary    = data.summary    ?? [];
-    var timeseries = data.timeseries ?? [];
-    renderCompareSummary(summaryEl, summary);
-    renderCompareTimeseries(timeseriesEl, timeseries, ids);
-  } catch (e) {
-    summaryEl.innerHTML = '<p style="color:var(--color-down)">加载失败：' + e.message + '</p>';
-  }
-}
-
-/* ─── Comparison Summary Table ───────────────── */
-function renderCompareSummary(container, summary) {
-  if (summary.length === 0) {
-    container.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-muted)">数据积累中，至少需要 10 个窗口</div>';
-    return;
-  }
-  var thead = '<tr>'
-    + '<th>策略</th><th>窗口数</th><th>胜率</th>'
-    + '<th>平均成本</th><th>最优成本</th><th>平均 Regime</th>'
-    + '</tr>';
-  var tbody = summary.map(function(r) {
-    var wr = r.total_windows ? ((r.wins / r.total_windows) * 100).toFixed(1) + '%' : '--';
-    var costColor = (r.avg_cost ?? 1) < 1 ? 'var(--color-up)' : 'var(--color-down)';
-    return '<tr>'
-      + '<td>' + (r.strategy_id ?? '--') + '</td>'
-      + '<td>' + (r.total_windows ?? '--') + '</td>'
-      + '<td>' + wr + '</td>'
-      + '<td style="color:' + costColor + '">' + (r.avg_cost != null ? r.avg_cost.toFixed(4) : '--') + '</td>'
-      + '<td>' + (r.best_cost != null ? r.best_cost.toFixed(4) : '--') + '</td>'
-      + '<td>' + (r.avg_regime != null ? r.avg_regime.toFixed(3) : '--') + '</td>'
-      + '</tr>';
-  }).join('');
-  container.innerHTML = '<div style="overflow-x:auto"><table class="order-table">'
-    + '<thead>' + thead + '</thead>'
-    + '<tbody>' + tbody + '</tbody>'
-    + '</table></div>';
-}
-
-/* ─── Cumulative PnL Line Chart ──────────────── */
-var COMPARE_PALETTE = [
-  'var(--color-up)', 'var(--color-warn)', 'var(--color-accent)',
-  'var(--text-muted)', '#8884d8', '#82ca9d'
+// ─── Data ───────────────────────────────
+const STRATS = [
+  { id:"s1", name:"配对做市#002", color:"#10b981", type:"pair",     status:"running", pnl:326,  trades:361, winRate:35, avgPos:8.2 },
+  { id:"s2", name:"配对做市#003", color:"#0ea5e9", type:"pair",     status:"running", pnl:52,   trades:120, winRate:31, avgPos:9.5 },
+  { id:"s3", name:"极值回归A",    color:"#f59e0b", type:"revert",   status:"running", pnl:22,   trades:18,  winRate:12, avgPos:4.8 },
+  { id:"s4", name:"方向突破B",    color:"#ef4444", type:"breakout", status:"stopped", pnl:-38,  trades:45,  winRate:28, avgPos:6.1 },
 ];
+const TM = { pair:{icon:"⚖️",short:"配对"}, revert:{icon:"🎯",short:"回归"}, breakout:{icon:"📐",short:"突破"} };
 
-function renderCompareTimeseries(container, timeseries, ids) {
-  if (timeseries.length === 0) {
-    container.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text-muted)">时间序列数据不足</div>';
-    return;
-  }
+const ORDERS = [
+  {sd:"BID",p:"0.472",sz:"$5",tr:"T1",st:"#002",age:"8s"},
+  {sd:"BID",p:"0.465",sz:"$5",tr:"T2",st:"#002",age:"8s"},
+  {sd:"ASK",p:"0.538",sz:"$5",tr:"T1",st:"#002",age:"5s"},
+  {sd:"ASK",p:"0.545",sz:"$5",tr:"T2",st:"#002",age:"5s"},
+  {sd:"BID",p:"0.082",sz:"$3",tr:"—", st:"回归A",age:"32s"},
+];
+const LOGS = [
+  {ts:"18:32:15",st:"#002",  c:"#10b981",a:"下单",d:"BUY UP @ 0.472 × $5"},
+  {ts:"18:32:14",st:"#002",  c:"#10b981",a:"撤单",d:"BID 0.468 老化(21s)"},
+  {ts:"18:31:58",st:"#002",  c:"#10b981",a:"成交",d:"BUY DOWN @ 0.531 配对 cost=0.963"},
+  {ts:"18:31:45",st:"回归A", c:"#f59e0b",a:"监控",d:"DOWN ask=0.18 > 0.12"},
+  {ts:"18:31:30",st:"#002",  c:"#10b981",a:"撤单",d:"全撤: sigma跳变"},
+];
+const BOOK = {
+  asks:[{p:"0.545",s:"450"},{p:"0.540",s:"1560"},{p:"0.538",s:"890"},{p:"0.535",s:"120",mine:true},{p:"0.531",s:"380"}],
+  bids:[{p:"0.523",s:"412"},{p:"0.520",s:"85",mine:true},{p:"0.518",s:"1240"},{p:"0.515",s:"634"},{p:"0.510",s:"2100",mine:true}],
+};
 
-  var svgW = 600, svgH = 240, padL = 50, padB = 30, padT = 10, padR = 20;
-  var innerW = svgW - padL - padR;
-  var innerH = svgH - padB - padT;
+// ─── State ──────────────────────────────
+let currentScore = 0.68;
+let countdown = 247;
 
-  var grouped = {};
-  timeseries.forEach(function(row) {
-    var sid = row.strategy_id;
-    if (!grouped[sid]) grouped[sid] = [];
-    grouped[sid].push(row);
+// ─── Tab switching ───────────────────────
+function switchTab(tab) {
+  ["hall","lab","set"].forEach(t => {
+    const page = document.getElementById("page-" + t);
+    const tabEl = document.getElementById("tab-" + t);
+    if (t === tab) {
+      page.style.display = "flex";
+      tabEl.style.color = "#ccc";
+      tabEl.style.borderBottom = "2px solid #6366f1";
+    } else {
+      page.style.display = "none";
+      tabEl.style.color = "#444";
+      tabEl.style.borderBottom = "2px solid transparent";
+    }
   });
-
-  var allTimes = timeseries.map(function(r) { return new Date(r.window_start).getTime(); });
-  var allPnl   = timeseries.map(function(r) { return r.cumulative_pnl ?? 0; });
-  var minT = Math.min.apply(null, allTimes), maxT = Math.max.apply(null, allTimes);
-  var minP = Math.min.apply(null, [0].concat(allPnl));
-  var maxP = Math.max.apply(null, [0.001].concat(allPnl));
-
-  function toX(t) { return padL + ((new Date(t).getTime() - minT) / (maxT - minT || 1)) * innerW; }
-  function toY(p) { return padT + innerH - ((p - minP) / (maxP - minP)) * innerH; }
-
-  var lines = ids.map(function(sid, i) {
-    var rows = grouped[sid] ?? [];
-    if (rows.length < 2) return '';
-    var pts = rows.map(function(r) { return toX(r.window_start).toFixed(1) + ',' + toY(r.cumulative_pnl ?? 0).toFixed(1); }).join(' ');
-    return '<polyline points="' + pts + '" fill="none" stroke="' + COMPARE_PALETTE[i % COMPARE_PALETTE.length] + '" stroke-width="1.5" opacity="0.9"/>';
-  }).join('');
-
-  var zeroY = toY(0).toFixed(1);
-  var zeroLine = '<line x1="' + padL + '" y1="' + zeroY + '" x2="' + (svgW - padR) + '" y2="' + zeroY
-    + '" stroke="var(--border)" stroke-dasharray="3,3"/>';
-
-  var legend = ids.map(function(sid, i) {
-    return '<tspan fill="' + COMPARE_PALETTE[i % COMPARE_PALETTE.length] + '">■ ' + sid + '  </tspan>';
-  }).join('');
-
-  container.innerHTML = '<div style="overflow-x:auto">'
-    + '<h4 style="color:var(--text-muted);font-size:0.85em;margin:0 0 8px">累计 PnL 走势</h4>'
-    + '<svg width="' + svgW + '" height="' + svgH + '" style="width:100%;max-width:' + svgW + 'px">'
-    + zeroLine + lines
-    + '<text x="' + padL + '" y="' + (svgH - 6) + '" font-size="10">' + legend + '</text>'
-    + '</svg></div>';
 }
 
-/* ═══════════════════════════════════════════════
-   SETTINGS — 系统设置
-   ═══════════════════════════════════════════════ */
-
-function saveSettings() {
-  var urlInput = document.getElementById('setting-base-url');
-  var newUrl = (urlInput ? urlInput.value : '').trim();
-  if (newUrl) {
-    BASE_URL = newUrl.replace(/\/$/, '');
-    localStorage.setItem('btcqdd_base_url', BASE_URL);
-  }
-  var status = document.getElementById('settings-status');
-  if (status) {
-    status.textContent = '✅ 已保存，刷新页面生效';
-    status.style.color = 'var(--color-up)';
-    setTimeout(function() { status.textContent = ''; }, 3000);
+// ─── Side switching ──────────────────────
+function setSide(side) {
+  const buyEl  = document.getElementById("side-buy");
+  const sellEl = document.getElementById("side-sell");
+  const btnEl  = document.getElementById("buy-btn");
+  if (side === "buy") {
+    buyEl.style.color  = "#26a69a"; buyEl.style.borderBottom  = "2px solid #26a69a";
+    sellEl.style.color = "#444";    sellEl.style.borderBottom = "2px solid transparent";
+    btnEl.style.background = "#26a69a"; btnEl.textContent = "Buy";
+  } else {
+    sellEl.style.color = "#ef5350"; sellEl.style.borderBottom = "2px solid #ef5350";
+    buyEl.style.color  = "#444";    buyEl.style.borderBottom  = "2px solid transparent";
+    btnEl.style.background = "#ef5350"; btnEl.textContent = "Sell";
   }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-  var urlInput = document.getElementById('setting-base-url');
-  if (urlInput) urlInput.value = BASE_URL;
-});
+// ─── Coin dropdown ───────────────────────
+function toggleCoinMenu() {
+  const m = document.getElementById("coin-menu");
+  m.style.display = m.style.display === "none" ? "block" : "none";
+}
+function selectCoin(coin) {
+  document.getElementById("coin-label").textContent = coin;
+  document.getElementById("kline-coin").textContent = coin;
+  document.getElementById("pm-coin").textContent = coin;
+  document.getElementById("coin-menu").style.display = "none";
+  document.querySelectorAll("#coin-menu div").forEach(el => {
+    const match = el.textContent.trim() === coin;
+    el.style.background = match ? "#12122a" : "transparent";
+    el.style.color = match ? "#ddd" : "#666";
+  });
+}
+
+// ─── TF switching ────────────────────────
+function setTf(tf) {
+  ["5M","15M","1H","4H","1D"].forEach(t => {
+    const el = document.getElementById("tf-" + t);
+    if (t === tf) { el.style.background = "#6366f1"; el.style.color = "#fff"; }
+    else          { el.style.background = "transparent"; el.style.color = "#444"; }
+  });
+  document.getElementById("kline-tf").textContent = tf;
+  document.getElementById("pm-tf").textContent = tf;
+}
+
+// ─── Regime gauge ────────────────────────
+function updateGauge(score) {
+  const color = score > 0.6 ? "#10b981" : score > 0.4 ? "#f59e0b" : "#ef4444";
+  const angleRad = (-90 + score * 180) * Math.PI / 180;
+  const x2 = 60 + 36 * Math.cos(angleRad);
+  const y2 = 62 + 36 * Math.sin(angleRad);
+  document.getElementById("gauge-arc").setAttribute("stroke-dasharray", (score * 157) + " 157");
+  document.getElementById("gauge-needle").setAttribute("x2", x2.toFixed(2));
+  document.getElementById("gauge-needle").setAttribute("y2", y2.toFixed(2));
+  document.getElementById("gauge-needle").setAttribute("stroke", color);
+  document.getElementById("gauge-dot").setAttribute("fill", color);
+  const scoreEl = document.getElementById("regime-score");
+  scoreEl.style.color = color;
+  scoreEl.textContent = score.toFixed(2);
+}
+
+// ─── Countdown ───────────────────────────
+function updateCountdown() {
+  const m = Math.floor(countdown / 60);
+  const s = countdown % 60;
+  const el = document.getElementById("countdown");
+  el.textContent = m + ":" + s.toString().padStart(2, "0");
+  el.style.color = countdown < 60 ? "#ef5350" : "#888";
+}
+
+// ─── Render strategy table ───────────────
+function renderStratTable() {
+  document.getElementById("strat-tbody").innerHTML = STRATS.map(st => {
+    const typeShort = TM[st.type]?.short || "";
+    const pnlColor = st.pnl > 0 ? "#26a69a" : st.pnl < 0 ? "#ef5350" : "#444";
+    const pnlText = st.pnl ? (st.pnl > 0 ? "+" : "") + st.pnl : "—";
+    const badgeColor = st.status === "running" ? "#26a69a" : "#ef5350";
+    const badgeText = st.status === "running" ? "▶" : "■";
+    return `<tr style="border-bottom:1px solid #0a0a18">
+      <td style="padding:3px 6px"><span style="font-size:7px;padding:1px 4px;border-radius:2px;background:${badgeColor}15;color:${badgeColor};font-weight:600">${badgeText}</span></td>
+      <td style="padding:3px 6px;color:#bbb;font-weight:600">${st.name}</td>
+      <td style="padding:3px 6px"><div style="width:10px;height:10px;border-radius:2px;background:${st.color}"></div></td>
+      <td style="padding:3px 6px;color:#666">${typeShort}</td>
+      <td style="padding:3px 6px;font-family:var(--m);color:#555">${st.status === "running" ? "16:25:30" : "—"}</td>
+      <td style="padding:3px 6px;font-family:var(--m);color:#555">${st.trades || "—"}</td>
+      <td style="padding:3px 6px;font-family:var(--m);color:#555">${st.winRate ? st.winRate + "%" : "—"}</td>
+      <td style="padding:3px 6px;font-family:var(--m);font-weight:600;color:${pnlColor}">${pnlText}</td>
+      <td style="padding:3px 6px"><span style="cursor:pointer;color:#444;font-size:11px">⚙</span></td>
+    </tr>`;
+  }).join("");
+}
+
+// ─── Render log ──────────────────────────
+function renderLog(items) {
+  document.getElementById("log-area").innerHTML = items.map((lg, i) => {
+    const aColor = lg.a === "下单" ? "#26a69a" : lg.a === "撤单" ? "#f59e0b" : lg.a === "成交" ? "#0ea5e9" : "#555";
+    return `<div style="display:flex;align-items:center;gap:8px;padding:1px 6px;font-size:8px;opacity:${(1 - i * 0.12).toFixed(2)}">
+      <span style="color:#1a1a2e;font-family:var(--m);width:48px;flex-shrink:0">${lg.ts}</span>
+      <span style="color:${lg.c};font-weight:600;width:30px;flex-shrink:0">${lg.st}</span>
+      <span style="font-size:7px;padding:1px 4px;border-radius:2px;background:${aColor}15;color:${aColor};font-weight:600">${lg.a}</span>
+      <span style="color:#444;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${lg.d}</span>
+    </div>`;
+  }).join("");
+}
+
+// ─── Render order book ───────────────────
+function renderBook(bookData) {
+  document.getElementById("asks-area").innerHTML = bookData.asks.map(a => {
+    const w = Math.min(80, parseInt(a.s) / 25);
+    return `<div style="display:flex;justify-content:space-between;padding:1px 0;position:relative">
+      <div style="position:absolute;right:0;top:0;bottom:0;width:${w}%;background:#ef535006"></div>
+      <span style="color:#ef5350;font-size:9px;font-family:var(--m);position:relative">${a.p}${a.mine ? '<span style="color:#6366f1;font-size:6px;margin-left:1px">●</span>' : ''}</span>
+      <span style="color:#444;font-size:9px;font-family:var(--m);position:relative">${a.s}</span>
+    </div>`;
+  }).join("");
+  document.getElementById("bids-area").innerHTML = bookData.bids.map(b => {
+    const w = Math.min(80, parseInt(b.s) / 25);
+    return `<div style="display:flex;justify-content:space-between;padding:1px 0;position:relative">
+      <div style="position:absolute;right:0;top:0;bottom:0;width:${w}%;background:#26a69a06"></div>
+      <span style="color:#26a69a;font-size:9px;font-family:var(--m);position:relative">${b.p}${b.mine ? '<span style="color:#6366f1;font-size:6px;margin-left:1px">●</span>' : ''}</span>
+      <span style="color:#444;font-size:9px;font-family:var(--m);position:relative">${b.s}</span>
+    </div>`;
+  }).join("");
+}
+
+// ─── Render orders ───────────────────────
+function renderOrders(list) {
+  document.getElementById("orders-area").innerHTML =
+    '<div style="color:#2a2a40;font-size:7px;font-weight:600;margin-bottom:2px">我的挂单</div>' +
+    list.slice(0, 4).map(o =>
+      `<div style="display:flex;justify-content:space-between;margin-bottom:1px">
+        <span style="color:${o.sd === "BID" ? "#26a69a" : "#ef5350"};font-size:8px;font-family:var(--m)">${o.sd} ${o.p}</span>
+        <span style="color:#333;font-size:8px;font-family:var(--m)">${o.age}</span>
+      </div>`
+    ).join("");
+}
+
+// ─── Render strategy legend ───────────────
+function renderStratLegend() {
+  document.getElementById("strat-legend").innerHTML = STRATS.filter(s => s.status === "running").map(st =>
+    `<div style="display:flex;align-items:center;gap:4px;margin-bottom:1px">
+      <svg width="8" height="7" viewBox="0 0 8 7"><polygon points="4,0 0,7 8,7" fill="${st.color}"/></svg>
+      <span style="color:#333;font-size:7px">${st.name}</span>
+    </div>`
+  ).join("");
+}
+
+// ─── Polling ─────────────────────────────
+const API = "http://localhost:53123";
+
+async function pollBook() {
+  try {
+    const res = await fetch(API + "/book/snapshot");
+    if (!res.ok) return;
+    const data = await res.json();
+    const asks = (data.asks || []).slice(0, 5).map(r => ({p: parseFloat(r[0]).toFixed(3), s: String(r[1])}));
+    const bids = (data.bids || []).slice(0, 5).map(r => ({p: parseFloat(r[0]).toFixed(3), s: String(r[1])}));
+    if (asks.length || bids.length) renderBook({asks, bids});
+    if (data.mid != null) {
+      document.getElementById("mid-price").innerHTML =
+        `<span style="color:#ddd;font-size:13px;font-weight:700;font-family:var(--m)">${parseFloat(data.mid).toFixed(3)}</span>` +
+        `<span style="color:#222;font-size:7px;margin-left:4px">spread ${data.spread != null ? parseFloat(data.spread).toFixed(3) : "—"}</span>`;
+    }
+  } catch (_) {}
+}
+
+async function pollInstances() {
+  try {
+    const res = await fetch(API + "/ui/instances");
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data.ok && Array.isArray(data.data) && data.data.length > 0) {
+      const inst = data.data[0];
+      if (inst.regime_score != null) { currentScore = inst.regime_score; updateGauge(currentScore); }
+    }
+  } catch (_) {}
+}
+
+async function pollOrders() {
+  try {
+    const res = await fetch(API + "/trading/orders");
+    if (!res.ok) return;
+    const data = await res.json();
+    if (Array.isArray(data) && data.length > 0) renderOrders(data);
+  } catch (_) {}
+}
+
+// ─── Timer loop ──────────────────────────
+setInterval(() => {
+  countdown = countdown <= 0 ? 300 : countdown - 1;
+  updateCountdown();
+  currentScore = Math.max(0, Math.min(1, currentScore + (Math.random() - 0.5) * 0.04));
+  updateGauge(currentScore);
+}, 1000);
+
+setInterval(pollBook, 2000);
+setInterval(pollInstances, 5000);
+setInterval(pollOrders, 5000);
+
+// ─── Init ────────────────────────────────
+renderStratTable();
+renderLog(LOGS);
+renderBook(BOOK);
+renderOrders(ORDERS);
+renderStratLegend();
+updateGauge(currentScore);
+updateCountdown();
 </script>
 </body>
 </html>
