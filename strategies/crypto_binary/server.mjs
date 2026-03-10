@@ -13,6 +13,7 @@ import { logger, EVENTS } from './logger.mjs';
 import { getDb } from './db.mjs';
 import { initManualTrade, submitManualOrder, getManualStats } from './manual_trade.mjs';
 import { publish, subscribe, unsubscribe, EVENT_TYPES } from './event_bus.mjs';
+import { getAttribution, getLossModes, getSensitivity, getDistribution, getCompare } from './postmortem_api.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -81,7 +82,7 @@ function sendJson(res, data, status = 200) {
   res.end(JSON.stringify(data));
 }
 
-const server = createServer((req, res) => {
+const server = createServer(async (req, res) => {
   // CORS headers for local UI (file:// → localhost)
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -250,6 +251,60 @@ const server = createServer((req, res) => {
     } catch (e) {
       sendJson(res, { error: e.message }, 500);
     }
+    return;
+  }
+
+  // ── 复盘分析端点（UI-M4）──────────────────────────────────
+
+  // GET /postmortem/attribution
+  if (req.method === 'GET' && req.url === '/postmortem/attribution') {
+    try {
+      if (!db) { sendJson(res, { error: 'db not ready' }, 503); return; }
+      sendJson(res, await getAttribution(db));
+    } catch (e) { sendJson(res, { error: e.message }, 500); }
+    return;
+  }
+
+  // GET /postmortem/loss-modes
+  if (req.method === 'GET' && req.url === '/postmortem/loss-modes') {
+    try {
+      if (!db) { sendJson(res, { error: 'db not ready' }, 503); return; }
+      sendJson(res, await getLossModes(db));
+    } catch (e) { sendJson(res, { error: e.message }, 500); }
+    return;
+  }
+
+  // GET /postmortem/sensitivity
+  if (req.method === 'GET' && req.url === '/postmortem/sensitivity') {
+    try {
+      if (!db) { sendJson(res, { error: 'db not ready' }, 503); return; }
+      sendJson(res, await getSensitivity(db));
+    } catch (e) { sendJson(res, { error: e.message }, 500); }
+    return;
+  }
+
+  // GET /postmortem/distribution
+  if (req.method === 'GET' && req.url === '/postmortem/distribution') {
+    try {
+      if (!db) { sendJson(res, { error: 'db not ready' }, 503); return; }
+      sendJson(res, await getDistribution(db));
+    } catch (e) { sendJson(res, { error: e.message }, 500); }
+    return;
+  }
+
+  // GET /postmortem/compare?ids=s1,s2
+  if (req.method === 'GET' && req.url.startsWith('/postmortem/compare')) {
+    const parsedUrl = new URL(req.url, 'http://localhost');
+    const ids = (parsedUrl.searchParams.get('ids') ?? '').split(',').filter(Boolean);
+    if (ids.length === 0) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'ids query param required' }));
+      return;
+    }
+    try {
+      if (!db) { sendJson(res, { error: 'db not ready' }, 503); return; }
+      sendJson(res, await getCompare(db, ids));
+    } catch (e) { sendJson(res, { error: e.message }, 500); }
     return;
   }
 
