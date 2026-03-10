@@ -1,45 +1,228 @@
-=== HEADER ===
+Trae Task Report
+Task ID: 260310_003
 Header: TraeTask_260310_003
-task_id: 260310_003
-mode: LOCAL
-commit: 8c39e64be1a75cb38564f1d76bcc8f61365f75a8
-
-RESULT_JSON
-{"task_id":"260310_003","status":"DONE","summary":"Complete rewrite of ui/btcqdd.html strictly following btcqdd_final_v2.jsx: 3-column TradingHall layout (left 180px / center flex:1 / right 164px), Regime SVG gauge, countdown, order book, strategy table, log, coin dropdown, TF switcher, tab switching, API polling."}
-
-LOG_HEAD
-[260310_003] UI Rewrite 1/2 — btcqdd.html complete rewrite to match btcqdd_final_v2.jsx
+Date: 2026-03-10T17:12:54.390Z
 Branch: 260310_003
-Commit: 8c39e64b
-Generated: 2026-03-10T17:11:40.553Z
+Commit: 4b7c710a14bafb73a780a57dd646b7d4565530a9
 
-LOG_TAIL
-Task 260310_003 completed successfully.
+
+=== RESULT_JSON ===
+(See result_260310_003.json)
+
+=== LOG_HEAD ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260310_003
+PR_TASK_ID_DETECTED=260310_003
+TARGET_TASK_ID=260310_003
+LATEST_TASK_ID=260310_003
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] Verifying task_id: 260310_003
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Report Block Check Passed: notify_260310_003.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260310_003.txt
+[Gate Light] Header Check Passed: TraeTask_260310_003
+[Gate Light] Checking Workspace Healer Evidence...
+[Gate Light] Workspace Healer verified (Clean Environment).
+[Gate Light] Skipping Error Digest Validation (Preview Mode).
+[Gate Light] Checking doc path standards...
+[Gate Light] Doc path standards verified.
+[Gate Light] Checking for legacy doc path references...
+[CheckDocPathRefs] Scanning for legacy doc path references...
+[CheckDocPathRefs] PASS: No legacy doc path references found.
+[Gate Light] Checking for banned cmd syntax in PowerShell scripts...
+...
+
+=== LOG_TAIL ===
+...
+[Gate Light] Checking Deletion Audit (Locks & Runs)...
+[Gate Light] Deletion Audit: No lock/index yet (Assuming Pre-Integrate or First Run in progress).
+[Gate Light] Checking No Auto-Merge (Git Forbidden Commands)...
+[Gate Light] No Auto-Merge verified.
+[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
+[Gate Light] Fetching origin/main history for diff context...
+[Gate Light] Allowed legacy task_id (transition): 260310_002
+[Gate Light] NoHistoricalEvidenceTouch verified.
+[Gate Light] Skipping SnippetCommitMustMatch check (Preview Mode).
+[Gate Light] Checking Rank V2 Contract Version Guard...
+[Gate Light] Base Commit: b92b68b3ba8594f0964f454086de7389611513ff
+[Gate Light] Schema Unchanged (3bd83a08). Version check skipped.
+[Gate Light] Rank V2 Contract Version Guard PASS
+[Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...
+[Gate Light] Immutable Integrate & SafeCmd Enforcement verified.
+[Gate Light] Checking Scope Lock...
+[Gate Light] Scope Lock verified (9 files, all within scope).
+[Gate Light] BTCQDD Healthcheck: PASS
+[Gate Light] Skipping Postflight Envelope Validation (Preview Mode).
+[Gate Light] PASS
 
 === DOD_EVIDENCE_STDOUT ===
 TASK_ID=260310_003
-GENERATED_AT=2026-03-10T17:11:40.553Z
+GENERATED_AT=2026-03-10T17:12:42.912Z
 
 # DoD Markers
-DOD_TRADING_HALL=3-column flex layout: left 180px / center flex:1 / right 164px, matching btcqdd_final_v2.jsx TradingHall()
-DOD_TOPBAR=height:36px, BTCQDD logo BTC=#6366f1 QDD=#2a2a40, 3 tabs with active highlight, 模拟badge, $1000, 登录
-DOD_REGIME_GAUGE=SVG semi-arc M10 65 A50 50 0 0 1 110 65, needle angle=(-90+score*180)*PI/180, gradient red→amber→green
-DOD_LEFT_PANEL=手动交易 Buy/Sell tab + Up/Down price + amount input + quick buttons + Buy btn + 手动盈亏 + 市场状态 + Connection
-DOD_CENTER=coin dropdown + K-line placeholder + TF selector (5M/15M/1H/4H/1D) + PM curve placeholder + strategy table + log
-DOD_RIGHT=ask/bid order book with depth bars + mid price + 我的挂单 + strategy legend triangles
-DOD_POLLING=pollBook every 2s, pollInstances+pollOrders every 5s, countdown+regime ticker every 1s
-DOD_PLACEHOLDER_PAGES=策略实验室 and 通用设置 render placeholder text for next capsule
+DOD_TRADING_HALL=3-column flex layout matching btcqdd_final_v2.jsx TradingHall()
+DOD_TOPBAR=height:36px topbar with tabs, 模拟badge, $1000, 登录
+DOD_REGIME_GAUGE=SVG gauge with gradient arc and animated needle
+DOD_LEFT_PANEL=手动交易+盈亏+市场状态+连接状态 all present
+DOD_CENTER=coin dropdown+K-line+TF+PM+strategy table+log all present
+DOD_RIGHT=订单簿 ask/bid + 我的挂单 + strategy legend
+DOD_POLLING=2s book, 5s instances/orders, 1s countdown/regime
+DOD_PLACEHOLDER_PAGES=策略实验室 and 通用设置 placeholders present
+
+GATE_LIGHT_EXIT=0
+===========================
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260310_003_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_SITE_HEALTH_ROOT_53122: 260310_003_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260310_003_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_SITE_HEALTH_PAIRS_53122: 260310_003_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+
+=== CI_PARITY_PREVIEW ===
+Base: b92b68b3ba8594f0964f454086de7389611513ff
+Head: 4b7c710a14bafb73a780a57dd646b7d4565530a9
+MergeBase: b92b68b3ba8594f0964f454086de7389611513ff
+Source: JSON (Evidence-as-Code)
+Scope: 9 files
+Files (Top 3):
+  - rules/task-reports/2026-03/ci_parity_260310_003.json
+  - rules/task-reports/2026-03/dod_evidence_260310_003.txt
+  - rules/task-reports/2026-03/generate_evidence_260310_003.mjs
+...
+=========================
+
+=== WORKSPACE_HEALER ===
+Result: PASS
+Mode: EnforceClean
+Tracked Changed: 0
+Untracked: 0
+========================
+
+=== OPEN_PR_GUARD ===
+Status: PASS
+Blocking PRs: 0
+(None)
+=====================
+
+
 
 === GATE_LIGHT_PREVIEW ===
-GATE_LIGHT_EXIT=0
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260310_003
+PR_TASK_ID_DETECTED=260310_003
+TARGET_TASK_ID=260310_003
+LATEST_TASK_ID=260310_003
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] Verifying task_id: 260310_003
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Report Block Check Passed: notify_260310_003.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260310_003.txt
+[Gate Light] Header Check Passed: TraeTask_260310_003
+[Gate Light] Checking Workspace Healer Evidence...
+[Gate Light] Workspace Healer verified (Clean Environment).
+[Gate Light] Skipping Error Digest Validation (Preview Mode).
+[Gate Light] Checking doc path standards...
+[Gate Light] Doc path standards verified.
+[Gate Light] Checking for legacy doc path references...
+[CheckDocPathRefs] Scanning for legacy doc path references...
+[CheckDocPathRefs] PASS: No legacy doc path references found.
+[Gate Light] Checking for banned cmd syntax in PowerShell scripts...
+Starting static scan for banned cmd syntax in .ps1 files...
+Scanning targets: scripts/run_task.ps1, scripts/test_fail_budget.ps1, scripts/ps/Invoke-Step.ps1
+Static scan PASSED.
+[Gate Light] Checking for global healthcheck artifacts...
+[Gate Light] Global Artifact Guard verified.
+[Gate Light] Checking News Pull API Contract...
+[Contract Check] Loading schema from: E:\OppRadar\OppRadar\contracts\news_pull_response.schema.json
+[Contract Check] Validating Success Sample...
+PASS
+[Contract Check] Validating Error Sample...
+PASS
+[Contract Check] All samples validated against schema.
+[Gate Light] Checking Rank V2 API Contract...
+=== Rank V2 Contract Verification ===
+Schema loaded.
+Server already running.
+Fetching http://localhost:53122/opportunities/rank_v2?provider=mock&limit=5&run_id=verify_rank_v2...
+Received 3 items.
+Validating against schema...
+Schema Validation PASSED.
+Response Hash: 12827176
+::set-output name=rank_v2_hash::12827176
+VERIFICATION_SUCCESS
+[Gate Light] Checking Export V1 API Contract...
+=== Export V1 Contract Verification ===
+Schema loaded.
+Server already running.
+Generating Run assets via http://localhost:53122/scans/run...
+Run assets generated. Run ID: sc_9be2d8e1
+Fetching Export: http://localhost:53122/opportunities/runs/export_v1?run_id=sc_9be2d8e1...
+Received Export JSON.
+Validating against schema...
+Export Schema Validation PASSED.
+Export Hash: df6fa318
+::set-output name=export_v1_hash::df6fa318
+EXPORT_CONTRACT_VERIFICATION_SUCCESS
+[Gate Light] Checking Ledger V0 API Contract...
+=== Ledger V0 Contract Verification ===
+Schema loaded.
+Server already running.
+Fetching /opportunities/ledger/query_v0?limit=1...
+Validating against schema...
+Validation PASSED.
+[Gate Light] Checking Scanner API Contract...
+[Gate Light] Scanner runs contract: PASS
+[Gate Light] Checking Universe API Contract...
+[Gate Light] Universe runs contract: PASS
+[Gate Light] Checking Trading Routes API Contract...
+[Gate Light] Trading orders contract: PASS
+[Gate Light] Trading orders 404 contract: PASS
+[Gate Light] Trading kill contract: PASS
+[Gate Light] Checking healthcheck evidence...
+[Gate Light] Using evidence directory: E:\OppRadar\rules\task-reports\2026-03
+[Gate Light] Healthcheck evidence verified (Path + Content).
+[Gate Light] Skipping DoD Evidence Excerpt Check (Preview Mode).
+[Gate Light] Checking Deletion Audit (Locks & Runs)...
+[Gate Light] Deletion Audit: No lock/index yet (Assuming Pre-Integrate or First Run in progress).
+[Gate Light] Checking No Auto-Merge (Git Forbidden Commands)...
+[Gate Light] No Auto-Merge verified.
+[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
+[Gate Light] Fetching origin/main history for diff context...
+[Gate Light] Allowed legacy task_id (transition): 260310_002
+[Gate Light] NoHistoricalEvidenceTouch verified.
+[Gate Light] Skipping SnippetCommitMustMatch check (Preview Mode).
+[Gate Light] Checking Rank V2 Contract Version Guard...
+[Gate Light] Base Commit: b92b68b3ba8594f0964f454086de7389611513ff
+[Gate Light] Schema Unchanged (3bd83a08). Version check skipped.
+[Gate Light] Rank V2 Contract Version Guard PASS
+[Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...
+[Gate Light] Immutable Integrate & SafeCmd Enforcement verified.
+[Gate Light] Checking Scope Lock...
+[Gate Light] Scope Lock verified (9 files, all within scope).
+[Gate Light] BTCQDD Healthcheck: PASS
+[Gate Light] Skipping Postflight Envelope Validation (Preview Mode).
+[Gate Light] PASS
 ==========================
 
-INDEX
-notify_260310_003.txt
-result_260310_003.json
-git_meta_260310_003.json
-dod_evidence_260310_003.txt
-trae_report_snippet_260310_003.txt
-gate_light_preview_260310_003.log
+=== ERROR_STATS_INDEX ===
+{"task_id":"260310_003","run_id":"20260311011253_4b7c710","commit":"4b7c710a14bafb73a780a57dd646b7d4565530a9","ts":"2026-03-10T17:12:53.665Z","mode":"Integrate","error_class":"NO_ERROR","severity":"INFO","message":"No errors found.","hint":""}
+=========================
+
+=== ERROR_SUMMARY ===
+TASK_ID: 260310_003
+COMMIT: 4b7c710a14bafb73a780a57dd646b7d4565530a9
+TOTAL_ERRORS: 0
+MODE: Integrate
+CONTRACT_SELF_CHECK_EXIT: N/A
+CONTRACT_SELF_CHECK_LINES: N/A
+
+TOP ERROR CLASSES:
+None
+
+TOP ERROR TIERS:
+None
+
+Errors (First 5):
+=====================
 
 GATE_LIGHT_EXIT=0
+[Generated by scripts/assemble_evidence.mjs]
