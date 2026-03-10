@@ -29,7 +29,7 @@ function sl_stat(l, v, c = "#ccc") {
   return `<div class="stat-card"><div class="stat-label">${l}</div><div class="stat-value" style="color:${c}">${v}</div></div>`;
 }
 
-function sl_mlc(title, series, h = 110) {
+function sl_mlc(title, series, h = 220) {
   const w = 440, pad = {t:12, r:40, b:18, l:4};
   const cw = w - pad.l - pad.r, ch = h - pad.t - pad.b;
   const all = series.flatMap(s => s.data);
@@ -50,21 +50,21 @@ function sl_mlc(title, series, h = 110) {
   const legend = series.map(s => {
     const lastVal = s.data[s.data.length - 1];
     const fmt = s.fmt ? s.fmt(lastVal) : "";
-    return `<div style="display:flex;align-items:center;gap:4px">
-      <div style="width:8px;height:2px;background:${s.color};border-radius:1px"></div>
-      <span style="color:#444;font-size:7px">${s.name}</span>
-      <span style="color:${s.color};font-size:7px;font-family:var(--m);font-weight:600">${fmt}</span>
+    return `<div style="display:flex;align-items:center;gap:8px">
+      <div style="width:16px;height:4px;background:${s.color};border-radius:2px"></div>
+      <span style="color:#444;font-size:14px">${s.name}</span>
+      <span style="color:${s.color};font-size:14px;font-family:var(--m);font-weight:600">${fmt}</span>
     </div>`;
   }).join("");
-  return `<div style="margin-bottom:8px">
-    ${title ? `<div style="color:#555;font-size:9px;font-weight:700;margin-bottom:2px">${title}</div>` : ""}
+  return `<div style="margin-bottom:16px">
+    ${title ? `<div style="color:#555;font-size:18px;font-weight:700;margin-bottom:4px">${title}</div>` : ""}
     <svg width="100%" height="${h}" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">
       <rect x="${pad.l}" y="${pad.t}" width="${cw}" height="${ch}" fill="#08081a" rx="2"/>
       ${zeroLine}
       ${polylines}
       ${dots}
     </svg>
-    <div style="display:flex;gap:12px;justify-content:center;margin-top:1px">${legend}</div>
+    <div style="display:flex;gap:24px;justify-content:center;margin-top:2px">${legend}</div>
   </div>`;
 }
 
@@ -74,15 +74,15 @@ function sl_slider(id, label, value, min, max, step, unit = "", disabled = false
   const dis = disabled ? " disabled" : "";
   return `<div class="slider-wrap${dis}">
     <div style="display:flex;justify-content:space-between;margin-bottom:2px">
-      <span style="color:#666;font-size:10px">${label}</span>
-      <span id="${id}-val" style="color:#aaa;font-size:10px;font-family:var(--m);font-weight:600">${dispVal}${unit}</span>
+      <span style="color:#666;font-size:20px">${label}</span>
+      <span id="${id}-val" style="color:#aaa;font-size:20px;font-family:var(--m);font-weight:600">${dispVal}${unit}</span>
     </div>
     <div class="slider-track">
       <div class="slider-bg"></div>
       <div id="${id}-fill" class="slider-fill${dis}" style="width:${pct}%"></div>
       ${!disabled ? `<input class="slider-input" type="range" min="${min}" max="${max}" step="${step}" value="${value}"
         oninput="sl_onSlider('${id}',this.value,${min},${max},'${unit}',${step < 1})">` : ""}
-      <div id="${id}-thumb" class="slider-thumb${dis}" style="left:calc(${pct}% - 6px)"></div>
+      <div id="${id}-thumb" class="slider-thumb${dis}" style="left:calc(${pct}% - 12px)"></div>
     </div>
   </div>`;
 }
@@ -96,7 +96,7 @@ function sl_onSlider(id, val, min, max, unit, isFloat) {
   const thumbEl = document.getElementById(id + "-thumb");
   if (valEl) valEl.textContent = dispVal + unit;
   if (fillEl) fillEl.style.width = pct + "%";
-  if (thumbEl) thumbEl.style.left = `calc(${pct}% - 6px)`;
+  if (thumbEl) thumbEl.style.left = `calc(${pct}% - 12px)`;
   // update state for edit sliders
   if (id === "sl-offset") { sl_offset = v; sl_updateInfluence(); }
   if (id === "sl-tranches") { sl_tranches = v; sl_updateInfluence(); }
@@ -113,11 +113,11 @@ function sl_updateInfluence() {
   const el = document.getElementById("sl-influence-rows");
   if (!el) return;
   el.innerHTML = rows.map(r =>
-    `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid #0a0a18">
-      <span style="color:#888;font-size:10px">${r.l}</span>
-      <div style="display:flex;align-items:center;gap:8px">
-        <span style="color:${r.c};font-size:14px;font-weight:800">${r.dir}</span>
-        <span style="color:#444;font-size:9px">${r.d}</span>
+    `<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:2px solid #0a0a18">
+      <span style="color:#888;font-size:20px">${r.l}</span>
+      <div style="display:flex;align-items:center;gap:16px">
+        <span style="color:${r.c};font-size:28px;font-weight:800">${r.dir}</span>
+        <span style="color:#444;font-size:18px">${r.d}</span>
       </div>
     </div>`
   ).join("");
@@ -129,44 +129,44 @@ function sl_renderSidebar() {
   if (!el) return;
   if (sl_sub === "compare") {
     el.innerHTML = `
-      <div style="padding:8px 10px;color:#2a2a40;font-size:8px;font-weight:600;letter-spacing:1px">勾选对比</div>
+      <div style="padding:16px 20px;color:#2a2a40;font-size:16px;font-weight:600;letter-spacing:1px">勾选对比</div>
       ${SL_STRATS.map(s => {
         const on = sl_checked.includes(s.id);
-        return `<div onclick="sl_toggleCheck('${s.id}')" style="padding:6px 10px;cursor:pointer;display:flex;align-items:center;gap:6px;background:${on ? "#0e0e22" : "transparent"}">
-          <div style="width:13px;height:13px;border-radius:3px;border:1.5px solid ${on ? s.color : "#1a1a2e"};background:${on ? s.color + "20" : "transparent"};
+        return `<div onclick="sl_toggleCheck('${s.id}')" style="padding:12px 20px;cursor:pointer;display:flex;align-items:center;gap:12px;background:${on ? "#0e0e22" : "transparent"}">
+          <div style="width:26px;height:26px;border-radius:6px;border:3px solid ${on ? s.color : "#1a1a2e"};background:${on ? s.color + "20" : "transparent"};
             display:flex;align-items:center;justify-content:center;flex-shrink:0">
-            ${on ? `<span style="color:${s.color};font-size:9px;font-weight:800">✓</span>` : ""}
+            ${on ? `<span style="color:${s.color};font-size:18px;font-weight:800">✓</span>` : ""}
           </div>
           <div>
-            <div style="display:flex;align-items:center;gap:4px">
-              <div style="width:5px;height:5px;border-radius:1px;background:${s.color}"></div>
-              <span style="color:${on ? "#ccc" : "#555"};font-size:10px;font-weight:600">${s.name}</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="width:10px;height:10px;border-radius:2px;background:${s.color}"></div>
+              <span style="color:${on ? "#ccc" : "#555"};font-size:20px;font-weight:600">${s.name}</span>
             </div>
-            <span style="color:#2a2a40;font-size:8px">${s.pnl > 0 ? "+" : ""}${s.pnl}</span>
+            <span style="color:#2a2a40;font-size:16px">${s.pnl > 0 ? "+" : ""}${s.pnl}</span>
           </div>
         </div>`;
       }).join("")}
-      <div style="padding:6px 10px;color:#2a2a40;font-size:8px">已选 ${sl_checked.length}</div>`;
+      <div style="padding:12px 20px;color:#2a2a40;font-size:16px">已选 ${sl_checked.length}</div>`;
   } else {
     el.innerHTML = `
-      <div style="padding:8px 10px;color:#2a2a40;font-size:8px;font-weight:600;letter-spacing:1px">选择策略</div>
+      <div style="padding:16px 20px;color:#2a2a40;font-size:16px;font-weight:600;letter-spacing:1px">选择策略</div>
       ${SL_STRATS.map(s => {
         const active = sl_sel === s.id;
         const pnlColor = s.pnl > 0 ? "#26a69a" : s.pnl < 0 ? "#ef5350" : "#2a2a40";
-        return `<div onclick="sl_setSel('${s.id}')" style="padding:6px 10px;cursor:pointer;
-          border-left:${active ? `3px solid ${s.color}` : "3px solid transparent"};background:${active ? "#0e0e22" : "transparent"}">
-          <div style="display:flex;align-items:center;gap:8px">
-            <div style="width:6px;height:6px;border-radius:1px;background:${s.color}"></div>
-            <span style="color:${active ? "#ccc" : "#666"};font-weight:600;font-size:10px">${s.name}</span>
+        return `<div onclick="sl_setSel('${s.id}')" style="padding:12px 20px;cursor:pointer;
+          border-left:${active ? `6px solid ${s.color}` : "6px solid transparent"};background:${active ? "#0e0e22" : "transparent"}">
+          <div style="display:flex;align-items:center;gap:16px">
+            <div style="width:12px;height:12px;border-radius:2px;background:${s.color}"></div>
+            <span style="color:${active ? "#ccc" : "#666"};font-weight:600;font-size:20px">${s.name}</span>
           </div>
           <div style="display:flex;justify-content:space-between">
-            <span style="color:#2a2a40;font-size:8px">${SL_TM[s.type]?.icon} ${SL_TM[s.type]?.short}</span>
-            <span style="font-family:var(--m);font-size:8px;color:${pnlColor}">${s.pnl ? (s.pnl > 0 ? "+" : "") + s.pnl : "—"}</span>
+            <span style="color:#2a2a40;font-size:16px">${SL_TM[s.type]?.icon} ${SL_TM[s.type]?.short}</span>
+            <span style="font-family:var(--m);font-size:16px;color:${pnlColor}">${s.pnl ? (s.pnl > 0 ? "+" : "") + s.pnl : "—"}</span>
           </div>
         </div>`;
       }).join("")}
-      <div style="padding:6px 10px">
-        <div style="text-align:center;padding:4px 0;border-radius:3px;background:#12122a;color:#444;font-size:9px;cursor:pointer">+ 新建</div>
+      <div style="padding:12px 20px">
+        <div style="text-align:center;padding:8px 0;border-radius:6px;background:#12122a;color:#444;font-size:18px;cursor:pointer">+ 新建</div>
       </div>`;
   }
 }
@@ -181,38 +181,38 @@ function sl_renderSubtabBar() {
     <div onclick="sl_setSub('postmortem')" class="subtab ${sl_sub === 'postmortem' ? 'active' : ''}">📋 交易复盘</div>
     <div onclick="sl_setSub('compare')" class="subtab ${sl_sub === 'compare' ? 'active' : ''}">⚡ 策略对比</div>
     ${sl_sub !== "compare" ? `<div style="flex:1"></div>
-      <div style="display:flex;align-items:center;gap:8px;padding:0 6px">
-        <div style="width:7px;height:7px;border-radius:2px;background:${st?.color}"></div>
-        <span style="font-weight:700;color:#ccc;font-size:12px">${st?.name}</span>
+      <div style="display:flex;align-items:center;gap:16px;padding:0 12px">
+        <div style="width:14px;height:14px;border-radius:4px;background:${st?.color}"></div>
+        <span style="font-weight:700;color:#ccc;font-size:24px">${st?.name}</span>
       </div>` : ""}`;
 }
 
 // ─── Edit content ─────────────────────────
 function sl_renderEdit() {
   const st = SL_STRATS.find(s => s.id === sl_sel);
-  return `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+  return `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
     <!-- 左卡：策略参数 -->
     <div class="card">
-      <div style="font-size:11px;font-weight:700;margin-bottom:10px;color:${st?.color}">${SL_TM[st?.type]?.icon} ${st?.name} 参数</div>
+      <div style="font-size:22px;font-weight:700;margin-bottom:20px;color:${st?.color}">${SL_TM[st?.type]?.icon} ${st?.name} 参数</div>
       ${sl_slider("sl-offset", "挂单偏移", sl_offset, 0.005, 0.10, 0.005)}
       ${sl_slider("sl-tranches", "档数", sl_tranches, 1, 5, 1)}
       ${sl_slider("sl-pairT", "配对成本目标", sl_pairT, 0.90, 0.99, 0.01)}
       ${sl_slider("sl-prob", "概率区间下界", 0.35, 0.10, 0.45, 0.05)}
       ${sl_slider("sl-refresh", "报价刷新", 0.01, 0.005, 0.05, 0.005)}
       ${sl_slider("sl-timeout", "配对超时", 300, 60, 600, 30, "s")}
-      <div style="margin-top:8px;text-align:center;padding:7px 0;border-radius:5px;font-size:11px;font-weight:700;background:linear-gradient(135deg,#6366f1,#0ea5e9);color:#fff;cursor:pointer">运行历史模拟</div>
+      <div style="margin-top:16px;text-align:center;padding:14px 0;border-radius:10px;font-size:22px;font-weight:700;background:linear-gradient(135deg,#6366f1,#0ea5e9);color:#fff;cursor:pointer">运行历史模拟</div>
     </div>
     <!-- 中卡：参数影响 -->
     <div class="card">
       <div class="section-title">📐 参数影响</div>
       <div id="sl-influence-rows"></div>
-      <div style="border-top:1px solid #12122a;padding-top:10px;margin-top:8px">
-        <div style="color:#555;font-size:10px;font-weight:600;margin-bottom:4px">敏感度</div>
+      <div style="border-top:2px solid #12122a;padding-top:20px;margin-top:16px">
+        <div style="color:#555;font-size:20px;font-weight:600;margin-bottom:8px">敏感度</div>
         ${[{v:"0.01",pnl:18},{v:"0.02",pnl:47},{v:"0.03",pnl:52},{v:"0.05",pnl:31}].map(r => {
           const best = 52;
-          return `<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #08081a;background:${r.pnl === best ? "#26a69a06" : "transparent"}">
-            <span style="font-family:var(--m);color:#aaa;font-size:10px">${r.v}</span>
-            <span style="font-family:var(--m);color:#26a69a;font-size:10px;font-weight:700">+${r.pnl}${r.pnl === best ? '<span style="color:#f59e0b;margin-left:2px;font-size:7px">★</span>' : ""}</span>
+          return `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:2px solid #08081a;background:${r.pnl === best ? "#26a69a06" : "transparent"}">
+            <span style="font-family:var(--m);color:#aaa;font-size:20px">${r.v}</span>
+            <span style="font-family:var(--m);color:#26a69a;font-size:20px;font-weight:700">+${r.pnl}${r.pnl === best ? '<span style="color:#f59e0b;margin-left:4px;font-size:14px">★</span>' : ""}</span>
           </div>`;
         }).join("")}
       </div>
@@ -220,16 +220,16 @@ function sl_renderEdit() {
     <!-- 右卡：模拟结果 -->
     <div class="card">
       <div class="section-title">🧪 模拟结果</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
         ${sl_stat("成交率", "62%")}${sl_stat("平均Edge", "1.3%", "#26a69a")}
         ${sl_stat("模拟PnL", "+$214", "#26a69a")}${sl_stat("最大回撤", "-6.2%", "#ef5350")}
       </div>
-      <div style="color:#444;font-size:10px;font-weight:600;margin-bottom:4px">PnL 曲线</div>
+      <div style="color:#444;font-size:20px;font-weight:600;margin-bottom:8px">PnL 曲线</div>
       <svg width="100%" height="60" viewBox="0 0 200 60"><rect width="200" height="60" fill="#08081a" rx="2"/>
         <polyline fill="none" stroke="#26a69a" stroke-width="1.2" points="0,48 20,45 40,40 60,35 80,32 100,28 120,30 140,22 160,18 180,15 200,10"/></svg>
-      <div style="display:flex;gap:8px;margin-top:10px">
-        <div style="flex:1;text-align:center;padding:5px 0;border-radius:4px;font-size:10px;font-weight:600;background:#26a69a15;color:#26a69a;cursor:pointer">→ 部署运行</div>
-        <div style="text-align:center;padding:5px 8px;border-radius:4px;font-size:9px;background:#12122a;color:#555;cursor:pointer">导出</div>
+      <div style="display:flex;gap:16px;margin-top:20px">
+        <div style="flex:1;text-align:center;padding:10px 0;border-radius:8px;font-size:20px;font-weight:600;background:#26a69a15;color:#26a69a;cursor:pointer">→ 部署运行</div>
+        <div style="text-align:center;padding:10px 16px;border-radius:8px;font-size:18px;background:#12122a;color:#555;cursor:pointer">导出</div>
       </div>
     </div>
   </div>`;
@@ -262,16 +262,16 @@ function sl_renderPostmortem() {
   const stColor = st?.color || "#10b981";
 
   return `<div>
-    <div style="background:#0b0b1a;border-radius:6px;padding:10px 14px;border:1px solid #12122a;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between">
-      <div style="display:flex;align-items:center;gap:8px">
-        <div style="width:8px;height:8px;border-radius:2px;background:${stColor}"></div>
-        <span style="font-size:14px;font-weight:800;color:#ddd">${st?.name}</span>
+    <div style="background:#0b0b1a;border-radius:12px;padding:20px 28px;border:2px solid #12122a;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:16px">
+        <div style="width:16px;height:16px;border-radius:4px;background:${stColor}"></div>
+        <span style="font-size:28px;font-weight:800;color:#ddd">${st?.name}</span>
         ${sl_bdg("BTC 15M", stColor)}
-        <span style="color:#333;font-size:9px">· ${st?.trades} 次</span>
+        <span style="color:#333;font-size:18px">· ${st?.trades} 次</span>
       </div>
-      <div style="padding:3px 8px;border-radius:3px;font-size:9px;background:#6366f115;color:#6366f1;cursor:pointer">修改参数</div>
+      <div style="padding:6px 16px;border-radius:6px;font-size:18px;background:#6366f115;color:#6366f1;cursor:pointer">修改参数</div>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:12px">
+    <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:24px">
       ${sl_stat("总收益", `+$${st?.pnl}`, "#26a69a")}
       ${sl_stat("胜率", st?.winRate + "%", st?.winRate > 30 ? "#26a69a" : "#f59e0b")}
       ${sl_stat("Sharpe", "1.82")}
@@ -279,57 +279,57 @@ function sl_renderPostmortem() {
       ${sl_stat("成交率", "68%")}
       ${sl_stat("仓位", "$" + st?.avgPos)}
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px">
       <div class="card">
         <div class="section-title" style="color:#26a69a">💰 赚钱来源</div>
-        ${sources.map(s => `<div style="margin-bottom:6px">
+        ${sources.map(s => `<div style="margin-bottom:12px">
           <div style="display:flex;justify-content:space-between">
-            <span style="color:#aaa;font-size:10px;font-weight:600">${s.l}</span>
-            <span style="font-family:var(--m);font-size:11px;font-weight:700;color:${s.v >= 0 ? "#26a69a" : "#ef5350"}">${s.v >= 0 ? "+" : ""}${s.v}%</span>
+            <span style="color:#aaa;font-size:20px;font-weight:600">${s.l}</span>
+            <span style="font-family:var(--m);font-size:22px;font-weight:700;color:${s.v >= 0 ? "#26a69a" : "#ef5350"}">${s.v >= 0 ? "+" : ""}${s.v}%</span>
           </div>
-          <div style="height:4px;background:#08081a;border-radius:2px;overflow:hidden;margin-top:2px">
-            <div style="height:4px;width:${Math.max(2, Math.abs(s.v) * 5)}%;background:${s.v >= 0 ? "#26a69a50" : "#ef535050"};border-radius:2px"></div></div>
-          <div style="color:#222;font-size:8px;margin-top:1px">${s.d}</div>
+          <div style="height:8px;background:#08081a;border-radius:4px;overflow:hidden;margin-top:4px">
+            <div style="height:8px;width:${Math.max(2, Math.abs(s.v) * 5)}%;background:${s.v >= 0 ? "#26a69a50" : "#ef535050"};border-radius:4px"></div></div>
+          <div style="color:#222;font-size:16px;margin-top:2px">${s.d}</div>
         </div>`).join("")}
-        <div style="border-top:1px solid #12122a;padding-top:8px;margin-top:4px">
-          <div style="color:#444;font-size:9px;font-weight:600;margin-bottom:4px">按市场状态</div>
+        <div style="border-top:2px solid #12122a;padding-top:16px;margin-top:8px">
+          <div style="color:#444;font-size:18px;font-weight:600;margin-bottom:8px">按市场状态</div>
           ${[{l:"震荡",v:"+14.5%",c:"#26a69a"},{l:"中性",v:"+5.8%",c:"#26a69a"},{l:"趋势",v:"-2.1%",c:"#ef5350"}].map(r =>
-            `<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid #08081a">
-              <span style="color:#555;font-size:9px">${r.l}</span>
-              <span style="color:${r.c};font-family:var(--m);font-size:9px;font-weight:600">${r.v}</span>
+            `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:2px solid #08081a">
+              <span style="color:#555;font-size:18px">${r.l}</span>
+              <span style="color:${r.c};font-family:var(--m);font-size:18px;font-weight:600">${r.v}</span>
             </div>`).join("")}
         </div>
       </div>
       <div class="card">
         <div class="section-title" style="color:#ef5350">⚠️ 失败模式</div>
-        ${losses.map((lm, i) => `<div style="background:#08081a;border-radius:4px;padding:8px;margin-bottom:6px;border:1px solid #10102a">
-          <div style="display:flex;justify-content:space-between;margin-bottom:2px">
-            <span style="color:#bbb;font-size:10px;font-weight:700">${i+1}. ${lm.l}</span>
-            <span style="font-family:var(--m);font-size:12px;font-weight:800;color:#ef5350">${lm.pct}%</span>
+        ${losses.map((lm, i) => `<div style="background:#08081a;border-radius:8px;padding:16px;margin-bottom:12px;border:2px solid #10102a">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <span style="color:#bbb;font-size:20px;font-weight:700">${i+1}. ${lm.l}</span>
+            <span style="font-family:var(--m);font-size:24px;font-weight:800;color:#ef5350">${lm.pct}%</span>
           </div>
-          <div style="font-size:8px;color:#444;border-left:2px solid #ef535030;padding-left:6px">${lm.ex}</div>
+          <div style="font-size:16px;color:#444;border-left:4px solid #ef535030;padding-left:12px">${lm.ex}</div>
         </div>`).join("")}
       </div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
       <div class="card">
         <div class="section-title" style="color:#6366f1">🔬 参数敏感度</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px">
           ${sens.map(ps => {
             const best = Math.max(...ps.vals.map(v => v.pnl));
             return `<div>
-              <div style="color:#888;font-size:10px;font-weight:700;margin-bottom:4px">${ps.p}</div>
-              <table style="width:100%;border-collapse:collapse;font-size:9px">
-                <thead><tr style="border-bottom:1px solid #12122a">
-                  <th style="padding:2px 4px;text-align:left;color:#333;font-size:7px">值</th>
-                  <th style="padding:2px 4px;text-align:center;color:#333;font-size:7px">收益</th>
-                  <th style="padding:2px 4px;text-align:center;color:#333;font-size:7px">成交</th>
+              <div style="color:#888;font-size:20px;font-weight:700;margin-bottom:8px">${ps.p}</div>
+              <table style="width:100%;border-collapse:collapse;font-size:18px">
+                <thead><tr style="border-bottom:2px solid #12122a">
+                  <th style="padding:4px 8px;text-align:left;color:#333;font-size:14px">值</th>
+                  <th style="padding:4px 8px;text-align:center;color:#333;font-size:14px">收益</th>
+                  <th style="padding:4px 8px;text-align:center;color:#333;font-size:14px">成交</th>
                 </tr></thead>
                 <tbody>${ps.vals.map(r =>
-                  `<tr style="border-bottom:1px solid #08081a;background:${r.pnl === best ? "#26a69a06" : "transparent"}">
-                    <td style="padding:2px 4px;font-family:var(--m);color:#aaa">${r.v}</td>
-                    <td style="padding:2px 4px;text-align:center;font-family:var(--m);font-weight:700;color:#26a69a">+${r.pnl}${r.pnl === best ? '<span style="color:#f59e0b;margin-left:1px;font-size:6px">★</span>' : ""}</td>
-                    <td style="padding:2px 4px;text-align:center;font-family:var(--m);color:#666">${r.f}%</td>
+                  `<tr style="border-bottom:2px solid #08081a;background:${r.pnl === best ? "#26a69a06" : "transparent"}">
+                    <td style="padding:4px 8px;font-family:var(--m);color:#aaa">${r.v}</td>
+                    <td style="padding:4px 8px;text-align:center;font-family:var(--m);font-weight:700;color:#26a69a">+${r.pnl}${r.pnl === best ? '<span style="color:#f59e0b;margin-left:2px;font-size:12px">★</span>' : ""}</td>
+                    <td style="padding:4px 8px;text-align:center;font-family:var(--m);color:#666">${r.f}%</td>
                   </tr>`).join("")}
                 </tbody>
               </table>
@@ -339,16 +339,16 @@ function sl_renderPostmortem() {
       </div>
       <div class="card">
         <div class="section-title">📊 单笔收益分布</div>
-        ${dist.map(b => `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
-          <span style="width:44px;text-align:right;color:#555;font-size:9px;font-family:var(--m);flex-shrink:0">${b.r}</span>
-          <div style="flex:1;height:14px;background:#08081a;border-radius:3px;overflow:hidden">
-            <div style="height:14px;width:${(b.n / maxD) * 100}%;background:${b.c};border-radius:3px;display:flex;align-items:center;padding-left:4px">
-              ${b.n > 20 ? `<span style="color:#060612;font-size:7px;font-weight:700">${b.n}</span>` : ""}
+        ${dist.map(b => `<div style="display:flex;align-items:center;gap:16px;margin-bottom:8px">
+          <span style="width:88px;text-align:right;color:#555;font-size:18px;font-family:var(--m);flex-shrink:0">${b.r}</span>
+          <div style="flex:1;height:28px;background:#08081a;border-radius:6px;overflow:hidden">
+            <div style="height:28px;width:${(b.n / maxD) * 100}%;background:${b.c};border-radius:6px;display:flex;align-items:center;padding-left:8px">
+              ${b.n > 20 ? `<span style="color:#060612;font-size:14px;font-weight:700">${b.n}</span>` : ""}
             </div>
           </div>
-          <span style="width:20px;color:#444;font-size:8px;font-family:var(--m)">${b.n}</span>
+          <span style="width:40px;color:#444;font-size:16px;font-family:var(--m)">${b.n}</span>
         </div>`).join("")}
-        <div style="color:#222;font-size:8px;margin-top:4px;text-align:center">靠<span style="color:#26a69a">大量小盈利</span>积累，偶被<span style="color:#ef5350">单边行情</span>打回撤</div>
+        <div style="color:#222;font-size:16px;margin-top:8px;text-align:center">靠<span style="color:#26a69a">大量小盈利</span>积累，偶被<span style="color:#ef5350">单边行情</span>打回撤</div>
       </div>
     </div>
   </div>`;
@@ -368,11 +368,11 @@ function sl_renderCompare() {
   ];
   const tableRows = ms.map(m => {
     const best = Math.max(...sts.map(x => x[m.k]));
-    return `<tr style="border-bottom:1px solid #0a0a18">
-      <td style="padding:5px 8px;color:#555;font-weight:600">${m.l}</td>
-      ${sts.map(s => `<td style="padding:5px 8px;text-align:center;font-family:var(--m);font-weight:700;font-size:12px;
+    return `<tr style="border-bottom:2px solid #0a0a18">
+      <td style="padding:10px 16px;color:#555;font-weight:600">${m.l}</td>
+      ${sts.map(s => `<td style="padding:10px 16px;text-align:center;font-family:var(--m);font-weight:700;font-size:24px;
         color:${m.c(s[m.k])};background:${s[m.k] === best ? m.c(s[m.k]) + "08" : "transparent"}">
-        ${m.f(s[m.k])}${s[m.k] === best ? '<span style="margin-left:3px;font-size:7px;color:#f59e0b">★</span>' : ""}
+        ${m.f(s[m.k])}${s[m.k] === best ? '<span style="margin-left:6px;font-size:14px;color:#f59e0b">★</span>' : ""}
       </td>`).join("")}
     </tr>`;
   }).join("");
@@ -385,16 +385,16 @@ function sl_renderCompare() {
   const wrSeries = sts.map(s => ({name: s.name, color: s.color, fmt: v => v.toFixed(0) + "%",
     data: sl_genS(s.winRate, 0, 8).map(v => Math.max(5, Math.min(80, v)))}));
 
-  return `<div style="display:flex;flex-direction:column;gap:12px">
+  return `<div style="display:flex;flex-direction:column;gap:24px">
     <div class="card">
       <div class="section-title">⚡ 核心指标</div>
-      <table style="width:100%;border-collapse:collapse;font-size:10px">
-        <thead><tr style="border-bottom:1px solid #12122a">
-          <th style="padding:5px 8px;text-align:left;color:#333;font-size:9px;width:60px">指标</th>
-          ${sts.map(s => `<th style="padding:5px 8px;text-align:center;border-bottom:2px solid ${s.color}">
-            <div style="display:flex;align-items:center;justify-content:center;gap:4px">
-              <div style="width:6px;height:6px;border-radius:1px;background:${s.color}"></div>
-              <span style="color:#ccc;font-size:10px;font-weight:700">${s.name}</span>
+      <table style="width:100%;border-collapse:collapse;font-size:20px">
+        <thead><tr style="border-bottom:2px solid #12122a">
+          <th style="padding:10px 16px;text-align:left;color:#333;font-size:18px;width:120px">指标</th>
+          ${sts.map(s => `<th style="padding:10px 16px;text-align:center;border-bottom:4px solid ${s.color}">
+            <div style="display:flex;align-items:center;justify-content:center;gap:8px">
+              <div style="width:12px;height:12px;border-radius:2px;background:${s.color}"></div>
+              <span style="color:#ccc;font-size:20px;font-weight:700">${s.name}</span>
             </div>
           </th>`).join("")}
         </tr></thead>
@@ -435,10 +435,10 @@ window.initStrategyLab = function() {
   if (!el) return;
   el.style.flexDirection = "row";
   el.innerHTML = `
-    <div id="sl-sidebar" style="width:160px;background:#080814;border-right:1px solid #10102a;display:flex;flex-direction:column;flex-shrink:0;overflow:auto"></div>
+    <div id="sl-sidebar" style="width:320px;background:#080814;border-right:2px solid #10102a;display:flex;flex-direction:column;flex-shrink:0;overflow:auto"></div>
     <div style="flex:1;display:flex;flex-direction:column;overflow:hidden">
       <div id="sl-subtab-bar" class="subtab-bar"></div>
-      <div id="sl-content" style="flex:1;overflow:auto;padding:14px"></div>
+      <div id="sl-content" style="flex:1;overflow:auto;padding:28px"></div>
     </div>`;
   sl_renderSidebar();
   sl_renderSubtabBar();

@@ -12,15 +12,15 @@ function st_slider(id, label, value, min, max, step, unit = "", disabled = false
   const dis = disabled ? " disabled" : "";
   return `<div class="slider-wrap${dis}">
     <div style="display:flex;justify-content:space-between;margin-bottom:2px">
-      <span style="color:#666;font-size:10px">${label}</span>
-      <span id="${id}-val" style="color:#aaa;font-size:10px;font-family:var(--m);font-weight:600">${dispVal}${unit}</span>
+      <span style="color:#666;font-size:20px">${label}</span>
+      <span id="${id}-val" style="color:#aaa;font-size:20px;font-family:var(--m);font-weight:600">${dispVal}${unit}</span>
     </div>
     <div class="slider-track">
       <div class="slider-bg"></div>
       <div id="${id}-fill" class="slider-fill${dis}" style="width:${pct}%"></div>
       ${!disabled ? `<input class="slider-input" type="range" min="${min}" max="${max}" step="${step}" value="${value}"
         oninput="st_onSlider('${id}',this.value,${min},${max},'${unit}',${step < 1})">` : ""}
-      <div id="${id}-thumb" class="slider-thumb${dis}" style="left:calc(${pct}% - 6px)"></div>
+      <div id="${id}-thumb" class="slider-thumb${dis}" style="left:calc(${pct}% - 12px)"></div>
     </div>
   </div>`;
 }
@@ -34,7 +34,7 @@ function st_onSlider(id, val, min, max, unit, isFloat) {
   const thumbEl = document.getElementById(id + "-thumb");
   if (valEl) valEl.textContent = dispVal + unit;
   if (fillEl) fillEl.style.width = pct + "%";
-  if (thumbEl) thumbEl.style.left = `calc(${pct}% - 6px)`;
+  if (thumbEl) thumbEl.style.left = `calc(${pct}% - 12px)`;
   // update state
   if (id === "st-pos")    st_risk.pos    = v;
   if (id === "st-maxOrd") st_risk.maxOrd = v;
@@ -50,9 +50,9 @@ function st_onSlider(id, val, min, max, unit, isFloat) {
 // ─── Toggle helper ───────────────────────
 function st_toggle(id, label, on) {
   return `<div class="toggle-wrap">
-    <span style="color:#666;font-size:10px">${label}</span>
+    <span style="color:#666;font-size:20px">${label}</span>
     <div onclick="st_onToggle('${id}')" class="toggle-track" id="${id}-track" style="background:${on ? "#6366f1" : "#141428"}">
-      <div id="${id}-knob" class="toggle-knob" style="left:${on ? "16px" : "2px"}"></div>
+      <div id="${id}-knob" class="toggle-knob" style="left:${on ? "32px" : "4px"}"></div>
     </div>
   </div>`;
 }
@@ -65,7 +65,7 @@ function st_onToggle(id) {
   const track = document.getElementById(id + "-track");
   const knob  = document.getElementById(id + "-knob");
   if (track) track.style.background = on ? "#6366f1" : "#141428";
-  if (knob)  knob.style.left = on ? "16px" : "2px";
+  if (knob)  knob.style.left = on ? "32px" : "4px";
 }
 
 // ─── Section content ─────────────────────
@@ -87,8 +87,8 @@ function st_renderContent() {
       ${st_slider("st-sigma", "sigma跳变", st_cancel.sigma, 0.1, 0.8,  0.05)}
       ${st_slider("st-tau",   "时间衰减",  st_cancel.tau,   30,  300,  10,  "s")}
       ${st_slider("st-age",   "挂单老化",  st_cancel.age,   5,   60,   5,   "s")}
-      <div style="display:flex;justify-content:space-between;margin-top:4px">
-        <span style="color:#666;font-size:10px">tick变更</span>
+      <div style="display:flex;justify-content:space-between;margin-top:8px">
+        <span style="color:#666;font-size:20px">tick变更</span>
         <span class="badge" style="background:#ef535015;color:#ef5350">强制</span>
       </div>
     </div>`;
@@ -103,17 +103,17 @@ function st_renderContent() {
     const isOpt = st_fill.model === "optimistic";
     html = `<div class="card">
       <div class="section-title">🧪 模拟模式</div>
-      <div style="display:flex;gap:4px;margin-bottom:8px">
-        <div onclick="st_setFillModel('conservative')" style="flex:1;text-align:center;padding:3px 0;border-radius:3px;font-size:9px;font-weight:600;
+      <div style="display:flex;gap:8px;margin-bottom:16px">
+        <div onclick="st_setFillModel('conservative')" style="flex:1;text-align:center;padding:6px 0;border-radius:6px;font-size:18px;font-weight:600;
           cursor:pointer;background:${!isOpt ? "#6366f1" : "#12122a"};color:${!isOpt ? "#fff" : "#333"}">保守</div>
-        <div onclick="st_setFillModel('optimistic')" style="flex:1;text-align:center;padding:3px 0;border-radius:3px;font-size:9px;font-weight:600;
+        <div onclick="st_setFillModel('optimistic')" style="flex:1;text-align:center;padding:6px 0;border-radius:6px;font-size:18px;font-weight:600;
           cursor:pointer;background:${isOpt ? "#6366f1" : "#12122a"};color:${isOpt ? "#fff" : "#333"}">乐观</div>
       </div>
       ${st_slider("st-disc",  "fill_discount", st_fill.disc,  0.1,  1.0,  0.1,  "",   isOpt)}
       ${st_slider("st-delay", "fill_delay",    st_fill.delay, 100, 2000, 100,  "ms", isOpt)}
     </div>`;
   }
-  html += `<div style="margin-top:12px;text-align:center;padding:7px 0;border-radius:5px;font-size:11px;font-weight:700;
+  html += `<div style="margin-top:24px;text-align:center;padding:14px 0;border-radius:10px;font-size:22px;font-weight:700;
     background:linear-gradient(135deg,#6366f1,#0ea5e9);color:#fff;cursor:pointer">应用设置</div>`;
   el.innerHTML = html;
 }
@@ -133,10 +133,10 @@ function st_renderNav() {
     {id:"events", icon:"📅", l:"事件回避"},
     {id:"fill",   icon:"🧪", l:"模拟模式"},
   ];
-  el.innerHTML = navs.map(n => `<div onclick="st_setSec('${n.id}')" style="padding:7px 10px;cursor:pointer;
-    border-left:${st_sec === n.id ? "3px solid #6366f1" : "3px solid transparent"};background:${st_sec === n.id ? "#0e0e22" : "transparent"}">
-    <span style="font-size:11px;margin-right:5px">${n.icon}</span>
-    <span style="color:${st_sec === n.id ? "#ccc" : "#555"};font-weight:600;font-size:10px">${n.l}</span>
+  el.innerHTML = navs.map(n => `<div onclick="st_setSec('${n.id}')" style="padding:14px 20px;cursor:pointer;
+    border-left:${st_sec === n.id ? "6px solid #6366f1" : "6px solid transparent"};background:${st_sec === n.id ? "#0e0e22" : "transparent"}">
+    <span style="font-size:22px;margin-right:10px">${n.icon}</span>
+    <span style="color:${st_sec === n.id ? "#ccc" : "#555"};font-weight:600;font-size:20px">${n.l}</span>
   </div>`).join("");
 }
 
@@ -152,12 +152,12 @@ window.initSettings = function() {
   if (!el) return;
   el.style.flexDirection = "row";
   el.innerHTML = `
-    <div style="width:160px;background:#080814;border-right:1px solid #10102a;overflow:auto;flex-shrink:0;display:flex;flex-direction:column">
-      <div style="padding:8px 10px;color:#2a2a40;font-size:8px;font-weight:600;letter-spacing:1px">通用设置</div>
+    <div style="width:320px;background:#080814;border-right:2px solid #10102a;overflow:auto;flex-shrink:0;display:flex;flex-direction:column">
+      <div style="padding:16px 20px;color:#2a2a40;font-size:16px;font-weight:600;letter-spacing:1px">通用设置</div>
       <div id="st-nav"></div>
-      <div style="padding:10px;margin-top:auto;border-top:1px solid #10102a;color:#1a1a30;font-size:7px">所有设置对全部策略生效</div>
+      <div style="padding:20px;margin-top:auto;border-top:2px solid #10102a;color:#1a1a30;font-size:14px">所有设置对全部策略生效</div>
     </div>
-    <div id="st-content" style="flex:1;overflow:auto;padding:14px;max-width:400px"></div>`;
+    <div id="st-content" style="flex:1;overflow:auto;padding:28px;max-width:800px"></div>`;
   st_renderNav();
   st_renderContent();
 };
