@@ -3,28 +3,21 @@
 // rest 模式：纯 REST 轮询（向后兼容）
 
 import './proxy_agent.mjs';
+import { ProxyAgent, fetch as undiciFetch } from 'undici';
 import { logger, EVENTS } from './logger.mjs';
 import { randomUUID } from 'crypto';
 
 const BINANCE_REST = 'https://api.binance.com';
 
-// Explicit ProxyAgent dispatcher for REST fetch calls.
-// Node.js v18+ built-in fetch and the npm undici package may not share the same
-// global dispatcher, so we pass the dispatcher explicitly to guarantee proxy use.
-const _proxyUrl = process.env.HTTPS_PROXY || process.env.HTTP_PROXY;
-let _proxyDispatcher = null;
-if (_proxyUrl) {
-  try {
-    const { ProxyAgent } = await import('undici');
-    _proxyDispatcher = new ProxyAgent(_proxyUrl);
-    console.log('[PriceFeed] Explicit proxy dispatcher created:', _proxyUrl);
-  } catch (e) {
-    console.warn('[PriceFeed] undici ProxyAgent unavailable, proxy may not work for REST:', e.message);
-  }
-}
-/** @param {string} url @returns {Promise<Response>} */
-function proxyFetch(url) {
-  return _proxyDispatcher ? fetch(url, { dispatcher: _proxyDispatcher }) : fetch(url);
+// Use undici.fetch with explicit ProxyAgent so the dispatcher is never ignored.
+// Node.js built-in fetch does not honour the `dispatcher` option; undici.fetch does.
+const _proxyUrl = process.env.HTTPS_PROXY || process.env.HTTP_PROXY || null;
+const _dispatcher = _proxyUrl ? new ProxyAgent(_proxyUrl) : null;
+if (_dispatcher) console.log('[PriceFeed] Proxy dispatcher ready:', _proxyUrl);
+
+async function proxyFetch(url, options = {}) {
+  if (_dispatcher) return undiciFetch(url, { ...options, dispatcher: _dispatcher });
+  return fetch(url, options);
 }
 const BINANCE_WS   = 'wss://stream.binance.com:9443/ws';
 
