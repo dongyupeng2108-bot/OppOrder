@@ -1020,7 +1020,7 @@ body {
       <span class="nav-icon">📋</span>
       <span class="nav-label">复盘分析</span>
     </div>
-    <div class="nav-item" data-tab="settings" onclick="switchTab('settings');switchPage('trading')">
+    <div class="nav-item" data-tab="settings" onclick="switchTab('settings');switchPage('settings')">
       <span class="nav-icon">⚙️</span>
       <span class="nav-label">系统设置</span>
     </div>
@@ -1357,13 +1357,43 @@ body {
     <div id="pm-sensitivity"  style="display:none"></div>
   </div>
 
+  <!-- ── SETTINGS PAGE ──────────────────────────── -->
+  <div id="page-settings" style="display:none;flex:1;overflow:auto;padding:var(--space-page);background:var(--bg-base)">
+    <div style="max-width:480px;margin-top:16px">
+
+      <!-- 服务地址 -->
+      <section class="param-card" style="margin-bottom:16px">
+        <h3 style="margin:0 0 12px;font-size:var(--size-heading);color:var(--text-secondary);font-weight:var(--weight-semi)">服务连接</h3>
+        <div class="param-row">
+          <label>服务地址</label>
+          <input type="text" id="setting-base-url" placeholder="http://localhost:53123"
+            style="flex:1;background:var(--bg-elevated);color:var(--text-secondary);border:1px solid var(--border);padding:4px 8px;border-radius:var(--radius-xs);font-size:var(--size-xs);font-family:var(--font-mono)">
+        </div>
+        <div style="margin-top:8px;text-align:right">
+          <button onclick="saveSettings()" style="background:var(--color-primary);border:none;color:var(--text-primary);font-size:var(--size-xs);font-weight:var(--weight-semi);padding:3px 10px;border-radius:var(--radius-xs);cursor:pointer">保存</button>
+          <span id="settings-status" style="margin-left:8px;font-size:0.85em"></span>
+        </div>
+      </section>
+
+      <!-- 主题（预留） -->
+      <section class="param-card">
+        <h3 style="margin:0 0 12px;font-size:var(--size-heading);color:var(--text-secondary);font-weight:var(--weight-semi)">主题</h3>
+        <div class="param-row">
+          <label>当前主题</label>
+          <span style="color:var(--text-muted);font-size:0.85em">深色（唯一可用主题）</span>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
 </div><!-- #layout -->
 
 <!-- ══════════════════════════════════════════════
      SCRIPTS: Real-time data + Navigation + TF
      ══════════════════════════════════════════════ -->
 <script>
-const BASE_URL = 'http://localhost:53123';
+let BASE_URL = localStorage.getItem('btcqdd_base_url') || 'http://localhost:53123';
 
 /* ─── Log ────────────────────────────────────── */
 function addLog(msg) {
@@ -1562,7 +1592,7 @@ function connectWS() {
   const wsStat = document.getElementById('ws-status');
 
   try {
-    _ws = new WebSocket('ws://localhost:53123/events/stream');
+    _ws = new WebSocket(BASE_URL.replace(/^http/, 'ws') + '/events/stream');
   } catch {
     if (wsStat) wsStat.textContent = 'err';
     return;
@@ -1671,29 +1701,35 @@ function switchTab(tabId) {
 }
 
 function switchPage(page) {
-  const main    = document.getElementById('main');
-  const info    = document.getElementById('info');
-  const pageLab = document.getElementById('page-lab');
-  const pagePm  = document.getElementById('page-postmortem');
+  const main       = document.getElementById('main');
+  const info       = document.getElementById('info');
+  const pageLab    = document.getElementById('page-lab');
+  const pagePm     = document.getElementById('page-postmortem');
+  const pageSet    = document.getElementById('page-settings');
   if (!main || !info || !pageLab) return;
 
+  // Hide all overlay pages first
+  if (pageLab) pageLab.style.display    = 'none';
+  if (pagePm)  pagePm.style.display     = 'none';
+  if (pageSet) pageSet.style.display    = 'none';
+  main.style.display = 'none';
+  info.style.display = 'none';
+
   if (page === 'lab') {
-    main.style.display    = 'none';
-    info.style.display    = 'none';
     pageLab.style.display = '';
-    if (pagePm) pagePm.style.display = 'none';
     loadInstances();
   } else if (page === 'postmortem') {
-    main.style.display    = 'none';
-    info.style.display    = 'none';
-    pageLab.style.display = 'none';
     if (pagePm) pagePm.style.display = '';
     loadAttribution();
+  } else if (page === 'settings') {
+    if (pageSet) {
+      pageSet.style.display = '';
+      const urlInput = document.getElementById('setting-base-url');
+      if (urlInput) urlInput.value = BASE_URL;
+    }
   } else {
-    main.style.display    = '';
-    info.style.display    = '';
-    pageLab.style.display = 'none';
-    if (pagePm) pagePm.style.display = 'none';
+    main.style.display = '';
+    info.style.display = '';
   }
 }
 
@@ -2421,6 +2457,30 @@ function renderCompareTimeseries(container, timeseries, ids) {
     + '<text x="' + padL + '" y="' + (svgH - 6) + '" font-size="10">' + legend + '</text>'
     + '</svg></div>';
 }
+
+/* ═══════════════════════════════════════════════
+   SETTINGS — 系统设置
+   ═══════════════════════════════════════════════ */
+
+function saveSettings() {
+  var urlInput = document.getElementById('setting-base-url');
+  var newUrl = (urlInput ? urlInput.value : '').trim();
+  if (newUrl) {
+    BASE_URL = newUrl.replace(/\/$/, '');
+    localStorage.setItem('btcqdd_base_url', BASE_URL);
+  }
+  var status = document.getElementById('settings-status');
+  if (status) {
+    status.textContent = '✅ 已保存，刷新页面生效';
+    status.style.color = 'var(--color-up)';
+    setTimeout(function() { status.textContent = ''; }, 3000);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  var urlInput = document.getElementById('setting-base-url');
+  if (urlInput) urlInput.value = BASE_URL;
+});
 </script>
 </body>
 </html>
