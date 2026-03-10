@@ -4,6 +4,7 @@
 import './proxy_agent.mjs';
 import { executeLive, checkSignerHealth } from '../../OppRadar/trading_executor_live.mjs';
 import { getDb } from './db.mjs';
+import { logger, EVENTS } from './logger.mjs';
 import crypto from 'crypto';
 
 export function createLiveExecutor(config) {
@@ -18,14 +19,14 @@ export function createLiveExecutor(config) {
    */
   async function execute(signal) {
     if (openOrders >= max_open_orders) {
-      console.log(`[LiveExecutor] Skipped: max_open_orders (${max_open_orders}) reached`);
+      logger.warn(EVENTS.ORDER_PLACE_FAIL, { module: 'live_executor', reason: 'MAX_OPEN_ORDERS', max_open_orders });
       return { filled: false, reason: 'MAX_OPEN_ORDERS' };
     }
 
     // 检查 Signer Agent 是否在线
     const signerOk = await checkSignerHealth();
     if (!signerOk) {
-      console.warn('[LiveExecutor] Signer offline, skipping signal');
+      logger.warn(EVENTS.ORDER_PLACE_FAIL, { module: 'live_executor', reason: 'SIGNER_OFFLINE' });
       return { filled: false, reason: 'SIGNER_OFFLINE' };
     }
 
@@ -69,7 +70,7 @@ export function createLiveExecutor(config) {
       const fillResult = await executeLive(order);
       if (fillResult.status === 'FILLED') {
         openOrders++;
-        console.log(`[LiveExecutor] Filled: ${signal.direction} @ ${signal.ask.toFixed(4)} order_id=${order_id}`);
+        logger.info(EVENTS.ORDER_PLACE_ACK, { module: 'live_executor', direction: signal.direction, ask: signal.ask, order_id });
         return {
           filled: true,
           fill_price: fillResult.fill_price,
@@ -81,11 +82,11 @@ export function createLiveExecutor(config) {
           order_id,
         };
       } else {
-        console.warn(`[LiveExecutor] Not filled: ${fillResult.status} reason=${fillResult.reject_reason}`);
+        logger.warn(EVENTS.ORDER_PLACE_FAIL, { module: 'live_executor', status: fillResult.status, reason: fillResult.reject_reason || fillResult.status });
         return { filled: false, reason: fillResult.reject_reason || fillResult.status };
       }
     } catch (e) {
-      console.error(`[LiveExecutor] executeLive error: ${e.message}`);
+      logger.error(EVENTS.ERROR_UNHANDLED_PATH, { module: 'live_executor', err: e.message });
       return { filled: false, reason: e.message };
     }
   }
@@ -99,7 +100,7 @@ export function createLiveExecutor(config) {
     const won = fill.direction === settled_outcome;
     const payout = won ? fill.shares * 1.0 : 0;
     const pnl = payout - fill.fill_amount_usd;
-    console.log(`[LiveExecutor] Settle: ${fill.direction} vs outcome=${settled_outcome} won=${won} pnl=${pnl.toFixed(4)}`);
+    logger.info('order_settle', { module: 'live_executor', direction: fill.direction, outcome: settled_outcome, won, pnl });
     return pnl;
   }
 
