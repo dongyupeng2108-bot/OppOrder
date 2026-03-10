@@ -1,0 +1,9 @@
+{
+  "task_id": "260310_003",
+  "status": "DONE",
+  "summary": "Complete rewrite of ui/btcqdd.html strictly following btcqdd_final_v2.jsx: 3-column TradingHall layout (left 180px / center flex:1 / right 164px), Regime SVG gauge, countdown, order book, strategy table, log, coin dropdown, TF switcher, tab switching, API polling.",
+  "gate_light_exit": 0,
+  "report_file": "notify_260310_003.txt",
+  "report_sha256_short": "b3a08d2c",
+  "generated_at": "2026-03-10T17:11:40.553Z"
+}

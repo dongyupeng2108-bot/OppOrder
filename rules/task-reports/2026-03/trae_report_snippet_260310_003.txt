@@ -1,0 +1,20 @@
+Header: TraeTask_260310_003
+TASK: 260310_003
+BRANCH: 260310_003
+COMMIT: 8c39e64b
+STATUS: DONE
+SUMMARY: Complete rewrite of ui/btcqdd.html strictly following btcqdd_final_v2.jsx: 3-column TradingHall layout (left 180px / center flex:1 / right 164px), Regime SVG gauge, countdown, order book, strategy table, log, coin dropdown, TF switcher, tab switching, API polling.
+
+=== DOD_EVIDENCE_STDOUT ===
+DOD_TRADING_HALL: 3-column TradingHall layout matches JSX spec
+DOD_TOPBAR: topbar with BTCQDD logo, 3 tabs, 模拟badge, $1000, 登录
+DOD_REGIME_GAUGE: SVG arc gauge with animated needle and score label
+DOD_LEFT_PANEL: 手动交易+盈亏+市场状态+连接 all sections present
+DOD_CENTER: coin dropdown, K-line/PM placeholders, TF selector, strategy table, log
+DOD_RIGHT: order book, 我的挂单, strategy legend
+DOD_POLLING: live polling every 2s/5s/1s
+DOD_PLACEHOLDER_PAGES: 策略实验室 and 通用设置 placeholders
+
+=== GATE_LIGHT_PREVIEW ===
+GATE_LIGHT_EXIT=0
+==========================

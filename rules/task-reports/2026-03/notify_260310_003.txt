@@ -1,0 +1,45 @@
+=== HEADER ===
+Header: TraeTask_260310_003
+task_id: 260310_003
+mode: LOCAL
+commit: 8c39e64be1a75cb38564f1d76bcc8f61365f75a8
+
+RESULT_JSON
+{"task_id":"260310_003","status":"DONE","summary":"Complete rewrite of ui/btcqdd.html strictly following btcqdd_final_v2.jsx: 3-column TradingHall layout (left 180px / center flex:1 / right 164px), Regime SVG gauge, countdown, order book, strategy table, log, coin dropdown, TF switcher, tab switching, API polling."}
+
+LOG_HEAD
+[260310_003] UI Rewrite 1/2 — btcqdd.html complete rewrite to match btcqdd_final_v2.jsx
+Branch: 260310_003
+Commit: 8c39e64b
+Generated: 2026-03-10T17:11:40.553Z
+
+LOG_TAIL
+Task 260310_003 completed successfully.
+
+=== DOD_EVIDENCE_STDOUT ===
+TASK_ID=260310_003
+GENERATED_AT=2026-03-10T17:11:40.553Z
+
+# DoD Markers
+DOD_TRADING_HALL=3-column flex layout: left 180px / center flex:1 / right 164px, matching btcqdd_final_v2.jsx TradingHall()
+DOD_TOPBAR=height:36px, BTCQDD logo BTC=#6366f1 QDD=#2a2a40, 3 tabs with active highlight, 模拟badge, $1000, 登录
+DOD_REGIME_GAUGE=SVG semi-arc M10 65 A50 50 0 0 1 110 65, needle angle=(-90+score*180)*PI/180, gradient red→amber→green
+DOD_LEFT_PANEL=手动交易 Buy/Sell tab + Up/Down price + amount input + quick buttons + Buy btn + 手动盈亏 + 市场状态 + Connection
+DOD_CENTER=coin dropdown + K-line placeholder + TF selector (5M/15M/1H/4H/1D) + PM curve placeholder + strategy table + log
+DOD_RIGHT=ask/bid order book with depth bars + mid price + 我的挂单 + strategy legend triangles
+DOD_POLLING=pollBook every 2s, pollInstances+pollOrders every 5s, countdown+regime ticker every 1s
+DOD_PLACEHOLDER_PAGES=策略实验室 and 通用设置 render placeholder text for next capsule
+
+=== GATE_LIGHT_PREVIEW ===
+GATE_LIGHT_EXIT=0
+==========================
+
+INDEX
+notify_260310_003.txt
+result_260310_003.json
+git_meta_260310_003.json
+dod_evidence_260310_003.txt
+trae_report_snippet_260310_003.txt
+gate_light_preview_260310_003.log
+
+GATE_LIGHT_EXIT=0
