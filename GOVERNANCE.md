@@ -319,6 +319,7 @@ Select-String -Path 'rules/task-reports/2026-03/gate_light_preview_<task_id>.log
 3. **文件命名规范**：`capsule_<里程碑>_<task_id>.md`，例如 `capsule_B1b_260307_012.md`
 4. **Owner 下载文件后**放入 `E:\OppRadar\taskfiles\`，再将执行指令发给 Claude Code
 5. **设计文档**也必须放到 `E:\OppRadar\taskfiles\`，Code 无法访问 `/mnt/user-data/uploads/`
+6. **胶囊串行规则**：PM 每次只出一个胶囊。上一个胶囊未收到 Code 回报（含 PR 号、Gate Light 结果）前，PM 不得下发下一个胶囊。Owner 确认规则来源：260309 PM 窗口。
 
 ---
 
@@ -622,3 +623,4 @@ claude --dangerously-skip-permissions
 | v1.5 | 260308 | PM 入职手册内容整合：§七新增角色边界、根目录硬验证、Integrate 停止条件；新增 §十四 Code 行为规律；新增 §十五 标准回报模板；新增 §十六 踩坑记录；新增 §十七 常用命令速查 |
 | v1.6 | 260308 | §十六 新增坑11：Node.js fetch 不读系统代理，记录根因、解法及所有受影响模块的规范写法 |
 | v1.7 | 260308 | 新增 §十九 跨模块接口确认规范：胶囊强制插入依赖接口确认步骤，防止 Code 凭假设动手导致运行时接口不匹配 |
+| v1.9 | 260309 | §十二 新增胶囊串行规则：一次只出一个胶囊，未回报前不得下发下一个 |
