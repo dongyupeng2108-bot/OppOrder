@@ -960,6 +960,20 @@ body {
   color: var(--text-secondary);
   font-weight: var(--weight-semi);
 }
+
+/* ─── Postmortem Analysis Page ────────────────── */
+#page-postmortem {
+  flex: 1;
+  overflow: auto;
+  padding: var(--space-page);
+  display: none;
+  background: var(--bg-base);
+}
+
+#pm-tabs {
+  border-bottom: 1px solid var(--border);
+  margin-bottom: var(--space-gap-lg);
+}
 </style>
 </head>
 <body>
@@ -1002,7 +1016,7 @@ body {
       <span class="nav-icon">🧪</span>
       <span class="nav-label">策略实验室</span>
     </div>
-    <div class="nav-item" data-tab="postmortem" onclick="switchTab('postmortem');switchPage('trading')">
+    <div class="nav-item" data-tab="postmortem" onclick="switchTab('postmortem');switchPage('postmortem')">
       <span class="nav-icon">📋</span>
       <span class="nav-label">复盘分析</span>
     </div>
@@ -1301,6 +1315,21 @@ body {
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- ── POSTMORTEM ANALYSIS PAGE ───────────────── -->
+  <div id="page-postmortem">
+    <div class="tab-bar" id="pm-tabs">
+      <button class="tab-btn active" onclick="switchPmTab('attribution')">利润归因</button>
+      <button class="tab-btn" onclick="switchPmTab('lossmodes')">失败模式</button>
+      <button class="tab-btn" onclick="switchPmTab('distribution')">收益分布</button>
+      <button class="tab-btn" onclick="switchPmTab('sensitivity')">参数敏感度</button>
+    </div>
+
+    <div id="pm-attribution"></div>
+    <div id="pm-lossmodes"    style="display:none"></div>
+    <div id="pm-distribution" style="display:none"></div>
+    <div id="pm-sensitivity"  style="display:none"></div>
   </div>
 
 </div><!-- #layout -->
@@ -1620,17 +1649,26 @@ function switchPage(page) {
   const main    = document.getElementById('main');
   const info    = document.getElementById('info');
   const pageLab = document.getElementById('page-lab');
+  const pagePm  = document.getElementById('page-postmortem');
   if (!main || !info || !pageLab) return;
 
   if (page === 'lab') {
     main.style.display    = 'none';
     info.style.display    = 'none';
     pageLab.style.display = '';
+    if (pagePm) pagePm.style.display = 'none';
     loadInstances();
+  } else if (page === 'postmortem') {
+    main.style.display    = 'none';
+    info.style.display    = 'none';
+    pageLab.style.display = 'none';
+    if (pagePm) pagePm.style.display = '';
+    loadAttribution();
   } else {
     main.style.display    = '';
     info.style.display    = '';
     pageLab.style.display = 'none';
+    if (pagePm) pagePm.style.display = 'none';
   }
 }
 
@@ -2013,6 +2051,210 @@ function renderActionLog() {
       <span class="action-log-label">${e.label}</span>
     </div>`
   ).join('');
+}
+
+/* ═══════════════════════════════════════════════
+   POSTMORTEM ANALYSIS — 复盘分析
+   ═══════════════════════════════════════════════ */
+
+/* ─── Empty State Helper ─────────────────────── */
+function emptyState(label) {
+  return '<div style="padding:40px;text-align:center;color:var(--text-muted);font-size:0.9em">'
+    + (label ? label + ' · ' : '') + '数据积累中，至少需要 10 个窗口'
+    + '</div>';
+}
+
+/* ─── Tab Switch (lazy-load) ─────────────────── */
+function switchPmTab(tab) {
+  ['attribution','lossmodes','distribution','sensitivity'].forEach(function(t) {
+    document.getElementById('pm-' + t).style.display = t === tab ? '' : 'none';
+  });
+  var btns = document.querySelectorAll('#pm-tabs .tab-btn');
+  var order = ['attribution','lossmodes','distribution','sensitivity'];
+  btns.forEach(function(btn, i) {
+    btn.classList.toggle('active', order[i] === tab);
+  });
+  var loaders = {
+    attribution:  loadAttribution,
+    lossmodes:    loadLossModes,
+    distribution: loadDistribution,
+    sensitivity:  loadSensitivity
+  };
+  if (loaders[tab]) loaders[tab]();
+}
+
+/* ─── View 1: 利润归因（水平柱状图）──────────── */
+async function loadAttribution() {
+  var container = document.getElementById('pm-attribution');
+  if (!container) return;
+  try {
+    var data = await fetch(BASE_URL + '/postmortem/attribution').then(function(r) { return r.json(); });
+    var regimeBuckets = data.regime_buckets ?? [];
+    var hourBuckets   = data.hour_buckets   ?? [];
+    if (regimeBuckets.length === 0 && hourBuckets.length === 0) {
+      container.innerHTML = emptyState('利润归因');
+      return;
+    }
+    container.innerHTML =
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px">'
+      + '<div>'
+      + '<h4 style="color:var(--text-muted);font-size:0.85em;margin:0 0 8px">Regime 归因</h4>'
+      + renderHBar(regimeBuckets, 'regime_bucket', 'total_pnl')
+      + '</div>'
+      + '<div>'
+      + '<h4 style="color:var(--text-muted);font-size:0.85em;margin:0 0 8px">时段归因</h4>'
+      + renderHBar(hourBuckets, 'hour_bucket', 'total_pnl')
+      + '</div>'
+      + '</div>';
+  } catch (_) {
+    container.innerHTML = emptyState('利润归因');
+  }
+}
+
+function renderHBar(rows, labelKey, valueKey) {
+  if (!rows.length) return emptyState();
+  var maxVal = Math.max.apply(null, rows.map(function(r) { return Math.abs(r[valueKey] ?? 0); }).concat([0.001]));
+  var barH = 28, svgH = rows.length * (barH + 6) + 20, svgW = 320, labelW = 100;
+  var bars = rows.map(function(r, i) {
+    var val  = r[valueKey] ?? 0;
+    var barW = Math.abs(val) / maxVal * (svgW - labelW - 40);
+    var color = val >= 0 ? 'var(--color-up)' : 'var(--color-down)';
+    var y = i * (barH + 6) + 10;
+    return '<text x="' + (labelW - 4) + '" y="' + (y + barH / 2 + 4) + '" text-anchor="end"'
+      + ' font-size="11" fill="var(--text-muted)">' + r[labelKey] + '</text>'
+      + '<rect x="' + labelW + '" y="' + y + '" width="' + Math.max(barW, 2) + '" height="' + barH + '"'
+      + ' fill="' + color + '" opacity="0.8" rx="2"/>'
+      + '<text x="' + (labelW + Math.max(barW, 2) + 4) + '" y="' + (y + barH / 2 + 4) + '"'
+      + ' font-size="11" fill="var(--text-secondary)">' + val.toFixed(3) + '</text>';
+  }).join('');
+  return '<svg width="' + svgW + '" height="' + svgH + '" style="width:100%">' + bars + '</svg>';
+}
+
+/* ─── View 2: 失败模式（饼图 + 案例列表）──────── */
+async function loadLossModes() {
+  var container = document.getElementById('pm-lossmodes');
+  if (!container) return;
+  try {
+    var data  = await fetch(BASE_URL + '/postmortem/loss-modes').then(function(r) { return r.json(); });
+    var modes = data.modes ?? [];
+    if (modes.length === 0) { container.innerHTML = emptyState('失败模式'); return; }
+    container.innerHTML =
+      '<div style="display:grid;grid-template-columns:240px 1fr;gap:24px;margin-top:16px;align-items:start">'
+      + '<div>' + renderPie(modes, 'loss_mode', 'count') + '</div>'
+      + '<div>' + renderModeCards(modes, data.examples ?? {}) + '</div>'
+      + '</div>';
+  } catch (_) {
+    container.innerHTML = emptyState('失败模式');
+  }
+}
+
+function renderPie(slices, labelKey, valueKey) {
+  var total = slices.reduce(function(s, r) { return s + (r[valueKey] ?? 0); }, 0);
+  if (!total) return emptyState();
+  var cx = 100, cy = 100, r = 80;
+  var PALETTE = ['var(--color-down)', 'var(--color-warn)', 'var(--color-accent)', 'var(--text-muted)'];
+  var startAngle = -Math.PI / 2;
+  var paths = slices.map(function(s, i) {
+    var angle = (s[valueKey] / total) * 2 * Math.PI;
+    var x1 = cx + r * Math.cos(startAngle);
+    var y1 = cy + r * Math.sin(startAngle);
+    var x2 = cx + r * Math.cos(startAngle + angle);
+    var y2 = cy + r * Math.sin(startAngle + angle);
+    var large = angle > Math.PI ? 1 : 0;
+    var d = 'M' + cx + ',' + cy + ' L' + x1.toFixed(2) + ',' + y1.toFixed(2)
+      + ' A' + r + ',' + r + ' 0 ' + large + ',1 ' + x2.toFixed(2) + ',' + y2.toFixed(2) + ' Z';
+    startAngle += angle;
+    return '<path d="' + d + '" fill="' + PALETTE[i % PALETTE.length] + '" opacity="0.85"/>';
+  }).join('');
+  var legends = slices.map(function(s, i) {
+    return '<div style="display:flex;align-items:center;gap:6px;font-size:0.8em;margin-bottom:4px">'
+      + '<span style="width:12px;height:12px;background:' + PALETTE[i % PALETTE.length]
+      + ';border-radius:2px;display:inline-block"></span>'
+      + s[labelKey] + ' (' + s[valueKey] + ')</div>';
+  }).join('');
+  return '<svg width="200" height="200" viewBox="0 0 200 200">' + paths + '</svg>'
+    + '<div style="margin-top:8px">' + legends + '</div>';
+}
+
+function renderModeCards(modes, examples) {
+  return modes.map(function(m) {
+    var ex = examples[m.loss_mode];
+    return '<div style="border:1px solid var(--border);border-radius:4px;padding:10px;margin-bottom:8px">'
+      + '<div style="font-weight:600;margin-bottom:4px">' + m.loss_mode
+      + ' <span style="color:var(--text-muted);font-size:0.8em">(' + m.count + ' 次)</span></div>'
+      + '<div style="font-size:0.8em;color:var(--text-muted)">平均成本 '
+      + (m.avg_cost != null ? m.avg_cost.toFixed(4) : '--')
+      + ' · 最差 ' + (m.worst_cost != null ? m.worst_cost.toFixed(4) : '--') + '</div>'
+      + (ex ? '<div style="font-size:0.75em;color:var(--text-muted);margin-top:4px">典型案例：'
+        + ex.strategy_id + ' @ pair_cost=' + (ex.pair_cost != null ? ex.pair_cost.toFixed(4) : '--') + '</div>' : '')
+      + '</div>';
+  }).join('');
+}
+
+/* ─── View 3: 收益分布（垂直柱状图）──────────── */
+async function loadDistribution() {
+  var container = document.getElementById('pm-distribution');
+  if (!container) return;
+  try {
+    var data = await fetch(BASE_URL + '/postmortem/distribution').then(function(r) { return r.json(); });
+    var rows = Array.isArray(data) ? data : [];
+    if (rows.length === 0) { container.innerHTML = emptyState('收益分布'); return; }
+    var maxCount  = Math.max.apply(null, rows.map(function(r) { return r.count ?? 0; }).concat([1]));
+    var svgW      = rows.length * 60 + 40;
+    var svgH      = 200, barMaxH = 150;
+    var profitBuckets = ['gt_10pct', '5_10pct', '0_5pct'];
+    var bars = rows.map(function(r, i) {
+      var bh    = (r.count / maxCount) * barMaxH;
+      var x     = i * 60 + 20;
+      var y     = svgH - bh - 30;
+      var isProfit = profitBuckets.indexOf(r.bucket) >= 0;
+      var color = r.bucket === 'null' ? 'var(--text-muted)'
+        : isProfit ? 'var(--color-up)' : 'var(--color-down)';
+      return '<rect x="' + x + '" y="' + y.toFixed(1) + '" width="44" height="' + Math.max(bh, 2).toFixed(1) + '"'
+        + ' fill="' + color + '" opacity="0.8" rx="2"/>'
+        + '<text x="' + (x + 22) + '" y="' + (svgH - 14) + '" text-anchor="middle"'
+        + ' font-size="9" fill="var(--text-muted)">' + r.bucket + '</text>'
+        + '<text x="' + (x + 22) + '" y="' + (y - 4).toFixed(1) + '" text-anchor="middle"'
+        + ' font-size="11" fill="var(--text-secondary)">' + r.count + '</text>';
+    }).join('');
+    container.innerHTML = '<div style="margin-top:16px;overflow-x:auto">'
+      + '<svg width="' + svgW + '" height="' + svgH + '" style="min-width:' + svgW + 'px">' + bars + '</svg>'
+      + '</div>';
+  } catch (_) {
+    container.innerHTML = emptyState('收益分布');
+  }
+}
+
+/* ─── View 4: 参数敏感度表 ───────────────────── */
+async function loadSensitivity() {
+  var container = document.getElementById('pm-sensitivity');
+  if (!container) return;
+  try {
+    var data = await fetch(BASE_URL + '/postmortem/sensitivity').then(function(r) { return r.json(); });
+    var rows = Array.isArray(data) ? data : [];
+    if (rows.length === 0) { container.innerHTML = emptyState('参数敏感度'); return; }
+    var thead = '<tr><th>策略</th><th>Config Hash</th><th>窗口数</th>'
+      + '<th>胜率</th><th>平均成本</th><th>首次</th><th>最近</th></tr>';
+    var tbody = rows.map(function(r) {
+      var wr    = r.total_windows ? ((r.wins / r.total_windows) * 100).toFixed(1) + '%' : '--';
+      var first = r.first_trade ? new Date(r.first_trade).toLocaleDateString() : '--';
+      var last  = r.last_trade  ? new Date(r.last_trade).toLocaleDateString()  : '--';
+      return '<tr>'
+        + '<td>' + (r.strategy_id ?? '--') + '</td>'
+        + '<td style="font-family:monospace;font-size:0.8em">' + (r.config_hash ?? '').slice(0, 8) + '</td>'
+        + '<td>' + (r.total_windows ?? '--') + '</td>'
+        + '<td>' + wr + '</td>'
+        + '<td>' + (r.avg_cost != null ? r.avg_cost.toFixed(4) : '--') + '</td>'
+        + '<td>' + first + '</td>'
+        + '<td>' + last + '</td>'
+        + '</tr>';
+    }).join('');
+    container.innerHTML = '<div style="margin-top:16px;overflow-x:auto">'
+      + '<table class="order-table"><thead>' + thead + '</thead><tbody>' + tbody + '</tbody></table>'
+      + '</div>';
+  } catch (_) {
+    container.innerHTML = emptyState('参数敏感度');
+  }
 }
 </script>
 </body>
