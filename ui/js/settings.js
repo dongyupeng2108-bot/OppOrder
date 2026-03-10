@@ -113,7 +113,7 @@ function st_renderContent() {
       ${st_slider("st-delay", "fill_delay",    st_fill.delay, 100, 2000, 100,  "ms", isOpt)}
     </div>`;
   }
-  html += `<div style="margin-top:24px;text-align:center;padding:14px 0;border-radius:10px;font-size:22px;font-weight:700;
+  html += `<div onclick="st_applySettings()" style="margin-top:24px;text-align:center;padding:14px 0;border-radius:10px;font-size:22px;font-weight:700;
     background:linear-gradient(135deg,#6366f1,#0ea5e9);color:#fff;cursor:pointer">应用设置</div>`;
   el.innerHTML = html;
 }
@@ -121,6 +121,13 @@ function st_renderContent() {
 function st_setFillModel(model) {
   st_fill.model = model;
   st_renderContent();
+}
+
+function st_applySettings() {
+  const payload = { risk: st_risk, cancel: st_cancel, fill: st_fill, events: st_events };
+  fetch(BASE_URL + '/config/reload', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) })
+    .then(() => {}).catch(() => {});
+  console.log('[Settings] Applied:', payload);
 }
 
 // ─── Sidebar nav ─────────────────────────

@@ -5,6 +5,7 @@ window.STRAT_COLORS = ['#10b981', '#0ea5e9', '#f59e0b', '#ef4444', '#8b5cf6', '#
 
 // ── Tab 切换 ──
 window.switchTab = function(tab) {
+  if (tab !== 'hall') window.cleanupTradingHall?.();
   document.querySelectorAll('.topbar-tab').forEach(el =>
     el.classList.toggle('active', el.dataset.tab === tab));
   document.querySelectorAll('.page').forEach(el =>
