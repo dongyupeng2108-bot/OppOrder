@@ -37,12 +37,12 @@ function th_setSide(side) {
   const sellEl = document.getElementById("th-side-sell");
   const btnEl  = document.getElementById("th-buy-btn");
   if (side === "buy") {
-    buyEl.style.color  = "#26a69a"; buyEl.style.borderBottom  = "2px solid #26a69a";
-    sellEl.style.color = "#444";    sellEl.style.borderBottom = "2px solid transparent";
+    buyEl.style.color  = "#26a69a"; buyEl.style.borderBottom  = "4px solid #26a69a";
+    sellEl.style.color = "#444";    sellEl.style.borderBottom = "4px solid transparent";
     btnEl.style.background = "#26a69a"; btnEl.textContent = "Buy";
   } else {
-    sellEl.style.color = "#ef5350"; sellEl.style.borderBottom = "2px solid #ef5350";
-    buyEl.style.color  = "#444";    buyEl.style.borderBottom  = "2px solid transparent";
+    sellEl.style.color = "#ef5350"; sellEl.style.borderBottom = "4px solid #ef5350";
+    buyEl.style.color  = "#444";    buyEl.style.borderBottom  = "4px solid transparent";
     btnEl.style.background = "#ef5350"; btnEl.textContent = "Sell";
   }
 }
@@ -54,7 +54,6 @@ function th_toggleCoinMenu() {
 }
 function th_selectCoin(coin) {
   document.getElementById("th-coin-label").textContent = coin;
-  document.getElementById("th-kline-coin").textContent = coin;
   document.getElementById("th-pm-coin").textContent = coin;
   document.getElementById("th-coin-menu").style.display = "none";
   document.querySelectorAll("#th-coin-menu div").forEach(el => {
@@ -62,18 +61,6 @@ function th_selectCoin(coin) {
     el.style.background = match ? "#12122a" : "transparent";
     el.style.color = match ? "#ddd" : "#666";
   });
-}
-
-// ─── TF switching ────────────────────────
-function th_setTf(tf) {
-  ["5M","15M","1H","4H","1D"].forEach(t => {
-    const el = document.getElementById("th-tf-" + t);
-    if (!el) return;
-    if (t === tf) { el.style.background = "#6366f1"; el.style.color = "#fff"; }
-    else          { el.style.background = "transparent"; el.style.color = "#444"; }
-  });
-  document.getElementById("th-kline-tf").textContent = tf;
-  document.getElementById("th-pm-tf").textContent = tf;
 }
 
 // ─── Regime gauge ────────────────────────
@@ -112,16 +99,16 @@ function th_renderStratTable() {
     const pnlText = st.pnl ? (st.pnl > 0 ? "+" : "") + st.pnl : "—";
     const badgeColor = st.status === "running" ? "#26a69a" : "#ef5350";
     const badgeText = st.status === "running" ? "▶" : "■";
-    return `<tr style="border-bottom:1px solid #0a0a18">
-      <td style="padding:3px 6px"><span class="badge" style="background:${badgeColor}15;color:${badgeColor}">${badgeText}</span></td>
-      <td style="padding:3px 6px;color:#bbb;font-weight:600">${st.name}</td>
-      <td style="padding:3px 6px"><div style="width:10px;height:10px;border-radius:2px;background:${st.color}"></div></td>
-      <td style="padding:3px 6px;color:#666">${typeShort}</td>
-      <td style="padding:3px 6px;font-family:var(--m);color:#555">${st.status === "running" ? "16:25:30" : "—"}</td>
-      <td style="padding:3px 6px;font-family:var(--m);color:#555">${st.trades || "—"}</td>
-      <td style="padding:3px 6px;font-family:var(--m);color:#555">${st.winRate ? st.winRate + "%" : "—"}</td>
-      <td style="padding:3px 6px;font-family:var(--m);font-weight:600;color:${pnlColor}">${pnlText}</td>
-      <td style="padding:3px 6px"><span style="cursor:pointer;color:#444;font-size:11px">⚙</span></td>
+    return `<tr style="border-bottom:2px solid #0a0a18">
+      <td style="padding:6px 12px"><span class="badge" style="background:${badgeColor}15;color:${badgeColor}">${badgeText}</span></td>
+      <td style="padding:6px 12px;color:#bbb;font-weight:600">${st.name}</td>
+      <td style="padding:6px 12px"><div style="width:20px;height:20px;border-radius:4px;background:${st.color}"></div></td>
+      <td style="padding:6px 12px;color:#666">${typeShort}</td>
+      <td style="padding:6px 12px;font-family:var(--m);color:#555">${st.status === "running" ? "16:25:30" : "—"}</td>
+      <td style="padding:6px 12px;font-family:var(--m);color:#555">${st.trades || "—"}</td>
+      <td style="padding:6px 12px;font-family:var(--m);color:#555">${st.winRate ? st.winRate + "%" : "—"}</td>
+      <td style="padding:6px 12px;font-family:var(--m);font-weight:600;color:${pnlColor}">${pnlText}</td>
+      <td style="padding:6px 12px"><span style="cursor:pointer;color:#444;font-size:22px">⚙</span></td>
     </tr>`;
   }).join("");
 }
@@ -132,9 +119,9 @@ function th_renderLog(items) {
   if (!el) return;
   el.innerHTML = items.map((lg, i) => {
     const aColor = lg.a === "下单" ? "#26a69a" : lg.a === "撤单" ? "#f59e0b" : lg.a === "成交" ? "#0ea5e9" : "#555";
-    return `<div style="display:flex;align-items:center;gap:8px;padding:1px 6px;font-size:8px;opacity:${(1 - i * 0.12).toFixed(2)}">
-      <span style="color:#1a1a2e;font-family:var(--m);width:48px;flex-shrink:0">${lg.ts}</span>
-      <span style="color:${lg.c};font-weight:600;width:30px;flex-shrink:0">${lg.st}</span>
+    return `<div style="display:flex;align-items:center;gap:16px;padding:2px 12px;font-size:16px;opacity:${(1 - i * 0.12).toFixed(2)}">
+      <span style="color:#1a1a2e;font-family:var(--m);width:96px;flex-shrink:0">${lg.ts}</span>
+      <span style="color:${lg.c};font-weight:600;width:60px;flex-shrink:0">${lg.st}</span>
       <span class="badge" style="background:${aColor}15;color:${aColor}">${lg.a}</span>
       <span style="color:#444;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${lg.d}</span>
     </div>`;
@@ -147,18 +134,18 @@ function th_renderBook(bookData) {
   const bidsEl = document.getElementById("th-bids-area");
   if (asksEl) asksEl.innerHTML = bookData.asks.map(a => {
     const w = Math.min(80, parseInt(a.s) / 25);
-    return `<div style="display:flex;justify-content:space-between;padding:1px 0;position:relative">
+    return `<div style="display:flex;justify-content:space-between;padding:2px 0;position:relative">
       <div style="position:absolute;right:0;top:0;bottom:0;width:${w}%;background:#ef535006"></div>
-      <span style="color:#ef5350;font-size:9px;font-family:var(--m);position:relative">${a.p}${a.mine ? '<span style="color:#6366f1;font-size:6px;margin-left:1px">●</span>' : ''}</span>
-      <span style="color:#444;font-size:9px;font-family:var(--m);position:relative">${a.s}</span>
+      <span style="color:#ef5350;font-size:18px;font-family:var(--m);position:relative">${a.p}${a.mine ? '<span style="color:#6366f1;font-size:12px;margin-left:2px">●</span>' : ''}</span>
+      <span style="color:#444;font-size:18px;font-family:var(--m);position:relative">${a.s}</span>
     </div>`;
   }).join("");
   if (bidsEl) bidsEl.innerHTML = bookData.bids.map(b => {
     const w = Math.min(80, parseInt(b.s) / 25);
-    return `<div style="display:flex;justify-content:space-between;padding:1px 0;position:relative">
+    return `<div style="display:flex;justify-content:space-between;padding:2px 0;position:relative">
       <div style="position:absolute;right:0;top:0;bottom:0;width:${w}%;background:#26a69a06"></div>
-      <span style="color:#26a69a;font-size:9px;font-family:var(--m);position:relative">${b.p}${b.mine ? '<span style="color:#6366f1;font-size:6px;margin-left:1px">●</span>' : ''}</span>
-      <span style="color:#444;font-size:9px;font-family:var(--m);position:relative">${b.s}</span>
+      <span style="color:#26a69a;font-size:18px;font-family:var(--m);position:relative">${b.p}${b.mine ? '<span style="color:#6366f1;font-size:12px;margin-left:2px">●</span>' : ''}</span>
+      <span style="color:#444;font-size:18px;font-family:var(--m);position:relative">${b.s}</span>
     </div>`;
   }).join("");
 }
@@ -167,11 +154,11 @@ function th_renderBook(bookData) {
 function th_renderOrders(list) {
   const el = document.getElementById("th-orders-area");
   if (!el) return;
-  el.innerHTML = '<div style="color:#2a2a40;font-size:7px;font-weight:600;margin-bottom:2px">我的挂单</div>' +
+  el.innerHTML = '<div style="color:#2a2a40;font-size:14px;font-weight:600;margin-bottom:4px">我的挂单</div>' +
     list.slice(0, 4).map(o =>
-      `<div style="display:flex;justify-content:space-between;margin-bottom:1px">
-        <span style="color:${o.sd === "BID" ? "#26a69a" : "#ef5350"};font-size:8px;font-family:var(--m)">${o.sd} ${o.p}</span>
-        <span style="color:#333;font-size:8px;font-family:var(--m)">${o.age}</span>
+      `<div style="display:flex;justify-content:space-between;margin-bottom:2px">
+        <span style="color:${o.sd === "BID" ? "#26a69a" : "#ef5350"};font-size:16px;font-family:var(--m)">${o.sd} ${o.p}</span>
+        <span style="color:#333;font-size:16px;font-family:var(--m)">${o.age}</span>
       </div>`
     ).join("");
 }
@@ -181,9 +168,9 @@ function th_renderStratLegend() {
   const el = document.getElementById("th-strat-legend");
   if (!el) return;
   el.innerHTML = TH_STRATS.filter(s => s.status === "running").map(st =>
-    `<div style="display:flex;align-items:center;gap:4px;margin-bottom:1px">
-      <svg width="8" height="7" viewBox="0 0 8 7"><polygon points="4,0 0,7 8,7" fill="${st.color}"/></svg>
-      <span style="color:#333;font-size:7px">${st.name}</span>
+    `<div style="display:flex;align-items:center;gap:8px;margin-bottom:2px">
+      <svg width="16" height="14" viewBox="0 0 8 7"><polygon points="4,0 0,7 8,7" fill="${st.color}"/></svg>
+      <span style="color:#333;font-size:14px">${st.name}</span>
     </div>`
   ).join("");
 }
@@ -200,8 +187,8 @@ async function th_pollBook() {
     const midEl = document.getElementById("th-mid-price");
     if (data.mid != null && midEl) {
       midEl.innerHTML =
-        `<span style="color:#ddd;font-size:13px;font-weight:700;font-family:var(--m)">${parseFloat(data.mid).toFixed(3)}</span>` +
-        `<span style="color:#222;font-size:7px;margin-left:4px">spread ${data.spread != null ? parseFloat(data.spread).toFixed(3) : "—"}</span>`;
+        `<span style="color:#ddd;font-size:26px;font-weight:700;font-family:var(--m)">${parseFloat(data.mid).toFixed(3)}</span>` +
+        `<span style="color:#222;font-size:14px;margin-left:8px">spread ${data.spread != null ? parseFloat(data.spread).toFixed(3) : "—"}</span>`;
     }
   } catch (_) {}
 }
@@ -233,129 +220,115 @@ function th_render() {
   if (!el) return;
   el.innerHTML = `
     <!-- Left panel -->
-    <div style="width:180px;background:#080814;border-right:1px solid #10102a;display:flex;flex-direction:column;flex-shrink:0;overflow:auto">
-      <div style="padding:10px;border-bottom:1px solid #10102a">
-        <div style="color:#333;font-size:8px;font-weight:600;letter-spacing:1px;margin-bottom:6px">手动交易</div>
-        <div style="display:flex;margin-bottom:6px">
-          <div id="th-side-buy" onclick="th_setSide('buy')" style="flex:1;text-align:center;padding:4px 0;cursor:pointer;font-size:10px;font-weight:700;color:#26a69a;border-bottom:2px solid #26a69a">Buy</div>
-          <div id="th-side-sell" onclick="th_setSide('sell')" style="flex:1;text-align:center;padding:4px 0;cursor:pointer;font-size:10px;font-weight:700;color:#444;border-bottom:2px solid transparent">Sell</div>
+    <div style="width:360px;background:#080814;border-right:2px solid #10102a;display:flex;flex-direction:column;flex-shrink:0;overflow:auto">
+      <div style="padding:20px;border-bottom:2px solid #10102a">
+        <div style="color:#333;font-size:16px;font-weight:600;letter-spacing:1px;margin-bottom:12px">手动交易</div>
+        <div style="display:flex;margin-bottom:12px">
+          <div id="th-side-buy" onclick="th_setSide('buy')" style="flex:1;text-align:center;padding:8px 0;cursor:pointer;font-size:20px;font-weight:700;color:#26a69a;border-bottom:4px solid #26a69a">Buy</div>
+          <div id="th-side-sell" onclick="th_setSide('sell')" style="flex:1;text-align:center;padding:8px 0;cursor:pointer;font-size:20px;font-weight:700;color:#444;border-bottom:4px solid transparent">Sell</div>
         </div>
-        <div style="display:flex;gap:4px;margin-bottom:6px">
-          <div style="flex:1;text-align:center;padding:3px 0;border-radius:3px;font-size:9px;font-weight:600;background:#26a69a15;color:#26a69a">Up 49¢</div>
-          <div style="flex:1;text-align:center;padding:3px 0;border-radius:3px;font-size:9px;font-weight:600;background:#ef535015;color:#ef5350">Down 51¢</div>
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+          <div style="flex:1;text-align:center;padding:6px 0;border-radius:6px;font-size:18px;font-weight:600;background:#26a69a15;color:#26a69a">Up 49¢</div>
+          <div style="flex:1;text-align:center;padding:6px 0;border-radius:6px;font-size:18px;font-weight:600;background:#ef535015;color:#ef5350">Down 51¢</div>
         </div>
-        <div style="display:flex;align-items:center;background:#0a0a1a;border:1px solid #12122a;border-radius:3px;padding:0 6px;height:28px;margin-bottom:4px">
-          <span style="color:#555;font-size:9px">$</span>
-          <input id="th-amt-input" value="1" style="flex:1;background:transparent;border:none;outline:none;color:#ddd;font-family:var(--m);font-size:13px;font-weight:700;text-align:right;padding:0 4px">
+        <div style="display:flex;align-items:center;background:#0a0a1a;border:2px solid #12122a;border-radius:6px;padding:0 12px;height:56px;margin-bottom:8px">
+          <span style="color:#555;font-size:18px">$</span>
+          <input id="th-amt-input" value="1" style="flex:1;background:transparent;border:none;outline:none;color:#ddd;font-family:var(--m);font-size:26px;font-weight:700;text-align:right;padding:0 8px">
         </div>
-        <div style="display:flex;gap:4px;margin-bottom:6px">
-          <div style="flex:1;text-align:center;padding:1px 0;border-radius:2px;background:#12122a;color:#444;font-size:7px;cursor:pointer">$1</div>
-          <div style="flex:1;text-align:center;padding:1px 0;border-radius:2px;background:#12122a;color:#444;font-size:7px;cursor:pointer">$5</div>
-          <div style="flex:1;text-align:center;padding:1px 0;border-radius:2px;background:#12122a;color:#444;font-size:7px;cursor:pointer">+10</div>
-          <div style="flex:1;text-align:center;padding:1px 0;border-radius:2px;background:#12122a;color:#444;font-size:7px;cursor:pointer">Max</div>
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+          <div style="flex:1;text-align:center;padding:2px 0;border-radius:4px;background:#12122a;color:#444;font-size:14px;cursor:pointer">$1</div>
+          <div style="flex:1;text-align:center;padding:2px 0;border-radius:4px;background:#12122a;color:#444;font-size:14px;cursor:pointer">$5</div>
+          <div style="flex:1;text-align:center;padding:2px 0;border-radius:4px;background:#12122a;color:#444;font-size:14px;cursor:pointer">+10</div>
+          <div style="flex:1;text-align:center;padding:2px 0;border-radius:4px;background:#12122a;color:#444;font-size:14px;cursor:pointer">Max</div>
         </div>
-        <div id="th-buy-btn" style="text-align:center;padding:6px 0;border-radius:3px;font-size:10px;font-weight:700;background:#26a69a;color:#fff;cursor:pointer">Buy</div>
+        <div id="th-buy-btn" style="text-align:center;padding:12px 0;border-radius:6px;font-size:20px;font-weight:700;background:#26a69a;color:#fff;cursor:pointer">Buy</div>
       </div>
-      <div style="padding:10px;border-bottom:1px solid #10102a">
-        <div style="display:flex;justify-content:space-between;margin-bottom:4px">
-          <span style="color:#333;font-size:8px;font-weight:600">手动盈亏</span>
-          <span style="color:#222;font-size:7px;cursor:pointer;background:#12122a;padding:1px 4px;border-radius:2px">重置</span>
+      <div style="padding:20px;border-bottom:2px solid #10102a">
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+          <span style="color:#333;font-size:16px;font-weight:600">手动盈亏</span>
+          <span style="color:#222;font-size:14px;cursor:pointer;background:#12122a;padding:2px 8px;border-radius:4px">重置</span>
         </div>
-        <div style="text-align:center"><span style="color:#26a69a;font-size:18px;font-weight:800;font-family:var(--m)">+12.50</span></div>
-        <div style="display:flex;justify-content:space-around;font-size:8px;color:#333;margin-top:2px"><span>交易 8</span><span>胜率 63%</span></div>
+        <div style="text-align:center"><span style="color:#26a69a;font-size:36px;font-weight:800;font-family:var(--m)">+12.50</span></div>
+        <div style="display:flex;justify-content:space-around;font-size:16px;color:#333;margin-top:4px"><span>交易 8</span><span>胜率 63%</span></div>
       </div>
-      <div style="padding:10px;border-bottom:1px solid #10102a">
-        <div style="color:#333;font-size:8px;font-weight:600;letter-spacing:1px;margin-bottom:4px">市场状态</div>
+      <div style="padding:20px;border-bottom:2px solid #10102a">
+        <div style="color:#333;font-size:16px;font-weight:600;letter-spacing:1px;margin-bottom:8px">市场状态</div>
         <div style="text-align:center">
-          <svg width="80" height="48" viewBox="0 0 120 70">
+          <svg width="160" height="96" viewBox="0 0 120 70">
             <path d="M 10 65 A 50 50 0 0 1 110 65" fill="none" stroke="#141428" stroke-width="8" stroke-linecap="round"/>
             <path id="th-gauge-arc" d="M 10 65 A 50 50 0 0 1 110 65" fill="none" stroke="url(#th-gg)" stroke-width="8" stroke-linecap="round" stroke-dasharray="106.76 157"/>
             <defs><linearGradient id="th-gg" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#ef4444"/><stop offset="50%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#10b981"/></linearGradient></defs>
             <line id="th-gauge-needle" x1="60" y1="62" x2="82.55" y2="43.45" stroke="#10b981" stroke-width="2" stroke-linecap="round"/>
             <circle id="th-gauge-dot" cx="60" cy="62" r="3" fill="#10b981"/>
           </svg>
-          <div id="th-regime-score" style="color:#10b981;font-size:14px;font-weight:700;font-family:var(--m);margin-top:-2px">0.68</div>
+          <div id="th-regime-score" style="color:#10b981;font-size:28px;font-weight:700;font-family:var(--m);margin-top:-4px">0.68</div>
         </div>
       </div>
-      <div style="padding:6px 10px;margin-top:auto;border-top:1px solid #10102a">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:1px">
-          <div style="width:4px;height:4px;border-radius:2px;background:#26a69a"></div>
-          <span style="color:#333;font-size:7px">Binance WS</span>
-          <span style="color:#26a69a;font-size:7px;font-family:var(--m);margin-left:auto">38ms</span>
+      <div style="padding:12px 20px;margin-top:auto;border-top:2px solid #10102a">
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:2px">
+          <div style="width:8px;height:8px;border-radius:4px;background:#26a69a"></div>
+          <span style="color:#333;font-size:14px">Binance WS</span>
+          <span style="color:#26a69a;font-size:14px;font-family:var(--m);margin-left:auto">38ms</span>
         </div>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:1px">
-          <div style="width:4px;height:4px;border-radius:2px;background:#26a69a"></div>
-          <span style="color:#333;font-size:7px">PM WS</span>
-          <span style="color:#26a69a;font-size:7px;font-family:var(--m);margin-left:auto">105ms</span>
+        <div style="display:flex;align-items:center;gap:16px;margin-bottom:2px">
+          <div style="width:8px;height:8px;border-radius:4px;background:#26a69a"></div>
+          <span style="color:#333;font-size:14px">PM WS</span>
+          <span style="color:#26a69a;font-size:14px;font-family:var(--m);margin-left:auto">105ms</span>
         </div>
       </div>
     </div>
 
     <!-- Center -->
     <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0">
-      <div style="height:26px;background:#0a0a18;border-bottom:1px solid #12122a;display:flex;align-items:center;padding:0 10px;gap:6px;flex-shrink:0">
-        <span style="color:#444;font-size:10px">交易大厅</span>
+      <div style="height:52px;background:#0a0a18;border-bottom:2px solid #12122a;display:flex;align-items:center;padding:0 20px;gap:12px;flex-shrink:0">
+        <span style="color:#444;font-size:20px">交易大厅</span>
         <div style="flex:1"></div>
         <div style="position:relative">
-          <div onclick="th_toggleCoinMenu()" style="display:flex;align-items:center;gap:3px;cursor:pointer;padding:1px 7px;border-radius:3px;background:#12122a">
-            <span id="th-coin-label" style="font-weight:700;font-size:11px;color:#ddd">BTC</span>
-            <span style="color:#333;font-size:7px">▼</span>
+          <div onclick="th_toggleCoinMenu()" style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:2px 14px;border-radius:6px;background:#12122a">
+            <span id="th-coin-label" style="font-weight:700;font-size:22px;color:#ddd">BTC</span>
+            <span style="color:#333;font-size:14px">▼</span>
           </div>
-          <div id="th-coin-menu" style="display:none;position:absolute;top:22px;right:0;background:#0a0a18;border:1px solid #12122a;border-radius:5px;padding:3px;z-index:100;min-width:80px">
-            <div onclick="th_selectCoin('BTC')" style="padding:3px 7px;border-radius:3px;cursor:pointer;font-size:10px;background:#12122a;color:#ddd">BTC</div>
-            <div onclick="th_selectCoin('ETH')" style="padding:3px 7px;border-radius:3px;cursor:pointer;font-size:10px;background:transparent;color:#666">ETH</div>
-            <div onclick="th_selectCoin('SOL')" style="padding:3px 7px;border-radius:3px;cursor:pointer;font-size:10px;background:transparent;color:#666">SOL</div>
-            <div onclick="th_selectCoin('XRP')" style="padding:3px 7px;border-radius:3px;cursor:pointer;font-size:10px;background:transparent;color:#666">XRP</div>
+          <div id="th-coin-menu" style="display:none;position:absolute;top:44px;right:0;background:#0a0a18;border:2px solid #12122a;border-radius:10px;padding:6px;z-index:100;min-width:160px">
+            <div onclick="th_selectCoin('BTC')" style="padding:6px 14px;border-radius:6px;cursor:pointer;font-size:20px;background:#12122a;color:#ddd">BTC</div>
+            <div onclick="th_selectCoin('ETH')" style="padding:6px 14px;border-radius:6px;cursor:pointer;font-size:20px;background:transparent;color:#666">ETH</div>
+            <div onclick="th_selectCoin('SOL')" style="padding:6px 14px;border-radius:6px;cursor:pointer;font-size:20px;background:transparent;color:#666">SOL</div>
+            <div onclick="th_selectCoin('XRP')" style="padding:6px 14px;border-radius:6px;cursor:pointer;font-size:20px;background:transparent;color:#666">XRP</div>
           </div>
         </div>
       </div>
-      <div style="flex:1;min-height:80px;border-bottom:1px solid #12122a;display:flex;align-items:center;justify-content:center;position:relative;color:#1a1a2e;font-size:11px">
-        <span id="th-kline-coin" style="position:absolute;top:6px;left:10px;color:#555;font-size:10px;font-weight:600">BTC</span>
-        <span id="th-kline-tf" style="position:absolute;top:6px;right:10px;color:#333;font-size:9px;font-family:var(--m)">15M</span>
-        BTC K 线图（含成交量柱）
-      </div>
-      <div style="height:24px;background:#0a0a18;border-bottom:1px solid #12122a;display:flex;align-items:center;padding:0 10px;gap:2px;flex-shrink:0">
-        <div id="th-tf-5M"  onclick="th_setTf('5M')"  style="padding:2px 8px;border-radius:2px;font-size:9px;font-weight:600;font-family:var(--m);background:transparent;color:#444;cursor:pointer">5M</div>
-        <div id="th-tf-15M" onclick="th_setTf('15M')" style="padding:2px 8px;border-radius:2px;font-size:9px;font-weight:600;font-family:var(--m);background:#6366f1;color:#fff;cursor:pointer">15M</div>
-        <div id="th-tf-1H"  onclick="th_setTf('1H')"  style="padding:2px 8px;border-radius:2px;font-size:9px;font-weight:600;font-family:var(--m);background:transparent;color:#444;cursor:pointer">1H</div>
-        <div id="th-tf-4H"  onclick="th_setTf('4H')"  style="padding:2px 8px;border-radius:2px;font-size:9px;font-weight:600;font-family:var(--m);background:transparent;color:#444;cursor:pointer">4H</div>
-        <div id="th-tf-1D"  onclick="th_setTf('1D')"  style="padding:2px 8px;border-radius:2px;font-size:9px;font-weight:600;font-family:var(--m);background:transparent;color:#444;cursor:pointer">1D</div>
-        <div style="flex:1"></div>
-        <span style="color:#2a2a40;font-size:8px">Bitcoin Up or Down – Mar 9, 6:50–6:55 AM ET</span>
-      </div>
-      <div style="flex:1;min-height:80px;border-bottom:1px solid #12122a;display:flex;align-items:center;justify-content:center;position:relative;color:#1a1a2e;font-size:11px">
-        <span id="th-pm-coin" style="position:absolute;top:6px;left:10px;color:#555;font-size:10px;font-weight:600">BTC</span>
-        <span id="th-pm-tf" style="position:absolute;top:6px;right:70px;color:#333;font-size:9px;font-family:var(--m)">15M</span>
-        <div style="position:absolute;top:4px;right:8px;background:#0a0a1a;border-radius:3px;padding:2px 8px;border:1px solid #12122a">
-          <span id="th-countdown" style="font-family:var(--m);font-size:12px;font-weight:700;color:#888">4:07</span>
+      <div style="flex:1;min-height:160px;border-bottom:2px solid #12122a;display:flex;align-items:center;justify-content:center;position:relative;color:#1a1a2e;font-size:22px">
+        <span id="th-pm-coin" style="position:absolute;top:12px;left:20px;color:#555;font-size:20px;font-weight:600">BTC</span>
+        <span id="th-pm-tf" style="position:absolute;top:12px;right:140px;color:#333;font-size:18px;font-family:var(--m)">15M</span>
+        <div style="position:absolute;top:8px;right:16px;background:#0a0a1a;border-radius:6px;padding:4px 16px;border:2px solid #12122a">
+          <span id="th-countdown" style="font-family:var(--m);font-size:24px;font-weight:700;color:#888">4:07</span>
         </div>
         PM 概率折线图（含成交标记 + 配对连线）
       </div>
-      <div style="flex-shrink:0;background:#080814;border-top:1px solid #12122a">
+      <div style="flex-shrink:0;background:#080814;border-top:2px solid #12122a">
         <table class="data-table">
           <thead><tr>
             <th></th><th>策略</th><th>颜色</th><th>类型</th><th>运行</th><th>交易</th><th>胜率</th><th>获利</th><th></th>
           </tr></thead>
           <tbody id="th-strat-tbody"></tbody>
         </table>
-        <div style="padding:2px 6px;border-bottom:1px solid #12122a"><span style="font-size:9px;color:#333;cursor:pointer">+ 添加策略</span></div>
-        <div id="th-log-area" style="max-height:60px;overflow:auto;padding:2px 0"></div>
+        <div style="padding:4px 12px;border-bottom:2px solid #12122a"><span style="font-size:18px;color:#333;cursor:pointer">+ 添加策略</span></div>
+        <div id="th-log-area" style="max-height:120px;overflow:auto;padding:4px 0"></div>
       </div>
     </div>
 
     <!-- Right panel -->
-    <div style="width:164px;background:#080814;border-left:1px solid #10102a;display:flex;flex-direction:column;flex-shrink:0;overflow:auto">
-      <div style="padding:5px 8px;color:#2a2a40;font-size:8px;font-weight:600;letter-spacing:1px;border-bottom:1px solid #10102a">订单簿</div>
-      <div id="th-asks-area" style="padding:3px 6px"></div>
-      <div id="th-mid-price" style="text-align:center;padding:4px 0;border-top:1px solid #10102a;border-bottom:1px solid #10102a">
-        <span style="color:#ddd;font-size:13px;font-weight:700;font-family:var(--m)">0.527</span>
-        <span style="color:#222;font-size:7px;margin-left:4px">spread 0.008</span>
+    <div style="width:328px;background:#080814;border-left:2px solid #10102a;display:flex;flex-direction:column;flex-shrink:0;overflow:auto">
+      <div style="padding:10px 16px;color:#2a2a40;font-size:16px;font-weight:600;letter-spacing:1px;border-bottom:2px solid #10102a">订单簿</div>
+      <div id="th-asks-area" style="padding:6px 12px"></div>
+      <div id="th-mid-price" style="text-align:center;padding:8px 0;border-top:2px solid #10102a;border-bottom:2px solid #10102a">
+        <span style="color:#ddd;font-size:26px;font-weight:700;font-family:var(--m)">0.527</span>
+        <span style="color:#222;font-size:14px;margin-left:8px">spread 0.008</span>
       </div>
-      <div id="th-bids-area" style="padding:3px 6px"></div>
-      <div id="th-orders-area" style="padding:4px 6px;border-top:1px solid #10102a">
-        <div style="color:#2a2a40;font-size:7px;font-weight:600;margin-bottom:2px">我的挂单</div>
+      <div id="th-bids-area" style="padding:6px 12px"></div>
+      <div id="th-orders-area" style="padding:8px 12px;border-top:2px solid #10102a">
+        <div style="color:#2a2a40;font-size:14px;font-weight:600;margin-bottom:4px">我的挂单</div>
       </div>
-      <div id="th-strat-legend" style="padding:4px 6px;margin-top:auto;border-top:1px solid #10102a"></div>
+      <div id="th-strat-legend" style="padding:8px 12px;margin-top:auto;border-top:2px solid #10102a"></div>
     </div>
   `;
 }
