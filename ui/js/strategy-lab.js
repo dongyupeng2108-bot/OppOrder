@@ -16,11 +16,6 @@ let sl_tranches = 3;
 let sl_pairT = 0.97;
 
 // ─── Helpers ─────────────────────────────
-function sl_genS(base, drift, vol, n = 36) {
-  let v = base;
-  return Array.from({length: n}, () => { v += drift + (Math.random() - 0.5) * vol; return +v.toFixed(2); });
-}
-
 function sl_bdg(text, color) {
   return `<span class="badge" style="background:${color}15;color:${color}">${text}</span>`;
 }
@@ -238,28 +233,8 @@ function sl_renderEdit() {
 // ─── Postmortem content ───────────────────
 function sl_renderPostmortem() {
   const st = SL_STRATS.find(s => s.id === sl_sel);
-  const sources = [
-    {l:"夜间流动性偏移",v:9.4,d:"深夜盘口薄"},
-    {l:"高波动配对",v:6.1,d:"波动大价差扩大"},
-    {l:"均值回归",v:3.2,d:"偏离后回归"},
-    {l:"其他",v:-0.5,d:"tick损耗"},
-  ];
-  const losses = [
-    {l:"成交后继续反向",pct:43,ex:"3/8 买DOWN@0.48→0.12→-$4.80"},
-    {l:"快速单边未配对",pct:31,ex:"3/5 UP成交DOWN未→-$5"},
-    {l:"挂单未成交",pct:18,ex:"3/7 offset大→错过+$3.2"},
-    {l:"spread吞edge",pct:8,ex:"cost=0.998→-$0.2"},
-  ];
-  const sens = [
-    {p:"偏移",vals:[{v:"0.01",pnl:18,f:72},{v:"0.02",pnl:47,f:68},{v:"0.03",pnl:52,f:55},{v:"0.05",pnl:31,f:38}]},
-    {p:"档数",vals:[{v:"1",pnl:22,f:45},{v:"2",pnl:39,f:55},{v:"3",pnl:47,f:68},{v:"5",pnl:40,f:78}]},
-  ];
-  const dist = [
-    {r:"< -$5",n:12,c:"#ef5350"},{r:"-$5~0",n:73,c:"#ef535060"},
-    {r:"$0~$5",n:231,c:"#26a69a60"},{r:"> $5",n:45,c:"#26a69a"},
-  ];
-  const maxD = Math.max(...dist.map(b => b.n));
   const stColor = st?.color || "#10b981";
+  const placeholder = `<div style="color:#2a2a40;font-size:20px;text-align:center;padding:40px 0">暂无复盘数据</div>`;
 
   return `<div>
     <div style="background:#0b0b1a;border-radius:12px;padding:20px 28px;border:2px solid #12122a;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between">
@@ -267,88 +242,35 @@ function sl_renderPostmortem() {
         <div style="width:16px;height:16px;border-radius:4px;background:${stColor}"></div>
         <span style="font-size:28px;font-weight:800;color:#ddd">${st?.name}</span>
         ${sl_bdg("BTC 15M", stColor)}
-        <span style="color:#333;font-size:18px">· ${st?.trades} 次</span>
       </div>
       <div style="padding:6px 16px;border-radius:6px;font-size:18px;background:#6366f115;color:#6366f1;cursor:pointer">修改参数</div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:24px">
-      ${sl_stat("总收益", `+$${st?.pnl}`, "#26a69a")}
-      ${sl_stat("胜率", st?.winRate + "%", st?.winRate > 30 ? "#26a69a" : "#f59e0b")}
-      ${sl_stat("Sharpe", "1.82")}
-      ${sl_stat("最大回撤", "-6.4%", "#ef5350")}
-      ${sl_stat("成交率", "68%")}
-      ${sl_stat("仓位", "$" + st?.avgPos)}
+      ${sl_stat("总收益", "—")}
+      ${sl_stat("胜率", "—")}
+      ${sl_stat("Sharpe", "—")}
+      ${sl_stat("最大回撤", "—")}
+      ${sl_stat("成交率", "—")}
+      ${sl_stat("仓位", "—")}
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px">
       <div class="card">
         <div class="section-title" style="color:#26a69a">💰 赚钱来源</div>
-        ${sources.map(s => `<div style="margin-bottom:12px">
-          <div style="display:flex;justify-content:space-between">
-            <span style="color:#aaa;font-size:20px;font-weight:600">${s.l}</span>
-            <span style="font-family:var(--m);font-size:22px;font-weight:700;color:${s.v >= 0 ? "#26a69a" : "#ef5350"}">${s.v >= 0 ? "+" : ""}${s.v}%</span>
-          </div>
-          <div style="height:8px;background:#08081a;border-radius:4px;overflow:hidden;margin-top:4px">
-            <div style="height:8px;width:${Math.max(2, Math.abs(s.v) * 5)}%;background:${s.v >= 0 ? "#26a69a50" : "#ef535050"};border-radius:4px"></div></div>
-          <div style="color:#222;font-size:16px;margin-top:2px">${s.d}</div>
-        </div>`).join("")}
-        <div style="border-top:2px solid #12122a;padding-top:16px;margin-top:8px">
-          <div style="color:#444;font-size:18px;font-weight:600;margin-bottom:8px">按市场状态</div>
-          ${[{l:"震荡",v:"+14.5%",c:"#26a69a"},{l:"中性",v:"+5.8%",c:"#26a69a"},{l:"趋势",v:"-2.1%",c:"#ef5350"}].map(r =>
-            `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:2px solid #08081a">
-              <span style="color:#555;font-size:18px">${r.l}</span>
-              <span style="color:${r.c};font-family:var(--m);font-size:18px;font-weight:600">${r.v}</span>
-            </div>`).join("")}
-        </div>
+        ${placeholder}
       </div>
       <div class="card">
         <div class="section-title" style="color:#ef5350">⚠️ 失败模式</div>
-        ${losses.map((lm, i) => `<div style="background:#08081a;border-radius:8px;padding:16px;margin-bottom:12px;border:2px solid #10102a">
-          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
-            <span style="color:#bbb;font-size:20px;font-weight:700">${i+1}. ${lm.l}</span>
-            <span style="font-family:var(--m);font-size:24px;font-weight:800;color:#ef5350">${lm.pct}%</span>
-          </div>
-          <div style="font-size:16px;color:#444;border-left:4px solid #ef535030;padding-left:12px">${lm.ex}</div>
-        </div>`).join("")}
+        ${placeholder}
       </div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
       <div class="card">
         <div class="section-title" style="color:#6366f1">🔬 参数敏感度</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px">
-          ${sens.map(ps => {
-            const best = Math.max(...ps.vals.map(v => v.pnl));
-            return `<div>
-              <div style="color:#888;font-size:20px;font-weight:700;margin-bottom:8px">${ps.p}</div>
-              <table style="width:100%;border-collapse:collapse;font-size:18px">
-                <thead><tr style="border-bottom:2px solid #12122a">
-                  <th style="padding:4px 8px;text-align:left;color:#333;font-size:14px">值</th>
-                  <th style="padding:4px 8px;text-align:center;color:#333;font-size:14px">收益</th>
-                  <th style="padding:4px 8px;text-align:center;color:#333;font-size:14px">成交</th>
-                </tr></thead>
-                <tbody>${ps.vals.map(r =>
-                  `<tr style="border-bottom:2px solid #08081a;background:${r.pnl === best ? "#26a69a06" : "transparent"}">
-                    <td style="padding:4px 8px;font-family:var(--m);color:#aaa">${r.v}</td>
-                    <td style="padding:4px 8px;text-align:center;font-family:var(--m);font-weight:700;color:#26a69a">+${r.pnl}${r.pnl === best ? '<span style="color:#f59e0b;margin-left:2px;font-size:12px">★</span>' : ""}</td>
-                    <td style="padding:4px 8px;text-align:center;font-family:var(--m);color:#666">${r.f}%</td>
-                  </tr>`).join("")}
-                </tbody>
-              </table>
-            </div>`;
-          }).join("")}
-        </div>
+        ${placeholder}
       </div>
       <div class="card">
         <div class="section-title">📊 单笔收益分布</div>
-        ${dist.map(b => `<div style="display:flex;align-items:center;gap:16px;margin-bottom:8px">
-          <span style="width:88px;text-align:right;color:#555;font-size:18px;font-family:var(--m);flex-shrink:0">${b.r}</span>
-          <div style="flex:1;height:28px;background:#08081a;border-radius:6px;overflow:hidden">
-            <div style="height:28px;width:${(b.n / maxD) * 100}%;background:${b.c};border-radius:6px;display:flex;align-items:center;padding-left:8px">
-              ${b.n > 20 ? `<span style="color:#060612;font-size:14px;font-weight:700">${b.n}</span>` : ""}
-            </div>
-          </div>
-          <span style="width:40px;color:#444;font-size:16px;font-family:var(--m)">${b.n}</span>
-        </div>`).join("")}
-        <div style="color:#222;font-size:16px;margin-top:8px;text-align:center">靠<span style="color:#26a69a">大量小盈利</span>积累，偶被<span style="color:#ef5350">单边行情</span>打回撤</div>
+        ${placeholder}
       </div>
     </div>
   </div>`;
@@ -361,29 +283,15 @@ function sl_renderCompare() {
     return `<div style="color:#333;text-align:center;padding:40px">请勾选至少 2 个策略</div>`;
   }
   const ms = [
-    {k:"pnl",    l:"累计PnL", f: v => (v >= 0 ? "+" : "") + v,          c: v => v >= 0 ? "#26a69a" : "#ef5350"},
-    {k:"trades", l:"交易",    f: v => v,                                  c: () => "#aaa"},
-    {k:"winRate",l:"胜率",    f: v => v + "%",                            c: v => v > 30 ? "#26a69a" : "#f59e0b"},
-    {k:"avgPos", l:"仓位",    f: v => "$" + parseFloat(v).toFixed(1),    c: () => "#aaa"},
+    {l:"累计PnL"}, {l:"交易"}, {l:"胜率"}, {l:"仓位"},
   ];
-  const tableRows = ms.map(m => {
-    const best = Math.max(...sts.map(x => x[m.k]));
-    return `<tr style="border-bottom:2px solid #0a0a18">
+  const tableRows = ms.map(m =>
+    `<tr style="border-bottom:2px solid #0a0a18">
       <td style="padding:10px 16px;color:#555;font-weight:600">${m.l}</td>
-      ${sts.map(s => `<td style="padding:10px 16px;text-align:center;font-family:var(--m);font-weight:700;font-size:24px;
-        color:${m.c(s[m.k])};background:${s[m.k] === best ? m.c(s[m.k]) + "08" : "transparent"}">
-        ${m.f(s[m.k])}${s[m.k] === best ? '<span style="margin-left:6px;font-size:14px;color:#f59e0b">★</span>' : ""}
-      </td>`).join("")}
-    </tr>`;
-  }).join("");
-
-  // Generate MLC chart data
-  const pnlSeries = sts.map(s => ({name: s.name, color: s.color, fmt: v => (v >= 0 ? "+" : "") + v.toFixed(0),
-    data: sl_genS(0, s.pnl > 0 ? 0.8 : -0.3, s.pnl > 100 ? 8 : 5)}));
-  const posSeries = sts.map(s => ({name: s.name, color: s.color, fmt: v => "$" + v.toFixed(1),
-    data: sl_genS(s.avgPos, 0, 3).map(v => Math.max(0, v))}));
-  const wrSeries = sts.map(s => ({name: s.name, color: s.color, fmt: v => v.toFixed(0) + "%",
-    data: sl_genS(s.winRate, 0, 8).map(v => Math.max(5, Math.min(80, v)))}));
+      ${sts.map(() => `<td style="padding:10px 16px;text-align:center;font-family:var(--m);font-weight:700;font-size:24px;color:#2a2a40">—</td>`).join("")}
+    </tr>`
+  ).join("");
+  const placeholder = `<div style="color:#2a2a40;font-size:20px;text-align:center;padding:40px 0">暂无对比数据</div>`;
 
   return `<div style="display:flex;flex-direction:column;gap:24px">
     <div class="card">
@@ -403,9 +311,7 @@ function sl_renderCompare() {
     </div>
     <div class="card">
       <div class="section-title">📈 趋势对比</div>
-      ${sl_mlc("累计 PnL", pnlSeries)}
-      ${sl_mlc("仓位变化", posSeries)}
-      ${sl_mlc("滚动胜率", wrSeries)}
+      ${placeholder}
     </div>
   </div>`;
 }

@@ -1,34 +1,9 @@
-// ─── Data ───────────────────────────────
-const TH_STRATS = [
-  { id:"s1", name:"配对做市#002", color:"#10b981", type:"pair",     status:"running", pnl:326,  trades:361, winRate:35, avgPos:8.2 },
-  { id:"s2", name:"配对做市#003", color:"#0ea5e9", type:"pair",     status:"running", pnl:52,   trades:120, winRate:31, avgPos:9.5 },
-  { id:"s3", name:"极值回归A",    color:"#f59e0b", type:"revert",   status:"running", pnl:22,   trades:18,  winRate:12, avgPos:4.8 },
-  { id:"s4", name:"方向突破B",    color:"#ef4444", type:"breakout", status:"stopped", pnl:-38,  trades:45,  winRate:28, avgPos:6.1 },
-];
+// ─── Type map ────────────────────────────
 const TH_TM = { pair:{icon:"⚖️",short:"配对"}, revert:{icon:"🎯",short:"回归"}, breakout:{icon:"📐",short:"突破"} };
 
-const TH_ORDERS = [
-  {sd:"BID",p:"0.472",sz:"$5",tr:"T1",st:"#002",age:"8s"},
-  {sd:"BID",p:"0.465",sz:"$5",tr:"T2",st:"#002",age:"8s"},
-  {sd:"ASK",p:"0.538",sz:"$5",tr:"T1",st:"#002",age:"5s"},
-  {sd:"ASK",p:"0.545",sz:"$5",tr:"T2",st:"#002",age:"5s"},
-  {sd:"BID",p:"0.082",sz:"$3",tr:"—", st:"回归A",age:"32s"},
-];
-const TH_LOGS = [
-  {ts:"18:32:15",st:"#002",  c:"#10b981",a:"下单",d:"BUY UP @ 0.472 × $5"},
-  {ts:"18:32:14",st:"#002",  c:"#10b981",a:"撤单",d:"BID 0.468 老化(21s)"},
-  {ts:"18:31:58",st:"#002",  c:"#10b981",a:"成交",d:"BUY DOWN @ 0.531 配对 cost=0.963"},
-  {ts:"18:31:45",st:"回归A", c:"#f59e0b",a:"监控",d:"DOWN ask=0.18 > 0.12"},
-  {ts:"18:31:30",st:"#002",  c:"#10b981",a:"撤单",d:"全撤: sigma跳变"},
-];
-const TH_BOOK = {
-  asks:[{p:"0.545",s:"450"},{p:"0.540",s:"1560"},{p:"0.538",s:"890"},{p:"0.535",s:"120",mine:true},{p:"0.531",s:"380"}],
-  bids:[{p:"0.523",s:"412"},{p:"0.520",s:"85",mine:true},{p:"0.518",s:"1240"},{p:"0.515",s:"634"},{p:"0.510",s:"2100",mine:true}],
-};
-
 // ─── State ──────────────────────────────
-let th_score = 0.68;
-let th_countdown = 247;
+let th_score = null;
+let th_countdown = 300;
 let th_timers = [];
 
 // ─── Side switching ──────────────────────
@@ -65,14 +40,21 @@ function th_selectCoin(coin) {
 
 // ─── Regime gauge ────────────────────────
 function th_updateGauge(score) {
+  const scoreEl = document.getElementById("th-regime-score");
+  const arc = document.getElementById("th-gauge-arc");
+  const needle = document.getElementById("th-gauge-needle");
+  const dot = document.getElementById("th-gauge-dot");
+  if (score == null) {
+    if (scoreEl) { scoreEl.style.color = "#444"; scoreEl.textContent = "—"; }
+    if (arc) arc.setAttribute("stroke-dasharray", "0 157");
+    if (needle) { needle.setAttribute("x2", "10"); needle.setAttribute("y2", "65"); needle.setAttribute("stroke", "#333"); }
+    if (dot) dot.setAttribute("fill", "#333");
+    return;
+  }
   const color = score > 0.6 ? "#10b981" : score > 0.4 ? "#f59e0b" : "#ef4444";
   const angleRad = (-90 + score * 180) * Math.PI / 180;
   const x2 = 60 + 36 * Math.cos(angleRad);
   const y2 = 62 + 36 * Math.sin(angleRad);
-  const arc = document.getElementById("th-gauge-arc");
-  const needle = document.getElementById("th-gauge-needle");
-  const dot = document.getElementById("th-gauge-dot");
-  const scoreEl = document.getElementById("th-regime-score");
   if (arc) arc.setAttribute("stroke-dasharray", (score * 157) + " 157");
   if (needle) { needle.setAttribute("x2", x2.toFixed(2)); needle.setAttribute("y2", y2.toFixed(2)); needle.setAttribute("stroke", color); }
   if (dot) dot.setAttribute("fill", color);
@@ -90,23 +72,27 @@ function th_updateCountdown() {
 }
 
 // ─── Render strategy table ───────────────
-function th_renderStratTable() {
+function th_renderStratTable(strats = []) {
   const tbody = document.getElementById("th-strat-tbody");
   if (!tbody) return;
-  tbody.innerHTML = TH_STRATS.map(st => {
+  if (strats.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="9" style="padding:12px;text-align:center;color:#2a2a40;font-size:18px">暂无运行中策略</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = strats.map(st => {
     const typeShort = TH_TM[st.type]?.short || "";
     const pnlColor = st.pnl > 0 ? "#26a69a" : st.pnl < 0 ? "#ef5350" : "#444";
-    const pnlText = st.pnl ? (st.pnl > 0 ? "+" : "") + st.pnl : "—";
+    const pnlText = st.pnl != null ? (st.pnl > 0 ? "+" : "") + st.pnl : "—";
     const badgeColor = st.status === "running" ? "#26a69a" : "#ef5350";
     const badgeText = st.status === "running" ? "▶" : "■";
     return `<tr style="border-bottom:2px solid #0a0a18">
       <td style="padding:6px 12px"><span class="badge" style="background:${badgeColor}15;color:${badgeColor}">${badgeText}</span></td>
-      <td style="padding:6px 12px;color:#bbb;font-weight:600">${st.name}</td>
-      <td style="padding:6px 12px"><div style="width:20px;height:20px;border-radius:4px;background:${st.color}"></div></td>
+      <td style="padding:6px 12px;color:#bbb;font-weight:600">${st.name || "—"}</td>
+      <td style="padding:6px 12px"><div style="width:20px;height:20px;border-radius:4px;background:${st.color || "#444"}"></div></td>
       <td style="padding:6px 12px;color:#666">${typeShort}</td>
-      <td style="padding:6px 12px;font-family:var(--m);color:#555">${st.status === "running" ? "16:25:30" : "—"}</td>
-      <td style="padding:6px 12px;font-family:var(--m);color:#555">${st.trades || "—"}</td>
-      <td style="padding:6px 12px;font-family:var(--m);color:#555">${st.winRate ? st.winRate + "%" : "—"}</td>
+      <td style="padding:6px 12px;font-family:var(--m);color:#555">${st.status === "running" ? (st.started_at || "—") : "—"}</td>
+      <td style="padding:6px 12px;font-family:var(--m);color:#555">${st.trades != null ? st.trades : "—"}</td>
+      <td style="padding:6px 12px;font-family:var(--m);color:#555">${st.winRate != null ? st.winRate + "%" : "—"}</td>
       <td style="padding:6px 12px;font-family:var(--m);font-weight:600;color:${pnlColor}">${pnlText}</td>
       <td style="padding:6px 12px"><span style="cursor:pointer;color:#444;font-size:22px">⚙</span></td>
     </tr>`;
@@ -164,12 +150,12 @@ function th_renderOrders(list) {
 }
 
 // ─── Render strategy legend ───────────────
-function th_renderStratLegend() {
+function th_renderStratLegend(strats = []) {
   const el = document.getElementById("th-strat-legend");
   if (!el) return;
-  el.innerHTML = TH_STRATS.filter(s => s.status === "running").map(st =>
+  el.innerHTML = strats.filter(s => s.status === "running").map(st =>
     `<div style="display:flex;align-items:center;gap:8px;margin-bottom:2px">
-      <svg width="16" height="14" viewBox="0 0 8 7"><polygon points="4,0 0,7 8,7" fill="${st.color}"/></svg>
+      <svg width="16" height="14" viewBox="0 0 8 7"><polygon points="4,0 0,7 8,7" fill="${st.color || "#444"}"/></svg>
       <span style="color:#333;font-size:14px">${st.name}</span>
     </div>`
   ).join("");
@@ -204,9 +190,13 @@ async function th_pollInstances() {
     const res = await fetch(BASE_URL + "/ui/instances");
     if (!res.ok) return;
     const data = await res.json();
-    if (data.ok && Array.isArray(data.data) && data.data.length > 0) {
-      const inst = data.data[0];
-      if (inst.regime_score != null) { th_score = inst.regime_score; th_updateGauge(th_score); }
+    if (data.ok && Array.isArray(data.data)) {
+      th_renderStratTable(data.data);
+      th_renderStratLegend(data.data);
+      if (data.data.length > 0 && data.data[0].regime_score != null) {
+        th_score = data.data[0].regime_score;
+        th_updateGauge(th_score);
+      }
     }
   } catch (_) {}
 }
@@ -234,8 +224,8 @@ function th_render() {
           <div id="th-side-sell" onclick="th_setSide('sell')" style="flex:1;text-align:center;padding:8px 0;cursor:pointer;font-size:20px;font-weight:700;color:#444;border-bottom:4px solid transparent">Sell</div>
         </div>
         <div style="display:flex;gap:8px;margin-bottom:12px">
-          <div id="up-price" style="flex:1;text-align:center;padding:6px 0;border-radius:6px;font-size:18px;font-weight:600;background:#26a69a15;color:#26a69a">Up 49¢</div>
-          <div id="down-price" style="flex:1;text-align:center;padding:6px 0;border-radius:6px;font-size:18px;font-weight:600;background:#ef535015;color:#ef5350">Down 51¢</div>
+          <div id="up-price" style="flex:1;text-align:center;padding:6px 0;border-radius:6px;font-size:18px;font-weight:600;background:#26a69a15;color:#26a69a">Up —</div>
+          <div id="down-price" style="flex:1;text-align:center;padding:6px 0;border-radius:6px;font-size:18px;font-weight:600;background:#ef535015;color:#ef5350">Down —</div>
         </div>
         <div style="display:flex;align-items:center;background:#0a0a1a;border:2px solid #12122a;border-radius:6px;padding:0 12px;height:56px;margin-bottom:8px">
           <span style="color:#555;font-size:18px">$</span>
@@ -254,32 +244,32 @@ function th_render() {
           <span style="color:#333;font-size:16px;font-weight:600">手动盈亏</span>
           <span style="color:#222;font-size:14px;cursor:pointer;background:#12122a;padding:2px 8px;border-radius:4px">重置</span>
         </div>
-        <div style="text-align:center"><span style="color:#26a69a;font-size:36px;font-weight:800;font-family:var(--m)">+12.50</span></div>
-        <div style="display:flex;justify-content:space-around;font-size:16px;color:#333;margin-top:4px"><span>交易 8</span><span>胜率 63%</span></div>
+        <div style="text-align:center"><span style="color:#26a69a;font-size:36px;font-weight:800;font-family:var(--m)">0.00</span></div>
+        <div style="display:flex;justify-content:space-around;font-size:16px;color:#333;margin-top:4px"><span>交易 0</span><span>胜率 —</span></div>
       </div>
       <div style="padding:20px;border-bottom:2px solid #10102a">
         <div style="color:#333;font-size:16px;font-weight:600;letter-spacing:1px;margin-bottom:8px">市场状态</div>
         <div style="text-align:center">
           <svg width="160" height="96" viewBox="0 0 120 70">
             <path d="M 10 65 A 50 50 0 0 1 110 65" fill="none" stroke="#141428" stroke-width="8" stroke-linecap="round"/>
-            <path id="th-gauge-arc" d="M 10 65 A 50 50 0 0 1 110 65" fill="none" stroke="url(#th-gg)" stroke-width="8" stroke-linecap="round" stroke-dasharray="106.76 157"/>
+            <path id="th-gauge-arc" d="M 10 65 A 50 50 0 0 1 110 65" fill="none" stroke="url(#th-gg)" stroke-width="8" stroke-linecap="round" stroke-dasharray="0 157"/>
             <defs><linearGradient id="th-gg" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#ef4444"/><stop offset="50%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#10b981"/></linearGradient></defs>
-            <line id="th-gauge-needle" x1="60" y1="62" x2="82.55" y2="43.45" stroke="#10b981" stroke-width="2" stroke-linecap="round"/>
-            <circle id="th-gauge-dot" cx="60" cy="62" r="3" fill="#10b981"/>
+            <line id="th-gauge-needle" x1="60" y1="62" x2="10" y2="65" stroke="#333" stroke-width="2" stroke-linecap="round"/>
+            <circle id="th-gauge-dot" cx="60" cy="62" r="3" fill="#333"/>
           </svg>
-          <div id="th-regime-score" style="color:#10b981;font-size:28px;font-weight:700;font-family:var(--m);margin-top:-4px">0.68</div>
+          <div id="th-regime-score" style="color:#444;font-size:28px;font-weight:700;font-family:var(--m);margin-top:-4px">—</div>
         </div>
       </div>
       <div style="padding:12px 20px;margin-top:auto;border-top:2px solid #10102a">
         <div style="display:flex;align-items:center;gap:16px;margin-bottom:2px">
-          <div style="width:8px;height:8px;border-radius:4px;background:#26a69a"></div>
+          <div style="width:8px;height:8px;border-radius:4px;background:#333"></div>
           <span style="color:#333;font-size:14px">Binance WS</span>
-          <span style="color:#26a69a;font-size:14px;font-family:var(--m);margin-left:auto">38ms</span>
+          <span style="color:#555;font-size:14px;font-family:var(--m);margin-left:auto">—</span>
         </div>
         <div style="display:flex;align-items:center;gap:16px;margin-bottom:2px">
-          <div style="width:8px;height:8px;border-radius:4px;background:#26a69a"></div>
+          <div style="width:8px;height:8px;border-radius:4px;background:#333"></div>
           <span style="color:#333;font-size:14px">PM WS</span>
-          <span style="color:#26a69a;font-size:14px;font-family:var(--m);margin-left:auto">105ms</span>
+          <span style="color:#555;font-size:14px;font-family:var(--m);margin-left:auto">—</span>
         </div>
       </div>
     </div>
@@ -306,7 +296,7 @@ function th_render() {
         <span id="th-pm-coin" style="position:absolute;top:12px;left:20px;color:#555;font-size:20px;font-weight:600">BTC</span>
         <span id="th-pm-tf" style="position:absolute;top:12px;right:140px;color:#333;font-size:18px;font-family:var(--m)">15M</span>
         <div style="position:absolute;top:8px;right:16px;background:#0a0a1a;border-radius:6px;padding:4px 16px;border:2px solid #12122a">
-          <span id="th-countdown" style="font-family:var(--m);font-size:24px;font-weight:700;color:#888">4:07</span>
+          <span id="th-countdown" style="font-family:var(--m);font-size:24px;font-weight:700;color:#888">5:00</span>
         </div>
         PM 概率折线图（含成交标记 + 配对连线）
       </div>
@@ -327,8 +317,7 @@ function th_render() {
       <div style="padding:10px 16px;color:#2a2a40;font-size:16px;font-weight:600;letter-spacing:1px;border-bottom:2px solid #10102a">订单簿</div>
       <div id="th-asks-area" style="padding:6px 12px"></div>
       <div id="th-mid-price" style="text-align:center;padding:8px 0;border-top:2px solid #10102a;border-bottom:2px solid #10102a">
-        <span style="color:#ddd;font-size:26px;font-weight:700;font-family:var(--m)">0.527</span>
-        <span style="color:#222;font-size:14px;margin-left:8px">spread 0.008</span>
+        <span style="color:#555;font-size:26px;font-weight:700;font-family:var(--m)">—</span>
       </div>
       <div id="th-bids-area" style="padding:6px 12px"></div>
       <div id="th-orders-area" style="padding:8px 12px;border-top:2px solid #10102a">
@@ -346,8 +335,6 @@ function th_startTimers() {
   th_timers.push(setInterval(() => {
     th_countdown = th_countdown <= 0 ? 300 : th_countdown - 1;
     th_updateCountdown();
-    th_score = Math.max(0, Math.min(1, th_score + (Math.random() - 0.5) * 0.04));
-    th_updateGauge(th_score);
   }, 1000));
   th_timers.push(setInterval(th_pollBook, 2000));
   th_timers.push(setInterval(th_pollInstances, 5000));
@@ -358,10 +345,6 @@ function th_startTimers() {
 window.initTradingHall = function() {
   th_render();
   th_renderStratTable();
-  th_renderLog(TH_LOGS);
-  th_renderBook(TH_BOOK);
-  th_renderOrders(TH_ORDERS);
-  th_renderStratLegend();
   th_updateGauge(th_score);
   th_updateCountdown();
   th_startTimers();
