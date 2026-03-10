@@ -2,9 +2,17 @@
 // 修复：slug 格式为 btc-updown-15m-<timestamp>，需要前缀搜索
 
 import './proxy_agent.mjs';
+import { ProxyAgent, fetch as undiciFetch } from 'undici';
 import { logger, EVENTS } from './logger.mjs';
 
 const GAMMA_BASE = 'https://gamma-api.polymarket.com';
+
+const _proxyUrl = process.env.HTTPS_PROXY || process.env.HTTP_PROXY || null;
+const _dispatcher = _proxyUrl ? new ProxyAgent(_proxyUrl) : null;
+async function proxyFetch(url, options = {}) {
+  if (_dispatcher) return undiciFetch(url, { ...options, dispatcher: _dispatcher });
+  return fetch(url, options);
+}
 
 export function createScanner(config) {
   const { slug_prefix, window_minutes } = config.market;
@@ -13,7 +21,7 @@ export function createScanner(config) {
   async function fetchEvents() {
     // 使用 slug_contains 参数做前缀搜索，按时间降序取最新
     const url = `${GAMMA_BASE}/events?limit=20&active=true&order=startDate&ascending=false`;
-    const res = await fetch(url);
+    const res = await proxyFetch(url);
     if (!res.ok) throw new Error(`Gamma API failed: ${res.status}`);
     const all = await res.json();
     // 过滤：slug 必须以 slug_prefix 开头
@@ -119,7 +127,7 @@ export function createScanner(config) {
       const secsLeft = windowStart + durationSec - now;
 
       const url = `${GAMMA_BASE}/events?slug=${slug}`;
-      const resp = await fetch(url);
+      const resp = await proxyFetch(url);
       const data = await resp.json();
 
       if (!data || data.length === 0) {
