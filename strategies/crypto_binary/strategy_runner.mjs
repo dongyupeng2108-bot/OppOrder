@@ -371,5 +371,13 @@ export function createRunner(config) {
     }];
   }
 
-  return { start, stop, reload, getRegimeState, getCancelStats, getActiveOrders, getInstanceStats };
+  function getOrderbookSnapshot() {
+    return orderbookMonitor ? orderbookMonitor.getLatestSnapshot() : null;
+  }
+
+  function getOrderManagerRef() {
+    return orderManager || null;
+  }
+
+  return { start, stop, reload, getRegimeState, getCancelStats, getActiveOrders, getInstanceStats, getOrderbookSnapshot, getOrderManager: getOrderManagerRef };
 }
