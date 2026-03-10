@@ -661,6 +661,149 @@ body {
   font-weight: var(--weight-bold);
   color: var(--text-primary);
 }
+
+/* ─── Order Table ─────────────────────────────── */
+.orders-section {
+  flex-shrink: 0;
+  background: var(--bg-panel);
+  border-top: 1px solid var(--border);
+}
+
+.orders-header {
+  display: flex;
+  align-items: center;
+  padding: 3px var(--space-card);
+  border-bottom: 1px solid var(--border);
+  gap: var(--space-gap-sm);
+}
+
+.tab-bar {
+  display: flex;
+  gap: 0;
+}
+
+.tab-btn {
+  padding: 2px 10px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-ghost);
+  cursor: pointer;
+  font-size: var(--size-xxs);
+  font-family: var(--font-body);
+  font-weight: var(--weight-semi);
+  transition: var(--transition-toggle);
+}
+
+.tab-btn.active {
+  color: var(--text-primary);
+  border-bottom-color: var(--color-primary);
+}
+
+.order-table-wrap {
+  max-height: 80px;
+  overflow-y: auto;
+}
+
+.order-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--size-micro);
+  font-family: var(--font-mono);
+}
+
+.order-table th {
+  color: var(--text-ghost);
+  font-weight: var(--weight-semi);
+  padding: 2px var(--space-card);
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  background: var(--bg-elevated);
+}
+
+.order-table td {
+  padding: 2px var(--space-card);
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+.order-table .side-up   { color: var(--color-up); }
+.order-table .side-down { color: var(--color-down); }
+.order-table .no-data {
+  text-align: center;
+  color: var(--text-dead);
+  padding: var(--space-gap-md) 0;
+}
+
+/* ─── Strategy Table (right panel) ───────────── */
+.strategy-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--size-micro);
+  font-family: var(--font-mono);
+}
+
+.strategy-table th {
+  color: var(--text-ghost);
+  font-weight: var(--weight-semi);
+  padding: 2px var(--space-gap-xs);
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.strategy-table td {
+  padding: 2px var(--space-gap-xs);
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-faint);
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 60px;
+  text-overflow: ellipsis;
+}
+
+.strategy-table .active-yes { color: var(--color-up); }
+.strategy-table .active-no  { color: var(--text-ghost); }
+.strategy-table .no-data {
+  text-align: center;
+  color: var(--text-dead);
+  padding: var(--space-gap-md) 0;
+}
+
+/* ─── Action Log (right panel) ───────────────── */
+.action-log-wrap {
+  max-height: 100px;
+  overflow-y: auto;
+  padding: 2px 0;
+}
+
+.action-log-row {
+  display: flex;
+  gap: var(--space-gap-sm);
+  padding: 1px var(--space-panel);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.action-log-time {
+  font-family: var(--font-mono);
+  font-size: var(--size-micro);
+  color: var(--text-dead);
+  flex-shrink: 0;
+  width: 48px;
+}
+
+.action-log-label {
+  font-size: var(--size-micro);
+  color: var(--text-faint);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 </style>
 </head>
 <body>
@@ -800,6 +943,45 @@ body {
       </div>
     </div>
 
+    <!-- Order table section -->
+    <div class="orders-section">
+      <div class="orders-header">
+        <div class="tab-bar">
+          <button class="tab-btn active" id="tab-active" onclick="switchOrderTab('active')">活跃挂单</button>
+          <button class="tab-btn"        id="tab-history" onclick="switchOrderTab('history')">历史成交</button>
+        </div>
+        <span id="orders-count" style="margin-left:auto;font-size:var(--size-micro);color:var(--text-dead)">--</span>
+      </div>
+
+      <!-- Active orders panel -->
+      <div id="orders-active-panel" class="order-table-wrap">
+        <table class="order-table">
+          <thead>
+            <tr>
+              <th>ID</th><th>市场</th><th>方向</th><th>价格</th><th>数量</th><th>状态</th><th>时间</th>
+            </tr>
+          </thead>
+          <tbody id="orders-active-body">
+            <tr><td class="no-data" colspan="7">加载中…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- History orders panel (hidden by default) -->
+      <div id="orders-history-panel" class="order-table-wrap" style="display:none">
+        <table class="order-table">
+          <thead>
+            <tr>
+              <th>ID</th><th>市场</th><th>方向</th><th>价格</th><th>数量</th><th>状态</th><th>时间</th>
+            </tr>
+          </thead>
+          <tbody id="orders-history-body">
+            <tr><td class="no-data" colspan="7">加载中…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     <!-- Bottom log panel -->
     <div class="bottom-panel">
       <div class="bottom-panel-header">
@@ -891,6 +1073,32 @@ body {
       <div class="ob-row">
         <span class="ob-label">窗口</span>
         <span class="ob-val" id="regime-window" style="color:var(--text-dead)">--</span>
+      </div>
+    </div>
+
+    <!-- Strategy status table -->
+    <div class="info-section">
+      <div class="info-section-title">策略状态</div>
+      <div style="overflow-x:auto">
+        <table class="strategy-table">
+          <thead>
+            <tr><th>策略</th><th>窗口</th><th>胜率</th><th>状态</th></tr>
+          </thead>
+          <tbody id="strategy-table-body">
+            <tr><td class="no-data" colspan="4">加载中…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Action log -->
+    <div class="info-section">
+      <div class="info-section-title">动作日志</div>
+      <div class="action-log-wrap" id="action-log">
+        <div class="action-log-row">
+          <span class="action-log-time">--:--:--</span>
+          <span class="action-log-label">等待事件…</span>
+        </div>
       </div>
     </div>
 
@@ -1129,6 +1337,8 @@ function connectWS() {
         updateWindowInfo(event.payload);
         addLog('window.switch → ' + (event.payload.window_id ?? '?'));
       }
+      // Append all events to action log
+      appendActionLog(event);
     } catch { /* ignore malformed frames */ }
   };
 
@@ -1211,6 +1421,172 @@ function switchTab(tabId) {
 function setTf(btn, tf) {
   document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+}
+
+/* ─── Order Table Tab Switch ─────────────────── */
+function switchOrderTab(tab) {
+  document.getElementById('orders-active-panel').style.display  = tab === 'active'  ? '' : 'none';
+  document.getElementById('orders-history-panel').style.display = tab === 'history' ? '' : 'none';
+  document.getElementById('tab-active').classList.toggle('active',  tab === 'active');
+  document.getElementById('tab-history').classList.toggle('active', tab === 'history');
+}
+
+/* ─── Order Table ─────────────────────────────── */
+async function loadOrders() {
+  let list = [];
+  let statsRow = null;
+
+  // Try /trading/orders first (may not exist)
+  try {
+    const raw = await fetch(BASE_URL + '/trading/orders', { signal: AbortSignal.timeout(3000) }).then(r => r.json());
+    list = Array.isArray(raw) ? raw : (raw.data ?? raw.orders ?? []);
+  } catch {
+    // Endpoint absent — try /trading/manual-stats for a summary row
+    try {
+      statsRow = await fetch(BASE_URL + '/trading/manual-stats', { signal: AbortSignal.timeout(3000) }).then(r => r.json());
+    } catch { /* silent */ }
+    list = [];
+  }
+
+  const active  = list.filter(o => o.status === 'open' || o.status === 'pending' || o.status === 'submitted');
+  const history = list.filter(o => !['open','pending','submitted'].includes(o.status));
+
+  renderOrderTable('active',  active,  statsRow);
+  renderOrderTable('history', history, null);
+
+  const cnt = document.getElementById('orders-count');
+  if (cnt) cnt.textContent = `活跃 ${active.length} / 历史 ${history.length}`;
+}
+
+function renderOrderTable(type, orders, statsRow) {
+  const tbody = document.getElementById(`orders-${type}-body`);
+  if (!tbody) return;
+
+  if (orders.length === 0 && !statsRow) {
+    tbody.innerHTML = `<tr><td class="no-data" colspan="7">暂无记录</td></tr>`;
+    return;
+  }
+
+  // If we only have aggregate stats (no list endpoint), show a summary row
+  if (orders.length === 0 && statsRow && type === 'active') {
+    const wr = statsRow.win_rate != null ? (statsRow.win_rate * 100).toFixed(1) + '%' : '--';
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="3" style="color:var(--text-ghost)">手动交易汇总</td>
+        <td>总计 ${statsRow.total_trades ?? '--'}</td>
+        <td>胜 ${statsRow.wins ?? '--'}</td>
+        <td>${wr}</td>
+        <td>--</td>
+      </tr>`;
+    return;
+  }
+
+  tbody.innerHTML = orders.map(o => {
+    const sideClass = (o.side ?? '').toUpperCase() === 'UP' ? 'side-up' : 'side-down';
+    const ts = o.created_at ? new Date(o.created_at).toLocaleTimeString() : '--';
+    const price = o.price != null ? Number(o.price).toFixed(4) : '--';
+    return `
+      <tr>
+        <td>${(o.order_id ?? o.id ?? '').toString().slice(0, 8)}</td>
+        <td>${o.market_id ?? '--'}</td>
+        <td class="${sideClass}">${o.side ?? '--'}</td>
+        <td>${price}</td>
+        <td>${o.size ?? '--'}</td>
+        <td>${o.status ?? '--'}</td>
+        <td>${ts}</td>
+      </tr>`;
+  }).join('');
+}
+
+loadOrders();
+setInterval(loadOrders, 10000);
+
+/* ─── Strategy Status Table ──────────────────── */
+async function loadStrategyTable() {
+  let instances = [];
+  let sensitivity = [];
+
+  // Try /ui/instances for live instance stats
+  try {
+    const raw = await fetch(BASE_URL + '/ui/instances', { signal: AbortSignal.timeout(3000) }).then(r => r.json());
+    instances = Array.isArray(raw.data) ? raw.data : (Array.isArray(raw) ? raw : []);
+  } catch { /* silent */ }
+
+  // Try /postmortem/sensitivity for historical win rates
+  try {
+    const raw = await fetch(BASE_URL + '/postmortem/sensitivity', { signal: AbortSignal.timeout(3000) }).then(r => r.json());
+    sensitivity = Array.isArray(raw) ? raw : [];
+  } catch { /* silent */ }
+
+  // Merge: sensitivity rows enriched with live instance data
+  const rows = sensitivity.length > 0 ? sensitivity : instances;
+  renderStrategyTable(rows, instances);
+}
+
+function renderStrategyTable(rows, instances) {
+  const tbody = document.getElementById('strategy-table-body');
+  if (!tbody) return;
+
+  if (!rows || rows.length === 0) {
+    tbody.innerHTML = `<tr><td class="no-data" colspan="4">暂无策略数据</td></tr>`;
+    return;
+  }
+
+  const currentScore = parseFloat(document.getElementById('regime-score-label')?.textContent ?? '0') || 0;
+
+  tbody.innerHTML = rows.map(s => {
+    const sid = s.strategy_id ?? s.id ?? '--';
+    const wins = s.wins ?? 0;
+    const total = s.total_windows ?? s.total ?? 0;
+    const wr = total > 0 ? (wins / total * 100).toFixed(0) + '%' : '--';
+
+    // Activation: maker strategies → S1 (≥0.5), sniper/taker → S2 (≥0.6)
+    const isMaker  = sid.includes('maker')  || sid.includes('mm');
+    const isSniper = sid.includes('sniper') || sid.includes('taker');
+    const active   = (isMaker && currentScore >= 0.5) || (isSniper && currentScore >= 0.6) || (!isMaker && !isSniper && currentScore >= 0.5);
+    const activeClass = active ? 'active-yes' : 'active-no';
+
+    return `
+      <tr title="${sid}">
+        <td style="max-width:52px;overflow:hidden;text-overflow:ellipsis">${sid.slice(0, 10)}</td>
+        <td>${total || '--'}</td>
+        <td>${wr}</td>
+        <td class="${activeClass}">${active ? '激活' : '休眠'}</td>
+      </tr>`;
+  }).join('');
+}
+
+loadStrategyTable();
+setInterval(loadStrategyTable, 30000);
+
+/* ─── Action Log ─────────────────────────────── */
+const ACTION_LOG_ENTRIES = [];
+const MAX_ACTION_LOG = 50;
+
+function appendActionLog(event) {
+  const time = new Date(event.ts ?? Date.now()).toLocaleTimeString();
+  const typeLabels = {
+    'regime.changed':  'Regime → ' + (event.payload?.regime_score?.toFixed?.(3) ?? '--'),
+    'window.switch':   '窗口 → '   + (event.payload?.window_id ?? event.payload?.to_window ?? '--'),
+    'order.placed':    '挂单 '     + (event.payload?.side ?? '') + ' @' + (event.payload?.price ?? '--'),
+    'order.cancelled': '撤单 '     + (event.payload?.order_id ?? '--').toString().slice(0, 8),
+    'order.filled':    '成交 '     + (event.payload?.side ?? '') + ' @' + (event.payload?.price ?? '--'),
+  };
+  const label = typeLabels[event.type] ?? event.type;
+  ACTION_LOG_ENTRIES.unshift({ time, label });
+  if (ACTION_LOG_ENTRIES.length > MAX_ACTION_LOG) ACTION_LOG_ENTRIES.pop();
+  renderActionLog();
+}
+
+function renderActionLog() {
+  const container = document.getElementById('action-log');
+  if (!container) return;
+  container.innerHTML = ACTION_LOG_ENTRIES.map(e =>
+    `<div class="action-log-row">
+      <span class="action-log-time">${e.time}</span>
+      <span class="action-log-label">${e.label}</span>
+    </div>`
+  ).join('');
 }
 </script>
 </body>
