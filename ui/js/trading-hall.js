@@ -184,12 +184,18 @@ async function th_pollBook() {
     const asks = (data.asks || []).slice(0, 5).map(r => ({p: parseFloat(r[0]).toFixed(3), s: String(r[1])}));
     const bids = (data.bids || []).slice(0, 5).map(r => ({p: parseFloat(r[0]).toFixed(3), s: String(r[1])}));
     if (asks.length || bids.length) th_renderBook({asks, bids});
+    const mid    = data.mid    ?? data.mid_up;
+    const ask    = data.best_ask ?? data.ask_up ?? data.ask;
+    const bid    = data.best_bid ?? data.bid_up ?? data.bid;
+    const spread = data.spread ?? data.spread_up;
     const midEl = document.getElementById("th-mid-price");
-    if (data.mid != null && midEl) {
+    if (mid != null && midEl) {
       midEl.innerHTML =
-        `<span style="color:#ddd;font-size:26px;font-weight:700;font-family:var(--m)">${parseFloat(data.mid).toFixed(3)}</span>` +
-        `<span style="color:#222;font-size:14px;margin-left:8px">spread ${data.spread != null ? parseFloat(data.spread).toFixed(3) : "—"}</span>`;
+        `<span style="color:#ddd;font-size:26px;font-weight:700;font-family:var(--m)">${parseFloat(mid).toFixed(3)}</span>` +
+        `<span style="color:#222;font-size:14px;margin-left:8px">spread ${spread != null ? parseFloat(spread).toFixed(3) : "—"}</span>`;
     }
+    if (ask != null) { const el = document.getElementById("up-price");   if (el) el.textContent = "Up "   + (ask * 100).toFixed(0) + "¢"; }
+    if (bid != null) { const el = document.getElementById("down-price"); if (el) el.textContent = "Down " + (bid * 100).toFixed(0) + "¢"; }
   } catch (_) {}
 }
 
@@ -228,8 +234,8 @@ function th_render() {
           <div id="th-side-sell" onclick="th_setSide('sell')" style="flex:1;text-align:center;padding:8px 0;cursor:pointer;font-size:20px;font-weight:700;color:#444;border-bottom:4px solid transparent">Sell</div>
         </div>
         <div style="display:flex;gap:8px;margin-bottom:12px">
-          <div style="flex:1;text-align:center;padding:6px 0;border-radius:6px;font-size:18px;font-weight:600;background:#26a69a15;color:#26a69a">Up 49¢</div>
-          <div style="flex:1;text-align:center;padding:6px 0;border-radius:6px;font-size:18px;font-weight:600;background:#ef535015;color:#ef5350">Down 51¢</div>
+          <div id="up-price" style="flex:1;text-align:center;padding:6px 0;border-radius:6px;font-size:18px;font-weight:600;background:#26a69a15;color:#26a69a">Up 49¢</div>
+          <div id="down-price" style="flex:1;text-align:center;padding:6px 0;border-radius:6px;font-size:18px;font-weight:600;background:#ef535015;color:#ef5350">Down 51¢</div>
         </div>
         <div style="display:flex;align-items:center;background:#0a0a1a;border:2px solid #12122a;border-radius:6px;padding:0 12px;height:56px;margin-bottom:8px">
           <span style="color:#555;font-size:18px">$</span>
