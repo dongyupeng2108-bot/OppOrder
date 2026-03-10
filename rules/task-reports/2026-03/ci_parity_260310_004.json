@@ -1,0 +1,25 @@
+{
+  "task_id": "260310_004",
+  "parity": "PASS",
+  "base": "de6987eeb5875be0758d467c9be14d19aeafb2bb",
+  "head": "e7c2a2d2a1b107494da19734a427773707b75418",
+  "merge_base": "de6987eeb5875be0758d467c9be14d19aeafb2bb",
+  "scope_files": [
+    "rules/task-reports/2026-03/ci_parity_260310_004.json",
+    "rules/task-reports/2026-03/dod_evidence_260310_004.txt",
+    "rules/task-reports/2026-03/generate_evidence_260310_004.mjs",
+    "rules/task-reports/2026-03/git_meta_260310_004.json",
+    "rules/task-reports/2026-03/notify_260310_004.txt",
+    "rules/task-reports/2026-03/result_260310_004.json",
+    "rules/task-reports/2026-03/trae_report_snippet_260310_004.txt",
+    "rules/task-reports/locks/260310_003.lock.json",
+    "ui/btcqdd.html",
+    "ui/css/btcqdd.css",
+    "ui/js/settings.js",
+    "ui/js/shared.js",
+    "ui/js/strategy-lab.js",
+    "ui/js/trading-hall.js"
+  ],
+  "scope_count": 14,
+  "generated_at": "2026-03-10T17:41:15.846Z"
+}

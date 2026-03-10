@@ -1,0 +1,15 @@
+TASK_ID=260310_004
+GENERATED_AT=2026-03-10T17:41:15.846Z
+
+# DoD Markers
+DOD_FILE_SPLIT=6 files: btcqdd.html(41L) + css/btcqdd.css + js/shared.js + js/trading-hall.js + js/strategy-lab.js + js/settings.js
+DOD_STRATEGY_LAB=3 sub-tabs edit/postmortem/compare fully implemented
+DOD_SHARED_SETTINGS=4 nav sections risk/cancel/events/fill fully implemented
+DOD_MLC_CHARTS=3 SVG polyline charts in compare tab
+DOD_SLIDERS=interactive sliders with live DOM update
+DOD_TOGGLES=animated toggles with 0.15s CSS transition
+DOD_SIDEBAR_SELECT=border-left highlight sidebar + compare checkbox sidebar
+DOD_TRADING_HALL_MIGRATE=trading hall extracted and migrated to js/trading-hall.js
+DOD_HTML_SKELETON=btcqdd.html 41 lines < 150 lines requirement
+
+GATE_LIGHT_EXIT=0
