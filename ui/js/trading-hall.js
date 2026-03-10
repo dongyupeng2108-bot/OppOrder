@@ -225,7 +225,7 @@ async function th_pollInstances() {
         th_score = data.data[0].regime_score;
         th_updateGauge(th_score);
         priceHistory.push(th_score);
-        if (priceHistory.length > 60) priceHistory.shift();
+        if (priceHistory.length > 100) priceHistory.shift();
         drawPmChart();
       }
     }
@@ -375,6 +375,12 @@ function th_startTimers() {
   th_timers.push(setInterval(th_pollInstances, 5000));
   th_timers.push(setInterval(th_pollOrders, 5000));
 }
+
+// ─── Cleanup (called when leaving tab) ───
+window.cleanupTradingHall = function() {
+  th_timers.forEach(clearInterval);
+  th_timers = [];
+};
 
 // ─── Init ────────────────────────────────
 window.initTradingHall = function() {

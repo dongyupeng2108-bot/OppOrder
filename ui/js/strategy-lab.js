@@ -14,6 +14,44 @@ let sl_checked = ["s1","s2","s3"];
 let sl_offset = 0.03;
 let sl_tranches = 3;
 let sl_pairT = 0.97;
+let sl_instances = null; // null=未加载; []=无策略; [...]= 已加载
+
+// ─── Instance fetch ───────────────────────
+async function sl_pollInstances() {
+  try {
+    const res = await fetch(BASE_URL + '/ui/instances');
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data.ok && Array.isArray(data.data)) {
+      sl_instances = data.data.map((d, i) => ({
+        id: d.strategy_id,
+        name: d.strategy_id,
+        color: window.STRAT_COLORS?.[i % 6] || '#10b981',
+        type: 'pair',
+        status: d.is_active ? 'running' : 'stopped',
+        pnl: null,
+        trades: d.open_orders ?? null,
+        winRate: null,
+        avgPos: null,
+      }));
+      if (sl_instances.length > 0) {
+        sl_sel = sl_instances[0].id;
+        sl_checked = sl_instances.slice(0, 3).map(s => s.id);
+      }
+      sl_renderSidebar();
+      sl_renderSubtabBar();
+      sl_renderContent();
+    }
+  } catch (_) {}
+}
+
+function sl_findStrat(id) {
+  if (sl_instances) {
+    const s = sl_instances.find(s => s.id === id);
+    if (s) return s;
+  }
+  return SL_STRATS.find(s => s.id === id);
+}
 
 // ─── Helpers ─────────────────────────────
 function sl_bdg(text, color) {
@@ -122,10 +160,16 @@ function sl_updateInfluence() {
 function sl_renderSidebar() {
   const el = document.getElementById("sl-sidebar");
   if (!el) return;
+  const list = sl_instances ?? SL_STRATS;
   if (sl_sub === "compare") {
+    if (list.length === 0) {
+      el.innerHTML = `<div style="padding:16px 20px;color:#2a2a40;font-size:16px;font-weight:600;letter-spacing:1px">勾选对比</div>
+        <div style="padding:40px 20px;color:#2a2a40;font-size:18px;text-align:center">暂无策略</div>`;
+      return;
+    }
     el.innerHTML = `
       <div style="padding:16px 20px;color:#2a2a40;font-size:16px;font-weight:600;letter-spacing:1px">勾选对比</div>
-      ${SL_STRATS.map(s => {
+      ${list.map(s => {
         const on = sl_checked.includes(s.id);
         return `<div onclick="sl_toggleCheck('${s.id}')" style="padding:12px 20px;cursor:pointer;display:flex;align-items:center;gap:12px;background:${on ? "#0e0e22" : "transparent"}">
           <div style="width:26px;height:26px;border-radius:6px;border:3px solid ${on ? s.color : "#1a1a2e"};background:${on ? s.color + "20" : "transparent"};
@@ -137,15 +181,20 @@ function sl_renderSidebar() {
               <div style="width:10px;height:10px;border-radius:2px;background:${s.color}"></div>
               <span style="color:${on ? "#ccc" : "#555"};font-size:20px;font-weight:600">${s.name}</span>
             </div>
-            <span style="color:#2a2a40;font-size:16px">${s.pnl > 0 ? "+" : ""}${s.pnl}</span>
+            <span style="color:#2a2a40;font-size:16px">${s.pnl != null ? (s.pnl > 0 ? "+" : "") + s.pnl : "—"}</span>
           </div>
         </div>`;
       }).join("")}
       <div style="padding:12px 20px;color:#2a2a40;font-size:16px">已选 ${sl_checked.length}</div>`;
   } else {
+    if (list.length === 0) {
+      el.innerHTML = `<div style="padding:16px 20px;color:#2a2a40;font-size:16px;font-weight:600;letter-spacing:1px">选择策略</div>
+        <div style="padding:40px 20px;color:#2a2a40;font-size:18px;text-align:center">暂无策略</div>`;
+      return;
+    }
     el.innerHTML = `
       <div style="padding:16px 20px;color:#2a2a40;font-size:16px;font-weight:600;letter-spacing:1px">选择策略</div>
-      ${SL_STRATS.map(s => {
+      ${list.map(s => {
         const active = sl_sel === s.id;
         const pnlColor = s.pnl > 0 ? "#26a69a" : s.pnl < 0 ? "#ef5350" : "#2a2a40";
         return `<div onclick="sl_setSel('${s.id}')" style="padding:12px 20px;cursor:pointer;
@@ -155,8 +204,8 @@ function sl_renderSidebar() {
             <span style="color:${active ? "#ccc" : "#666"};font-weight:600;font-size:20px">${s.name}</span>
           </div>
           <div style="display:flex;justify-content:space-between">
-            <span style="color:#2a2a40;font-size:16px">${SL_TM[s.type]?.icon} ${SL_TM[s.type]?.short}</span>
-            <span style="font-family:var(--m);font-size:16px;color:${pnlColor}">${s.pnl ? (s.pnl > 0 ? "+" : "") + s.pnl : "—"}</span>
+            <span style="color:#2a2a40;font-size:16px">${SL_TM[s.type]?.icon || ""} ${SL_TM[s.type]?.short || ""}</span>
+            <span style="font-family:var(--m);font-size:16px;color:${pnlColor}">${s.pnl != null ? (s.pnl > 0 ? "+" : "") + s.pnl : "—"}</span>
           </div>
         </div>`;
       }).join("")}
@@ -170,7 +219,7 @@ function sl_renderSidebar() {
 function sl_renderSubtabBar() {
   const el = document.getElementById("sl-subtab-bar");
   if (!el) return;
-  const st = SL_STRATS.find(s => s.id === sl_sel);
+  const st = sl_findStrat(sl_sel);
   el.innerHTML = `
     <div onclick="sl_setSub('edit')" class="subtab ${sl_sub === 'edit' ? 'active' : ''}">⚙️ 调整参数</div>
     <div onclick="sl_setSub('postmortem')" class="subtab ${sl_sub === 'postmortem' ? 'active' : ''}">📋 交易复盘</div>
@@ -184,7 +233,7 @@ function sl_renderSubtabBar() {
 
 // ─── Edit content ─────────────────────────
 function sl_renderEdit() {
-  const st = SL_STRATS.find(s => s.id === sl_sel);
+  const st = sl_findStrat(sl_sel);
   return `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
     <!-- 左卡：策略参数 -->
     <div class="card">
@@ -195,7 +244,7 @@ function sl_renderEdit() {
       ${sl_slider("sl-prob", "概率区间下界", 0.35, 0.10, 0.45, 0.05)}
       ${sl_slider("sl-refresh", "报价刷新", 0.01, 0.005, 0.05, 0.005)}
       ${sl_slider("sl-timeout", "配对超时", 300, 60, 600, 30, "s")}
-      <div style="margin-top:16px;text-align:center;padding:14px 0;border-radius:10px;font-size:22px;font-weight:700;background:linear-gradient(135deg,#6366f1,#0ea5e9);color:#fff;cursor:pointer">运行历史模拟</div>
+      <div onclick="console.log('[StratLab] 运行历史模拟')" style="margin-top:16px;text-align:center;padding:14px 0;border-radius:10px;font-size:22px;font-weight:700;background:linear-gradient(135deg,#6366f1,#0ea5e9);color:#fff;cursor:pointer">运行历史模拟</div>
     </div>
     <!-- 中卡：参数影响 -->
     <div class="card">
@@ -223,7 +272,7 @@ function sl_renderEdit() {
       <svg width="100%" height="60" viewBox="0 0 200 60"><rect width="200" height="60" fill="#08081a" rx="2"/>
         <polyline fill="none" stroke="#26a69a" stroke-width="1.2" points="0,48 20,45 40,40 60,35 80,32 100,28 120,30 140,22 160,18 180,15 200,10"/></svg>
       <div style="display:flex;gap:16px;margin-top:20px">
-        <div style="flex:1;text-align:center;padding:10px 0;border-radius:8px;font-size:20px;font-weight:600;background:#26a69a15;color:#26a69a;cursor:pointer">→ 部署运行</div>
+        <div onclick="console.log('[StratLab] 部署运行')" style="flex:1;text-align:center;padding:10px 0;border-radius:8px;font-size:20px;font-weight:600;background:#26a69a15;color:#26a69a;cursor:pointer">→ 部署运行</div>
         <div style="text-align:center;padding:10px 16px;border-radius:8px;font-size:18px;background:#12122a;color:#555;cursor:pointer">导出</div>
       </div>
     </div>
@@ -232,7 +281,7 @@ function sl_renderEdit() {
 
 // ─── Postmortem content ───────────────────
 function sl_renderPostmortem() {
-  const st = SL_STRATS.find(s => s.id === sl_sel);
+  const st = sl_findStrat(sl_sel);
   const stColor = st?.color || "#10b981";
   const placeholder = `<div style="color:#2a2a40;font-size:20px;text-align:center;padding:40px 0">暂无复盘数据</div>`;
 
@@ -349,4 +398,5 @@ window.initStrategyLab = function() {
   sl_renderSidebar();
   sl_renderSubtabBar();
   sl_renderContent();
+  sl_pollInstances();
 };
