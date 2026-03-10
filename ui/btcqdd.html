@@ -47,8 +47,8 @@ const FONT = {
   body:  "'Noto Sans SC', 'SF Pro Text', -apple-system, sans-serif",
 };
 const SIZE = {
-  hero: 18, title: 15, heading: 14, lg: 13, md: 12,
-  base: 11, sm: 10, xs: 9, xxs: 8, micro: 7,
+  hero: 21, title: 18, heading: 17, lg: 16, md: 15,
+  base: 14, sm: 13, xs: 12, xxs: 11, micro: 10,
 };
 const WEIGHT = { black: 800, bold: 700, semi: 600, normal: 400 };
 const LAYOUT = {
@@ -443,7 +443,7 @@ body {
 .chart-label {
   fill: var(--text-invisible);
   font-family: var(--font-mono);
-  font-size: 7px;
+  font-size: var(--size-micro);
 }
 
 /* Win-rate section */
@@ -475,7 +475,7 @@ body {
 .winrate-placeholder {
   fill: var(--text-dead);
   font-family: var(--font-mono);
-  font-size: 8px;
+  font-size: var(--size-xxs);
 }
 
 .winrate-line {
