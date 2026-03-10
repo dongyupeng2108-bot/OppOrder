@@ -10,26 +10,77 @@ let priceHistory = [];
 // ─── PM chart ────────────────────────────
 function drawPmChart() {
   const svg = document.getElementById('pm-chart');
-  const line = document.getElementById('pm-line');
-  const dot  = document.getElementById('pm-dot');
-  if (!svg || !line || priceHistory.length < 2) return;
+  if (!svg || priceHistory.length < 2) return;
   const rect = svg.getBoundingClientRect();
   const W = rect.width  || svg.parentElement?.getBoundingClientRect().width  || 600;
   const H = rect.height || svg.parentElement?.getBoundingClientRect().height || 160;
   if (W === 0 || H === 0) return;
-  const mn = Math.min(...priceHistory);
-  const mx = Math.max(...priceHistory);
-  const rg = mx - mn || 1;
-  const n = priceHistory.length;
-  const pts = priceHistory.map((v, i) => {
-    const x = (i / (n - 1)) * W;
-    const y = H - ((v - mn) / rg) * (H * 0.8) - H * 0.1;
+
+  // 边距
+  const PAD_RIGHT  = 44; // Y轴标签区
+  const PAD_BOTTOM = 22; // X轴标签区
+  const CW = W - PAD_RIGHT;
+  const CH = H - PAD_BOTTOM;
+
+  const vals  = priceHistory.map(p => p.v);
+  const times = priceHistory.map(p => p.t);
+
+  // Y轴范围：数据 min/max + 10% 边距
+  let minVal = Math.min(...vals);
+  let maxVal = Math.max(...vals);
+  const range = maxVal - minVal || 0.01;
+  const pad   = range * 0.10;
+  let yMin = Math.max(0, minVal - pad);
+  let yMax = Math.min(1, maxVal + pad);
+  if (yMax - yMin < 0.02) {
+    yMin = Math.max(0, yMin - 0.01);
+    yMax = Math.min(1, yMax + 0.01);
+  }
+
+  // 折线坐标
+  const pts = priceHistory.map((p, i) => {
+    const x = (i / (priceHistory.length - 1)) * CW;
+    const y = CH - ((p.v - yMin) / (yMax - yMin)) * CH;
     return `${x.toFixed(1)},${y.toFixed(1)}`;
   }).join(' ');
-  line.setAttribute('points', pts);
-  const lastY = H - ((priceHistory[n - 1] - mn) / rg) * (H * 0.8) - H * 0.1;
-  dot.setAttribute('cx', W.toFixed(1));
-  dot.setAttribute('cy', lastY.toFixed(1));
+
+  // 最后一个点
+  const last = priceHistory[priceHistory.length - 1];
+  const dotX = CW;
+  const dotY = CH - ((last.v - yMin) / (yMax - yMin)) * CH;
+
+  // 网格线（5条横线）
+  const gridLines = [0, 0.25, 0.5, 0.75, 1].map(r => {
+    const y = (r * CH).toFixed(1);
+    return `<line x1="0" y1="${y}" x2="${CW}" y2="${y}" stroke="#1a1a2e" stroke-width="1"/>`;
+  }).join('');
+
+  // Y轴标签（右侧，5条）
+  const yLabels = [0, 0.25, 0.5, 0.75, 1].map(r => {
+    const val = yMax - r * (yMax - yMin); // r=0 → yMax（顶）
+    const y   = (r * CH).toFixed(0);
+    return `<text x="${(CW + 4).toFixed(0)}" y="${(+y + 4).toFixed(0)}"
+      font-size="11" fill="#4a4a6a" text-anchor="start">${(val * 100).toFixed(0)}%</text>`;
+  }).join('');
+
+  // X轴标签（首/中/尾 3个时间点）
+  const fmt = ts => new Date(ts).toTimeString().slice(0, 8);
+  const xLabels = [0, 0.5, 1].map(r => {
+    const idx    = Math.min(Math.floor(r * (priceHistory.length - 1)), priceHistory.length - 1);
+    const x      = (r * CW).toFixed(0);
+    const anchor = r === 0 ? 'start' : r === 1 ? 'end' : 'middle';
+    return `<text x="${x}" y="${(H - 4).toFixed(0)}"
+      font-size="11" fill="#4a4a6a" text-anchor="${anchor}">${fmt(times[idx])}</text>`;
+  }).join('');
+
+  svg.innerHTML = `
+    ${gridLines}
+    <polyline points="${pts}" fill="none" stroke="#00d4aa" stroke-width="1.5"/>
+    <circle cx="${dotX.toFixed(1)}" cy="${dotY.toFixed(1)}" r="3" fill="#00d4aa"/>
+    ${yLabels}
+    ${xLabels}
+  `;
+
   const placeholder = document.getElementById('pm-placeholder');
   if (placeholder) placeholder.style.display = 'none';
 }
@@ -210,6 +261,11 @@ async function th_pollBook() {
     }
     if (ask != null) { const el = document.getElementById("up-price");   if (el) el.textContent = "Up "   + (ask * 100).toFixed(0) + "¢"; }
     if (bid != null) { const el = document.getElementById("down-price"); if (el) el.textContent = "Down " + (bid * 100).toFixed(0) + "¢"; }
+    if (mid != null && mid >= 0.05 && mid <= 0.95) {
+      priceHistory.push({ v: mid, t: Date.now() });
+      if (priceHistory.length > 100) priceHistory.shift();
+      drawPmChart();
+    }
   } catch (_) {}
 }
 
@@ -224,9 +280,6 @@ async function th_pollInstances() {
       if (data.data.length > 0 && data.data[0].regime_score != null) {
         th_score = data.data[0].regime_score;
         th_updateGauge(th_score);
-        priceHistory.push(th_score);
-        if (priceHistory.length > 100) priceHistory.shift();
-        drawPmChart();
       }
     }
   } catch (_) {}
@@ -329,11 +382,8 @@ function th_render() {
         <div style="position:absolute;top:8px;right:16px;background:#0a0a1a;border-radius:6px;padding:4px 16px;border:2px solid #12122a;z-index:1">
           <span id="th-countdown" style="font-family:var(--m);font-size:24px;font-weight:700;color:#888">5:00</span>
         </div>
-        <svg id="pm-chart" style="position:absolute;inset:0;width:100%;height:100%" preserveAspectRatio="none">
-          <polyline id="pm-line" fill="none" stroke="#10b981" stroke-width="2" points=""/>
-          <circle id="pm-dot" r="4" fill="#10b981" cx="-10" cy="-10"/>
-        </svg>
-        <span id="pm-placeholder" style="color:#1a1a2e;font-size:22px">PM 概率折线图（含成交标记 + 配对连线）</span>
+        <svg id="pm-chart" width="100%" height="100%" style="display:block;position:absolute;inset:0"></svg>
+        <div id="pm-placeholder" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#1a1a2e;font-size:20px;pointer-events:none">PM 概率折线图（含成交标记 + 配对连线）</div>
       </div>
       <div style="flex-shrink:0;background:#080814;border-top:2px solid #12122a">
         <table class="data-table">
