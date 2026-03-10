@@ -5,6 +5,34 @@ const TH_TM = { pair:{icon:"⚖️",short:"配对"}, revert:{icon:"🎯",short:"
 let th_score = null;
 let th_countdown = 300;
 let th_timers = [];
+let priceHistory = [];
+
+// ─── PM chart ────────────────────────────
+function drawPmChart() {
+  const svg = document.getElementById('pm-chart');
+  const line = document.getElementById('pm-line');
+  const dot  = document.getElementById('pm-dot');
+  if (!svg || !line || priceHistory.length < 2) return;
+  const rect = svg.getBoundingClientRect();
+  const W = rect.width  || svg.parentElement?.getBoundingClientRect().width  || 600;
+  const H = rect.height || svg.parentElement?.getBoundingClientRect().height || 160;
+  if (W === 0 || H === 0) return;
+  const mn = Math.min(...priceHistory);
+  const mx = Math.max(...priceHistory);
+  const rg = mx - mn || 1;
+  const n = priceHistory.length;
+  const pts = priceHistory.map((v, i) => {
+    const x = (i / (n - 1)) * W;
+    const y = H - ((v - mn) / rg) * (H * 0.8) - H * 0.1;
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ');
+  line.setAttribute('points', pts);
+  const lastY = H - ((priceHistory[n - 1] - mn) / rg) * (H * 0.8) - H * 0.1;
+  dot.setAttribute('cx', W.toFixed(1));
+  dot.setAttribute('cy', lastY.toFixed(1));
+  const placeholder = document.getElementById('pm-placeholder');
+  if (placeholder) placeholder.style.display = 'none';
+}
 
 // ─── Side switching ──────────────────────
 function th_setSide(side) {
@@ -196,6 +224,9 @@ async function th_pollInstances() {
       if (data.data.length > 0 && data.data[0].regime_score != null) {
         th_score = data.data[0].regime_score;
         th_updateGauge(th_score);
+        priceHistory.push(th_score);
+        if (priceHistory.length > 60) priceHistory.shift();
+        drawPmChart();
       }
     }
   } catch (_) {}
@@ -293,12 +324,16 @@ function th_render() {
         </div>
       </div>
       <div style="flex:1;min-height:160px;border-bottom:2px solid #12122a;display:flex;align-items:center;justify-content:center;position:relative;color:#1a1a2e;font-size:22px">
-        <span id="th-pm-coin" style="position:absolute;top:12px;left:20px;color:#555;font-size:20px;font-weight:600">BTC</span>
-        <span id="th-pm-tf" style="position:absolute;top:12px;right:140px;color:#333;font-size:18px;font-family:var(--m)">15M</span>
-        <div style="position:absolute;top:8px;right:16px;background:#0a0a1a;border-radius:6px;padding:4px 16px;border:2px solid #12122a">
+        <span id="th-pm-coin" style="position:absolute;top:12px;left:20px;color:#555;font-size:20px;font-weight:600;z-index:1">BTC</span>
+        <span id="th-pm-tf" style="position:absolute;top:12px;right:140px;color:#333;font-size:18px;font-family:var(--m);z-index:1">15M</span>
+        <div style="position:absolute;top:8px;right:16px;background:#0a0a1a;border-radius:6px;padding:4px 16px;border:2px solid #12122a;z-index:1">
           <span id="th-countdown" style="font-family:var(--m);font-size:24px;font-weight:700;color:#888">5:00</span>
         </div>
-        PM 概率折线图（含成交标记 + 配对连线）
+        <svg id="pm-chart" style="position:absolute;inset:0;width:100%;height:100%" preserveAspectRatio="none">
+          <polyline id="pm-line" fill="none" stroke="#10b981" stroke-width="2" points=""/>
+          <circle id="pm-dot" r="4" fill="#10b981" cx="-10" cy="-10"/>
+        </svg>
+        <span id="pm-placeholder" style="color:#1a1a2e;font-size:22px">PM 概率折线图（含成交标记 + 配对连线）</span>
       </div>
       <div style="flex-shrink:0;background:#080814;border-top:2px solid #12122a">
         <table class="data-table">
