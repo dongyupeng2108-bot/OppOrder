@@ -1,0 +1,14 @@
+TASK_ID=260310_003
+GENERATED_AT=2026-03-10T17:12:42.912Z
+
+# DoD Markers
+DOD_TRADING_HALL=3-column flex layout matching btcqdd_final_v2.jsx TradingHall()
+DOD_TOPBAR=height:36px topbar with tabs, 模拟badge, $1000, 登录
+DOD_REGIME_GAUGE=SVG gauge with gradient arc and animated needle
+DOD_LEFT_PANEL=手动交易+盈亏+市场状态+连接状态 all present
+DOD_CENTER=coin dropdown+K-line+TF+PM+strategy table+log all present
+DOD_RIGHT=订单簿 ask/bid + 我的挂单 + strategy legend
+DOD_POLLING=2s book, 5s instances/orders, 1s countdown/regime
+DOD_PLACEHOLDER_PAGES=策略实验室 and 通用设置 placeholders present
+
+GATE_LIGHT_EXIT=0
