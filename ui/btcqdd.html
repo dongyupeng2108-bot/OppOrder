@@ -1276,44 +1276,69 @@ body {
 
   <!-- ── STRATEGY LAB PAGE ─────────────────────── -->
   <div id="page-lab">
-    <!-- Instance selector bar -->
-    <div id="lab-selector">
-      <label>实例：</label>
-      <select id="instance-select" onchange="onInstanceChange(this.value)">
-        <option>加载中…</option>
-      </select>
-      <button id="lab-reload-btn" onclick="reloadConfig()">热更新配置</button>
-      <span id="reload-status"></span>
+    <!-- Sub-tab bar -->
+    <div class="tab-bar" id="lab-tabs" style="border-bottom:1px solid var(--border);margin-bottom:var(--space-gap-lg)">
+      <button class="tab-btn active" onclick="switchLabTab('params')">调参面板</button>
+      <button class="tab-btn" onclick="switchLabTab('compare')">策略对比</button>
     </div>
 
-    <!-- Live instance stats bar -->
-    <div class="lab-instance-stats" id="lab-instance-stats"></div>
-
-    <!-- Param cards -->
-    <div id="lab-params">
-      <!-- Strategy params -->
-      <div class="param-card">
-        <div class="param-card-title">策略参数</div>
-        <div id="param-strategy-fields">
-          <div class="param-row"><label style="color:var(--text-dead)">加载实例后显示…</label></div>
-        </div>
+    <!-- Params view (existing content) -->
+    <div id="lab-params-view">
+      <!-- Instance selector bar -->
+      <div id="lab-selector">
+        <label>实例：</label>
+        <select id="instance-select" onchange="onInstanceChange(this.value)">
+          <option>加载中…</option>
+        </select>
+        <button id="lab-reload-btn" onclick="reloadConfig()">热更新配置</button>
+        <span id="reload-status"></span>
       </div>
 
-      <!-- Cancel engine params -->
-      <div class="param-card">
-        <div class="param-card-title">撤单引擎</div>
-        <div id="param-cancel-fields">
-          <div class="param-row"><label style="color:var(--text-dead)">加载实例后显示…</label></div>
+      <!-- Live instance stats bar -->
+      <div class="lab-instance-stats" id="lab-instance-stats"></div>
+
+      <!-- Param cards -->
+      <div id="lab-params">
+        <!-- Strategy params -->
+        <div class="param-card">
+          <div class="param-card-title">策略参数</div>
+          <div id="param-strategy-fields">
+            <div class="param-row"><label style="color:var(--text-dead)">加载实例后显示…</label></div>
+          </div>
         </div>
+
+        <!-- Cancel engine params -->
+        <div class="param-card">
+          <div class="param-card-title">撤单引擎</div>
+          <div id="param-cancel-fields">
+            <div class="param-row"><label style="color:var(--text-dead)">加载实例后显示…</label></div>
+          </div>
+        </div>
+
+        <!-- Regime detector params -->
+        <div class="param-card">
+          <div class="param-card-title">市场状态检测</div>
+          <div id="param-regime-fields">
+            <div class="param-row"><label style="color:var(--text-dead)">加载实例后显示…</label></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Compare view -->
+    <div id="lab-compare-view" style="display:none">
+      <!-- Multi-instance selector -->
+      <div id="compare-selector" style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);margin-bottom:16px">
+        <label style="color:var(--text-muted);font-size:0.85em">选择实例：</label>
+        <div id="compare-checkboxes" style="display:flex;gap:12px;flex-wrap:wrap"></div>
+        <button onclick="loadCompare()" style="margin-left:auto;background:var(--color-primary);border:none;color:var(--text-primary);font-size:var(--size-xs);font-weight:var(--weight-semi);padding:3px 10px;border-radius:var(--radius-xs);cursor:pointer">对比</button>
       </div>
 
-      <!-- Regime detector params -->
-      <div class="param-card">
-        <div class="param-card-title">市场状态检测</div>
-        <div id="param-regime-fields">
-          <div class="param-row"><label style="color:var(--text-dead)">加载实例后显示…</label></div>
-        </div>
-      </div>
+      <!-- Comparison summary table -->
+      <div id="compare-summary" style="margin-bottom:24px"></div>
+
+      <!-- Cumulative PnL line chart -->
+      <div id="compare-timeseries"></div>
     </div>
   </div>
 
@@ -2255,6 +2280,146 @@ async function loadSensitivity() {
   } catch (_) {
     container.innerHTML = emptyState('参数敏感度');
   }
+}
+
+/* ═══════════════════════════════════════════════
+   STRATEGY LAB — Compare Sub-Tab
+   ═══════════════════════════════════════════════ */
+
+/* ─── Sub-Tab Switch ─────────────────────────── */
+function switchLabTab(tab) {
+  document.getElementById('lab-params-view').style.display  = tab === 'params'  ? '' : 'none';
+  document.getElementById('lab-compare-view').style.display = tab === 'compare' ? '' : 'none';
+  document.querySelectorAll('#lab-tabs .tab-btn').forEach(function(btn, i) {
+    btn.classList.toggle('active', ['params', 'compare'][i] === tab);
+  });
+  if (tab === 'compare') initCompareSelector();
+}
+
+/* ─── Multi-Instance Checkbox Loader ────────── */
+async function initCompareSelector() {
+  var container = document.getElementById('compare-checkboxes');
+  if (!container || container.children.length > 0) return;
+  try {
+    var data = await fetch(BASE_URL + '/ui/instances').then(function(r) { return r.json(); });
+    var instances = Array.isArray(data) ? data : (data.data ?? []);
+    container.innerHTML = instances.map(function(inst) {
+      var id = inst.strategy_id ?? inst.id ?? '';
+      return '<label style="display:flex;align-items:center;gap:4px;font-size:0.85em;cursor:pointer;color:var(--text-secondary)">'
+        + '<input type="checkbox" value="' + id + '" checked> ' + id + '</label>';
+    }).join('');
+    if (instances.length > 0) loadCompare();
+  } catch (_) {
+    container.innerHTML = '<span style="color:var(--text-muted)">无法加载实例列表</span>';
+  }
+}
+
+/* ─── Load Compare Data ──────────────────────── */
+async function loadCompare() {
+  var checkboxes = document.querySelectorAll('#compare-checkboxes input[type=checkbox]:checked');
+  var ids = Array.from(checkboxes).map(function(c) { return c.value; }).filter(Boolean);
+  var summaryEl    = document.getElementById('compare-summary');
+  var timeseriesEl = document.getElementById('compare-timeseries');
+  if (!summaryEl || !timeseriesEl) return;
+
+  if (ids.length === 0) {
+    summaryEl.innerHTML    = '<p style="color:var(--text-muted)">请至少选择一个实例</p>';
+    timeseriesEl.innerHTML = '';
+    return;
+  }
+
+  try {
+    var data = await fetch(BASE_URL + '/postmortem/compare?ids=' + ids.join(',')).then(function(r) { return r.json(); });
+    var summary    = data.summary    ?? [];
+    var timeseries = data.timeseries ?? [];
+    renderCompareSummary(summaryEl, summary);
+    renderCompareTimeseries(timeseriesEl, timeseries, ids);
+  } catch (e) {
+    summaryEl.innerHTML = '<p style="color:var(--color-down)">加载失败：' + e.message + '</p>';
+  }
+}
+
+/* ─── Comparison Summary Table ───────────────── */
+function renderCompareSummary(container, summary) {
+  if (summary.length === 0) {
+    container.innerHTML = '<div style="padding:32px;text-align:center;color:var(--text-muted)">数据积累中，至少需要 10 个窗口</div>';
+    return;
+  }
+  var thead = '<tr>'
+    + '<th>策略</th><th>窗口数</th><th>胜率</th>'
+    + '<th>平均成本</th><th>最优成本</th><th>平均 Regime</th>'
+    + '</tr>';
+  var tbody = summary.map(function(r) {
+    var wr = r.total_windows ? ((r.wins / r.total_windows) * 100).toFixed(1) + '%' : '--';
+    var costColor = (r.avg_cost ?? 1) < 1 ? 'var(--color-up)' : 'var(--color-down)';
+    return '<tr>'
+      + '<td>' + (r.strategy_id ?? '--') + '</td>'
+      + '<td>' + (r.total_windows ?? '--') + '</td>'
+      + '<td>' + wr + '</td>'
+      + '<td style="color:' + costColor + '">' + (r.avg_cost != null ? r.avg_cost.toFixed(4) : '--') + '</td>'
+      + '<td>' + (r.best_cost != null ? r.best_cost.toFixed(4) : '--') + '</td>'
+      + '<td>' + (r.avg_regime != null ? r.avg_regime.toFixed(3) : '--') + '</td>'
+      + '</tr>';
+  }).join('');
+  container.innerHTML = '<div style="overflow-x:auto"><table class="order-table">'
+    + '<thead>' + thead + '</thead>'
+    + '<tbody>' + tbody + '</tbody>'
+    + '</table></div>';
+}
+
+/* ─── Cumulative PnL Line Chart ──────────────── */
+var COMPARE_PALETTE = [
+  'var(--color-up)', 'var(--color-warn)', 'var(--color-accent)',
+  'var(--text-muted)', '#8884d8', '#82ca9d'
+];
+
+function renderCompareTimeseries(container, timeseries, ids) {
+  if (timeseries.length === 0) {
+    container.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text-muted)">时间序列数据不足</div>';
+    return;
+  }
+
+  var svgW = 600, svgH = 240, padL = 50, padB = 30, padT = 10, padR = 20;
+  var innerW = svgW - padL - padR;
+  var innerH = svgH - padB - padT;
+
+  var grouped = {};
+  timeseries.forEach(function(row) {
+    var sid = row.strategy_id;
+    if (!grouped[sid]) grouped[sid] = [];
+    grouped[sid].push(row);
+  });
+
+  var allTimes = timeseries.map(function(r) { return new Date(r.window_start).getTime(); });
+  var allPnl   = timeseries.map(function(r) { return r.cumulative_pnl ?? 0; });
+  var minT = Math.min.apply(null, allTimes), maxT = Math.max.apply(null, allTimes);
+  var minP = Math.min.apply(null, [0].concat(allPnl));
+  var maxP = Math.max.apply(null, [0.001].concat(allPnl));
+
+  function toX(t) { return padL + ((new Date(t).getTime() - minT) / (maxT - minT || 1)) * innerW; }
+  function toY(p) { return padT + innerH - ((p - minP) / (maxP - minP)) * innerH; }
+
+  var lines = ids.map(function(sid, i) {
+    var rows = grouped[sid] ?? [];
+    if (rows.length < 2) return '';
+    var pts = rows.map(function(r) { return toX(r.window_start).toFixed(1) + ',' + toY(r.cumulative_pnl ?? 0).toFixed(1); }).join(' ');
+    return '<polyline points="' + pts + '" fill="none" stroke="' + COMPARE_PALETTE[i % COMPARE_PALETTE.length] + '" stroke-width="1.5" opacity="0.9"/>';
+  }).join('');
+
+  var zeroY = toY(0).toFixed(1);
+  var zeroLine = '<line x1="' + padL + '" y1="' + zeroY + '" x2="' + (svgW - padR) + '" y2="' + zeroY
+    + '" stroke="var(--border)" stroke-dasharray="3,3"/>';
+
+  var legend = ids.map(function(sid, i) {
+    return '<tspan fill="' + COMPARE_PALETTE[i % COMPARE_PALETTE.length] + '">■ ' + sid + '  </tspan>';
+  }).join('');
+
+  container.innerHTML = '<div style="overflow-x:auto">'
+    + '<h4 style="color:var(--text-muted);font-size:0.85em;margin:0 0 8px">累计 PnL 走势</h4>'
+    + '<svg width="' + svgW + '" height="' + svgH + '" style="width:100%;max-width:' + svgW + 'px">'
+    + zeroLine + lines
+    + '<text x="' + padL + '" y="' + (svgH - 6) + '" font-size="10">' + legend + '</text>'
+    + '</svg></div>';
 }
 </script>
 </body>
