@@ -804,6 +804,162 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* ─── Strategy Lab Page ───────────────────────── */
+#page-lab {
+  flex: 1;
+  overflow: auto;
+  padding: var(--space-page);
+  display: none;
+  background: var(--bg-base);
+}
+
+#lab-selector {
+  display: flex;
+  align-items: center;
+  gap: var(--space-gap-md);
+  padding-bottom: var(--space-gap-md);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: var(--space-gap-lg);
+  flex-wrap: wrap;
+}
+
+#lab-selector label {
+  font-size: var(--size-xs);
+  color: var(--text-ghost);
+}
+
+#instance-select {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-size: var(--size-xs);
+  font-family: var(--font-mono);
+  padding: 3px 6px;
+  border-radius: var(--radius-xs);
+  min-width: 160px;
+}
+
+#lab-reload-btn {
+  background: var(--color-primary);
+  border: none;
+  color: var(--text-primary);
+  font-size: var(--size-xs);
+  font-weight: var(--weight-semi);
+  padding: 3px 10px;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+}
+
+#reload-status {
+  font-size: var(--size-xs);
+  font-family: var(--font-mono);
+  color: var(--text-ghost);
+}
+
+#lab-params {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-gap-lg);
+}
+
+@media (max-width: 900px) {
+  #lab-params { grid-template-columns: 1fr; }
+}
+
+.param-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-card);
+}
+
+.param-card-title {
+  font-size: var(--size-xxs);
+  font-weight: var(--weight-semi);
+  color: var(--text-invisible);
+  letter-spacing: 1px;
+  margin-bottom: var(--space-gap-md);
+  text-transform: uppercase;
+}
+
+.param-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  gap: var(--space-gap-sm);
+}
+
+.param-row:last-child {
+  border-bottom: none;
+}
+
+.param-row label {
+  font-size: var(--size-xxs);
+  color: var(--text-body);
+  flex: 1;
+}
+
+.param-input {
+  width: 88px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  font-size: var(--size-xxs);
+  font-family: var(--font-mono);
+  padding: 2px 5px;
+  border-radius: var(--radius-xs);
+  text-align: right;
+}
+
+.param-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.param-toggle {
+  accent-color: var(--color-primary);
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.param-readonly {
+  font-family: var(--font-mono);
+  font-size: var(--size-micro);
+  color: var(--text-ghost);
+  text-align: right;
+  max-width: 88px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lab-instance-stats {
+  margin-bottom: var(--space-gap-lg);
+  padding: var(--space-gap-sm) var(--space-card);
+  background: var(--bg-elevated);
+  border-radius: var(--radius-xs);
+  display: flex;
+  gap: var(--space-gap-lg);
+  flex-wrap: wrap;
+}
+
+.lab-stat {
+  display: flex;
+  gap: var(--space-gap-xs);
+  align-items: center;
+  font-size: var(--size-xxs);
+}
+
+.lab-stat-label { color: var(--text-ghost); }
+.lab-stat-val {
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  font-weight: var(--weight-semi);
+}
 </style>
 </head>
 <body>
@@ -838,19 +994,19 @@ body {
   <div id="sidebar">
     <div class="sidebar-header">导航</div>
 
-    <div class="nav-item active" data-tab="hall" onclick="switchTab('hall')">
+    <div class="nav-item active" data-tab="hall" onclick="switchTab('hall');switchPage('trading')">
       <span class="nav-icon">📈</span>
       <span class="nav-label">交易大厅</span>
     </div>
-    <div class="nav-item" data-tab="lab" onclick="switchTab('lab')">
+    <div class="nav-item" data-tab="lab" onclick="switchTab('lab');switchPage('lab')">
       <span class="nav-icon">🧪</span>
       <span class="nav-label">策略实验室</span>
     </div>
-    <div class="nav-item" data-tab="postmortem" onclick="switchTab('postmortem')">
+    <div class="nav-item" data-tab="postmortem" onclick="switchTab('postmortem');switchPage('trading')">
       <span class="nav-icon">📋</span>
       <span class="nav-label">复盘分析</span>
     </div>
-    <div class="nav-item" data-tab="settings" onclick="switchTab('settings')">
+    <div class="nav-item" data-tab="settings" onclick="switchTab('settings');switchPage('trading')">
       <span class="nav-icon">⚙️</span>
       <span class="nav-label">系统设置</span>
     </div>
@@ -1102,6 +1258,49 @@ body {
       </div>
     </div>
 
+  </div>
+
+  <!-- ── STRATEGY LAB PAGE ─────────────────────── -->
+  <div id="page-lab">
+    <!-- Instance selector bar -->
+    <div id="lab-selector">
+      <label>实例：</label>
+      <select id="instance-select" onchange="onInstanceChange(this.value)">
+        <option>加载中…</option>
+      </select>
+      <button id="lab-reload-btn" onclick="reloadConfig()">热更新配置</button>
+      <span id="reload-status"></span>
+    </div>
+
+    <!-- Live instance stats bar -->
+    <div class="lab-instance-stats" id="lab-instance-stats"></div>
+
+    <!-- Param cards -->
+    <div id="lab-params">
+      <!-- Strategy params -->
+      <div class="param-card">
+        <div class="param-card-title">策略参数</div>
+        <div id="param-strategy-fields">
+          <div class="param-row"><label style="color:var(--text-dead)">加载实例后显示…</label></div>
+        </div>
+      </div>
+
+      <!-- Cancel engine params -->
+      <div class="param-card">
+        <div class="param-card-title">撤单引擎</div>
+        <div id="param-cancel-fields">
+          <div class="param-row"><label style="color:var(--text-dead)">加载实例后显示…</label></div>
+        </div>
+      </div>
+
+      <!-- Regime detector params -->
+      <div class="param-card">
+        <div class="param-card-title">市场状态检测</div>
+        <div id="param-regime-fields">
+          <div class="param-row"><label style="color:var(--text-dead)">加载实例后显示…</label></div>
+        </div>
+      </div>
+    </div>
   </div>
 
 </div><!-- #layout -->
@@ -1410,17 +1609,244 @@ function renderWinRateChart(data) {
 loadWinRateChart();
 setInterval(loadWinRateChart, 30000);
 
-/* ─── Navigation Tab Switching ───────────────── */
+/* ─── Navigation Tab + Page Switching ───────── */
 function switchTab(tabId) {
   document.querySelectorAll('.nav-item').forEach(el => {
     el.classList.toggle('active', el.dataset.tab === tabId);
   });
 }
 
+function switchPage(page) {
+  const main    = document.getElementById('main');
+  const info    = document.getElementById('info');
+  const pageLab = document.getElementById('page-lab');
+  if (!main || !info || !pageLab) return;
+
+  if (page === 'lab') {
+    main.style.display    = 'none';
+    info.style.display    = 'none';
+    pageLab.style.display = '';
+    loadInstances();
+  } else {
+    main.style.display    = '';
+    info.style.display    = '';
+    pageLab.style.display = 'none';
+  }
+}
+
 /* ─── Time-frame Button ──────────────────────── */
 function setTf(btn, tf) {
   document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+}
+
+/* ═══════════════════════════════════════════════
+   STRATEGY LAB — Instance loader + Param editor
+   ═══════════════════════════════════════════════ */
+
+let _currentInstance = null;
+let _instanceConfig  = {};
+let _allInstances    = [];
+
+/* Load instance list from /ui/instances */
+async function loadInstances() {
+  try {
+    const raw = await fetch(BASE_URL + '/ui/instances', { signal: AbortSignal.timeout(4000) }).then(r => r.json());
+    _allInstances = Array.isArray(raw.data) ? raw.data : (Array.isArray(raw) ? raw : []);
+
+    const sel = document.getElementById('instance-select');
+    if (!sel) return;
+
+    if (_allInstances.length === 0) {
+      sel.innerHTML = '<option value="">无可用实例</option>';
+      return;
+    }
+
+    sel.innerHTML = _allInstances.map(inst => {
+      const id = inst.strategy_id ?? inst.id ?? '?';
+      return `<option value="${id}">${id}</option>`;
+    }).join('');
+
+    // Auto-select first
+    const firstId = _allInstances[0].strategy_id ?? _allInstances[0].id;
+    sel.value = firstId;
+    onInstanceChange(firstId);
+  } catch {
+    const sel = document.getElementById('instance-select');
+    if (sel) sel.innerHTML = '<option value="">无法加载实例</option>';
+    renderLabStats(null);
+  }
+}
+
+/* Called when user picks an instance */
+function onInstanceChange(instanceId) {
+  _currentInstance = instanceId;
+  const inst = _allInstances.find(i => (i.strategy_id ?? i.id) === instanceId);
+  if (!inst) return;
+
+  // Build param config from live stats (available fields)
+  // Note: /ui/instances returns live stats, not full config
+  // Param values shown as read-only with live data where available
+  _instanceConfig = {
+    strategy: {
+      entry_offset:       null,
+      vol_adjust_enabled: null,
+      pair_cost_target:   null,
+    },
+    cancel: {
+      tau_min_sec:       null,
+      order_age_max_sec: null,
+      sigma_threshold:   null,
+    },
+    regime: {
+      min_score: null,
+      max_score: null,
+    },
+    risk: {
+      max_position_usd: null,
+    },
+    _live: inst,
+  };
+
+  renderLabStats(inst);
+  renderParamFields();
+}
+
+/* Render live instance stats bar */
+function renderLabStats(inst) {
+  const el = document.getElementById('lab-instance-stats');
+  if (!el) return;
+  if (!inst) {
+    el.innerHTML = '<span class="lab-stat"><span class="lab-stat-label">无实例数据</span></span>';
+    return;
+  }
+  const scoreColor = (inst.regime_score ?? 0) >= 0.6 ? COLOR.up
+    : (inst.regime_score ?? 0) >= 0.4 ? COLOR.warn : COLOR.down;
+  el.innerHTML = [
+    ['策略', inst.strategy_id ?? '--'],
+    ['运行中', inst.enabled ? '✅' : '⏹'],
+    ['Regime', inst.regime_score != null ? inst.regime_score.toFixed(3) : '--'],
+    ['活跃', inst.is_active ? '是' : '否'],
+    ['挂单', inst.open_orders ?? '--'],
+    ['当前窗口', inst.current_window ?? '--'],
+  ].map(([lbl, val]) => `
+    <div class="lab-stat">
+      <span class="lab-stat-label">${lbl}</span>
+      <span class="lab-stat-val">${val}</span>
+    </div>`).join('');
+}
+
+/* Render param field groups */
+function renderParamFields() {
+  renderFieldGroup('param-strategy-fields', [
+    { key: 'strategy.entry_offset',       label: '挂单偏移 entry_offset',  type: 'number', step: 0.005 },
+    { key: 'strategy.vol_adjust_enabled', label: '动态偏移 vol_adjust',    type: 'toggle' },
+    { key: 'strategy.pair_cost_target',   label: '配对成本上限',            type: 'number', step: 0.01 },
+    { key: 'regime.min_score',            label: 'Regime 激活下限',         type: 'number', step: 0.05 },
+    { key: 'regime.max_score',            label: 'Regime 激活上限',         type: 'number', step: 0.05 },
+    { key: 'risk.max_position_usd',       label: '最大仓位 USD',            type: 'number', step: 1 },
+  ]);
+  renderFieldGroup('param-cancel-fields', [
+    { key: 'cancel.tau_min_sec',        label: '时间撤单阈值（秒）', type: 'number', step: 10 },
+    { key: 'cancel.order_age_max_sec',  label: '老化撤单阈值（秒）', type: 'number', step: 5 },
+    { key: 'cancel.sigma_threshold',    label: 'Sigma 撤单阈值',    type: 'number', step: 0.05 },
+  ]);
+  const regimeEl = document.getElementById('param-regime-fields');
+  if (regimeEl) {
+    regimeEl.innerHTML = `
+      <div class="param-row">
+        <label style="color:var(--text-ghost)">Regime 权重（全局）</label>
+      </div>
+      <div class="param-row">
+        <label>sigma_weight</label>
+        <span class="param-readonly" id="rd-sigma-weight">--</span>
+      </div>
+      <div class="param-row">
+        <label>alternation_weight</label>
+        <span class="param-readonly" id="rd-alt-weight">--</span>
+      </div>
+      <div class="param-row">
+        <label>volume_weight</label>
+        <span class="param-readonly" id="rd-vol-weight">--</span>
+      </div>
+      <div class="param-row">
+        <label style="color:var(--text-invisible);font-size:var(--size-micro)">权重来自实例 JSON，此处只读</label>
+      </div>`;
+  }
+}
+
+function getNestedValue(obj, dotKey) {
+  return dotKey.split('.').reduce((acc, k) => acc?.[k], obj);
+}
+
+function setNestedValue(obj, dotKey, value) {
+  const keys = dotKey.split('.');
+  let cur = obj;
+  for (let i = 0; i < keys.length - 1; i++) {
+    if (cur[keys[i]] == null) cur[keys[i]] = {};
+    cur = cur[keys[i]];
+  }
+  cur[keys[keys.length - 1]] = value;
+}
+
+function renderFieldGroup(containerId, fields) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = fields.map(f => {
+    const val = getNestedValue(_instanceConfig, f.key);
+    const displayVal = val != null ? val : '';
+    const note = val == null
+      ? `<span style="font-size:var(--size-micro);color:var(--text-dead)">(实例 JSON)</span>` : '';
+
+    if (f.type === 'toggle') {
+      return `
+        <div class="param-row">
+          <label>${f.label}${note}</label>
+          <input class="param-toggle" type="checkbox" data-key="${f.key}"
+            ${val ? 'checked' : ''}
+            onchange="onParamChange('${f.key}', this.checked)">
+        </div>`;
+    }
+    return `
+      <div class="param-row">
+        <label>${f.label}${note}</label>
+        <input class="param-input" type="number" step="${f.step ?? 0.01}"
+          value="${displayVal}" placeholder="--"
+          data-key="${f.key}"
+          onchange="onParamChange('${f.key}', parseFloat(this.value))">
+      </div>`;
+  }).join('');
+}
+
+function onParamChange(dotKey, value) {
+  setNestedValue(_instanceConfig, dotKey, value);
+}
+
+/* Hot-reload: POST /config/reload (server re-reads JSON file) */
+async function reloadConfig() {
+  const statusEl = document.getElementById('reload-status');
+  if (statusEl) { statusEl.textContent = '更新中…'; statusEl.style.color = TEXT.muted; }
+  try {
+    const res = await fetch(BASE_URL + '/config/reload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({}),
+      signal: AbortSignal.timeout(6000),
+    });
+    const data = await res.json();
+    const hasDiff = data.diff && Object.keys(data.diff).length > 0;
+    const msg = res.ok
+      ? (hasDiff ? '热更新成功，有变更' : '热更新成功（无变更）')
+      : ('失败: ' + (data.error ?? data.message ?? res.status));
+    if (statusEl) {
+      statusEl.textContent = msg;
+      statusEl.style.color = res.ok ? COLOR.up : COLOR.down;
+    }
+    addLog('config/reload: ' + msg);
+  } catch (e) {
+    if (statusEl) { statusEl.textContent = '失败: ' + e.message; statusEl.style.color = COLOR.down; }
+  }
+  setTimeout(() => { if (statusEl) statusEl.textContent = ''; }, 4000);
 }
 
 /* ─── Order Table Tab Switch ─────────────────── */
