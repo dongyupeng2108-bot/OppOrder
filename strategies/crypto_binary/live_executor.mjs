@@ -2,7 +2,8 @@
 // 将 BTCQDD Signal 转换为 trading_executor_live.mjs 期望的 order 格式
 
 import './proxy_agent.mjs';
-import { executeLive, checkSignerHealth } from '../../OppRadar/trading_executor_live.mjs';
+// NOTE: trading_executor_live.mjs is imported lazily inside execute() to prevent
+// OppRadar/db.mjs module-level side-effect (oppradar.sqlite log) at server startup.
 import { getDb } from './db.mjs';
 import { logger, EVENTS } from './logger.mjs';
 import crypto from 'crypto';
@@ -22,6 +23,9 @@ export function createLiveExecutor(config) {
       logger.warn(EVENTS.ORDER_PLACE_FAIL, { module: 'live_executor', reason: 'MAX_OPEN_ORDERS', max_open_orders });
       return { filled: false, reason: 'MAX_OPEN_ORDERS' };
     }
+
+    // 懒加载 trading_executor_live（避免模块初始化时触发 OppRadar db.mjs 副作用）
+    const { executeLive, checkSignerHealth } = await import('../../OppRadar/trading_executor_live.mjs');
 
     // 检查 Signer Agent 是否在线
     const signerOk = await checkSignerHealth();

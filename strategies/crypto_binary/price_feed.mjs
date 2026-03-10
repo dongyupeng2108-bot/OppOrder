@@ -7,6 +7,25 @@ import { logger, EVENTS } from './logger.mjs';
 import { randomUUID } from 'crypto';
 
 const BINANCE_REST = 'https://api.binance.com';
+
+// Explicit ProxyAgent dispatcher for REST fetch calls.
+// Node.js v18+ built-in fetch and the npm undici package may not share the same
+// global dispatcher, so we pass the dispatcher explicitly to guarantee proxy use.
+const _proxyUrl = process.env.HTTPS_PROXY || process.env.HTTP_PROXY;
+let _proxyDispatcher = null;
+if (_proxyUrl) {
+  try {
+    const { ProxyAgent } = await import('undici');
+    _proxyDispatcher = new ProxyAgent(_proxyUrl);
+    console.log('[PriceFeed] Explicit proxy dispatcher created:', _proxyUrl);
+  } catch (e) {
+    console.warn('[PriceFeed] undici ProxyAgent unavailable, proxy may not work for REST:', e.message);
+  }
+}
+/** @param {string} url @returns {Promise<Response>} */
+function proxyFetch(url) {
+  return _proxyDispatcher ? fetch(url, { dispatcher: _proxyDispatcher }) : fetch(url);
+}
 const BINANCE_WS   = 'wss://stream.binance.com:9443/ws';
 
 // 成交量分桶：30 秒一桶
@@ -128,7 +147,7 @@ export function createPriceFeed(config) {
 
   async function fetchRest() {
     try {
-      const res = await fetch(`${BINANCE_REST}/api/v3/ticker/price?symbol=${symbol.toUpperCase()}`);
+      const res = await proxyFetch(`${BINANCE_REST}/api/v3/ticker/price?symbol=${symbol.toUpperCase()}`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       const price = parseFloat(data.price);
@@ -346,7 +365,7 @@ export function createPriceFeed(config) {
 
   async function getCurrentPrice() {
     if (currentPrice !== null) return currentPrice;
-    const res = await fetch(`${BINANCE_REST}/api/v3/ticker/price?symbol=${symbol.toUpperCase()}`);
+    const res = await proxyFetch(`${BINANCE_REST}/api/v3/ticker/price?symbol=${symbol.toUpperCase()}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     return parseFloat(data.price);
@@ -355,7 +374,7 @@ export function createPriceFeed(config) {
   async function getKlines() {
     const limit = config.price_feed?.kline_limit || 50;
     const interval = config.price_feed?.kline_interval || '1m';
-    const res = await fetch(
+    const res = await proxyFetch(
       `${BINANCE_REST}/api/v3/klines?symbol=${symbol.toUpperCase()}&interval=${interval}&limit=${limit}`
     );
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
