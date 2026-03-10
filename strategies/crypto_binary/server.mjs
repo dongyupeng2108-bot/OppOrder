@@ -6,11 +6,13 @@ import { createServer } from 'http';
 import { readFileSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { WebSocketServer } from 'ws';
 import { createRunner } from './strategy_runner.mjs';
 import { initPostmortem } from './postmortem.mjs';
 import { logger, EVENTS } from './logger.mjs';
 import { getDb } from './db.mjs';
 import { initManualTrade, submitManualOrder, getManualStats } from './manual_trade.mjs';
+import { publish, subscribe, unsubscribe, EVENT_TYPES } from './event_bus.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -47,6 +49,29 @@ let db = null;
   await initManualTrade(db);
   console.log('[BTCQDD] DB migration completed (initPostmortem + initManualTrade)');
   await runner.start();
+
+  // 定时轮询检测 regime/window 状态变化 → publish 事件（替代方案，2s 延迟）
+  // 所有内部事件发射点均在 scope 外模块，无法直接注入 publish，故采用轮询
+  let _lastRegimeScore = null;
+  let _lastWindowId = null;
+  setInterval(() => {
+    try {
+      const regimeState = runner.getRegimeState();
+      if (regimeState) {
+        const score = regimeState.regime_score ?? null;
+        if (_lastRegimeScore !== null && score !== null && Math.abs(score - _lastRegimeScore) > 0.05) {
+          publish(EVENT_TYPES.REGIME_CHANGED, { regime_score: score, prev: _lastRegimeScore });
+        }
+        _lastRegimeScore = score;
+
+        const windowId = regimeState.current_window ?? null;
+        if (_lastWindowId !== null && windowId !== null && windowId !== _lastWindowId) {
+          publish(EVENT_TYPES.WINDOW_SWITCH, { window_id: windowId, prev: _lastWindowId });
+        }
+        _lastWindowId = windowId;
+      }
+    } catch (_) { /* runner not yet ready */ }
+  }, 2000);
 })().catch(err => {
   logger.error(EVENTS.ERROR_UNHANDLED_PATH, { module: 'server', err: err.message, msg: 'runner failed to start' });
 });
@@ -235,4 +260,45 @@ const server = createServer((req, res) => {
 
 server.listen(PORT, () => {
   logger.info(EVENTS.SERVER_START, { module: 'server', msg: `listening on http://localhost:${PORT}`, strategy: STRATEGY_ID });
+});
+
+// ── WebSocket /events/stream ────────────────────────────────────────────
+
+const wss = new WebSocketServer({ noServer: true });
+
+server.on('upgrade', (req, socket, head) => {
+  const { pathname } = new URL(req.url, 'http://localhost');
+  if (pathname === '/events/stream') {
+    wss.handleUpgrade(req, socket, head, (ws) => {
+      wss.emit('connection', ws, req);
+    });
+  } else {
+    socket.destroy();
+  }
+});
+
+wss.on('connection', (ws) => {
+  logger.info('ws_connect_ok', { module: 'server', path: '/events/stream' });
+
+  const handler = (event) => {
+    if (ws.readyState === ws.OPEN) {
+      try { ws.send(JSON.stringify(event)); }
+      catch (e) { logger.error('ws_send_fail', { module: 'server', err: e.message }); }
+    }
+  };
+
+  subscribe(handler);
+
+  // 连接确认帧
+  ws.send(JSON.stringify({ type: 'connected', ts: Date.now() }));
+
+  ws.on('close', () => {
+    unsubscribe(handler);
+    logger.info('ws_disconnect', { module: 'server', path: '/events/stream' });
+  });
+
+  ws.on('error', (e) => {
+    logger.error('ws_error', { module: 'server', path: '/events/stream', err: e.message });
+    unsubscribe(handler);
+  });
 });
