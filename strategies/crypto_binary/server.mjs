@@ -223,6 +223,18 @@ const server = createServer(async (req, res) => {
     return;
   }
 
+  // GET /trading/orders — 订单列表（来自 trading_orders 表）
+  if (req.method === 'GET' && req.url === '/trading/orders') {
+    try {
+      if (!db) { sendJson(res, [], 200); return; }
+      const orders = await db.all('SELECT * FROM trading_orders ORDER BY created_at DESC LIMIT 200');
+      sendJson(res, orders ?? []);
+    } catch {
+      sendJson(res, []);
+    }
+    return;
+  }
+
   // POST /trading/manual — 手动下单
   if (req.method === 'POST' && req.url === '/trading/manual') {
     let body = '';
