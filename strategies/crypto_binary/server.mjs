@@ -9,6 +9,8 @@ import { fileURLToPath } from 'url';
 import { createRunner } from './strategy_runner.mjs';
 import { initPostmortem } from './postmortem.mjs';
 import { logger, EVENTS } from './logger.mjs';
+import { getDb } from './db.mjs';
+import { initManualTrade, submitManualOrder, getManualStats } from './manual_trade.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -38,13 +40,21 @@ logger.info(EVENTS.SERVER_START, {
 
 // 启动策略运行器（先确保 DB 迁移完成）
 let runner = createRunner(config);
+let db = null;
 (async () => {
+  db = await getDb();
   await initPostmortem();
-  console.log('[BTCQDD] DB migration completed (initPostmortem)');
+  await initManualTrade(db);
+  console.log('[BTCQDD] DB migration completed (initPostmortem + initManualTrade)');
   await runner.start();
 })().catch(err => {
   logger.error(EVENTS.ERROR_UNHANDLED_PATH, { module: 'server', err: err.message, msg: 'runner failed to start' });
 });
+
+function sendJson(res, data, status = 200) {
+  res.writeHead(status, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify(data));
+}
 
 const server = createServer((req, res) => {
   // CORS headers for local UI (file:// → localhost)
@@ -163,6 +173,57 @@ const server = createServer((req, res) => {
     } catch (e) {
       res.writeHead(500, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ ok: false, error: e.message }));
+    }
+    return;
+  }
+
+  // GET /book/snapshot — 订单簿快照
+  if (req.method === 'GET' && req.url === '/book/snapshot') {
+    try {
+      const snap = runner.getOrderbookSnapshot();
+      sendJson(res, {
+        bids: snap ? [] : [],
+        asks: snap ? [] : [],
+        best_bid: snap?.bid_up ?? null,
+        best_ask: snap?.ask_up ?? null,
+        mid: snap?.mid_up ?? null,
+        spread: snap?.spread_up ?? null,
+        tick_size: snap?.tick_size ?? null,
+        updated_at: snap?.sampled_at ?? Date.now()
+      });
+    } catch (e) {
+      sendJson(res, { error: e.message }, 500);
+    }
+    return;
+  }
+
+  // POST /trading/manual — 手动下单
+  if (req.method === 'POST' && req.url === '/trading/manual') {
+    let body = '';
+    req.on('data', chunk => { body += chunk; });
+    req.on('end', async () => {
+      try {
+        const params = JSON.parse(body || '{}');
+        if (!db) throw new Error('db not ready');
+        const result = await submitManualOrder(params, { db });
+        sendJson(res, result);
+      } catch (e) {
+        const status = e.message.startsWith('missing required') ? 400 : 500;
+        res.writeHead(status, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: e.message }));
+      }
+    });
+    return;
+  }
+
+  // GET /trading/manual-stats — 手动交易统计
+  if (req.method === 'GET' && req.url === '/trading/manual-stats') {
+    try {
+      if (!db) { sendJson(res, { error: 'db not ready' }, 503); return; }
+      const stats = await getManualStats(db);
+      sendJson(res, stats);
+    } catch (e) {
+      sendJson(res, { error: e.message }, 500);
     }
     return;
   }
