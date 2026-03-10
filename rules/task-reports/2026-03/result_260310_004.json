@@ -1,0 +1,9 @@
+{
+  "task_id": "260310_004",
+  "status": "DONE",
+  "summary": "UI Rewrite 2/2: implement StrategyLab (3 sub-tabs: edit/postmortem/compare with MLC charts, sliders, sidebar) + SharedSettings (4 sections: risk/cancel/events/fill with toggles + sliders) + split btcqdd.html into ui/css/btcqdd.css + ui/js/{shared,trading-hall,strategy-lab,settings}.js. btcqdd.html is now 41-line skeleton.",
+  "gate_light_exit": 0,
+  "report_file": "notify_260310_004.txt",
+  "report_sha256_short": "0ab4972d",
+  "generated_at": "2026-03-10T17:40:41.858Z"
+}

@@ -1,0 +1,18 @@
+Header: TraeTask_260310_004
+TASK: 260310_004
+BRANCH: 260310_004
+COMMIT: 2b3f1167
+STATUS: DONE
+SUMMARY: UI Rewrite 2/2: implement StrategyLab (3 sub-tabs: edit/postmortem/compare with MLC charts, sliders, sidebar) + SharedSettings (4 sections: risk/cancel/events/fill with toggles + sliders) + split btcqdd.html into ui/css/btcqdd.css + ui/js/{shared,trading-hall,strategy-lab,settings}.js. btcqdd.html is now 41-line skeleton.
+
+=== DOD_EVIDENCE_STDOUT ===
+DOD_FILE_SPLIT: 6 files created/updated including 41-line skeleton btcqdd.html
+DOD_STRATEGY_LAB: 3 sub-tabs edit/postmortem/compare implemented
+DOD_SHARED_SETTINGS: 4 nav sections risk/cancel/events/fill implemented
+DOD_MLC_CHARTS: 3 SVG polyline charts in compare tab
+DOD_SLIDERS: interactive sliders live update
+DOD_TOGGLES: animated toggle with 0.15s transition
+
+=== GATE_LIGHT_PREVIEW ===
+GATE_LIGHT_EXIT=0
+==========================

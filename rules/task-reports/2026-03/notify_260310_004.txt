@@ -1,0 +1,46 @@
+=== HEADER ===
+Header: TraeTask_260310_004
+task_id: 260310_004
+mode: LOCAL
+commit: 2b3f1167cb745d6456046c936aab4b04f6e8d752
+
+RESULT_JSON
+{"task_id":"260310_004","status":"DONE","summary":"UI Rewrite 2/2: implement StrategyLab (3 sub-tabs: edit/postmortem/compare with MLC charts, sliders, sidebar) + SharedSettings (4 sections: risk/cancel/events/fill with toggles + sliders) + split btcqdd.html into ui/css/btcqdd.css + ui/js/{shared,trading-hall,strategy-lab,settings}.js. btcqdd.html is now 41-line skeleton."}
+
+LOG_HEAD
+[260310_004] UI Rewrite 2/2 — StrategyLab + SharedSettings + file split
+Branch: 260310_004
+Commit: 2b3f1167
+Generated: 2026-03-10T17:40:41.858Z
+
+LOG_TAIL
+Task 260310_004 completed successfully.
+
+=== DOD_EVIDENCE_STDOUT ===
+TASK_ID=260310_004
+GENERATED_AT=2026-03-10T17:40:41.858Z
+
+# DoD Markers
+DOD_FILE_SPLIT=btcqdd.html(41 lines skeleton) + css/btcqdd.css + js/shared.js + js/trading-hall.js + js/strategy-lab.js + js/settings.js
+DOD_STRATEGY_LAB=StrategyLab with 3 sub-tabs: edit(3-col cards+sliders+influence), postmortem(6-stat+sources+losses+sensitivity+dist), compare(checklist+table+3 MLC charts)
+DOD_SHARED_SETTINGS=SharedSettings with 4 nav sections: risk(4 sliders) + cancel(3 sliders+badge) + events(3 toggles) + fill(model switch+2 sliders disabled)
+DOD_MLC_CHARTS=3 MLC polyline SVG charts in compare tab: cumPnL/position/winRate with colored series+dots+legend
+DOD_SLIDERS=interactive range sliders with live value/fill/thumb update in both strategy-lab and settings
+DOD_TOGGLES=FOMC/CPI/NFP toggles with 0.15s transition, background and knob position animated
+DOD_SIDEBAR_SELECT=strategy sidebar with border-left highlight + color dot; compare sidebar with checkbox overlay
+DOD_TRADING_HALL_MIGRATE=trading-hall.js extracted from old btcqdd.html, initTradingHall() renders full hall on demand
+DOD_HTML_SKELETON=btcqdd.html < 150 lines (41 lines), all JS/CSS external
+
+=== GATE_LIGHT_PREVIEW ===
+GATE_LIGHT_EXIT=0
+==========================
+
+INDEX
+notify_260310_004.txt
+result_260310_004.json
+git_meta_260310_004.json
+dod_evidence_260310_004.txt
+trae_report_snippet_260310_004.txt
+gate_light_preview_260310_004.log
+
+GATE_LIGHT_EXIT=0
