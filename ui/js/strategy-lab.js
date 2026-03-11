@@ -117,7 +117,18 @@ let sl_offset = 0.03;
 let sl_tranches = 3;
 let sl_pairT = 0.97;
 let sl_instances = null; // null=未加载; []=无策略; [...]= 已加载
-let sl_deployed = new Set(); // 当前已部署的实例名集合
+let sl_deployed = new Set(); // DEPRECATED: replaced by sl_serverStatus
+let sl_serverStatus = {}; // key=实例名, value={ name, desired_state, runtime_state, last_error, last_heartbeat }
+
+async function sl_fetchStatus() {
+  try {
+    const r = await fetch(BASE_URL + '/strategies/status');
+    if (!r.ok) return;
+    const d = await r.json();
+    sl_serverStatus = {};
+    (d.instances || []).forEach(s => { sl_serverStatus[s.name] = s; });
+  } catch (_) {}
+}
 
 // ─── Instance fetch ───────────────────────
 async function sl_pollInstances(autoSelect) {
@@ -126,6 +137,7 @@ async function sl_pollInstances(autoSelect) {
     if (!res.ok) return;
     const data = await res.json();
     if (data.ok && Array.isArray(data.data)) {
+      await sl_fetchStatus();
       sl_instances = data.data.map((d, i) => ({
         id: d.strategy_id,
         name: d.strategy_id,
@@ -378,7 +390,20 @@ function sl_renderEdit() {
       <svg width="100%" height="60" viewBox="0 0 200 60"><rect width="200" height="60" fill="#08081a" rx="2"/>
         <polyline fill="none" stroke="#26a69a" stroke-width="1.2" points="0,48 20,45 40,40 60,35 80,32 100,28 120,30 140,22 160,18 180,15 200,10"/></svg>
       <div style="margin-top:20px">
-        ${sl_deployed.has(sl_sel)
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+          ${sl_serverStatus[sl_sel]?.runtime_state === true
+            ? `<span style="background:#26a69a20;color:#26a69a;padding:4px 10px;border-radius:4px;font-size:16px;font-weight:600">● 运行中</span>`
+            : sl_serverStatus[sl_sel]?.desired_state === false
+              ? `<span style="background:#44444420;color:#888;padding:4px 10px;border-radius:4px;font-size:16px">○ 已禁用</span>`
+              : ''}
+          ${sl_serverStatus[sl_sel]?.last_error
+            ? `<span style="background:#ff444420;color:#ff6b6b;padding:4px 10px;border-radius:4px;font-size:16px;cursor:help" title="${sl_serverStatus[sl_sel].last_error}">⚠ 错误</span>`
+            : ''}
+        </div>
+        ${sl_serverStatus[sl_sel]?.last_heartbeat
+          ? `<div style="color:#444;font-size:14px;margin-bottom:8px">最后心跳：${Math.round((Date.now()-sl_serverStatus[sl_sel].last_heartbeat)/1000)}秒前</div>`
+          : ''}
+        ${sl_serverStatus[sl_sel]?.runtime_state === true
           ? `<button onclick="sl_stopDeploy()" style="width:100%;padding:14px;background:transparent;border:2px solid #ff6b6b;color:#ff6b6b;border-radius:6px;font-size:20px;cursor:pointer;font-weight:600">■ 停止部署</button>`
           : `<button onclick="sl_deployRun()" style="width:100%;padding:14px;background:#00d4aa;border:none;color:#000;border-radius:6px;font-size:20px;cursor:pointer;font-weight:600">→ 部署运行</button>`}
         <button onclick="sl_deleteStrategy()" style="width:100%;padding:14px;background:transparent;border:2px solid #ff4444;color:#ff4444;border-radius:6px;font-size:20px;cursor:pointer;font-weight:600;margin-top:12px">删除策略</button>
@@ -497,8 +522,8 @@ function sl_deployRun() {
   if (!sl_sel) return;
   fetch(`${BASE_URL}/config/reload`, { method: 'POST' })
     .then(r => r.json())
-    .then(() => {
-      sl_deployed.add(sl_sel);
+    .then(async () => {
+      await sl_fetchStatus();
       sl_renderContent();
       _sl_toast(`${sl_sel} 已部署`);
     })
@@ -513,9 +538,9 @@ function sl_stopDeploy() {
     body: JSON.stringify({ name: sl_sel })
   })
   .then(r => r.json())
-  .then(d => {
+  .then(async d => {
     if (!d.ok) throw new Error(d.error);
-    sl_deployed.delete(sl_sel);
+    await sl_fetchStatus();
     sl_renderContent();
     _sl_toast(`${sl_sel} 已停止`);
   })
@@ -530,7 +555,6 @@ function sl_deleteStrategy() {
     .then(r => r.json())
     .then(d => {
       if (!d.ok) throw new Error(d.error);
-      sl_deployed.delete(sl_sel);
       _sl_toast(`${sl_sel} 已删除`);
       sl_pollInstances();
     })

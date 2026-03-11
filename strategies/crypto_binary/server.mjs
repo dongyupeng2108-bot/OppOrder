@@ -3,7 +3,7 @@
 // 提供：GET / 健康检查，POST /config/reload 热更新
 
 import { createServer } from 'http';
-import { readFileSync, existsSync, mkdirSync, writeFileSync, unlinkSync } from 'fs';
+import { readFileSync, readdirSync, existsSync, mkdirSync, writeFileSync, unlinkSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { WebSocketServer } from 'ws';
@@ -44,6 +44,9 @@ logger.info(EVENTS.SERVER_START, {
 // 启动策略运行器（先确保 DB 迁移完成）
 let runner = createRunner(config);
 let db = null;
+
+// Runner 注册表：key=实例名，value={ running, last_error, last_heartbeat }
+const globalRunnerRegistry = new Map();
 (async () => {
   db = await getDb();
   await initPostmortem();
@@ -110,6 +113,7 @@ const server = createServer(async (req, res) => {
 
   // POST /config/reload — 热更新
   if (req.method === 'POST' && req.url === '/config/reload') {
+    globalRunnerRegistry.set(STRATEGY_ID, { running: false, last_error: null, last_heartbeat: null });
     try {
       const oldConfig = JSON.parse(JSON.stringify(config));
       config = loadConfig(STRATEGY_ID);
@@ -133,6 +137,7 @@ const server = createServer(async (req, res) => {
         runner.reload(config);
       }
 
+      globalRunnerRegistry.set(STRATEGY_ID, { running: true, last_error: null, last_heartbeat: Date.now() });
       console.log(`[BTCQDD] Config reloaded. Diff:`, JSON.stringify(diff));
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({
@@ -142,6 +147,7 @@ const server = createServer(async (req, res) => {
         ts: new Date().toISOString()
       }));
     } catch (err) {
+      globalRunnerRegistry.set(STRATEGY_ID, { running: false, last_error: err.message, last_heartbeat: null });
       console.error(`[BTCQDD] Config reload failed:`, err.message);
       res.writeHead(500, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ status: 'error', message: err.message }));
@@ -415,6 +421,41 @@ const server = createServer(async (req, res) => {
       sendJson(res, { ok: true, name, deleted: true });
     } catch (e) {
       sendJson(res, { ok: false, error: e.message }, 500);
+    }
+    return;
+  }
+
+  // ─── GET /strategies/status ────────────────────────────────────────────────
+  if (req.method === 'GET' && req.url === '/strategies/status') {
+    try {
+      const instancesDir = resolve(__dirname, 'instances');
+      const files = readdirSync(instancesDir).filter(f => f.endsWith('.json'));
+
+      const instances = files.map(f => {
+        const name = f.replace('.json', '');
+        let desired_state = true;
+        try {
+          const cfg = JSON.parse(readFileSync(resolve(instancesDir, f), 'utf8'));
+          desired_state = cfg.enabled !== false; // 默认 true，显式 false 才关
+        } catch (_) {}
+
+        // runtime_state 从全局 runner 注册表读取
+        const runnerInfo = globalRunnerRegistry.get(name) || {};
+
+        return {
+          name,
+          desired_state,
+          runtime_state: runnerInfo.running === true,
+          last_error: runnerInfo.last_error || null,
+          last_heartbeat: runnerInfo.last_heartbeat || null,
+        };
+      });
+
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ instances }));
+    } catch (err) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: err.message }));
     }
     return;
   }
