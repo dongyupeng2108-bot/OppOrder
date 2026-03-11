@@ -341,7 +341,10 @@ async function th_pollBook(signal) {
     if (asks.length || bids.length) {
       th_renderBook({asks, bids});
     } else {
-      // 伪深度降级：用 best_ask/best_bid/tick_size 构造 3 档显示
+      // ── FAKE_DEPTH START ──────────────────────────────────────────
+      // 当前 /book/snapshot 返回 bids:[], asks:[]，使用 best_bid/best_ask 构造估算深度
+      // TODO: 待后端 /book/snapshot 接入真实盘口数据后移除此段
+      // ──────────────────────────────────────────────────────────────
       const askP = data.best_ask ?? data.ask_up ?? 0;
       const bidP = data.best_bid ?? data.bid_up ?? 0;
       const tick = data.tick_size ?? 0.01;
@@ -350,6 +353,7 @@ async function th_pollBook(signal) {
         const pseudoBids = [0, 1, 2].map(i => ({p: (bidP - i * tick).toFixed(3), s: String(Math.round(500 - i * 120))}));
         th_renderBook({asks: pseudoAsks, bids: pseudoBids});
       }
+      // ── FAKE_DEPTH END ────────────────────────────────────────────
     }
     const mid    = data.mid    ?? data.mid_up;
     const ask    = data.best_ask ?? data.ask_up ?? data.ask;
@@ -532,6 +536,7 @@ function th_render() {
     <!-- Right panel -->
     <div style="width:328px;background:#080814;border-left:2px solid #10102a;display:flex;flex-direction:column;flex-shrink:0;overflow:auto">
       <div style="padding:10px 16px;color:#2a2a40;font-size:16px;font-weight:600;letter-spacing:1px;border-bottom:2px solid #10102a">订单簿</div>
+      <div style="font-size:10px;color:var(--color-muted,#888);padding:2px 8px 4px;border-bottom:1px solid #1a1a2e;letter-spacing:0.3px;">⚠ 估算深度（仅展示参考，非真实盘口）</div>
       <div id="th-asks-area" style="padding:6px 12px"></div>
       <div id="th-mid-price" style="text-align:center;padding:8px 0;border-top:2px solid #10102a;border-bottom:2px solid #10102a">
         <span style="color:#555;font-size:26px;font-weight:700;font-family:var(--m)">—</span>
