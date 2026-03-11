@@ -277,7 +277,10 @@ function th_renderLog() {
 
 // ─── Add strategy ────────────────────────
 function th_addStrategy() {
-  alert('添加策略：请将策略配置 JSON 放入 strategies/crypto_binary/instances/ 目录，重启服务后自动加载。');
+  switchTab('lab');
+  setTimeout(() => {
+    if (typeof sl_newStrategy === 'function') sl_newStrategy();
+  }, 100);
 }
 
 // ─── Render order book ───────────────────
