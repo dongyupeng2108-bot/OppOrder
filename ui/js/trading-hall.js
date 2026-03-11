@@ -25,17 +25,9 @@ function drawPmChart() {
   const vals  = priceHistory.map(p => p.v);
   const times = priceHistory.map(p => p.t);
 
-  // Y轴范围：数据 min/max + 10% 边距
-  let minVal = Math.min(...vals);
-  let maxVal = Math.max(...vals);
-  const range = maxVal - minVal || 0.01;
-  const pad   = range * 0.10;
-  let yMin = Math.max(0, minVal - pad);
-  let yMax = Math.min(1, maxVal + pad);
-  if (yMax - yMin < 0.02) {
-    yMin = Math.max(0, yMin - 0.01);
-    yMax = Math.min(1, yMax + 0.01);
-  }
+  // Y轴范围：固定 0~100%
+  const yMin = 0;
+  const yMax = 1;
 
   // 折线坐标
   const pts = priceHistory.map((p, i) => {
@@ -55,10 +47,10 @@ function drawPmChart() {
     return `<line x1="0" y1="${y}" x2="${CW}" y2="${y}" stroke="#1a1a2e" stroke-width="1"/>`;
   }).join('');
 
-  // Y轴标签（右侧，5条）
+  // Y轴标签（右侧，5条）；顶部标签固定在 y=16 避免被倒计时遮挡
   const yLabels = [0, 0.25, 0.5, 0.75, 1].map(r => {
-    const val = yMax - r * (yMax - yMin); // r=0 → yMax（顶）
-    const y   = (r * CH).toFixed(0);
+    const val = yMax - r * (yMax - yMin); // r=0 → 100%（顶）
+    const y   = r === 0 ? 16 : (r * CH);
     return `<text x="${(CW + 4).toFixed(0)}" y="${(+y + 4).toFixed(0)}"
       font-size="11" fill="#4a4a6a" text-anchor="start">${(val * 100).toFixed(0)}%</text>`;
   }).join('');
@@ -193,6 +185,11 @@ function th_renderLog(items) {
   }).join("");
 }
 
+// ─── Add strategy ────────────────────────
+function th_addStrategy() {
+  alert('添加策略：请将策略配置 JSON 放入 strategies/crypto_binary/instances/ 目录，重启服务后自动加载。');
+}
+
 // ─── Render order book ───────────────────
 function th_renderBook(bookData) {
   const asksEl = document.getElementById("th-asks-area");
@@ -248,7 +245,19 @@ async function th_pollBook() {
     const data = await res.json();
     const asks = (data.asks || []).slice(0, 5).map(r => ({p: parseFloat(r[0]).toFixed(3), s: String(r[1])}));
     const bids = (data.bids || []).slice(0, 5).map(r => ({p: parseFloat(r[0]).toFixed(3), s: String(r[1])}));
-    if (asks.length || bids.length) th_renderBook({asks, bids});
+    if (asks.length || bids.length) {
+      th_renderBook({asks, bids});
+    } else {
+      // 伪深度降级：用 best_ask/best_bid/tick_size 构造 3 档显示
+      const askP = data.best_ask ?? data.ask_up ?? 0;
+      const bidP = data.best_bid ?? data.bid_up ?? 0;
+      const tick = data.tick_size ?? 0.01;
+      if (askP > 0 || bidP > 0) {
+        const pseudoAsks = [0, 1, 2].map(i => ({p: (askP + i * tick).toFixed(3), s: String(Math.round(500 - i * 120))}));
+        const pseudoBids = [0, 1, 2].map(i => ({p: (bidP - i * tick).toFixed(3), s: String(Math.round(500 - i * 120))}));
+        th_renderBook({asks: pseudoAsks, bids: pseudoBids});
+      }
+    }
     const mid    = data.mid    ?? data.mid_up;
     const ask    = data.best_ask ?? data.ask_up ?? data.ask;
     const bid    = data.best_bid ?? data.bid_up ?? data.bid;
@@ -392,7 +401,7 @@ function th_render() {
           </tr></thead>
           <tbody id="th-strat-tbody"></tbody>
         </table>
-        <div style="padding:4px 12px;border-bottom:2px solid #12122a"><span style="font-size:18px;color:#333;cursor:pointer">+ 添加策略</span></div>
+        <div style="padding:4px 12px;border-bottom:2px solid #12122a"><span onclick="th_addStrategy()" style="font-size:18px;color:#333;cursor:pointer">+ 添加策略</span></div>
         <div id="th-log-area" style="max-height:120px;overflow:auto;padding:4px 0"></div>
       </div>
     </div>
