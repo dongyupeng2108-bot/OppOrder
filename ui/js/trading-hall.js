@@ -9,6 +9,8 @@ let th_timers = [];
 let priceHistory = [];
 const TH_LOG_MAX = 100;
 const th_logBuffer = []; // { time, type, text }
+let th_symbol    = 'BTC';  // 当前选中币种
+let th_timeframe = '5m';   // 当前选中周期
 
 // ─── PM chart ────────────────────────────
 function drawPmChart() {
@@ -103,6 +105,7 @@ function th_toggleCoinMenu() {
   m.style.display = m.style.display === "none" ? "block" : "none";
 }
 function th_selectCoin(coin) {
+  th_symbol = coin;
   document.getElementById("th-coin-label").textContent = coin;
   document.getElementById("th-pm-coin").textContent = coin;
   document.getElementById("th-coin-menu").style.display = "none";
@@ -111,6 +114,64 @@ function th_selectCoin(coin) {
     el.style.background = match ? "#12122a" : "transparent";
     el.style.color = match ? "#ddd" : "#666";
   });
+  th_onMarketSwitch();
+}
+
+// ─── Symbol / Timeframe switching ─────────
+function th_bindSymbolButtons() {
+  // 币种切换通过 th_selectCoin(coin) inline handler 实现，th-sym-* id 不存在，此处静默跳过
+  ['BTC', 'ETH', 'SOL', 'XRP'].forEach(sym => {
+    const btn = document.getElementById(`th-sym-${sym.toLowerCase()}`);
+    if (!btn) return;
+    btn.onclick = () => { th_symbol = sym; th_updateSymbolUI(); th_onMarketSwitch(); };
+  });
+}
+
+function th_bindTimeframeButtons() {
+  // th-tf-* 元素在 HTML 中不存在，全部静默跳过
+  ['5m', '15m', '1h', '4h'].forEach(tf => {
+    const btn = document.getElementById(`th-tf-${tf}`);
+    if (!btn) return;
+    btn.onclick = () => { th_timeframe = tf; th_updateTimeframeUI(); th_onMarketSwitch(); };
+  });
+}
+
+function th_updateSymbolUI() {
+  ['btc', 'eth', 'sol', 'xrp'].forEach(s => {
+    const btn = document.getElementById(`th-sym-${s}`);
+    if (btn) btn.classList.toggle('active', s.toUpperCase() === th_symbol);
+  });
+}
+
+function th_updateTimeframeUI() {
+  ['5m', '15m', '1h', '4h'].forEach(tf => {
+    const btn = document.getElementById(`th-tf-${tf}`);
+    if (btn) btn.classList.toggle('active', tf === th_timeframe);
+  });
+}
+
+async function th_onMarketSwitch() {
+  th_appendLog('system', `切换到 ${th_symbol} ${th_timeframe}`);
+
+  // /market/current-window 不存在，静默跳过
+  try {
+    const r = await fetch(`${BASE_URL}/market/current-window?symbol=${th_symbol}&timeframe=${th_timeframe}`);
+    if (r.ok) {
+      const d = await r.json();
+      const winEl = document.getElementById('th-current-window');
+      if (winEl && d.window_start) winEl.textContent = new Date(d.window_start * 1000).toLocaleTimeString();
+      th_resetCountdown(d.window_start, d.window_size_sec || th_windowSizeSec());
+    }
+  } catch (_) {}
+
+  // /market/orderbook 不存在，静默跳过（现有 /book/snapshot 由轮询定时刷新）
+  try {
+    const r = await fetch(`${BASE_URL}/market/orderbook?symbol=${th_symbol}&timeframe=${th_timeframe}`);
+    if (r.ok) {
+      const d = await r.json();
+      if (typeof th_renderBook === 'function') th_renderBook(d);
+    }
+  } catch (_) {}
 }
 
 // ─── Regime gauge ────────────────────────
@@ -433,12 +494,27 @@ function th_render() {
   `;
 }
 
+// ─── Countdown helpers ────────────────────
+function th_windowSizeSec() {
+  const map = { '5m': 300, '15m': 900, '1h': 3600, '4h': 14400 };
+  return map[th_timeframe] || 300;
+}
+
+function th_resetCountdown(windowStart, sizeSec) {
+  const sz = sizeSec || th_windowSizeSec();
+  const wStart = windowStart || Math.floor(Date.now() / 1000 / sz) * sz;
+  th_countdown = (wStart + sz) - Math.floor(Date.now() / 1000);
+}
+
 // ─── Timer loop ──────────────────────────
 function th_startTimers() {
   th_timers.forEach(clearInterval);
   th_timers = [];
   th_timers.push(setInterval(() => {
-    th_countdown = th_countdown <= 0 ? 300 : th_countdown - 1;
+    const sizeSec = th_windowSizeSec();
+    const now = Math.floor(Date.now() / 1000);
+    const windowStart = Math.floor(now / sizeSec) * sizeSec;
+    th_countdown = (windowStart + sizeSec) - now;
     th_updateCountdown();
   }, 1000));
   th_timers.push(setInterval(th_pollBook, 2000));
@@ -598,5 +674,7 @@ window.initTradingHall = function() {
   th_refreshManualStats();
   th_registerWsHandlers();
   th_startConnIndicator();
+  th_bindSymbolButtons();
+  th_bindTimeframeButtons();
   th_appendLog('system', '交易大厅已初始化，WS 监听中');
 };
