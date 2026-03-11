@@ -7,6 +7,8 @@ let th_side = 'buy';
 let th_countdown = 300;
 let th_timers = [];
 let priceHistory = [];
+const TH_LOG_MAX = 100;
+const th_logBuffer = []; // { time, type, text }
 
 // ─── PM chart ────────────────────────────
 function drawPmChart() {
@@ -172,19 +174,26 @@ function th_renderStratTable(strats = []) {
   }).join("");
 }
 
+// ─── Log buffer helpers ───────────────────
+function th_appendLog(type, text) {
+  const entry = { time: new Date().toLocaleTimeString(), type, text };
+  th_logBuffer.unshift(entry);
+  if (th_logBuffer.length > TH_LOG_MAX) th_logBuffer.length = TH_LOG_MAX;
+  th_renderLog();
+}
+
 // ─── Render log ──────────────────────────
-function th_renderLog(items) {
+function th_renderLog() {
   const el = document.getElementById("th-log-area");
   if (!el) return;
-  el.innerHTML = items.map((lg, i) => {
-    const aColor = lg.a === "下单" ? "#26a69a" : lg.a === "撤单" ? "#f59e0b" : lg.a === "成交" ? "#0ea5e9" : "#555";
-    return `<div style="display:flex;align-items:center;gap:16px;padding:2px 12px;font-size:16px;opacity:${(1 - i * 0.12).toFixed(2)}">
-      <span style="color:#1a1a2e;font-family:var(--m);width:96px;flex-shrink:0">${lg.ts}</span>
-      <span style="color:${lg.c};font-weight:600;width:60px;flex-shrink:0">${lg.st}</span>
-      <span class="badge" style="background:${aColor}15;color:${aColor}">${lg.a}</span>
-      <span style="color:#444;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${lg.d}</span>
-    </div>`;
-  }).join("");
+  const colorMap = { regime: '#26a69a', window: '#5c6bc0', order: '#ffa726', system: '#888' };
+  el.innerHTML = th_logBuffer.map(e =>
+    `<div style="display:flex;gap:8px;padding:3px 0;border-bottom:1px solid #111;font-size:12px;line-height:1.5;">
+      <span style="color:#555;flex-shrink:0;">${e.time}</span>
+      <span style="color:${colorMap[e.type]||'#888'};flex-shrink:0;width:52px;">[${e.type}]</span>
+      <span style="color:#ccc;">${e.text}</span>
+    </div>`
+  ).join('');
 }
 
 // ─── Add strategy ────────────────────────
@@ -541,16 +550,29 @@ function th_registerWsHandlers() {
       th_score = data.regime_score;
       th_updateGauge(th_score);
     }
+    const score = data.regime_score !== undefined ? data.regime_score : data.score;
+    const label = (score !== undefined && score >= 0.5) ? '震荡' : '趋势';
+    th_appendLog('regime', `score=${score !== undefined ? score.toFixed(3) : '—'} (${label})`);
   });
 
   // window.switch：窗口切换时刷新手动交易统计
-  onWsEvent('window.switch', (_data) => {
+  onWsEvent('window.switch', (data) => {
     th_refreshManualStats();
+    th_appendLog('window', `窗口切换 → ${data.window_id || data.slug || JSON.stringify(data)}`);
   });
 
-  // order.filled / order.cancelled：轻量刷新统计
-  onWsEvent('order.filled', () => { setTimeout(th_refreshManualStats, 200); });
-  onWsEvent('order.cancelled', () => { setTimeout(th_refreshManualStats, 200); });
+  // order.filled / order.cancelled / order.placed：轻量刷新统计 + 日志
+  onWsEvent('order.filled', (data) => {
+    setTimeout(th_refreshManualStats, 200);
+    th_appendLog('order', `成交 ${data.side || ''} $${data.amount || data.size || ''} @ ${data.fill_price || '—'}`);
+  });
+  onWsEvent('order.cancelled', (data) => {
+    setTimeout(th_refreshManualStats, 200);
+    th_appendLog('order', `撤单 ${data.side || ''} ${data.reason || ''}`);
+  });
+  onWsEvent('order.placed', (data) => {
+    th_appendLog('order', `挂单 ${data.side || ''} $${data.amount || data.size || ''}`);
+  });
 }
 
 // ─── Connection indicator ─────────────────
@@ -576,4 +598,5 @@ window.initTradingHall = function() {
   th_refreshManualStats();
   th_registerWsHandlers();
   th_startConnIndicator();
+  th_appendLog('system', '交易大厅已初始化，WS 监听中');
 };
