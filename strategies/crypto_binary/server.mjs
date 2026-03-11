@@ -548,6 +548,41 @@ const server = createServer(async (req, res) => {
     return;
   }
 
+  // ─── GET /stats — postmortem 聚合统计，支持 group_by 参数 ─────────────────
+  if (req.method === 'GET' && req.url.startsWith('/stats')) {
+    try {
+      if (!db) { sendJson(res, { error: 'db not ready' }, 503); return; }
+      const parsedUrl = new URL(req.url, 'http://localhost');
+      const groupByParam = parsedUrl.searchParams.get('group_by') || 'strategy_id';
+      const ALLOWED = ['strategy_id', 'config_hash', 'symbol', 'timeframe', 'strategy_type'];
+      const groupKeys = groupByParam.split(',').map(k => k.trim()).filter(k => ALLOWED.includes(k));
+      if (groupKeys.length === 0) {
+        sendJson(res, { error: 'Invalid group_by fields' }, 400);
+        return;
+      }
+      const selectCols = groupKeys.join(', ');
+      const rows = await db.all(`
+        SELECT
+          ${selectCols},
+          COUNT(*) AS count,
+          AVG(paper_pnl) AS avg_pnl,
+          AVG(CASE WHEN paper_pnl > 0 THEN 1.0 ELSE 0.0 END) AS win_rate,
+          AVG(pair_cost) AS avg_pair_cost,
+          AVG(regime_score) AS avg_regime_score,
+          MIN(created_at) AS first_at,
+          MAX(created_at) AS last_at
+        FROM cb_postmortem
+        GROUP BY ${selectCols}
+        ORDER BY count DESC
+      `);
+      sendJson(res, { rows: rows ?? [], total_count: (rows ?? []).reduce((s, r) => s + r.count, 0) });
+    } catch (err) {
+      console.error('[Stats] Error:', err.message);
+      sendJson(res, { error: err.message }, 500);
+    }
+    return;
+  }
+
   // 404
   res.writeHead(404, { 'Content-Type': 'application/json' });
   res.end(JSON.stringify({ status: 'not_found' }));
