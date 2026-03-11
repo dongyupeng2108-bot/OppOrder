@@ -244,7 +244,7 @@ function th_renderStratTable(strats = []) {
       <td style="padding:6px 12px;color:#bbb;font-weight:600">${st.strategy_id || st.name || "—"}</td>
       <td style="padding:6px 12px"><div style="width:20px;height:20px;border-radius:4px;background:${st.color || "#444"}"></div></td>
       <td style="padding:6px 12px;color:#666">${typeShort}</td>
-      <td style="padding:6px 12px;font-family:var(--m);color:#555">${st.runtime_state === true ? (st.started_at || "—") : "—"}</td>
+      <td style="padding:6px 12px;font-family:var(--m);color:${statusInfo.color}">${statusInfo.label}</td>
       <td style="padding:6px 12px;font-family:var(--m);color:#555">${st.trades != null ? st.trades : "—"}</td>
       <td style="padding:6px 12px;font-family:var(--m);color:#555">${st.winRate != null ? st.winRate + "%" : "—"}</td>
       <td style="padding:6px 12px;font-family:var(--m);font-weight:600;color:${pnlColor}">${pnlText}</td>
@@ -310,12 +310,17 @@ function th_renderOrders(list) {
   const el = document.getElementById("th-orders-area");
   if (!el) return;
   el.innerHTML = '<div style="color:#2a2a40;font-size:14px;font-weight:600;margin-bottom:4px">我的挂单</div>' +
-    list.slice(0, 4).map(o =>
-      `<div style="display:flex;justify-content:space-between;margin-bottom:2px">
-        <span style="color:${o.sd === "BID" ? "#26a69a" : "#ef5350"};font-size:16px;font-family:var(--m)">${o.sd} ${o.p}</span>
-        <span style="color:#333;font-size:16px;font-family:var(--m)">${o.age}</span>
-      </div>`
-    ).join("");
+    list.slice(0, 4).map(o => {
+      const sideStr  = o.side ?? o.sd ?? '—';
+      const priceStr = o.price ?? o.ask_price ?? o.limit_price ?? '—';
+      const sizeStr  = o.size ?? o.shares ?? o.amount ?? '—';
+      const sideColor = String(sideStr).toUpperCase() === 'BID' ? '#26a69a' : '#ef5350';
+      const ageStr = o.created_at ? Math.round((Date.now() - new Date(o.created_at).getTime()) / 1000) + 's' : (o.age ?? '—');
+      return `<div style="display:flex;justify-content:space-between;margin-bottom:2px">
+        <span style="color:${sideColor};font-size:16px;font-family:var(--m)">${sideStr} ${priceStr} × ${sizeStr}</span>
+        <span style="color:#333;font-size:16px;font-family:var(--m)">${ageStr}</span>
+      </div>`;
+    }).join("");
 }
 
 // ─── Render strategy legend ───────────────
