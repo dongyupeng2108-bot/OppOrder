@@ -468,7 +468,7 @@ function sl_renderSubtabBar() {
 // ─── Edit content ─────────────────────────
 function sl_renderEdit() {
   const st = sl_findStrat(sl_sel);
-  return `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
+  return `<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:24px">
     <!-- 左卡：策略参数 -->
     <div class="card">
       <div style="font-size:22px;font-weight:700;margin-bottom:20px;color:${st?.color}">${SL_TM[st?.type]?.icon} ${st?.name} 参数</div>
@@ -495,36 +495,23 @@ function sl_renderEdit() {
         }).join("")}
       </div>
     </div>
-    <!-- 右卡：模拟结果 -->
-    <div class="card">
-      <div class="section-title">🧪 模拟结果</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
-        ${sl_stat("成交率", "62%")}${sl_stat("平均Edge", "1.3%", "#26a69a")}
-        ${sl_stat("模拟PnL", "+$214", "#26a69a")}${sl_stat("最大回撤", "-6.2%", "#ef5350")}
-      </div>
-      <div style="color:#444;font-size:20px;font-weight:600;margin-bottom:8px">PnL 曲线</div>
-      <svg width="100%" height="60" viewBox="0 0 200 60"><rect width="200" height="60" fill="#08081a" rx="2"/>
-        <polyline fill="none" stroke="#26a69a" stroke-width="1.2" points="0,48 20,45 40,40 60,35 80,32 100,28 120,30 140,22 160,18 180,15 200,10"/></svg>
-      <div style="margin-top:20px">
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
-          ${sl_serverStatus[sl_sel]?.runtime_state === true
-            ? `<span style="background:#26a69a20;color:#26a69a;padding:4px 10px;border-radius:4px;font-size:16px;font-weight:600">● 运行中</span>`
-            : sl_serverStatus[sl_sel]?.desired_state === false
-              ? `<span style="background:#44444420;color:#888;padding:4px 10px;border-radius:4px;font-size:16px">○ 已禁用</span>`
-              : ''}
-          ${sl_serverStatus[sl_sel]?.last_error
-            ? `<span style="background:#ff444420;color:#ff6b6b;padding:4px 10px;border-radius:4px;font-size:16px;cursor:help" title="${sl_serverStatus[sl_sel].last_error}">⚠ 错误</span>`
-            : ''}
-        </div>
-        ${sl_serverStatus[sl_sel]?.last_heartbeat
-          ? `<div style="color:#444;font-size:14px;margin-bottom:8px">最后心跳：${Math.round((Date.now()-sl_serverStatus[sl_sel].last_heartbeat)/1000)}秒前</div>`
-          : ''}
-        ${sl_serverStatus[sl_sel]?.runtime_state === true
-          ? `<button onclick="sl_stopDeploy()" style="width:100%;padding:14px;background:transparent;border:2px solid #ff6b6b;color:#ff6b6b;border-radius:6px;font-size:20px;cursor:pointer;font-weight:600">■ 停止部署</button>`
-          : `<button onclick="sl_deployRun()" style="width:100%;padding:14px;background:#00d4aa;border:none;color:#000;border-radius:6px;font-size:20px;cursor:pointer;font-weight:600">→ 部署运行</button>`}
-        <button onclick="sl_deleteStrategy()" style="width:100%;padding:14px;background:transparent;border:2px solid #ff4444;color:#ff4444;border-radius:6px;font-size:20px;cursor:pointer;font-weight:600;margin-top:12px">删除策略</button>
-      </div>
-    </div>
+  </div>
+  <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+    ${sl_serverStatus[sl_sel]?.runtime_state === true
+      ? `<span style="background:#26a69a20;color:#26a69a;padding:4px 10px;border-radius:4px;font-size:16px;font-weight:600">● 运行中</span>`
+      : sl_serverStatus[sl_sel]?.desired_state === false
+        ? `<span style="background:#44444420;color:#888;padding:4px 10px;border-radius:4px;font-size:16px">○ 已禁用</span>`
+        : ''}
+    ${sl_serverStatus[sl_sel]?.last_error
+      ? `<span style="background:#ff444420;color:#ff6b6b;padding:4px 10px;border-radius:4px;font-size:16px;cursor:help" title="${sl_serverStatus[sl_sel].last_error}">⚠ 错误</span>`
+      : ''}
+    ${sl_serverStatus[sl_sel]?.last_heartbeat
+      ? `<span style="color:#444;font-size:14px">最后心跳：${Math.round((Date.now()-sl_serverStatus[sl_sel].last_heartbeat)/1000)}秒前</span>`
+      : ''}
+    ${sl_serverStatus[sl_sel]?.runtime_state === true
+      ? `<button onclick="sl_stopDeploy()" style="padding:14px 28px;background:transparent;border:2px solid #ff6b6b;color:#ff6b6b;border-radius:6px;font-size:20px;cursor:pointer;font-weight:600">■ 停止部署</button>`
+      : `<button onclick="sl_deployRun()" style="padding:14px 28px;background:#00d4aa;border:none;color:#000;border-radius:6px;font-size:20px;cursor:pointer;font-weight:600">→ 部署运行</button>`}
+    <button onclick="sl_deleteStrategy()" style="padding:14px 28px;background:transparent;border:2px solid #ff4444;color:#ff4444;border-radius:6px;font-size:20px;cursor:pointer;font-weight:600">删除策略</button>
   </div>`;
 }
 
