@@ -493,7 +493,7 @@ function th_render() {
     </div>
 
     <!-- Center -->
-    <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0">
+    <div style="flex:1;display:flex;flex-direction:column;overflow-y:auto;min-width:0">
       <div style="height:52px;background:#0a0a18;border-bottom:2px solid #12122a;display:flex;align-items:center;padding:0 20px;gap:12px;flex-shrink:0">
         <span style="color:#444;font-size:20px">交易大厅</span>
         <div style="flex:1"></div>

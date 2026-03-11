@@ -64,8 +64,8 @@ html, body { height: 100%; background: var(--bg-base); color: #bbb;
 .topbar-tab.active { color: #ccc; border-bottom-color: #6366f1; }
 
 /* 主内容 */
-#main { flex: 1; overflow: hidden; }
-.page { display: none; height: 100%; }
+#main { flex: 1; overflow-y: auto; }
+.page { display: none; min-height: 100%; }
 .page.active { display: flex; }
 
 /* 滑条 */
