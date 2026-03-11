@@ -80,6 +80,27 @@ const globalRunnerRegistry = new Map();
   logger.error(EVENTS.ERROR_UNHANDLED_PATH, { module: 'server', err: err.message, msg: 'runner failed to start' });
 });
 
+// 深度嵌套合并：将 "a.b.c" 形式的扁平键写入嵌套对象
+function applyNestedOverrides(target, overrides) {
+  const result = JSON.parse(JSON.stringify(target));
+  for (const [key, value] of Object.entries(overrides)) {
+    if (key.includes('.')) {
+      const parts = key.split('.');
+      let obj = result;
+      for (let i = 0; i < parts.length - 1; i++) {
+        if (typeof obj[parts[i]] !== 'object' || obj[parts[i]] === null) {
+          obj[parts[i]] = {};
+        }
+        obj = obj[parts[i]];
+      }
+      obj[parts[parts.length - 1]] = value;
+    } else {
+      result[key] = value;
+    }
+  }
+  return result;
+}
+
 function sendJson(res, data, status = 200) {
   res.writeHead(status, { 'Content-Type': 'application/json' });
   res.end(JSON.stringify(data));
@@ -371,8 +392,19 @@ const server = createServer(async (req, res) => {
           }
         }
 
-        // 合并参数，strategy_id 必须等于实例名
-        const newConfig = { ...template, ...overrides, strategy_id: name };
+        // 合并参数（支持 "a.b.c" 嵌套键），strategy_id 必须等于实例名
+        const newConfig = applyNestedOverrides(template, overrides);
+        newConfig.strategy_id = name;
+
+        // 校验必填字段
+        if (!newConfig.strategy_id) {
+          sendJson(res, { ok: false, error: 'strategy_id is required' }, 400);
+          return;
+        }
+        if (!newConfig.strategy?.type) {
+          sendJson(res, { ok: false, error: 'strategy.type is required' }, 400);
+          return;
+        }
 
         // 写入文件
         mkdirSync(instancesDir, { recursive: true });
