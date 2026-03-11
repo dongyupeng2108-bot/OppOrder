@@ -3,6 +3,7 @@ const TH_TM = { pair:{icon:"⚖️",short:"配对"}, revert:{icon:"🎯",short:"
 
 // ─── State ──────────────────────────────
 let th_score = null;
+let th_side = 'buy';
 let th_countdown = 300;
 let th_timers = [];
 let priceHistory = [];
@@ -79,6 +80,7 @@ function drawPmChart() {
 
 // ─── Side switching ──────────────────────
 function th_setSide(side) {
+  th_side = side;
   const buyEl  = document.getElementById("th-side-buy");
   const sellEl = document.getElementById("th-side-sell");
   const btnEl  = document.getElementById("th-buy-btn");
@@ -322,23 +324,23 @@ function th_render() {
         </div>
         <div style="display:flex;align-items:center;background:#0a0a1a;border:2px solid #12122a;border-radius:6px;padding:0 12px;height:56px;margin-bottom:8px">
           <span style="color:#555;font-size:18px">$</span>
-          <input id="th-amt-input" value="1" style="flex:1;background:transparent;border:none;outline:none;color:#ddd;font-family:var(--m);font-size:26px;font-weight:700;text-align:right;padding:0 8px">
+          <input id="th-amount-input" value="1" style="flex:1;background:transparent;border:none;outline:none;color:#ddd;font-family:var(--m);font-size:26px;font-weight:700;text-align:right;padding:0 8px">
         </div>
         <div style="display:flex;gap:8px;margin-bottom:12px">
-          <div style="flex:1;text-align:center;padding:2px 0;border-radius:4px;background:#12122a;color:#444;font-size:14px;cursor:pointer">$1</div>
-          <div style="flex:1;text-align:center;padding:2px 0;border-radius:4px;background:#12122a;color:#444;font-size:14px;cursor:pointer">$5</div>
-          <div style="flex:1;text-align:center;padding:2px 0;border-radius:4px;background:#12122a;color:#444;font-size:14px;cursor:pointer">+10</div>
-          <div style="flex:1;text-align:center;padding:2px 0;border-radius:4px;background:#12122a;color:#444;font-size:14px;cursor:pointer">Max</div>
+          <div id="th-amt-1" style="flex:1;text-align:center;padding:2px 0;border-radius:4px;background:#12122a;color:#444;font-size:14px;cursor:pointer">$1</div>
+          <div id="th-amt-5" style="flex:1;text-align:center;padding:2px 0;border-radius:4px;background:#12122a;color:#444;font-size:14px;cursor:pointer">$5</div>
+          <div id="th-amt-add10" style="flex:1;text-align:center;padding:2px 0;border-radius:4px;background:#12122a;color:#444;font-size:14px;cursor:pointer">+10</div>
+          <div id="th-amt-max" style="flex:1;text-align:center;padding:2px 0;border-radius:4px;background:#12122a;color:#444;font-size:14px;cursor:pointer">Max</div>
         </div>
         <div id="th-buy-btn" style="text-align:center;padding:12px 0;border-radius:6px;font-size:20px;font-weight:700;background:#26a69a;color:#fff;cursor:pointer">Buy</div>
       </div>
       <div style="padding:20px;border-bottom:2px solid #10102a">
         <div style="display:flex;justify-content:space-between;margin-bottom:8px">
           <span style="color:#333;font-size:16px;font-weight:600">手动盈亏</span>
-          <span style="color:#222;font-size:14px;cursor:pointer;background:#12122a;padding:2px 8px;border-radius:4px">重置</span>
+          <span id="th-reset-pnl" style="color:#222;font-size:14px;cursor:pointer;background:#12122a;padding:2px 8px;border-radius:4px">重置</span>
         </div>
-        <div style="text-align:center"><span style="color:#26a69a;font-size:36px;font-weight:800;font-family:var(--m)">0.00</span></div>
-        <div style="display:flex;justify-content:space-around;font-size:16px;color:#333;margin-top:4px"><span>交易 0</span><span>胜率 —</span></div>
+        <div style="text-align:center"><span id="th-manual-pnl" style="color:#26a69a;font-size:36px;font-weight:800;font-family:var(--m)">0.0000</span></div>
+        <div style="display:flex;justify-content:space-around;font-size:16px;color:#333;margin-top:4px"><span>交易 <span id="th-manual-trades">0</span></span><span>胜率 <span id="th-manual-winrate">—</span></span></div>
       </div>
       <div style="padding:20px;border-bottom:2px solid #10102a">
         <div style="color:#333;font-size:16px;font-weight:600;letter-spacing:1px;margin-bottom:8px">市场状态</div>
@@ -441,6 +443,96 @@ window.cleanupTradingHall = function() {
   th_timers = [];
 };
 
+// ─── Manual trade helpers ─────────────────
+function th_bindManualTradeButtons() {
+  const buyBtn   = document.getElementById('th-buy-btn');
+  const amtInput = document.getElementById('th-amount-input');
+
+  if (buyBtn) buyBtn.onclick = () => th_submitManualOrder(th_side.toUpperCase());
+
+  const amt1 = document.getElementById('th-amt-1');
+  const amt5 = document.getElementById('th-amt-5');
+  const add10 = document.getElementById('th-amt-add10');
+  const max   = document.getElementById('th-amt-max');
+  if (amt1  && amtInput) amt1.onclick  = () => { amtInput.value = 1; };
+  if (amt5  && amtInput) amt5.onclick  = () => { amtInput.value = 5; };
+  if (add10 && amtInput) add10.onclick = () => { amtInput.value = (parseFloat(amtInput.value) || 0) + 10; };
+  if (max   && amtInput) max.onclick   = () => { amtInput.value = 10; };
+}
+
+async function th_submitManualOrder(side) {
+  const amtInput = document.getElementById('th-amount-input');
+  const amount = parseFloat(amtInput?.value);
+  if (!amount || amount <= 0) {
+    th_showTradeToast('请输入有效金额', 'error');
+    return;
+  }
+
+  const buyBtn = document.getElementById('th-buy-btn');
+  if (buyBtn) buyBtn.disabled = true;
+
+  try {
+    const r = await fetch(BASE_URL + '/trading/manual', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ side, amount }),
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error || 'Order failed');
+    th_showTradeToast(`${side} $${amount} 已提交（Paper）`, 'success');
+    setTimeout(th_refreshManualStats, 600);
+  } catch (err) {
+    th_showTradeToast('下单失败：' + err.message, 'error');
+  } finally {
+    if (buyBtn) buyBtn.disabled = false;
+  }
+}
+
+async function th_refreshManualStats() {
+  try {
+    const r = await fetch(BASE_URL + '/trading/manual-stats');
+    if (!r.ok) return;
+    const d = await r.json();
+    const pnlEl   = document.getElementById('th-manual-pnl');
+    const tradeEl = document.getElementById('th-manual-trades');
+    const winEl   = document.getElementById('th-manual-winrate');
+    if (pnlEl)   pnlEl.textContent   = (d.total_pnl >= 0 ? '+' : '') + (d.total_pnl || 0).toFixed(4);
+    if (tradeEl) tradeEl.textContent = d.total_trades || 0;
+    if (winEl)   winEl.textContent   = d.win_rate !== undefined ? (d.win_rate * 100).toFixed(1) + '%' : '—';
+  } catch (_) {}
+}
+
+function th_bindResetPnl() {
+  const resetBtn = document.getElementById('th-reset-pnl');
+  if (!resetBtn) return;
+  resetBtn.onclick = () => {
+    if (!confirm('确认清零手动交易统计？此操作不可撤销。')) return;
+    const pnlEl   = document.getElementById('th-manual-pnl');
+    const tradeEl = document.getElementById('th-manual-trades');
+    const winEl   = document.getElementById('th-manual-winrate');
+    if (pnlEl)   pnlEl.textContent   = '0.0000';
+    if (tradeEl) tradeEl.textContent = '0';
+    if (winEl)   winEl.textContent   = '—';
+    th_showTradeToast('统计已重置', 'success');
+  };
+}
+
+function th_showTradeToast(msg, type = 'success') {
+  const existing = document.getElementById('th-trade-toast');
+  if (existing) existing.remove();
+  const toast = document.createElement('div');
+  toast.id = 'th-trade-toast';
+  toast.textContent = msg;
+  toast.style.cssText = `
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    z-index: 9999; padding: 10px 20px; border-radius: 6px; font-size: 13px;
+    background: ${type === 'error' ? '#ef5350' : '#26a69a'};
+    color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  `;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 4000);
+}
+
 // ─── Init ────────────────────────────────
 window.initTradingHall = function() {
   th_render();
@@ -448,4 +540,7 @@ window.initTradingHall = function() {
   th_updateGauge(th_score);
   th_updateCountdown();
   th_startTimers();
+  th_bindManualTradeButtons();
+  th_bindResetPnl();
+  th_refreshManualStats();
 };
