@@ -119,6 +119,7 @@ let sl_pairT = 0.97;
 let sl_instances = null; // null=未加载; []=无策略; [...]= 已加载
 let sl_deployed = new Set(); // DEPRECATED: replaced by sl_serverStatus
 let sl_serverStatus = {}; // key=实例名, value={ name, desired_state, runtime_state, last_error, last_heartbeat }
+let sl_isEditing = false; // 用户正在编辑参数期间不覆盖选中状态
 
 const SL_MIN_POSTMORTEM = 50; // 统计意义所需最低记录数
 
@@ -229,6 +230,7 @@ async function sl_fetchStatus() {
 }
 
 async function sl_loadInstanceParams(name) {
+  sl_isEditing = true;
   try {
     const r = await fetch(BASE_URL + `/strategies/${name}/config`);
     if (!r.ok) return;
@@ -260,16 +262,18 @@ async function sl_pollInstances(autoSelect) {
         winRate: null,
         avgPos: null,
       }));
-      if (autoSelect && sl_instances.find(i => i.id === autoSelect)) {
-        sl_sel = autoSelect;
-        sl_checked = sl_instances.slice(0, 3).map(s => s.id);
-      } else if (sl_instances.length > 0 && (!sl_sel || !sl_instances.find(i => i.id === sl_sel))) {
-        sl_sel = sl_instances[0].id;
-        sl_checked = sl_instances.slice(0, 3).map(s => s.id);
+      if (!sl_isEditing) {
+        if (autoSelect && sl_instances.find(i => i.id === autoSelect)) {
+          sl_sel = autoSelect;
+          sl_checked = sl_instances.slice(0, 3).map(s => s.id);
+        } else if (sl_instances.length > 0 && (!sl_sel || !sl_instances.find(i => i.id === sl_sel))) {
+          sl_sel = sl_instances[0].id;
+          sl_checked = sl_instances.slice(0, 3).map(s => s.id);
+        }
+        sl_renderSidebar();
+        sl_renderSubtabBar();
+        sl_renderContent();
       }
-      sl_renderSidebar();
-      sl_renderSubtabBar();
-      sl_renderContent();
     }
   } catch (_) {}
 }
@@ -732,8 +736,10 @@ async function sl_saveParams() {
     });
     const d = await r.json();
     if (!r.ok) throw new Error(d.error || 'Save failed');
+    sl_isEditing = false;
     sl_showSaveToast('参数已保存。点击「重新加载」使策略立即生效（将短暂中断所有 runner）。', 'success');
   } catch (err) {
+    sl_isEditing = false;
     sl_showSaveToast('保存失败：' + err.message, 'error');
   }
 }
