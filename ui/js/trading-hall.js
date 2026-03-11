@@ -533,6 +533,37 @@ function th_showTradeToast(msg, type = 'success') {
   setTimeout(() => toast.remove(), 4000);
 }
 
+// ─── WS event handlers ───────────────────
+function th_registerWsHandlers() {
+  // regime.changed：更新 regime gauge 显示
+  onWsEvent('regime.changed', (data) => {
+    if (data.regime_score !== undefined) {
+      th_score = data.regime_score;
+      th_updateGauge(th_score);
+    }
+  });
+
+  // window.switch：窗口切换时刷新手动交易统计
+  onWsEvent('window.switch', (_data) => {
+    th_refreshManualStats();
+  });
+
+  // order.filled / order.cancelled：轻量刷新统计
+  onWsEvent('order.filled', () => { setTimeout(th_refreshManualStats, 200); });
+  onWsEvent('order.cancelled', () => { setTimeout(th_refreshManualStats, 200); });
+}
+
+// ─── Connection indicator ─────────────────
+function th_startConnIndicator() {
+  const indicator = document.getElementById('th-conn-indicator');
+  if (!indicator) return;
+  setInterval(() => {
+    const alive = typeof isWsAlive === 'function' && isWsAlive();
+    indicator.style.background = alive ? '#26a69a' : '#666';
+    indicator.title = alive ? 'WS 已连接' : 'WS 未连接或超时';
+  }, 2000);
+}
+
 // ─── Init ────────────────────────────────
 window.initTradingHall = function() {
   th_render();
@@ -543,4 +574,6 @@ window.initTradingHall = function() {
   th_bindManualTradeButtons();
   th_bindResetPnl();
   th_refreshManualStats();
+  th_registerWsHandlers();
+  th_startConnIndicator();
 };

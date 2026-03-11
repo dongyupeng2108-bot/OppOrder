@@ -17,11 +17,40 @@ window.switchTab = function(tab) {
 
 // ── WS 连接 ──
 const _wsHandlers = [];
-window.onWsEvent = h => _wsHandlers.push(h);
+const _wsHandlerMap = new Map(); // 原始 handler → wrapper（type 过滤用）
+let wsLastPong = 0;
+
+// onWsEvent(handler) — 接收所有事件（原有行为）
+// onWsEvent(type, handler) — 只接收指定 type 的事件，handler 收到 payload
+window.onWsEvent = (typeOrHandler, handler) => {
+  if (typeof typeOrHandler === 'function') {
+    _wsHandlers.push(typeOrHandler);
+  } else {
+    const wrapper = (evt) => { if (evt.type === typeOrHandler) handler(evt.payload ?? evt, evt); };
+    _wsHandlerMap.set(handler, wrapper);
+    _wsHandlers.push(wrapper);
+  }
+};
+
+// offWsEvent(handler) — 取消注册（支持 type 过滤和直接注册两种方式）
+window.offWsEvent = (handler) => {
+  const wrapper = _wsHandlerMap.get(handler);
+  const toRemove = wrapper || handler;
+  const idx = _wsHandlers.indexOf(toRemove);
+  if (idx !== -1) _wsHandlers.splice(idx, 1);
+  if (wrapper) _wsHandlerMap.delete(handler);
+};
+
+// isWsAlive() — 5s 内有消息则视为连接正常
+window.isWsAlive = () => wsLastPong > 0 && (Date.now() - wsLastPong) < 5000;
+
 (function connectWS() {
   try {
     const ws = new WebSocket(BASE_URL.replace(/^http/, 'ws') + '/events/stream');
-    ws.onmessage = e => { try { const d = JSON.parse(e.data); _wsHandlers.forEach(h => h(d)); } catch {} };
+    ws.onmessage = e => {
+      wsLastPong = Date.now();
+      try { const d = JSON.parse(e.data); _wsHandlers.forEach(h => h(d)); } catch {}
+    };
     ws.onclose = () => setTimeout(connectWS, 3000);
   } catch (_) { setTimeout(connectWS, 3000); }
 })();
