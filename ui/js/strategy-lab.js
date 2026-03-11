@@ -120,6 +120,104 @@ let sl_instances = null; // null=未加载; []=无策略; [...]= 已加载
 let sl_deployed = new Set(); // DEPRECATED: replaced by sl_serverStatus
 let sl_serverStatus = {}; // key=实例名, value={ name, desired_state, runtime_state, last_error, last_heartbeat }
 
+const SL_MIN_POSTMORTEM = 50; // 统计意义所需最低记录数
+
+async function sl_fetchAttribution() {
+  try {
+    const r = await fetch(BASE_URL + '/postmortem/attribution');
+    if (!r.ok) return null;
+    return await r.json();
+  } catch (_) { return null; }
+}
+
+async function sl_fetchLossModes() {
+  try {
+    const r = await fetch(BASE_URL + '/postmortem/loss-modes');
+    if (!r.ok) return null;
+    return await r.json();
+  } catch (_) { return null; }
+}
+
+async function sl_fetchPostmortemCount() {
+  try {
+    // /stats 不存在时从 attribution regime_buckets 汇总总数
+    const r = await fetch(BASE_URL + '/postmortem/attribution');
+    if (!r.ok) return 0;
+    const d = await r.json();
+    const buckets = Array.isArray(d.regime_buckets) ? d.regime_buckets : [];
+    return buckets.reduce((s, x) => s + (x.count || 0), 0);
+  } catch (_) { return 0; }
+}
+
+async function sl_renderAttribution(containerEl) {
+  const count = await sl_fetchPostmortemCount();
+  if (count < SL_MIN_POSTMORTEM) {
+    containerEl.innerHTML = `<div style="padding:24px;text-align:center;color:#666;font-size:13px;">数据积累中（当前 ${count} 条，需 ${SL_MIN_POSTMORTEM}+ 条才有统计意义）</div>`;
+    return;
+  }
+  const data = await sl_fetchAttribution();
+  if (!data) {
+    containerEl.innerHTML = `<div style="padding:24px;text-align:center;color:#ef5350;font-size:13px;">归因数据加载失败，请检查服务</div>`;
+    return;
+  }
+  const regimeBuckets = Array.isArray(data.regime_buckets) ? data.regime_buckets : [];
+  const hourBuckets = Array.isArray(data.hour_buckets) ? data.hour_buckets : [];
+  const regimeRows = regimeBuckets.map(row =>
+    `<tr>
+      <td style="padding:6px 12px;border-bottom:1px solid #1a1a2e;">${row.regime_bucket || '—'}</td>
+      <td style="padding:6px 12px;border-bottom:1px solid #1a1a2e;text-align:right;">${row.count || 0}</td>
+      <td style="padding:6px 12px;border-bottom:1px solid #1a1a2e;text-align:right;color:${(row.total_pnl||0)>=0?'#26a69a':'#ef5350'};">${row.total_pnl !== undefined ? (row.total_pnl >= 0 ? '+' : '') + row.total_pnl.toFixed(4) : '—'}</td>
+    </tr>`
+  ).join('');
+  const hourRows = hourBuckets.map(row =>
+    `<tr>
+      <td style="padding:6px 12px;border-bottom:1px solid #1a1a2e;">${row.hour_bucket || '—'}</td>
+      <td style="padding:6px 12px;border-bottom:1px solid #1a1a2e;text-align:right;">${row.count || 0}</td>
+      <td style="padding:6px 12px;border-bottom:1px solid #1a1a2e;text-align:right;color:${(row.total_pnl||0)>=0?'#26a69a':'#ef5350'};">${row.total_pnl !== undefined ? (row.total_pnl >= 0 ? '+' : '') + row.total_pnl.toFixed(4) : '—'}</td>
+    </tr>`
+  ).join('');
+  containerEl.innerHTML = `
+    <div style="font-size:12px;color:#888;margin-bottom:6px;padding:0 12px;">Regime 分桶</div>
+    <table style="width:100%;border-collapse:collapse;font-size:13px;">
+      <thead><tr style="color:#aaa;">
+        <th style="padding:6px 12px;text-align:left;border-bottom:1px solid #333;">市场状态</th>
+        <th style="padding:6px 12px;text-align:right;border-bottom:1px solid #333;">样本数</th>
+        <th style="padding:6px 12px;text-align:right;border-bottom:1px solid #333;">总 PnL</th>
+      </tr></thead>
+      <tbody>${regimeRows || '<tr><td colspan="3" style="padding:12px;text-align:center;color:#555;">暂无数据</td></tr>'}</tbody>
+    </table>
+    <div style="font-size:12px;color:#888;margin:10px 0 6px;padding:0 12px;">时段分桶</div>
+    <table style="width:100%;border-collapse:collapse;font-size:13px;">
+      <thead><tr style="color:#aaa;">
+        <th style="padding:6px 12px;text-align:left;border-bottom:1px solid #333;">时段</th>
+        <th style="padding:6px 12px;text-align:right;border-bottom:1px solid #333;">样本数</th>
+        <th style="padding:6px 12px;text-align:right;border-bottom:1px solid #333;">总 PnL</th>
+      </tr></thead>
+      <tbody>${hourRows || '<tr><td colspan="3" style="padding:12px;text-align:center;color:#555;">暂无数据</td></tr>'}</tbody>
+    </table>`;
+}
+
+async function sl_renderLossModes(containerEl) {
+  const count = await sl_fetchPostmortemCount();
+  if (count < SL_MIN_POSTMORTEM) {
+    containerEl.innerHTML = `<div style="padding:24px;text-align:center;color:#666;font-size:13px;">数据积累中（当前 ${count} 条，需 ${SL_MIN_POSTMORTEM}+ 条才有统计意义）</div>`;
+    return;
+  }
+  const data = await sl_fetchLossModes();
+  if (!data) {
+    containerEl.innerHTML = `<div style="padding:24px;text-align:center;color:#ef5350;font-size:13px;">失败模式数据加载失败，请检查服务</div>`;
+    return;
+  }
+  const modes = Array.isArray(data.modes) ? data.modes : [];
+  const items = modes.map(item =>
+    `<div style="display:flex;justify-content:space-between;padding:8px 12px;border-bottom:1px solid #1a1a2e;font-size:13px;">
+      <span style="color:#ccc;">${item.loss_mode || item.mode || '未知'}</span>
+      <span style="color:#ef5350;">${item.count || 0} 次${item.avg_cost !== undefined ? '（avg cost: ' + item.avg_cost.toFixed(4) + '）' : ''}</span>
+    </div>`
+  ).join('');
+  containerEl.innerHTML = items || `<div style="padding:24px;text-align:center;color:#666;font-size:13px;">暂无失败记录</div>`;
+}
+
 async function sl_fetchStatus() {
   try {
     const r = await fetch(BASE_URL + '/strategies/status');
@@ -452,11 +550,11 @@ function sl_renderPostmortem() {
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px">
       <div class="card">
         <div class="section-title" style="color:#26a69a">💰 赚钱来源</div>
-        ${placeholder}
+        <div id="sl-attribution-container" style="color:#2a2a40;font-size:13px;text-align:center;padding:24px 0">加载中…</div>
       </div>
       <div class="card">
         <div class="section-title" style="color:#ef5350">⚠️ 失败模式</div>
-        ${placeholder}
+        <div id="sl-loss-modes-container" style="color:#2a2a40;font-size:13px;text-align:center;padding:24px 0">加载中…</div>
       </div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
@@ -520,6 +618,12 @@ function sl_renderContent() {
   else if (sl_sub === "postmortem") el.innerHTML = sl_renderPostmortem();
   else el.innerHTML = sl_renderCompare();
   if (sl_sub === "edit") sl_updateInfluence();
+  if (sl_sub === "postmortem") {
+    const attrEl = document.getElementById('sl-attribution-container');
+    const lossEl = document.getElementById('sl-loss-modes-container');
+    if (attrEl) sl_renderAttribution(attrEl);
+    if (lossEl) sl_renderLossModes(lossEl);
+  }
 }
 
 // ─── Event handlers ──────────────────────
