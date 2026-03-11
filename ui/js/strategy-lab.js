@@ -159,7 +159,7 @@ async function sl_renderAttribution(containerEl) {
   }
   const data = await sl_fetchAttribution();
   if (!data) {
-    containerEl.innerHTML = `<div style="padding:24px;text-align:center;color:#ef5350;font-size:13px;">归因数据加载失败，请检查服务</div>`;
+    containerEl.innerHTML = `<div style="padding:24px;text-align:center;color:var(--color-down);font-size:13px;">归因数据加载失败，请检查服务</div>`;
     return;
   }
   const regimeBuckets = Array.isArray(data.regime_buckets) ? data.regime_buckets : [];
@@ -207,14 +207,14 @@ async function sl_renderLossModes(containerEl) {
   }
   const data = await sl_fetchLossModes();
   if (!data) {
-    containerEl.innerHTML = `<div style="padding:24px;text-align:center;color:#ef5350;font-size:13px;">失败模式数据加载失败，请检查服务</div>`;
+    containerEl.innerHTML = `<div style="padding:24px;text-align:center;color:var(--color-down);font-size:13px;">失败模式数据加载失败，请检查服务</div>`;
     return;
   }
   const modes = Array.isArray(data.modes) ? data.modes : [];
   const items = modes.map(item =>
     `<div style="display:flex;justify-content:space-between;padding:8px 12px;border-bottom:1px solid #1a1a2e;font-size:13px;">
       <span style="color:#ccc;">${item.loss_mode || item.mode || '未知'}</span>
-      <span style="color:#ef5350;">${item.count || 0} 次${item.avg_cost !== undefined ? '（avg cost: ' + item.avg_cost.toFixed(4) + '）' : ''}</span>
+      <span style="color:var(--color-down);">${item.count || 0} 次${item.avg_cost !== undefined ? '（avg cost: ' + item.avg_cost.toFixed(4) + '）' : ''}</span>
     </div>`
   ).join('');
   containerEl.innerHTML = items || `<div style="padding:24px;text-align:center;color:#666;font-size:13px;">暂无失败记录</div>`;
@@ -479,7 +479,6 @@ function sl_renderEdit() {
       ${sl_slider("sl-refresh", "报价刷新", 0.01, 0.005, 0.05, 0.005)}
       ${sl_slider("sl-timeout", "配对超时", 300, 60, 600, 30, "s")}
       <button onclick="sl_saveParams()" style="margin-top:16px;width:100%;padding:14px 0;border-radius:10px;font-size:22px;font-weight:700;background:#00d4aa;border:none;color:#000;cursor:pointer">保存参数</button>
-      <div onclick="console.log('[StratLab] 运行历史模拟')" style="margin-top:8px;text-align:center;padding:14px 0;border-radius:10px;font-size:22px;font-weight:700;background:linear-gradient(135deg,#6366f1,#0ea5e9);color:#fff;cursor:pointer">运行历史模拟</div>
     </div>
     <!-- 中卡：参数影响 -->
     <div class="card">
@@ -491,7 +490,7 @@ function sl_renderEdit() {
           const best = 52;
           return `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:2px solid #08081a;background:${r.pnl === best ? "#26a69a06" : "transparent"}">
             <span style="font-family:var(--m);color:#aaa;font-size:20px">${r.v}</span>
-            <span style="font-family:var(--m);color:#26a69a;font-size:20px;font-weight:700">+${r.pnl}${r.pnl === best ? '<span style="color:#f59e0b;margin-left:4px;font-size:14px">★</span>' : ""}</span>
+            <span style="font-family:var(--m);color:var(--color-up);font-size:20px;font-weight:700">+${r.pnl}${r.pnl === best ? '<span style="color:#f59e0b;margin-left:4px;font-size:14px">★</span>' : ""}</span>
           </div>`;
         }).join("")}
       </div>

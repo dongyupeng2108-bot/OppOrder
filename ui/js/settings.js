@@ -89,7 +89,7 @@ function st_renderContent() {
       ${st_slider("st-age",   "挂单老化",  st_cancel.age,   5,   60,   5,   "s")}
       <div style="display:flex;justify-content:space-between;margin-top:8px">
         <span style="color:#666;font-size:20px">tick变更</span>
-        <span class="badge" style="background:#ef535015;color:#ef5350">强制</span>
+        <span class="badge" style="background:#ef535015;color:var(--color-down)">强制</span>
       </div>
     </div>`;
   } else if (st_sec === "events") {
