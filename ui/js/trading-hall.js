@@ -214,6 +214,16 @@ function th_updateCountdown() {
   el.style.color = th_countdown < 60 ? "#ef5350" : "#888";
 }
 
+// ─── Status label helper ──────────────────
+function th_getStatusLabel(inst) {
+  const r = inst.runtime_state;
+  const d = inst.desired_state;
+  if (r === true)  return { label: '运行中', color: 'var(--color-up)' };
+  if (r === false && d === true) return { label: '配置中', color: 'var(--color-orange, #ffa726)' };
+  if (r === false) return { label: '已停止', color: 'var(--color-muted, #888)' };
+  return { label: '未知', color: 'var(--color-muted, #888)' };
+}
+
 // ─── Render strategy table ───────────────
 function th_renderStratTable(strats = []) {
   const tbody = document.getElementById("th-strat-tbody");
@@ -226,14 +236,15 @@ function th_renderStratTable(strats = []) {
     const typeShort = TH_TM[st.type]?.short || "";
     const pnlColor = st.pnl > 0 ? "#26a69a" : st.pnl < 0 ? "#ef5350" : "#444";
     const pnlText = st.pnl != null ? (st.pnl > 0 ? "+" : "") + st.pnl : "—";
-    const badgeColor = st.status === "running" ? "#26a69a" : "#ef5350";
-    const badgeText = st.status === "running" ? "▶" : "■";
+    const statusInfo = th_getStatusLabel(st);
+    const badgeColor = statusInfo.color;
+    const badgeText = st.runtime_state === true ? "▶" : "■";
     return `<tr style="border-bottom:2px solid #0a0a18">
       <td style="padding:6px 12px"><span class="badge" style="background:${badgeColor}15;color:${badgeColor}">${badgeText}</span></td>
-      <td style="padding:6px 12px;color:#bbb;font-weight:600">${st.name || "—"}</td>
+      <td style="padding:6px 12px;color:#bbb;font-weight:600">${st.strategy_id || st.name || "—"}</td>
       <td style="padding:6px 12px"><div style="width:20px;height:20px;border-radius:4px;background:${st.color || "#444"}"></div></td>
       <td style="padding:6px 12px;color:#666">${typeShort}</td>
-      <td style="padding:6px 12px;font-family:var(--m);color:#555">${st.status === "running" ? (st.started_at || "—") : "—"}</td>
+      <td style="padding:6px 12px;font-family:var(--m);color:#555">${st.runtime_state === true ? (st.started_at || "—") : "—"}</td>
       <td style="padding:6px 12px;font-family:var(--m);color:#555">${st.trades != null ? st.trades : "—"}</td>
       <td style="padding:6px 12px;font-family:var(--m);color:#555">${st.winRate != null ? st.winRate + "%" : "—"}</td>
       <td style="padding:6px 12px;font-family:var(--m);font-weight:600;color:${pnlColor}">${pnlText}</td>
@@ -362,16 +373,30 @@ async function th_pollBook(signal) {
 
 async function th_pollInstances(signal) {
   try {
-    const res = await fetch(BASE_URL + "/ui/instances", { signal });
-    if (!res.ok) return;
-    const data = await res.json();
-    if (data.ok && Array.isArray(data.data)) {
-      th_renderStratTable(data.data);
-      th_renderStratLegend(data.data);
-      if (data.data.length > 0 && data.data[0].regime_score != null) {
-        th_score = data.data[0].regime_score;
-        th_updateGauge(th_score);
-      }
+    const [instRes, statusRes] = await Promise.all([
+      fetch(BASE_URL + '/ui/instances', { signal }),
+      fetch(BASE_URL + '/strategies/status', { signal }),
+    ]);
+    const instData   = instRes.ok   ? await instRes.json()   : { data: [] };
+    const statusData = statusRes.ok ? await statusRes.json() : { instances: [] };
+
+    const runtimeMap = {};
+    (statusData.instances || []).forEach(s => { runtimeMap[s.name] = s; });
+
+    const items = Array.isArray(instData.data) ? instData.data : [];
+    const merged = items.map(inst => ({
+      ...inst,
+      runtime_state:  runtimeMap[inst.strategy_id]?.runtime_state  ?? null,
+      desired_state:  runtimeMap[inst.strategy_id]?.desired_state  ?? null,
+      last_error:     runtimeMap[inst.strategy_id]?.last_error     ?? null,
+      last_heartbeat: runtimeMap[inst.strategy_id]?.last_heartbeat ?? null,
+    }));
+
+    th_renderStratTable(merged);
+    th_renderStratLegend(merged);
+    if (merged.length > 0 && merged[0].regime_score != null) {
+      th_score = merged[0].regime_score;
+      th_updateGauge(th_score);
     }
   } catch (err) {
     if (err.name === 'AbortError') return;
