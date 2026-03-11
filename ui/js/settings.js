@@ -123,11 +123,77 @@ function st_setFillModel(model) {
   st_renderContent();
 }
 
-function st_applySettings() {
-  const payload = { risk: st_risk, cancel: st_cancel, fill: st_fill, events: st_events };
-  fetch(BASE_URL + '/config/reload', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) })
-    .then(() => {}).catch(() => {});
-  console.log('[Settings] Applied:', payload);
+async function st_applySettings() {
+  const instanceName = (typeof sl_sel !== 'undefined' && sl_sel) ? sl_sel : null;
+  if (!instanceName) {
+    st_showToast('请先在策略实验室选择一个实例', 'error');
+    return;
+  }
+
+  const patch = {
+    risk: {
+      max_position_usd: st_risk.pos,
+      max_open_orders: st_risk.maxOrd,
+      consecutive_loss_stop: st_risk.stop,
+      max_drawdown_pct: st_risk.dd / 100,
+    },
+    cancel: {
+      sigma_threshold: st_cancel.sigma,
+      tau_min_sec: st_cancel.tau,
+      order_age_max_sec: st_cancel.age,
+    },
+    paper: {
+      fill_model: st_fill.model,
+      fill_discount: st_fill.disc,
+      fill_delay_ms: st_fill.delay,
+    },
+  };
+
+  try {
+    const r = await fetch(BASE_URL + `/strategies/${instanceName}/config`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(patch),
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error || 'Write failed');
+  } catch (err) {
+    st_showToast('保存失败：' + err.message, 'error');
+    return;
+  }
+
+  const confirmed = confirm(
+    `参数已写入配置文件。\n\n点击「确定」将执行热加载，期间所有 runner 短暂中断（约 1~2 秒）。\n点击「取消」可稍后手动触发重载。`
+  );
+  if (!confirmed) {
+    st_showToast('参数已保存，未触发重载。如需生效请手动点击重新加载。', 'success');
+    return;
+  }
+
+  try {
+    const r = await fetch(BASE_URL + '/config/reload', { method: 'POST' });
+    if (!r.ok) throw new Error('Reload failed: HTTP ' + r.status);
+    st_showToast('设置已保存并重载成功', 'success');
+  } catch (err) {
+    st_showToast('配置已写入，但重载失败：' + err.message, 'error');
+  }
+}
+
+function st_showToast(msg, type = 'success') {
+  const existing = document.getElementById('st-toast');
+  if (existing) existing.remove();
+  const toast = document.createElement('div');
+  toast.id = 'st-toast';
+  toast.textContent = msg;
+  toast.style.cssText = `
+    position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+    padding: 12px 20px; border-radius: 6px; font-size: 13px;
+    background: ${type === 'error' ? '#ef5350' : '#26a69a'};
+    color: #fff; max-width: 400px; line-height: 1.5;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  `;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 5000);
 }
 
 // ─── Sidebar nav ─────────────────────────
