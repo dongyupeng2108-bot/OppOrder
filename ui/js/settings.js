@@ -162,11 +162,14 @@ async function st_applySettings() {
     return;
   }
 
-  const confirmed = confirm(
-    `参数已写入配置文件。\n\n点击「确定」将执行热加载，期间所有 runner 短暂中断（约 1~2 秒）。\n点击「取消」可稍后手动触发重载。`
-  );
+  const isLive = (typeof st_executorMode !== 'undefined' && st_executorMode === 'live')
+              || document.body.dataset.executorMode === 'live';
+  const confirmMsg = isLive
+    ? '⚠️ 当前为 Live 模式！\n\nconfig/reload 将短暂中断所有 runner（约 1~2 秒），期间可能影响在途挂单。\n\n确认继续？'
+    : 'config/reload 将短暂中断所有 runner（约 1~2 秒）。\n\n确认继续？';
+  const confirmed = confirm(confirmMsg);
   if (!confirmed) {
-    st_showToast('参数已保存，未触发重载。如需生效请手动点击重新加载。', 'success');
+    st_showToast('已取消重载', 'success');
     return;
   }
 
