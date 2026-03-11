@@ -144,6 +144,12 @@ function th_updateSymbolUI() {
   });
 }
 
+function th_setTimeframe(tf) {
+  th_timeframe = tf;
+  th_updateTimeframeUI();
+  th_onMarketSwitch();
+}
+
 function th_updateTimeframeUI() {
   ['5m', '15m', '1h', '4h'].forEach(tf => {
     const btn = document.getElementById(`th-tf-${tf}`);
@@ -466,6 +472,13 @@ function th_render() {
             <div onclick="th_selectCoin('XRP')" style="padding:6px 14px;border-radius:6px;cursor:pointer;font-size:20px;background:transparent;color:#666">XRP</div>
           </div>
         </div>
+        <!-- 周期切换 -->
+        <div class="th-timeframe-bar" style="display:inline-flex;gap:4px;margin-left:12px;">
+          <button id="th-tf-5m"  class="th-tf-btn active" onclick="th_setTimeframe('5m')">5m</button>
+          <button id="th-tf-15m" class="th-tf-btn"         onclick="th_setTimeframe('15m')">15m</button>
+          <button id="th-tf-1h"  class="th-tf-btn"         onclick="th_setTimeframe('1h')">1h</button>
+          <button id="th-tf-4h"  class="th-tf-btn"         onclick="th_setTimeframe('4h')">4h</button>
+        </div>
       </div>
       <div style="flex:1;min-height:160px;border-bottom:2px solid #12122a;display:flex;align-items:center;justify-content:center;position:relative;color:#1a1a2e;font-size:22px">
         <span id="th-pm-coin" style="position:absolute;top:12px;left:20px;color:#555;font-size:20px;font-weight:600;z-index:1">BTC</span>
@@ -711,5 +724,6 @@ window.initTradingHall = function() {
   th_startConnIndicator();
   th_bindSymbolButtons();
   th_bindTimeframeButtons();
+  th_updateTimeframeUI();
   th_appendLog('system', '交易大厅已初始化，WS 监听中');
 };
