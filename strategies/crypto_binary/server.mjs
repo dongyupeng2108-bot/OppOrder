@@ -85,10 +85,23 @@ function sendJson(res, data, status = 200) {
   res.end(JSON.stringify(data));
 }
 
+function deepMerge(base, patch) {
+  const result = { ...base };
+  for (const key of Object.keys(patch)) {
+    if (patch[key] && typeof patch[key] === 'object' && !Array.isArray(patch[key])
+        && base[key] && typeof base[key] === 'object') {
+      result[key] = deepMerge(base[key], patch[key]);
+    } else {
+      result[key] = patch[key];
+    }
+  }
+  return result;
+}
+
 const server = createServer(async (req, res) => {
   // CORS headers for local UI (file:// → localhost)
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   // OPTIONS preflight
@@ -423,6 +436,81 @@ const server = createServer(async (req, res) => {
       sendJson(res, { ok: false, error: e.message }, 500);
     }
     return;
+  }
+
+  // ─── GET /strategies/:name/config ──────────────────────────────────────────
+  {
+    const { pathname: pn } = new URL(req.url, 'http://localhost');
+    if (req.method === 'GET' && pn.startsWith('/strategies/') && pn.endsWith('/config')) {
+      const name = pn.split('/')[2];
+      const instancePath = resolve(__dirname, 'instances', `${name}.json`);
+
+      if (!existsSync(instancePath)) {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: `Instance not found: ${name}` }));
+        return;
+      }
+
+      try {
+        const cfg = JSON.parse(readFileSync(instancePath, 'utf8'));
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(cfg));
+      } catch (err) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: err.message }));
+      }
+      return;
+    }
+  }
+
+  // ─── PUT /strategies/:name/config ───────────────────────────────────────────
+  {
+    const { pathname: pn } = new URL(req.url, 'http://localhost');
+    if (req.method === 'PUT' && pn.startsWith('/strategies/') && pn.endsWith('/config')) {
+      const name = pn.split('/')[2];
+      const instancePath = resolve(__dirname, 'instances', `${name}.json`);
+
+      if (!existsSync(instancePath)) {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: `Instance not found: ${name}` }));
+        return;
+      }
+
+      let body = '';
+      req.on('data', chunk => { body += chunk; });
+      req.on('end', () => {
+        try {
+          const patch = JSON.parse(body);
+
+          // 参数范围校验
+          if (patch.strategy) {
+            const s = patch.strategy;
+            if (s.entry_offset !== undefined && (s.entry_offset < 0.001 || s.entry_offset > 0.2)) {
+              res.writeHead(400, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ error: 'entry_offset must be between 0.001 and 0.2' }));
+              return;
+            }
+            if (s.order_tranches !== undefined && (s.order_tranches < 1 || s.order_tranches > 5)) {
+              res.writeHead(400, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ error: 'order_tranches must be between 1 and 5' }));
+              return;
+            }
+          }
+
+          // 读取现有配置，深度合并 patch
+          const existing = JSON.parse(readFileSync(instancePath, 'utf8'));
+          const merged = deepMerge(existing, patch);
+          writeFileSync(instancePath, JSON.stringify(merged, null, 2), 'utf8');
+
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ ok: true, written: instancePath }));
+        } catch (err) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: err.message }));
+        }
+      });
+      return;
+    }
   }
 
   // ─── GET /strategies/status ────────────────────────────────────────────────
