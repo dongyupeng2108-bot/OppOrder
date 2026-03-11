@@ -1,3 +1,8 @@
+// ─── New strategy ────────────────────────
+function sl_newStrategy() {
+  alert('新建策略：请在 strategies/crypto_binary/instances/ 目录创建新的 .json 配置文件，重启服务后自动加载。');
+}
+
 // ─── Data ───────────────────────────────
 const SL_STRATS = [
   { id:"s1", name:"配对做市#002", color:"#10b981", type:"pair",     status:"running", pnl:326,  trades:361, winRate:35, avgPos:8.2 },
@@ -210,7 +215,7 @@ function sl_renderSidebar() {
         </div>`;
       }).join("")}
       <div style="padding:12px 20px">
-        <div style="text-align:center;padding:8px 0;border-radius:6px;background:#12122a;color:#444;font-size:18px;cursor:pointer">+ 新建</div>
+        <div onclick="sl_newStrategy()" style="text-align:center;padding:8px 0;border-radius:6px;background:#12122a;color:#444;font-size:18px;cursor:pointer">+ 新建</div>
       </div>`;
   }
 }
