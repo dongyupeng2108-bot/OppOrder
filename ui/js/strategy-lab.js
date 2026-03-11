@@ -130,6 +130,19 @@ async function sl_fetchStatus() {
   } catch (_) {}
 }
 
+async function sl_loadInstanceParams(name) {
+  try {
+    const r = await fetch(BASE_URL + `/strategies/${name}/config`);
+    if (!r.ok) return;
+    const config = await r.json();
+    const s = config.strategy || {};
+    if (s.entry_offset !== undefined)    sl_offset   = s.entry_offset;
+    if (s.order_tranches !== undefined)  sl_tranches = s.order_tranches;
+    if (s.pair_cost_target !== undefined) sl_pairT   = s.pair_cost_target;
+    sl_renderEdit();
+  } catch (_) {}
+}
+
 // ─── Instance fetch ───────────────────────
 async function sl_pollInstances(autoSelect) {
   try {
@@ -362,7 +375,8 @@ function sl_renderEdit() {
       ${sl_slider("sl-prob", "概率区间下界", 0.35, 0.10, 0.45, 0.05)}
       ${sl_slider("sl-refresh", "报价刷新", 0.01, 0.005, 0.05, 0.005)}
       ${sl_slider("sl-timeout", "配对超时", 300, 60, 600, 30, "s")}
-      <div onclick="console.log('[StratLab] 运行历史模拟')" style="margin-top:16px;text-align:center;padding:14px 0;border-radius:10px;font-size:22px;font-weight:700;background:linear-gradient(135deg,#6366f1,#0ea5e9);color:#fff;cursor:pointer">运行历史模拟</div>
+      <button onclick="sl_saveParams()" style="margin-top:16px;width:100%;padding:14px 0;border-radius:10px;font-size:22px;font-weight:700;background:#00d4aa;border:none;color:#000;cursor:pointer">保存参数</button>
+      <div onclick="console.log('[StratLab] 运行历史模拟')" style="margin-top:8px;text-align:center;padding:14px 0;border-radius:10px;font-size:22px;font-weight:700;background:linear-gradient(135deg,#6366f1,#0ea5e9);color:#fff;cursor:pointer">运行历史模拟</div>
     </div>
     <!-- 中卡：参数影响 -->
     <div class="card">
@@ -509,7 +523,7 @@ function sl_renderContent() {
 }
 
 // ─── Event handlers ──────────────────────
-function sl_setSel(id) { sl_sel = id; sl_renderSidebar(); sl_renderSubtabBar(); sl_renderContent(); }
+async function sl_setSel(id) { sl_sel = id; sl_renderSidebar(); sl_renderSubtabBar(); sl_renderContent(); await sl_loadInstanceParams(id); }
 function sl_setSub(sub) { sl_sub = sub; sl_renderSidebar(); sl_renderSubtabBar(); sl_renderContent(); }
 function sl_toggleCheck(id) {
   sl_checked = sl_checked.includes(id) ? sl_checked.filter(x => x !== id) : [...sl_checked, id];
@@ -518,8 +532,16 @@ function sl_toggleCheck(id) {
 }
 
 // ─── Deploy / Stop / Delete ──────────────
-function sl_deployRun() {
+async function sl_deployRun() {
   if (!sl_sel) return;
+  // 部署前自动保存当前滑条参数（静默，不弹 toast）
+  try {
+    await fetch(BASE_URL + `/strategies/${sl_sel}/config`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ strategy: { entry_offset: sl_offset, order_tranches: sl_tranches, pair_cost_target: sl_pairT } })
+    });
+  } catch (_) {}
   fetch(`${BASE_URL}/config/reload`, { method: 'POST' })
     .then(r => r.json())
     .then(async () => {
@@ -572,6 +594,44 @@ function _sl_toast(msg, isError = false) {
     'z-index:9999;pointer-events:none';
   document.body.appendChild(el);
   setTimeout(() => el.remove(), 2500);
+}
+
+function sl_showSaveToast(msg, type = 'success') {
+  const existing = document.getElementById('sl-save-toast');
+  if (existing) existing.remove();
+  const toast = document.createElement('div');
+  toast.id = 'sl-save-toast';
+  toast.textContent = msg;
+  toast.style.cssText = `position:fixed;bottom:24px;right:24px;z-index:9999;` +
+    `padding:12px 20px;border-radius:6px;font-size:13px;` +
+    `background:${type === 'error' ? '#ef5350' : '#26a69a'};` +
+    `color:#fff;max-width:420px;line-height:1.5;` +
+    `box-shadow:0 4px 12px rgba(0,0,0,0.4);`;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 6000);
+}
+
+async function sl_saveParams() {
+  if (!sl_sel) return;
+  const patch = {
+    strategy: {
+      entry_offset: sl_offset,
+      order_tranches: sl_tranches,
+      pair_cost_target: sl_pairT,
+    }
+  };
+  try {
+    const r = await fetch(BASE_URL + `/strategies/${sl_sel}/config`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(patch)
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error || 'Save failed');
+    sl_showSaveToast('参数已保存。点击「重新加载」使策略立即生效（将短暂中断所有 runner）。', 'success');
+  } catch (err) {
+    sl_showSaveToast('保存失败：' + err.message, 'error');
+  }
 }
 
 // ─── Full page render ─────────────────────
