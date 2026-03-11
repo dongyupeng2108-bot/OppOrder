@@ -11,6 +11,7 @@ const TH_LOG_MAX = 100;
 const th_logBuffer = []; // { time, type, text }
 let th_symbol    = 'BTC';  // 当前选中币种
 let th_timeframe = '5m';   // 当前选中周期
+let _th_pollCtrl = null;   // AbortController for polling loops
 
 // ─── PM chart ────────────────────────────
 function drawPmChart() {
@@ -310,9 +311,9 @@ function th_renderStratLegend(strats = []) {
 }
 
 // ─── Polling ─────────────────────────────
-async function th_pollBook() {
+async function th_pollBook(signal) {
   try {
-    const res = await fetch(BASE_URL + "/book/snapshot");
+    const res = await fetch(BASE_URL + "/book/snapshot", { signal });
     if (!res.ok) return;
     const data = await res.json();
     const asks = (data.asks || []).slice(0, 5).map(r => ({p: parseFloat(r[0]).toFixed(3), s: String(r[1])}));
@@ -347,12 +348,15 @@ async function th_pollBook() {
       if (priceHistory.length > 100) priceHistory.shift();
       drawPmChart();
     }
-  } catch (_) {}
+  } catch (err) {
+    if (err.name === 'AbortError') return;
+    console.warn('[th_pollBook]', err.message);
+  }
 }
 
-async function th_pollInstances() {
+async function th_pollInstances(signal) {
   try {
-    const res = await fetch(BASE_URL + "/ui/instances");
+    const res = await fetch(BASE_URL + "/ui/instances", { signal });
     if (!res.ok) return;
     const data = await res.json();
     if (data.ok && Array.isArray(data.data)) {
@@ -363,16 +367,22 @@ async function th_pollInstances() {
         th_updateGauge(th_score);
       }
     }
-  } catch (_) {}
+  } catch (err) {
+    if (err.name === 'AbortError') return;
+    console.warn('[th_pollInstances]', err.message);
+  }
 }
 
-async function th_pollOrders() {
+async function th_pollOrders(signal) {
   try {
-    const res = await fetch(BASE_URL + "/trading/orders");
+    const res = await fetch(BASE_URL + "/trading/orders", { signal });
     if (!res.ok) return;
     const data = await res.json();
     if (Array.isArray(data) && data.length > 0) th_renderOrders(data);
-  } catch (_) {}
+  } catch (err) {
+    if (err.name === 'AbortError') return;
+    console.warn('[th_pollOrders]', err.message);
+  }
 }
 
 // ─── Render full TradingHall HTML ────────
@@ -506,6 +516,32 @@ function th_resetCountdown(windowStart, sizeSec) {
   th_countdown = (wStart + sz) - Math.floor(Date.now() / 1000);
 }
 
+// ─── Polling loop (AbortController) ─────
+function th_startPolling() {
+  if (_th_pollCtrl) _th_pollCtrl.abort();
+  _th_pollCtrl = new AbortController();
+  const { signal } = _th_pollCtrl;
+
+  const loopBook = async () => {
+    if (signal.aborted) return;
+    await th_pollBook(signal);
+    if (!signal.aborted) setTimeout(loopBook, 2000);
+  };
+  const loopInstances = async () => {
+    if (signal.aborted) return;
+    await th_pollInstances(signal);
+    if (!signal.aborted) setTimeout(loopInstances, 5000);
+  };
+  const loopOrders = async () => {
+    if (signal.aborted) return;
+    await th_pollOrders(signal);
+    if (!signal.aborted) setTimeout(loopOrders, 5000);
+  };
+  loopBook();
+  loopInstances();
+  loopOrders();
+}
+
 // ─── Timer loop ──────────────────────────
 function th_startTimers() {
   th_timers.forEach(clearInterval);
@@ -517,15 +553,14 @@ function th_startTimers() {
     th_countdown = (windowStart + sizeSec) - now;
     th_updateCountdown();
   }, 1000));
-  th_timers.push(setInterval(th_pollBook, 2000));
-  th_timers.push(setInterval(th_pollInstances, 5000));
-  th_timers.push(setInterval(th_pollOrders, 5000));
+  th_startPolling();
 }
 
 // ─── Cleanup (called when leaving tab) ───
 window.cleanupTradingHall = function() {
   th_timers.forEach(clearInterval);
   th_timers = [];
+  if (_th_pollCtrl) { _th_pollCtrl.abort(); _th_pollCtrl = null; }
 };
 
 // ─── Manual trade helpers ─────────────────
