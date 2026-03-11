@@ -72,6 +72,10 @@ function st_onToggle(id) {
 function st_renderContent() {
   const el = document.getElementById("st-content");
   if (!el) return;
+  const hasSel = typeof sl_sel !== 'undefined' && sl_sel;
+  const instanceLabel = hasSel
+    ? `<div style="font-size:12px;color:var(--color-up,#26a69a);padding:8px 16px 4px;border-bottom:1px solid #1a1a2e;margin-bottom:8px;">✏ 当前编辑实例：<strong>${sl_sel}</strong></div>`
+    : `<div style="font-size:12px;color:var(--color-muted,#888);padding:8px 16px 4px;border-bottom:1px solid #1a1a2e;margin-bottom:8px;">⚠ 请先在策略实验室中选择一个实例</div>`;
   let html = "";
   if (st_sec === "risk") {
     html = `<div class="card">
@@ -115,7 +119,13 @@ function st_renderContent() {
   }
   html += `<div onclick="st_applySettings()" style="margin-top:24px;text-align:center;padding:14px 0;border-radius:10px;font-size:22px;font-weight:700;
     background:linear-gradient(135deg,#6366f1,#0ea5e9);color:#fff;cursor:pointer">应用设置</div>`;
-  el.innerHTML = html;
+  el.innerHTML = instanceLabel + html;
+  if (!hasSel) {
+    el.querySelectorAll('input[type=range]').forEach(e => { e.disabled = true; e.style.opacity = '0.4'; });
+    el.querySelectorAll('button').forEach(e => {
+      if (!e.dataset.keepEnabled) { e.disabled = true; e.style.opacity = '0.4'; }
+    });
+  }
 }
 
 function st_setFillModel(model) {
