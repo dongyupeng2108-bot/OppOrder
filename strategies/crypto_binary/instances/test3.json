@@ -1,0 +1,4 @@
+{
+  "strategy.type": "pair_cost_maker",
+  "strategy_id": "test3"
+}
