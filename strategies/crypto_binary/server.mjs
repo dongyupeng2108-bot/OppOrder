@@ -3,7 +3,7 @@
 // 提供：GET / 健康检查，POST /config/reload 热更新
 
 import { createServer } from 'http';
-import { readFileSync, existsSync, mkdirSync, writeFileSync } from 'fs';
+import { readFileSync, existsSync, mkdirSync, writeFileSync, unlinkSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { WebSocketServer } from 'ws';
@@ -367,6 +367,55 @@ const server = createServer(async (req, res) => {
         sendJson(res, { ok: false, error: e.message }, 500);
       }
     });
+    return;
+  }
+
+  // ─── POST /strategies/stop ─────────────────────────────────────────────────
+  if (req.method === 'POST' && req.url === '/strategies/stop') {
+    let body = '';
+    req.on('data', chunk => { body += chunk; });
+    req.on('end', () => {
+      try {
+        const { name } = JSON.parse(body || '{}');
+        if (!name) { sendJson(res, { ok: false, error: 'name 必填' }, 400); return; }
+
+        const filePath = resolve(__dirname, 'instances', `${name}.json`);
+        if (!existsSync(filePath)) {
+          sendJson(res, { ok: false, error: `实例 ${name} 不存在` }, 404);
+          return;
+        }
+
+        const cfg = JSON.parse(readFileSync(filePath, 'utf8'));
+        cfg.enabled = false;
+        writeFileSync(filePath, JSON.stringify(cfg, null, 2), 'utf8');
+
+        fetch(`http://localhost:${PORT}/config/reload`, { method: 'POST' }).catch(() => {});
+
+        sendJson(res, { ok: true, name, enabled: false });
+      } catch (e) {
+        sendJson(res, { ok: false, error: e.message }, 500);
+      }
+    });
+    return;
+  }
+
+  // ─── DELETE /strategies/:name ──────────────────────────────────────────────
+  if (req.method === 'DELETE' && /^\/strategies\/[a-zA-Z0-9_-]{1,64}$/.test(req.url)) {
+    const name = req.url.slice('/strategies/'.length);
+    try {
+      const filePath = resolve(__dirname, 'instances', `${name}.json`);
+      if (!existsSync(filePath)) {
+        sendJson(res, { ok: false, error: `实例 ${name} 不存在` }, 404);
+        return;
+      }
+
+      unlinkSync(filePath);
+      fetch(`http://localhost:${PORT}/config/reload`, { method: 'POST' }).catch(() => {});
+
+      sendJson(res, { ok: true, name, deleted: true });
+    } catch (e) {
+      sendJson(res, { ok: false, error: e.message }, 500);
+    }
     return;
   }
 
