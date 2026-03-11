@@ -100,13 +100,6 @@ function _sl_submitCreate() {
   });
 }
 
-// ─── Data ───────────────────────────────
-const SL_STRATS = [
-  { id:"s1", name:"配对做市#002", color:"#10b981", type:"pair",     status:"running", pnl:326,  trades:361, winRate:35, avgPos:8.2 },
-  { id:"s2", name:"配对做市#003", color:"#0ea5e9", type:"pair",     status:"running", pnl:52,   trades:120, winRate:31, avgPos:9.5 },
-  { id:"s3", name:"极值回归A",    color:"#f59e0b", type:"revert",   status:"running", pnl:22,   trades:18,  winRate:12, avgPos:4.8 },
-  { id:"s4", name:"方向突破B",    color:"#ef4444", type:"breakout", status:"stopped", pnl:-38,  trades:45,  winRate:28, avgPos:6.1 },
-];
 const SL_TM = { pair:{icon:"⚖️",short:"配对"}, revert:{icon:"🎯",short:"回归"}, breakout:{icon:"📐",short:"突破"} };
 
 // ─── State ──────────────────────────────
@@ -134,6 +127,14 @@ async function sl_fetchAttribution() {
 async function sl_fetchLossModes() {
   try {
     const r = await fetch(BASE_URL + '/postmortem/loss-modes');
+    if (!r.ok) return null;
+    return await r.json();
+  } catch (_) { return null; }
+}
+
+async function sl_fetchCompareData() {
+  try {
+    const r = await fetch(BASE_URL + '/stats?group_by=strategy_id,config_hash');
     if (!r.ok) return null;
     return await r.json();
   } catch (_) { return null; }
@@ -283,7 +284,7 @@ function sl_findStrat(id) {
     const s = sl_instances.find(s => s.id === id);
     if (s) return s;
   }
-  return SL_STRATS.find(s => s.id === id);
+  return null;
 }
 
 // ─── Helpers ─────────────────────────────
@@ -393,7 +394,7 @@ function sl_updateInfluence() {
 function sl_renderSidebar() {
   const el = document.getElementById("sl-sidebar");
   if (!el) return;
-  const list = sl_instances ?? SL_STRATS;
+  const list = sl_instances ?? [];
   if (sl_sub === "compare") {
     if (list.length === 0) {
       el.innerHTML = `<div style="padding:16px 20px;color:#2a2a40;font-size:16px;font-weight:600;letter-spacing:1px">勾选对比</div>
@@ -575,43 +576,52 @@ function sl_renderPostmortem() {
 }
 
 // ─── Compare content ─────────────────────
-function sl_renderCompare() {
-  const sts = SL_STRATS.filter(s => sl_checked.includes(s.id));
-  if (sts.length < 2) {
-    return `<div style="color:#333;text-align:center;padding:40px">请勾选至少 2 个策略</div>`;
-  }
-  const ms = [
-    {l:"累计PnL"}, {l:"交易"}, {l:"胜率"}, {l:"仓位"},
-  ];
-  const tableRows = ms.map(m =>
-    `<tr style="border-bottom:2px solid #0a0a18">
-      <td style="padding:10px 16px;color:#555;font-weight:600">${m.l}</td>
-      ${sts.map(() => `<td style="padding:10px 16px;text-align:center;font-family:var(--m);font-weight:700;font-size:24px;color:#2a2a40">—</td>`).join("")}
-    </tr>`
-  ).join("");
-  const placeholder = `<div style="color:#2a2a40;font-size:20px;text-align:center;padding:40px 0">暂无对比数据</div>`;
+async function sl_renderCompare() {
+  const container = document.getElementById('sl-compare-container');
+  if (!container) return;
 
-  return `<div style="display:flex;flex-direction:column;gap:24px">
-    <div class="card">
-      <div class="section-title">⚡ 核心指标</div>
-      <table style="width:100%;border-collapse:collapse;font-size:20px">
-        <thead><tr style="border-bottom:2px solid #12122a">
-          <th style="padding:10px 16px;text-align:left;color:#333;font-size:18px;width:120px">指标</th>
-          ${sts.map(s => `<th style="padding:10px 16px;text-align:center;border-bottom:4px solid ${s.color}">
-            <div style="display:flex;align-items:center;justify-content:center;gap:8px">
-              <div style="width:12px;height:12px;border-radius:2px;background:${s.color}"></div>
-              <span style="color:#ccc;font-size:20px;font-weight:700">${s.name}</span>
-            </div>
-          </th>`).join("")}
-        </tr></thead>
-        <tbody>${tableRows}</tbody>
-      </table>
-    </div>
-    <div class="card">
-      <div class="section-title">📈 趋势对比</div>
-      ${placeholder}
-    </div>
-  </div>`;
+  container.innerHTML = `<div style="padding:24px;text-align:center;color:#666;font-size:13px;">加载中…</div>`;
+
+  const data = await sl_fetchCompareData();
+  const rows = data?.rows || [];
+
+  if (rows.length === 0) {
+    container.innerHTML = `<div style="padding:24px;text-align:center;color:#666;font-size:13px;">暂无复盘数据，运行策略后自动更新</div>`;
+    return;
+  }
+
+  rows.sort((a, b) => (b.avg_pnl || 0) - (a.avg_pnl || 0));
+
+  const tableRows = rows.map(row => {
+    const pnl = row.avg_pnl || 0;
+    const pnlColor = pnl >= 0 ? '#26a69a' : '#ef5350';
+    const pnlStr = (pnl >= 0 ? '+' : '') + pnl.toFixed(4);
+    const hash = row.config_hash ? row.config_hash.slice(0, 8) : '—';
+    const winRate = row.win_rate !== undefined ? (row.win_rate * 100).toFixed(1) + '%' : '—';
+
+    return `<tr>
+      <td style="padding:6px 12px;border-bottom:1px solid #1a1a2e;font-size:12px;">${row.strategy_id || '—'}</td>
+      <td style="padding:6px 12px;border-bottom:1px solid #1a1a2e;font-size:12px;color:#888;">${hash}</td>
+      <td style="padding:6px 12px;border-bottom:1px solid #1a1a2e;font-size:12px;text-align:right;">${row.count || 0}</td>
+      <td style="padding:6px 12px;border-bottom:1px solid #1a1a2e;font-size:12px;text-align:right;color:${pnlColor};">${pnlStr}</td>
+      <td style="padding:6px 12px;border-bottom:1px solid #1a1a2e;font-size:12px;text-align:right;">${winRate}</td>
+    </tr>`;
+  }).join('');
+
+  container.innerHTML = `
+    <table style="width:100%;border-collapse:collapse;">
+      <thead><tr style="color:#888;font-size:11px;">
+        <th style="padding:6px 12px;text-align:left;border-bottom:1px solid #333;">策略</th>
+        <th style="padding:6px 12px;text-align:left;border-bottom:1px solid #333;">Config</th>
+        <th style="padding:6px 12px;text-align:right;border-bottom:1px solid #333;">样本</th>
+        <th style="padding:6px 12px;text-align:right;border-bottom:1px solid #333;">均PnL</th>
+        <th style="padding:6px 12px;text-align:right;border-bottom:1px solid #333;">胜率</th>
+      </tr></thead>
+      <tbody>${tableRows}</tbody>
+    </table>
+    <div style="margin-top:8px;font-size:11px;color:#555;padding:0 12px;">
+      主键：strategy_id + config_hash · 共 ${rows.length} 组 · 总样本 ${data.total_count || 0}
+    </div>`;
 }
 
 // ─── Main render ─────────────────────────
@@ -620,7 +630,7 @@ function sl_renderContent() {
   if (!el) return;
   if (sl_sub === "edit") el.innerHTML = sl_renderEdit();
   else if (sl_sub === "postmortem") el.innerHTML = sl_renderPostmortem();
-  else el.innerHTML = sl_renderCompare();
+  else { el.innerHTML = '<div id="sl-compare-container"></div>'; sl_renderCompare(); }
   if (sl_sub === "edit") sl_updateInfluence();
   if (sl_sub === "postmortem") {
     const attrEl = document.getElementById('sl-attribution-container');
