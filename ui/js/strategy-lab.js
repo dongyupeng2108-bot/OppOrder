@@ -1,6 +1,103 @@
 // ─── New strategy ────────────────────────
 function sl_newStrategy() {
-  alert('新建策略：请在 strategies/crypto_binary/instances/ 目录创建新的 .json 配置文件，重启服务后自动加载。');
+  document.getElementById('sl-create-modal')?.remove();
+  fetch(`${BASE_URL}/ui/instances`)
+    .then(r => r.json())
+    .then(d => _sl_showCreateModal((d.data || []).map(i => i.strategy_id)))
+    .catch(() => _sl_showCreateModal([]));
+}
+
+function _sl_showCreateModal(existingNames) {
+  const tplOpts = existingNames.map(n =>
+    `<option value="${n}">${n}</option>`).join('');
+
+  const overlay = document.createElement('div');
+  overlay.id = 'sl-create-modal';
+  overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;' +
+    'background:rgba(0,0,0,0.75);z-index:999;display:flex;align-items:center;justify-content:center';
+
+  overlay.innerHTML = `
+    <div style="background:#0d0d1a;border:1px solid #1e1e3a;border-radius:8px;
+      padding:32px;width:480px;max-width:92vw">
+      <div style="font-size:24px;color:#e0e0ff;font-weight:600;margin-bottom:24px">新建策略实例</div>
+
+      <div style="margin-bottom:16px">
+        <label style="color:#8080a0;font-size:16px;display:block;margin-bottom:6px">
+          实例名称 <span style="color:#ff6b6b">*</span>
+        </label>
+        <input id="sl-cs-name" type="text" placeholder="如: btc_5m_maker_v2"
+          style="width:100%;background:#0a0a18;border:1px solid #1e1e3a;color:#e0e0ff;
+            padding:10px 12px;font-size:18px;border-radius:4px;box-sizing:border-box"/>
+      </div>
+
+      <div style="margin-bottom:16px">
+        <label style="color:#8080a0;font-size:16px;display:block;margin-bottom:6px">策略类型</label>
+        <select id="sl-cs-type"
+          style="width:100%;background:#0a0a18;border:1px solid #1e1e3a;color:#e0e0ff;
+            padding:10px 12px;font-size:18px;border-radius:4px;box-sizing:border-box">
+          <option value="pair_cost_maker">S1 配对成本做市</option>
+          <option value="low_price_sniper">S2 低价接博</option>
+          <option value="bs_directional">BS 方向性交易</option>
+        </select>
+      </div>
+
+      <div style="margin-bottom:20px">
+        <label style="color:#8080a0;font-size:16px;display:block;margin-bottom:6px">复制自（可选）</label>
+        <select id="sl-cs-base"
+          style="width:100%;background:#0a0a18;border:1px solid #1e1e3a;color:#e0e0ff;
+            padding:10px 12px;font-size:18px;border-radius:4px;box-sizing:border-box">
+          <option value="">— 使用默认参数 —</option>
+          ${tplOpts}
+        </select>
+      </div>
+
+      <div id="sl-cs-error" style="color:#ff6b6b;font-size:16px;margin-bottom:12px;display:none"></div>
+
+      <div style="display:flex;gap:12px;justify-content:flex-end">
+        <button onclick="document.getElementById('sl-create-modal').remove()"
+          style="padding:10px 24px;background:#1a1a2e;border:1px solid #1e1e3a;
+            color:#8080a0;border-radius:4px;font-size:18px;cursor:pointer">取消</button>
+        <button id="sl-cs-submit" onclick="_sl_submitCreate()"
+          style="padding:10px 24px;background:#00d4aa;border:none;color:#000;
+            border-radius:4px;font-size:18px;cursor:pointer;font-weight:600">创建</button>
+      </div>
+    </div>`;
+
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+  document.body.appendChild(overlay);
+  setTimeout(() => document.getElementById('sl-cs-name')?.focus(), 50);
+}
+
+function _sl_submitCreate() {
+  const name  = (document.getElementById('sl-cs-name')?.value || '').trim();
+  const type  = document.getElementById('sl-cs-type')?.value;
+  const base  = document.getElementById('sl-cs-base')?.value;
+  const errEl = document.getElementById('sl-cs-error');
+  const btn   = document.getElementById('sl-cs-submit');
+
+  if (!name || !/^[a-zA-Z0-9_-]+$/.test(name)) {
+    errEl.textContent = '实例名称只允许字母/数字/下划线/连字符';
+    errEl.style.display = 'block';
+    return;
+  }
+  btn.textContent = '创建中…'; btn.disabled = true;
+  errEl.style.display = 'none';
+
+  fetch(`${BASE_URL}/strategies/create`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, base_config: base || undefined, overrides: { 'strategy.type': type } })
+  })
+  .then(r => r.json())
+  .then(d => {
+    if (!d.ok) throw new Error(d.error);
+    document.getElementById('sl-create-modal')?.remove();
+    sl_pollInstances(name);
+  })
+  .catch(e => {
+    errEl.textContent = e.message; errEl.style.display = 'block';
+    btn.textContent = '创建'; btn.disabled = false;
+  });
 }
 
 // ─── Data ───────────────────────────────
@@ -20,9 +117,10 @@ let sl_offset = 0.03;
 let sl_tranches = 3;
 let sl_pairT = 0.97;
 let sl_instances = null; // null=未加载; []=无策略; [...]= 已加载
+let sl_deployed = new Set(); // 当前已部署的实例名集合
 
 // ─── Instance fetch ───────────────────────
-async function sl_pollInstances() {
+async function sl_pollInstances(autoSelect) {
   try {
     const res = await fetch(BASE_URL + '/ui/instances');
     if (!res.ok) return;
@@ -39,7 +137,10 @@ async function sl_pollInstances() {
         winRate: null,
         avgPos: null,
       }));
-      if (sl_instances.length > 0) {
+      if (autoSelect && sl_instances.find(i => i.id === autoSelect)) {
+        sl_sel = autoSelect;
+        sl_checked = sl_instances.slice(0, 3).map(s => s.id);
+      } else if (sl_instances.length > 0 && (!sl_sel || !sl_instances.find(i => i.id === sl_sel))) {
         sl_sel = sl_instances[0].id;
         sl_checked = sl_instances.slice(0, 3).map(s => s.id);
       }
@@ -276,9 +377,11 @@ function sl_renderEdit() {
       <div style="color:#444;font-size:20px;font-weight:600;margin-bottom:8px">PnL 曲线</div>
       <svg width="100%" height="60" viewBox="0 0 200 60"><rect width="200" height="60" fill="#08081a" rx="2"/>
         <polyline fill="none" stroke="#26a69a" stroke-width="1.2" points="0,48 20,45 40,40 60,35 80,32 100,28 120,30 140,22 160,18 180,15 200,10"/></svg>
-      <div style="display:flex;gap:16px;margin-top:20px">
-        <div onclick="console.log('[StratLab] 部署运行')" style="flex:1;text-align:center;padding:10px 0;border-radius:8px;font-size:20px;font-weight:600;background:#26a69a15;color:#26a69a;cursor:pointer">→ 部署运行</div>
-        <div style="text-align:center;padding:10px 16px;border-radius:8px;font-size:18px;background:#12122a;color:#555;cursor:pointer">导出</div>
+      <div style="margin-top:20px">
+        ${sl_deployed.has(sl_sel)
+          ? `<button onclick="sl_stopDeploy()" style="width:100%;padding:14px;background:transparent;border:2px solid #ff6b6b;color:#ff6b6b;border-radius:6px;font-size:20px;cursor:pointer;font-weight:600">■ 停止部署</button>`
+          : `<button onclick="sl_deployRun()" style="width:100%;padding:14px;background:#00d4aa;border:none;color:#000;border-radius:6px;font-size:20px;cursor:pointer;font-weight:600">→ 部署运行</button>`}
+        <button onclick="sl_deleteStrategy()" style="width:100%;padding:14px;background:transparent;border:2px solid #ff4444;color:#ff4444;border-radius:6px;font-size:20px;cursor:pointer;font-weight:600;margin-top:12px">删除策略</button>
       </div>
     </div>
   </div>`;
@@ -387,6 +490,64 @@ function sl_toggleCheck(id) {
   sl_checked = sl_checked.includes(id) ? sl_checked.filter(x => x !== id) : [...sl_checked, id];
   sl_renderSidebar();
   if (sl_sub === "compare") sl_renderContent();
+}
+
+// ─── Deploy / Stop / Delete ──────────────
+function sl_deployRun() {
+  if (!sl_sel) return;
+  fetch(`${BASE_URL}/config/reload`, { method: 'POST' })
+    .then(r => r.json())
+    .then(() => {
+      sl_deployed.add(sl_sel);
+      sl_renderContent();
+      _sl_toast(`${sl_sel} 已部署`);
+    })
+    .catch(e => _sl_toast(`部署失败: ${e.message}`, true));
+}
+
+function sl_stopDeploy() {
+  if (!sl_sel) return;
+  fetch(`${BASE_URL}/strategies/stop`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: sl_sel })
+  })
+  .then(r => r.json())
+  .then(d => {
+    if (!d.ok) throw new Error(d.error);
+    sl_deployed.delete(sl_sel);
+    sl_renderContent();
+    _sl_toast(`${sl_sel} 已停止`);
+  })
+  .catch(e => _sl_toast(`停止失败: ${e.message}`, true));
+}
+
+function sl_deleteStrategy() {
+  if (!sl_sel) return;
+  if (!confirm(`确认删除策略实例 "${sl_sel}"？此操作不可恢复。`)) return;
+
+  fetch(`${BASE_URL}/strategies/${encodeURIComponent(sl_sel)}`, { method: 'DELETE' })
+    .then(r => r.json())
+    .then(d => {
+      if (!d.ok) throw new Error(d.error);
+      sl_deployed.delete(sl_sel);
+      _sl_toast(`${sl_sel} 已删除`);
+      sl_pollInstances();
+    })
+    .catch(e => _sl_toast(`删除失败: ${e.message}`, true));
+}
+
+function _sl_toast(msg, isError = false) {
+  document.getElementById('sl-toast')?.remove();
+  const el = document.createElement('div');
+  el.id = 'sl-toast';
+  el.textContent = msg;
+  el.style.cssText = 'position:fixed;bottom:32px;left:50%;transform:translateX(-50%);' +
+    `background:${isError ? '#ff4444' : '#00d4aa'};color:#000;` +
+    'padding:12px 28px;border-radius:6px;font-size:18px;font-weight:600;' +
+    'z-index:9999;pointer-events:none';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 2500);
 }
 
 // ─── Full page render ─────────────────────
