@@ -3,7 +3,7 @@
 // 提供：GET / 健康检查，POST /config/reload 热更新
 
 import { createServer } from 'http';
-import { readFileSync } from 'fs';
+import { readFileSync, existsSync, mkdirSync, writeFileSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { WebSocketServer } from 'ws';
@@ -317,6 +317,56 @@ const server = createServer(async (req, res) => {
       if (!db) { sendJson(res, { error: 'db not ready' }, 503); return; }
       sendJson(res, await getCompare(db, ids));
     } catch (e) { sendJson(res, { error: e.message }, 500); }
+    return;
+  }
+
+  // ─── POST /strategies/create ───────────────────────────────────────────────
+  if (req.method === 'POST' && req.url === '/strategies/create') {
+    let body = '';
+    req.on('data', chunk => { body += chunk; });
+    req.on('end', () => {
+      try {
+        const { name, base_config, overrides = {} } = JSON.parse(body || '{}');
+
+        // 参数校验
+        if (!name || !/^[a-zA-Z0-9_-]{1,64}$/.test(name)) {
+          sendJson(res, { ok: false, error: 'name 只允许字母/数字/下划线/连字符，长度 1~64' }, 400);
+          return;
+        }
+
+        const instancesDir = resolve(__dirname, 'instances');
+        const filePath = resolve(instancesDir, `${name}.json`);
+
+        // 防止覆盖已有实例
+        if (existsSync(filePath)) {
+          sendJson(res, { ok: false, error: `实例 ${name} 已存在` }, 409);
+          return;
+        }
+
+        // 读取模板（base_config 为已有实例名），不指定则空对象
+        let template = {};
+        if (base_config) {
+          const tplPath = resolve(instancesDir, `${base_config}.json`);
+          if (existsSync(tplPath)) {
+            template = JSON.parse(readFileSync(tplPath, 'utf8'));
+          }
+        }
+
+        // 合并参数，strategy_id 必须等于实例名
+        const newConfig = { ...template, ...overrides, strategy_id: name };
+
+        // 写入文件
+        mkdirSync(instancesDir, { recursive: true });
+        writeFileSync(filePath, JSON.stringify(newConfig, null, 2), 'utf8');
+
+        // 触发热加载（忽略失败，文件已写入即成功）
+        fetch(`http://localhost:${PORT}/config/reload`, { method: 'POST' }).catch(() => {});
+
+        sendJson(res, { ok: true, name, file: `instances/${name}.json` });
+      } catch (e) {
+        sendJson(res, { ok: false, error: e.message }, 500);
+      }
+    });
     return;
   }
 
