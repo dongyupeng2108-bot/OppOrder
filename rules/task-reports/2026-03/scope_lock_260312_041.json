@@ -1,0 +1,11 @@
+{
+  "task_id": "260312_041",
+  "allowed_files": [
+    "ui/js/strategy-lab.js"
+  ],
+  "auto_exempt": [
+    "rules/LATEST.json",
+    "rules/task-reports/index/error_stats.jsonl"
+  ],
+  "created_at": "2026-03-12T18:59:14.853Z"
+}
