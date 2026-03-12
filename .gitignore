@@ -21,6 +21,7 @@ runtime
 
 # Data
 OppRadar/data/
+data/backtest/
 data/runtime/
 data/opps_runs/
 data/opps_ledger/**
