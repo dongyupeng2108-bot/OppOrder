@@ -13,6 +13,21 @@ let th_symbol    = 'BTC';  // 当前选中币种
 let th_timeframe = '5m';   // 当前选中周期
 let _th_pollCtrl = null;   // AbortController for polling loops
 let _th_wsHandler = null;  // unified WS handler (for dedup via offWsEvent)
+let _th_abortControllers = {}; // per-poll AbortControllers
+
+function th_abortPoll(key) {
+  if (_th_abortControllers[key]) {
+    _th_abortControllers[key].abort();
+    _th_abortControllers[key] = null;
+  }
+}
+
+function th_newAbort(key) {
+  th_abortPoll(key);
+  const ctrl = new AbortController();
+  _th_abortControllers[key] = ctrl;
+  return ctrl.signal;
+}
 let _th_symbol   = 'BTCUSDT'; // Binance symbol（与 th_symbol 同步，全名格式）
 let _th_interval = '5m';      // K 线周期（与 th_timeframe 同步）
 
@@ -258,7 +273,9 @@ async function th_onMarketSwitch() {
       if (winEl && d.window_start) winEl.textContent = new Date(d.window_start * 1000).toLocaleTimeString();
       th_resetCountdown(d.window_start, d.window_size_sec || th_windowSizeSec());
     }
-  } catch (_) {}
+  } catch (err) {
+    console.warn('[trading-hall] current-window not available:', err.message);
+  }
 
   // /market/orderbook 不存在，静默跳过（现有 /book/snapshot 由轮询定时刷新）
   try {
@@ -267,7 +284,9 @@ async function th_onMarketSwitch() {
       const d = await r.json();
       if (typeof th_renderBook === 'function') th_renderBook(d);
     }
-  } catch (_) {}
+  } catch (err) {
+    console.warn('[trading-hall] orderbook not available:', err.message);
+  }
 }
 
 // ─── Regime gauge ────────────────────────
@@ -786,7 +805,9 @@ async function th_refreshManualStats() {
     if (pnlEl)   pnlEl.textContent   = (d.total_pnl >= 0 ? '+' : '') + (d.total_pnl || 0).toFixed(4);
     if (tradeEl) tradeEl.textContent = d.total_trades || 0;
     if (winEl)   winEl.textContent   = d.win_rate !== undefined ? (d.win_rate * 100).toFixed(1) + '%' : '—';
-  } catch (_) {}
+  } catch (err) {
+    console.error('[trading-hall] refreshManualStats failed:', err.message);
+  }
 }
 
 function th_bindResetPnl() {
