@@ -172,24 +172,8 @@ async function st_applySettings() {
     return;
   }
 
-  const isLive = (typeof st_executorMode !== 'undefined' && st_executorMode === 'live')
-              || document.body.dataset.executorMode === 'live';
-  const confirmMsg = isLive
-    ? '⚠️ 当前为 Live 模式！\n\nconfig/reload 将短暂中断所有 runner（约 1~2 秒），期间可能影响在途挂单。\n\n确认继续？'
-    : 'config/reload 将短暂中断所有 runner（约 1~2 秒）。\n\n确认继续？';
-  const confirmed = confirm(confirmMsg);
-  if (!confirmed) {
-    st_showToast('已取消重载', 'success');
-    return;
-  }
-
-  try {
-    const r = await fetch(BASE_URL + '/config/reload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: instanceName }) });
-    if (!r.ok) throw new Error('Reload failed: HTTP ' + r.status);
-    st_showToast('设置已保存并重载成功', 'success');
-  } catch (err) {
-    st_showToast('配置已写入，但重载失败：' + err.message, 'error');
-  }
+  const isLive = await st_hasLiveInstance();
+  await st_reloadWithConfirm(instanceName, isLive);
 }
 
 function st_showToast(msg, type = 'success') {
@@ -207,6 +191,48 @@ function st_showToast(msg, type = 'success') {
   `;
   document.body.appendChild(toast);
   setTimeout(() => toast.remove(), 5000);
+}
+
+// ─── Reload confirm helpers ───────────────
+async function st_hasLiveInstance() {
+  try {
+    const res  = await fetch(`${BASE_URL}/strategies/status`);
+    const data = await res.json();
+    const instances = data.instances || [];
+    return instances.some(i => i.runtime_state && i.executor_mode === 'live');
+  } catch {
+    return false;
+  }
+}
+
+async function st_reloadWithConfirm(name = null, isLiveMode = false) {
+  let msg = name
+    ? `确认热加载实例"${name}"？\n将短暂中断该实例 runner，约 1~2 秒。`
+    : `确认热加载所有实例？\n将短暂中断所有 runner，约 1~2 秒。`;
+  if (isLiveMode) {
+    msg += '\n\n⚠️ 警告：当前有 Live 实例运行，中断期间可能影响实盘订单！';
+  }
+  if (!confirm(msg)) return false;
+  try {
+    const body = name ? { name } : {};
+    const res  = await fetch(`${BASE_URL}/config/reload`, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(body),
+    });
+    const data = await res.json();
+    if (data.ok !== false) {
+      const label = name ? `实例"${name}"` : '所有实例';
+      st_showToast(`${label}已热加载`, 'success');
+      return true;
+    } else {
+      st_showToast(`热加载失败：${data.error || '未知错误'}`, 'error');
+      return false;
+    }
+  } catch (err) {
+    st_showToast(`热加载失败：${err.message}`, 'error');
+    return false;
+  }
 }
 
 // ─── Sidebar nav ─────────────────────────
