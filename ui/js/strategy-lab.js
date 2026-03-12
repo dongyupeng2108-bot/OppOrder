@@ -113,6 +113,7 @@ let sl_pairT = 0.97;
 let sl_instances = null; // null=未加载; []=无策略; [...]= 已加载
 let sl_serverStatus = {}; // key=实例名, value={ name, desired_state, runtime_state, last_error, last_heartbeat }
 let sl_isEditing = false; // 用户正在编辑参数期间不覆盖选中状态
+let _sl_pollAbort = null; // AbortController for sl_pollInstances
 
 const SL_MIN_POSTMORTEM = 50; // 统计意义所需最低记录数
 
@@ -233,7 +234,9 @@ async function sl_fetchStatus() {
     const d = await r.json();
     sl_serverStatus = {};
     (d.instances || []).forEach(s => { sl_serverStatus[s.name] = s; });
-  } catch (_) {}
+  } catch (err) {
+    console.error('[strategy-lab] fetchStatus failed:', err.message);
+  }
 }
 
 // 从服务端获取所有实例真实状态，返回 Map<name, statusObj>
@@ -271,11 +274,16 @@ async function sl_loadInstanceParams(name) {
     if (s.order_tranches !== undefined)  sl_tranches = s.order_tranches;
     if (s.pair_cost_target !== undefined) sl_pairT   = s.pair_cost_target;
     sl_renderEdit();
-  } catch (_) {}
+  } catch (err) {
+    console.error('[strategy-lab] loadInstanceParams failed:', err.message);
+  }
 }
 
 // ─── Instance fetch ───────────────────────
 async function sl_pollInstances(autoSelect) {
+  if (sl_isEditing) return; // 用户编辑期间跳过，防止覆盖选中状态
+  if (_sl_pollAbort) { _sl_pollAbort.abort(); }
+  _sl_pollAbort = new AbortController();
   try {
     const runtimeMap = await sl_fetchRuntimeStatus();
     // 同步更新 sl_serverStatus（供 sl_renderEdit 使用）
@@ -310,7 +318,10 @@ async function sl_pollInstances(autoSelect) {
       sl_renderSubtabBar();
       sl_renderContent();
     }
-  } catch (_) {}
+  } catch (err) {
+    if (err.name === 'AbortError') return;
+    console.error('[strategy-lab] pollInstances failed:', err.message);
+  }
 }
 
 function sl_findStrat(id) {
@@ -679,7 +690,9 @@ async function sl_deployRun() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ strategy: { entry_offset: sl_offset, order_tranches: sl_tranches, pair_cost_target: sl_pairT } })
     });
-  } catch (_) {}
+  } catch (err) {
+    console.error('[strategy-lab] deployRun pre-save failed:', err.message);
+  }
   try {
     const r = await fetch(`${BASE_URL}/strategies/start`, {
       method: 'POST',
