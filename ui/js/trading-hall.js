@@ -12,6 +12,7 @@ const th_logBuffer = []; // { time, type, text }
 let th_symbol    = 'BTC';  // 当前选中币种
 let th_timeframe = '5m';   // 当前选中周期
 let _th_pollCtrl = null;   // AbortController for polling loops
+let _th_wsHandler = null;  // unified WS handler (for dedup via offWsEvent)
 
 // ─── PM chart ────────────────────────────
 function drawPmChart() {
@@ -485,7 +486,7 @@ function th_render() {
           <span style="color:#555;font-size:14px;font-family:var(--m);margin-left:auto">—</span>
         </div>
         <div style="display:flex;align-items:center;gap:16px;margin-bottom:2px">
-          <div style="width:8px;height:8px;border-radius:4px;background:#333"></div>
+          <div id="th-conn-indicator" style="width:8px;height:8px;border-radius:4px;background:#333"></div>
           <span style="color:#333;font-size:14px">PM WS</span>
           <span style="color:#555;font-size:14px;font-family:var(--m);margin-left:auto">—</span>
         </div>
@@ -612,6 +613,7 @@ window.cleanupTradingHall = function() {
   th_timers.forEach(clearInterval);
   th_timers = [];
   if (_th_pollCtrl) { _th_pollCtrl.abort(); _th_pollCtrl = null; }
+  if (_th_wsHandler) { offWsEvent(_th_wsHandler); _th_wsHandler = null; }
 };
 
 // ─── Manual trade helpers ─────────────────
@@ -705,36 +707,55 @@ function th_showTradeToast(msg, type = 'success') {
 }
 
 // ─── WS event handlers ───────────────────
-function th_registerWsHandlers() {
-  // regime.changed：更新 regime gauge 显示
-  onWsEvent('regime.changed', (data) => {
-    if (data.regime_score !== undefined) {
-      th_score = data.regime_score;
-      th_updateGauge(th_score);
+function th_onRegimeChanged(event) {
+  const p = event.payload || event;
+  const score = p.regime_score;
+  if (score == null) return;
+  th_score = score;
+  th_updateGauge(th_score);
+  const scoreEl = document.getElementById('th-regime-score');
+  if (scoreEl) {
+    scoreEl.textContent = score.toFixed(2);
+    scoreEl.style.color = score >= 0.6 ? '#26a69a' : score >= 0.4 ? '#ffb74d' : '#ef5350';
+  }
+  const label = score >= 0.5 ? '震荡' : '趋势';
+  th_appendLog('regime', `score=${score.toFixed(3)} (${label})`);
+}
+
+function th_onWindowSwitch(event) {
+  const p = event.payload || event;
+  th_refreshManualStats();
+  th_appendLog('window', `窗口切换 → ${p.window_id || JSON.stringify(p)}`);
+}
+
+function th_onOrderEvent(event) {
+  const p = event.payload || event;
+  setTimeout(th_refreshManualStats, 200);
+  const typeLabel = { 'order.placed': '挂单', 'order.filled': '成交', 'order.cancelled': '撤单' }[event.type] || event.type;
+  th_appendLog('order', `${typeLabel} ${p.side || ''} $${p.amount || p.size || ''}`);
+}
+
+function th_initWsEvents() {
+  if (_th_wsHandler) offWsEvent(_th_wsHandler);
+
+  _th_wsHandler = function(event) {
+    if (!event || !event.type) return;
+    switch (event.type) {
+      case 'regime.changed':
+        th_onRegimeChanged(event);
+        break;
+      case 'window.switch':
+        th_onWindowSwitch(event);
+        break;
+      case 'order.placed':
+      case 'order.filled':
+      case 'order.cancelled':
+        th_onOrderEvent(event);
+        break;
     }
-    const score = data.regime_score !== undefined ? data.regime_score : data.score;
-    const label = (score !== undefined && score >= 0.5) ? '震荡' : '趋势';
-    th_appendLog('regime', `score=${score !== undefined ? score.toFixed(3) : '—'} (${label})`);
-  });
+  };
 
-  // window.switch：窗口切换时刷新手动交易统计
-  onWsEvent('window.switch', (data) => {
-    th_refreshManualStats();
-    th_appendLog('window', `窗口切换 → ${data.window_id || data.slug || JSON.stringify(data)}`);
-  });
-
-  // order.filled / order.cancelled / order.placed：轻量刷新统计 + 日志
-  onWsEvent('order.filled', (data) => {
-    setTimeout(th_refreshManualStats, 200);
-    th_appendLog('order', `成交 ${data.side || ''} $${data.amount || data.size || ''} @ ${data.fill_price || '—'}`);
-  });
-  onWsEvent('order.cancelled', (data) => {
-    setTimeout(th_refreshManualStats, 200);
-    th_appendLog('order', `撤单 ${data.side || ''} ${data.reason || ''}`);
-  });
-  onWsEvent('order.placed', (data) => {
-    th_appendLog('order', `挂单 ${data.side || ''} $${data.amount || data.size || ''}`);
-  });
+  onWsEvent(_th_wsHandler);
 }
 
 // ─── Connection indicator ─────────────────
@@ -758,7 +779,7 @@ window.initTradingHall = function() {
   th_bindManualTradeButtons();
   th_bindResetPnl();
   th_refreshManualStats();
-  th_registerWsHandlers();
+  th_initWsEvents();
   th_startConnIndicator();
   th_bindSymbolButtons();
   th_bindTimeframeButtons();
