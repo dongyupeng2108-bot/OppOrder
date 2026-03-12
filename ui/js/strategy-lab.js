@@ -738,7 +738,7 @@ async function sl_stopDeploy() {
 
 function sl_deleteStrategy() {
   if (!sl_sel) return;
-  if (!confirm(`确认删除策略实例「${sl_sel}」？\n\n此操作不可撤销，实例配置文件将被永久删除。`)) return;
+  if (!confirm(`确认删除实例"${sl_sel}"？\n此操作不可恢复，实例配置文件将被永久删除。`)) return;
 
   fetch(`${BASE_URL}/strategies/${encodeURIComponent(sl_sel)}`, { method: 'DELETE' })
     .then(r => r.json())
