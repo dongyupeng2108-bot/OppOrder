@@ -184,7 +184,7 @@ async function st_applySettings() {
   }
 
   try {
-    const r = await fetch(BASE_URL + '/config/reload', { method: 'POST' });
+    const r = await fetch(BASE_URL + '/config/reload', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: instanceName }) });
     if (!r.ok) throw new Error('Reload failed: HTTP ' + r.status);
     st_showToast('设置已保存并重载成功', 'success');
   } catch (err) {
