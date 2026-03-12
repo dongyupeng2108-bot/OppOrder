@@ -613,11 +613,22 @@ async function sl_renderCompare() {
 
   container.innerHTML = `<div style="padding:24px;text-align:center;color:#666;font-size:13px;">加载中…</div>`;
 
-  const data = await sl_fetchCompareData();
-  const rows = data?.rows || [];
+  let data;
+  try {
+    const res = await fetch(`${BASE_URL}/stats?group_by=strategy_id,config_hash`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    data = await res.json();
+  } catch (err) {
+    console.error('[strategy-lab] renderCompare failed:', err.message);
+    container.innerHTML = '<div style="color:#666;padding:16px;">加载失败，请稍后重试</div>';
+    return;
+  }
 
-  if (rows.length === 0) {
-    container.innerHTML = `<div style="padding:24px;text-align:center;color:#666;font-size:13px;">暂无复盘数据，运行策略后自动更新</div>`;
+  const rows = Array.isArray(data) ? data : (data.rows || data.stats || data.data || []);
+  const totalCount = data.total_count ?? rows.reduce((s, r) => s + (r.count || 0), 0);
+
+  if (rows.length === 0 || totalCount < 50) {
+    sl_showAccumulating(container, totalCount);
     return;
   }
 
