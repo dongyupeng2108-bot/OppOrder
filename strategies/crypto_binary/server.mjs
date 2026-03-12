@@ -7,7 +7,15 @@ import { readFileSync, readdirSync, existsSync, mkdirSync, writeFileSync, unlink
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { WebSocketServer } from 'ws';
-import { createRunner } from './strategy_runner.mjs';
+import {
+  startInstance,
+  stopInstance,
+  reloadInstance,
+  getStatus as smGetStatus,
+  getRunner,
+  getActiveRunner,
+  updateHeartbeat,
+} from './strategy_manager.mjs';
 import { initPostmortem } from './postmortem.mjs';
 import { logger, EVENTS } from './logger.mjs';
 import { getDb } from './db.mjs';
@@ -32,42 +40,25 @@ function loadConfig(strategyId) {
   return JSON.parse(readFileSync(configPath, 'utf-8'));
 }
 
-let config = STRATEGY_ID ? loadConfig(STRATEGY_ID) : null;
 logger.info(EVENTS.SERVER_START, {
   module: 'server',
   log_level: process.env.LOG_LEVEL || 'info',
   port: PORT,
   strategy: STRATEGY_ID || 'none',
-  display_name: config?.display_name || null,
 });
 
-// 启动策略运行器（先确保 DB 迁移完成）
-let runner = config ? createRunner(config) : null;
 let db = null;
-
-// Runner 注册表：key=实例名，value={ running, last_error, last_heartbeat }
-const globalRunnerRegistry = new Map();
 (async () => {
   db = await getDb();
   await initPostmortem();
   await initManualTrade(db);
   console.log('[BTCQDD] DB migration completed (initPostmortem + initManualTrade)');
-  if (runner && STRATEGY_ID) {
-    try {
-      await runner.start();
-      globalRunnerRegistry.set(STRATEGY_ID, {
-        running: true,
-        last_error: null,
-        last_heartbeat: Date.now()
-      });
+  if (STRATEGY_ID) {
+    const result = await startInstance(STRATEGY_ID);
+    if (result.ok) {
       logger.info({ module: 'server', strategy: STRATEGY_ID, msg: 'auto-started from --strategy arg' });
-    } catch (err) {
-      globalRunnerRegistry.set(STRATEGY_ID, {
-        running: false,
-        last_error: err.message,
-        last_heartbeat: null
-      });
-      logger.error({ module: 'server', err: err.message, msg: 'auto-start failed' });
+    } else {
+      logger.error({ module: 'server', strategy: STRATEGY_ID, err: result.error, msg: 'auto-start failed' });
     }
   }
 
@@ -77,7 +68,8 @@ const globalRunnerRegistry = new Map();
   let _lastWindowId = null;
   setInterval(() => {
     try {
-      const regimeState = runner ? runner.getRegimeState() : null;
+      const activeRunner = getActiveRunner();
+      const regimeState = activeRunner ? activeRunner.getRegimeState() : null;
       if (regimeState) {
         const score = regimeState.regime_score ?? null;
         if (_lastRegimeScore !== null && score !== null && Math.abs(score - _lastRegimeScore) > 0.05) {
@@ -156,56 +148,35 @@ const server = createServer(async (req, res) => {
       status: 'ok',
       port: PORT,
       strategy: STRATEGY_ID || 'none',
-      runner_active: runner !== null
+      runner_active: getActiveRunner() !== null
     }));
     return;
   }
 
   // POST /config/reload — 热更新
   if (req.method === 'POST' && req.url === '/config/reload') {
-    if (!STRATEGY_ID) {
-      sendJson(res, { ok: false, error: 'no strategy loaded' }, 400);
-      return;
-    }
-    globalRunnerRegistry.set(STRATEGY_ID, { running: false, last_error: null, last_heartbeat: null });
-    try {
-      const oldConfig = JSON.parse(JSON.stringify(config));
-      config = loadConfig(STRATEGY_ID);
-
-      // 计算 diff
-      const diff = {};
-      for (const section of ['signal', 'risk', 'model', 'strategy', 'cancel']) {
-        const oldSec = oldConfig[section] || {};
-        const newSec = config[section] || {};
-        const sectionDiff = {};
-        for (const key of new Set([...Object.keys(oldSec), ...Object.keys(newSec)])) {
-          if (JSON.stringify(oldSec[key]) !== JSON.stringify(newSec[key])) {
-            sectionDiff[key] = { old: oldSec[key], new: newSec[key] };
-          }
+    let body = '';
+    req.on('data', d => { body += d; });
+    req.on('end', async () => {
+      try {
+        const parsed = body ? JSON.parse(body) : {};
+        if (parsed.name) {
+          // 新路径：指定实例 reload
+          const result = await reloadInstance(parsed.name);
+          sendJson(res, result, result.ok ? 200 : 500);
+          return;
         }
-        if (Object.keys(sectionDiff).length > 0) diff[section] = sectionDiff;
+        // 旧路径：全局 reload（向后兼容，STRATEGY_ID 必须存在）
+        if (!STRATEGY_ID) {
+          sendJson(res, { ok: false, error: 'no strategy loaded, use { name } to specify instance' }, 400);
+          return;
+        }
+        const result = await reloadInstance(STRATEGY_ID);
+        sendJson(res, result, result.ok ? 200 : 500);
+      } catch (err) {
+        sendJson(res, { ok: false, error: err.message }, 500);
       }
-
-      // 通知 runner 使用新配置
-      if (runner && typeof runner.reload === 'function') {
-        runner.reload(config);
-      }
-
-      globalRunnerRegistry.set(STRATEGY_ID, { running: true, last_error: null, last_heartbeat: Date.now() });
-      console.log(`[BTCQDD] Config reloaded. Diff:`, JSON.stringify(diff));
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({
-        status: 'reloaded',
-        strategy_id: config.strategy_id,
-        diff,
-        ts: new Date().toISOString()
-      }));
-    } catch (err) {
-      globalRunnerRegistry.set(STRATEGY_ID, { running: false, last_error: err.message, last_heartbeat: null });
-      console.error(`[BTCQDD] Config reload failed:`, err.message);
-      res.writeHead(500, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ status: 'error', message: err.message }));
-    }
+    });
     return;
   }
 
@@ -214,7 +185,8 @@ const server = createServer(async (req, res) => {
   // GET /ui/regime — 当前市场状态评分
   if (req.method === 'GET' && req.url === '/ui/regime') {
     try {
-      const state = runner ? runner.getRegimeState() : null;
+      const ar = getActiveRunner();
+      const state = ar ? ar.getRegimeState() : null;
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ ok: true, data: state }));
     } catch (e) {
@@ -227,31 +199,9 @@ const server = createServer(async (req, res) => {
   // GET /ui/instances — 扫描磁盘 instances 目录，合并运行时状态
   if (req.method === 'GET' && req.url === '/ui/instances') {
     try {
-      const instancesDir = resolve(__dirname, 'instances');
-      const files = readdirSync(instancesDir).filter(f => f.endsWith('.json'));
-      const instances = files.map(file => {
-        try {
-          const cfg = JSON.parse(readFileSync(resolve(instancesDir, file), 'utf8'));
-          const sid = cfg.strategy_id || file.replace('.json', '');
-          const runnerInfo = globalRunnerRegistry.get(sid) || globalRunnerRegistry.get(file.replace('.json', ''));
-          return {
-            strategy_id: sid,
-            enabled: cfg.enabled !== false,
-            regime_score: runnerInfo?.lastRegimeScore ?? null,
-            is_active: runnerInfo?.running === true,
-            current_window: runnerInfo?.currentWindow ?? null,
-            paper_pnl: runnerInfo?.paperPnl ?? null,
-            open_orders: runnerInfo?.openOrders?.length ?? 0,
-            pair_cost: runnerInfo?.lastPairCost ?? null,
-            volume_score: runnerInfo?.lastVolumeScore ?? null,
-          };
-        } catch {
-          return null;
-        }
-      }).filter(Boolean);
-      sendJson(res, { ok: true, data: instances });
-    } catch (e) {
-      sendJson(res, { ok: false, error: e.message }, 500);
+      sendJson(res, { instances: smGetStatus() });
+    } catch (err) {
+      sendJson(res, { ok: false, error: err.message }, 500);
     }
     return;
   }
@@ -259,7 +209,8 @@ const server = createServer(async (req, res) => {
   // GET /ui/cancel-stats — 撤单引擎统计
   if (req.method === 'GET' && req.url === '/ui/cancel-stats') {
     try {
-      const stats = runner ? runner.getCancelStats() : {};
+      const ar = getActiveRunner();
+      const stats = ar ? ar.getCancelStats() : {};
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ ok: true, data: stats }));
     } catch (e) {
@@ -272,7 +223,8 @@ const server = createServer(async (req, res) => {
   // GET /ui/active-orders — 当前活跃挂单
   if (req.method === 'GET' && req.url === '/ui/active-orders') {
     try {
-      const orders = runner ? runner.getActiveOrders() : [];
+      const ar = getActiveRunner();
+      const orders = ar ? ar.getActiveOrders() : [];
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ ok: true, data: orders }));
     } catch (e) {
@@ -285,7 +237,8 @@ const server = createServer(async (req, res) => {
   // GET /book/snapshot — 订单簿快照
   if (req.method === 'GET' && req.url === '/book/snapshot') {
     try {
-      const snap = runner ? runner.getOrderbookSnapshot() : null;
+      const ar = getActiveRunner();
+      const snap = ar ? ar.getOrderbookSnapshot() : null;
       sendJson(res, {
         bids: snap ? [] : [],
         asks: snap ? [] : [],
@@ -460,30 +413,52 @@ const server = createServer(async (req, res) => {
     return;
   }
 
-  // ─── POST /strategies/stop ─────────────────────────────────────────────────
-  if (req.method === 'POST' && req.url === '/strategies/stop') {
+  // POST /strategies/start — 启动指定实例
+  if (req.method === 'POST' && req.url === '/strategies/start') {
     let body = '';
-    req.on('data', chunk => { body += chunk; });
-    req.on('end', () => {
+    req.on('data', d => { body += d; });
+    req.on('end', async () => {
       try {
         const { name } = JSON.parse(body || '{}');
-        if (!name) { sendJson(res, { ok: false, error: 'name 必填' }, 400); return; }
+        if (!name) { sendJson(res, { ok: false, error: 'name required' }, 400); return; }
+        const result = await startInstance(name);
+        sendJson(res, result, result.ok ? 200 : 500);
+      } catch (err) {
+        sendJson(res, { ok: false, error: err.message }, 500);
+      }
+    });
+    return;
+  }
 
-        const filePath = resolve(__dirname, 'instances', `${name}.json`);
-        if (!existsSync(filePath)) {
-          sendJson(res, { ok: false, error: `实例 ${name} 不存在` }, 404);
-          return;
-        }
+  // POST /strategies/stop — 停止指定实例
+  if (req.method === 'POST' && req.url === '/strategies/stop') {
+    let body = '';
+    req.on('data', d => { body += d; });
+    req.on('end', async () => {
+      try {
+        const { name } = JSON.parse(body || '{}');
+        if (!name) { sendJson(res, { ok: false, error: 'name required' }, 400); return; }
+        const result = await stopInstance(name);
+        sendJson(res, result, result.ok ? 200 : 500);
+      } catch (err) {
+        sendJson(res, { ok: false, error: err.message }, 500);
+      }
+    });
+    return;
+  }
 
-        const cfg = JSON.parse(readFileSync(filePath, 'utf8'));
-        cfg.enabled = false;
-        writeFileSync(filePath, JSON.stringify(cfg, null, 2), 'utf8');
-
-        fetch(`http://localhost:${PORT}/config/reload`, { method: 'POST' }).catch(() => {});
-
-        sendJson(res, { ok: true, name, enabled: false });
-      } catch (e) {
-        sendJson(res, { ok: false, error: e.message }, 500);
+  // POST /strategies/reload — 重载指定实例
+  if (req.method === 'POST' && req.url.startsWith('/strategies/reload')) {
+    let body = '';
+    req.on('data', d => { body += d; });
+    req.on('end', async () => {
+      try {
+        const { name } = JSON.parse(body || '{}');
+        if (!name) { sendJson(res, { ok: false, error: 'name required' }, 400); return; }
+        const result = await reloadInstance(name);
+        sendJson(res, result, result.ok ? 200 : 500);
+      } catch (err) {
+        sendJson(res, { ok: false, error: err.message }, 500);
       }
     });
     return;
@@ -586,36 +561,7 @@ const server = createServer(async (req, res) => {
 
   // ─── GET /strategies/status ────────────────────────────────────────────────
   if (req.method === 'GET' && req.url === '/strategies/status') {
-    try {
-      const instancesDir = resolve(__dirname, 'instances');
-      const files = readdirSync(instancesDir).filter(f => f.endsWith('.json'));
-
-      const instances = files.map(f => {
-        const name = f.replace('.json', '');
-        let desired_state = true;
-        try {
-          const cfg = JSON.parse(readFileSync(resolve(instancesDir, f), 'utf8'));
-          desired_state = cfg.enabled !== false; // 默认 true，显式 false 才关
-        } catch (_) {}
-
-        // runtime_state 从全局 runner 注册表读取
-        const runnerInfo = globalRunnerRegistry.get(name) || {};
-
-        return {
-          name,
-          desired_state,
-          runtime_state: runnerInfo.running === true,
-          last_error: runnerInfo.last_error || null,
-          last_heartbeat: runnerInfo.last_heartbeat || null,
-        };
-      });
-
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ instances }));
-    } catch (err) {
-      res.writeHead(500, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: err.message }));
-    }
+    sendJson(res, { instances: smGetStatus() });
     return;
   }
 
