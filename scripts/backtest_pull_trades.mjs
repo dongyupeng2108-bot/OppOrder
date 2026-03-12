@@ -23,7 +23,7 @@ const MARKETS_INDEX = path.join(OUT_DIR, 'markets_index.json');
 const ERRORS_LOG   = path.join(OUT_DIR, 'pull_errors.log');
 
 const GAMMA_API = 'https://gamma-api.polymarket.com';
-const CLOB_API  = 'https://clob.polymarket.com';
+const DATA_API  = 'https://data-api.polymarket.com';
 const DAYS_90_MS = 90 * 24 * 60 * 60 * 1000;
 const SLEEP_MS   = 50;
 const RETRY_DELAYS = [1000, 2000, 4000];
@@ -166,34 +166,35 @@ async function fetchMarkets() {
   return markets;
 }
 
-// Fetch all trades for a single token
-async function fetchTrades(tokenId) {
+// Fetch all trades for a market using data-api (no auth required)
+async function fetchTrades(conditionId) {
   const trades = [];
-  let cursor = null;
+  let offset = 0;
+  const limit = 500;
   while (true) {
-    let url = `${CLOB_API}/trades?asset_id=${tokenId}&limit=500`;
-    if (cursor) url += `&cursor=${encodeURIComponent(cursor)}`;
-    let data;
+    const url = `${DATA_API}/trades?market=${encodeURIComponent(conditionId)}&limit=${limit}&offset=${offset}`;
+    let batch;
     try {
-      data = await fetchWithRetry(url);
+      batch = await fetchWithRetry(url);
     } catch (err) {
       throw err;
     }
-    const batch = Array.isArray(data) ? data : (data.data || []);
+    if (!Array.isArray(batch) || batch.length === 0) break;
     trades.push(...batch);
-    cursor = data.next_cursor || null;
-    if (!cursor || batch.length === 0) break;
+    if (batch.length < limit) break;
+    offset += limit;
     await sleep(SLEEP_MS);
   }
   return trades;
 }
 
-function tradeToRow(market, side, trade) {
+function tradeToRow(market, trade) {
   const ts = trade.timestamp
     ? new Date(Number(trade.timestamp) * 1000).toISOString()
-    : (trade.created_at || '');
-  const price = trade.price ?? trade.outcome_price ?? '';
-  const size  = trade.size  ?? trade.amount ?? '';
+    : '';
+  const price = trade.price ?? '';
+  const size  = trade.size  ?? '';
+  const side  = (trade.outcome || 'UNKNOWN').toUpperCase();
   let outcome = 'pending';
   try {
     const prices = typeof market.outcome === 'string' ? JSON.parse(market.outcome) : market.outcome;
@@ -240,24 +241,20 @@ async function main() {
     let marketTradeCount = 0;
     const rows = [];
 
-    for (const token of market.tokens) {
-      const side = (token.side || 'UNKNOWN').toUpperCase();
-      let trades = [];
-      try {
-        trades = await fetchTrades(token.token_id);
-      } catch (err) {
-        const msg = `[${new Date().toISOString()}] market=${market.slug} token=${token.token_id} side=${side} error: ${err.message}\n`;
-        appendFileSync(ERRORS_LOG, msg, 'utf8');
-        console.warn(`  ⚠ skip token ${token.token_id}: ${err.message}`);
-        continue;
-      }
+    let trades = [];
+    try {
+      trades = await fetchTrades(market.condition_id);
+    } catch (err) {
+      const msg = `[${new Date().toISOString()}] market=${market.slug} conditionId=${market.condition_id} error: ${err.message}\n`;
+      appendFileSync(ERRORS_LOG, msg, 'utf8');
+      console.warn(`  ⚠ skip market ${market.slug}: ${err.message}`);
+    }
 
-      for (const t of trades) {
-        rows.push(tradeToRow(market, side, t));
-        marketTradeCount++;
-        const ts = t.timestamp ? Number(t.timestamp) * 1000 : 0;
-        if (ts > 0) { minTs = Math.min(minTs, ts); maxTs = Math.max(maxTs, ts); }
-      }
+    for (const t of trades) {
+      rows.push(tradeToRow(market, t));
+      marketTradeCount++;
+      const ts = t.timestamp ? Number(t.timestamp) * 1000 : 0;
+      if (ts > 0) { minTs = Math.min(minTs, ts); maxTs = Math.max(maxTs, ts); }
     }
 
     if (rows.length > 0) {
