@@ -1,0 +1,17 @@
+{
+  "task_id": "260312_024",
+  "allowed_files": [
+    "strategies/crypto_binary/server.mjs",
+    "strategies/crypto_binary/instances/11111.json",
+    "strategies/crypto_binary/instances/3333.json",
+    "strategies/crypto_binary/instances/333422.json",
+    "strategies/crypto_binary/instances/543.json",
+    "strategies/crypto_binary/instances/test1.json",
+    "strategies/crypto_binary/instances/test_disk.json"
+  ],
+  "auto_exempt": [
+    "rules/LATEST.json",
+    "rules/task-reports/index/error_stats.jsonl"
+  ],
+  "created_at": "2026-03-12T03:44:56.593Z"
+}
