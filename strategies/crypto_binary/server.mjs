@@ -23,7 +23,7 @@ const args = Object.fromEntries(
     .filter(a => a.startsWith('--'))
     .map(a => a.slice(2).split('='))
 );
-const STRATEGY_ID = args.strategy || 'btc_15m';
+const STRATEGY_ID = args.strategy || null;
 const PORT = parseInt(args.port || '53123', 10);
 
 // 加载策略配置
@@ -32,17 +32,17 @@ function loadConfig(strategyId) {
   return JSON.parse(readFileSync(configPath, 'utf-8'));
 }
 
-let config = loadConfig(STRATEGY_ID);
+let config = STRATEGY_ID ? loadConfig(STRATEGY_ID) : null;
 logger.info(EVENTS.SERVER_START, {
   module: 'server',
   log_level: process.env.LOG_LEVEL || 'info',
   port: PORT,
-  strategy: STRATEGY_ID,
-  display_name: config.display_name,
+  strategy: STRATEGY_ID || 'none',
+  display_name: config?.display_name || null,
 });
 
 // 启动策略运行器（先确保 DB 迁移完成）
-let runner = createRunner(config);
+let runner = config ? createRunner(config) : null;
 let db = null;
 
 // Runner 注册表：key=实例名，value={ running, last_error, last_heartbeat }
@@ -52,7 +52,24 @@ const globalRunnerRegistry = new Map();
   await initPostmortem();
   await initManualTrade(db);
   console.log('[BTCQDD] DB migration completed (initPostmortem + initManualTrade)');
-  await runner.start();
+  if (runner && STRATEGY_ID) {
+    try {
+      await runner.start();
+      globalRunnerRegistry.set(STRATEGY_ID, {
+        running: true,
+        last_error: null,
+        last_heartbeat: Date.now()
+      });
+      logger.info({ module: 'server', strategy: STRATEGY_ID, msg: 'auto-started from --strategy arg' });
+    } catch (err) {
+      globalRunnerRegistry.set(STRATEGY_ID, {
+        running: false,
+        last_error: err.message,
+        last_heartbeat: null
+      });
+      logger.error({ module: 'server', err: err.message, msg: 'auto-start failed' });
+    }
+  }
 
   // 定时轮询检测 regime/window 状态变化 → publish 事件（替代方案，2s 延迟）
   // 所有内部事件发射点均在 scope 外模块，无法直接注入 publish，故采用轮询
@@ -60,7 +77,7 @@ const globalRunnerRegistry = new Map();
   let _lastWindowId = null;
   setInterval(() => {
     try {
-      const regimeState = runner.getRegimeState();
+      const regimeState = runner ? runner.getRegimeState() : null;
       if (regimeState) {
         const score = regimeState.regime_score ?? null;
         if (_lastRegimeScore !== null && score !== null && Math.abs(score - _lastRegimeScore) > 0.05) {
@@ -137,16 +154,19 @@ const server = createServer(async (req, res) => {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
       status: 'ok',
-      strategy_id: config.strategy_id,
-      display_name: config.display_name,
       port: PORT,
-      ts: new Date().toISOString()
+      strategy: STRATEGY_ID || 'none',
+      runner_active: runner !== null
     }));
     return;
   }
 
   // POST /config/reload — 热更新
   if (req.method === 'POST' && req.url === '/config/reload') {
+    if (!STRATEGY_ID) {
+      sendJson(res, { ok: false, error: 'no strategy loaded' }, 400);
+      return;
+    }
     globalRunnerRegistry.set(STRATEGY_ID, { running: false, last_error: null, last_heartbeat: null });
     try {
       const oldConfig = JSON.parse(JSON.stringify(config));
@@ -167,7 +187,7 @@ const server = createServer(async (req, res) => {
       }
 
       // 通知 runner 使用新配置
-      if (typeof runner.reload === 'function') {
+      if (runner && typeof runner.reload === 'function') {
         runner.reload(config);
       }
 
@@ -194,7 +214,7 @@ const server = createServer(async (req, res) => {
   // GET /ui/regime — 当前市场状态评分
   if (req.method === 'GET' && req.url === '/ui/regime') {
     try {
-      const state = runner.getRegimeState();
+      const state = runner ? runner.getRegimeState() : null;
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ ok: true, data: state }));
     } catch (e) {
@@ -239,7 +259,7 @@ const server = createServer(async (req, res) => {
   // GET /ui/cancel-stats — 撤单引擎统计
   if (req.method === 'GET' && req.url === '/ui/cancel-stats') {
     try {
-      const stats = runner.getCancelStats();
+      const stats = runner ? runner.getCancelStats() : {};
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ ok: true, data: stats }));
     } catch (e) {
@@ -252,7 +272,7 @@ const server = createServer(async (req, res) => {
   // GET /ui/active-orders — 当前活跃挂单
   if (req.method === 'GET' && req.url === '/ui/active-orders') {
     try {
-      const orders = runner.getActiveOrders();
+      const orders = runner ? runner.getActiveOrders() : [];
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ ok: true, data: orders }));
     } catch (e) {
@@ -265,7 +285,7 @@ const server = createServer(async (req, res) => {
   // GET /book/snapshot — 订单簿快照
   if (req.method === 'GET' && req.url === '/book/snapshot') {
     try {
-      const snap = runner.getOrderbookSnapshot();
+      const snap = runner ? runner.getOrderbookSnapshot() : null;
       sendJson(res, {
         bids: snap ? [] : [],
         asks: snap ? [] : [],
