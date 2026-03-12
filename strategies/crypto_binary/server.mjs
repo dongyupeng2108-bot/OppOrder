@@ -298,6 +298,37 @@ const server = createServer(async (req, res) => {
     return;
   }
 
+  // GET /trading/manual/stats — 带重置过滤的手动交易统计
+  if (req.method === 'GET' && req.url === '/trading/manual/stats') {
+    try {
+      if (!db) { sendJson(res, { error: 'db not ready' }, 503); return; }
+      const resetAt = global._manualTradeResetAt || 0;
+      const row = await db.get(
+        `SELECT
+          COUNT(*) as total_trades,
+          COALESCE(SUM(CASE WHEN status='filled' THEN 1 ELSE 0 END), 0) as wins,
+          COALESCE(SUM(CASE WHEN status='cancelled' THEN 1 ELSE 0 END), 0) as losses,
+          COALESCE(SUM(CASE WHEN status='filled' THEN COALESCE(pnl,0) ELSE 0 END), 0) as total_pnl
+        FROM trading_orders
+        WHERE source='manual' AND created_at > ?`,
+        [resetAt]
+      );
+      const r = row || { total_trades: 0, wins: 0, losses: 0, total_pnl: 0 };
+      const win_rate = r.total_trades > 0 ? (r.wins || 0) / r.total_trades : 0;
+      sendJson(res, { total_trades: r.total_trades || 0, wins: r.wins || 0, losses: r.losses || 0, total_pnl: r.total_pnl || 0, win_rate });
+    } catch (e) {
+      sendJson(res, { error: e.message }, 500);
+    }
+    return;
+  }
+
+  // POST /trading/manual/reset — 软重置手动交易统计
+  if (req.method === 'POST' && req.url === '/trading/manual/reset') {
+    global._manualTradeResetAt = Date.now();
+    sendJson(res, { ok: true, reset_at: new Date(global._manualTradeResetAt).toISOString() });
+    return;
+  }
+
   // ── 复盘分析端点（UI-M4）──────────────────────────────────
 
   // GET /postmortem/attribution

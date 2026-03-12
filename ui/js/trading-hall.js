@@ -661,7 +661,7 @@ async function th_submitManualOrder(side) {
 
 async function th_refreshManualStats() {
   try {
-    const r = await fetch(BASE_URL + '/trading/manual-stats');
+    const r = await fetch(BASE_URL + '/trading/manual/stats');
     if (!r.ok) return;
     const d = await r.json();
     const pnlEl   = document.getElementById('th-manual-pnl');
@@ -676,15 +676,15 @@ async function th_refreshManualStats() {
 function th_bindResetPnl() {
   const resetBtn = document.getElementById('th-reset-pnl');
   if (!resetBtn) return;
-  resetBtn.onclick = () => {
+  resetBtn.onclick = async () => {
     if (!confirm('确认清零手动交易统计？此操作不可撤销。')) return;
-    const pnlEl   = document.getElementById('th-manual-pnl');
-    const tradeEl = document.getElementById('th-manual-trades');
-    const winEl   = document.getElementById('th-manual-winrate');
-    if (pnlEl)   pnlEl.textContent   = '0.0000';
-    if (tradeEl) tradeEl.textContent = '0';
-    if (winEl)   winEl.textContent   = '—';
-    th_showTradeToast('统计已重置', 'success');
+    try {
+      await fetch(BASE_URL + '/trading/manual/reset', { method: 'POST' });
+      await th_refreshManualStats();
+      th_showTradeToast('统计已重置', 'success');
+    } catch (err) {
+      th_showTradeToast('重置失败：' + err.message, 'error');
+    }
   };
 }
 
