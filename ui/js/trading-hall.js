@@ -13,6 +13,8 @@ let th_symbol    = 'BTC';  // 当前选中币种
 let th_timeframe = '5m';   // 当前选中周期
 let _th_pollCtrl = null;   // AbortController for polling loops
 let _th_wsHandler = null;  // unified WS handler (for dedup via offWsEvent)
+let _th_symbol   = 'BTCUSDT'; // Binance symbol（与 th_symbol 同步，全名格式）
+let _th_interval = '5m';      // K 线周期（与 th_timeframe 同步）
 
 // ─── K 线图 ───────────────────────────────
 let _th_klineChart = null;
@@ -241,6 +243,11 @@ function th_updateTimeframeUI() {
 
 async function th_onMarketSwitch() {
   th_appendLog('system', `切换到 ${th_symbol} ${th_timeframe}`);
+  // 更新 Binance symbol/interval 并重加载 K 线
+  const binanceSym = (th_symbol === 'BTC' ? 'BTCUSDT' : th_symbol + 'USDT').toUpperCase();
+  _th_symbol   = binanceSym;
+  _th_interval = th_timeframe;
+  th_loadKlines(binanceSym, th_timeframe);
 
   // /market/current-window 不存在，静默跳过
   try {
@@ -641,6 +648,21 @@ function th_render() {
   `;
 }
 
+// ─── Market switch ────────────────────────
+function th_getWindowEnd(interval) {
+  const secs = { '5m': 300, '15m': 900, '1h': 3600, '4h': 14400 }[interval] || 900;
+  const now  = Math.floor(Date.now() / 1000);
+  return (Math.floor(now / secs) + 1) * secs * 1000; // ms
+}
+
+async function th_switchMarket(symbol, interval) {
+  if (symbol === _th_symbol && interval === _th_interval) return;
+  _th_symbol   = symbol;
+  _th_interval = interval;
+  await th_loadKlines(symbol, interval);
+  th_appendLog('switch', `${symbol} ${interval}`, 'info');
+}
+
 // ─── Countdown helpers ────────────────────
 function th_windowSizeSec() {
   const map = { '5m': 300, '15m': 900, '1h': 3600, '4h': 14400 };
@@ -680,15 +702,22 @@ function th_startPolling() {
 }
 
 // ─── Timer loop ──────────────────────────
+let _th_lastWindowStart = -1; // 用于检测窗口切换
 function th_startTimers() {
   th_timers.forEach(clearInterval);
   th_timers = [];
+  _th_lastWindowStart = -1;
   th_timers.push(setInterval(() => {
     const sizeSec = th_windowSizeSec();
     const now = Math.floor(Date.now() / 1000);
     const windowStart = Math.floor(now / sizeSec) * sizeSec;
     th_countdown = (windowStart + sizeSec) - now;
     th_updateCountdown();
+    // 窗口切换时自动刷新 K 线
+    if (_th_lastWindowStart >= 0 && windowStart !== _th_lastWindowStart) {
+      th_loadKlines(_th_symbol, _th_interval);
+    }
+    _th_lastWindowStart = windowStart;
   }, 1000));
   th_startPolling();
 }
