@@ -90,12 +90,13 @@ function _sl_submitCreate() {
   })
   .then(r => r.json())
   .then(d => {
-    if (!d.ok) throw new Error(d.error);
+    if (!d.ok) throw new Error(d.error || '创建失败');
     document.getElementById('sl-create-modal')?.remove();
+    sl_isEditing = false;
     sl_pollInstances(name);
   })
   .catch(e => {
-    errEl.textContent = e.message; errEl.style.display = 'block';
+    errEl.textContent = e.message || '创建失败，请检查服务是否运行'; errEl.style.display = 'block';
     btn.textContent = '创建'; btn.disabled = false;
   });
 }
