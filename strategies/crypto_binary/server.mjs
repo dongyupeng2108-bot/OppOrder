@@ -204,15 +204,34 @@ const server = createServer(async (req, res) => {
     return;
   }
 
-  // GET /ui/instances — 所有策略实例当前状态
+  // GET /ui/instances — 扫描磁盘 instances 目录，合并运行时状态
   if (req.method === 'GET' && req.url === '/ui/instances') {
     try {
-      const stats = runner.getInstanceStats();
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ ok: true, data: stats }));
+      const instancesDir = resolve(__dirname, 'instances');
+      const files = readdirSync(instancesDir).filter(f => f.endsWith('.json'));
+      const instances = files.map(file => {
+        try {
+          const cfg = JSON.parse(readFileSync(resolve(instancesDir, file), 'utf8'));
+          const sid = cfg.strategy_id || file.replace('.json', '');
+          const runnerInfo = globalRunnerRegistry.get(sid) || globalRunnerRegistry.get(file.replace('.json', ''));
+          return {
+            strategy_id: sid,
+            enabled: cfg.enabled !== false,
+            regime_score: runnerInfo?.lastRegimeScore ?? null,
+            is_active: runnerInfo?.running === true,
+            current_window: runnerInfo?.currentWindow ?? null,
+            paper_pnl: runnerInfo?.paperPnl ?? null,
+            open_orders: runnerInfo?.openOrders?.length ?? 0,
+            pair_cost: runnerInfo?.lastPairCost ?? null,
+            volume_score: runnerInfo?.lastVolumeScore ?? null,
+          };
+        } catch {
+          return null;
+        }
+      }).filter(Boolean);
+      sendJson(res, { ok: true, data: instances });
     } catch (e) {
-      res.writeHead(500, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ ok: false, error: e.message }));
+      sendJson(res, { ok: false, error: e.message }, 500);
     }
     return;
   }

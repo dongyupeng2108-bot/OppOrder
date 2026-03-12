@@ -1,0 +1,6 @@
+{
+  "strategy": {
+    "type": "low_price_sniper"
+  },
+  "strategy_id": "test1"
+}
