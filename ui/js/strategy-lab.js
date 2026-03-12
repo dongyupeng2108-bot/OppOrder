@@ -125,7 +125,11 @@ function sl_showAccumulating(containerEl, current, required = SL_MIN_POSTMORTEM)
 
 async function sl_fetchAttribution() {
   try {
-    const r = await fetch(BASE_URL + '/postmortem/attribution');
+    const strategyId = sl_sel || '';
+    const url = strategyId
+      ? `${BASE_URL}/postmortem/attribution?strategy_id=${encodeURIComponent(strategyId)}`
+      : `${BASE_URL}/postmortem/attribution`;
+    const r = await fetch(url);
     if (!r.ok) return null;
     return await r.json();
   } catch (_) { return null; }
@@ -133,7 +137,11 @@ async function sl_fetchAttribution() {
 
 async function sl_fetchLossModes() {
   try {
-    const r = await fetch(BASE_URL + '/postmortem/loss-modes');
+    const strategyId = sl_sel || '';
+    const url = strategyId
+      ? `${BASE_URL}/postmortem/loss-modes?strategy_id=${encodeURIComponent(strategyId)}`
+      : `${BASE_URL}/postmortem/loss-modes`;
+    const r = await fetch(url);
     if (!r.ok) return null;
     return await r.json();
   } catch (_) { return null; }
@@ -150,7 +158,11 @@ async function sl_fetchCompareData() {
 async function sl_fetchPostmortemCount() {
   try {
     // /stats 不存在时从 attribution regime_buckets 汇总总数
-    const r = await fetch(BASE_URL + '/postmortem/attribution');
+    const strategyId = sl_sel || '';
+    const _attrUrl = strategyId
+      ? `${BASE_URL}/postmortem/attribution?strategy_id=${encodeURIComponent(strategyId)}`
+      : `${BASE_URL}/postmortem/attribution`;
+    const r = await fetch(_attrUrl);
     if (!r.ok) return 0;
     const d = await r.json();
     const buckets = Array.isArray(d.regime_buckets) ? d.regime_buckets : [];

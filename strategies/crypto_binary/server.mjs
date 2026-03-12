@@ -362,28 +362,128 @@ const server = createServer(async (req, res) => {
   // ── 复盘分析端点（UI-M4）──────────────────────────────────
 
   // GET /postmortem/attribution
-  if (req.method === 'GET' && req.url === '/postmortem/attribution') {
+  if (req.method === 'GET' && req.url.startsWith('/postmortem/attribution')) {
     try {
       if (!db) { sendJson(res, { error: 'db not ready' }, 503); return; }
-      sendJson(res, await getAttribution(db));
+      const _attrUrl = new URL(req.url, 'http://localhost');
+      const _attrSid = _attrUrl.searchParams.get('strategy_id') || null;
+      if (!_attrSid) {
+        sendJson(res, await getAttribution(db));
+      } else {
+        const regimeBuckets = await db.all(`
+          SELECT
+            CASE
+              WHEN regime_score >= 0.6 THEN 'oscillating'
+              WHEN regime_score >= 0.4 THEN 'transitional'
+              ELSE 'trending'
+            END as regime_bucket,
+            COUNT(*) as count,
+            COALESCE(SUM(CASE WHEN pair_cost IS NOT NULL AND pair_cost < 1.0
+              THEN 1.0 - pair_cost ELSE 0 END), 0) as total_pnl,
+            AVG(pair_cost) as avg_cost
+          FROM cb_postmortem
+          WHERE regime_score IS NOT NULL AND strategy_id = ?
+          GROUP BY regime_bucket
+          ORDER BY regime_bucket
+        `, [_attrSid]);
+        const hourBuckets = await db.all(`
+          SELECT
+            CASE
+              WHEN CAST(strftime('%H', window_start) AS INTEGER) BETWEEN 1  AND 7  THEN 'asia'
+              WHEN CAST(strftime('%H', window_start) AS INTEGER) BETWEEN 7  AND 12 THEN 'europe'
+              WHEN CAST(strftime('%H', window_start) AS INTEGER) BETWEEN 12 AND 16 THEN 'us_morning'
+              WHEN CAST(strftime('%H', window_start) AS INTEGER) BETWEEN 16 AND 20 THEN 'us_afternoon'
+              WHEN CAST(strftime('%H', window_start) AS INTEGER) BETWEEN 20 AND 23 THEN 'us_close'
+              ELSE 'overnight'
+            END as hour_bucket,
+            COUNT(*) as count,
+            COALESCE(SUM(CASE WHEN pair_cost IS NOT NULL AND pair_cost < 1.0
+              THEN 1.0 - pair_cost ELSE 0 END), 0) as total_pnl
+          FROM cb_postmortem
+          WHERE window_start IS NOT NULL AND strategy_id = ?
+          GROUP BY hour_bucket
+          ORDER BY hour_bucket
+        `, [_attrSid]);
+        sendJson(res, { regime_buckets: regimeBuckets, hour_buckets: hourBuckets });
+      }
     } catch (e) { sendJson(res, { error: e.message }, 500); }
     return;
   }
 
   // GET /postmortem/loss-modes
-  if (req.method === 'GET' && req.url === '/postmortem/loss-modes') {
+  if (req.method === 'GET' && req.url.startsWith('/postmortem/loss-modes')) {
     try {
       if (!db) { sendJson(res, { error: 'db not ready' }, 503); return; }
-      sendJson(res, await getLossModes(db));
+      const _lmUrl = new URL(req.url, 'http://localhost');
+      const _lmSid = _lmUrl.searchParams.get('strategy_id') || null;
+      if (!_lmSid) {
+        sendJson(res, await getLossModes(db));
+      } else {
+        const modes = await db.all(`
+          SELECT
+            CASE
+              WHEN pair_cost IS NULL        THEN 'unpaired_timeout'
+              WHEN pair_cost >= 1.05        THEN 'wrong_direction'
+              WHEN pair_cost >= 1.0         THEN 'spread_eaten'
+              ELSE                          'other'
+            END as loss_mode,
+            COUNT(*) as count,
+            AVG(pair_cost) as avg_cost,
+            MIN(pair_cost) as worst_cost
+          FROM cb_postmortem
+          WHERE (pair_cost IS NULL OR pair_cost >= 1.0) AND strategy_id = ?
+          GROUP BY loss_mode
+          ORDER BY count DESC
+        `, [_lmSid]);
+        const examples = {};
+        for (const mode of modes) {
+          const ex = await db.get(`
+            SELECT id, strategy_id, window_start, window_end, pair_cost, regime_score
+            FROM cb_postmortem
+            WHERE (
+              CASE
+                WHEN pair_cost IS NULL        THEN 'unpaired_timeout'
+                WHEN pair_cost >= 1.05        THEN 'wrong_direction'
+                WHEN pair_cost >= 1.0         THEN 'spread_eaten'
+                ELSE                          'other'
+              END
+            ) = ? AND strategy_id = ?
+            ORDER BY id DESC LIMIT 1
+          `, [mode.loss_mode, _lmSid]);
+          if (ex) examples[mode.loss_mode] = ex;
+        }
+        sendJson(res, { modes, examples });
+      }
     } catch (e) { sendJson(res, { error: e.message }, 500); }
     return;
   }
 
   // GET /postmortem/sensitivity
-  if (req.method === 'GET' && req.url === '/postmortem/sensitivity') {
+  if (req.method === 'GET' && req.url.startsWith('/postmortem/sensitivity')) {
     try {
       if (!db) { sendJson(res, { error: 'db not ready' }, 503); return; }
-      sendJson(res, await getSensitivity(db));
+      const _sensUrl = new URL(req.url, 'http://localhost');
+      const _sensSid = _sensUrl.searchParams.get('strategy_id') || null;
+      if (!_sensSid) {
+        sendJson(res, await getSensitivity(db));
+      } else {
+        const rows = await db.all(`
+          SELECT
+            config_hash,
+            strategy_id,
+            COUNT(*) as total_windows,
+            SUM(CASE WHEN pair_cost IS NOT NULL AND pair_cost < 1.0 THEN 1 ELSE 0 END) as wins,
+            AVG(pair_cost) as avg_cost,
+            AVG(regime_score) as avg_regime,
+            MIN(created_at) as first_trade,
+            MAX(created_at) as last_trade
+          FROM cb_postmortem
+          WHERE config_hash IS NOT NULL AND strategy_id = ?
+          GROUP BY config_hash, strategy_id
+          ORDER BY avg_cost ASC
+        `, [_sensSid]);
+        sendJson(res, rows);
+      }
     } catch (e) { sendJson(res, { error: e.message }, 500); }
     return;
   }
