@@ -175,14 +175,14 @@ async function sl_renderAttribution(containerEl) {
     `<tr>
       <td style="padding:6px 12px;border-bottom:1px solid #1a1a2e;">${row.regime_bucket || '—'}</td>
       <td style="padding:6px 12px;border-bottom:1px solid #1a1a2e;text-align:right;">${row.count || 0}</td>
-      <td style="padding:6px 12px;border-bottom:1px solid #1a1a2e;text-align:right;color:${(row.total_pnl||0)>=0?'#26a69a':'#ef5350'};">${row.total_pnl !== undefined ? (row.total_pnl >= 0 ? '+' : '') + row.total_pnl.toFixed(4) : '—'}</td>
+      <td style="padding:6px 12px;border-bottom:1px solid #1a1a2e;text-align:right;color:${(row.total_pnl||0)>=0?'var(--color-up)':'var(--color-down)'};">${row.total_pnl !== undefined ? (row.total_pnl >= 0 ? '+' : '') + row.total_pnl.toFixed(4) : '—'}</td>
     </tr>`
   ).join('');
   const hourRows = hourBuckets.map(row =>
     `<tr>
       <td style="padding:6px 12px;border-bottom:1px solid #1a1a2e;">${row.hour_bucket || '—'}</td>
       <td style="padding:6px 12px;border-bottom:1px solid #1a1a2e;text-align:right;">${row.count || 0}</td>
-      <td style="padding:6px 12px;border-bottom:1px solid #1a1a2e;text-align:right;color:${(row.total_pnl||0)>=0?'#26a69a':'#ef5350'};">${row.total_pnl !== undefined ? (row.total_pnl >= 0 ? '+' : '') + row.total_pnl.toFixed(4) : '—'}</td>
+      <td style="padding:6px 12px;border-bottom:1px solid #1a1a2e;text-align:right;color:${(row.total_pnl||0)>=0?'var(--color-up)':'var(--color-down)'};">${row.total_pnl !== undefined ? (row.total_pnl >= 0 ? '+' : '') + row.total_pnl.toFixed(4) : '—'}</td>
     </tr>`
   ).join('');
   containerEl.innerHTML = `
@@ -256,11 +256,11 @@ async function sl_fetchRuntimeStatus() {
 
 // 四态标签：runtime_state=true→运行中 / false+desired_state=true→配置中 / false+desired_state=false→已停止 / last_error非null→错误
 function sl_getStatusLabel(inst) {
-  if (!inst) return { label: '未知', color: '#888888' };
-  if (inst.last_error) return { label: '错误', color: '#ef5350' };
-  if (inst.runtime_state) return { label: '运行中', color: '#26a69a' };
+  if (!inst) return { label: '未知', color: 'var(--text-body)' };
+  if (inst.last_error) return { label: '错误', color: 'var(--color-down)' };
+  if (inst.runtime_state) return { label: '运行中', color: 'var(--color-up)' };
   if (inst.desired_state) return { label: '配置中', color: '#ff9800' };
-  return { label: '已停止', color: '#888888' };
+  return { label: '已停止', color: 'var(--text-body)' };
 }
 
 async function sl_loadInstanceParams(name) {
@@ -417,10 +417,10 @@ function sl_onSlider(id, val, min, max, unit, isFloat) {
 
 function sl_updateInfluence() {
   const rows = [
-    {l:"成交率", dir: sl_offset > 0.02 ? "↓" : "↑", c: sl_offset > 0.02 ? "#ef5350" : "#26a69a", d: sl_offset > 0.02 ? "降低" : "升高"},
-    {l:"Edge",   dir: sl_offset > 0.02 ? "↑" : "↓", c: sl_offset > 0.02 ? "#26a69a" : "#ef5350", d: sl_offset > 0.02 ? "增大" : "减小"},
-    {l:"配对率", dir: sl_tranches > 2 ? "↑" : "↓",  c: sl_tranches > 2 ? "#26a69a" : "#ef5350",  d: sl_tranches > 2 ? "提升" : "降低"},
-    {l:"风险",   dir: sl_offset > 0.03 ? "↑" : "→", c: sl_offset > 0.03 ? "#f59e0b" : "#666",    d: sl_offset > 0.03 ? "增大" : "不变"},
+    {l:"成交率", dir: sl_offset > 0.02 ? "↓" : "↑", c: sl_offset > 0.02 ? "var(--color-down)" : "var(--color-up)", d: sl_offset > 0.02 ? "降低" : "升高"},
+    {l:"Edge",   dir: sl_offset > 0.02 ? "↑" : "↓", c: sl_offset > 0.02 ? "var(--color-up)" : "var(--color-down)", d: sl_offset > 0.02 ? "增大" : "减小"},
+    {l:"配对率", dir: sl_tranches > 2 ? "↑" : "↓",  c: sl_tranches > 2 ? "var(--color-up)" : "var(--color-down)",  d: sl_tranches > 2 ? "提升" : "降低"},
+    {l:"风险",   dir: sl_offset > 0.03 ? "↑" : "→", c: sl_offset > 0.03 ? "var(--color-warn)" : "var(--text-muted)",    d: sl_offset > 0.03 ? "增大" : "不变"},
   ];
   const el = document.getElementById("sl-influence-rows");
   if (!el) return;
@@ -636,7 +636,7 @@ async function sl_renderCompare() {
 
   const tableRows = rows.map(row => {
     const pnl = row.avg_pnl || 0;
-    const pnlColor = pnl >= 0 ? '#26a69a' : '#ef5350';
+    const pnlColor = pnl >= 0 ? 'var(--color-up)' : 'var(--color-down)';
     const pnlStr = (pnl >= 0 ? '+' : '') + pnl.toFixed(4);
     const hash = row.config_hash ? row.config_hash.slice(0, 8) : '—';
     const winRate = row.win_rate !== undefined ? (row.win_rate * 100).toFixed(1) + '%' : '—';
@@ -771,7 +771,7 @@ function sl_showSaveToast(msg, type = 'success') {
   toast.textContent = msg;
   toast.style.cssText = `position:fixed;bottom:24px;right:24px;z-index:9999;` +
     `padding:12px 20px;border-radius:6px;font-size:13px;` +
-    `background:${type === 'error' ? '#ef5350' : '#26a69a'};` +
+    `background:${type === 'error' ? 'var(--color-down)' : 'var(--color-up)'};` +
     `color:#fff;max-width:420px;line-height:1.5;` +
     `box-shadow:0 4px 12px rgba(0,0,0,0.4);`;
   document.body.appendChild(toast);
