@@ -22,8 +22,17 @@ import { getDb } from './db.mjs';
 import { initManualTrade, submitManualOrder, getManualStats } from './manual_trade.mjs';
 import { publish, subscribe, unsubscribe, EVENT_TYPES } from './event_bus.mjs';
 import { getAttribution, getLossModes, getSensitivity, getDistribution, getCompare } from './postmortem_api.mjs';
+import { ProxyAgent, fetch as undiciFetch } from 'undici';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+
+// 代理感知 fetch（用于 /klines 等需要翻墙的端点）
+const _klinesProxyUrl = process.env.HTTPS_PROXY || process.env.HTTP_PROXY || null;
+const _klinesDispatcher = _klinesProxyUrl ? new ProxyAgent(_klinesProxyUrl) : null;
+async function _proxyFetch(url, opts = {}) {
+  if (_klinesDispatcher) return undiciFetch(url, { ...opts, dispatcher: _klinesDispatcher });
+  return fetch(url, opts);
+}
 
 // 解析命令行参数
 const args = Object.fromEntries(
@@ -326,6 +335,27 @@ const server = createServer(async (req, res) => {
   if (req.method === 'POST' && req.url === '/trading/manual/reset') {
     global._manualTradeResetAt = Date.now();
     sendJson(res, { ok: true, reset_at: new Date(global._manualTradeResetAt).toISOString() });
+    return;
+  }
+
+  // GET /klines — 转发 Binance REST klines（K 线代理）
+  if (req.method === 'GET' && req.url.startsWith('/klines')) {
+    const params = new URL(req.url, 'http://localhost').searchParams;
+    const symbol   = params.get('symbol')   || 'BTCUSDT';
+    const interval = params.get('interval') || '15m';
+    const limit    = parseInt(params.get('limit') || '21', 10);
+    try {
+      const url = `https://api.binance.com/api/v3/klines?symbol=${encodeURIComponent(symbol)}&interval=${encodeURIComponent(interval)}&limit=${limit}`;
+      const resp = await _proxyFetch(url);
+      if (!resp.ok) {
+        sendJson(res, { ok: false, error: `Binance ${resp.status}` }, 502);
+        return;
+      }
+      const data = await resp.json();
+      sendJson(res, { ok: true, klines: data });
+    } catch (err) {
+      sendJson(res, { ok: false, error: err.message }, 500);
+    }
     return;
   }
 
