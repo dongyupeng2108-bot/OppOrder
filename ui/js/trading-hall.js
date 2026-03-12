@@ -255,8 +255,8 @@ function th_renderStratTable(strats = []) {
 }
 
 // ─── Log buffer helpers ───────────────────
-function th_appendLog(type, text) {
-  const entry = { time: new Date().toLocaleTimeString(), type, text };
+function th_appendLog(type, text, level = 'info') {
+  const entry = { time: new Date().toLocaleTimeString(), type, text, level };
   th_logBuffer.unshift(entry);
   if (th_logBuffer.length > TH_LOG_MAX) th_logBuffer.length = TH_LOG_MAX;
   th_renderLog();
@@ -266,12 +266,12 @@ function th_appendLog(type, text) {
 function th_renderLog() {
   const el = document.getElementById("th-log-area");
   if (!el) return;
-  const colorMap = { regime: '#26a69a', window: '#5c6bc0', order: '#ffa726', system: '#888' };
+  const colorMap = { info: '#b0bec5', warn: '#ffb74d', error: '#ef5350', success: '#26a69a' };
   el.innerHTML = th_logBuffer.map(e =>
     `<div style="display:flex;gap:8px;padding:3px 0;border-bottom:1px solid #111;font-size:12px;line-height:1.5;">
       <span style="color:#555;flex-shrink:0;">${e.time}</span>
-      <span style="color:${colorMap[e.type]||'#888'};flex-shrink:0;width:52px;">[${e.type}]</span>
-      <span style="color:#ccc;">${e.text}</span>
+      <span style="color:${colorMap[e.level]||colorMap.info};flex-shrink:0;width:52px;">[${e.type}]</span>
+      <span style="color:${colorMap[e.level]||colorMap.info};">${e.text}</span>
     </div>`
   ).join('');
 }
@@ -719,20 +719,22 @@ function th_onRegimeChanged(event) {
     scoreEl.style.color = score >= 0.6 ? '#26a69a' : score >= 0.4 ? '#ffb74d' : '#ef5350';
   }
   const label = score >= 0.5 ? '震荡' : '趋势';
-  th_appendLog('regime', `score=${score.toFixed(3)} (${label})`);
+  const regimeLevel = score >= 0.6 ? 'success' : score >= 0.4 ? 'warn' : 'info';
+  th_appendLog('regime', `score=${score.toFixed(3)} (${label})`, regimeLevel);
 }
 
 function th_onWindowSwitch(event) {
   const p = event.payload || event;
   th_refreshManualStats();
-  th_appendLog('window', `窗口切换 → ${p.window_id || JSON.stringify(p)}`);
+  th_appendLog('window', `窗口切换 → ${p.window_id || JSON.stringify(p)}`, 'info');
 }
 
 function th_onOrderEvent(event) {
   const p = event.payload || event;
   setTimeout(th_refreshManualStats, 200);
   const typeLabel = { 'order.placed': '挂单', 'order.filled': '成交', 'order.cancelled': '撤单' }[event.type] || event.type;
-  th_appendLog('order', `${typeLabel} ${p.side || ''} $${p.amount || p.size || ''}`);
+  const orderLevel = event.type === 'order.filled' ? 'success' : event.type === 'order.cancelled' ? 'warn' : 'info';
+  th_appendLog('order', `${typeLabel} ${p.side || ''} $${p.amount || p.size || ''}`, orderLevel);
 }
 
 function th_initWsEvents() {
@@ -784,5 +786,7 @@ window.initTradingHall = function() {
   th_bindSymbolButtons();
   th_bindTimeframeButtons();
   th_updateTimeframeUI();
-  th_appendLog('system', '交易大厅已初始化，WS 监听中');
+  th_logBuffer.length = 0;
+  th_renderLog();
+  th_appendLog('system', '日志已就绪，等待事件...', 'info');
 };
