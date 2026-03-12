@@ -116,6 +116,12 @@ let sl_isEditing = false; // 用户正在编辑参数期间不覆盖选中状态
 
 const SL_MIN_POSTMORTEM = 50; // 统计意义所需最低记录数
 
+// 数据量不足时在容器中显示积累中提示
+function sl_showAccumulating(containerEl, current, required = SL_MIN_POSTMORTEM) {
+  if (!containerEl) return;
+  containerEl.innerHTML = `<div style="padding:24px;text-align:center;color:#666;font-size:13px;">数据积累中（当前 ${current} 条，需 ${required}+ 条才有统计意义）</div>`;
+}
+
 async function sl_fetchAttribution() {
   try {
     const r = await fetch(BASE_URL + '/postmortem/attribution');
@@ -154,7 +160,7 @@ async function sl_fetchPostmortemCount() {
 async function sl_renderAttribution(containerEl) {
   const count = await sl_fetchPostmortemCount();
   if (count < SL_MIN_POSTMORTEM) {
-    containerEl.innerHTML = `<div style="padding:24px;text-align:center;color:#666;font-size:13px;">数据积累中（当前 ${count} 条，需 ${SL_MIN_POSTMORTEM}+ 条才有统计意义）</div>`;
+    sl_showAccumulating(containerEl, count);
     return;
   }
   const data = await sl_fetchAttribution();
@@ -202,7 +208,7 @@ async function sl_renderAttribution(containerEl) {
 async function sl_renderLossModes(containerEl) {
   const count = await sl_fetchPostmortemCount();
   if (count < SL_MIN_POSTMORTEM) {
-    containerEl.innerHTML = `<div style="padding:24px;text-align:center;color:#666;font-size:13px;">数据积累中（当前 ${count} 条，需 ${SL_MIN_POSTMORTEM}+ 条才有统计意义）</div>`;
+    sl_showAccumulating(containerEl, count);
     return;
   }
   const data = await sl_fetchLossModes();
