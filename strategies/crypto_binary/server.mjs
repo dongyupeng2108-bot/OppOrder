@@ -549,7 +549,7 @@ const server = createServer(async (req, res) => {
           writeFileSync(instancePath, JSON.stringify(merged, null, 2), 'utf8');
 
           res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ ok: true, written: instancePath }));
+          res.end(JSON.stringify({ ok: true, written: instancePath, name }));
         } catch (err) {
           res.writeHead(400, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ error: err.message }));
