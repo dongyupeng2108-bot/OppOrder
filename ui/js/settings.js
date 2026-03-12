@@ -64,7 +64,7 @@ function st_onToggle(id) {
   const on = id === "st-fomc" ? st_events.fomc : id === "st-cpi" ? st_events.cpi : st_events.nfp;
   const track = document.getElementById(id + "-track");
   const knob  = document.getElementById(id + "-knob");
-  if (track) track.style.background = on ? "#6366f1" : "#141428";
+  if (track) track.style.background = on ? 'var(--color-primary)' : 'var(--border-dim)';
   if (knob)  knob.style.left = on ? "32px" : "4px";
 }
 
@@ -185,7 +185,7 @@ function st_showToast(msg, type = 'success') {
   toast.style.cssText = `
     position: fixed; bottom: 24px; right: 24px; z-index: 9999;
     padding: 12px 20px; border-radius: 6px; font-size: 13px;
-    background: ${type === 'error' ? '#ef5350' : '#26a69a'};
+    background: ${type === 'error' ? 'var(--color-down)' : 'var(--color-up)'};
     color: #fff; max-width: 400px; line-height: 1.5;
     box-shadow: 0 4px 12px rgba(0,0,0,0.4);
   `;

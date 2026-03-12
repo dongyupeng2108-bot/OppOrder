@@ -189,13 +189,13 @@ function th_setSide(side) {
   const sellEl = document.getElementById("th-side-sell");
   const btnEl  = document.getElementById("th-buy-btn");
   if (side === "buy") {
-    buyEl.style.color  = "#26a69a"; buyEl.style.borderBottom  = "4px solid #26a69a";
-    sellEl.style.color = "#444";    sellEl.style.borderBottom = "4px solid transparent";
-    btnEl.style.background = "#26a69a"; btnEl.textContent = "Buy";
+    buyEl.style.color  = 'var(--color-up)'; buyEl.style.borderBottom  = '4px solid var(--color-up)';
+    sellEl.style.color = 'var(--text-faint)';    sellEl.style.borderBottom = "4px solid transparent";
+    btnEl.style.background = 'var(--color-up)'; btnEl.textContent = "Buy";
   } else {
-    sellEl.style.color = "#ef5350"; sellEl.style.borderBottom = "4px solid #ef5350";
-    buyEl.style.color  = "#444";    buyEl.style.borderBottom  = "4px solid transparent";
-    btnEl.style.background = "#ef5350"; btnEl.textContent = "Sell";
+    sellEl.style.color = 'var(--color-down)'; sellEl.style.borderBottom = '4px solid var(--color-down)';
+    buyEl.style.color  = 'var(--text-faint)';    buyEl.style.borderBottom  = "4px solid transparent";
+    btnEl.style.background = 'var(--color-down)'; btnEl.textContent = "Sell";
   }
 }
 
@@ -211,8 +211,8 @@ function th_selectCoin(coin) {
   document.getElementById("th-coin-menu").style.display = "none";
   document.querySelectorAll("#th-coin-menu div").forEach(el => {
     const match = el.textContent.trim() === coin;
-    el.style.background = match ? "#12122a" : "transparent";
-    el.style.color = match ? "#ddd" : "#666";
+    el.style.background = match ? 'var(--border)' : "transparent";
+    el.style.color = match ? "#ddd" : 'var(--text-muted)';
   });
   th_onMarketSwitch();
 }
@@ -296,7 +296,7 @@ function th_updateGauge(score) {
   const needle = document.getElementById("th-gauge-needle");
   const dot = document.getElementById("th-gauge-dot");
   if (score == null) {
-    if (scoreEl) { scoreEl.style.color = "#444"; scoreEl.textContent = "—"; }
+    if (scoreEl) { scoreEl.style.color = 'var(--text-faint)'; scoreEl.textContent = "—"; }
     if (arc) arc.setAttribute("stroke-dasharray", "0 157");
     if (needle) { needle.setAttribute("x2", "10"); needle.setAttribute("y2", "65"); needle.setAttribute("stroke", "#333"); }
     if (dot) dot.setAttribute("fill", "#333");
@@ -319,7 +319,7 @@ function th_updateCountdown() {
   const el = document.getElementById("th-countdown");
   if (!el) return;
   el.textContent = m + ":" + s.toString().padStart(2, "0");
-  el.style.color = th_countdown < 60 ? "#ef5350" : "#888";
+  el.style.color = th_countdown < 60 ? 'var(--color-down)' : 'var(--text-body)';
 }
 
 // ─── Status label helper ──────────────────
@@ -342,7 +342,7 @@ function th_renderStratTable(strats = []) {
   }
   tbody.innerHTML = strats.map(st => {
     const typeShort = TH_TM[st.type]?.short || "";
-    const pnlColor = st.pnl > 0 ? "#26a69a" : st.pnl < 0 ? "#ef5350" : "#444";
+    const pnlColor = st.pnl > 0 ? 'var(--color-up)' : st.pnl < 0 ? 'var(--color-down)' : 'var(--text-faint)';
     const pnlText = st.pnl != null ? (st.pnl > 0 ? "+" : "") + st.pnl : "—";
     const statusInfo = th_getStatusLabel(st);
     const badgeColor = statusInfo.color;
@@ -422,7 +422,7 @@ function th_renderOrders(list) {
       const sideStr  = o.side ?? o.sd ?? '—';
       const priceStr = o.price ?? o.ask_price ?? o.limit_price ?? '—';
       const sizeStr  = o.size ?? o.shares ?? o.amount ?? '—';
-      const sideColor = String(sideStr).toUpperCase() === 'BID' ? '#26a69a' : '#ef5350';
+      const sideColor = String(sideStr).toUpperCase() === 'BID' ? 'var(--color-up)' : 'var(--color-down)';
       const ageStr = o.created_at ? Math.round((Date.now() - new Date(o.created_at).getTime()) / 1000) + 's' : (o.age ?? '—');
       return `<div style="display:flex;justify-content:space-between;margin-bottom:2px">
         <span style="color:${sideColor};font-size:16px;font-family:var(--m)">${sideStr} ${priceStr} × ${sizeStr}</span>
