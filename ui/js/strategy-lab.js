@@ -111,7 +111,6 @@ let sl_offset = 0.03;
 let sl_tranches = 3;
 let sl_pairT = 0.97;
 let sl_instances = null; // null=未加载; []=无策略; [...]= 已加载
-let sl_deployed = new Set(); // DEPRECATED: replaced by sl_serverStatus
 let sl_serverStatus = {}; // key=实例名, value={ name, desired_state, runtime_state, last_error, last_heartbeat }
 let sl_isEditing = false; // 用户正在编辑参数期间不覆盖选中状态
 
@@ -231,6 +230,30 @@ async function sl_fetchStatus() {
   } catch (_) {}
 }
 
+// 从服务端获取所有实例真实状态，返回 Map<name, statusObj>
+async function sl_fetchRuntimeStatus() {
+  try {
+    const res = await fetch(`${BASE_URL}/strategies/status`);
+    const data = await res.json();
+    const map = new Map();
+    for (const inst of (data.instances || [])) {
+      map.set(inst.name, inst);
+    }
+    return map;
+  } catch {
+    return new Map();
+  }
+}
+
+// 四态标签：runtime_state=true→运行中 / false+desired_state=true→配置中 / false+desired_state=false→已停止 / last_error非null→错误
+function sl_getStatusLabel(inst) {
+  if (!inst) return { label: '未知', color: '#888888' };
+  if (inst.last_error) return { label: '错误', color: '#ef5350' };
+  if (inst.runtime_state) return { label: '运行中', color: '#26a69a' };
+  if (inst.desired_state) return { label: '配置中', color: '#ff9800' };
+  return { label: '已停止', color: '#888888' };
+}
+
 async function sl_loadInstanceParams(name) {
   sl_isEditing = true;
   try {
@@ -248,34 +271,38 @@ async function sl_loadInstanceParams(name) {
 // ─── Instance fetch ───────────────────────
 async function sl_pollInstances(autoSelect) {
   try {
-    const res = await fetch(BASE_URL + '/ui/instances');
-    if (!res.ok) return;
-    const data = await res.json();
-    if (data.ok && Array.isArray(data.data)) {
-      await sl_fetchStatus();
-      sl_instances = data.data.map((d, i) => ({
-        id: d.strategy_id,
-        name: d.strategy_id,
+    const runtimeMap = await sl_fetchRuntimeStatus();
+    // 同步更新 sl_serverStatus（供 sl_renderEdit 使用）
+    sl_serverStatus = {};
+    for (const [name, inst] of runtimeMap) {
+      sl_serverStatus[name] = inst;
+    }
+    const names = Array.from(runtimeMap.keys());
+    sl_instances = names.map((name, i) => {
+      const instStatus = runtimeMap.get(name);
+      return {
+        id: name,
+        name: name,
         color: window.STRAT_COLORS?.[i % 6] || '#10b981',
         type: 'pair',
-        status: d.is_active ? 'running' : 'stopped',
+        status: instStatus?.runtime_state ? 'running' : 'stopped',
         pnl: null,
-        trades: d.open_orders ?? null,
+        trades: null,
         winRate: null,
         avgPos: null,
-      }));
-      if (!sl_isEditing) {
-        if (autoSelect && sl_instances.find(i => i.id === autoSelect)) {
-          sl_sel = autoSelect;
-          sl_checked = sl_instances.slice(0, 3).map(s => s.id);
-        } else if (sl_instances.length > 0 && (!sl_sel || !sl_instances.find(i => i.id === sl_sel))) {
-          sl_sel = sl_instances[0].id;
-          sl_checked = sl_instances.slice(0, 3).map(s => s.id);
-        }
-        sl_renderSidebar();
-        sl_renderSubtabBar();
-        sl_renderContent();
+      };
+    });
+    if (!sl_isEditing) {
+      if (autoSelect && sl_instances.find(i => i.id === autoSelect)) {
+        sl_sel = autoSelect;
+        sl_checked = sl_instances.slice(0, 3).map(s => s.id);
+      } else if (sl_instances.length > 0 && (!sl_sel || !sl_instances.find(i => i.id === sl_sel))) {
+        sl_sel = sl_instances[0].id;
+        sl_checked = sl_instances.slice(0, 3).map(s => s.id);
       }
+      sl_renderSidebar();
+      sl_renderSubtabBar();
+      sl_renderContent();
     }
   } catch (_) {}
 }
@@ -647,31 +674,36 @@ async function sl_deployRun() {
       body: JSON.stringify({ strategy: { entry_offset: sl_offset, order_tranches: sl_tranches, pair_cost_target: sl_pairT } })
     });
   } catch (_) {}
-  fetch(`${BASE_URL}/config/reload`, { method: 'POST' })
-    .then(r => r.json())
-    .then(async () => {
-      await sl_fetchStatus();
-      sl_renderContent();
-      _sl_toast(`${sl_sel} 已部署`);
-    })
-    .catch(e => _sl_toast(`部署失败: ${e.message}`, true));
+  try {
+    const r = await fetch(`${BASE_URL}/strategies/start`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: sl_sel })
+    });
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error || '部署失败');
+    await sl_pollInstances();
+    _sl_toast(`${sl_sel} 已部署`);
+  } catch (e) {
+    _sl_toast(`部署失败: ${e.message}`, true);
+  }
 }
 
-function sl_stopDeploy() {
+async function sl_stopDeploy() {
   if (!sl_sel) return;
-  fetch(`${BASE_URL}/strategies/stop`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name: sl_sel })
-  })
-  .then(r => r.json())
-  .then(async d => {
+  try {
+    const r = await fetch(`${BASE_URL}/strategies/stop`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: sl_sel })
+    });
+    const d = await r.json();
     if (!d.ok) throw new Error(d.error);
-    await sl_fetchStatus();
-    sl_renderContent();
+    await sl_pollInstances();
     _sl_toast(`${sl_sel} 已停止`);
-  })
-  .catch(e => _sl_toast(`停止失败: ${e.message}`, true));
+  } catch (e) {
+    _sl_toast(`停止失败: ${e.message}`, true);
+  }
 }
 
 function sl_deleteStrategy() {
