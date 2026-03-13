@@ -3,6 +3,7 @@
 // 提供：GET / 健康检查，POST /config/reload 热更新
 
 import { createServer } from 'http';
+import { execSync } from 'child_process';
 import { readFileSync, readdirSync, existsSync, mkdirSync, writeFileSync, unlinkSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -672,6 +673,17 @@ const server = createServer(async (req, res) => {
 
       unlinkSync(filePath);
       fetch(`http://localhost:${PORT}/config/reload`, { method: 'POST' }).catch(() => {});
+
+      // git rm + commit：彻底从版本历史移除，防止 checkout/restore 复活
+      const repoRoot = resolve(__dirname, '..', '..');
+      const gitRelPath = `strategies/crypto_binary/instances/${name}.json`;
+      try {
+        execSync(`git rm --cached --force "${gitRelPath}"`, { cwd: repoRoot, stdio: 'pipe' });
+        execSync(`git commit -m "remove instance: ${name}"`, { cwd: repoRoot, stdio: 'pipe' });
+        console.info(`[server] instance ${name} removed from git`);
+      } catch (gitErr) {
+        console.warn(`[server] git rm/commit failed for ${name}:`, gitErr.message);
+      }
 
       sendJson(res, { ok: true, name, deleted: true });
     } catch (e) {
