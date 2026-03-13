@@ -23,6 +23,8 @@ import { initManualTrade, submitManualOrder, getManualStats } from './manual_tra
 import { publish, subscribe, unsubscribe, EVENT_TYPES } from './event_bus.mjs';
 import { getAttribution, getLossModes, getSensitivity, getDistribution, getCompare } from './postmortem_api.mjs';
 import { ProxyAgent, fetch as undiciFetch } from 'undici';
+import { createScanner } from './market_scanner.mjs';
+import { createOrderbookMonitor } from './orderbook_monitor.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -56,12 +58,43 @@ logger.info(EVENTS.SERVER_START, {
   strategy: STRATEGY_ID || 'none',
 });
 
+// 全局盘口监控（不依赖 runner，服务启动即开始）
+let _globalOrderbookMonitor = null;
+let _globalScanner          = null;
+
+async function initGlobalOrderbook() {
+  try {
+    const baseConfig = {
+      market: { slug_prefix: 'btc-updown-15m-', window_minutes: 15 },
+      polymarket_poll_sec: 2,
+      polymarket_mode: 'rest',
+    };
+    _globalScanner = createScanner(baseConfig);
+    const win = await _globalScanner.findCurrentWindow();
+    if (!win || !win.up_token_id) {
+      console.warn('[server] initGlobalOrderbook: no active BTC 15m window found');
+      return;
+    }
+    console.info(`[server] initGlobalOrderbook: window ${win.slug}, up=${win.up_token_id.slice(0,8)}…`);
+    _globalOrderbookMonitor = createOrderbookMonitor(baseConfig);
+    _globalOrderbookMonitor.start(win.up_token_id, win.down_token_id);
+    console.info('[server] Global orderbook monitor started');
+  } catch (err) {
+    console.warn('[server] initGlobalOrderbook failed:', err.message);
+    // 失败不阻塞服务启动
+  }
+}
+
 let db = null;
 (async () => {
   db = await getDb();
   await initPostmortem();
   await initManualTrade(db);
   console.log('[BTCQDD] DB migration completed (initPostmortem + initManualTrade)');
+
+  // 服务启动后异步初始化全局盘口（不阻塞 listen）
+  initGlobalOrderbook();
+
   if (STRATEGY_ID) {
     const result = await startInstance(STRATEGY_ID);
     if (result.ok) {
@@ -247,7 +280,9 @@ const server = createServer(async (req, res) => {
   if (req.method === 'GET' && req.url === '/book/snapshot') {
     try {
       const ar = getActiveRunner();
-      const snap = ar ? ar.getOrderbookSnapshot() : null;
+      const monitor = _globalOrderbookMonitor
+        || (ar ? { getLatestSnapshot: () => ar.getOrderbookSnapshot() } : null);
+      const snap = monitor ? monitor.getLatestSnapshot() : null;
       sendJson(res, {
         bids: snap ? [] : [],
         asks: snap ? [] : [],
