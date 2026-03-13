@@ -26,6 +26,7 @@ import { getAttribution, getLossModes, getSensitivity, getDistribution, getCompa
 import { ProxyAgent, fetch as undiciFetch } from 'undici';
 import { createScanner } from './market_scanner.mjs';
 import { createOrderbookMonitor } from './orderbook_monitor.mjs';
+import * as strategyRunnerSe from './strategy_runner_se.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -58,6 +59,14 @@ logger.info(EVENTS.SERVER_START, {
   port: PORT,
   strategy: STRATEGY_ID || 'none',
 });
+
+// 供 strategy_runner_se.mjs 动态导入使用
+export function getGlobalSnapshot() {
+  return _globalOrderbookMonitor?.getLatestSnapshot?.() || null;
+}
+export function getGlobalRegime() {
+  return getActiveRunner()?.getRegimeState?.() || null;
+}
 
 // 全局盘口监控（不依赖 runner，服务启动即开始）
 let _globalOrderbookMonitor = null;
@@ -805,6 +814,44 @@ const server = createServer(async (req, res) => {
       console.error('[Stats] Error:', err.message);
       sendJson(res, { error: err.message }, 500);
     }
+    return;
+  }
+
+  // ── /strategy-runner/* ────────────────────────────────────────────────
+
+  // POST /strategy-runner/deploy
+  if (req.method === 'POST' && req.url === '/strategy-runner/deploy') {
+    let body = '';
+    req.on('data', d => { body += d; });
+    req.on('end', () => {
+      try {
+        const { code, period } = JSON.parse(body);
+        if (!code) { sendJson(res, { ok: false, error: 'code required' }, 400); return; }
+        const result = strategyRunnerSe.deploy(code, period);
+        sendJson(res, result);
+      } catch (err) {
+        sendJson(res, { ok: false, error: err.message }, 400);
+      }
+    });
+    return;
+  }
+
+  // POST /strategy-runner/stop
+  if (req.method === 'POST' && req.url === '/strategy-runner/stop') {
+    strategyRunnerSe.stop();
+    sendJson(res, { ok: true });
+    return;
+  }
+
+  // GET /strategy-runner/status
+  if (req.method === 'GET' && req.url === '/strategy-runner/status') {
+    sendJson(res, strategyRunnerSe.getStatus());
+    return;
+  }
+
+  // GET /strategy-runner/logs
+  if (req.method === 'GET' && req.url === '/strategy-runner/logs') {
+    sendJson(res, strategyRunnerSe.getLogs());
     return;
   }
 
