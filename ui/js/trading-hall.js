@@ -28,90 +28,6 @@ function th_newAbort(key) {
   _th_abortControllers[key] = ctrl;
   return ctrl.signal;
 }
-let _th_symbol   = 'BTCUSDT'; // Binance symbol（与 th_symbol 同步，全名格式）
-let _th_interval = '5m';      // K 线周期（与 th_timeframe 同步）
-
-// ─── K 线图 ───────────────────────────────
-let _th_klineChart = null;
-let _th_klineData  = []; // [{ t, o, h, l, c }]
-
-const _th_candlestickPlugin = {
-  id: 'candlestick',
-  beforeDatasetsDraw(chart) {
-    const { ctx, scales: { x, y } } = chart;
-    _th_klineData.forEach((d, i) => {
-      const xPos = x.getPixelForIndex(i);
-      const oY   = y.getPixelForValue(d.o);
-      const cY   = y.getPixelForValue(d.c);
-      const hY   = y.getPixelForValue(d.h);
-      const lY   = y.getPixelForValue(d.l);
-      const up   = d.c >= d.o;
-      const color = up ? '#26a69a' : '#ef5350';
-      const w     = Math.max(4, (x.width / (_th_klineData.length || 1)) * 0.6);
-      ctx.save();
-      ctx.strokeStyle = color;
-      ctx.lineWidth   = 1;
-      ctx.beginPath();
-      ctx.moveTo(xPos, hY);
-      ctx.lineTo(xPos, lY);
-      ctx.stroke();
-      ctx.fillStyle = color;
-      ctx.fillRect(xPos - w / 2, Math.min(oY, cY), w, Math.max(1, Math.abs(oY - cY)));
-      ctx.restore();
-    });
-  }
-};
-
-function th_initKlineChart() {
-  const canvas = document.getElementById('th-kline-canvas');
-  if (!canvas || typeof Chart === 'undefined') return;
-  if (_th_klineChart) { _th_klineChart.destroy(); _th_klineChart = null; }
-  _th_klineChart = new Chart(canvas, {
-    type: 'line',
-    plugins: [_th_candlestickPlugin],
-    data: {
-      labels: [],
-      datasets: [{ data: [], borderColor: 'transparent', pointRadius: 0 }]
-    },
-    options: {
-      responsive: true,
-      animation: false,
-      plugins: { legend: { display: false }, tooltip: { enabled: false } },
-      scales: {
-        x: { ticks: { color: '#666', font: { size: 10 } }, grid: { color: '#2a2a2a' } },
-        y: { ticks: { color: '#666', font: { size: 10 } }, grid: { color: '#2a2a2a' }, position: 'right' }
-      }
-    }
-  });
-}
-
-async function th_loadKlines(symbol, interval) {
-  const sym = (symbol || (th_symbol === 'BTC' ? 'BTCUSDT' : th_symbol + 'USDT')).toUpperCase();
-  const itv = interval || th_timeframe || '15m';
-  try {
-    const res  = await fetch(`${BASE_URL}/klines?symbol=${sym}&interval=${itv}&limit=21`);
-    const data = await res.json();
-    if (!data.ok || !data.klines) return;
-    _th_klineData = data.klines.map(k => ({
-      t: new Date(k[0]).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }),
-      o: parseFloat(k[1]),
-      h: parseFloat(k[2]),
-      l: parseFloat(k[3]),
-      c: parseFloat(k[4]),
-    }));
-    if (!_th_klineChart) th_initKlineChart();
-    if (!_th_klineChart) return;
-    _th_klineChart.data.labels = _th_klineData.map(d => d.t);
-    const prices = _th_klineData.flatMap(d => [d.h, d.l]);
-    _th_klineChart.options.scales.y.min = Math.min(...prices) * 0.9995;
-    _th_klineChart.options.scales.y.max = Math.max(...prices) * 1.0005;
-    _th_klineChart.data.datasets[0].data = _th_klineData.map(d => d.c);
-    _th_klineChart.update('none');
-  } catch (err) {
-    console.error('[kline] load failed:', err.message);
-  }
-}
-
 // ─── PM chart ────────────────────────────
 function drawPmChart() {
   const svg = document.getElementById('pm-chart');
@@ -258,11 +174,6 @@ function th_updateTimeframeUI() {
 
 async function th_onMarketSwitch() {
   th_appendLog('system', `切换到 ${th_symbol} ${th_timeframe}`);
-  // 更新 Binance symbol/interval 并重加载 K 线
-  const binanceSym = (th_symbol === 'BTC' ? 'BTCUSDT' : th_symbol + 'USDT').toUpperCase();
-  _th_symbol   = binanceSym;
-  _th_interval = th_timeframe;
-  th_loadKlines(binanceSym, th_timeframe);
 
   // /market/current-window 不存在，静默跳过
   try {
@@ -625,10 +536,6 @@ function th_render() {
           <button id="th-tf-4h"  class="th-tf-btn"         onclick="th_setTimeframe('4h')">4h</button>
         </div>
       </div>
-      <!-- K 线图容器（在 PM 概率图上方，双图纵向排列） -->
-      <div id="th-kline-wrap" style="width:100%;flex-shrink:0;border-bottom:2px solid #12122a;background:#080814;padding:4px 0;">
-        <canvas id="th-kline-canvas" height="120" style="width:100%;display:block;"></canvas>
-      </div>
       <div style="flex:1;min-height:160px;border-bottom:2px solid #12122a;display:flex;align-items:center;justify-content:center;position:relative;color:#1a1a2e;font-size:22px">
         <span id="th-pm-coin" style="position:absolute;top:12px;left:20px;color:#555;font-size:20px;font-weight:600;z-index:1">BTC</span>
         <span id="th-pm-tf" style="position:absolute;top:12px;right:140px;color:#333;font-size:18px;font-family:var(--m);z-index:1">15M</span>
@@ -675,10 +582,6 @@ function th_getWindowEnd(interval) {
 }
 
 async function th_switchMarket(symbol, interval) {
-  if (symbol === _th_symbol && interval === _th_interval) return;
-  _th_symbol   = symbol;
-  _th_interval = interval;
-  await th_loadKlines(symbol, interval);
   th_appendLog('switch', `${symbol} ${interval}`, 'info');
 }
 
@@ -732,10 +635,6 @@ function th_startTimers() {
     const windowStart = Math.floor(now / sizeSec) * sizeSec;
     th_countdown = (windowStart + sizeSec) - now;
     th_updateCountdown();
-    // 窗口切换时自动刷新 K 线
-    if (_th_lastWindowStart >= 0 && windowStart !== _th_lastWindowStart) {
-      th_loadKlines(_th_symbol, _th_interval);
-    }
     _th_lastWindowStart = windowStart;
   }, 1000));
   th_startPolling();
@@ -909,8 +808,6 @@ function th_startConnIndicator() {
 // ─── Init ────────────────────────────────
 window.initTradingHall = function() {
   th_render();
-  th_initKlineChart();
-  th_loadKlines();
   th_renderStratTable();
   th_updateGauge(th_score);
   th_updateCountdown();
