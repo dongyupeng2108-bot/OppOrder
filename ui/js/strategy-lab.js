@@ -422,30 +422,11 @@ function sl_onSlider(id, val, min, max, unit, isFloat) {
   if (fillEl) fillEl.style.width = pct + "%";
   if (thumbEl) thumbEl.style.left = `calc(${pct}% - 12px)`;
   // update state for edit sliders
-  if (id === "sl-offset") { sl_offset = v; sl_updateInfluence(); }
-  if (id === "sl-tranches") { sl_tranches = v; sl_updateInfluence(); }
+  if (id === "sl-offset") { sl_offset = v; }
+  if (id === "sl-tranches") { sl_tranches = v; }
   if (id === "sl-pairT") sl_pairT = v;
 }
 
-function sl_updateInfluence() {
-  const rows = [
-    {l:"成交率", dir: sl_offset > 0.02 ? "↓" : "↑", c: sl_offset > 0.02 ? "var(--color-down)" : "var(--color-up)", d: sl_offset > 0.02 ? "降低" : "升高"},
-    {l:"Edge",   dir: sl_offset > 0.02 ? "↑" : "↓", c: sl_offset > 0.02 ? "var(--color-up)" : "var(--color-down)", d: sl_offset > 0.02 ? "增大" : "减小"},
-    {l:"配对率", dir: sl_tranches > 2 ? "↑" : "↓",  c: sl_tranches > 2 ? "var(--color-up)" : "var(--color-down)",  d: sl_tranches > 2 ? "提升" : "降低"},
-    {l:"风险",   dir: sl_offset > 0.03 ? "↑" : "→", c: sl_offset > 0.03 ? "var(--color-warn)" : "var(--text-muted)",    d: sl_offset > 0.03 ? "增大" : "不变"},
-  ];
-  const el = document.getElementById("sl-influence-rows");
-  if (!el) return;
-  el.innerHTML = rows.map(r =>
-    `<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:2px solid #0a0a18">
-      <span style="color:#888;font-size:20px">${r.l}</span>
-      <div style="display:flex;align-items:center;gap:16px">
-        <span style="color:${r.c};font-size:28px;font-weight:800">${r.dir}</span>
-        <span style="color:#444;font-size:18px">${r.d}</span>
-      </div>
-    </div>`
-  ).join("");
-}
 
 // ─── Sidebar ─────────────────────────────
 function sl_renderSidebar() {
@@ -525,7 +506,7 @@ function sl_renderSubtabBar() {
 // ─── Edit content ─────────────────────────
 function sl_renderEdit() {
   const st = sl_findStrat(sl_sel);
-  return `<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:24px">
+  return `<div style="display:grid;grid-template-columns:1fr;gap:24px">
     <!-- 左卡：策略参数 -->
     <div class="card">
       <div style="font-size:22px;font-weight:700;margin-bottom:20px;color:${st?.color}">${SL_TM[st?.type]?.icon} ${st?.name} 参数</div>
@@ -536,21 +517,6 @@ function sl_renderEdit() {
       ${sl_slider("sl-refresh", "报价刷新", 0.01, 0.005, 0.05, 0.005)}
       ${sl_slider("sl-timeout", "配对超时", 300, 60, 600, 30, "s")}
       <button onclick="sl_saveParams()" style="margin-top:16px;width:100%;padding:14px 0;border-radius:10px;font-size:22px;font-weight:700;background:#00d4aa;border:none;color:#000;cursor:pointer">保存参数</button>
-    </div>
-    <!-- 中卡：参数影响 -->
-    <div class="card">
-      <div class="section-title">📐 参数影响</div>
-      <div id="sl-influence-rows"></div>
-      <div style="border-top:2px solid #12122a;padding-top:20px;margin-top:16px">
-        <div style="color:#555;font-size:20px;font-weight:600;margin-bottom:8px">敏感度</div>
-        ${[{v:"0.01",pnl:18},{v:"0.02",pnl:47},{v:"0.03",pnl:52},{v:"0.05",pnl:31}].map(r => {
-          const best = 52;
-          return `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:2px solid #08081a;background:${r.pnl === best ? "#26a69a06" : "transparent"}">
-            <span style="font-family:var(--m);color:#aaa;font-size:20px">${r.v}</span>
-            <span style="font-family:var(--m);color:var(--color-up);font-size:20px;font-weight:700">+${r.pnl}${r.pnl === best ? '<span style="color:#f59e0b;margin-left:4px;font-size:14px">★</span>' : ""}</span>
-          </div>`;
-        }).join("")}
-      </div>
     </div>
   </div>
   <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
@@ -605,11 +571,7 @@ function sl_renderPostmortem() {
         <div id="sl-loss-modes-container" style="color:#2a2a40;font-size:13px;text-align:center;padding:24px 0">加载中…</div>
       </div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
-      <div class="card">
-        <div class="section-title" style="color:#6366f1">🔬 参数敏感度</div>
-        ${placeholder}
-      </div>
+    <div style="display:grid;grid-template-columns:1fr;gap:24px">
       <div class="card">
         <div class="section-title">📊 单笔收益分布</div>
         ${placeholder}
@@ -685,7 +647,6 @@ function sl_renderContent() {
   if (sl_sub === "edit") el.innerHTML = sl_renderEdit();
   else if (sl_sub === "postmortem") el.innerHTML = sl_renderPostmortem();
   else { el.innerHTML = '<div id="sl-compare-container"></div>'; sl_renderCompare(); }
-  if (sl_sub === "edit") sl_updateInfluence();
   if (sl_sub === "postmortem") {
     const attrEl = document.getElementById('sl-attribution-container');
     const lossEl = document.getElementById('sl-loss-modes-container');
