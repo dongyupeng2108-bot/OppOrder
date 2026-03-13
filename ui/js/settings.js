@@ -172,6 +172,12 @@ async function st_applySettings() {
     return;
   }
 
+  // PUT 成功后：回显滑条（重新 fetch 当前实例参数）
+  const name = sl_sel || null;
+  if (name && typeof sl_loadInstanceParams === 'function') {
+    await sl_loadInstanceParams(name);
+  }
+
   const isLive = await st_hasLiveInstance();
   await st_reloadWithConfirm(instanceName, isLive);
 }
