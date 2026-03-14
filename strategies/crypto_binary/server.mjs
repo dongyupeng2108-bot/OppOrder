@@ -4,8 +4,8 @@
 
 import { createServer } from 'http';
 import { execSync } from 'child_process';
-import { readFileSync, readdirSync, existsSync, mkdirSync, writeFileSync, unlinkSync } from 'fs';
-import { resolve, dirname } from 'path';
+import { readFileSync, readdirSync, existsSync, mkdirSync, writeFileSync, unlinkSync, createReadStream, statSync } from 'fs';
+import { resolve, dirname, extname } from 'path';
 import { fileURLToPath } from 'url';
 import { WebSocketServer } from 'ws';
 import {
@@ -823,11 +823,11 @@ const server = createServer(async (req, res) => {
   if (req.method === 'POST' && req.url === '/strategy-runner/deploy') {
     let body = '';
     req.on('data', d => { body += d; });
-    req.on('end', () => {
+    req.on('end', async () => {
       try {
-        const { code, period } = JSON.parse(body);
+        const { code, period } = JSON.parse(body || '{}');
         if (!code) { sendJson(res, { ok: false, error: 'code required' }, 400); return; }
-        const result = strategyRunnerSe.deploy(code, period);
+        const result = await strategyRunnerSe.deploy(code, period);
         sendJson(res, result);
       } catch (err) {
         sendJson(res, { ok: false, error: err.message }, 400);
@@ -838,21 +838,71 @@ const server = createServer(async (req, res) => {
 
   // POST /strategy-runner/stop
   if (req.method === 'POST' && req.url === '/strategy-runner/stop') {
-    strategyRunnerSe.stop();
-    sendJson(res, { ok: true });
+    try {
+      strategyRunnerSe.stop();
+      sendJson(res, { ok: true });
+    } catch (err) {
+      sendJson(res, { ok: false, error: err.message }, 500);
+    }
     return;
   }
 
   // GET /strategy-runner/status
   if (req.method === 'GET' && req.url === '/strategy-runner/status') {
-    sendJson(res, strategyRunnerSe.getStatus());
+    try {
+      sendJson(res, strategyRunnerSe.getStatus());
+    } catch (err) {
+      sendJson(res, { ok: false, error: err.message }, 500);
+    }
     return;
   }
 
   // GET /strategy-runner/logs
   if (req.method === 'GET' && req.url === '/strategy-runner/logs') {
-    sendJson(res, strategyRunnerSe.getLogs());
+    try {
+      sendJson(res, strategyRunnerSe.getLogs());
+    } catch (err) {
+      sendJson(res, { ok: false, error: err.message }, 500);
+    }
     return;
+  }
+
+  // ── 静态资源服务（兜底）───────────────────────────────────────────────
+  if (req.method === 'GET') {
+    // 映射 /ui/* -> ../../ui/*
+    const { pathname } = new URL(req.url, 'http://localhost');
+    if (pathname.startsWith('/ui/')) {
+      const relPath = decodeURIComponent(pathname.slice('/ui/'.length));
+      const absPath = resolve(__dirname, '..', '..', 'ui', relPath);
+      // 安全检查：防止目录穿越
+      if (!absPath.startsWith(resolve(__dirname, '..', '..', 'ui'))) {
+        res.writeHead(403); res.end('Forbidden'); return;
+      }
+      if (existsSync(absPath) && statSync(absPath).isFile()) {
+        const ext = extname(absPath);
+        const mime = {
+          '.html': 'text/html',
+          '.css': 'text/css',
+          '.js': 'text/javascript',
+          '.json': 'application/json',
+          '.png': 'image/png',
+          '.svg': 'image/svg+xml',
+          '.ico': 'image/x-icon'
+        }[ext] || 'text/plain';
+        res.writeHead(200, { 'Content-Type': mime });
+        createReadStream(absPath).pipe(res);
+        return;
+      }
+    }
+    // 映射根目录 -> ../../ui/btcqdd.html
+    if (req.url === '/' || req.url === '/index.html') {
+      const absPath = resolve(__dirname, '..', '..', 'ui', 'btcqdd.html');
+      if (existsSync(absPath)) {
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        createReadStream(absPath).pipe(res);
+        return;
+      }
+    }
   }
 
   // 404
