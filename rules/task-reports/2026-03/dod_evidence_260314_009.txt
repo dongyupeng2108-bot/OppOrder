@@ -1,0 +1,5 @@
+DoD Evidence for 260314_009
+- Removed CONTEXT reference panel from ui/js/strategy-editor.js
+- Expanded PNL chart area (flex: 2, height 200px)
+- Added CONTEXT field reference table to AI Guide modal
+- Verified via manual check and code review

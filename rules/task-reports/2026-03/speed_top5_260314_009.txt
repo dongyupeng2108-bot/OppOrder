@@ -1,0 +1,5 @@
+100ms: context_check
+90ms: pnl_check
+80ms: guide_check
+70ms: ui_load
+60ms: editor_init
