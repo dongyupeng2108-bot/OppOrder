@@ -1,0 +1,4 @@
+DoD Evidence for 260314_021
+- Removed recursive fetch call to strategy-runner/status in _buildContext
+- Removed all diagnostic console.log calls
+- Verified strategy runner loop continues execution without deadlock
