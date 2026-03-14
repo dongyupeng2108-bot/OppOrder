@@ -1,11 +1,22 @@
 {
   "task_id": "260314_016",
-  "status": "success",
+  "status": "DONE",
   "artifacts": [
     "strategies/crypto_binary/strategy_runner_se.mjs"
   ],
   "metrics": {
     "coverage": 100,
     "tests": 1
+  },
+  "summary": "Automation Pack V1 Validation for Task 260314_016",
+  "report_file": "notify_260314_016.txt",
+  "report_sha256_short": "bc636079",
+  "mode": "Integrate",
+  "dod_evidence": {
+    "gate_light_exit": 0,
+    "healthcheck": [
+      "rules/task-reports/2026-03/260314_016_healthcheck_53122_root.txt",
+      "rules/task-reports/2026-03/260314_016_healthcheck_53122_pairs.txt"
+    ]
   }
 }
