@@ -267,6 +267,7 @@ export function deploy(code, period) {
   }
 
   _appendLog('SYSTEM', `策略已部署，周期: ${_period}`);
+  _appendLog('SYSTEM', `定时器已启动，间隔 2s`);
   _startLoop();
   return { ok: true };
 }
