@@ -1,0 +1,5 @@
+{
+  "commit": "HEAD",
+  "author": "TraeAI",
+  "message": "fix: update strategy runner to use best_ask/best_bid in snapshot"
+}
