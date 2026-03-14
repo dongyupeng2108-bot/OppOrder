@@ -1,5 +1,4 @@
-100ms: context_build
-90ms: snapshot_fetch
-80ms: strategy_exec
-70ms: log_append
-60ms: cleanup
+task_id=260314_020
+generated_at=2026-03-15T00:22:06.1139041+08:00
+total=8443
+wall_total_ms=8443
