@@ -1,0 +1,5 @@
+DoD Evidence for 260314_013
+- Updated server.mjs scanner configuration: window_minutes=5, slug_prefix='btc-updown-5m-'
+- Updated ui/js/strategy-editor.js default period to '5m'
+- Updated ui/strategy-editor.html default active button to 5m
+- Verified server startup log shows btc-updown-5m window detection
