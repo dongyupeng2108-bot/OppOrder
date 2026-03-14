@@ -1,0 +1,5 @@
+100ms: server_config_check
+90ms: frontend_default_check
+80ms: scanner_init
+70ms: ui_render
+60ms: period_highlight
