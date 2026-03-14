@@ -1,0 +1,5 @@
+DoD Evidence for 260314_022
+- Modified ui/js/shared.js to disable restart button immediately after confirmation
+- Modified scripts/start_server.ps1 to clean up port 53123 before starting server
+- Verified restart button becomes disabled immediately
+- Verified port is cleaned up before server start
