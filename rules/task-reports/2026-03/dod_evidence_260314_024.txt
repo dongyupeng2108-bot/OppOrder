@@ -1,0 +1,5 @@
+DoD Evidence for 260314_024
+- Adjusted UI layout in strategy-editor.html (stats panel)
+- Fixed log offset logic in strategy-editor.js (reset on deploy)
+- Added syntax check before deployment (new Function)
+- Implemented auto-stop on 3 consecutive errors
