@@ -142,7 +142,7 @@ async function _buildContext() {
 // SE-1: BUY/SELL/PAIR_POST 只记日志，不真实下单；SE-3 联调时再接 order_manager
 async function _handleAction(result, ctx) {
   if (!result || !result.action) {
-    _appendLog('HOLD', 'no action');
+    _appendLog('HOLD', `up=${ctx.price?.up?.toFixed(3) ?? 'null'} down=${ctx.price?.down?.toFixed(3) ?? 'null'}`);
     return;
   }
 
