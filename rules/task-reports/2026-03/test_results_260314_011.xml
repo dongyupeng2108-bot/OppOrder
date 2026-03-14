@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="strategy_runner_se_integration" tests="1" failures="0" errors="0" skipped="0">
+    <testcase name="order_manager_connected" time="0.001"/>
+  </testsuite>
+</testsuites>

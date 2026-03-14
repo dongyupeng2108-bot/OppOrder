@@ -3,6 +3,7 @@
 // SE-1: Paper 模式，BUY/SELL/PAIR_POST 只记录日志，不真实下单
 
 import './proxy_agent.mjs';
+import { createOrderManager } from './order_manager.mjs';
 
 // ── 运行器状态 ────────────────────────────────────────────────────────────
 let _running    = false;
@@ -10,6 +11,7 @@ let _period     = '15m';
 let _decideFunc = null;
 let _timer      = null;
 let _startTime  = null;
+let _orderManager = null;
 let _stats      = { pnl: 0, trades: 0, wins: 0, losses: 0 };
 let _pnlSeries  = [];   // [{ hour: 0, pnl: 0 }, ...]
 let _logBuffer  = [];   // 环形缓冲，最多 500 条
@@ -115,11 +117,31 @@ async function _handleAction(result, ctx) {
     case 'BUY':
       _appendLog('BUY', `side=${side} price=${price}`);
       _stats.trades++;
+      try {
+        const orderResult = await _orderManager.postOrder({
+          side, price,
+          type: 'limit',
+          size: 1
+        });
+        _appendLog('ORDER', `order_id=${orderResult?.order_id || 'paper'}`);
+      } catch (err) {
+        _appendLog('ERROR', `order failed: ${err.message}`);
+      }
       break;
 
     case 'SELL':
       _appendLog('SELL', `side=${side} price=${price}`);
       _stats.trades++;
+      try {
+        const orderResult = await _orderManager.postOrder({
+          side, price,
+          type: 'limit',
+          size: 1
+        });
+        _appendLog('ORDER', `order_id=${orderResult?.order_id || 'paper'}`);
+      } catch (err) {
+        _appendLog('ERROR', `order failed: ${err.message}`);
+      }
       break;
 
     case 'CANCEL_ALL':
@@ -129,6 +151,15 @@ async function _handleAction(result, ctx) {
     case 'PAIR_POST':
       _appendLog('PAIR_POST', `up=${result.up_price} down=${result.down_price}`);
       _stats.trades++;
+      try {
+        await Promise.all([
+          _orderManager.postOrder({ side: 'UP', price: result.up_price, type: 'limit', size: 1 }),
+          _orderManager.postOrder({ side: 'DOWN', price: result.down_price, type: 'limit', size: 1 })
+        ]);
+        _appendLog('ORDER', 'pair orders posted');
+      } catch (err) {
+        _appendLog('ERROR', `pair post failed: ${err.message}`);
+      }
       break;
 
     default:
@@ -164,6 +195,25 @@ export function deploy(code, period) {
   _pnlSeries   = [{ hour: 0, pnl: 0 }];
   _lastPnlHour = 0;
 
+  // 初始化 OrderManager (Paper 模式)
+  _orderManager = createOrderManager({ mode: 'paper', fill_model: 'conservative' });
+
+  // 适配器：poly-fill postOrder (因为 order_manager 只暴露 placeOrders)
+  if (!_orderManager.postOrder) {
+    _orderManager.postOrder = async (params) => {
+      // params: { side, price, type, size }
+      // placeOrders: { side, token_id, mid_price, offset, tick_size }
+      const orders = _orderManager.placeOrders({
+        side: params.side,
+        token_id: params.side, // Paper 模式暂用 side 作 token_id
+        mid_price: params.price,
+        offset: 0,
+        tick_size: 0.0001
+      });
+      return orders[0];
+    };
+  }
+
   _appendLog('SYSTEM', `策略已部署，周期: ${_period}`);
   _startLoop();
   return { ok: true };
@@ -173,6 +223,7 @@ export function stop() {
   if (_timer) { clearInterval(_timer); _timer = null; }
   _running    = false;
   _decideFunc = null;
+  _orderManager = null;
   _appendLog('SYSTEM', '策略已停止');
 }
 
