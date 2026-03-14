@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="ui_strategy_editor_pnl_flex" tests="1" failures="0" errors="0" skipped="0">
+    <testcase name="pnl_layout_flex_full_height" time="0.001"/>
+  </testsuite>
+</testsuites>

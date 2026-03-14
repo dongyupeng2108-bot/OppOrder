@@ -1,0 +1,5 @@
+100ms: layout_flex_check
+90ms: pnl_flex_grow
+80ms: ui_render
+70ms: chart_resize
+60ms: editor_init
