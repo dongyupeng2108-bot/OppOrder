@@ -1,6 +1,6 @@
 {
   "task_id": "260314_007",
-  "status": "success",
+  "status": "DONE",
   "artifacts": [
     "ui/strategy-editor.html",
     "ui/btcqdd.html",
@@ -9,5 +9,16 @@
   "metrics": {
     "coverage": 100,
     "tests": 1
+  },
+  "summary": "Automation Pack V1 Validation for Task 260314_007",
+  "report_file": "notify_260314_007.txt",
+  "report_sha256_short": "5ca2297a",
+  "mode": "Integrate",
+  "dod_evidence": {
+    "gate_light_exit": 0,
+    "healthcheck": [
+      "rules/task-reports/2026-03/260314_007_healthcheck_53122_root.txt",
+      "rules/task-reports/2026-03/260314_007_healthcheck_53122_pairs.txt"
+    ]
   }
 }
