@@ -85,6 +85,8 @@ const SE_GUIDE_TEXT = `🤖 AI 策略编写指南
 let _se_running = false;
 let _se_period = '5m';
 let _se_pollTimer = null;
+let _seLogOffset = 0;
+let _seErrorCount = 0;
 const BASE_URL = ''; // 相对路径
 
 // 初始化
@@ -170,6 +172,13 @@ async function se_deploy() {
   const code = document.getElementById('se-editor').value.trim();
   if (!code) { alert('请先编写策略代码'); return; }
 
+  try {
+    new Function(code);
+  } catch (e) {
+    alert('语法错误：' + e.message);
+    return;
+  }
+
   if (_se_running) {
     // 当前运行中 → 停止
     await se_stop();
@@ -185,6 +194,10 @@ async function se_deploy() {
     const data = await res.json();
     if (data.ok) {
       _se_running = true;
+      _seLogOffset = 0;
+      _seErrorCount = 0;
+      const logArea = document.getElementById('se-log-area');
+      if (logArea) logArea.innerHTML = '';
       se_updateRunningUI(true);
       se_startPoll();
     } else {
@@ -294,16 +307,32 @@ function se_formatUptime(sec) {
 function se_renderLogs(logs) {
   const area = document.getElementById('se-log-area');
   if (!logs.length) return;
-  // 只追加新日志（避免重绘整个列表）
-  const existing = area.children.length;
-  const newLogs = logs.slice(existing);
+  
+  const newLogs = logs.slice(_seLogOffset);
+  _seLogOffset = logs.length;
+  
+  if (newLogs.length === 0) return;
+
   newLogs.forEach(log => {
     const div = document.createElement('div');
     div.className = `se-log-entry se-log-${log.type?.toLowerCase() || 'info'}`;
     const time = new Date(log.ts).toLocaleTimeString('zh-CN', { hour12: false });
     div.textContent = `${time} [${log.type}] ${log.msg}`;
     area.appendChild(div);
+
+    if (log.type === 'ERROR') {
+      _seErrorCount++;
+    } else {
+      _seErrorCount = 0;
+    }
   });
+
+  if (_seErrorCount >= 3 && _se_running) {
+    se_stop();
+    se_appendLog('SYSTEM', '策略因连续错误已自动停止');
+    _seErrorCount = 0;
+  }
+
   // 自动滚到底部
   area.scrollTop = area.scrollHeight;
 }
