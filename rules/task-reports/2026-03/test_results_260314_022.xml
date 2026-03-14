@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="restart_button_fix" tests="1" failures="0" errors="0" skipped="0">
+    <testcase name="disable_button_immediately" time="0.001"/>
+  </testsuite>
+</testsuites>

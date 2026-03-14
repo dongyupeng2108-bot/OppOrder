@@ -1,0 +1,5 @@
+100ms: check_port
+90ms: kill_process
+80ms: disable_button
+70ms: fetch_restart
+60ms: reload_page

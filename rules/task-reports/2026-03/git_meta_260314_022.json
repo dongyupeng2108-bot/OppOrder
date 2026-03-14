@@ -1,0 +1,5 @@
+{
+  "commit": "HEAD",
+  "author": "TraeAI",
+  "message": "fix: prevent multiple restart clicks and clean port before start"
+}

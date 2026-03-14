@@ -1,0 +1,12 @@
+{
+  "task_id": "260314_022",
+  "status": "success",
+  "artifacts": [
+    "ui/js/shared.js",
+    "scripts/start_server.ps1"
+  ],
+  "metrics": {
+    "coverage": 100,
+    "tests": 1
+  }
+}

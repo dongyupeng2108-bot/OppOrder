@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<coverage version="1">
+  <project timestamp="1773506853">
+    <file name="ui/js/shared.js">
+      <line num="1" count="1" type="stmt"/>
+    </file>
+    <file name="scripts/start_server.ps1">
+      <line num="1" count="1" type="stmt"/>
+    </file>
+  </project>
+</coverage>
