@@ -1,0 +1,4 @@
+DoD Evidence for 260314_026
+- Updated _buildSnapshot in strategy_runner_se.mjs to prioritize best_bid/best_ask
+- Updated _buildContext to correctly populate orderbook fields
+- Verified snapshot construction logic

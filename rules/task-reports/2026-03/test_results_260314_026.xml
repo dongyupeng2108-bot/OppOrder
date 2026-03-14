@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="strategy_runner_snapshot_fix" tests="1" failures="0" errors="0" skipped="0">
+    <testcase name="use_best_bid_ask_in_snapshot" time="0.001"/>
+  </testsuite>
+</testsuites>
