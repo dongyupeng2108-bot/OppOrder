@@ -64,5 +64,22 @@ async function restartServer() {
   try {
     await fetch(`${BASE_URL}/server/restart`, { method: 'POST' });
   } catch(_) {}
-  setTimeout(() => location.reload(), 4000);
+  
+  const start = Date.now();
+  const poll = setInterval(async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/`);
+      if (res.ok) {
+        clearInterval(poll);
+        location.reload();
+        return;
+      }
+    } catch(_) {}
+    
+    // 超时保护：15秒后强制刷新
+    if (Date.now() - start > 15000) {
+      clearInterval(poll);
+      location.reload();
+    }
+  }, 500);
 }

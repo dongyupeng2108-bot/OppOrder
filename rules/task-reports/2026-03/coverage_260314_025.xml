@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<coverage version="1">
+  <project timestamp="1773510512">
+    <file name="ui/strategy-editor.html">
+      <line num="1" count="1" type="stmt"/>
+    </file>
+    <file name="ui/js/strategy-editor.js">
+      <line num="1" count="1" type="stmt"/>
+    </file>
+    <file name="strategies/crypto_binary/strategy_runner_se.mjs">
+      <line num="1" count="1" type="stmt"/>
+    </file>
+    <file name="ui/js/shared.js">
+      <line num="1" count="1" type="stmt"/>
+    </file>
+  </project>
+</coverage>

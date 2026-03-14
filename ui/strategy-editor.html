@@ -27,13 +27,29 @@
       min-width: 75% !important;
     }
     .se-stats-panel {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 5px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 24px;
+      padding: 4px 16px;
       flex-shrink: 0;
+      border-bottom: 1px solid #333;
     }
-    .se-stats-panel .se-stat-item:nth-child(3) {
-      grid-column: 1 / -1;
+    .se-stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 60px;
+    }
+    .se-stat-label {
+      font-size: 11px;
+      color: #888;
+      margin-bottom: 2px;
+    }
+    .se-stat-value {
+      font-size: 14px;
+      font-family: monospace;
+      color: #fff;
     }
   </style>
 </head>

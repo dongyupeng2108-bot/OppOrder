@@ -198,6 +198,7 @@ async function se_deploy() {
       _seErrorCount = 0;
       const logArea = document.getElementById('se-log-area');
       if (logArea) logArea.innerHTML = '';
+      se_appendLog('SYSTEM', '策略已启动');
       se_updateRunningUI(true);
       se_startPoll();
     } else {
