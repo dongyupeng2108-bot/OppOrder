@@ -1,0 +1,5 @@
+DoD Evidence for 260314_025
+- Adjusted UI layout in strategy-editor.html (stats right-aligned)
+- Updated HOLD log format in strategy_runner_se.mjs (up/down prices)
+- Updated restart button logic in shared.js (polling detection)
+- Reset log offset on deploy in strategy-editor.js

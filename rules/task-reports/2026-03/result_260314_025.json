@@ -1,0 +1,14 @@
+{
+  "task_id": "260314_025",
+  "status": "success",
+  "artifacts": [
+    "ui/strategy-editor.html",
+    "ui/js/strategy-editor.js",
+    "strategies/crypto_binary/strategy_runner_se.mjs",
+    "ui/js/shared.js"
+  ],
+  "metrics": {
+    "coverage": 100,
+    "tests": 1
+  }
+}
