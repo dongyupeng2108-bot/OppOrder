@@ -1,0 +1,5 @@
+100ms: layout_render
+90ms: syntax_check
+80ms: log_render
+70ms: error_check
+60ms: stop_strategy
