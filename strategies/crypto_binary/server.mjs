@@ -868,7 +868,7 @@ const server = createServer(async (req, res) => {
   }
 
   // ── 静态资源服务（兜底）───────────────────────────────────────────────
-  if (req.method === 'GET') {
+  if (req.method === 'GET' || req.method === 'HEAD') {
     // 映射 /ui/* -> ../../ui/*
     const { pathname } = new URL(req.url, 'http://localhost');
     if (pathname.startsWith('/ui/')) {
@@ -890,7 +890,11 @@ const server = createServer(async (req, res) => {
           '.ico': 'image/x-icon'
         }[ext] || 'text/plain';
         res.writeHead(200, { 'Content-Type': mime });
-        createReadStream(absPath).pipe(res);
+        if (req.method === 'HEAD') {
+          res.end();
+        } else {
+          createReadStream(absPath).pipe(res);
+        }
         return;
       }
     }
@@ -899,7 +903,11 @@ const server = createServer(async (req, res) => {
       const absPath = resolve(__dirname, '..', '..', 'ui', 'btcqdd.html');
       if (existsSync(absPath)) {
         res.writeHead(200, { 'Content-Type': 'text/html' });
-        createReadStream(absPath).pipe(res);
+        if (req.method === 'HEAD') {
+          res.end();
+        } else {
+          createReadStream(absPath).pipe(res);
+        }
         return;
       }
     }

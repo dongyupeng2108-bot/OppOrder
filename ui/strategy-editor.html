@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BTCQDD 策略编辑器</title>
+  <link rel="stylesheet" href="css/btcqdd.css">
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background-color: #0b0b19;
+      color: #ccc;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <!-- 容器：由 strategy-editor.js 填充 -->
+  <div id="se-container" style="height:100%"></div>
+
+  <script src="js/strategy-editor.js"></script>
+  <script>
+    // 独立页面模式：手动初始化
+    window.addEventListener('DOMContentLoaded', () => {
+      if (typeof initStrategyEditor === 'function') {
+        initStrategyEditor();
+      } else {
+        console.error('initStrategyEditor not found');
+      }
+    });
+  </script>
+</body>
+</html>
