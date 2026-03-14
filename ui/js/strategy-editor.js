@@ -60,6 +60,25 @@ const SE_GUIDE_TEXT = `🤖 AI 策略编写指南
 
 5. 调试
    使用 console.log() 输出日志，会在右侧日志面板显示。
+
+---
+
+## CONTEXT 字段速查
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| ctx.price.up | number 0~1 | UP token 当前价格 |
+| ctx.price.down | number 0~1 | DOWN token 当前价格 |
+| ctx.price.btc | number | BTC/USDT 现价 |
+| ctx.price.spread | number | |up - down| 价差 |
+| ctx.regime.score | number 0~1 | 市场评分（0=趋势，1=震荡）|
+| ctx.regime.sigma | number | BTC 波动率 |
+| ctx.regime.alternation | number | 涨跌交替度 |
+| ctx.window.remaining_sec | number | 窗口剩余秒数 |
+| ctx.window.period | string | "5m" 或 "15m" |
+| ctx.orderbook.mid | number | 盘口中间价 |
+| ctx.orderbook.best_bid | number | 最优买价 |
+| ctx.orderbook.best_ask | number | 最优卖价 |
 `;
 
 // 状态管理
@@ -118,21 +137,11 @@ function initStrategyEditor() {
             <div id="se-stat-uptime" class="se-stat-value">0s</div>
           </div>
         </div>
-        <div class="se-panel">
+        <div class="se-panel" style="flex: 2; display: flex; flex-direction: column;">
           <div class="se-panel-title">累计 PnL</div>
-          <svg id="se-pnl-chart" class="se-pnl-svg" viewBox="0 0 300 80" preserveAspectRatio="none">
-            <text x="150" y="45" text-anchor="middle" class="se-chart-placeholder">运行后显示</text>
+          <svg id="se-pnl-chart" class="se-pnl-svg" viewBox="0 0 300 200" preserveAspectRatio="none" style="flex: 1; width: 100%;">
+            <text x="150" y="100" text-anchor="middle" class="se-chart-placeholder">运行后显示</text>
           </svg>
-        </div>
-        <div class="se-panel">
-          <div class="se-panel-title">Context 参考</div>
-          <div class="se-context-ref">
-            <div class="se-ctx-row"><span class="se-ctx-key">ctx.price.up/down</span><span class="se-ctx-desc">UP/DOWN token 价格 (0~1)</span></div>
-            <div class="se-ctx-row"><span class="se-ctx-key">ctx.price.btc</span><span class="se-ctx-desc">BTC/USDT 现价</span></div>
-            <div class="se-ctx-row"><span class="se-ctx-key">ctx.regime.score</span><span class="se-ctx-desc">市场评分 (0=趋势,1=震荡)</span></div>
-            <div class="se-ctx-row"><span class="se-ctx-key">ctx.window.remaining_sec</span><span class="se-ctx-desc">窗口剩余秒数</span></div>
-            <div class="se-ctx-row"><span class="se-ctx-key">ctx.orderbook.mid</span><span class="se-ctx-desc">盘口中间价</span></div>
-          </div>
         </div>
       </div>
     </div>
@@ -303,7 +312,7 @@ function se_renderPnlChart(pnlSeries) {
   const svg = document.getElementById('se-pnl-chart');
   if (!pnlSeries.length) return;
 
-  const W = 300, H = 80, PAD = 10;
+  const W = 300, H = 200, PAD = 10;
   const pnls = pnlSeries.map(p => p.pnl);
   const minP = Math.min(...pnls), maxP = Math.max(...pnls);
   const range = maxP - minP || 1;
