@@ -118,12 +118,12 @@ function initStrategyEditor() {
       </div>
 
       <!-- 右栏 -->
-      <div class="se-right">
-        <div class="se-panel">
+      <div class="se-right" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="se-panel" style="flex-shrink: 0; height: 160px;">
           <div class="se-panel-title">实时日志</div>
           <div id="se-log-area" class="se-log-area"></div>
         </div>
-        <div class="se-panel se-stats-panel">
+        <div class="se-panel se-stats-panel" style="flex-shrink: 0;">
           <div class="se-stat-item">
             <div class="se-stat-label">交易次数</div>
             <div id="se-stat-trades" class="se-stat-value">0</div>
@@ -137,9 +137,9 @@ function initStrategyEditor() {
             <div id="se-stat-uptime" class="se-stat-value">0s</div>
           </div>
         </div>
-        <div class="se-panel" style="flex: 2; display: flex; flex-direction: column;">
+        <div class="se-panel" style="flex: 1; min-height: 0; display: flex; flex-direction: column;">
           <div class="se-panel-title">累计 PnL</div>
-          <svg id="se-pnl-chart" class="se-pnl-svg" viewBox="0 0 300 200" preserveAspectRatio="none" style="flex: 1; width: 100%;">
+          <svg id="se-pnl-chart" class="se-pnl-svg" viewBox="0 0 300 200" preserveAspectRatio="none" style="flex: 1; width: 100%; height: 100%;">
             <text x="150" y="100" text-anchor="middle" class="se-chart-placeholder">运行后显示</text>
           </svg>
         </div>

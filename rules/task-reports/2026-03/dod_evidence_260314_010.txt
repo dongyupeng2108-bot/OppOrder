@@ -1,0 +1,6 @@
+DoD Evidence for 260314_010
+- Adjusted right column layout to flex column
+- Fixed height for log area (160px) and stats panel
+- PNL area set to flex: 1 (grow to fill remaining space)
+- Removed fixed height from PNL SVG
+- Verified via manual check and code review
