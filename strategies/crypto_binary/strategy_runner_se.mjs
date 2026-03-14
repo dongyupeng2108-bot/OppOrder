@@ -19,10 +19,9 @@ let _lastPnlHour = -1;
 
 // ── 内部工具 ──────────────────────────────────────────────────────────────
 function _appendLog(type, msg) {
-  console.log('[SE_TICK_LOG] 准备写日志', type, msg);
   const entry = { ts: new Date().toISOString(), type, msg };
   _logBuffer.push(entry);
-  if (_logBuffer.length > 500) _logBuffer.shift();
+  if (_logBuffer.length > 200) _logBuffer.shift();
 }
 
 function _updatePnlSeries() {
@@ -36,12 +35,9 @@ function _updatePnlSeries() {
 
 // ── 定时循环（2 秒） ──────────────────────────────────────────────────────
 function _startLoop() {
-  console.log('[SE_STARTLOOP] called');
   _timer = setInterval(async () => {
-    console.log('[SE_TICK]', Date.now(), '_running=', _running, '_decideFunc=', !!_decideFunc);
     if (!_running || !_decideFunc) return;
     try {
-      console.log('[SE_TICK_INNER] 进入 _tick try 块');
       const ctx = await _buildContext();
       let result;
 
@@ -83,6 +79,7 @@ function _startLoop() {
       
       _updatePnlSeries();
     } catch (err) {
+      console.log('[SE_TICK_CATCH]', err.message, err.stack);
       _appendLog('ERROR', err.message);
     }
   }, 2000);
@@ -101,7 +98,6 @@ function _buildSnapshot(ctx) {
 // ── Context 构建 ──────────────────────────────────────────────────────────
 async function _buildContext() {
   let snapshot = null;
-  let regime = null;
   
   // 优先使用 global._btcqddGetSnapshot 获取快照（避免 fetch 开销和 import 循环）
   if (global._btcqddGetSnapshot) {
@@ -115,14 +111,9 @@ async function _buildContext() {
     } catch (_) {}
   }
 
-  try {
-    const res = await fetch('http://localhost:53123/strategy-runner/status');
-    if (res.ok) {
-        const status = await res.json();
-        regime = status.regime;
-    }
-  } catch (err) {}
-
+  // 这里的 fetch 导致自调用死锁，已删除
+  // regime 暂时为 null
+  
   return {
     price: {
       btc: null,
@@ -133,17 +124,9 @@ async function _buildContext() {
       // 兼容旧字段
       spread:      snapshot ? (Math.abs((snapshot.mid_up || 0) - (snapshot.mid_down || 0))) : null
     },
-    regime: {
-      score:       regime?.score || 0.5,
-      sigma:       regime?.sigma || null,
-      alternation: regime?.alternation || null,
-    },
-    window: {
-      remaining_sec: 100, // mock
-      period: _period,
-      slug: null,
-    },
-    position: null, // TODO: connect to PositionManager
+    regime: { score: null, sigma: null, alternation: null },
+    window: { remaining_sec: null, period: _period, slug: null },
+    position: null,
     orderbook: {
       bid_up:   snapshot?.bid_up   || null,
       ask_up:   snapshot?.ask_up   || null,
