@@ -54,3 +54,18 @@ window.isWsAlive = () => wsLastPong > 0 && (Date.now() - wsLastPong) < 5000;
     ws.onclose = () => setTimeout(connectWS, 3000);
   } catch (_) { setTimeout(connectWS, 3000); }
 })();
+
+// ── 重启服务 ──
+async function restartServer() {
+  if (!confirm('确认重启服务？当前运行中的策略将停止。')) return;
+  try {
+    await fetch(`${BASE_URL}/server/restart`, { method: 'POST' });
+    const btn = document.querySelector('.restart-btn');
+    if (btn) { btn.textContent = '重启中...'; btn.disabled = true; }
+    // 3秒后刷新页面（等服务重启）
+    setTimeout(() => location.reload(), 4000);
+  } catch(_) {
+    // fetch 失败是正常的（服务已关闭）
+    setTimeout(() => location.reload(), 4000);
+  }
+}

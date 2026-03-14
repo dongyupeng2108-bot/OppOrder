@@ -89,6 +89,9 @@ async function initGlobalOrderbook() {
     _globalOrderbookMonitor = createOrderbookMonitor(baseConfig);
     _globalOrderbookMonitor.start(win.up_token_id, win.down_token_id);
     console.info('[server] Global orderbook monitor started');
+
+    // 注入全局快照获取函数，供 strategy_runner_se.mjs 调用
+    global._btcqddGetSnapshot = () => _globalOrderbookMonitor?.getLatestSnapshot?.() || null;
   } catch (err) {
     console.warn('[server] initGlobalOrderbook failed:', err.message);
     // 失败不阻塞服务启动
@@ -864,6 +867,15 @@ const server = createServer(async (req, res) => {
     } catch (err) {
       sendJson(res, { ok: false, error: err.message }, 500);
     }
+    return;
+  }
+
+  // 重启服务接口
+  if (req.method === 'POST' && req.url === '/server/restart') {
+    sendJson(res, { ok: true, msg: '正在重启...' });
+    setTimeout(() => {
+      process.exit(0);
+    }, 200);
     return;
   }
 
