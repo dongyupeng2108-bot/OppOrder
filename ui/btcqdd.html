@@ -45,7 +45,11 @@
   </div>
   <div id="main">
     <div id="page-hall" class="page active"></div>
-    <div id="page-lab"  class="page"></div>
+    <!-- 策略编辑器 Tab -->
+    <div id="page-editor" class="tab-page" style="display:none">
+      <!-- 容器：由 strategy-editor.js 填充 -->
+      <div id="se-container" style="height:100%"></div>
+    </div>
     <div id="page-set"  class="page"></div>
   </div>
 </div>
@@ -53,6 +57,7 @@
 <script src="js/trading-hall.js"></script>
 <script src="js/strategy-lab.js"></script>
 <script src="js/settings.js"></script>
+<script src="js/strategy-editor.js"></script>
 <script>
   window.addEventListener('DOMContentLoaded', () => switchTab('hall'));
 </script>
