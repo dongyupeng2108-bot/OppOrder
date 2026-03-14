@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="strategy_runner_snapshot_fix" tests="2" failures="0" errors="0" skipped="0">
+    <testcase name="global_snapshot_injection" time="0.001"/>
+    <testcase name="server_restart_endpoint" time="0.001"/>
+  </testsuite>
+</testsuites>

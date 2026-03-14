@@ -1,0 +1,7 @@
+DoD Evidence for 260314_015
+- Updated server.mjs to inject global._btcqddGetSnapshot helper
+- Updated strategy_runner_se.mjs to use global helper for snapshot fetching (avoids self-call deadlock)
+- Added POST /server/restart endpoint to server.mjs
+- Created scripts/start_server.ps1 for auto-restart loop
+- Added 'Restart' button to UI topbar and implementation in shared.js
+- Verified restart functionality via script and UI

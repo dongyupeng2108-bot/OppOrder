@@ -98,14 +98,17 @@ function _buildSnapshot(ctx) {
 async function _buildContext() {
   let snapshot = null;
   let regime = null;
-  try {
-    // 改为通过 HTTP 请求获取快照，避免 import 循环依赖或未初始化问题
-    const res = await fetch('http://localhost:53123/book/snapshot');
-    if (res.ok) {
-        snapshot = await res.json();
-    }
-  } catch (err) {
-    // silent fail
+  
+  // 优先使用 global._btcqddGetSnapshot 获取快照（避免 fetch 开销和 import 循环）
+  if (global._btcqddGetSnapshot) {
+    snapshot = global._btcqddGetSnapshot();
+  } else {
+    try {
+      const res = await fetch('http://localhost:53123/book/snapshot');
+      if (res.ok) {
+          snapshot = await res.json();
+      }
+    } catch (_) {}
   }
 
   try {
