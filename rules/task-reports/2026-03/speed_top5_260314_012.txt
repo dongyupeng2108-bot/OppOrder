@@ -1,0 +1,5 @@
+100ms: order_manager_check
+90ms: simulate_fills_call
+80ms: fill_processing
+70ms: pnl_update
+60ms: log_append

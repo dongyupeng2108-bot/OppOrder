@@ -51,11 +51,47 @@ function _startLoop() {
       ]);
 
       await _handleAction(result, ctx);
+
+      // ── 模拟成交 ────────────────────────────────────────────────────────
+      try {
+        if (_orderManager && typeof _orderManager.simulateFills === 'function') {
+          const snapshot = _buildSnapshot(ctx);
+          const fills = _orderManager.simulateFills(snapshot);
+          
+          if (fills && fills.length > 0) {
+            for (const fill of fills) {
+              // 计算 PnL: fill.price 与 mid_price 的差值 (假设立即平仓)
+              // 注意：这里仅作演示，真实 PnL 需要 PositionManager
+              const mid = fill.side === 'UP' ? ctx.price.up : ctx.price.down;
+              const pnlDelta = (mid - fill.price) * fill.size; // 简单估算
+              
+              _stats.pnl += pnlDelta;
+              if (pnlDelta > 0) _stats.wins++;
+              else if (pnlDelta < 0) _stats.losses++;
+              
+              _appendLog('FILL', `order_id=${fill.order_id.slice(0,8)}... side=${fill.side} price=${fill.price.toFixed(4)} pnl=${pnlDelta.toFixed(4)}`);
+            }
+          }
+        }
+      } catch (err) {
+        _appendLog('ERROR', `simulateFills: ${err.message}`);
+      }
+      
       _updatePnlSeries();
     } catch (err) {
       _appendLog('ERROR', err.message);
     }
   }, 2000);
+}
+
+// 辅助：从 ctx 构建 snapshot 供 order_manager 使用
+function _buildSnapshot(ctx) {
+  return {
+    bid_up: ctx.orderbook?.bid_up || ctx.price.up - 0.0005,
+    ask_up: ctx.orderbook?.ask_up || ctx.price.up + 0.0005,
+    bid_down: ctx.orderbook?.bid_down || ctx.price.down - 0.0005,
+    ask_down: ctx.orderbook?.ask_down || ctx.price.down + 0.0005,
+  };
 }
 
 // ── 上下文构建 ────────────────────────────────────────────────────────────
