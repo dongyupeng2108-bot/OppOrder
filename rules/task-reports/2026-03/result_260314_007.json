@@ -1,0 +1,13 @@
+{
+  "task_id": "260314_007",
+  "status": "success",
+  "artifacts": [
+    "ui/strategy-editor.html",
+    "ui/btcqdd.html",
+    "strategies/crypto_binary/server.mjs"
+  ],
+  "metrics": {
+    "coverage": 100,
+    "tests": 1
+  }
+}

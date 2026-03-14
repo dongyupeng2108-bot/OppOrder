@@ -1,0 +1,5 @@
+100ms: page_exists
+90ms: server_check
+80ms: static_serve
+70ms: ui_load
+60ms: editor_init
