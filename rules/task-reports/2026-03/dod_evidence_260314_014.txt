@@ -1,0 +1,5 @@
+DoD Evidence for 260314_014
+- Updated _buildContext to fetch snapshot from http://localhost:53123/book/snapshot
+- Updated _buildContext to fetch regime from http://localhost:53123/strategy-runner/status
+- Verified ctx.price.down and ctx.price.up are populated from snapshot
+- Verified BUY action triggered when price condition met

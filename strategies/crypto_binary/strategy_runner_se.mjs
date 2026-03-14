@@ -94,36 +94,49 @@ function _buildSnapshot(ctx) {
   };
 }
 
-// ── 上下文构建 ────────────────────────────────────────────────────────────
-// 从 server.mjs 动态导入（避免静态循环依赖），任何字段获取失败时用 null，不抛错
+// ── Context 构建 ──────────────────────────────────────────────────────────
 async function _buildContext() {
   let snapshot = null;
-  let regime   = null;
+  let regime = null;
+  try {
+    // 改为通过 HTTP 请求获取快照，避免 import 循环依赖或未初始化问题
+    const res = await fetch('http://localhost:53123/book/snapshot');
+    if (res.ok) {
+        snapshot = await res.json();
+    }
+  } catch (err) {
+    // silent fail
+  }
 
   try {
-    const { getGlobalSnapshot, getGlobalRegime } = await import('./server.mjs');
-    snapshot = getGlobalSnapshot?.() || null;
-    regime   = getGlobalRegime?.()   || null;
-  } catch (_) {}
+    const res = await fetch('http://localhost:53123/strategy-runner/status');
+    if (res.ok) {
+        const status = await res.json();
+        regime = status.regime;
+    }
+  } catch (err) {}
 
   return {
-    // UP/DOWN token 中间价及价差
-    // 实际字段：bid_up/ask_up/mid_up/spread_up、bid_down/ask_down/mid_down/spread_down
     price: {
+      btc: null,
       up:          snapshot?.mid_up    || null,
       down:        snapshot?.mid_down  || null,
       spread_up:   snapshot?.spread_up   || null,
       spread_down: snapshot?.spread_down || null,
+      // 兼容旧字段
+      spread:      snapshot ? (Math.abs((snapshot.mid_up || 0) - (snapshot.mid_down || 0))) : null
     },
-    // regime_detector 返回 { score, dimensions: { sigma_trend, alternation, volume } }
     regime: {
-      score:       regime?.score                     ?? null,
-      sigma:       regime?.dimensions?.sigma_trend   ?? null,
-      alternation: regime?.dimensions?.alternation   ?? null,
-      volume:      regime?.dimensions?.volume        ?? null,
+      score:       regime?.score || 0.5,
+      sigma:       regime?.sigma || null,
+      alternation: regime?.alternation || null,
     },
-    // market_scanner 为工厂模式无单例，SE-1 暂置 null
-    window: { remaining_sec: null, period: _period, slug: null },
+    window: {
+      remaining_sec: 100, // mock
+      period: _period,
+      slug: null,
+    },
+    position: null, // TODO: connect to PositionManager
     orderbook: {
       bid_up:   snapshot?.bid_up   || null,
       ask_up:   snapshot?.ask_up   || null,

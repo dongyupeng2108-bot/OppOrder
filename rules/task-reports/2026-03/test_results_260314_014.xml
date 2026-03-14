@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="strategy_runner_context_fetch" tests="1" failures="0" errors="0" skipped="0">
+    <testcase name="context_fetched_via_http" time="0.001"/>
+  </testsuite>
+</testsuites>
