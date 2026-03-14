@@ -1,0 +1,5 @@
+100ms: timer_init
+90ms: start_loop_log
+80ms: tick_log
+70ms: context_build
+60ms: log_append
