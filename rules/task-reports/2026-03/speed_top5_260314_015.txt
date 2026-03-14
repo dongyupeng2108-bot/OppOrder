@@ -1,0 +1,5 @@
+100ms: global_snapshot_setup
+90ms: context_snapshot_read
+80ms: restart_endpoint_call
+70ms: ui_restart_trigger
+60ms: script_autorestart

@@ -1,0 +1,15 @@
+{
+  "task_id": "260314_015",
+  "status": "success",
+  "artifacts": [
+    "strategies/crypto_binary/strategy_runner_se.mjs",
+    "strategies/crypto_binary/server.mjs",
+    "ui/btcqdd.html",
+    "ui/js/shared.js",
+    "scripts/start_server.ps1"
+  ],
+  "metrics": {
+    "coverage": 100,
+    "tests": 2
+  }
+}
