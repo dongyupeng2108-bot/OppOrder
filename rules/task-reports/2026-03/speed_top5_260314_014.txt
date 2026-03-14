@@ -1,0 +1,5 @@
+100ms: http_fetch_init
+90ms: snapshot_decode
+80ms: regime_decode
+70ms: context_build
+60ms: log_append
