@@ -1,8 +1,24 @@
 {
   "task_id": "260314_017",
-  "profile_version": "1.0",
-  "metrics": {
-    "coverage": 100,
-    "test_pass_rate": 100
-  }
+  "generated_at": "2026-03-14T15:01:06.349Z",
+  "steps": [
+    {
+      "step": "doc_path_refs_scan",
+      "duration_ms": 368,
+      "file_count": 1397,
+      "line_count": 231988
+    },
+    {
+      "step": "ps_cmd_static_scan",
+      "duration_ms": 83,
+      "file_count": 3,
+      "line_count": 1668
+    },
+    {
+      "step": "task_reports_audit_scan",
+      "duration_ms": 3,
+      "file_count": 0,
+      "line_count": 0
+    }
+  ]
 }
