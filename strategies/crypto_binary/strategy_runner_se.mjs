@@ -35,7 +35,9 @@ function _updatePnlSeries() {
 
 // ── 定时循环（2 秒） ──────────────────────────────────────────────────────
 function _startLoop() {
+  console.log('[SE_STARTLOOP] called');
   _timer = setInterval(async () => {
+    console.log('[SE_TICK]', Date.now(), '_running=', _running, '_decideFunc=', !!_decideFunc);
     if (!_running || !_decideFunc) return;
     try {
       const ctx = await _buildContext();
