@@ -42,7 +42,11 @@ function _startLoop() {
     if (!_running || !_decideFunc) return;
     try {
       console.log('[SE_TICK_INNER] 进入 _tick try 块');
+      
+      console.log('[SE_BUILD_CTX] 开始');
       const ctx = await _buildContext();
+      console.log('[SE_BUILD_CTX] 完成', JSON.stringify(ctx?.price));
+      
       let result;
 
       // 超时保护：1 秒
@@ -83,6 +87,7 @@ function _startLoop() {
       
       _updatePnlSeries();
     } catch (err) {
+      console.log('[SE_TICK_CATCH]', err.message, err.stack);
       _appendLog('ERROR', err.message);
     }
   }, 2000);
