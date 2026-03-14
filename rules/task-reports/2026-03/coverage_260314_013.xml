@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <coverage version="1">
-  <project timestamp="1773495877">
+  <project timestamp="1773495931">
     <file name="strategies/crypto_binary/server.mjs">
       <line num="1" count="1" type="stmt"/>
     </file>

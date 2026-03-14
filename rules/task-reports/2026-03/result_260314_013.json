@@ -1,6 +1,6 @@
 {
   "task_id": "260314_013",
-  "status": "success",
+  "status": "DONE",
   "artifacts": [
     "strategies/crypto_binary/server.mjs",
     "ui/js/strategy-editor.js",
@@ -9,5 +9,16 @@
   "metrics": {
     "coverage": 100,
     "tests": 1
+  },
+  "summary": "Automation Pack V1 Validation for Task 260314_013",
+  "report_file": "notify_260314_013.txt",
+  "report_sha256_short": "8f51ff1f",
+  "mode": "Integrate",
+  "dod_evidence": {
+    "gate_light_exit": 0,
+    "healthcheck": [
+      "rules/task-reports/2026-03/260314_013_healthcheck_53122_root.txt",
+      "rules/task-reports/2026-03/260314_013_healthcheck_53122_pairs.txt"
+    ]
   }
 }
