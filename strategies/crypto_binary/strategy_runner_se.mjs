@@ -88,8 +88,8 @@ function _startLoop() {
 // 辅助：从 ctx 构建 snapshot 供 order_manager 使用
 function _buildSnapshot(ctx) {
   return {
-    bid_up: ctx.orderbook?.bid_up || ctx.price.up - 0.0005,
-    ask_up: ctx.orderbook?.ask_up || ctx.price.up + 0.0005,
+    bid_up: ctx.orderbook?.best_bid || ctx.orderbook?.bid_up || ctx.price.up - 0.0005,
+    ask_up: ctx.orderbook?.best_ask || ctx.orderbook?.ask_up || ctx.price.up + 0.0005,
     bid_down: ctx.orderbook?.bid_down || ctx.price.down - 0.0005,
     ask_down: ctx.orderbook?.ask_down || ctx.price.down + 0.0005,
   };
@@ -128,8 +128,10 @@ async function _buildContext() {
     window: { remaining_sec: null, period: _period, slug: null },
     position: null,
     orderbook: {
-      bid_up:   snapshot?.bid_up   || null,
-      ask_up:   snapshot?.ask_up   || null,
+      bid_up:   snapshot?.bid_up   || snapshot?.best_bid || null,
+      ask_up:   snapshot?.ask_up   || snapshot?.best_ask || null,
+      best_bid: snapshot?.bid_up   || snapshot?.best_bid || null,
+      best_ask: snapshot?.ask_up   || snapshot?.best_ask || null,
       mid_up:   snapshot?.mid_up   || null,
       bid_down: snapshot?.bid_down || null,
       ask_down: snapshot?.ask_down || null,
