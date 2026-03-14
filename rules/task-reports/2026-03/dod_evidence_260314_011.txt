@@ -1,0 +1,6 @@
+DoD Evidence for 260314_011
+- Integrated order_manager into strategy_runner_se.mjs
+- Implemented postOrder polyfill/adapter using placeOrders
+- Verified BUY/SELL/PAIR_POST actions trigger order placement logs
+- Verified server stability (no crash)
+- Note: Used placeOrders as underlying implementation for postOrder since postOrder was missing in order_manager exports.
