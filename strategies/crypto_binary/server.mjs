@@ -75,14 +75,14 @@ let _globalScanner          = null;
 async function initGlobalOrderbook() {
   try {
     const baseConfig = {
-      market: { slug_prefix: 'btc-updown-15m-', window_minutes: 15 },
+      market: { slug_prefix: 'btc-updown-5m-', window_minutes: 5 },
       polymarket_poll_sec: 2,
       polymarket_mode: 'rest',
     };
     _globalScanner = createScanner(baseConfig);
     const win = await _globalScanner.findCurrentWindow();
     if (!win || !win.up_token_id) {
-      console.warn('[server] initGlobalOrderbook: no active BTC 15m window found');
+      console.warn('[server] initGlobalOrderbook: no active BTC 5m window found');
       return;
     }
     console.info(`[server] initGlobalOrderbook: window ${win.slug}, up=${win.up_token_id.slice(0,8)}…`);

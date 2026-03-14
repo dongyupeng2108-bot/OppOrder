@@ -83,7 +83,7 @@ const SE_GUIDE_TEXT = `🤖 AI 策略编写指南
 
 // 状态管理
 let _se_running = false;
-let _se_period = '15m';
+let _se_period = '5m';
 let _se_pollTimer = null;
 const BASE_URL = ''; // 相对路径
 
@@ -101,8 +101,8 @@ function initStrategyEditor() {
       <div class="se-left">
         <div class="se-toolbar">
           <div class="se-period-toggle">
-            <button id="se-btn-5m" class="se-period-btn" onclick="se_setPeriod('5m')">5m</button>
-            <button id="se-btn-15m" class="se-period-btn se-period-active" onclick="se_setPeriod('15m')">15m</button>
+            <button id="se-btn-5m" class="se-period-btn se-period-active" onclick="se_setPeriod('5m')">5m</button>
+            <button id="se-btn-15m" class="se-period-btn" onclick="se_setPeriod('15m')">15m</button>
           </div>
           <div class="se-status">
             <span id="se-status-dot" class="se-dot se-dot-off"></span>
