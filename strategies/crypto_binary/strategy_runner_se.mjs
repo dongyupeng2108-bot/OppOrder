@@ -143,6 +143,15 @@ async function _buildContext() {
 // ── 动作处理 ──────────────────────────────────────────────────────────────
 // SE-1: BUY/SELL/PAIR_POST 只记日志，不真实下单；SE-3 联调时再接 order_manager
 async function _handleAction(result, ctx) {
+  // 兼容字符串格式（'BUY_UP' / 'BUY_DOWN' / 'HOLD' / 'CLOSE'）
+  if (typeof result === 'string') {
+    if (result === 'BUY_UP') result = { action: 'BUY', side: 'UP', price: ctx.price?.up };
+    else if (result === 'BUY_DOWN') result = { action: 'BUY', side: 'DOWN', price: ctx.price?.down };
+    else if (result === 'HOLD') result = { action: 'HOLD' };
+    else if (result === 'CLOSE') result = { action: 'CANCEL_ALL' };
+    else result = { action: 'HOLD' };
+  }
+
   if (!result || !result.action) {
     _appendLog('HOLD', `up=${ctx.price?.up?.toFixed(3) ?? 'null'} down=${ctx.price?.down?.toFixed(3) ?? 'null'}`);
     return;

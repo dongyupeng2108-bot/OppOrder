@@ -1,0 +1,4 @@
+DoD Evidence for 260314_027
+- Updated _handleAction in strategy_runner_se.mjs to support string return values
+- Supported values: BUY_UP, BUY_DOWN, HOLD, CLOSE
+- Verified with manual test strategy
