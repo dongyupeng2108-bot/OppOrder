@@ -1,0 +1,5 @@
+100ms: tick_exec
+90ms: handle_action
+80ms: log_append
+70ms: price_format
+60ms: log_write
