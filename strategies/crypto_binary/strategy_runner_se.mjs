@@ -150,7 +150,7 @@ async function _handleAction(result, ctx) {
 
   switch (action) {
     case 'HOLD':
-      _appendLog('HOLD', `score=${ctx.regime?.score?.toFixed(2)}`);
+      _appendLog('HOLD', `up=${ctx.price?.up?.toFixed(3) ?? 'null'} down=${ctx.price?.down?.toFixed(3) ?? 'null'}`);
       break;
 
     case 'BUY':

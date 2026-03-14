@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="hold_log_format_fix" tests="1" failures="0" errors="0" skipped="0">
+    <testcase name="update_hold_log_format" time="0.001"/>
+  </testsuite>
+</testsuites>

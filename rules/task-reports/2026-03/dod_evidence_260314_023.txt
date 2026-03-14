@@ -1,0 +1,3 @@
+DoD Evidence for 260314_023
+- Updated HOLD log format in strategy_runner_se.mjs to show up/down prices instead of score
+- Verified format matches: up=X.XXX down=X.XXX
