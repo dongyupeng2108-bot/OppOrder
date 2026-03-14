@@ -1,0 +1,5 @@
+{
+  "commit": "HEAD",
+  "author": "TraeAI",
+  "message": "fix: remove recursive fetch causing deadlock in strategy runner"
+}

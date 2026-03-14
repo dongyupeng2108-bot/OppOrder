@@ -1,0 +1,5 @@
+100ms: context_build
+90ms: snapshot_fetch
+80ms: strategy_exec
+70ms: log_append
+60ms: cleanup
