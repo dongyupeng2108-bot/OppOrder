@@ -19,6 +19,7 @@ let _lastPnlHour = -1;
 
 // ── 内部工具 ──────────────────────────────────────────────────────────────
 function _appendLog(type, msg) {
+  console.log('[SE_TICK_LOG] 准备写日志', type, msg);
   const entry = { ts: new Date().toISOString(), type, msg };
   _logBuffer.push(entry);
   if (_logBuffer.length > 500) _logBuffer.shift();
@@ -40,6 +41,7 @@ function _startLoop() {
     console.log('[SE_TICK]', Date.now(), '_running=', _running, '_decideFunc=', !!_decideFunc);
     if (!_running || !_decideFunc) return;
     try {
+      console.log('[SE_TICK_INNER] 进入 _tick try 块');
       const ctx = await _buildContext();
       let result;
 
