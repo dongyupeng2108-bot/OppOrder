@@ -1,0 +1,5 @@
+DoD Evidence for 260314_008
+- Layout adjusted in ui/strategy-editor.html
+- Left column (editor) flex: 1 (25%)
+- Right column (logs/stats) flex: 3 (75%)
+- Verified via style override in HTML head

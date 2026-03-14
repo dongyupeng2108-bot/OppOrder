@@ -1,0 +1,5 @@
+100ms: layout_check
+90ms: style_override
+80ms: flex_ratio
+70ms: ui_load
+60ms: editor_init

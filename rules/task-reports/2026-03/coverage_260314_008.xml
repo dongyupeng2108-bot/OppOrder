@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<coverage version="1">
+  <project timestamp="1773489103">
+    <file name="ui/strategy-editor.html">
+      <line num="1" count="1" type="stmt"/>
+    </file>
+  </project>
+</coverage>
