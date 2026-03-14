@@ -1,0 +1,5 @@
+DoD Evidence for 260314_012
+- Integrated simulateFills into strategy_runner_se.mjs loop
+- Verified fills trigger PnL updates and log entries
+- Implemented _buildSnapshot helper for simulateFills
+- Verified server stability
