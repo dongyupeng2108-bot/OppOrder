@@ -1,0 +1,5 @@
+DoD Evidence for 260314_016
+- Added try/catch block to _startLoop timer callback in strategy_runner_se.mjs
+- Added "定时器已启动" log message in deploy function
+- Verified timer keeps running even if errors occur during tick execution
+- Verified logs show periodic activity

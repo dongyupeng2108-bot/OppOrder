@@ -1,0 +1,11 @@
+{
+  "task_id": "260314_016",
+  "status": "success",
+  "artifacts": [
+    "strategies/crypto_binary/strategy_runner_se.mjs"
+  ],
+  "metrics": {
+    "coverage": 100,
+    "tests": 1
+  }
+}

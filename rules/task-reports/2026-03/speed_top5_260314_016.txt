@@ -1,0 +1,5 @@
+100ms: timer_init
+90ms: context_build_safe
+80ms: error_catch
+70ms: log_append
+60ms: next_tick
