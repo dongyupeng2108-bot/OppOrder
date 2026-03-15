@@ -99,7 +99,8 @@ async function initGlobalOrderbook() {
 }
 
 // 监听窗口切换，用新窗口 token_id 重新初始化盘口
-subscribe(EVENT_TYPES.WINDOW_SWITCH, async ({ window_id }) => {
+subscribe(async (evt) => {
+  if (evt.type !== EVENT_TYPES.WINDOW_SWITCH) return;
   console.info('[server] WINDOW_SWITCH detected, reinitializing orderbook...');
   await initGlobalOrderbook();
 });
