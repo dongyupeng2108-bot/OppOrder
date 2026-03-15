@@ -86,6 +86,13 @@ async function initGlobalOrderbook() {
       return;
     }
     console.info(`[server] initGlobalOrderbook: window ${win.slug}, up=${win.up_token_id.slice(0,8)}…`);
+
+    // 停止旧的 monitor（防止旧实例继续用过期 token_id 发请求）
+    if (_globalOrderbookMonitor) {
+      try { _globalOrderbookMonitor.stop(); } catch(_) {}
+      _globalOrderbookMonitor = null;
+    }
+
     _globalOrderbookMonitor = createOrderbookMonitor(baseConfig);
     _globalOrderbookMonitor.start(win.up_token_id, win.down_token_id);
     console.info('[server] Global orderbook monitor started');
