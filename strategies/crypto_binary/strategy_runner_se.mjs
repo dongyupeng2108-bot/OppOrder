@@ -275,7 +275,7 @@ async function _handleAction(result, ctx) {
 
 // ── 导出接口 ──────────────────────────────────────────────────────────────
 
-export const DEFAULT_CODE = `
+const DEFAULT_CODE = `
 // 策略函数 decide(ctx)
 // 返回: 'BUY_UP' | 'BUY_DOWN' | 'HOLD' | 'CLOSE'
 function decide(ctx) {
