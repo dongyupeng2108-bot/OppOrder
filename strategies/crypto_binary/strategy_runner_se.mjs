@@ -36,45 +36,46 @@ function _updatePnlSeries() {
 }
 
 async function _checkSettlement() {
+  if (_pendingSettlement.length === 0) return;
   const now = Date.now();
-  const TIMEOUT_MS = 10 * 60 * 1000; // 10分钟
-  for (let i = _pendingSettlement.length - 1; i >= 0; i--) {
-    const entry = _pendingSettlement[i];
+  const TIMEOUT_MS = 10 * 60 * 1000;
+  const remaining = [];
+  for (const entry of [..._pendingSettlement]) {
+    if (!entry || !entry.startedAt) continue; // 防御性检查
     // 超时处理
     if (now - entry.startedAt > TIMEOUT_MS) {
-      _appendLog('SETTLE_TIMEOUT', `upToken=${entry.upTokenId.slice(0,8)} orders=${entry.orders.length}`);
-      _pendingSettlement.splice(i, 1);
-      continue;
+      _appendLog('SETTLE_TIMEOUT', `upToken=${entry.upTokenId?.slice(0,8)} orders=${entry.orders?.length}`);
+      continue; // 不加入 remaining，相当于删除
     }
     // 查询旧窗口价格
     try {
       const res = await fetch(`https://clob.polymarket.com/book?token_id=${entry.upTokenId}`);
-      if (!res.ok) continue;
+      if (!res.ok) { remaining.push(entry); continue; }
       const book = await res.json();
       const bids = book.bids || [];
       const asks = book.asks || [];
       const bestBid = parseFloat(bids[bids.length-1]?.price ?? 0);
       const bestAsk = parseFloat(asks[asks.length-1]?.price ?? 1);
       const midUp = (bestBid + bestAsk) / 2;
-      // 判断结算
       let upWon = null;
       if (midUp >= 0.99) upWon = true;
       else if (midUp <= 0.01) upWon = false;
-      else continue; // 还未结算，下次再查
-      // 结算所有订单
+      if (upWon === null) { remaining.push(entry); continue; }
+      // 结算
       for (const order of entry.orders) {
         const won = (order.side === 'UP' && upWon) || (order.side === 'DOWN' && !upWon);
-        const pnlDelta = won 
-          ? (1.0 - order.price) * order.size 
-          : (-order.price) * order.size;
+        const pnlDelta = won ? (1.0 - order.price) * order.size : (-order.price) * order.size;
         _stats.pnl += pnlDelta;
         if (pnlDelta > 0) _stats.wins++;
         else _stats.losses++;
         _appendLog('SETTLE', `side=${order.side} price=${order.price.toFixed(4)} pnl=${pnlDelta.toFixed(4)} upWon=${upWon}`);
       }
-      _pendingSettlement.splice(i, 1);
-    } catch(_) {}
+      // 结算完成，不加入 remaining
+    } catch(_) { remaining.push(entry); }
   }
+  // 替换整个数组
+  _pendingSettlement.length = 0;
+  remaining.forEach(e => _pendingSettlement.push(e));
 }
 
 // ── 定时循环（2 秒） ──────────────────────────────────────────────────────
