@@ -51,31 +51,61 @@ async function _checkSettlement() {
       _appendLog('SETTLE_TIMEOUT', `upToken=${entry.upTokenId?.slice(0,8)} orders=${entry.orders?.length}`);
       continue; // 不加入 remaining，相当于删除
     }
-    // 查询旧窗口价格
-    try {
-      const res = await fetch(`https://clob.polymarket.com/book?token_id=${entry.upTokenId}`);
-      if (!res.ok) { remaining.push(entry); continue; }
-      const book = await res.json();
-      const bids = book.bids || [];
-      const asks = book.asks || [];
-      const bestBid = parseFloat(bids[bids.length-1]?.price ?? 0);
-      const bestAsk = parseFloat(asks[asks.length-1]?.price ?? 1);
-      const midUp = (bestBid + bestAsk) / 2;
-      let upWon = null;
-      if (midUp >= 0.99) upWon = true;
-      else if (midUp <= 0.01) upWon = false;
-      if (upWon === null) { remaining.push(entry); continue; }
-      // 结算
-      for (const order of entry.orders) {
-        const won = (order.side === 'UP' && upWon) || (order.side === 'DOWN' && !upWon);
-        const pnlDelta = won ? (1.0 - order.price) * order.size : (-order.price) * order.size;
-        _stats.pnl += pnlDelta;
-        if (pnlDelta > 0) _stats.wins++;
-        else _stats.losses++;
-        _appendLog('SETTLE', `side=${order.side} price=${order.price.toFixed(4)} pnl=${pnlDelta.toFixed(4)} upWon=${upWon}`);
+    // Group orders by upTokenId
+    const groups = {};
+    const unSettledOrders = [];
+
+    for (const order of entry.orders) {
+      const tId = order.upTokenId || entry.upTokenId;
+      if (!tId) {
+        unSettledOrders.push(order);
+        continue;
       }
-      // 结算完成，不加入 remaining
-    } catch(_) { remaining.push(entry); }
+      if (!groups[tId]) groups[tId] = [];
+      groups[tId].push(order);
+    }
+
+    // Process groups
+    for (const tId of Object.keys(groups)) {
+      const orders = groups[tId];
+      let settled = false;
+      try {
+        const res = await fetch(`https://clob.polymarket.com/book?token_id=${tId}`);
+        if (res.ok) {
+          const book = await res.json();
+          const bids = book.bids || [];
+          const asks = book.asks || [];
+          const bestBid = parseFloat(bids[bids.length-1]?.price ?? 0);
+          const bestAsk = parseFloat(asks[asks.length-1]?.price ?? 1);
+          const midUp = (bestBid + bestAsk) / 2;
+          
+          let upWon = null;
+          if (midUp >= 0.99) upWon = true;
+          else if (midUp <= 0.01) upWon = false;
+          
+          if (upWon !== null) {
+            settled = true;
+            for (const order of orders) {
+              const won = (order.side === 'UP' && upWon) || (order.side === 'DOWN' && !upWon);
+              const pnlDelta = won ? (1.0 - order.price) * order.size : (-order.price) * order.size;
+              _stats.pnl += pnlDelta;
+              if (pnlDelta > 0) _stats.wins++;
+              else _stats.losses++;
+              _appendLog('SETTLE', `side=${order.side} price=${order.price.toFixed(4)} pnl=${pnlDelta.toFixed(4)} upWon=${upWon}`);
+            }
+          }
+        }
+      } catch(_) {}
+      
+      if (!settled) {
+        orders.forEach(o => unSettledOrders.push(o));
+      }
+    }
+
+    if (unSettledOrders.length > 0) {
+      entry.orders = unSettledOrders;
+      remaining.push(entry);
+    }
   }
   // 替换整个数组
   _pendingSettlement.length = 0;
@@ -340,6 +370,14 @@ export function deploy(code, period) {
         offset: 0,
         tick_size: 0.0001
       });
+
+      // FIX: Bind current window token IDs
+      const snapshot = global._btcqddGetSnapshot ? global._btcqddGetSnapshot() : null;
+      if (snapshot && orders[0]) {
+        orders[0].upTokenId = snapshot.up_token_id;
+        orders[0].downTokenId = snapshot.down_token_id;
+      }
+
       return orders[0];
     };
   }
