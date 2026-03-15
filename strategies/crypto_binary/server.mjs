@@ -90,6 +90,9 @@ async function initGlobalOrderbook() {
 
     // 停止旧的 monitor（防止旧实例继续用过期 token_id 发请求）
     if (_globalOrderbookMonitor) {
+      // 保存旧窗口 token_ids 供结算引擎使用
+      const oldState = _globalOrderbookMonitor.getLatestSnapshot?.();
+      global._btcqddLastWindowTokenIds = _globalOrderbookMonitor.getTokenIds?.() || null;
       try { _globalOrderbookMonitor.stop(); } catch(_) {}
       _globalOrderbookMonitor = null;
     }
