@@ -5,6 +5,7 @@
 import './proxy_agent.mjs';
 import { createOrderManager } from './order_manager.mjs';
 import { subscribe, EVENT_TYPES } from './event_bus.mjs';
+import { createPriceFeed } from './price_feed.mjs';
 
 // ── 运行器状态 ────────────────────────────────────────────────────────────
 let _running    = false;
@@ -18,6 +19,9 @@ let _pnlSeries  = [];   // [{ hour: 0, pnl: 0 }, ...]
 let _logBuffer  = [];   // 环形缓冲，最多 500 条
 let _lastPnlHour = -1;
 const _pendingSettlement = []; // [{ upTokenId, downTokenId, orders, startedAt }]
+let _priceFeed = null;
+let _lastBtcPrice = null;
+let _lastTriggerPrice = null; // 上次触发决策时的价格，用于节流
 
 // ── 内部工具 ──────────────────────────────────────────────────────────────
 function _appendLog(type, msg) {
@@ -83,54 +87,58 @@ async function _checkSettlement() {
 
 // ── 定时循环（2 秒） ──────────────────────────────────────────────────────
 function _startLoop() {
-  _timer = setInterval(async () => {
-    if (!_running || !_decideFunc) return;
-    try {
-      const ctx = await _buildContext();
-      let result;
+  _timer = setInterval(_tick, 2000);
+}
 
-      // 超时保护：1 秒
-      const timeout = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('decide() timeout')), 1000)
-      );
+// ── 决策核心逻辑 ────────────────────────────────────────────────────────
+async function _tick() {
+  if (!_running || !_decideFunc) return;
+  try {
+    const ctx = await _buildContext();
+    let result;
+
+    // 超时保护：1 秒
+    const timeout = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('decide() timeout')), 1000)
+    );
+    try {
       result = await Promise.race([
         Promise.resolve(_decideFunc(ctx)),
         timeout,
       ]);
-
-      await _handleAction(result, ctx);
-
-      // ── 模拟成交 ────────────────────────────────────────────────────────
-      try {
-        if (_orderManager && typeof _orderManager.simulateFills === 'function') {
-          const snapshot = _buildSnapshot(ctx);
-          const fills = _orderManager.simulateFills(snapshot);
-          
-          if (fills && fills.length > 0) {
-            for (const fill of fills) {
-              // 计算 PnL: fill.price 与 mid_price 的差值 (假设立即平仓)
-              // 注意：这里仅作演示，真实 PnL 需要 PositionManager
-              const mid = fill.side === 'UP' ? ctx.price.up : ctx.price.down;
-              const pnlDelta = (mid - fill.price) * fill.size; // 简单估算
-              
-              _stats.pnl += pnlDelta;
-              if (pnlDelta > 0) _stats.wins++;
-              else if (pnlDelta < 0) _stats.losses++;
-              
-              _appendLog('FILL', `order_id=${fill.order_id.slice(0,8)}... side=${fill.side} price=${fill.price.toFixed(4)} pnl=${pnlDelta.toFixed(4)}`);
-            }
-          }
-        }
-      } catch (err) {
-        _appendLog('ERROR', `simulateFills: ${err.message}`);
-      }
-      
-      _updatePnlSeries();
-    } catch (err) {
-      console.log('[SE_TICK_CATCH]', err.message, err.stack);
-      _appendLog('ERROR', err.message);
+    } catch (e) {
+      _appendLog('ERROR', `decide() failed: ${e.message}`);
+      return;
     }
-  }, 2000);
+
+    await _handleAction(result, ctx);
+
+    // ── 模拟成交 ────────────────────────────────────────────────────────
+    if (_orderManager && typeof _orderManager.simulateFills === 'function') {
+      const snapshot = _buildSnapshot(ctx);
+      const fills = _orderManager.simulateFills(snapshot);
+      
+      if (fills && fills.length > 0) {
+        for (const fill of fills) {
+          // 计算 PnL: fill.price 与 mid_price 的差值 (假设立即平仓)
+          // 注意：这里仅作演示，真实 PnL 需要 PositionManager
+          const mid = fill.side === 'UP' ? (ctx.price.up || 0.5) : (ctx.price.down || 0.5);
+          const pnlDelta = (mid - fill.price) * fill.size; // 简单估算
+          
+          _stats.pnl += pnlDelta;
+          if (pnlDelta > 0) _stats.wins++;
+          else if (pnlDelta < 0) _stats.losses++;
+          
+          _appendLog('FILL', `order_id=${fill.order_id.slice(0,8)}... side=${fill.side} price=${fill.price.toFixed(4)} pnl=${pnlDelta.toFixed(4)}`);
+        }
+      }
+    }
+    
+    _updatePnlSeries();
+  } catch (err) {
+    console.log('[SE_TICK_CATCH]', err.message, err.stack);
+    _appendLog('ERROR', err.message);
+  }
 }
 
 // 辅助：从 ctx 构建 snapshot 供 order_manager 使用
@@ -164,7 +172,7 @@ async function _buildContext() {
   
   return {
     price: {
-      btc: null,
+      btc: _lastBtcPrice,
       up:          snapshot?.mid_up    || null,
       down:        snapshot?.mid_down  || null,
       spread_up:   snapshot?.spread_up   || null,
@@ -340,6 +348,22 @@ export function deploy(code, period) {
   _appendLog('SYSTEM', `定时器已启动，间隔 2s`);
   _startLoop();
   
+  // 启动 price_feed
+  if (!_priceFeed) {
+    _priceFeed = createPriceFeed({ symbol: 'BTCUSDT', price_feed: { mode: 'ws', poll_sec: 2 } });
+    _priceFeed.start();
+    _priceFeed.subscribe((snapshot) => {
+      _lastBtcPrice = snapshot?.price ?? null;
+      // 节流：价格变化超过 0.1% 才触发决策
+      if (_lastBtcPrice && _lastTriggerPrice) {
+        const change = Math.abs(_lastBtcPrice - _lastTriggerPrice) / _lastTriggerPrice;
+        if (change < 0.001) return; // 小于 0.1% 不触发
+      }
+      _lastTriggerPrice = _lastBtcPrice;
+      _tick(); // 触发一次决策
+    });
+  }
+  
   // 启动结算轮询
   setInterval(_checkSettlement, 10000);
 
@@ -366,6 +390,7 @@ export function deploy(code, period) {
 
 export function stop() {
   if (_timer) { clearInterval(_timer); _timer = null; }
+  if (_priceFeed) { _priceFeed.stop(); _priceFeed = null; _lastBtcPrice = null; _lastTriggerPrice = null; }
   _running    = false;
   _decideFunc = null;
   _orderManager = null;
