@@ -321,9 +321,13 @@ export function createOrderbookMonitor(config) {
 
   function isStale() { return stale; }
 
+  function getTokenIds() {
+    return { up: currentUpTokenId, down: currentDownTokenId };
+  }
+
   return {
     start, stop, subscribe, setTokenIds,
-    getLatestSnapshot, isStale,
+    getLatestSnapshot, isStale, getTokenIds,
     // 向后兼容（原版接口）
     inferTickSize, floorToTick,
   };
