@@ -248,7 +248,7 @@ export function deploy(code, period) {
   // 初始化 OrderManager (Paper 模式)
   _orderManager = createOrderManager({
     paper: { fill_model: 'optimistic', fill_discount: 1.0, fill_delay_ms: 0 },
-    risk: { max_position_usd: 100 },
+    risk: { max_position_usd: 1 },
     strategy: { order_tranches: 1, tranche_weights: [1.0] }
   });
 
