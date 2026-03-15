@@ -319,7 +319,6 @@ Select-String -Path 'rules/task-reports/2026-03/gate_light_preview_<task_id>.log
 3. **文件命名规范**：`capsule_<里程碑>_<task_id>.md`，例如 `capsule_B1b_260307_012.md`
 4. **Owner 下载文件后**放入 `E:\OppRadar\taskfiles\`，再将执行指令发给 Claude Code
 5. **设计文档**也必须放到 `E:\OppRadar\taskfiles\`，Code 无法访问 `/mnt/user-data/uploads/`
-6. **胶囊串行规则**：PM 每次只出一个胶囊。上一个胶囊未收到 Code 回报（含 PR 号、Gate Light 结果）前，PM 不得下发下一个胶囊。Owner 确认规则来源：260309 PM 窗口。
 
 ---
 
@@ -509,6 +508,43 @@ CI 状态：✅/❌/⏳
 - 只需 import 一次，重复 import 无副作用（ES module 缓存机制保证）
 - 影响模块：price_feed.mjs / market_scanner.mjs / signal_engine.mjs 及后续所有发起网络请求的模块
 
+**坑12：postmortem INSERT 错误被上层 try/catch 吞掉**
+- 现象：日志出现 `[Postmortem] Recorded: ...` 但数据库无新记录
+- 根因：recordPostmortem 内 db.run 抛出的错误（如列不存在）被 strategy_runner 的 tick try/catch 捕获后只打印 `tick error:`，postmortem.mjs 本身没有 try/catch，错误细节不可见
+- 解法：在 recordPostmortem 内包裹 try/catch，catch 中 console.error 打印错误消息 + 关键参数 + 完整堆栈（PR#322）
+- 教训：模块内部错误不能依赖上层捕获，关键写入函数必须自己打印诊断信息
+
+**坑13：BTCQDD 与 OppRadar 使用不同 SQLite 文件**
+- 现象：查 `data/runtime/oppradar.sqlite` 的 cb_postmortem 表只有旧测试记录（id=1），服务实际写入的是另一个文件
+- 根因：BTCQDD 使用独立数据库 `data/crypto_binary/btcqdd.sqlite`，而 OppRadar 用 `data/runtime/oppradar.sqlite`，两者完全独立
+- 解法：查 BTCQDD 数据时必须用正确路径
+  ```powershell
+  # BTCQDD 数据查询（正确）
+  node -e "import('better-sqlite3').then(({default:DB})=>{const db=new DB('data/crypto_binary/btcqdd.sqlite');console.log(JSON.stringify(db.prepare('SELECT * FROM cb_postmortem ORDER BY id DESC LIMIT 5').all(),null,2))})"
+  ```
+- 教训：出胶囊时明确指定 DB 路径，不要假设只有一个数据库文件
+
+**坑14：DB 迁移代码在服务启动时未执行**
+- 现象：ALTER TABLE 迁移逻辑已合并（PR#321），但服务启动后 INSERT 仍报列不存在
+- 根因：postmortem.mjs 的初始化函数（含迁移逻辑）没有在服务启动时被调用，迁移代码从未执行
+- 解法：服务不在线时用 node -e 直接执行迁移命令，绕过服务层
+- 教训：DB 迁移逻辑必须验证"是否真的被调用"，不能只看代码存在就认为会执行
+
+**坑15：策略编辑器代码里不能用 window，必须用 globalThis**
+- 现象：策略代码里写 `window._s = { up: 0, down: 0 }` 导致服务崩溃，报 `ReferenceError: window is not defined`
+- 根因：策略代码在 Node.js 服务端 `eval()` 执行，Node.js 环境没有 `window` 对象（那是浏览器的全局对象）
+- 解法：用 `globalThis` 替代 `window`，`globalThis` 在 Node.js 和浏览器中都可用
+- **规范**：策略代码里需要跨 tick 保存状态时，必须用：
+  ```javascript
+  // ❌ 错误：Node.js 里 window 不存在
+  if (!window._s) window._s = { up: 0, down: 0 };
+  
+  // ✅ 正确：globalThis 在 Node.js 和浏览器都有效
+  if (!globalThis._s) globalThis._s = { up: 0, down: 0 };
+  ```
+- 影响范围：所有在策略编辑器里编写的策略代码
+- AI 指南已同步更新（PR #454）
+
 ---
 
 ## 十七、常用命令速查
@@ -551,7 +587,19 @@ Select-String -Path 'rules/task-reports/2026-03/gate_light_preview_<task_id>.log
 
 # 启动服务
 node OppRadar/mock_server_53122.mjs
-node strategies/crypto_binary/server.mjs --strategy=btc_15m
+$env:HTTPS_PROXY = "http://127.0.0.1:51081"; $env:HTTP_PROXY = "http://127.0.0.1:51081"
+.\scripts\start_btcqdd.ps1   # BTCQDD 守护进程（推荐，服务崩溃后自动重启）
+# node strategies/crypto_binary/server.mjs --strategy=btc_5m_maker  # 单次启动（不自动重启）
+
+# BTCQDD SE 策略引擎日志查询
+node -e "fetch('http://localhost:53123/strategy-runner/logs').then(r=>r.json()).then(d=>console.log(JSON.stringify(d.logs?.filter(l=>l.type?.includes('SETTLE')))))"
+node -e "fetch('http://localhost:53123/strategy-runner/status').then(r=>r.json()).then(d=>console.log(JSON.stringify(d.stats)))"
+
+# BTCQDD 数据库查询（注意：不是 oppradar.sqlite）
+node -e "import('better-sqlite3').then(({default:DB})=>{const db=new DB('data/crypto_binary/btcqdd.sqlite');console.log(JSON.stringify(db.prepare('SELECT id,strategy_id,window_start,window_end,pair_cost,regime_score,created_at FROM cb_postmortem ORDER BY id DESC LIMIT 5').all(),null,2))})"
+
+# BTCQDD 手动 DB 迁移（如迁移未自动执行时用）
+node -e "import('./shared/data/db.mjs').then(async m=>{const db=await m.getDb();const cols=['pair_cost REAL','regime_score REAL','cancel_latency_ms REAL','strategy_type TEXT','balance_ratio REAL','config_hash TEXT','config_snapshot_json TEXT','volume_ratio REAL'];for(const col of cols){try{await db.run('ALTER TABLE cb_postmortem ADD COLUMN '+col);console.log('added:',col)}catch(e){console.log('skip:',col)}}console.log('done')})"
 
 # 启动 Code
 claude --dangerously-skip-permissions
@@ -559,9 +607,26 @@ claude --dangerously-skip-permissions
 
 ---
 
+## 十八、变更历史
+
+| 版本 | 日期 | 变更内容 |
+|------|------|----------|
+| v1.0 | 260302 | 初始版本，M4.5 治理精简后输出 |
+| v1.1 | 260304 | 更新版本，Polymarket 平台政策备忘 |
+| v1.2 | 260307 | 新增第十条安全硬规则（M8）、第十一条清理类操作规范；第八条新增 PR 冲突/重复 PR 修复命令；第七条禁止操作新增模糊清理指令 |
+| v1.3 | 260308 | BTCQDD 适配：§五 Soft Gate 新增 BTCQDD Healthcheck；§八 Healthcheck 修复指引泛化；新增 §九-B Binance API 政策备忘 |
+| v1.4 | 260308 | 治理流程标准化：§七新增 run_task.ps1 使用规范、PR 账号规范、禁止手动 git 操作；§八新增 Scope Lock 违规修复和 PR 账号问题修复；§五 Scope Lock 纳入 Soft Gate；§六证据最小集新增 scope_lock；新增 §十二胶囊文件规范；新增 §十三 Scope Lock 规范 |
+| v1.5 | 260308 | PM 入职手册内容整合：§七新增角色边界、根目录硬验证、Integrate 停止条件；新增 §十四 Code 行为规律；新增 §十五 标准回报模板；新增 §十六 踩坑记录；新增 §十七 常用命令速查 |
+| v1.6 | 260308 | §十六 新增坑11：Node.js fetch 不读系统代理，记录根因、解法及所有受影响模块的规范写法 |
+| v1.7 | 260308 | 新增 §十九 跨模块接口确认规范：胶囊强制插入依赖接口确认步骤，防止 Code 凭假设动手导致运行时接口不匹配 |
+| v1.8 | 260309 | §十六 新增坑12~14：postmortem 错误被吞、BTCQDD/OppRadar 双数据库路径混淆、DB 迁移未执行；§十七 新增 BTCQDD DB 查询命令和手动迁移命令；启动命令更新为 btc_5m_maker |
+| v1.9 | 260316 | §十六 新增坑15：策略编辑器代码不能用 window 必须用 globalThis；§十七 启动命令更新为 start_btcqdd.ps1 守护进程 + 新增 SE 日志查询命令 |
+
+---
+
 ## 十九、跨模块接口确认规范（260308 新增）
 
-**背景**：B1.5/补丁系列多次出现模块接口不匹配问题，根因是胶囊缺少"动手前接口验证"步骤，Code 凭假设动手，运行时才暴露错误。
+**背景**：B1.5/补丁系列多次出现模块接口不匹配问题（orderbook_monitor 接口改版后 strategy_runner 未同步、config.model 字段假设不成立等），根因是胶囊缺少"动手前接口验证"步骤，Code 凭假设动手，运行时才暴露错误。
 
 **规则**：凡胶囊涉及跨模块调用（调用方 A 调用被改动模块 B 的接口），必须在胶囊 STEP 0 之后、STEP 1 之前插入**依赖接口确认步骤**。
 
@@ -610,17 +675,3 @@ claude --dangerously-skip-permissions
 - 申报格式：「接口不一致：A 模块使用 foo()，B 模块实际 export 的是 bar()，请 PM 确认修复范围」
 
 ---
-
-## 十八、变更历史
-
-| 版本 | 日期 | 变更内容 |
-|------|------|----------|
-| v1.0 | 260302 | 初始版本，M4.5 治理精简后输出 |
-| v1.1 | 260304 | 更新版本，Polymarket 平台政策备忘 |
-| v1.2 | 260307 | 新增第十条安全硬规则（M8）、第十一条清理类操作规范；第八条新增 PR 冲突/重复 PR 修复命令；第七条禁止操作新增模糊清理指令 |
-| v1.3 | 260308 | BTCQDD 适配：§五 Soft Gate 新增 BTCQDD Healthcheck；§八 Healthcheck 修复指引泛化；新增 §九-B Binance API 政策备忘 |
-| v1.4 | 260308 | 治理流程标准化：§七新增 run_task.ps1 使用规范、PR 账号规范、禁止手动 git 操作；§八新增 Scope Lock 违规修复和 PR 账号问题修复；§五 Scope Lock 纳入 Soft Gate；§六证据最小集新增 scope_lock；新增 §十二胶囊文件规范；新增 §十三 Scope Lock 规范 |
-| v1.5 | 260308 | PM 入职手册内容整合：§七新增角色边界、根目录硬验证、Integrate 停止条件；新增 §十四 Code 行为规律；新增 §十五 标准回报模板；新增 §十六 踩坑记录；新增 §十七 常用命令速查 |
-| v1.6 | 260308 | §十六 新增坑11：Node.js fetch 不读系统代理，记录根因、解法及所有受影响模块的规范写法 |
-| v1.7 | 260308 | 新增 §十九 跨模块接口确认规范：胶囊强制插入依赖接口确认步骤，防止 Code 凭假设动手导致运行时接口不匹配 |
-| v1.9 | 260309 | §十二 新增胶囊串行规则：一次只出一个胶囊，未回报前不得下发下一个 |
