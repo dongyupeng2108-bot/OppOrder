@@ -76,6 +76,9 @@ async function _checkSettlement() {
   // 替换整个数组
   _pendingSettlement.length = 0;
   remaining.forEach(e => _pendingSettlement.push(e));
+
+  // 清除所有已结算（FILLED）订单，防止下次窗口切换重复结算
+  if (_orderManager) _orderManager.clearSettled();
 }
 
 // ── 定时循环（2 秒） ──────────────────────────────────────────────────────
