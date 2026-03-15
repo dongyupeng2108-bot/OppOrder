@@ -108,8 +108,17 @@ async function initGlobalOrderbook() {
 // 监听窗口切换，用新窗口 token_id 重新初始化盘口
 subscribe(async (evt) => {
   if (evt.type !== EVENT_TYPES.WINDOW_SWITCH) return;
+  
+  if (!fs.existsSync('data/crypto_binary/logs')) {
+    fs.mkdirSync('data/crypto_binary/logs', { recursive: true });
+  }
+  const ts = new Date().toISOString();
+  fs.appendFileSync('data/crypto_binary/logs/window_switch.log', `${ts} WINDOW_SWITCH received\n`);
+
   console.info('[server] WINDOW_SWITCH detected, reinitializing orderbook...');
   await initGlobalOrderbook();
+
+  fs.appendFileSync('data/crypto_binary/logs/window_switch.log', `${ts} initGlobalOrderbook done\n`);
 });
 
 let db = null;

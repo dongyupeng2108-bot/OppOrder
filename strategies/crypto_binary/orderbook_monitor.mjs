@@ -63,7 +63,9 @@ export function createOrderbookMonitor(config) {
         fetch(`${PM_CLOB}/book?token_id=${upTokenId}`),
         fetch(`${PM_CLOB}/book?token_id=${downTokenId}`),
       ]);
-      if (!upRes.ok || !downRes.ok) throw new Error('REST book fetch failed');
+      if (!upRes.ok || !downRes.ok) {
+        throw new Error(`REST book fetch failed: up=${upRes.status} down=${downRes.status}`);
+      }
       const [upBook, downBook] = await Promise.all([upRes.json(), downRes.json()]);
       return _parseBooks(upBook, downBook, upTokenId, downTokenId);
     } catch (e) {
