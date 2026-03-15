@@ -90,9 +90,6 @@ async function initGlobalOrderbook() {
 
     // 停止旧的 monitor（防止旧实例继续用过期 token_id 发请求）
     if (_globalOrderbookMonitor) {
-      // 保存旧窗口 token_ids 供结算引擎使用
-      const oldState = _globalOrderbookMonitor.getLatestSnapshot?.();
-      global._btcqddLastWindowTokenIds = _globalOrderbookMonitor.getTokenIds?.() || null;
       try { _globalOrderbookMonitor.stop(); } catch(_) {}
       _globalOrderbookMonitor = null;
     }
@@ -118,6 +115,11 @@ subscribe(async (evt) => {
   }
   const ts = new Date().toISOString();
   fs.appendFileSync('data/crypto_binary/logs/window_switch.log', `${ts} WINDOW_SWITCH received\n`);
+
+  // 先同步保存旧窗口 token_ids（必须在 initGlobalOrderbook 之前）
+  if (_globalOrderbookMonitor) {
+    global._btcqddLastWindowTokenIds = _globalOrderbookMonitor.getTokenIds?.() || null;
+  }
 
   console.info('[server] WINDOW_SWITCH detected, reinitializing orderbook...');
   await initGlobalOrderbook();
