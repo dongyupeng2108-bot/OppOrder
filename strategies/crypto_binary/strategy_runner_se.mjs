@@ -21,7 +21,7 @@ let _lastPnlHour = -1;
 function _appendLog(type, msg) {
   const entry = { ts: new Date().toISOString(), type, msg };
   _logBuffer.push(entry);
-  if (_logBuffer.length > 200) _logBuffer.shift();
+  if (_logBuffer.length > 200) _logBuffer.splice(0, _logBuffer.length - 200);
 }
 
 function _updatePnlSeries() {

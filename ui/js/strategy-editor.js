@@ -200,7 +200,9 @@ async function se_deploy() {
       if (logArea) logArea.innerHTML = '';
       se_appendLog('SYSTEM', '策略已启动');
       se_updateRunningUI(true);
-      se_startPoll();
+      
+      _seLogOffset = 0;
+      if (typeof se_startPoll === 'function') se_startPoll();
     } else {
       se_appendLog('ERROR', data.error || '部署失败');
     }
