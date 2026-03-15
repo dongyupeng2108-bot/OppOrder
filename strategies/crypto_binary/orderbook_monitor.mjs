@@ -36,6 +36,7 @@ export function createOrderbookMonitor(config) {
 
   // WebSocket 客户端
   let wsClient = null;
+  let reconnectAttempts = 0;
 
   // 当前窗口的 token IDs（ws 模式下用于订阅）
   let currentUpTokenId   = null;
@@ -144,6 +145,7 @@ export function createOrderbookMonitor(config) {
     wsClient = createPmWsClient();
 
     wsClient.on('connected', async () => {
+      reconnectAttempts = 0;
       // 连通后立即用 REST 拉全量快照建立基准状态
       if (currentUpTokenId && currentDownTokenId) {
         const snapshot = await fetchSnapshot(currentUpTokenId, currentDownTokenId);
@@ -158,6 +160,18 @@ export function createOrderbookMonitor(config) {
       // 断线后启动 REST 兜底
       _stopVerifyTimer();
       startRest();
+
+      if (reconnectAttempts < 10) {
+        reconnectAttempts++;
+        setTimeout(() => {
+          if (currentUpTokenId && currentDownTokenId) {
+            logger.info(EVENTS.WS_RECONNECT_ATTEMPT, { module: 'orderbook_monitor', attempt: reconnectAttempts });
+            wsClient.connect([currentUpTokenId, currentDownTokenId]);
+          }
+        }, 3000);
+      } else {
+        logger.warn(EVENTS.WS_RECONNECT_EXHAUSTED, { module: 'orderbook_monitor', msg: 'max reconnect attempts (10) reached' });
+      }
     });
 
     wsClient.on('book', (msg) => {
