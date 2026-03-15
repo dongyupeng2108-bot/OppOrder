@@ -144,7 +144,7 @@ let db = null;
   // 所有内部事件发射点均在 scope 外模块，无法直接注入 publish，故采用轮询
   let _lastRegimeScore = null;
   let _lastWindowId = null;
-  setInterval(() => {
+  setInterval(async () => {
     try {
       const activeRunner = getActiveRunner();
       const regimeState = activeRunner ? activeRunner.getRegimeState() : null;
@@ -154,12 +154,18 @@ let db = null;
           publish(EVENT_TYPES.REGIME_CHANGED, { regime_score: score, prev: _lastRegimeScore });
         }
         _lastRegimeScore = score;
+      }
 
-        const windowId = regimeState.current_window ?? null;
-        if (_lastWindowId !== null && windowId !== null && windowId !== _lastWindowId) {
-          publish(EVENT_TYPES.WINDOW_SWITCH, { window_id: windowId, prev: _lastWindowId });
-        }
-        _lastWindowId = windowId;
+      // 用 scanner 直接检测窗口切换（不依赖策略运行器）
+      if (_globalScanner) {
+        try {
+          const win = await _globalScanner.findCurrentWindow();
+          const windowId = win?.slug ?? null;
+          if (windowId && _lastWindowId !== null && windowId !== _lastWindowId) {
+            publish(EVENT_TYPES.WINDOW_SWITCH, { window_id: windowId, prev: _lastWindowId });
+          }
+          if (windowId) _lastWindowId = windowId;
+        } catch (_) {}
       }
     } catch (_) { /* runner not yet ready */ }
   }, 2000);
