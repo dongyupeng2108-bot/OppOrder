@@ -264,6 +264,26 @@ async function _handleAction(result, ctx) {
 
 // ── 导出接口 ──────────────────────────────────────────────────────────────
 
+export const DEFAULT_CODE = `
+// 策略函数 decide(ctx)
+// 返回: 'BUY_UP' | 'BUY_DOWN' | 'HOLD' | 'CLOSE'
+function decide(ctx) {
+  // 1. 获取中间价
+  const up = ctx.price.up;
+  const down = ctx.price.down;
+  if (!up || !down) return 'HOLD';
+
+  // 2. 简单的均值回归
+  // 如果 UP 价格过低 (<0.45) 且剩余时间 > 60s -> 买入 UP
+  if (ctx.window.remaining_sec != null && ctx.window.remaining_sec < 60) return 'CLOSE';
+
+  if (up < 0.45) return 'BUY_UP';
+  if (down < 0.45) return 'BUY_DOWN';
+
+  return 'HOLD';
+}
+`;
+
 export function deploy(code, period) {
   // 停止已有运行
   stop();
@@ -356,6 +376,14 @@ export function getStatus() {
     uptime_sec: _startTime ? Math.floor((Date.now() - _startTime) / 1000) : 0,
     stats:      { ..._stats },
     pnl_series: [..._pnlSeries],
+    orders: {
+      open: _orderManager ? _orderManager.getActiveOrders() : [],
+      pending_settlement: _pendingSettlement.map(e => ({
+        upTokenId: e.upTokenId.slice(0,8),
+        count: e.orders?.length || 0,
+        startedAt: e.startedAt
+      }))
+    }
   };
 }
 
