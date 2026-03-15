@@ -89,6 +89,11 @@ let _seLogOffset = 0;
 let _seErrorCount = 0;
 const BASE_URL = ''; // 相对路径
 
+async function restartServer() {
+  try { await fetch(`${BASE_URL}/server/restart`, { method: 'POST' }); }
+  catch(e) { console.error('[SE] restart failed', e); }
+}
+
 // 初始化
 function initStrategyEditor() {
   const container = document.getElementById('se-container');
@@ -106,7 +111,6 @@ function initStrategyEditor() {
             <button id="se-btn-5m" class="se-period-btn se-period-active" onclick="se_setPeriod('5m')">5m</button>
             <button id="se-btn-15m" class="se-period-btn" onclick="se_setPeriod('15m')">15m</button>
           </div>
-          <span id="se-countdown" style="font-size:12px;color:#888;margin-right:8px;">--:--</span>
           <div class="se-status">
             <span id="se-status-dot" class="se-dot se-dot-off"></span>
             <span id="se-status-label">已停止</span>
@@ -124,11 +128,12 @@ function initStrategyEditor() {
       <div class="se-right">
         <!-- 左侧面板组 (日志 + 统计 + PnL) -->
         <div class="se-left-panels">
-          <div class="se-panel" style="flex-shrink: 0; height: 160px;">
+          <div class="se-panel" style="flex-shrink: 0; height: 160px; position: relative;">
             <div class="se-log-header">
               <span>实时日志</span>
               <button class="se-restart-inline-btn" onclick="restartServer()">⟳ 重启</button>
             </div>
+            <span id="se-countdown" style="position:absolute;top:6px;right:10px;font-size:11px;color:#555;font-family:monospace;pointer-events:none;z-index:1;">--:--</span>
             <div id="se-log-area" class="se-log-area"></div>
           </div>
           <div class="se-panel se-stats-panel" style="flex-shrink: 0;">
