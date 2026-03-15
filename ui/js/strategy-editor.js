@@ -106,6 +106,7 @@ function initStrategyEditor() {
             <button id="se-btn-5m" class="se-period-btn se-period-active" onclick="se_setPeriod('5m')">5m</button>
             <button id="se-btn-15m" class="se-period-btn" onclick="se_setPeriod('15m')">15m</button>
           </div>
+          <button class="se-btn se-restart-btn" onclick="restartServer()">⟳ 重启</button>
           <div class="se-status">
             <span id="se-status-dot" class="se-dot se-dot-off"></span>
             <span id="se-status-label">已停止</span>
@@ -120,30 +121,44 @@ function initStrategyEditor() {
       </div>
 
       <!-- 右栏 -->
-      <div class="se-right" style="display: flex; flex-direction: column; height: 100%;">
-        <div class="se-panel" style="flex-shrink: 0; height: 160px;">
-          <div class="se-panel-title">实时日志</div>
-          <div id="se-log-area" class="se-log-area"></div>
+      <div class="se-right">
+        <!-- 左侧面板组 (日志 + 统计 + PnL) -->
+        <div class="se-left-panels">
+          <div class="se-panel" style="flex-shrink: 0; height: 160px;">
+            <div class="se-panel-title">实时日志</div>
+            <div id="se-log-area" class="se-log-area"></div>
+          </div>
+          <div class="se-panel se-stats-panel" style="flex-shrink: 0;">
+            <div class="se-stat-item">
+              <div class="se-stat-label">交易次数</div>
+              <div id="se-stat-trades" class="se-stat-value">0</div>
+            </div>
+            <div class="se-stat-item">
+              <div class="se-stat-label">胜率</div>
+              <div id="se-stat-winrate" class="se-stat-value">—</div>
+            </div>
+            <div class="se-stat-item">
+              <div class="se-stat-label">运行时长</div>
+              <div id="se-stat-uptime" class="se-stat-value">0s</div>
+            </div>
+          </div>
+          <div class="se-panel" style="flex: 1; min-height: 0; display: flex; flex-direction: column;">
+            <div class="se-panel-title">累计 PnL</div>
+            <svg id="se-pnl-chart" class="se-pnl-svg" viewBox="0 0 300 200" preserveAspectRatio="none" style="flex: 1; width: 100%; height: 100%;">
+              <text x="150" y="100" text-anchor="middle" class="se-chart-placeholder">运行后显示</text>
+            </svg>
+          </div>
         </div>
-        <div class="se-panel se-stats-panel" style="flex-shrink: 0;">
-          <div class="se-stat-item">
-            <div class="se-stat-label">交易次数</div>
-            <div id="se-stat-trades" class="se-stat-value">0</div>
-          </div>
-          <div class="se-stat-item">
-            <div class="se-stat-label">胜率</div>
-            <div id="se-stat-winrate" class="se-stat-value">—</div>
-          </div>
-          <div class="se-stat-item">
-            <div class="se-stat-label">运行时长</div>
-            <div id="se-stat-uptime" class="se-stat-value">0s</div>
-          </div>
-        </div>
-        <div class="se-panel" style="flex: 1; min-height: 0; display: flex; flex-direction: column;">
-          <div class="se-panel-title">累计 PnL</div>
-          <svg id="se-pnl-chart" class="se-pnl-svg" viewBox="0 0 300 200" preserveAspectRatio="none" style="flex: 1; width: 100%; height: 100%;">
-            <text x="150" y="100" text-anchor="middle" class="se-chart-placeholder">运行后显示</text>
-          </svg>
+
+        <!-- 右侧订单面板 -->
+        <div class="se-order-panel">
+          <div class="se-order-title">订单</div>
+          <table class="se-order-table">
+            <thead><tr><th>类型</th><th>方向</th><th>价格</th><th>PNL</th></tr></thead>
+            <tbody id="se-order-body">
+              <tr><td colspan="4" style="color:#555;text-align:center">暂无</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -277,6 +292,7 @@ async function se_poll() {
     se_renderStats(status);
     se_renderPnlChart(status.pnl_series || []);
     se_renderLogs(logsData.logs || []);
+    se_renderOrders(status.orders);
 
     // 如果服务端显示已停止，同步前端状态
     if (!status.running && _se_running) {
@@ -305,6 +321,20 @@ function se_formatUptime(sec) {
   if (sec < 60) return sec + 's';
   if (sec < 3600) return Math.floor(sec / 60) + 'm';
   return Math.floor(sec / 3600) + 'h ' + Math.floor((sec % 3600) / 60) + 'm';
+}
+
+function se_renderOrders(orders) {
+  const tbody = document.getElementById('se-order-body');
+  if (!tbody) return;
+  const rows = [];
+  for (const o of (orders?.open || [])) {
+    const cls = o.side === 'UP' ? 'up-color' : 'down-color';
+    rows.push(`<tr><td>挂单</td><td class="${cls}">${o.side}</td><td>${o.price?.toFixed(3) ?? '--'}</td><td style="color:#555">----</td></tr>`);
+  }
+  for (const e of (orders?.pending_settlement || [])) {
+    rows.push(`<tr><td class="pending-color">待结算</td><td>--</td><td>--</td><td class="pending-color">${e.count}单</td></tr>`);
+  }
+  tbody.innerHTML = rows.length ? rows.join('') : '<tr><td colspan="4" style="color:#555;text-align:center">暂无</td></tr>';
 }
 
 function se_renderLogs(logs) {
