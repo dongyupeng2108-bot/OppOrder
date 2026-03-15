@@ -128,12 +128,14 @@ function initStrategyEditor() {
       <div class="se-right">
         <!-- 左侧面板组 (日志 + 统计 + PnL) -->
         <div class="se-left-panels">
-          <div class="se-panel" style="flex-shrink: 0; height: 160px; position: relative;">
+          <div class="se-panel" style="flex-shrink: 0; height: 160px;">
             <div class="se-log-header">
               <span>实时日志</span>
-              <button class="se-restart-inline-btn" onclick="restartServer()">⟳ 重启</button>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;">
+                <button class="se-restart-inline-btn" onclick="restartServer()">⟳ 重启</button>
+                <span id="se-countdown" style="font-size:11px;color:#aaa;font-family:monospace;">--:--</span>
+              </div>
             </div>
-            <span id="se-countdown" style="position:absolute;top:6px;right:10px;font-size:11px;color:#555;font-family:monospace;pointer-events:none;z-index:1;">--:--</span>
             <div id="se-log-area" class="se-log-area"></div>
           </div>
           <div class="se-panel se-stats-panel" style="flex-shrink: 0;">
