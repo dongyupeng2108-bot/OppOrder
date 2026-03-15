@@ -1,3 +1,4 @@
+import fs from 'fs';
 // BTCQDD 独立服务入口
 // 端口 53123（默认），支持 --strategy=<id> 和 --port=<n> 参数
 // 提供：GET / 健康检查，POST /config/reload 热更新
