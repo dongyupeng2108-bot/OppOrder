@@ -106,7 +106,7 @@ function initStrategyEditor() {
             <button id="se-btn-5m" class="se-period-btn se-period-active" onclick="se_setPeriod('5m')">5m</button>
             <button id="se-btn-15m" class="se-period-btn" onclick="se_setPeriod('15m')">15m</button>
           </div>
-          <button class="se-btn se-restart-btn" onclick="restartServer()">⟳ 重启</button>
+          <span id="se-countdown" style="font-size:12px;color:#888;margin-right:8px;">--:--</span>
           <div class="se-status">
             <span id="se-status-dot" class="se-dot se-dot-off"></span>
             <span id="se-status-label">已停止</span>
@@ -125,7 +125,10 @@ function initStrategyEditor() {
         <!-- 左侧面板组 (日志 + 统计 + PnL) -->
         <div class="se-left-panels">
           <div class="se-panel" style="flex-shrink: 0; height: 160px;">
-            <div class="se-panel-title">实时日志</div>
+            <div class="se-log-header">
+              <span>实时日志</span>
+              <button class="se-restart-inline-btn" onclick="restartServer()">⟳ 重启</button>
+            </div>
             <div id="se-log-area" class="se-log-area"></div>
           </div>
           <div class="se-panel se-stats-panel" style="flex-shrink: 0;">
@@ -293,6 +296,19 @@ async function se_poll() {
     se_renderPnlChart(status.pnl_series || []);
     se_renderLogs(logsData.logs || []);
     se_renderOrders(status.orders);
+
+    // 倒计时更新
+    const remaining = status.window?.remaining_sec ?? null;
+    const el = document.getElementById('se-countdown');
+    if (el) {
+      if (remaining != null) {
+        const m = Math.floor(remaining / 60);
+        const s = remaining % 60;
+        el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+      } else {
+        el.textContent = '--:--';
+      }
+    }
 
     // 如果服务端显示已停止，同步前端状态
     if (!status.running && _se_running) {

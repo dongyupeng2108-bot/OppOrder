@@ -71,8 +71,16 @@
     ::-webkit-scrollbar-thumb:hover { background: #666; }
     /* Fix: Button Wrap */
     .se-btn-deploy { white-space: nowrap; min-width: fit-content; }
+    .se-btn, .se-btn-save, .se-btn-guide, .se-btn-copy, .se-btn-close { white-space: nowrap; }
     /* Fix: Log Overflow */
     #se-log-area { padding-bottom: 8px; box-sizing: border-box; }
+    /* Fix: Remove border between logs and stats/pnl */
+    .se-left-panels .se-panel { border-bottom: none !important; }
+    .se-left-panels .se-panel:last-child { border-bottom: 1px solid #333 !important; }
+    /* Fix: Inline Restart Button */
+    .se-log-header { display: flex; align-items: center; justify-content: space-between; padding: 4px 8px; }
+    .se-restart-inline-btn { font-size: 11px; padding: 2px 8px; background: #2a2a2a; color: #aaa; border: 1px solid #444; border-radius: 3px; cursor: pointer; }
+    .se-restart-inline-btn:hover { background: #3a3a3a; color: #fff; }
   </style>
 </head>
 <body>
