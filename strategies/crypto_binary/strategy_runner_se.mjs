@@ -246,7 +246,11 @@ export function deploy(code, period) {
   _lastPnlHour = 0;
 
   // 初始化 OrderManager (Paper 模式)
-  _orderManager = createOrderManager({ mode: 'paper', fill_model: 'conservative' });
+  _orderManager = createOrderManager({
+    paper: { fill_model: 'optimistic', fill_discount: 1.0, fill_delay_ms: 0 },
+    risk: { max_position_usd: 100 },
+    strategy: { order_tranches: 1, tranche_weights: [1.0] }
+  });
 
   // 适配器：poly-fill postOrder (因为 order_manager 只暴露 placeOrders)
   if (!_orderManager.postOrder) {
