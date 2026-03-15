@@ -133,7 +133,7 @@ function initStrategyEditor() {
               <span>实时日志</span>
               <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;">
                 <button class="se-restart-inline-btn" onclick="restartServer()">⟳ 重启</button>
-                <span id="se-countdown" style="font-size:11px;color:#aaa;font-family:monospace;">--:--</span>
+                <span id="se-countdown" style="font-size:11px;color:#aaa;font-family:monospace;display:block;margin-top:6px;text-align:right;">--:--</span>
               </div>
             </div>
             <div id="se-log-area" class="se-log-area"></div>
@@ -353,6 +353,15 @@ function se_renderOrders(orders) {
   for (const o of (orders?.open || [])) {
     const cls = o.side === 'UP' ? 'up-color' : 'down-color';
     rows.push(`<tr><td>挂单</td><td class="${cls}">${o.side}</td><td>${o.price?.toFixed(3) ?? '--'}</td><td style="color:#555">----</td></tr>`);
+  }
+  for (const o of (orders?.filled || [])) {
+    const cls = o.side === 'UP' ? 'up-color' : 'down-color';
+    rows.push(`<tr>
+      <td>活跃</td>
+      <td class="${cls}">${o.side}</td>
+      <td>${o.price?.toFixed(3) ?? '--'}</td>
+      <td style="color:#888">待结算</td>
+    </tr>`);
   }
   for (const e of (orders?.pending_settlement || [])) {
     rows.push(`<tr><td class="pending-color">待结算</td><td>--</td><td>--</td><td class="pending-color">${e.count}单</td></tr>`);

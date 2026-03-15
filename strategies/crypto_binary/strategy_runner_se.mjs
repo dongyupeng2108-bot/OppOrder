@@ -398,14 +398,36 @@ export function stop() {
 }
 
 export function getStatus() {
+  if (!_running) return { ok: true, running: false };
+
+  let uptime = 0;
+  if (_startTime) uptime = Math.floor((Date.now() - _startTime) / 1000);
+
+  // 获取订单状态
+  let openOrders = [];
+  let pendingSettle = [];
+  let filledOrders = [];
+  if (_orderManager) {
+    try {
+      openOrders = _orderManager.getAllOrders()
+        .filter(o => o.status === 'OPEN')
+        .map(o => ({ side: o.side, price: o.price, size: o.size }));
+      filledOrders = _orderManager.getAllOrders()
+        .filter(o => o.status === 'FILLED')
+        .map(o => ({ side: o.side, price: o.price, size: o.size }));
+    } catch (_) {}
+  }
+
   return {
+    ok: true,
     running:    _running,
     period:     _period,
-    uptime_sec: _startTime ? Math.floor((Date.now() - _startTime) / 1000) : 0,
+    uptime_sec: uptime,
     stats:      { ..._stats },
     pnl_series: [..._pnlSeries],
     orders: {
-      open: _orderManager ? _orderManager.getActiveOrders() : [],
+      open: openOrders,
+      filled: filledOrders,
       pending_settlement: _pendingSettlement.map(e => ({
         upTokenId: e.upTokenId.slice(0,8),
         count: e.orders?.length || 0,
