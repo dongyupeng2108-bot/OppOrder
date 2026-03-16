@@ -93,7 +93,7 @@ const SE_GUIDE_TEXT = `🤖 AI 策略编写指南
 let _se_running = false;
 let _se_period = '5m';
 let _se_pollTimer = null;
-let _seLogOffset = 0;
+let _seLastLogTs = '';
 let _seErrorCount = 0;
 const BASE_URL = ''; // 相对路径
 
@@ -233,14 +233,14 @@ async function se_deploy() {
     const data = await res.json();
     if (data.ok) {
       _se_running = true;
-      _seLogOffset = 0;
+      _seLastLogTs = '';
       _seErrorCount = 0;
       const logArea = document.getElementById('se-log-area');
       if (logArea) logArea.innerHTML = '';
       se_appendLog('SYSTEM', '策略已启动');
       se_updateRunningUI(true);
-      
-      _seLogOffset = 0;
+     // 清空旧数据
+      _seLastLogTs = '';
       if (typeof se_startPoll === 'function') se_startPoll();
     } else {
       se_appendLog('ERROR', data.error || '部署失败');
@@ -395,11 +395,14 @@ function se_renderLogs(logs) {
   const area = document.getElementById('se-log-area');
   if (!logs.length) return;
 
-  if (_seLogOffset > logs.length) _seLogOffset = 0;
-  const newLogs = logs.slice(_seLogOffset);
-  _seLogOffset = logs.length;
-  
+  // 只渲染比上次最后一条更新的日志
+  const newLogs = _seLastLogTs
+    ? logs.filter(l => l.ts > _seLastLogTs)
+    : logs;
+
   if (newLogs.length === 0) return;
+
+  _seLastLogTs = logs[logs.length - 1].ts;
 
   newLogs.forEach(log => {
     const div = document.createElement('div');
@@ -417,8 +420,12 @@ function se_renderLogs(logs) {
 
   if (_seErrorCount >= 3 && _se_running) {
     se_stop();
-    se_appendLog('SYSTEM', '策略因连续错误已自动停止');
-    _seErrorCount = 0;
+    alert('连续报错 3 次，策略已自动停止');
+  }
+
+  // 限制 DOM 节点数量（最多 300 条）
+  while (area.children.length > 300) {
+    area.removeChild(area.firstChild);
   }
 
   // 自动滚到底部
