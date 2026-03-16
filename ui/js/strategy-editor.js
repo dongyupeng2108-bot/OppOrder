@@ -160,11 +160,11 @@ async function initStrategyEditor() {
               <div id="se-stat-uptime" class="se-stat-value">0s</div>
             </div>
           </div>
-          <div class="se-panel" style="flex: 1; min-height: 0; display: flex; flex-direction: column;">
-            <div class="se-panel-title">累计 PnL</div>
-            <svg id="se-pnl-chart" class="se-pnl-svg" viewBox="0 0 300 200" preserveAspectRatio="none" style="flex: 1; width: 100%; height: 100%;">
-              <text x="150" y="100" text-anchor="middle" class="se-chart-placeholder">运行后显示</text>
-            </svg>
+          <div style="flex:1;background:#1e1e1e;border:1px solid #333;display:flex;flex-direction:column;">
+            <div style="padding:4px 8px;border-bottom:1px solid #333;font-size:12px;color:#aaa;">累计 PnL</div>
+            <div style="flex:1;position:relative;">
+              <svg id="se-pnl-chart" width="300" height="200" style="width:100%;height:100%;"></svg>
+            </div>
           </div>
         </div>
 
@@ -425,27 +425,50 @@ function se_renderLogs(logs) {
 
 function se_renderPnlChart(pnlSeries) {
   const svg = document.getElementById('se-pnl-chart');
-  if (!pnlSeries.length) return;
+  if (!pnlSeries || !pnlSeries.length) return;
 
-  const W = 300, H = 200, PAD = 10;
+  const W = 300, H = 200, PAD_L = 10, PAD_R = 10, PAD_T = 10, PAD_B = 30;
   const pnls = pnlSeries.map(p => p.pnl);
   const minP = Math.min(...pnls), maxP = Math.max(...pnls);
   const range = maxP - minP || 1;
+  const chartW = W - PAD_L - PAD_R;
+  const chartH = H - PAD_T - PAD_B;
 
   const points = pnlSeries.map((p, i) => {
-    const x = PAD + (i / Math.max(pnlSeries.length - 1, 1)) * (W - PAD * 2);
-    const y = H - PAD - ((p.pnl - minP) / range) * (H - PAD * 2);
+    const x = PAD_L + (i / Math.max(pnlSeries.length - 1, 1)) * chartW;
+    const y = PAD_T + chartH - ((p.pnl - minP) / range) * chartH;
     return `${x},${y}`;
   }).join(' ');
 
   const lastPnl = pnls[pnls.length - 1];
   const color = lastPnl >= 0 ? 'var(--color-up)' : 'var(--color-down)';
 
+  // X 轴时间标签（最多显示 5 个）
+  let xLabels = '';
+  const step = Math.max(1, Math.floor(pnlSeries.length / 5));
+  for (let i = 0; i < pnlSeries.length; i += step) {
+    const p = pnlSeries[i];
+    if (!p.ts) continue;
+    const d = new Date(p.ts);
+    const label = String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+    const x = PAD_L + (i / Math.max(pnlSeries.length - 1, 1)) * chartW;
+    xLabels += `<text x="${x}" y="${H - 5}" text-anchor="middle" fill="#888" font-size="9">${label}</text>`;
+  }
+
+  // 零线
+  let zeroLine = '';
+  if (minP < 0 && maxP > 0) {
+    const zeroY = PAD_T + chartH - ((0 - minP) / range) * chartH;
+    zeroLine = `<line x1="${PAD_L}" y1="${zeroY}" x2="${W - PAD_R}" y2="${zeroY}" stroke="#555" stroke-width="0.5" stroke-dasharray="4,2"/>`;
+  }
+
   svg.innerHTML = `
+    ${zeroLine}
     <polyline points="${points}" fill="none" stroke="${color}" stroke-width="2"/>
-    <text x="${W - PAD}" y="${PAD + 10}" text-anchor="end" fill="${color}" font-size="11">
+    <text x="${W - PAD_R}" y="${PAD_T + 12}" text-anchor="end" fill="${color}" font-size="11">
       ${lastPnl >= 0 ? '+' : ''}${lastPnl.toFixed(3)}
-    </text>`;
+    </text>
+    ${xLabels}`;
 }
 
 // 辅助日志函数
