@@ -161,9 +161,9 @@ async function initStrategyEditor() {
             </div>
           </div>
           <div style="flex:1;background:#1e1e1e;border:1px solid #333;display:flex;flex-direction:column;">
-            <div style="padding:4px 8px;border-bottom:1px solid #333;font-size:12px;color:#aaa;">累计 PnL</div>
+            <div id="se-pnl-title" style="padding:4px 8px;border-bottom:1px solid #333;font-size:12px;color:#aaa;">累计 PnL</div>
             <div style="flex:1;position:relative;">
-              <svg id="se-pnl-chart" width="300" height="200" style="width:100%;height:100%;"></svg>
+              <svg id="se-pnl-chart" viewBox="0 0 300 200" preserveAspectRatio="xMidYMid meet" style="width:100%;height:100%;"></svg>
             </div>
           </div>
         </div>
@@ -171,7 +171,8 @@ async function initStrategyEditor() {
         <!-- 右侧订单面板 -->
         <div class="se-order-panel">
           <div class="se-order-title">订单</div>
-          <table class="se-order-table">
+          <table class="se-order-table" style="table-layout:fixed;width:100%;">
+            <colgroup><col style="width:22%"><col style="width:22%"><col style="width:28%"><col style="width:28%"></colgroup>
             <thead><tr><th>类型</th><th>方向</th><th>价格</th><th>PNL</th></tr></thead>
             <tbody id="se-order-body">
               <tr><td colspan="4" style="color:#555;text-align:center">暂无</td></tr>
@@ -382,11 +383,11 @@ function se_renderStats(status) {
     se_formatUptime(status.uptime_sec || 0);
 
   // PnL 标题颜色：盈利绿色，亏损红色
-  const pnlTitle = document.querySelector('.se-panel-title, [data-pnl-title]');
-  if (pnlTitle && pnlTitle.textContent.includes('PnL')) {
+  const pnlTitleEl = document.getElementById('se-pnl-title');
+  if (pnlTitleEl) {
     const pnl = stats.pnl || 0;
-    pnlTitle.style.color = pnl > 0 ? '#00c853' : pnl < 0 ? '#ff1744' : '#aaa';
-    pnlTitle.textContent = `累计 PnL ${pnl >= 0 ? '+' : ''}${pnl.toFixed(4)}`;
+    pnlTitleEl.style.color = pnl > 0 ? '#00c853' : pnl < 0 ? '#ff1744' : '#aaa';
+    pnlTitleEl.textContent = `累计 PnL ${pnl >= 0 ? '+' : ''}${pnl.toFixed(4)}`;
   }
 }
 
@@ -525,13 +526,14 @@ function se_renderPnlChart(pnlSeries) {
   html += `<polygon points="${areaPoints} ${lastX},${zeroY} ${firstX},${zeroY}" fill="${color}" opacity="0.15"/>`;
 
   // 最新 PnL 数值（右上角，盈绿亏红）
-  html += `<text x="${W - PAD.right}" y="${PAD.top + 12}" text-anchor="end" fill="${color}" font-size="12" font-weight="bold">${lastPnl >= 0 ? '+' : ''}${lastPnl.toFixed(4)}</text>`;
+  html += `<text x="${W - PAD.right}" y="${PAD.top + 12}" text-anchor="end" fill="${color}" font-size="10" font-weight="bold">${lastPnl >= 0 ? '+' : ''}${lastPnl.toFixed(4)}</text>`;
 
   // Y 轴线 + X 轴线
   html += `<line x1="${PAD.left}" y1="${PAD.top}" x2="${PAD.left}" y2="${H - PAD.bottom}" stroke="#555" stroke-width="1"/>`;
   html += `<line x1="${PAD.left}" y1="${H - PAD.bottom}" x2="${W - PAD.right}" y2="${H - PAD.bottom}" stroke="#555" stroke-width="1"/>`;
 
   svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
   svg.innerHTML = html;
 }
 
