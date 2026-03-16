@@ -315,9 +315,9 @@ function decide(ctx) {
   if (!up || !down) return 'HOLD';
 
   // 2. 简单的均值回归
-  // 如果 UP 价格过低 (<0.45) 且剩余时间 > 60s -> 买入 UP
   if (ctx.window.remaining_sec != null && ctx.window.remaining_sec < 60) return 'CLOSE';
 
+  // 如果 UP 价格过低 (<0.45) 且剩余时间 > 60s -> 买入 UP
   if (up < 0.45) return 'BUY_UP';
   if (down < 0.45) return 'BUY_DOWN';
 
