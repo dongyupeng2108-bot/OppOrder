@@ -353,8 +353,9 @@ async function se_poll() {
 function se_renderStats(status) {
   const stats = status.stats || {};
   document.getElementById('se-stat-trades').textContent = stats.trades ?? 0;
-  const winRate = stats.trades > 0
-    ? Math.round((stats.wins / stats.trades) * 100) + '%'
+  const totalSettled = (stats.wins || 0) + (stats.losses || 0);
+  const winRate = totalSettled > 0
+    ? Math.round((stats.wins / totalSettled) * 100) + '%'
     : '—';
   document.getElementById('se-stat-winrate').textContent = winRate;
   document.getElementById('se-stat-uptime').textContent =
@@ -393,7 +394,8 @@ function se_renderOrders(orders) {
 function se_renderLogs(logs) {
   const area = document.getElementById('se-log-area');
   if (!logs.length) return;
-  
+
+  if (_seLogOffset > logs.length) _seLogOffset = 0;
   const newLogs = logs.slice(_seLogOffset);
   _seLogOffset = logs.length;
   
