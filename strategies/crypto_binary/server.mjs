@@ -885,6 +885,43 @@ const server = createServer(async (req, res) => {
     return;
   }
 
+  // GET /strategy-runner/code — 读取用户保存的策略代码
+  if (req.method === 'GET' && req.url === '/strategy-runner/code') {
+    try {
+      const codePath = resolve(__dirname, 'instances', 'se_custom_code.js');
+      if (fs.existsSync(codePath)) {
+        const code = fs.readFileSync(codePath, 'utf-8');
+        sendJson(res, { ok: true, code });
+      } else {
+        sendJson(res, { ok: true, code: null });
+      }
+    } catch (err) {
+      sendJson(res, { ok: false, error: err.message }, 500);
+    }
+    return;
+  }
+
+  // POST /strategy-runner/code — 保存用户策略代码到服务端文件
+  if (req.method === 'POST' && req.url === '/strategy-runner/code') {
+    let body = '';
+    req.on('data', d => { body += d; });
+    req.on('end', () => {
+      try {
+        const { code } = JSON.parse(body);
+        if (typeof code !== 'string') {
+          sendJson(res, { ok: false, error: 'code field required (string)' }, 400);
+          return;
+        }
+        const codePath = resolve(__dirname, 'instances', 'se_custom_code.js');
+        fs.writeFileSync(codePath, code, 'utf-8');
+        sendJson(res, { ok: true, saved: codePath });
+      } catch (err) {
+        sendJson(res, { ok: false, error: err.message }, 500);
+      }
+    });
+    return;
+  }
+
   // GET /strategy-runner/status
   if (req.method === 'GET' && req.url === '/strategy-runner/status') {
     try {

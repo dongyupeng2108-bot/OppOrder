@@ -95,7 +95,7 @@ async function restartServer() {
 }
 
 // 初始化
-function initStrategyEditor() {
+async function initStrategyEditor() {
   const container = document.getElementById('se-container');
   if (!container) return; // 避免重复初始化或找不到容器
 
@@ -186,8 +186,14 @@ function initStrategyEditor() {
     </div>
   `;
 
-  // 恢复上次代码（localStorage）
-  const saved = localStorage.getItem('se_code');
+  // 恢复上次代码：优先服务端 → 回退 localStorage → 最后用默认模板
+  let saved = null;
+  try {
+    const resp = await fetch(`${BASE_URL}/strategy-runner/code`);
+    const data = await resp.json();
+    if (data.ok && data.code) saved = data.code;
+  } catch (_) {}
+  if (!saved) saved = localStorage.getItem('se_code');
   document.getElementById('se-editor').value = saved || SE_DEFAULT_CODE;
   document.getElementById('se-guide-text').textContent = SE_GUIDE_TEXT;
 }
@@ -263,9 +269,16 @@ function se_updateRunningUI(running) {
 }
 
 // 保存 / 周期切换
-function se_save() {
+async function se_save() {
   const code = document.getElementById('se-editor').value;
-  localStorage.setItem('se_code', code);
+  localStorage.setItem('se_code', code);  // 保留 localStorage 作为备份
+  try {
+    await fetch(`${BASE_URL}/strategy-runner/code`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code })
+    });
+  } catch (_) {}
   // 视觉反馈：按钮短暂变色
   const btn = event.target;
   const orig = btn.textContent;
