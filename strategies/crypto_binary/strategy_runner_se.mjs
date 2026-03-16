@@ -115,9 +115,7 @@ async function _checkSettlement() {
             for (const order of orders) {
               const won = (order.side === 'UP' && upWon) || (order.side === 'DOWN' && !upWon);
               const pnlDelta = won ? (1.0 - order.price) * order.size : (-order.price) * order.size;
-              _stats.pnl += pnlDelta;
-              if (pnlDelta > 0) _stats.wins++;
-              else _stats.losses++;
+              // PnL 已在 simulateFills 中计算，此处不重复更新 _stats
               _appendLog('SETTLE', `side=${order.side} price=${order.price.toFixed(4)} pnl=${pnlDelta.toFixed(4)} upWon=${upWon}`);
             }
           }
@@ -217,7 +215,25 @@ function _buildSnapshot(ctx) {
   };
 }
 
-// ── Context 构建 ──────────────────────────────────────────────────────────
+async function _getWindowInfo() {
+  let remaining_sec = null;
+  let slug = null;
+  try {
+    const scanner = global._btcqddGlobalScanner;
+    if (scanner) {
+      const win = await scanner.findCurrentWindow();
+      if (win) {
+        slug = win.slug || null;
+        if (win.end_date) {
+          remaining_sec = Math.max(0, Math.floor((new Date(win.end_date) - Date.now()) / 1000));
+        }
+      }
+    }
+  } catch (_) {}
+  return { remaining_sec, period: _period, slug };
+}
+
+// ── Context 构建 ────────────────────────────────────────────────────
 async function _buildContext() {
   let snapshot = null;
   
@@ -247,7 +263,7 @@ async function _buildContext() {
       spread:      snapshot ? (Math.abs((snapshot.mid_up || 0) - (snapshot.mid_down || 0))) : null
     },
     regime: { score: null, sigma: null, alternation: null },
-    window: { remaining_sec: null, period: _period, slug: null },
+    window: await _getWindowInfo(),
     position: null,
     orderbook: {
       bid_up:   snapshot?.bid_up   || snapshot?.best_bid || null,

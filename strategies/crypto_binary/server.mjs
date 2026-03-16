@@ -81,6 +81,7 @@ async function initGlobalOrderbook() {
       polymarket_mode: 'rest',
     };
     _globalScanner = createScanner(baseConfig);
+    global._btcqddGlobalScanner = _globalScanner;
     const win = await _globalScanner.findCurrentWindow();
     if (!win || !win.up_token_id) {
       console.warn('[server] initGlobalOrderbook: no active BTC 5m window found');

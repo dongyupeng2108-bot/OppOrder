@@ -470,7 +470,7 @@ function se_renderPnlChart(pnlSeries) {
 
   const container = svg.parentElement;
   const W = container ? container.offsetWidth : 300;
-  const H = container ? container.offsetHeight : 200;
+  const H = container ? Math.min(container.offsetHeight, 250) : 200;
   const PAD = { top: 15, right: 10, bottom: 28, left: 45 };
   const chartW = W - PAD.left - PAD.right;
   const chartH = H - PAD.top - PAD.bottom;
