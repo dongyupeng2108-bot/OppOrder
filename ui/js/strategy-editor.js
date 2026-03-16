@@ -204,6 +204,26 @@ async function initStrategyEditor() {
   if (!saved) saved = localStorage.getItem('se_code');
   document.getElementById('se-editor').value = saved || SE_DEFAULT_CODE;
   document.getElementById('se-guide-text').textContent = SE_GUIDE_TEXT;
+
+  // 独立轮询：倒计时 + 日志，不依赖策略是否运行
+  setInterval(async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/strategy-runner/status`);
+      const status = await res.json();
+      // 更新倒计时
+      const remaining = status.window?.remaining_sec ?? null;
+      const el = document.getElementById('se-countdown');
+      if (el) {
+        if (remaining != null) {
+          const m = Math.floor(remaining / 60);
+          const s = remaining % 60;
+          el.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        } else {
+          el.textContent = '--:--';
+        }
+      }
+    } catch (_) {}
+  }, 3000);
 }
 
 // 部署 / 停止
@@ -360,6 +380,14 @@ function se_renderStats(status) {
   document.getElementById('se-stat-winrate').textContent = winRate;
   document.getElementById('se-stat-uptime').textContent =
     se_formatUptime(status.uptime_sec || 0);
+
+  // PnL 标题颜色：盈利绿色，亏损红色
+  const pnlTitle = document.querySelector('.se-panel-title, [data-pnl-title]');
+  if (pnlTitle && pnlTitle.textContent.includes('PnL')) {
+    const pnl = stats.pnl || 0;
+    pnlTitle.style.color = pnl > 0 ? '#00c853' : pnl < 0 ? '#ff1744' : '#aaa';
+    pnlTitle.textContent = `累计 PnL ${pnl >= 0 ? '+' : ''}${pnl.toFixed(4)}`;
+  }
 }
 
 function se_formatUptime(sec) {
@@ -434,50 +462,77 @@ function se_renderLogs(logs) {
 
 function se_renderPnlChart(pnlSeries) {
   const svg = document.getElementById('se-pnl-chart');
-  if (!pnlSeries || !pnlSeries.length) return;
+  if (!svg) return;
+  if (!pnlSeries || pnlSeries.length < 1) {
+    svg.innerHTML = '<text x="150" y="100" text-anchor="middle" fill="#666" font-size="12">运行后显示</text>';
+    return;
+  }
 
-  const W = 300, H = 200, PAD_L = 10, PAD_R = 10, PAD_T = 10, PAD_B = 30;
+  const W = 300, H = 200;
+  const PAD = { top: 15, right: 10, bottom: 28, left: 45 };
+  const chartW = W - PAD.left - PAD.right;
+  const chartH = H - PAD.top - PAD.bottom;
+
   const pnls = pnlSeries.map(p => p.pnl);
-  const minP = Math.min(...pnls), maxP = Math.max(...pnls);
-  const range = maxP - minP || 1;
-  const chartW = W - PAD_L - PAD_R;
-  const chartH = H - PAD_T - PAD_B;
+  const minP = Math.min(...pnls, 0);
+  const maxP = Math.max(...pnls, 0);
+  const range = maxP - minP || 0.01;
 
-  const points = pnlSeries.map((p, i) => {
-    const x = PAD_L + (i / Math.max(pnlSeries.length - 1, 1)) * chartW;
-    const y = PAD_T + chartH - ((p.pnl - minP) / range) * chartH;
-    return `${x},${y}`;
-  }).join(' ');
+  const toX = (i) => PAD.left + (i / Math.max(pnlSeries.length - 1, 1)) * chartW;
+  const toY = (v) => PAD.top + chartH - ((v - minP) / range) * chartH;
 
-  const lastPnl = pnls[pnls.length - 1];
-  const color = lastPnl >= 0 ? 'var(--color-up)' : 'var(--color-down)';
+  let html = '';
 
-  // X 轴时间标签（最多显示 5 个）
-  let xLabels = '';
+  // 背景
+  html += `<rect x="${PAD.left}" y="${PAD.top}" width="${chartW}" height="${chartH}" fill="#1a1a2e" rx="2"/>`;
+
+  // Y 轴网格线 + 标签（5 档）
+  for (let i = 0; i <= 4; i++) {
+    const val = minP + (range * i / 4);
+    const y = toY(val);
+    html += `<line x1="${PAD.left}" y1="${y}" x2="${W - PAD.right}" y2="${y}" stroke="#333" stroke-width="0.5"/>`;
+    html += `<text x="${PAD.left - 4}" y="${y + 3}" text-anchor="end" fill="#888" font-size="9">${val >= 0 ? '+' : ''}${val.toFixed(3)}</text>`;
+  }
+
+  // 零线（加粗）
+  if (minP < 0 && maxP > 0) {
+    const zeroY = toY(0);
+    html += `<line x1="${PAD.left}" y1="${zeroY}" x2="${W - PAD.right}" y2="${zeroY}" stroke="#555" stroke-width="1" stroke-dasharray="4,2"/>`;
+  }
+
+  // X 轴时间标签（最多 5 个）
   const step = Math.max(1, Math.floor(pnlSeries.length / 5));
   for (let i = 0; i < pnlSeries.length; i += step) {
     const p = pnlSeries[i];
     if (!p.ts) continue;
     const d = new Date(p.ts);
-    const label = String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
-    const x = PAD_L + (i / Math.max(pnlSeries.length - 1, 1)) * chartW;
-    xLabels += `<text x="${x}" y="${H - 5}" text-anchor="middle" fill="#888" font-size="9">${label}</text>`;
+    const label = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+    const x = toX(i);
+    html += `<text x="${x}" y="${H - 5}" text-anchor="middle" fill="#888" font-size="9">${label}</text>`;
   }
 
-  // 零线
-  let zeroLine = '';
-  if (minP < 0 && maxP > 0) {
-    const zeroY = PAD_T + chartH - ((0 - minP) / range) * chartH;
-    zeroLine = `<line x1="${PAD_L}" y1="${zeroY}" x2="${W - PAD_R}" y2="${zeroY}" stroke="#555" stroke-width="0.5" stroke-dasharray="4,2"/>`;
-  }
+  // 折线
+  const lastPnl = pnls[pnls.length - 1];
+  const color = lastPnl >= 0 ? '#00c853' : '#ff1744';
+  const points = pnlSeries.map((p, i) => `${toX(i)},${toY(p.pnl)}`).join(' ');
+  html += `<polyline points="${points}" fill="none" stroke="${color}" stroke-width="2"/>`;
 
-  svg.innerHTML = `
-    ${zeroLine}
-    <polyline points="${points}" fill="none" stroke="${color}" stroke-width="2"/>
-    <text x="${W - PAD_R}" y="${PAD_T + 12}" text-anchor="end" fill="${color}" font-size="11">
-      ${lastPnl >= 0 ? '+' : ''}${lastPnl.toFixed(3)}
-    </text>
-    ${xLabels}`;
+  // 区域填充（折线到零线之间半透明填充）
+  const zeroY = toY(0);
+  const areaPoints = pnlSeries.map((p, i) => `${toX(i)},${toY(p.pnl)}`).join(' ');
+  const lastX = toX(pnlSeries.length - 1);
+  const firstX = toX(0);
+  html += `<polygon points="${areaPoints} ${lastX},${zeroY} ${firstX},${zeroY}" fill="${color}" opacity="0.15"/>`;
+
+  // 最新 PnL 数值（右上角，盈绿亏红）
+  html += `<text x="${W - PAD.right}" y="${PAD.top + 12}" text-anchor="end" fill="${color}" font-size="12" font-weight="bold">${lastPnl >= 0 ? '+' : ''}${lastPnl.toFixed(4)}</text>`;
+
+  // Y 轴线 + X 轴线
+  html += `<line x1="${PAD.left}" y1="${PAD.top}" x2="${PAD.left}" y2="${H - PAD.bottom}" stroke="#555" stroke-width="1"/>`;
+  html += `<line x1="${PAD.left}" y1="${H - PAD.bottom}" x2="${W - PAD.right}" y2="${H - PAD.bottom}" stroke="#555" stroke-width="1"/>`;
+
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.innerHTML = html;
 }
 
 // 辅助日志函数
