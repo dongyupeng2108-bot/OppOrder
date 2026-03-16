@@ -22,6 +22,7 @@ const _pendingSettlement = []; // [{ upTokenId, downTokenId, orders, startedAt }
 let _priceFeed = null;
 let _lastBtcPrice = null;
 let _lastTriggerPrice = null; // 上次触发决策时的价格，用于节流
+let _priceBuf = [];  // 滚动价格缓冲，最多 15 个 BTC 价格
 
 // ── 内部工具 ──────────────────────────────────────────────────────────────
 function _appendLog(type, msg) {
@@ -39,6 +40,15 @@ function _updatePnlSeries() {
     _pnlSeries.push({ ts: Date.now(), pnl: _stats.pnl });
     if (_pnlSeries.length > 50) _pnlSeries.shift();
   }
+}
+
+function _calcVolatility() {
+  if (_priceBuf.length < 2) return 0;
+  let sumPctChange = 0;
+  for (let i = 1; i < _priceBuf.length; i++) {
+    sumPctChange += Math.abs(_priceBuf[i] - _priceBuf[i - 1]) / _priceBuf[i - 1];
+  }
+  return sumPctChange / (_priceBuf.length - 1) * 100;  // 百分比
 }
 
 async function _checkSettlement() {
@@ -127,6 +137,13 @@ async function _tick() {
   if (!_running || !_decideFunc) return;
   try {
     const ctx = await _buildContext();
+    
+    // 记录 BTC 价格到滚动缓冲
+    if (ctx.price.btc) {
+      _priceBuf.push(ctx.price.btc);
+      if (_priceBuf.length > 15) _priceBuf.shift();
+    }
+    
     let result;
 
     // 超时保护：1 秒
@@ -241,7 +258,7 @@ async function _handleAction(result, ctx) {
   }
 
   if (!result || !result.action) {
-    _appendLog('HOLD', `up=${ctx.price?.up?.toFixed(3) ?? 'null'} down=${ctx.price?.down?.toFixed(3) ?? 'null'}`);
+    _appendLog('HOLD', `up=${ctx.price?.up?.toFixed(3) ?? 'null'} down=${ctx.price?.down?.toFixed(3) ?? 'null'} vol=${_calcVolatility().toFixed(3)}%`);
     return;
   }
 
@@ -249,11 +266,11 @@ async function _handleAction(result, ctx) {
 
   switch (action) {
     case 'HOLD':
-      _appendLog('HOLD', `up=${ctx.price?.up?.toFixed(3) ?? 'null'} down=${ctx.price?.down?.toFixed(3) ?? 'null'}`);
+      _appendLog('HOLD', `up=${ctx.price?.up?.toFixed(3) ?? 'null'} down=${ctx.price?.down?.toFixed(3) ?? 'null'} vol=${_calcVolatility().toFixed(3)}%`);
       break;
 
     case 'BUY':
-      _appendLog('BUY', `side=${side} price=${price}`);
+      _appendLog('BUY', `side=${side} price=${price} vol=${_calcVolatility().toFixed(3)}%`);
       _stats.trades++;
       try {
         const orderResult = await _orderManager.postOrder({
@@ -352,6 +369,7 @@ export function deploy(code, period) {
   _stats       = { pnl: 0, trades: 0, wins: 0, losses: 0 };
   _pnlSeries   = [{ ts: Date.now(), pnl: 0 }];
   _lastPnlSlot = 0;
+  _priceBuf    = [];
 
   // 初始化 OrderManager (Paper 模式)
   _orderManager = createOrderManager({
