@@ -17,7 +17,7 @@ function decide(ctx) {
   // 示例：简单的趋势跟随
   const trend = ctx.price.up > 0.6 ? 'UP' : (ctx.price.down > 0.6 ? 'DOWN' : 'FLAT');
   
-  if (ctx.window.remaining_sec < 60) return 'CLOSE'; // 收盘前平仓
+  if (ctx.window.remaining_sec != null && ctx.window.remaining_sec < 60) return 'CLOSE'; // 收盘前平仓
   
   if (trend === 'UP') return 'BUY_UP';
   if (trend === 'DOWN') return 'BUY_DOWN';
@@ -60,6 +60,14 @@ const SE_GUIDE_TEXT = `🤖 AI 策略编写指南
 
 5. 调试
    使用 console.log() 输出日志，会在右侧日志面板显示。
+
+6. 重要：运行环境
+策略代码在 Node.js 服务端 eval() 执行，不是浏览器环境。
+- 不能用 window（Node.js 中不存在，会导致服务崩溃）
+- 必须用 globalThis 替代 window
+- 跨 tick 保存状态示例：
+  if (!globalThis._s) globalThis._s = { up: 0, down: 0 };
+  globalThis._s.up += 1;
 
 ---
 
