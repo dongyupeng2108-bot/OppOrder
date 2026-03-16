@@ -887,27 +887,25 @@ const server = createServer(async (req, res) => {
 
   // GET /strategy-runner/status
   if (req.method === 'GET' && req.url === '/strategy-runner/status') {
-    (async () => {
-      try {
-        const status = strategyRunnerSe.getStatus();
-        
-        // Inject window.remaining_sec
-        let remaining_sec = null;
-        if (_globalScanner) {
-          try {
-            const win = await _globalScanner.findCurrentWindow();
-            if (win?.end_date_iso) {
-              remaining_sec = Math.max(0, Math.floor((new Date(win.end_date_iso) - Date.now()) / 1000));
-            }
-          } catch(_) {}
-        }
-        status.window = { remaining_sec };
-        
-        sendJson(res, status);
-      } catch (err) {
-        sendJson(res, { ok: false, error: err.message }, 500);
+    try {
+      const status = strategyRunnerSe.getStatus();
+      
+      // Inject window.remaining_sec
+      let remaining_sec = null;
+      if (_globalScanner) {
+        try {
+          const win = await _globalScanner.findCurrentWindow();
+          if (win?.end_date) {
+            remaining_sec = Math.max(0, Math.floor((new Date(win.end_date) - Date.now()) / 1000));
+          }
+        } catch(_) {}
       }
-    })();
+      status.window = { remaining_sec };
+      
+      sendJson(res, status);
+    } catch (err) {
+      sendJson(res, { ok: false, error: err.message }, 500);
+    }
     return;
   }
 
