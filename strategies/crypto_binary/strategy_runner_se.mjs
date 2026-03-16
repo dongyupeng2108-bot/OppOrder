@@ -15,9 +15,9 @@ let _timer      = null;
 let _startTime  = null;
 let _orderManager = null;
 let _stats      = { pnl: 0, trades: 0, wins: 0, losses: 0 };
-let _pnlSeries  = [];   // [{ hour: 0, pnl: 0 }, ...]
+let _pnlSeries  = [];   // [{ ts, pnl }, ...] 最多 50 个周期
 let _logBuffer  = [];   // 环形缓冲，最多 500 条
-let _lastPnlHour = -1;
+let _lastPnlSlot = -1;
 const _pendingSettlement = []; // [{ upTokenId, downTokenId, orders, startedAt }]
 let _priceFeed = null;
 let _lastBtcPrice = null;
@@ -32,10 +32,12 @@ function _appendLog(type, msg) {
 
 function _updatePnlSeries() {
   if (!_startTime) return;
-  const elapsedHours = Math.floor((Date.now() - _startTime) / 3600000);
-  if (elapsedHours > _lastPnlHour) {
-    _lastPnlHour = elapsedHours;
-    _pnlSeries.push({ hour: elapsedHours, pnl: _stats.pnl });
+  const periodSec = _period === '15m' ? 900 : 300;
+  const slot = Math.floor((Date.now() - _startTime) / (periodSec * 1000));
+  if (slot > _lastPnlSlot) {
+    _lastPnlSlot = slot;
+    _pnlSeries.push({ ts: Date.now(), pnl: _stats.pnl });
+    if (_pnlSeries.length > 50) _pnlSeries.shift();
   }
 }
 
@@ -348,8 +350,8 @@ export function deploy(code, period) {
   _running     = true;
   _startTime   = Date.now();
   _stats       = { pnl: 0, trades: 0, wins: 0, losses: 0 };
-  _pnlSeries   = [{ hour: 0, pnl: 0 }];
-  _lastPnlHour = 0;
+  _pnlSeries   = [{ ts: Date.now(), pnl: 0 }];
+  _lastPnlSlot = 0;
 
   // 初始化 OrderManager (Paper 模式)
   _orderManager = createOrderManager({
