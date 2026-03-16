@@ -198,6 +198,7 @@ async function _tick() {
           
           _appendLog('FILL', `order_id=${fill.order_id.slice(0,8)}... side=${fill.side} price=${fill.price.toFixed(4)} pnl=${pnlDelta.toFixed(4)}`);
         }
+        _pushPnlPoint();
       }
     }
   } catch (err) {
@@ -286,7 +287,7 @@ async function _handleAction(result, ctx) {
       break;
 
     case 'BUY':
-      _appendLog('BUY', `side=${side} price=${price} vol=${_calcVolatility().toFixed(3)}%`);
+      _appendLog('BUY', `side=${side} price=${typeof price === 'number' ? price.toFixed(4) : price} vol=${_calcVolatility().toFixed(3)}%`);
       try {
         const orderResult = await _orderManager.postOrder({
           side, price,
@@ -389,6 +390,10 @@ export function deploy(code, period) {
   _decideFunc  = fn;
   _period      = period || '15m';
   _running     = true;
+  // 清除上一轮策略的 globalThis 状态变量
+  const keysToClean = Object.keys(globalThis).filter(k => k.startsWith('_v') || k.startsWith('_s') || k.startsWith('_test') || k.startsWith('_simple'));
+  for (const k of keysToClean) { delete globalThis[k]; }
+
   _startTime   = Date.now();
   _stats       = { pnl: 0, trades: 0, wins: 0, losses: 0 };
   _pnlSeries   = [{ ts: Date.now(), pnl: 0 }];

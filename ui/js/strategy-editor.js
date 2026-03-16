@@ -385,9 +385,8 @@ function se_renderStats(status) {
   // PnL 标题颜色：盈利绿色，亏损红色
   const pnlTitleEl = document.getElementById('se-pnl-title');
   if (pnlTitleEl) {
-    const pnl = stats.pnl || 0;
-    pnlTitleEl.style.color = pnl > 0 ? '#00c853' : pnl < 0 ? '#ff1744' : '#aaa';
-    pnlTitleEl.textContent = `累计 PnL ${pnl >= 0 ? '+' : ''}${pnl.toFixed(4)}`;
+    pnlTitleEl.style.color = '#aaa';
+    pnlTitleEl.textContent = '累计 PnL';
   }
 }
 
@@ -469,7 +468,9 @@ function se_renderPnlChart(pnlSeries) {
     return;
   }
 
-  const W = 300, H = 200;
+  const container = svg.parentElement;
+  const W = container ? container.offsetWidth : 300;
+  const H = container ? container.offsetHeight : 200;
   const PAD = { top: 15, right: 10, bottom: 28, left: 45 };
   const chartW = W - PAD.left - PAD.right;
   const chartH = H - PAD.top - PAD.bottom;
