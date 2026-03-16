@@ -406,8 +406,17 @@ function se_renderOrders(orders) {
   }
   for (const o of (orders?.filled || [])) {
     const cls = o.side === 'UP' ? 'up-color' : 'down-color';
+    let typeText = '持仓';
+    let typeStyle = '';
+    if (o.status === 'closed') {
+      typeText = '已平仓';
+      typeStyle = 'color:#888';
+    } else if (o.status === 'filled') {
+      typeText = '持仓';
+    }
+    
     rows.push(`<tr>
-      <td>活跃</td>
+      <td style="${typeStyle}">${typeText}</td>
       <td class="${cls}">${o.side}</td>
       <td>${o.price?.toFixed(3) ?? '--'}</td>
       <td style="color:#888">待结算</td>
