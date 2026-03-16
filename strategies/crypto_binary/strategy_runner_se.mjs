@@ -22,8 +22,8 @@ const _pendingSettlement = []; // [{ upTokenId, downTokenId, orders, startedAt }
 let _priceFeed = null;
 let _lastBtcPrice = null;
 let _lastTriggerPrice = null; // 上次触发决策时的价格，用于节流
-let _candles = [];     // [{open, high, low, close, ts}] 最近 14 根 30 秒 candle
-let _currentCandle = null;  // 当前正在构建的 candle
+let _cachedVol = 0;       // 缓存的 ATR14 波动率百分比
+let _volWindowSlug = null; // 上次计算波动率时的窗口 slug
 
 // ── 内部工具 ──────────────────────────────────────────────────────────────
 function _appendLog(type, msg) {
@@ -57,35 +57,36 @@ function _pushPnlPoint() {
   if (_pnlSeries.length > 50) _pnlSeries.shift();
 }
 
-function _updateCandle(btcPrice) {
-  if (!btcPrice) return;
-  const now = Date.now();
-  const slot = Math.floor(now / 30000);  // 30 秒一根 candle
+async function _fetchATR14() {
+  try {
+    const interval = _period === '15m' ? '15m' : '5m';
+    const url = `https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=${interval}&limit=15`;
+    const res = await fetch(url);
+    if (!res.ok) return 0;
+    const klines = await res.json();
+    if (!klines || klines.length < 2) return 0;
 
-  if (!_currentCandle || _currentCandle.slot !== slot) {
-    // 保存上一根 candle
-    if (_currentCandle) {
-      _candles.push({ ..._currentCandle });
-      if (_candles.length > 14) _candles.shift();
+    // klines 格式: [openTime, open, high, low, close, volume, ...]
+    // 取最近 14 根已完成的 K 线（去掉最后一根未完成的）
+    const completed = klines.slice(0, -1);
+    if (completed.length < 2) return 0;
+
+    let sumTR = 0;
+    for (const k of completed) {
+      const high = parseFloat(k[2]);
+      const low = parseFloat(k[3]);
+      sumTR += (high - low);
     }
-    // 新 candle
-    _currentCandle = { slot, open: btcPrice, high: btcPrice, low: btcPrice, close: btcPrice };
-  } else {
-    _currentCandle.high = Math.max(_currentCandle.high, btcPrice);
-    _currentCandle.low = Math.min(_currentCandle.low, btcPrice);
-    _currentCandle.close = btcPrice;
+    const atr = sumTR / completed.length;
+    const lastClose = parseFloat(completed[completed.length - 1][4]) || 1;
+    return (atr / lastClose) * 100;
+  } catch (_) {
+    return 0;
   }
 }
 
 function _calcVolatility() {
-  if (_candles.length < 2) return 0;
-  let sumTR = 0;
-  for (const c of _candles) {
-    sumTR += (c.high - c.low);
-  }
-  const atr = sumTR / _candles.length;
-  const lastClose = _candles[_candles.length - 1].close || 1;
-  return (atr / lastClose) * 100;  // ATR14 百分比
+  return _cachedVol;
 }
 
 async function _checkSettlement() {
@@ -178,10 +179,15 @@ async function _tick() {
   if (!_running || !_decideFunc) return;
   try {
     const ctx = await _buildContext();
+
+    if (ctx.window.slug && ctx.window.slug !== _volWindowSlug) {
+      _volWindowSlug = ctx.window.slug;
+      _fetchATR14().then(v => { _cachedVol = v; });
+    }
     
-    // 记录 BTC 价格到滚动缓冲
+    // 记录 BTC 价格到滚动缓冲（此处仅作日志用途，波动率由 _fetchATR14 负责）
     if (ctx.price.btc) {
-      _updateCandle(ctx.price.btc);
+      // _updateCandle(ctx.price.btc); // 已移除
     }
     
     let result;
@@ -427,8 +433,8 @@ export function deploy(code, period) {
   _startTime   = Date.now();
   _stats       = { pnl: 0, trades: 0, wins: 0, losses: 0 };
   _pnlSeries   = [{ ts: Date.now(), pnl: 0 }];
-  _candles     = [];
-  _currentCandle = null;
+  _cachedVol   = 0;
+  _volWindowSlug = null;
 
   // 初始化 OrderManager (Paper 模式)
   _orderManager = createOrderManager({

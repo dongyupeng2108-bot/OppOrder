@@ -98,8 +98,31 @@ let _seErrorCount = 0;
 const BASE_URL = ''; // 相对路径
 
 async function restartServer() {
-  try { await fetch(`${BASE_URL}/server/restart`, { method: 'POST' }); }
-  catch(e) { console.error('[SE] restart failed', e); }
+  const btn = document.querySelector('.se-restart-inline-btn');
+  if (btn) {
+    btn.textContent = '重启中...';
+    btn.style.opacity = '0.7';
+    btn.disabled = true;
+  }
+  try {
+    await fetch(`${BASE_URL}/server/restart`, { method: 'POST' });
+    if (btn) {
+      btn.textContent = '已重启';
+      setTimeout(() => {
+        btn.textContent = '⟳ 重启';
+        btn.style.opacity = '1';
+        btn.disabled = false;
+      }, 2000);
+    }
+  } catch(e) {
+    console.error('[SE] restart failed', e);
+    alert('重启失败: ' + e.message);
+    if (btn) {
+      btn.textContent = '⟳ 重启';
+      btn.style.opacity = '1';
+      btn.disabled = false;
+    }
+  }
 }
 
 // 初始化
@@ -160,7 +183,7 @@ async function initStrategyEditor() {
               <div id="se-stat-uptime" class="se-stat-value">0s</div>
             </div>
           </div>
-          <div style="flex:1;background:#1e1e1e;border:1px solid #333;display:flex;flex-direction:column;">
+          <div style="flex:1;background:#1e1e1e;border:1px solid #333;display:flex;flex-direction:column;border-bottom:none;">
             <div id="se-pnl-title" style="padding:4px 8px;border-bottom:1px solid #333;font-size:12px;color:#aaa;">累计 PnL</div>
             <div style="flex:1;position:relative;">
               <svg id="se-pnl-chart" viewBox="0 0 300 200" preserveAspectRatio="xMidYMid meet" style="width:100%;height:100%;"></svg>
