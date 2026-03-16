@@ -1,0 +1,19 @@
+{"ts":"2026-03-16T19:06:25.195Z","type":"FILL","msg":"order_id=797a8382... side=DOWN price=0.3299 pnl=-0.0149"}
+{"ts":"2026-03-16T19:06:27.214Z","type":"CLOSE","msg":"up=0.690 down=0.310 vol=0.005%"}
+{"ts":"2026-03-16T19:06:33.210Z","type":"BUY","msg":"side=DOWN price=0.2650 vol=0.005%"}
+{"ts":"2026-03-16T19:06:33.211Z","type":"ORDER","msg":"order_id=b5eb10e4-5bca-4a86-b756-b870b3889d4e"}
+{"ts":"2026-03-16T19:06:37.225Z","type":"FILL","msg":"order_id=b5eb10e4... side=DOWN price=0.2650 pnl=-0.0100"}
+{"ts":"2026-03-16T19:06:49.273Z","type":"CLOSE","msg":"up=0.775 down=0.225 vol=0.004%"}
+{"ts":"2026-03-16T19:10:01.169Z","type":"SETTLE_PENDING","msg":"orders=3 upToken=10671443"}
+{"ts":"2026-03-16T19:10:05.142Z","type":"BUY","msg":"side=UP price=0.4950 vol=0.023%"}
+{"ts":"2026-03-16T19:10:05.144Z","type":"ORDER","msg":"order_id=fd7b9e6f-baca-4f15-87f3-d7111d88348a"}
+{"ts":"2026-03-16T19:10:08.883Z","type":"SETTLE","msg":"side=DOWN price=0.4950 pnl=-0.4950 upWon=true"}
+{"ts":"2026-03-16T19:10:08.884Z","type":"SETTLE","msg":"side=DOWN price=0.3299 pnl=-0.3299 upWon=true"}
+{"ts":"2026-03-16T19:10:08.884Z","type":"SETTLE","msg":"side=DOWN price=0.2650 pnl=-0.2650 upWon=true"}
+{"ts":"2026-03-16T19:10:21.087Z","type":"CLOSE","msg":"up=0.805 down=0.195 vol=0.022%"}
+{"ts":"2026-03-16T19:10:26.050Z","type":"BUY","msg":"side=DOWN price=0.2750 vol=0.026%"}
+{"ts":"2026-03-16T19:10:26.051Z","type":"ORDER","msg":"order_id=1a80574a-a0f6-4cb7-970c-adb8f68742ee"}
+{"ts":"2026-03-16T19:10:34.074Z","type":"FILL","msg":"order_id=1a80574a... side=DOWN price=0.2750 pnl=-0.1000"}
+{"ts":"2026-03-16T19:10:42.132Z","type":"CLOSE","msg":"up=0.785 down=0.215 vol=0.024%"}
+{"ts":"2026-03-16T19:10:47.202Z","type":"BUY","msg":"side=DOWN price=0.1950 vol=0.022%"}
+{"ts":"2026-03-16T19:10:47.203Z","type":"ORDER","msg":"order_id=3708bb2e-8e57-498e-9141-3441274b5a52"}

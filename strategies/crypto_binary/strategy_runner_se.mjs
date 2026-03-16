@@ -22,7 +22,8 @@ const _pendingSettlement = []; // [{ upTokenId, downTokenId, orders, startedAt }
 let _priceFeed = null;
 let _lastBtcPrice = null;
 let _lastTriggerPrice = null; // 上次触发决策时的价格，用于节流
-let _priceBuf = [];  // 滚动价格缓冲，最多 15 个 BTC 价格
+let _candles = [];     // [{open, high, low, close, ts}] 最近 14 根 30 秒 candle
+let _currentCandle = null;  // 当前正在构建的 candle
 
 // ── 内部工具 ──────────────────────────────────────────────────────────────
 function _appendLog(type, msg) {
@@ -56,13 +57,35 @@ function _pushPnlPoint() {
   if (_pnlSeries.length > 50) _pnlSeries.shift();
 }
 
-function _calcVolatility() {
-  if (_priceBuf.length < 2) return 0;
-  let sumPctChange = 0;
-  for (let i = 1; i < _priceBuf.length; i++) {
-    sumPctChange += Math.abs(_priceBuf[i] - _priceBuf[i - 1]) / _priceBuf[i - 1];
+function _updateCandle(btcPrice) {
+  if (!btcPrice) return;
+  const now = Date.now();
+  const slot = Math.floor(now / 30000);  // 30 秒一根 candle
+
+  if (!_currentCandle || _currentCandle.slot !== slot) {
+    // 保存上一根 candle
+    if (_currentCandle) {
+      _candles.push({ ..._currentCandle });
+      if (_candles.length > 14) _candles.shift();
+    }
+    // 新 candle
+    _currentCandle = { slot, open: btcPrice, high: btcPrice, low: btcPrice, close: btcPrice };
+  } else {
+    _currentCandle.high = Math.max(_currentCandle.high, btcPrice);
+    _currentCandle.low = Math.min(_currentCandle.low, btcPrice);
+    _currentCandle.close = btcPrice;
   }
-  return sumPctChange / (_priceBuf.length - 1) * 100;  // 百分比
+}
+
+function _calcVolatility() {
+  if (_candles.length < 2) return 0;
+  let sumTR = 0;
+  for (const c of _candles) {
+    sumTR += (c.high - c.low);
+  }
+  const atr = sumTR / _candles.length;
+  const lastClose = _candles[_candles.length - 1].close || 1;
+  return (atr / lastClose) * 100;  // ATR14 百分比
 }
 
 async function _checkSettlement() {
@@ -115,7 +138,9 @@ async function _checkSettlement() {
             for (const order of orders) {
               const won = (order.side === 'UP' && upWon) || (order.side === 'DOWN' && !upWon);
               const pnlDelta = won ? (1.0 - order.price) * order.size : (-order.price) * order.size;
-              // PnL 已在 simulateFills 中计算，此处不重复更新 _stats
+              _stats.pnl += pnlDelta;
+              if (pnlDelta > 0) _stats.wins++;
+              else _stats.losses++;
               _appendLog('SETTLE', `side=${order.side} price=${order.price.toFixed(4)} pnl=${pnlDelta.toFixed(4)} upWon=${upWon}`);
             }
           }
@@ -156,8 +181,7 @@ async function _tick() {
     
     // 记录 BTC 价格到滚动缓冲
     if (ctx.price.btc) {
-      _priceBuf.push(ctx.price.btc);
-      if (_priceBuf.length > 15) _priceBuf.shift();
+      _updateCandle(ctx.price.btc);
     }
     
     let result;
@@ -185,18 +209,8 @@ async function _tick() {
       
       if (fills && fills.length > 0) {
         for (const fill of fills) {
-          // 计算 PnL: fill.price 与 mid_price 的差值 (假设立即平仓)
-          // 注意：这里仅作演示，真实 PnL 需要 PositionManager
-          const mid = fill.side === 'UP' ? (ctx.price.up || 0.5) : (ctx.price.down || 0.5);
-          const pnlDelta = (mid - fill.price) * fill.size; // 简单估算
-          
-          _stats.pnl += pnlDelta;
-          if (pnlDelta > 0) _stats.wins++;
-          else if (pnlDelta < 0) _stats.losses++;
-          
-          _appendLog('FILL', `order_id=${fill.order_id.slice(0,8)}... side=${fill.side} price=${fill.price.toFixed(4)} pnl=${pnlDelta.toFixed(4)}`);
+          _appendLog('FILL', `order_id=${fill.order_id.slice(0,8)}... side=${fill.side} price=${fill.price.toFixed(4)}`);
         }
-        _pushPnlPoint();
       }
     }
   } catch (err) {
@@ -337,7 +351,7 @@ async function _handleAction(result, ctx) {
         try {
           const actives = _orderManager.getActiveOrders();
           for (const o of actives) {
-            await _orderManager.cancelOrder(o.order_id);
+            o.status = 'CLOSED';  // 标记为已平仓，不真正删除
           }
         } catch (e) {
           _appendLog('ERROR', `CANCEL_ALL failed: ${e.message}`);
@@ -413,7 +427,8 @@ export function deploy(code, period) {
   _startTime   = Date.now();
   _stats       = { pnl: 0, trades: 0, wins: 0, losses: 0 };
   _pnlSeries   = [{ ts: Date.now(), pnl: 0 }];
-  _priceBuf    = [];
+  _candles     = [];
+  _currentCandle = null;
 
   // 初始化 OrderManager (Paper 模式)
   _orderManager = createOrderManager({
@@ -513,10 +528,10 @@ export function getStatus() {
     try {
       openOrders = _orderManager.getAllOrders()
         .filter(o => o.status === 'OPEN')
-        .map(o => ({ side: o.side, price: o.price, size: o.size }));
+        .map(o => ({ side: o.side, price: o.price, size: o.size, status: 'open' }));
       filledOrders = _orderManager.getAllOrders()
-        .filter(o => o.status === 'FILLED')
-        .map(o => ({ side: o.side, price: o.price, size: o.size }));
+        .filter(o => o.status === 'FILLED' || o.status === 'CLOSED')
+        .map(o => ({ side: o.side, price: o.price, size: o.size, status: o.status === 'CLOSED' ? 'closed' : 'filled' }));
     } catch (_) {}
   }
 
