@@ -2,6 +2,7 @@
 // 策略编辑器专用运行器（与现有 strategy_runner.mjs 独立，不冲突）
 // SE-1: Paper 模式，BUY/SELL/PAIR_POST 只记录日志，不真实下单
 
+import fs from 'fs';
 import './proxy_agent.mjs';
 import { createOrderManager } from './order_manager.mjs';
 import { subscribe, EVENT_TYPES } from './event_bus.mjs';
@@ -17,7 +18,6 @@ let _orderManager = null;
 let _stats      = { pnl: 0, trades: 0, wins: 0, losses: 0 };
 let _pnlSeries  = [];   // [{ ts, pnl }, ...] 最多 50 个周期
 let _logBuffer  = [];   // 环形缓冲，最多 500 条
-let _lastPnlSlot = -1;
 const _pendingSettlement = []; // [{ upTokenId, downTokenId, orders, startedAt }]
 let _priceFeed = null;
 let _lastBtcPrice = null;
@@ -28,18 +28,32 @@ let _priceBuf = [];  // 滚动价格缓冲，最多 15 个 BTC 价格
 function _appendLog(type, msg) {
   const entry = { ts: new Date().toISOString(), type, msg };
   _logBuffer.push(entry);
+  _writeLogFile(entry);
   if (_logBuffer.length > 200) _logBuffer.splice(0, _logBuffer.length - 200);
 }
 
-function _updatePnlSeries() {
-  if (!_startTime) return;
-  const periodSec = _period === '15m' ? 900 : 300;
-  const slot = Math.floor((Date.now() - _startTime) / (periodSec * 1000));
-  if (slot > _lastPnlSlot) {
-    _lastPnlSlot = slot;
-    _pnlSeries.push({ ts: Date.now(), pnl: _stats.pnl });
-    if (_pnlSeries.length > 50) _pnlSeries.shift();
-  }
+function _writeLogFile(entry) {
+  try {
+    const dir = 'data/crypto_binary/logs';
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+
+    // 交易相关日志写 se_trades.jsonl
+    const tradeTypes = ['BUY', 'ORDER', 'FILL', 'SETTLE', 'SETTLE_TIMEOUT', 'SETTLE_PENDING', 'CLOSE', 'CANCEL_ALL'];
+    if (tradeTypes.includes(entry.type)) {
+      fs.appendFileSync(`${dir}/se_trades.jsonl`, JSON.stringify(entry) + '\n');
+    }
+
+    // 系统日志写 se_system.log
+    const sysTypes = ['SYSTEM', 'ERROR', 'WINDOW_SWITCH'];
+    if (sysTypes.includes(entry.type)) {
+      fs.appendFileSync(`${dir}/se_system.log`, `${entry.ts} [${entry.type}] ${entry.msg}\n`);
+    }
+  } catch (_) {}
+}
+
+function _pushPnlPoint() {
+  _pnlSeries.push({ ts: Date.now(), pnl: _stats.pnl });
+  if (_pnlSeries.length > 50) _pnlSeries.shift();
 }
 
 function _calcVolatility() {
@@ -61,6 +75,7 @@ async function _checkSettlement() {
     // 超时处理
     if (now - entry.startedAt > TIMEOUT_MS) {
       _appendLog('SETTLE_TIMEOUT', `upToken=${entry.upTokenId?.slice(0,8)} orders=${entry.orders?.length}`);
+      _pushPnlPoint();
       continue; // 不加入 remaining，相当于删除
     }
     // Group orders by upTokenId
@@ -106,8 +121,11 @@ async function _checkSettlement() {
               _appendLog('SETTLE', `side=${order.side} price=${order.price.toFixed(4)} pnl=${pnlDelta.toFixed(4)} upWon=${upWon}`);
             }
           }
+          _pushPnlPoint();
         }
-      } catch(_) {}
+      } catch(err) {
+        _appendLog('ERROR', `Settle check failed: ${err.message}`);
+      }
       
       if (!settled) {
         orders.forEach(o => unSettledOrders.push(o));
@@ -182,8 +200,6 @@ async function _tick() {
         }
       }
     }
-    
-    _updatePnlSeries();
   } catch (err) {
     console.log('[SE_TICK_CATCH]', err.message, err.stack);
     _appendLog('ERROR', err.message);
@@ -271,7 +287,6 @@ async function _handleAction(result, ctx) {
 
     case 'BUY':
       _appendLog('BUY', `side=${side} price=${price} vol=${_calcVolatility().toFixed(3)}%`);
-      _stats.trades++;
       try {
         const orderResult = await _orderManager.postOrder({
           side, price,
@@ -300,12 +315,21 @@ async function _handleAction(result, ctx) {
       break;
 
     case 'CANCEL_ALL':
-      _appendLog('CANCEL_ALL', '');
+      _appendLog('CLOSE', `up=${ctx.price?.up?.toFixed(3) ?? 'null'} down=${ctx.price?.down?.toFixed(3) ?? 'null'} vol=${_calcVolatility().toFixed(3)}%`);
+      if (_orderManager) {
+        try {
+          const actives = _orderManager.getActiveOrders();
+          for (const o of actives) {
+            await _orderManager.cancelOrder(o.order_id);
+          }
+        } catch (e) {
+          _appendLog('ERROR', `CANCEL_ALL failed: ${e.message}`);
+        }
+      }
       break;
 
     case 'PAIR_POST':
       _appendLog('PAIR_POST', `up=${result.up_price} down=${result.down_price}`);
-      _stats.trades++;
       try {
         await Promise.all([
           _orderManager.postOrder({ side: 'UP', price: result.up_price, type: 'limit', size: 1 }),
@@ -368,7 +392,6 @@ export function deploy(code, period) {
   _startTime   = Date.now();
   _stats       = { pnl: 0, trades: 0, wins: 0, losses: 0 };
   _pnlSeries   = [{ ts: Date.now(), pnl: 0 }];
-  _lastPnlSlot = 0;
   _priceBuf    = [];
 
   // 初始化 OrderManager (Paper 模式)
@@ -481,7 +504,7 @@ export function getStatus() {
     running:    _running,
     period:     _period,
     uptime_sec: uptime,
-    stats:      { ..._stats },
+    stats:      { ..._stats, trades: (_stats.wins || 0) + (_stats.losses || 0) },
     pnl_series: [..._pnlSeries],
     orders: {
       open: openOrders,
