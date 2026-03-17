@@ -230,25 +230,6 @@ async function initStrategyEditor() {
   document.getElementById('se-editor').value = saved || SE_DEFAULT_CODE;
   document.getElementById('se-guide-text').textContent = SE_GUIDE_TEXT;
 
-  // 独立轮询：倒计时 + 日志，不依赖策略是否运行
-  setInterval(async () => {
-    try {
-      const res = await fetch(`${BASE_URL}/strategy-runner/status`);
-      const status = await res.json();
-      // 更新倒计时
-      const remaining = status.window?.remaining_sec ?? null;
-      const el = document.getElementById('se-countdown');
-      if (el) {
-        if (remaining != null) {
-          const m = Math.floor(remaining / 60);
-          const s = remaining % 60;
-          el.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-        } else {
-          el.textContent = '--:--';
-        }
-      }
-    } catch (_) {}
-  }, 3000);
 }
 
 // 部署 / 停止
