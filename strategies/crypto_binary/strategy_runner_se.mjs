@@ -287,16 +287,10 @@ async function _getWindowInfo() {
 async function _buildContext() {
   let snapshot = null;
   
-  // 优先使用 global._btcqddGetSnapshot 获取快照（避免 fetch 开销和 import 循环）
+  // 使用 global._btcqddGetSnapshot 获取快照（避免 fetch 开销和 import 循环）
+  // 注：不再 fallback 到 fetch，global._btcqddGetSnapshot 在正常启动后始终可用
   if (global._btcqddGetSnapshot) {
     snapshot = global._btcqddGetSnapshot();
-  } else {
-    try {
-      const res = await fetch('http://localhost:53123/book/snapshot');
-      if (res.ok) {
-          snapshot = await res.json();
-      }
-    } catch (_) {}
   }
 
   // 这里的 fetch 导致自调用死锁，已删除
