@@ -296,11 +296,7 @@ async function _buildContext() {
       spread:      snapshot ? (Math.abs((snapshot.mid_up || 0) - (snapshot.mid_down || 0))) : null
     },
     regime: { score: null, sigma: null, alternation: null },
-    window: {
-      remaining_sec: _statusRemainingSec ?? _windowInfoCache?.remaining_sec ?? null,
-      period: _period,
-      slug: _statusSlug
-    },
+    window: await _getWindowInfo(),
     position: null,
     orderbook: {
       bid_up:   snapshot?.bid_up   || snapshot?.best_bid || null,
@@ -590,6 +586,11 @@ export function getStatus() {
     uptime_sec: uptime,
     stats:      { ..._stats, trades: (_stats.wins || 0) + (_stats.losses || 0) },
     pnl_series: [..._pnlSeries],
+    window: {
+      remaining_sec: _statusRemainingSec ?? _windowInfoCache?.remaining_sec ?? null,
+      period: _period,
+      slug: _statusSlug
+    },
     orders: {
       open: openOrders,
       filled: filledOrders,
