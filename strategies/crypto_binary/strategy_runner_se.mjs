@@ -307,8 +307,35 @@ async function _buildContext() {
       spread:      snapshot ? (Math.abs((snapshot.mid_up || 0) - (snapshot.mid_down || 0))) : null
     },
     regime: { score: null, sigma: null, alternation: null },
+    volatility: _calcVolatility(),
     window: await _getWindowInfo(),
-    position: null,
+    position: (() => {
+      if (!_orderManager) return { up: 0, down: 0, total: 0 };
+      try {
+        const all = _orderManager.getAllOrders();
+        let up = 0, down = 0;
+        for (const o of all) {
+          if (o.status === 'FILLED' || o.status === 'CLOSED') {
+            if (o.side === 'UP') up += o.size || 1;
+            else if (o.side === 'DOWN') down += o.size || 1;
+          }
+        }
+        return { up, down, total: up + down };
+      } catch (_) { return { up: 0, down: 0, total: 0 }; }
+    })(),
+    orders: (() => {
+      if (!_orderManager) return [];
+      try {
+        return _orderManager.getActiveOrders().map(o => ({
+          order_id: o.order_id,
+          side: o.side,
+          price: o.price,
+          size: o.size || 1,
+          status: o.status,
+          age_ms: o.age_ms || 0
+        }));
+      } catch (_) { return []; }
+    })(),
     orderbook: {
       bid_up:   snapshot?.bid_up   || snapshot?.best_bid || null,
       ask_up:   snapshot?.ask_up   || snapshot?.best_ask || null,
@@ -318,6 +345,12 @@ async function _buildContext() {
       bid_down: snapshot?.bid_down || null,
       ask_down: snapshot?.ask_down || null,
       mid_down: snapshot?.mid_down || null,
+    },
+    stats: {
+      pnl: _stats.pnl,
+      wins: _stats.wins,
+      losses: _stats.losses,
+      trades: (_stats.wins || 0) + (_stats.losses || 0)
     },
   };
 }
