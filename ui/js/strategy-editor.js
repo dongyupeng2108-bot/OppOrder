@@ -26,67 +26,153 @@ function decide(ctx) {
 }`;
 
 // AI 指南文案
-const SE_GUIDE_TEXT = `🤖 AI 策略编写指南
+const SE_GUIDE_TEXT = `========================================
+  BTCQDD \u7b56\u7565\u7f16\u8f91\u5668\u6307\u5357
+========================================
 
-1. 函数签名
+\u7b2c\u4e00\u90e8\u5206\uff1a\u4f7f\u7528\u8bf4\u660e\uff08\u7ed9\u4eba\u770b\uff09
+
+1. \u8fd9\u662f\u4ec0\u4e48
+   \u7b56\u7565\u7f16\u8f91\u5668\u8ba9\u4f60\u7528 JavaScript \u7f16\u5199\u4ea4\u6613\u7b56\u7565\uff0c
+   \u5728 Polymarket \u52a0\u5bc6\u8d27\u5e01 Up/Down \u5e02\u573a\u4e0a\u8fdb\u884c Paper Trading\u3002
+   \u7b56\u7565\u4ee3\u7801\u6bcf\u6b21\u4ef7\u683c\u53d8\u52a8\u65f6\u88ab\u8c03\u7528\uff0c\u8fd4\u56de\u4ea4\u6613\u51b3\u7b56\u3002
+
+2. Paper \u6a21\u5f0f vs \u771f\u5b9e\u73af\u5883
+   \u5f53\u524d\u8fd0\u884c\u5728 Paper \u6a21\u5f0f\uff0c\u4e0e\u771f\u5b9e\u4ea4\u6613\u6709\u4ee5\u4e0b\u5dee\u5f02\uff1a
+   - \u6210\u4ea4\u6761\u4ef6\uff1a\u6302\u5355\u4ef7 >= \u5356\u4e00\u4ef7(ask)\u65f6\u624d\u6210\u4ea4\uff08\u771f\u5b9e maker \u884c\u4e3a\uff09
+     \u2192 \u6302\u5728 mid \u4ef7\u4f4d\u53ef\u80fd\u4e0d\u4f1a\u7acb\u5373\u6210\u4ea4\uff0c\u9700\u8981\u7b49\u5f85
+     \u2192 \u60f3\u7acb\u5373\u6210\u4ea4\u8bf7\u7528\u5bf9\u8c61\u683c\u5f0f\u6307\u5b9a ask \u4ef7\u683c
+   - \u6210\u4ea4\u6982\u7387\uff1aoptimistic \u6a21\u5f0f\uff08\u89e6\u4ef7\u5373\u6210\u4ea4\uff09\uff0c\u771f\u5b9e\u73af\u5883\u7ea6 30-70%
+   - \u624b\u7eed\u8d39\uff1amaker \u9650\u4ef7\u5355 = 0 \u8d39\u7528 + \u6bcf\u65e5\u8fd4\u5229\uff1btaker \u5e02\u4ef7\u5355 = 0.5-1.56%
+   - \u5e76\u53d1\u7ade\u4e89\uff1aPaper \u6ca1\u6709\u5176\u4ed6\u505a\u5e02\u5546\u7ade\u4e89\uff0c\u771f\u5b9e\u73af\u5883\u6709
+   - PnL \u8ba1\u7b97\uff1a\u7ed3\u7b97\u5236\uff08\u7a97\u53e3\u7ed3\u675f\u540e\u624d\u8ba1\u7b97\u76c8\u4e8f\uff09
+
+3. \u8ba2\u5355\u72b6\u6001\u6d41\u8f6c
+   \u4e0b\u5355 \u2192 \u6302\u5355\u4e2d(OPEN) \u2192 \u6210\u4ea4(FILLED)
+   CLOSE \u65f6\uff1aOPEN \u2192 \u5df2\u64a4\u5355(CANCELLED)\uff0cFILLED \u2192 \u5df2\u5e73\u4ed3(CLOSED)
+   \u7a97\u53e3\u5207\u6362 \u2192 FILLED/CLOSED \u8ba2\u5355\u53c2\u4e0e\u7ed3\u7b97\uff0cCANCELLED \u4e0d\u53c2\u4e0e
+
+4. \u6301\u4ed3\u9650\u5236
+   \u603b\u6301\u4ed3\u4e0a\u9650 $1\u3002\u8d85\u8fc7\u65f6\u65b0\u7684 BUY \u6307\u4ee4\u4f1a\u88ab\u62d2\u7edd\uff08\u65e5\u5fd7\u663e\u793a position limit\uff09\u3002
+
+========================================
+
+\u7b2c\u4e8c\u90e8\u5206\uff1a\u63a5\u53e3\u6587\u6863\uff08\u7ed9 AI \u770b\uff09
+
+1. \u51fd\u6570\u7b7e\u540d
    function decide(ctx) { ... return ACTION; }
 
-2. 上下文对象 (ctx)
-   - ctx.price.up       : UP token 当前价格 (0.0 ~ 1.0)
-   - ctx.price.down     : DOWN token 当前价格 (0.0 ~ 1.0)
-   - ctx.price.btc      : BTC/USDT 现货价格
-   - ctx.regime.score   : 市场状态评分 (0.0=强趋势, 1.0=完全震荡)
-   - ctx.window.remaining_sec : 当前 15m/5m 窗口剩余秒数
-   - ctx.orderbook.mid  : 当前盘口中间价 (用于精细定价)
+2. \u8fd4\u56de\u503c
 
-3. 返回值 (Action)
-   - 'BUY_UP'   : 买入/持有 UP token
-   - 'BUY_DOWN' : 买入/持有 DOWN token
-   - 'HOLD'     : 保持当前持仓 (不交易)
-   - 'CLOSE'    : 平掉所有持仓 (通常在窗口结束前)
+   \u5b57\u7b26\u4e32\u683c\u5f0f\uff08\u7b80\u5355\uff09\uff1a
+   - 'BUY_UP'    \u4e70 UP token\uff08\u4ef7\u683c = ctx.price.up\uff0c\u6570\u91cf = 1\uff09
+   - 'BUY_DOWN'  \u4e70 DOWN token\uff08\u4ef7\u683c = ctx.price.down\uff0c\u6570\u91cf = 1\uff09
+   - 'HOLD'      \u4e0d\u64cd\u4f5c
+   - 'CLOSE'     \u5e73\u4ed3\uff1aOPEN \u8ba2\u5355\u64a4\u5355\uff0cFILLED \u8ba2\u5355\u6807\u8bb0\u5df2\u5e73\u4ed3
 
-4. 示例策略
-   // 震荡策略 (Regime Score > 0.7)
-   if (ctx.regime.score > 0.7) {
-     if (ctx.price.up < 0.2) return 'BUY_UP';   // 超跌反弹
-     if (ctx.price.down < 0.2) return 'BUY_DOWN';
+   \u5bf9\u8c61\u683c\u5f0f\uff08\u7cbe\u7ec6\u63a7\u5236\uff09\uff1a
+   return {
+     action: 'BUY',
+     side: 'UP',        // 'UP' \u6216 'DOWN'
+     price: 0.35,       // \u81ea\u5b9a\u4e49\u6302\u5355\u4ef7\uff08\u9ed8\u8ba4 = ctx.price.up/down\uff09
+     size: 3            // \u4e0b\u5355\u6570\u91cf\uff08\u9ed8\u8ba4 = 1\uff09
+   };
+   \u2192 price \u8bbe\u4e3a ctx.orderbook.ask_down \u53ef\u4ee5\u7acb\u5373\u6210\u4ea4
+   \u2192 price \u8bbe\u4e3a ctx.price.down (mid) \u53ef\u80fd\u9700\u8981\u7b49\u5f85
+
+3. ctx \u5b57\u6bb5\u5b8c\u6574\u5217\u8868
+
+   ctx.price
+     .up          number 0~1    UP token \u4e2d\u95f4\u4ef7
+     .down        number 0~1    DOWN token \u4e2d\u95f4\u4ef7
+     .btc         number        BTC/USDT \u5b9e\u65f6\u4ef7\u683c
+     .spread      number        |up - down| \u4ef7\u5dee
+
+   ctx.window
+     .remaining_sec  number|\u200bnull  \u7a97\u53e3\u5269\u4f59\u79d2\u6570
+     .period         string       "5m" \u6216 "15m"
+     .slug           string|\u200bnull  \u7a97\u53e3\u552f\u4e00\u6807\u8bc6
+
+   ctx.orderbook
+     .mid_up      number|null   UP \u4e2d\u95f4\u4ef7
+     .mid_down    number|null   DOWN \u4e2d\u95f4\u4ef7
+     .bid_up      number|null   UP \u6700\u4f18\u4e70\u4ef7
+     .ask_up      number|null   UP \u6700\u4f18\u5356\u4ef7
+     .bid_down    number|null   DOWN \u6700\u4f18\u4e70\u4ef7
+     .ask_down    number|null   DOWN \u6700\u4f18\u5356\u4ef7
+
+   ctx.position
+     .up          number        \u5f53\u524d UP \u6301\u4ed3\u4efd\u6570
+     .down        number        \u5f53\u524d DOWN \u6301\u4ed3\u4efd\u6570
+     .total       number        \u603b\u6301\u4ed3
+
+   ctx.volatility   number        ATR14 \u6ce2\u52a8\u7387 (%)\uff0c\u7a97\u53e3\u5185\u56fa\u5b9a\u503c
+
+   ctx.orders       Array         \u5f53\u524d\u6d3b\u8dc3\u6302\u5355\u5217\u8868
+     [i].order_id   string
+     [i].side       'UP'|'DOWN'
+     [i].price      number
+     [i].size       number
+     [i].status     'OPEN'
+     [i].age_ms     number        \u6302\u5355\u5df2\u5b58\u6d3b\u6beb\u79d2
+
+   ctx.stats
+     .pnl         number        \u7d2f\u8ba1\u76c8\u4e8f ($)
+     .wins        number        \u80dc\u573a\u6570
+     .losses      number        \u8d1f\u573a\u6570
+     .trades      number        \u603b\u4ea4\u6613\u6b21\u6570 (wins+losses)
+
+   ctx.regime
+     .score       null           \u672a\u63a5\u5165\uff08\u59cb\u7ec6\u4e3a null\uff09
+     .sigma       null           \u672a\u63a5\u5165
+     .alternation null           \u672a\u63a5\u5165
+
+4. \u72b6\u6001\u6301\u4e45\u5316\uff08\u8de8 tick \u4fdd\u5b58\u6570\u636e\uff09
+   \u5fc5\u987b\u7528 globalThis\uff0c\u7edd\u5bf9\u4e0d\u80fd\u7528 window\uff01
+   if (!globalThis._s) globalThis._s = { count: 0 };
+   globalThis._s.count += 1;
+
+   \u547d\u540d\u5efa\u8bae\uff1a\u4f7f\u7528 _v1_xxx / _s_xxx \u524d\u7f00
+   \uff08deploy \u65f6\u6846\u67b6\u4f1a\u81ea\u52a8\u6e05\u7406 _v*/_s*/_test*/_simple* \u524d\u7f00\u53d8\u91cf\uff09
+
+5. \u5b89\u5168\u6ce8\u610f\u4e8b\u9879
+   - \u7edd\u5bf9\u4e0d\u80fd\u7528 window\uff08Node.js \u73af\u5883\uff0c\u4f1a\u5d29\u6e83\uff09
+   - \u4e0d\u8981\u5199\u540c\u6b65\u6b7b\u5faa\u73af while(true)\uff08\u4f1a\u5361\u6b7b\u670d\u52a1\uff09
+   - \u4e0d\u8981\u4fee\u6539 globalThis._btcqdd* \u524d\u7f00\u53d8\u91cf\uff08\u6846\u67b6\u5185\u90e8\u7528\uff09
+   - \u4e0d\u80fd\u7528 require() \u6216 import()\uff08\u5b89\u5168\u9650\u5236\uff09
+   - remaining_sec \u53ef\u80fd\u4e3a null\uff0c\u4f7f\u7528\u524d\u5fc5\u987b\u68c0\u67e5\uff1a
+     if (ctx.window.remaining_sec != null && ctx.window.remaining_sec < 60)
+     \u2192 \u76f4\u63a5\u5199 remaining_sec < 60 \u4f1a\u8bef\u89e6\u53d1\uff08null < 60 === true\uff09
+
+6. \u8c03\u8bd5
+   console.log() \u8f93\u51fa\u5230\u53f3\u4fa7\u65e5\u5fd7\u9762\u677f\u3002
+
+7. \u793a\u4f8b\u7b56\u7565
+
+   // \u4f4e\u4ef7\u63a5\u535a\u7b56\u7565
+   function decide(ctx) {
+     if (!globalThis._s) globalThis._s = { bought: false };
+
+     // \u7a97\u53e3\u5373\u5c06\u7ed3\u675f\u65f6\u5e73\u4ed3
+     if (ctx.window.remaining_sec != null && ctx.window.remaining_sec < 30) {
+       globalThis._s.bought = false;
+       return 'CLOSE';
+     }
+
+     // \u5df2\u6301\u4ed3\u5219\u4e0d\u91cd\u590d\u5f00\u4ed3
+     if (ctx.position.total > 0 || globalThis._s.bought) return 'HOLD';
+
+     // DOWN \u4ef7\u683c\u4f4e\u4e8e 0.15 \u65f6\u4e70\u5165\uff08\u7528 ask \u4ef7\u7acb\u5373\u6210\u4ea4\uff09
+     if (ctx.price.down != null && ctx.price.down < 0.15) {
+       globalThis._s.bought = true;
+       return {
+         action: 'BUY', side: 'DOWN',
+         price: ctx.orderbook.ask_down,
+         size: 1
+       };
+     }
+     return 'HOLD';
    }
-   // 趋势策略 (Regime Score < 0.3)
-   else if (ctx.regime.score < 0.3) {
-     if (ctx.price.up > 0.6) return 'BUY_UP';   // 追涨
-     if (ctx.price.down > 0.6) return 'BUY_DOWN';
-   }
-   return 'HOLD';
-
-5. 调试
-   使用 console.log() 输出日志，会在右侧日志面板显示。
-
-6. 重要：运行环境
-策略代码在 Node.js 服务端 eval() 执行，不是浏览器环境。
-- 不能用 window（Node.js 中不存在，会导致服务崩溃）
-- 必须用 globalThis 替代 window
-- 跨 tick 保存状态示例：
-  if (!globalThis._s) globalThis._s = { up: 0, down: 0 };
-  globalThis._s.up += 1;
-
----
-
-## CONTEXT 字段速查
-
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| ctx.price.up | number 0~1 | UP token 当前价格 |
-| ctx.price.down | number 0~1 | DOWN token 当前价格 |
-| ctx.price.btc | number | BTC/USDT 现价 |
-| ctx.price.spread | number | |up - down| 价差 |
-| ctx.regime.score | number 0~1 | 市场评分（0=趋势，1=震荡）|
-| ctx.regime.sigma | number | BTC 波动率 |
-| ctx.regime.alternation | number | 涨跌交替度 |
-| ctx.window.remaining_sec | number | 窗口剩余秒数 |
-| ctx.window.period | string | "5m" 或 "15m" |
-| ctx.orderbook.mid | number | 盘口中间价 |
-| ctx.orderbook.best_bid | number | 最优买价 |
-| ctx.orderbook.best_ask | number | 最优卖价 |
 `;
 
 // 状态管理
