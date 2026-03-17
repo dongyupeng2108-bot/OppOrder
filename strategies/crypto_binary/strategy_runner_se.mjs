@@ -23,9 +23,8 @@ let _priceFeed = null;
 let _lastBtcPrice = null;
 let _lastTriggerPrice = null; // 上次触发决策时的价格，用于节流
 let _lastTickTime = 0;    // 上次 _tick 执行时间，用于事件驱动限频
+let _tickRunning = false;  // _tick 互斥锁，防止并发执行
 let _latency = { decide_ms: null, order_ms: null, ts: 0 };
-let _tickStartTime = 0;
-let _lastDecideEndTime = 0;
 let _cachedVol = 0;       // 缓存的 ATR14 波动率百分比
 let _volWindowSlug = null; // 上次计算波动率时的窗口 slug
 
@@ -183,54 +182,61 @@ function _startLoop() {
 // ── 决策核心逻辑 ────────────────────────────────────────────────────────
 async function _tick() {
   if (!_running || !_decideFunc) return;
-  _lastTickTime = Date.now();
-  _tickStartTime = Date.now();
+  if (_tickRunning) return;  // 已有 _tick 在执行，跳过
+  _tickRunning = true;
+  const _now = Date.now();
+  _lastTickTime = _now;
+  const _tickStartTime = _now;
   try {
-    const ctx = await _buildContext();
-
-    if (ctx.window.slug && ctx.window.slug !== _volWindowSlug) {
-      _volWindowSlug = ctx.window.slug;
-      _fetchATR14().then(v => { _cachedVol = v; });
-    }
-    
-    // 记录 BTC 价格到滚动缓冲（此处仅作日志用途，波动率由 _fetchATR14 负责）
-    if (ctx.price.btc) {
-      // _updateCandle(ctx.price.btc); // 已移除
-    }
-    
-    let result;
-
-    // 超时保护：1 秒
-    const timeout = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error('decide() timeout')), 1000)
-    );
     try {
-      result = await Promise.race([
-        Promise.resolve(_decideFunc(ctx)),
-        timeout,
-      ]);
-    } catch (e) {
-      _appendLog('ERROR', `decide() failed: ${e.message}`);
-      return;
-    }
+      const ctx = await _buildContext();
 
-    _lastDecideEndTime = Date.now();
-    await _handleAction(result, ctx);
+      if (ctx.window.slug && ctx.window.slug !== _volWindowSlug) {
+        _volWindowSlug = ctx.window.slug;
+        _fetchATR14().then(v => { _cachedVol = v; });
+      }
 
-    // ── 模拟成交 ────────────────────────────────────────────────────────
-    if (_orderManager && typeof _orderManager.simulateFills === 'function') {
-      const snapshot = _buildSnapshot(ctx);
-      const fills = _orderManager.simulateFills(snapshot);
-      
-      if (fills && fills.length > 0) {
-        for (const fill of fills) {
-          _appendLog('FILL', `order_id=${fill.order_id.slice(0,8)}... side=${fill.side} price=${fill.price.toFixed(4)}`);
+      // 记录 BTC 价格到滚动缓冲（此处仅作日志用途，波动率由 _fetchATR14 负责）
+      if (ctx.price.btc) {
+        // _updateCandle(ctx.price.btc); // 已移除
+      }
+
+      let result;
+
+      // 超时保护：1 秒
+      const timeout = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('decide() timeout')), 1000)
+      );
+      try {
+        result = await Promise.race([
+          Promise.resolve(_decideFunc(ctx)),
+          timeout,
+        ]);
+      } catch (e) {
+        _appendLog('ERROR', `decide() failed: ${e.message}`);
+        return;
+      }
+
+      const _decideEndTime = Date.now();
+      await _handleAction(result, ctx, _tickStartTime, _decideEndTime);
+
+      // ── 模拟成交 ────────────────────────────────────────────────────────
+      if (_orderManager && typeof _orderManager.simulateFills === 'function') {
+        const snapshot = _buildSnapshot(ctx);
+        const fills = _orderManager.simulateFills(snapshot);
+
+        if (fills && fills.length > 0) {
+          for (const fill of fills) {
+            _appendLog('FILL', `order_id=${fill.order_id.slice(0,8)}... side=${fill.side} price=${fill.price.toFixed(4)}`);
+          }
         }
       }
+    } catch (err) {
+      console.log('[SE_TICK_CATCH]', err.message, err.stack);
+      _appendLog('ERROR', err.message);
     }
-  } catch (err) {
-    console.log('[SE_TICK_CATCH]', err.message, err.stack);
-    _appendLog('ERROR', err.message);
+  } finally {
+    _tickRunning = false;
   }
 }
 
@@ -321,7 +327,7 @@ async function _buildContext() {
 
 // ── 动作处理 ──────────────────────────────────────────────────────────────
 // SE-1: BUY/SELL/PAIR_POST 只记日志，不真实下单；SE-3 联调时再接 order_manager
-async function _handleAction(result, ctx) {
+async function _handleAction(result, ctx, tickStartTime, decideEndTime) {
   // 兼容字符串格式（'BUY_UP' / 'BUY_DOWN' / 'HOLD' / 'CLOSE'）
   if (typeof result === 'string') {
     if (result === 'BUY_UP') result = { action: 'BUY', side: 'UP', price: ctx.price?.up };
@@ -354,7 +360,7 @@ async function _handleAction(result, ctx) {
         });
         _appendLog('ORDER', `order_id=${orderResult?.order_id || 'paper'}`);
         _latency = {
-          decide_ms: _lastDecideEndTime - _tickStartTime,
+          decide_ms: (decideEndTime && tickStartTime) ? (decideEndTime - tickStartTime) : null,
           order_ms: Date.now() - _orderStartTime,
           ts: Date.now()
         };
@@ -468,9 +474,8 @@ export function deploy(code, period) {
   _windowInfoCache = null;
   _windowInfoCacheTime = 0;
   _lastTickTime = 0;
+  _tickRunning = false;
   _latency = { decide_ms: null, order_ms: null, ts: 0 };
-  _tickStartTime = 0;
-  _lastDecideEndTime = 0;
 
   // 初始化 OrderManager (Paper 模式)
   _orderManager = createOrderManager({
