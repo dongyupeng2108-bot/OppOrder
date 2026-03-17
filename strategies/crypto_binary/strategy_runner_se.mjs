@@ -249,10 +249,11 @@ async function _getWindowInfo() {
 
   let remaining_sec = null;
   let slug = null;
+  let win = null;
   try {
     const scanner = global._btcqddGlobalScanner;
     if (scanner) {
-      const win = await scanner.findCurrentWindow();
+      win = await scanner.findCurrentWindow();
       if (win) {
         slug = win.slug || null;
         if (win.end_date) {
