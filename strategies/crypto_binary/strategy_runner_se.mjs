@@ -5,7 +5,7 @@
 import fs from 'fs';
 import './proxy_agent.mjs';
 import { createOrderManager } from './order_manager.mjs';
-import { subscribe, EVENT_TYPES } from './event_bus.mjs';
+import { subscribe, unsubscribe as unsubscribeFromBus, EVENT_TYPES } from './event_bus.mjs';
 import { createPriceFeed } from './price_feed.mjs';
 
 // ── 运行器状态 ────────────────────────────────────────────────────────────
@@ -24,6 +24,9 @@ let _lastBtcPrice = null;
 let _lastTriggerPrice = null; // 上次触发决策时的价格，用于节流
 let _lastTickTime = 0;    // 上次 _tick 执行时间，用于事件驱动限频
 let _tickRunning = false;  // _tick 互斥锁，防止并发执行
+let _settlementTimer = null;       // _checkSettlement 定时器 ID
+let _windowSwitchUnsub = null;     // WINDOW_SWITCH 订阅的 handler 引用（用于 unsubscribe）
+let _orderbookSubscribed = false;  // orderbook 是否已订阅（全局对象无法移除，用标志避免重复）
 let _latency = { decide_ms: null, order_ms: null, ts: 0 };
 let _cachedVol = 0;       // 缓存的 ATR14 波动率百分比
 let _volWindowSlug = null; // 上次计算波动率时的窗口 slug
@@ -476,6 +479,7 @@ export function deploy(code, period) {
   _lastTickTime = 0;
   _tickRunning = false;
   _latency = { decide_ms: null, order_ms: null, ts: 0 };
+  _pendingSettlement.length = 0;
 
   // 初始化 OrderManager (Paper 模式)
   _orderManager = createOrderManager({
@@ -533,8 +537,9 @@ export function deploy(code, period) {
       }
     });
 
-    // Level 1.5: Polymarket 盘口变化也触发 _tick
-    if (global._btcqddGlobalOrderbook && typeof global._btcqddGlobalOrderbook.subscribe === 'function') {
+    // Level 1.5: Polymarket 盘口变化也触发 _tick（防重：只订阅一次）
+    if (!_orderbookSubscribed && global._btcqddGlobalOrderbook && typeof global._btcqddGlobalOrderbook.subscribe === 'function') {
+      _orderbookSubscribed = true;
       global._btcqddGlobalOrderbook.subscribe((snap) => {
         if (!_running || !_decideFunc) return;
         const now = Date.now();
@@ -547,10 +552,12 @@ export function deploy(code, period) {
   }
 
   // 启动结算轮询
-  setInterval(_checkSettlement, 10000);
+  if (_settlementTimer) clearInterval(_settlementTimer);
+  _settlementTimer = setInterval(_checkSettlement, 10000);
 
-  // 监听窗口切换，加入待结算池
-  subscribe(async (evt) => {
+  // 监听窗口切换，加入待结算池（防重：先移除旧 handler）
+  if (_windowSwitchUnsub) { unsubscribeFromBus(_windowSwitchUnsub); _windowSwitchUnsub = null; }
+  const _wsHandler = async (evt) => {
     if (evt.type !== EVENT_TYPES.WINDOW_SWITCH) return;
     // 将当前所有 FILLED 或 CLOSED 订单加入待结算池
     if (_orderManager && global._btcqddLastWindowTokenIds) {
@@ -565,13 +572,17 @@ export function deploy(code, period) {
         _appendLog('SETTLE_PENDING', `orders=${filledOrders.length} upToken=${global._btcqddLastWindowTokenIds.up.slice(0,8)}`);
       }
     }
-  });
+  };
+  subscribe(_wsHandler);
+  _windowSwitchUnsub = _wsHandler;
 
   return { ok: true };
 }
 
 export function stop() {
   if (_timer) { clearInterval(_timer); _timer = null; }
+  if (_settlementTimer) { clearInterval(_settlementTimer); _settlementTimer = null; }
+  if (_windowSwitchUnsub) { unsubscribeFromBus(_windowSwitchUnsub); _windowSwitchUnsub = null; }
   if (_priceFeed) { _priceFeed.stop(); _priceFeed = null; _lastBtcPrice = null; _lastTriggerPrice = null; }
   _running    = false;
   _decideFunc = null;
