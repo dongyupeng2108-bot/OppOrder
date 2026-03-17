@@ -928,19 +928,7 @@ const server = createServer(async (req, res) => {
   if (req.method === 'GET' && req.url === '/strategy-runner/status') {
     try {
       const status = strategyRunnerSe.getStatus();
-      
-      // Inject window.remaining_sec
-      let remaining_sec = null;
-      if (_globalScanner) {
-        try {
-          const win = await _globalScanner.findCurrentWindow();
-          if (win?.end_date) {
-            remaining_sec = Math.max(0, Math.floor((new Date(win.end_date) - Date.now()) / 1000));
-          }
-        } catch(_) {}
-      }
-      status.window = { remaining_sec };
-      
+      // window 字段由 getStatus() 内部返回（含 remaining_sec/period/slug），此处不再覆写
       sendJson(res, status);
     } catch (err) {
       sendJson(res, { ok: false, error: err.message }, 500);
