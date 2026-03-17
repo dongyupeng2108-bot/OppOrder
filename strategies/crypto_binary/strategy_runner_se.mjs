@@ -132,8 +132,8 @@ async function _checkSettlement() {
           const book = await res.json();
           const bids = book.bids || [];
           const asks = book.asks || [];
-          const bestBid = parseFloat(bids[bids.length-1]?.price ?? 0);
-          const bestAsk = parseFloat(asks[asks.length-1]?.price ?? 1);
+          const bestBid = parseFloat(bids[0]?.price ?? 0);
+          const bestAsk = parseFloat(asks[0]?.price ?? 1);
           const midUp = (bestBid + bestAsk) / 2;
           
           let upWon = null;
@@ -391,11 +391,12 @@ async function _handleAction(result, ctx, tickStartTime, decideEndTime) {
       _appendLog('CLOSE', `up=${ctx.price?.up?.toFixed(3) ?? 'null'} down=${ctx.price?.down?.toFixed(3) ?? 'null'} vol=${_calcVolatility().toFixed(3)}%`);
       if (_orderManager) {
         try {
-          // 标记 FILLED 订单为 CLOSED（getActiveOrders 只返回 OPEN，需要用 getAllOrders）
           const allOrders = _orderManager.getAllOrders();
           for (const o of allOrders) {
-            if (o.status === 'FILLED' || o.status === 'OPEN') {
-              o.status = 'CLOSED';
+            if (o.status === 'OPEN') {
+              _orderManager.cancelOrder(o.order_id);  // 未成交 → 撤单
+            } else if (o.status === 'FILLED') {
+              o.status = 'CLOSED';  // 已成交 → 平仓
             }
           }
         } catch (e) {
@@ -619,8 +620,11 @@ export function getStatus() {
         .filter(o => o.status === 'OPEN')
         .map(o => ({ side: o.side, price: o.price, size: o.size, status: 'open' }));
       filledOrders = _orderManager.getAllOrders()
-        .filter(o => o.status === 'FILLED' || o.status === 'CLOSED')
-        .map(o => ({ side: o.side, price: o.price, size: o.size, status: o.status === 'CLOSED' ? 'closed' : 'filled' }));
+        .filter(o => o.status === 'FILLED' || o.status === 'CLOSED' || o.status === 'CANCELLED')
+        .map(o => ({
+          side: o.side, price: o.price, size: o.size,
+          status: o.status === 'CLOSED' ? 'closed' : o.status === 'CANCELLED' ? 'cancelled' : 'filled'
+        }));
     } catch (_) {}
   }
 
