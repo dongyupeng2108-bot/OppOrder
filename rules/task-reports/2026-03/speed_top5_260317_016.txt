@@ -1,0 +1,5 @@
+100ms: syntax_check
+90ms: scope_lock
+80ms: gate_light
+70ms: settlement_timer
+60ms: window_switch_unsub

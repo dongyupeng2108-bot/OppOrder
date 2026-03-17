@@ -1,0 +1,91 @@
+{
+  "task_id": "260317_016",
+  "generated_at": "2026-03-17T12:16:12.984Z",
+  "files": [
+    {
+      "name": "result_260317_016.json",
+      "size": 575,
+      "sha256_short": "cdb12b2a"
+    },
+    {
+      "name": "run_260317_016.log",
+      "size": 11356,
+      "sha256_short": "fbe5af5b"
+    },
+    {
+      "name": "notify_260317_016.txt",
+      "size": 9947,
+      "sha256_short": "c6cad42a"
+    },
+    {
+      "name": "gate_light_preview_260317_016.log",
+      "size": 4373,
+      "sha256_short": "96a95db8"
+    },
+    {
+      "name": "dod_evidence_260317_016.txt",
+      "size": 1213,
+      "sha256_short": "8289a9fa"
+    },
+    {
+      "name": "git_meta_260317_016.json",
+      "size": 103,
+      "sha256_short": "6c6f00bc"
+    },
+    {
+      "name": "trae_report_snippet_260317_016.txt",
+      "size": 5182,
+      "sha256_short": "cdc0b972"
+    },
+    {
+      "name": "manual_verification_260317_016.json",
+      "size": 99,
+      "sha256_short": "93fb0544"
+    },
+    {
+      "name": "ci_parity_260317_016.json",
+      "size": 496,
+      "sha256_short": "afa7a471"
+    },
+    {
+      "name": "preflight_attestation_260317_016.json",
+      "size": 307,
+      "sha256_short": "811443ea"
+    },
+    {
+      "name": "workspace_healer_260317_016.json",
+      "size": 922,
+      "sha256_short": "3a3a5176"
+    },
+    {
+      "name": "errors_260317_016.jsonl",
+      "size": 296,
+      "sha256_short": "feb4e752"
+    },
+    {
+      "name": "errors_summary_260317_016.txt",
+      "size": 230,
+      "sha256_short": "0ff2dd99"
+    },
+    {
+      "name": "open_pr_guard_260317_016.json",
+      "size": 237,
+      "sha256_short": "d2cd9be0"
+    },
+    {
+      "name": "auto_pr_260317_016.json",
+      "size": 568,
+      "sha256_short": "7398e559"
+    },
+    {
+      "name": "260317_016_healthcheck_53122_root.txt",
+      "size": 159,
+      "sha256_short": "362aa8e8"
+    },
+    {
+      "name": "260317_016_healthcheck_53122_pairs.txt",
+      "size": 159,
+      "sha256_short": "4b482908"
+    }
+  ]
+}
