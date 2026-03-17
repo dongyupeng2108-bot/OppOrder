@@ -513,8 +513,20 @@ export function deploy(code, period) {
         }
       }
     });
+
+    // Level 1.5: Polymarket 盘口变化也触发 _tick
+    if (global._btcqddGlobalOrderbook && typeof global._btcqddGlobalOrderbook.subscribe === 'function') {
+      global._btcqddGlobalOrderbook.subscribe((snap) => {
+        if (!_running || !_decideFunc) return;
+        const now = Date.now();
+        if ((now - _lastTickTime) > 200) {
+          _lastTickTime = now;
+          _tick();
+        }
+      });
+    }
   }
-  
+
   // 启动结算轮询
   setInterval(_checkSettlement, 10000);
 
