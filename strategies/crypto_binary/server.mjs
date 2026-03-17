@@ -101,6 +101,7 @@ async function initGlobalOrderbook() {
 
     // 注入全局快照获取函数，供 strategy_runner_se.mjs 调用
     global._btcqddGetSnapshot = () => _globalOrderbookMonitor?.getLatestSnapshot?.() || null;
+    global._btcqddGlobalOrderbook = _globalOrderbookMonitor;
   } catch (err) {
     console.warn('[server] initGlobalOrderbook failed:', err.message);
     // 失败不阻塞服务启动
