@@ -261,7 +261,7 @@ async function _getWindowInfo() {
       }
     }
   } catch (_) {}
-  _windowInfoCache = { remaining_sec, period: _period, slug };
+  _windowInfoCache = { remaining_sec, period: _period, slug, _endDate: win?.end_date ? new Date(win.end_date).getTime() : null };
   _windowInfoCacheTime = now;
   return _windowInfoCache;
 }
@@ -296,7 +296,11 @@ async function _buildContext() {
       spread:      snapshot ? (Math.abs((snapshot.mid_up || 0) - (snapshot.mid_down || 0))) : null
     },
     regime: { score: null, sigma: null, alternation: null },
-    window: await _getWindowInfo(),
+    window: {
+      remaining_sec: _statusRemainingSec ?? _windowInfoCache?.remaining_sec ?? null,
+      period: _period,
+      slug: _statusSlug
+    },
     position: null,
     orderbook: {
       bid_up:   snapshot?.bid_up   || snapshot?.best_bid || null,
@@ -368,9 +372,12 @@ async function _handleAction(result, ctx) {
       _appendLog('CLOSE', `up=${ctx.price?.up?.toFixed(3) ?? 'null'} down=${ctx.price?.down?.toFixed(3) ?? 'null'} vol=${_calcVolatility().toFixed(3)}%`);
       if (_orderManager) {
         try {
-          const actives = _orderManager.getActiveOrders();
-          for (const o of actives) {
-            o.status = 'CLOSED';  // 标记为已平仓，不真正删除
+          // 标记 FILLED 订单为 CLOSED（getActiveOrders 只返回 OPEN，需要用 getAllOrders）
+          const allOrders = _orderManager.getAllOrders();
+          for (const o of allOrders) {
+            if (o.status === 'FILLED' || o.status === 'OPEN') {
+              o.status = 'CLOSED';
+            }
           }
         } catch (e) {
           _appendLog('ERROR', `CANCEL_ALL failed: ${e.message}`);
@@ -547,6 +554,19 @@ export function getStatus() {
 
   let uptime = 0;
   if (_startTime) uptime = Math.floor((Date.now() - _startTime) / 1000);
+
+  // remaining_sec 实时计算（不走 30s 缓存），slug 用缓存值
+  let _statusRemainingSec = null;
+  let _statusSlug = _windowInfoCache?.slug || null;
+  try {
+    const scanner = global._btcqddGlobalScanner;
+    if (scanner && _windowInfoCache?.slug) {
+      // 用缓存的 end_date 重新算 remaining（纯数学，不调 API）
+      if (_windowInfoCache._endDate) {
+        _statusRemainingSec = Math.max(0, Math.floor((_windowInfoCache._endDate - Date.now()) / 1000));
+      }
+    }
+  } catch (_) {}
 
   // 获取订单状态
   let openOrders = [];
