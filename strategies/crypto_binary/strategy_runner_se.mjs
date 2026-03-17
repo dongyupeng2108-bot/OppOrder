@@ -166,8 +166,10 @@ async function _checkSettlement() {
   _pendingSettlement.length = 0;
   remaining.forEach(e => _pendingSettlement.push(e));
 
-  // 清除所有已结算（FILLED）订单，防止下次窗口切换重复结算
-  if (_orderManager) _orderManager.clearSettled();
+  // 清除所有已结算或已平仓的订单，防止下次窗口切换重复结算或残留显示
+  if (_orderManager && typeof _orderManager.clearSettled === 'function') {
+    _orderManager.clearSettled();
+  }
 }
 
 // ── 定时循环（2 秒） ──────────────────────────────────────────────────────
@@ -519,9 +521,9 @@ export function deploy(code, period) {
   // 监听窗口切换，加入待结算池
   subscribe(async (evt) => {
     if (evt.type !== EVENT_TYPES.WINDOW_SWITCH) return;
-    // 将当前所有 FILLED 订单加入待结算池
+    // 将当前所有 FILLED 或 CLOSED 订单加入待结算池
     if (_orderManager && global._btcqddLastWindowTokenIds) {
-      const filledOrders = _orderManager.getAllOrders().filter(o => o.status === 'FILLED');
+      const filledOrders = _orderManager.getAllOrders().filter(o => o.status === 'FILLED' || o.status === 'CLOSED');
       if (filledOrders.length > 0) {
         _pendingSettlement.push({
           upTokenId: global._btcqddLastWindowTokenIds.up,
