@@ -443,6 +443,9 @@ function se_renderOrders(orders) {
     if (o.status === 'closed') {
       typeText = '已平仓';
       typeStyle = 'color:#888';
+    } else if (o.status === 'cancelled') {
+      typeText = '已撤单';
+      typeStyle = 'color:#666';
     } else if (o.status === 'filled') {
       typeText = '持仓';
     }
