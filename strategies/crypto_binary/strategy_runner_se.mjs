@@ -22,6 +22,7 @@ const _pendingSettlement = []; // [{ upTokenId, downTokenId, orders, startedAt }
 let _priceFeed = null;
 let _lastBtcPrice = null;
 let _lastTriggerPrice = null; // 上次触发决策时的价格，用于节流
+let _lastTickTime = 0;    // 上次 _tick 执行时间，用于事件驱动限频
 let _cachedVol = 0;       // 缓存的 ATR14 波动率百分比
 let _volWindowSlug = null; // 上次计算波动率时的窗口 slug
 
@@ -177,6 +178,7 @@ function _startLoop() {
 // ── 决策核心逻辑 ────────────────────────────────────────────────────────
 async function _tick() {
   if (!_running || !_decideFunc) return;
+  _lastTickTime = Date.now();
   try {
     const ctx = await _buildContext();
 
@@ -235,7 +237,16 @@ function _buildSnapshot(ctx) {
   };
 }
 
+let _windowInfoCache = null;
+let _windowInfoCacheTime = 0;
+
 async function _getWindowInfo() {
+  const now = Date.now();
+  // 30 秒缓存，防止高频调用 scanner API
+  if (_windowInfoCache && (now - _windowInfoCacheTime) < 30000) {
+    return _windowInfoCache;
+  }
+
   let remaining_sec = null;
   let slug = null;
   try {
@@ -250,7 +261,9 @@ async function _getWindowInfo() {
       }
     }
   } catch (_) {}
-  return { remaining_sec, period: _period, slug };
+  _windowInfoCache = { remaining_sec, period: _period, slug };
+  _windowInfoCacheTime = now;
+  return _windowInfoCache;
 }
 
 // ── Context 构建 ────────────────────────────────────────────────────
@@ -435,6 +448,9 @@ export function deploy(code, period) {
   _pnlSeries   = [{ ts: Date.now(), pnl: 0 }];
   _cachedVol   = 0;
   _volWindowSlug = null;
+  _windowInfoCache = null;
+  _windowInfoCacheTime = 0;
+  _lastTickTime = 0;
 
   // 初始化 OrderManager (Paper 模式)
   _orderManager = createOrderManager({
@@ -476,14 +492,20 @@ export function deploy(code, period) {
     _priceFeed = createPriceFeed({ symbol: 'BTCUSDT', price_feed: { mode: 'ws', poll_sec: 2 } });
     _priceFeed.start();
     _priceFeed.subscribe((snapshot) => {
-      _lastBtcPrice = snapshot?.price ?? null;
-      // 节流：价格变化超过 0.1% 才触发决策
-      if (_lastBtcPrice && _lastTriggerPrice) {
-        const change = Math.abs(_lastBtcPrice - _lastTriggerPrice) / _lastTriggerPrice;
-        if (change < 0.001) return; // 小于 0.1% 不触发
+      const newPrice = snapshot?.price ?? null;
+      _lastBtcPrice = newPrice;
+
+      // 事件驱动触发 _tick：价格变化 > 0.1% 且间隔 > 200ms
+      if (newPrice && _running && _decideFunc) {
+        const now = Date.now();
+        const priceChanged = !_lastTriggerPrice || Math.abs(newPrice - _lastTriggerPrice) / _lastTriggerPrice > 0.001;
+        const cooldownOk = (now - _lastTickTime) > 200;
+        if (priceChanged && cooldownOk) {
+          _lastTriggerPrice = newPrice;
+          _lastTickTime = now;
+          _tick();  // 事件驱动触发
+        }
       }
-      _lastTriggerPrice = _lastBtcPrice;
-      _tick(); // 触发一次决策
     });
   }
   
