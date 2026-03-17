@@ -372,21 +372,38 @@ async function _handleAction(result, ctx, tickStartTime, decideEndTime) {
     return;
   }
 
-  const { action, side, price } = result;
+  const { action, side, price, size: requestedSize } = result;
+  const size = (typeof requestedSize === 'number' && requestedSize > 0) ? requestedSize : 1;
 
   switch (action) {
     case 'HOLD':
       _appendLog('HOLD', `up=${ctx.price?.up?.toFixed(3) ?? 'null'} down=${ctx.price?.down?.toFixed(3) ?? 'null'} vol=${_calcVolatility().toFixed(3)}%`);
       break;
 
-    case 'BUY':
+    case 'BUY': {
+      // 持仓上限检查
+      if (_orderManager) {
+        try {
+          const all = _orderManager.getAllOrders();
+          let totalPosition = 0;
+          for (const o of all) {
+            if (o.status === 'FILLED' || o.status === 'CLOSED' || o.status === 'OPEN') {
+              totalPosition += (o.price || 0) * (o.size || 1);
+            }
+          }
+          if (totalPosition >= 1) {  // max_position_usd = 1
+            _appendLog('HOLD', `position limit reached: $${totalPosition.toFixed(2)}`);
+            break;
+          }
+        } catch (_) {}
+      }
       _appendLog('BUY', `side=${side} price=${typeof price === 'number' ? price.toFixed(4) : price} vol=${_calcVolatility().toFixed(3)}%`);
       try {
         const _orderStartTime = Date.now();
         const orderResult = await _orderManager.postOrder({
           side, price,
           type: 'limit',
-          size: 1
+          size
         });
         _appendLog('ORDER', `order_id=${orderResult?.order_id || 'paper'}`);
         _latency = {
@@ -398,6 +415,7 @@ async function _handleAction(result, ctx, tickStartTime, decideEndTime) {
         _appendLog('ERROR', `order failed: ${err.message}`);
       }
       break;
+    }
 
     case 'SELL':
       _appendLog('SELL', `side=${side} price=${price}`);
