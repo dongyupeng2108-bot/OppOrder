@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="timer_subscription_lifecycle_cleanup" tests="5" failures="0" errors="0" skipped="0">
+    <testcase name="syntax_check_strategy_runner_se_mjs" time="0.001"/>
+    <testcase name="settlementTimer_saved_and_cleared" time="0.001"/>
+    <testcase name="windowSwitch_unsubscribe_on_redeploy" time="0.001"/>
+    <testcase name="orderbook_subscribe_dedup" time="0.001"/>
+    <testcase name="pendingSettlement_cleared_on_deploy" time="0.001"/>
+  </testsuite>
+</testsuites>

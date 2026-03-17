@@ -1,0 +1,15 @@
+{
+  "task_id": "260317_016",
+  "is_shallow_repo": true,
+  "base": "1a7e9a0b268bf3b1417b51a5c319e7831b7f38f5",
+  "head": "aa98d2e41fc2c956d18aca86ee32ad6692da8a2d",
+  "merge_base": "1a7e9a0b268bf3b1417b51a5c319e7831b7f38f5",
+  "scope_files": [
+    "rules/LATEST.json",
+    "rules/task-reports/index/error_stats.jsonl",
+    "rules/task-reports/locks/260317_015.lock.json",
+    "strategies/crypto_binary/strategy_runner_se.mjs"
+  ],
+  "scope_count": 4,
+  "generated_at": "2026-03-17T12:16:11.145Z"
+}

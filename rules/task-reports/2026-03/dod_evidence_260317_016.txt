@@ -1,0 +1,15 @@
+DoD Evidence for 260317_016
+- strategy_runner_se.mjs: imported unsubscribe as unsubscribeFromBus from event_bus.mjs
+- strategy_runner_se.mjs: added _settlementTimer = null module-level variable
+- strategy_runner_se.mjs: added _windowSwitchUnsub = null module-level variable (handler reference)
+- strategy_runner_se.mjs: added _orderbookSubscribed = false module-level variable
+- strategy_runner_se.mjs: deploy clears existing _settlementTimer before creating new one
+- strategy_runner_se.mjs: deploy saves _settlementTimer = setInterval(_checkSettlement, 10000)
+- strategy_runner_se.mjs: deploy removes old WINDOW_SWITCH handler via unsubscribeFromBus before re-subscribing
+- strategy_runner_se.mjs: deploy stores new handler in _windowSwitchUnsub for future cleanup
+- strategy_runner_se.mjs: orderbook subscribe guarded with _orderbookSubscribed flag (dedup)
+- strategy_runner_se.mjs: deploy resets _pendingSettlement.length = 0
+- strategy_runner_se.mjs: stop() clears _settlementTimer and calls unsubscribeFromBus(_windowSwitchUnsub)
+- Syntax check passes (node --check)
+- Scope lock: only strategy_runner_se.mjs modified
+- STEP 3 choice: Situation A semantics via stored handler reference + unsubscribeFromBus

@@ -1,0 +1,11 @@
+{
+  "task_id": "260317_016",
+  "allowed_files": [
+    "strategies/crypto_binary/strategy_runner_se.mjs"
+  ],
+  "auto_exempt": [
+    "rules/LATEST.json",
+    "rules/task-reports/index/error_stats.jsonl"
+  ],
+  "created_at": "2026-03-17T12:09:15.671Z"
+}
