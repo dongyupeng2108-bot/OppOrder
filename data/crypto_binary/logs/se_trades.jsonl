@@ -37,4 +37,3 @@
 {"ts":"2026-03-17T05:45:48.343Z","type":"BUY","msg":"side=DOWN price=0.4150 vol=0.213%"}
 {"ts":"2026-03-17T05:45:48.343Z","type":"ORDER","msg":"order_id=3676a895-9cb6-4e19-a0c9-20ecc4ca1853"}
 {"ts":"2026-03-17T05:45:50.355Z","type":"FILL","msg":"order_id=3676a895... side=DOWN price=0.4150"}
-{"ts":"2026-03-17T12:46:00.736Z","type":"FILL","msg":"order_id=39d88360... side=UP price=0.4550"}
