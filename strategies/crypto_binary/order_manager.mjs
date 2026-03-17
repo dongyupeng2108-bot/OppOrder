@@ -210,7 +210,7 @@ export function createOrderManager(config) {
    */
   function clearSettled() {
     for (const [id, order] of orders) {
-      if (['FILLED', 'CANCELLED', 'STALE'].includes(order.status)) {
+      if (['FILLED', 'CANCELLED', 'STALE', 'CLOSED'].includes(order.status)) {
         orders.delete(id);
       }
     }
