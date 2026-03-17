@@ -183,7 +183,7 @@ async function initStrategyEditor() {
               <div id="se-stat-uptime" class="se-stat-value">0s</div>
             </div>
           </div>
-          <div style="flex:1;background:#1e1e1e;border:1px solid #333;display:flex;flex-direction:column;border-bottom:none;">
+          <div style="flex:1;background:#1e1e1e;border:1px solid #333;padding: 0 16px;display:flex;flex-direction:column;border-bottom:none;">
             <div id="se-pnl-title" style="padding:4px 8px;border-bottom:1px solid #333;font-size:12px;color:#aaa;">累计 PnL</div>
             <div style="flex:1;position:relative;">
               <svg id="se-pnl-chart" viewBox="0 0 300 200" preserveAspectRatio="xMidYMid meet" style="width:100%;height:100%;"></svg>
@@ -201,6 +201,7 @@ async function initStrategyEditor() {
               <tr><td colspan="4" style="color:#555;text-align:center">暂无</td></tr>
             </tbody>
           </table>
+          <div id="se-latency" style="font-size:10px;color:#888;text-align:right;padding:4px 8px;margin-top:auto;"></div>
         </div>
       </div>
     </div>
@@ -380,6 +381,14 @@ async function se_poll() {
       } else {
         el.textContent = '--:--';
       }
+    }
+
+    // 延迟显示
+    const latEl = document.getElementById('se-latency');
+    if (latEl && status.latency) {
+      const d = status.latency.decide_ms;
+      const o = status.latency.order_ms;
+      latEl.textContent = '\u5ef6\u8fdf: \u51b3\u7b56 ' + d + 'ms | \u4e0b\u5355 ' + o + 'ms';
     }
 
     // 如果服务端显示已停止，同步前端状态

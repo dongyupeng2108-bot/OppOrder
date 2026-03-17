@@ -23,6 +23,9 @@ let _priceFeed = null;
 let _lastBtcPrice = null;
 let _lastTriggerPrice = null; // 上次触发决策时的价格，用于节流
 let _lastTickTime = 0;    // 上次 _tick 执行时间，用于事件驱动限频
+let _latency = { decide_ms: null, order_ms: null, ts: 0 };
+let _tickStartTime = 0;
+let _lastDecideEndTime = 0;
 let _cachedVol = 0;       // 缓存的 ATR14 波动率百分比
 let _volWindowSlug = null; // 上次计算波动率时的窗口 slug
 
@@ -181,6 +184,7 @@ function _startLoop() {
 async function _tick() {
   if (!_running || !_decideFunc) return;
   _lastTickTime = Date.now();
+  _tickStartTime = Date.now();
   try {
     const ctx = await _buildContext();
 
@@ -210,6 +214,7 @@ async function _tick() {
       return;
     }
 
+    _lastDecideEndTime = Date.now();
     await _handleAction(result, ctx);
 
     // ── 模拟成交 ────────────────────────────────────────────────────────
@@ -341,12 +346,18 @@ async function _handleAction(result, ctx) {
     case 'BUY':
       _appendLog('BUY', `side=${side} price=${typeof price === 'number' ? price.toFixed(4) : price} vol=${_calcVolatility().toFixed(3)}%`);
       try {
+        const _orderStartTime = Date.now();
         const orderResult = await _orderManager.postOrder({
           side, price,
           type: 'limit',
           size: 1
         });
         _appendLog('ORDER', `order_id=${orderResult?.order_id || 'paper'}`);
+        _latency = {
+          decide_ms: _lastDecideEndTime - _tickStartTime,
+          order_ms: Date.now() - _orderStartTime,
+          ts: Date.now()
+        };
       } catch (err) {
         _appendLog('ERROR', `order failed: ${err.message}`);
       }
@@ -457,6 +468,9 @@ export function deploy(code, period) {
   _windowInfoCache = null;
   _windowInfoCacheTime = 0;
   _lastTickTime = 0;
+  _latency = { decide_ms: null, order_ms: null, ts: 0 };
+  _tickStartTime = 0;
+  _lastDecideEndTime = 0;
 
   // 初始化 OrderManager (Paper 模式)
   _orderManager = createOrderManager({
@@ -597,6 +611,7 @@ export function getStatus() {
   return {
     ok: true,
     running:    _running,
+    latency: _latency.ts > 0 ? _latency : null,
     period:     _period,
     uptime_sec: uptime,
     stats:      { ..._stats, trades: (_stats.wins || 0) + (_stats.losses || 0) },
