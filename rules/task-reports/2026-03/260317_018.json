@@ -1,0 +1,40 @@
+{
+  "task_id": "260317_018",
+  "timestamp": "2026-03-17T13:24:36.562Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "smoke_test": "PASS",
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260317_018",
+      "status": "DONE",
+      "artifacts": [
+        "strategies/crypto_binary/server.mjs",
+        "strategies/crypto_binary/strategy_runner_se.mjs"
+      ],
+      "metrics": {
+        "coverage": 100,
+        "tests": 4
+      },
+      "summary": "Automation Pack V1 Validation for Task 260317_018",
+      "report_file": "notify_260317_018.txt",
+      "report_sha256_short": "14cf5dc7",
+      "mode": "Integrate",
+      "dod_evidence": {
+        "gate_light_exit": 0,
+        "healthcheck": [
+          "rules/task-reports/2026-03/260317_018_healthcheck_53122_root.txt",
+          "rules/task-reports/2026-03/260317_018_healthcheck_53122_pairs.txt"
+        ]
+      }
+    }
+  }
+}
