@@ -207,6 +207,10 @@ export function createOrderManager(config) {
     return [...orders.values()];
   }
 
+  function removeOrder(orderId) {
+    return orders.delete(orderId);
+  }
+
   /**
    * 清除已完成/撤销挂单（窗口结束时调用，释放内存）
    */
@@ -227,6 +231,7 @@ export function createOrderManager(config) {
     getOpenOrders,
     getActiveOrders,
     getAllOrders,
+    removeOrder,
     clearSettled,
     calcTranches, // 暴露供测试
   };
