@@ -387,7 +387,7 @@ async function _handleAction(result, ctx, tickStartTime, decideEndTime) {
           const all = _orderManager.getAllOrders();
           let totalPosition = 0;
           for (const o of all) {
-            if (o.status === 'FILLED' || o.status === 'CLOSED' || o.status === 'OPEN') {
+            if (o.status === 'FILLED' || o.status === 'OPEN') {
               totalPosition += (o.price || 0) * (o.size || 1);
             }
           }
