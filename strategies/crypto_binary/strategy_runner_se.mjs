@@ -581,8 +581,10 @@ export function deploy(code, period) {
     }
   }
 
-  // 从当前窗口初始化 _lastWindowSlug
-  _getWindowInfo().then(wInfo => { _lastWindowSlug = wInfo?.slug || null; }).catch(() => {});
+  // 初始化 _lastWindowSlug
+  _getWindowInfo().then(w => {
+    if (w?.slug && !_lastWindowSlug) _lastWindowSlug = w.slug;
+  }).catch(() => {});
 
   // 启动结算轮询
   if (_settlementTimer) clearInterval(_settlementTimer);
@@ -592,26 +594,28 @@ export function deploy(code, period) {
   if (_windowSwitchUnsub) { unsubscribeFromBus(_windowSwitchUnsub); _windowSwitchUnsub = null; }
   const _wsHandler = async (evt) => {
     if (evt.type !== EVENT_TYPES.WINDOW_SWITCH) return;
-    // 如果是首次（_lastWindowSlug 为 null），从当前窗口初始化
-    if (!_lastWindowSlug) {
-      _lastWindowSlug = evt.window_id || null;
-    }
     // 将当前所有 FILLED 或 CLOSED 订单加入待结算池
     if (_orderManager) {
       const filledOrders = _orderManager.getAllOrders().filter(o => o.status === 'FILLED' || o.status === 'CLOSED');
       if (filledOrders.length > 0) {
         const oldSlug = _lastWindowSlug;
+        // oldSlug 是上一个窗口的 slug；如果为 null，尝试从 evt 中获取
+        const settleSlug = oldSlug || evt.window_id || _lastWindowSlug || null;
+        if (!settleSlug) {
+          _appendLog('SETTLE_WARN', `no slug available for settlement entry`);
+        }
         _pendingSettlement.push({
-          slug: oldSlug,                     // 旧窗口的 slug（用于 Gamma API 查询）
+          slug: settleSlug,                  // 旧窗口的 slug（用于 Gamma API 查询）
           upTokenId: global._btcqddLastWindowTokenIds?.up,
           orders: filledOrders,
           startedAt: Date.now()
         });
-        _appendLog('SETTLE_PENDING', `slug=${oldSlug} orders=${filledOrders.length}`);
+        _appendLog('SETTLE_PENDING', `slug=${settleSlug} orders=${filledOrders.length}`);
       }
     }
-    // 更新为新窗口 slug
-    _lastWindowSlug = evt.window_id || null;
+    // 更新为新窗口 slug（只有非空值才覆写，防止 evt.window_id 为 undefined 时覆写为 null）
+    const newSlug = evt.window_id || evt.slug || null;
+    if (newSlug) _lastWindowSlug = newSlug;
     // 窗口切换后延迟 5 秒检查结算（等 Gamma API 更新结果）
     setTimeout(_checkSettlement, 5000);
   };
