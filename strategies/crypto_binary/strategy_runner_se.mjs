@@ -134,8 +134,27 @@ async function _checkSettlement() {
           const asks = book.asks || [];
           const bestBid = parseFloat(bids[0]?.price ?? 0);
           const bestAsk = parseFloat(asks[0]?.price ?? 1);
-          const midUp = (bestBid + bestAsk) / 2;
-          
+          let midUp = (bestBid + bestAsk) / 2;
+
+          // 空 book 检测：市场结算后 order book 被清空
+          if (bids.length === 0 && asks.length === 0) {
+            try {
+              const gRes = await fetch(`https://gamma-api.polymarket.com/markets?clob_token_ids=${tId}`);
+              if (gRes.ok) {
+                const gData = await gRes.json();
+                const mkt = Array.isArray(gData) ? gData[0] : null;
+                if (mkt && mkt.outcome_prices) {
+                  // outcome_prices 格式: "[\"1\",\"0\"]" 或 "[\"0\",\"1\"]"
+                  const prices = typeof mkt.outcome_prices === 'string' ? JSON.parse(mkt.outcome_prices) : mkt.outcome_prices;
+                  midUp = parseFloat(prices[0]) || 0.5;
+                  _appendLog('SETTLE', `Gamma fallback: midUp=${midUp.toFixed(2)} resolved=${mkt.resolved}`);
+                }
+              }
+            } catch (e) {
+              // Gamma API 失败，继续等下一次轮询
+            }
+          }
+
           let upWon = null;
           if (midUp >= 0.99) upWon = true;
           else if (midUp <= 0.01) upWon = false;
@@ -580,7 +599,7 @@ export function deploy(code, period) {
 
   // 启动结算轮询
   if (_settlementTimer) clearInterval(_settlementTimer);
-  _settlementTimer = setInterval(_checkSettlement, 10000);
+  _settlementTimer = setInterval(_checkSettlement, 3000);
 
   // 监听窗口切换，加入待结算池（防重：先移除旧 handler）
   if (_windowSwitchUnsub) { unsubscribeFromBus(_windowSwitchUnsub); _windowSwitchUnsub = null; }
