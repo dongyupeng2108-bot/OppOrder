@@ -168,17 +168,11 @@ async function _checkSettlement() {
           `side=${order.side} price=${order.price.toFixed(4)} pnl=${pnlDelta >= 0 ? '+' : ''}${pnlDelta.toFixed(4)}`);
       }
       _pushPnlPoint();
-      // 只清除本次结算的订单（不影响当前窗口的活跃持仓）
-      if (_orderManager) {
-        try {
-          const allOrders = _orderManager.getAllOrders();
-          const settledIds = new Set(entry.orders.map(o => o.order_id));
-          for (let i = allOrders.length - 1; i >= 0; i--) {
-            if (settledIds.has(allOrders[i].order_id)) {
-              allOrders.splice(i, 1);
-            }
-          }
-        } catch (_) {}
+      // 从原始 Map 中移除已结算订单
+      if (_orderManager && typeof _orderManager.removeOrder === 'function') {
+        for (const order of entry.orders) {
+          if (order.order_id) _orderManager.removeOrder(order.order_id);
+        }
       }
       // 不加入 remaining → 结算完成，移除
     } catch (e) {
@@ -679,15 +673,15 @@ export function deploy(code, period) {
         });
         _appendLog('SETTLE_PENDING', `slug=${settleSlug} orders=${filledOrders.length}`);
       }
-      // 只清 CANCELLED 订单（FILLED 需要入结算池，不能清）
-      try {
+      // 清除 CANCELLED 订单（用 removeOrder 操作原始 Map）
+      if (_orderManager && typeof _orderManager.removeOrder === 'function') {
         const allOrders = _orderManager.getAllOrders();
-        for (let i = allOrders.length - 1; i >= 0; i--) {
-          if (allOrders[i].status === 'CANCELLED') {
-            allOrders.splice(i, 1);
+        for (const o of allOrders) {
+          if (o.status === 'CANCELLED') {
+            _orderManager.removeOrder(o.order_id);
           }
         }
-      } catch (_) {}
+      }
     }
     // 更新为新窗口 slug（只有非空值才覆写，防止 evt.payload?.window_id 为 undefined 时覆写为 null）
     const newSlug = evt.payload?.window_id || evt.payload?.slug || null;
