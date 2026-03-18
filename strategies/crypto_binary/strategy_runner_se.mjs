@@ -17,7 +17,7 @@ let _startTime  = null;
 let _orderManager = null;
 let _stats      = { pnl: 0, trades: 0, wins: 0, losses: 0 };
 let _pnlSeries  = [];   // [{ ts, pnl }, ...] 最多 50 个周期
-let _logBuffer  = [];   // 环形缓冲，最多 500 条
+let _logBuffer  = [];   // 最多 200 条（环形缓冲）
 const _pendingSettlement = []; // [{ upTokenId, downTokenId, orders, startedAt }]
 let _priceFeed = null;
 let _lastBtcPrice = null;
@@ -470,25 +470,6 @@ async function _handleAction(result, ctx, tickStartTime, decideEndTime) {
 
 // ── 导出接口 ──────────────────────────────────────────────────────────────
 
-const DEFAULT_CODE = `
-// 策略函数 decide(ctx)
-// 返回: 'BUY_UP' | 'BUY_DOWN' | 'HOLD' | 'CLOSE'
-function decide(ctx) {
-  // 1. 获取中间价
-  const up = ctx.price.up;
-  const down = ctx.price.down;
-  if (!up || !down) return 'HOLD';
-
-  // 2. 简单的均值回归
-  if (ctx.window.remaining_sec != null && ctx.window.remaining_sec < 60) return 'CLOSE';
-
-  // 如果 UP 价格过低 (<0.45) 且剩余时间 > 60s -> 买入 UP
-  if (up < 0.45) return 'BUY_UP';
-  if (down < 0.45) return 'BUY_DOWN';
-
-  return 'HOLD';
-}
-`;
 
 export function deploy(code, period) {
   // 停止已有运行

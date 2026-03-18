@@ -400,10 +400,10 @@ async function se_save() {
     });
   } catch (_) {}
   // 视觉反馈：按钮短暂变色
-  const btn = event.target;
-  const orig = btn.textContent;
-  btn.textContent = '已保存 ✓';
-  setTimeout(() => { btn.textContent = orig; }, 1500);
+  const btn = (typeof event !== 'undefined' && event?.target) ? event.target : null;
+  const orig = btn ? btn.textContent : '';
+  if (btn) btn.textContent = '已保存 ✓';
+  setTimeout(() => { if (btn) btn.textContent = orig; }, 1500);
 }
 
 function se_setPeriod(period) {
@@ -581,6 +581,7 @@ function se_renderPnlChart(pnlSeries) {
 
   const container = svg.parentElement;
   const W = container ? container.offsetWidth : 300;
+  if (!W || W < 50) return;  // 容器未渲染或太小，跳过
   const H = container ? Math.min(container.offsetHeight, 250) : 200;
   const PAD = { top: 15, right: 10, bottom: 28, left: 45 };
   const chartW = W - PAD.left - PAD.right;
