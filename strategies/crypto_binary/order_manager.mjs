@@ -155,17 +155,19 @@ export function createOrderManager(config) {
 
       if (order.fill_model === 'optimistic') {
         // 乐观：触价即成交
+        order.fill_price = Math.min(order.price, marketAsk);
         order.status = 'FILLED';
         filled.push(order);
-        console.log(`[OrderManager] FILL(optimistic) ${order.side} tranche=${order.tranche_index} price=${order.price.toFixed(4)}`);
+        console.log(`[OrderManager] FILL(optimistic) ${order.side} tranche=${order.tranche_index} price=${order.fill_price.toFixed(4)}`);
       } else {
         // 保守：按 fill_discount 概率成交，且延迟 fillDelayMs
         if (Math.random() < fillDiscount) {
           setTimeout(() => {
             if (order.status === 'OPEN') {
+              order.fill_price = Math.min(order.price, marketAsk);
               order.status = 'FILLED';
               filled.push(order);
-              console.log(`[OrderManager] FILL(conservative) ${order.side} tranche=${order.tranche_index} price=${order.price.toFixed(4)}`);
+              console.log(`[OrderManager] FILL(conservative) ${order.side} tranche=${order.tranche_index} price=${order.fill_price.toFixed(4)}`);
             }
           }, fillDelayMs);
         }
