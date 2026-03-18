@@ -158,14 +158,15 @@ async function _checkSettlement() {
 
       for (const order of entry.orders) {
         const won = (order.side === 'UP' && upWon) || (order.side === 'DOWN' && !upWon);
+        const effectivePrice = order.fill_price || order.price;
         const pnlDelta = won
-          ? (1.0 - order.price) * (order.size || 1)
-          : (-order.price) * (order.size || 1);
+          ? (1.0 - effectivePrice) * (order.size || 1)
+          : (-effectivePrice) * (order.size || 1);
         _stats.pnl += pnlDelta;
         if (won) _stats.wins++;
         else _stats.losses++;
         _appendLog(won ? 'WIN' : 'LOSS',
-          `side=${order.side} price=${order.price.toFixed(4)} pnl=${pnlDelta >= 0 ? '+' : ''}${pnlDelta.toFixed(4)}`);
+          `side=${order.side} price=${effectivePrice.toFixed(4)} pnl=${pnlDelta >= 0 ? '+' : ''}${pnlDelta.toFixed(4)}`);
       }
       _pushPnlPoint();
       // 从原始 Map 中移除已结算订单
@@ -245,7 +246,7 @@ async function _tick() {
 
         if (fills && fills.length > 0) {
           for (const fill of fills) {
-            _appendLog('FILL', `order_id=${fill.order_id.slice(0,8)}... side=${fill.side} price=${fill.price.toFixed(4)}`);
+            _appendLog('FILL', `order_id=${fill.order_id.slice(0,8)}... side=${fill.side} price=${(fill.fill_price || fill.price).toFixed(4)}`);
           }
         }
       }
