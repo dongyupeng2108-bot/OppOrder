@@ -30,6 +30,7 @@ let _orderbookSubscribed = false;  // orderbook 是否已订阅（全局对象�
 let _latency = { decide_ms: null, order_ms: null, ts: 0 };
 let _cachedVol = 0;       // 缓存的 ATR14 波动率百分比
 let _volWindowSlug = null; // 上次计算波动率时的窗口 slug
+let _windowStartBtc = null;  // 窗口开始时的 BTC 价格，用于本地结算
 
 // ── 内部工具 ──────────────────────────────────────────────────────────────
 function _appendLog(type, msg) {
@@ -100,100 +101,45 @@ async function _checkSettlement() {
   const now = Date.now();
   const TIMEOUT_MS = 10 * 60 * 1000;
   const remaining = [];
+
   for (const entry of [..._pendingSettlement]) {
-    if (!entry || !entry.startedAt) continue; // 防御性检查
+    if (!entry || !entry.startedAt) continue;
+
     // 超时处理
     if (now - entry.startedAt > TIMEOUT_MS) {
-      _appendLog('SETTLE_TIMEOUT', `upToken=${entry.upTokenId?.slice(0,8)} orders=${entry.orders?.length}`);
+      _appendLog('SETTLE_TIMEOUT', `orders=${entry.orders?.length}`);
       _pushPnlPoint();
-      continue; // 不加入 remaining，相当于删除
+      continue;
     }
-    // Group orders by upTokenId
-    const groups = {};
-    const unSettledOrders = [];
+
+    // 用 BTC 价格本地判断
+    const startPrice = entry.startBtc;
+    const currentPrice = _lastBtcPrice;
+
+    if (!startPrice || !currentPrice) {
+      remaining.push(entry);  // 价格数据不可用，等下一次
+      continue;
+    }
+
+    // BTC 涨了 → UP 赢，跌了或不变 → DOWN 赢
+    const upWon = currentPrice > startPrice;
+
+    _appendLog('SETTLE', `BTC ${startPrice.toFixed(2)} → ${currentPrice.toFixed(2)} | ${upWon ? 'UP' : 'DOWN'} wins`);
 
     for (const order of entry.orders) {
-      const tId = order.upTokenId || entry.upTokenId;
-      if (!tId) {
-        unSettledOrders.push(order);
-        continue;
-      }
-      if (!groups[tId]) groups[tId] = [];
-      groups[tId].push(order);
+      const won = (order.side === 'UP' && upWon) || (order.side === 'DOWN' && !upWon);
+      const pnlDelta = won ? (1.0 - order.price) * (order.size || 1) : (-order.price) * (order.size || 1);
+      _stats.pnl += pnlDelta;
+      if (won) _stats.wins++;
+      else _stats.losses++;
+      _appendLog(won ? 'WIN' : 'LOSS', `side=${order.side} price=${order.price.toFixed(4)} pnl=${pnlDelta >= 0 ? '+' : ''}${pnlDelta.toFixed(4)}`);
     }
-
-    // Process groups
-    for (const tId of Object.keys(groups)) {
-      const orders = groups[tId];
-      let settled = false;
-      try {
-        const res = await fetch(`https://clob.polymarket.com/book?token_id=${tId}`);
-        if (res.ok) {
-          const book = await res.json();
-          const bids = book.bids || [];
-          const asks = book.asks || [];
-          const bestBid = parseFloat(bids[0]?.price ?? 0);
-          const bestAsk = parseFloat(asks[0]?.price ?? 1);
-          let midUp = (bestBid + bestAsk) / 2;
-
-          // 空 book 检测：市场结算后 order book 被清空
-          if (bids.length === 0 && asks.length === 0) {
-            try {
-              const gRes = await fetch(`https://gamma-api.polymarket.com/markets?clob_token_ids=${tId}`);
-              if (gRes.ok) {
-                const gData = await gRes.json();
-                const mkt = Array.isArray(gData) ? gData[0] : null;
-                if (mkt && mkt.outcome_prices) {
-                  // outcome_prices 格式: "[\"1\",\"0\"]" 或 "[\"0\",\"1\"]"
-                  const prices = typeof mkt.outcome_prices === 'string' ? JSON.parse(mkt.outcome_prices) : mkt.outcome_prices;
-                  midUp = parseFloat(prices[0]) || 0.5;
-                  _appendLog('SETTLE', `Gamma fallback: midUp=${midUp.toFixed(2)} resolved=${mkt.resolved}`);
-                }
-              }
-            } catch (e) {
-              // Gamma API 失败，继续等下一次轮询
-            }
-          }
-
-          let upWon = null;
-          if (midUp >= 0.99) upWon = true;
-          else if (midUp <= 0.01) upWon = false;
-          
-          if (upWon !== null) {
-            settled = true;
-            for (const order of orders) {
-              const won = (order.side === 'UP' && upWon) || (order.side === 'DOWN' && !upWon);
-              const pnlDelta = won ? (1.0 - order.price) * order.size : (-order.price) * order.size;
-              _stats.pnl += pnlDelta;
-              if (pnlDelta > 0) _stats.wins++;
-              else _stats.losses++;
-              _appendLog('SETTLE', `side=${order.side} price=${order.price.toFixed(4)} pnl=${pnlDelta.toFixed(4)} upWon=${upWon}`);
-            }
-          }
-          _pushPnlPoint();
-        }
-      } catch(err) {
-        _appendLog('ERROR', `Settle check failed: ${err.message}`);
-      }
-      
-      if (!settled) {
-        orders.forEach(o => unSettledOrders.push(o));
-      }
-    }
-
-    if (unSettledOrders.length > 0) {
-      entry.orders = unSettledOrders;
-      remaining.push(entry);
-    }
+    _pushPnlPoint();
+    // 不加入 remaining → 结算完成，移除
   }
-  // 替换整个数组
+
   _pendingSettlement.length = 0;
-  remaining.forEach(e => _pendingSettlement.push(e));
-
-  // 清除所有已结算或已平仓的订单，防止下次窗口切换重复结算或残留显示
-  if (_orderManager && typeof _orderManager.clearSettled === 'function') {
-    _orderManager.clearSettled();
-  }
+  for (const r of remaining) _pendingSettlement.push(r);
 }
 
 // ── 定时循环（2 秒） ──────────────────────────────────────────────────────
@@ -526,6 +472,7 @@ export function deploy(code, period) {
   _tickRunning = false;
   _latency = { decide_ms: null, order_ms: null, ts: 0 };
   _pendingSettlement.length = 0;
+  _windowStartBtc = _lastBtcPrice;
 
   // 初始化 OrderManager (Paper 模式)
   _orderManager = createOrderManager({
@@ -613,11 +560,16 @@ export function deploy(code, period) {
           upTokenId: global._btcqddLastWindowTokenIds.up,
           downTokenId: global._btcqddLastWindowTokenIds.down,
           orders: filledOrders,
-          startedAt: Date.now()
+          startedAt: Date.now(),
+          startBtc: _windowStartBtc  // 窗口开始时的 BTC 价格
         });
         _appendLog('SETTLE_PENDING', `orders=${filledOrders.length} upToken=${global._btcqddLastWindowTokenIds.up.slice(0,8)}`);
+        // 窗口切换后 3 秒执行一次结算（等 BTC 价格稳定）
+        setTimeout(_checkSettlement, 3000);
       }
     }
+    // 记录新窗口的 BTC 基准价
+    _windowStartBtc = _lastBtcPrice;
   };
   subscribe(_wsHandler);
   _windowSwitchUnsub = _wsHandler;
