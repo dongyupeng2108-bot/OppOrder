@@ -659,7 +659,7 @@ export function deploy(code, period) {
       if (filledOrders.length > 0) {
         const oldSlug = _lastWindowSlug;
         // oldSlug 是上一个窗口的 slug；如果为 null，尝试从 evt 中获取
-        const settleSlug = oldSlug || evt.window_id || _lastWindowSlug || null;
+        const settleSlug = oldSlug || evt.payload?.window_id || _lastWindowSlug || null;
         if (!settleSlug) {
           _appendLog('SETTLE_WARN', `no slug available for settlement entry`);
         }
@@ -676,8 +676,8 @@ export function deploy(code, period) {
         _orderManager.clearSettled();
       }
     }
-    // 更新为新窗口 slug（只有非空值才覆写，防止 evt.window_id 为 undefined 时覆写为 null）
-    const newSlug = evt.window_id || evt.slug || null;
+    // 更新为新窗口 slug（只有非空值才覆写，防止 evt.payload?.window_id 为 undefined 时覆写为 null）
+    const newSlug = evt.payload?.window_id || evt.payload?.slug || null;
     if (newSlug) _lastWindowSlug = newSlug;
     // 刷新窗口静态元数据（冷路径，不阻塞后续逻辑）
     _windowState = 'stale';
