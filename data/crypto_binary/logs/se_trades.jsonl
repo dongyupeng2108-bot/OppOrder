@@ -37,3 +37,133 @@
 {"ts":"2026-03-17T05:45:48.343Z","type":"BUY","msg":"side=DOWN price=0.4150 vol=0.213%"}
 {"ts":"2026-03-17T05:45:48.343Z","type":"ORDER","msg":"order_id=3676a895-9cb6-4e19-a0c9-20ecc4ca1853"}
 {"ts":"2026-03-17T05:45:50.355Z","type":"FILL","msg":"order_id=3676a895... side=DOWN price=0.4150"}
+{"ts":"2026-03-18T14:58:26.985Z","type":"BUY","msg":"side=UP price=0.3650 vol=0.304%"}
+{"ts":"2026-03-18T14:58:26.987Z","type":"ORDER","msg":"order_id=957cf6db-ce90-4fec-951a-efd818ccfb16"}
+{"ts":"2026-03-18T14:58:28.809Z","type":"FILL","msg":"order_id=957cf6db... side=UP price=0.3650"}
+{"ts":"2026-03-18T14:58:34.037Z","type":"BUY","msg":"side=UP price=0.3450 vol=0.304%"}
+{"ts":"2026-03-18T14:58:34.040Z","type":"ORDER","msg":"order_id=1adc24a1-3de2-40c4-a7e2-9ee0bfa74df8"}
+{"ts":"2026-03-18T14:58:36.866Z","type":"FILL","msg":"order_id=1adc24a1... side=UP price=0.3449"}
+{"ts":"2026-03-18T14:58:50.100Z","type":"CLOSE","msg":"up=0.390 down=0.610 vol=0.304%"}
+{"ts":"2026-03-18T14:58:53.306Z","type":"BUY","msg":"side=UP price=0.2050 vol=0.304%"}
+{"ts":"2026-03-18T14:58:53.307Z","type":"ORDER","msg":"order_id=ecb25ca4-857b-4b8c-8b69-28cc6e2e11f7"}
+{"ts":"2026-03-18T14:58:55.206Z","type":"FILL","msg":"order_id=ecb25ca4... side=UP price=0.2050"}
+{"ts":"2026-03-18T14:59:08.974Z","type":"CLOSE","msg":"up=0.095 down=0.905 vol=0.304%"}
+{"ts":"2026-03-18T14:59:12.143Z","type":"BUY","msg":"side=UP price=0.1150 vol=0.304%"}
+{"ts":"2026-03-18T14:59:12.146Z","type":"ORDER","msg":"order_id=f3d4e5e4-3850-430b-9204-95b095720918"}
+{"ts":"2026-03-18T14:59:15.010Z","type":"FILL","msg":"order_id=f3d4e5e4... side=UP price=0.1150"}
+{"ts":"2026-03-18T14:59:28.200Z","type":"CLOSE","msg":"up=0.025 down=0.975 vol=0.304%"}
+{"ts":"2026-03-18T14:59:31.116Z","type":"BUY","msg":"side=UP price=0.0150 vol=0.304%"}
+{"ts":"2026-03-18T14:59:31.117Z","type":"ORDER","msg":"order_id=8710ecdf-d4f2-4169-a166-8ce515c64873"}
+{"ts":"2026-03-18T14:59:32.287Z","type":"CLOSE","msg":"up=0.015 down=0.985 vol=0.304%"}
+{"ts":"2026-03-18T15:00:00.529Z","type":"SETTLE_PENDING","msg":"slug=btc-updown-5m-1773845700 orders=3"}
+{"ts":"2026-03-18T15:00:06.387Z","type":"BUY","msg":"side=DOWN price=0.3750 vol=0.304%"}
+{"ts":"2026-03-18T15:00:06.390Z","type":"ORDER","msg":"order_id=ee66a811-d073-4d35-b04b-9ddf69de26fb"}
+{"ts":"2026-03-18T15:00:08.393Z","type":"FILL","msg":"order_id=ee66a811... side=DOWN price=0.3750"}
+{"ts":"2026-03-18T15:00:21.510Z","type":"CLOSE","msg":"up=0.610 down=0.390 vol=0.304%"}
+{"ts":"2026-03-18T15:00:26.463Z","type":"BUY","msg":"side=DOWN price=0.4400 vol=0.304%"}
+{"ts":"2026-03-18T15:00:26.464Z","type":"ORDER","msg":"order_id=6f1a0b88-8022-4f1f-9bbd-a1ac724ae841"}
+{"ts":"2026-03-18T15:00:32.566Z","type":"FILL","msg":"order_id=6f1a0b88... side=DOWN price=0.4400"}
+{"ts":"2026-03-18T15:00:42.505Z","type":"CLOSE","msg":"up=0.530 down=0.470 vol=0.304%"}
+{"ts":"2026-03-18T15:00:48.539Z","type":"BUY","msg":"side=DOWN price=0.4450 vol=0.304%"}
+{"ts":"2026-03-18T15:00:48.542Z","type":"ORDER","msg":"order_id=6242f4a4-bbe5-487d-ba3d-5510322101ff"}
+{"ts":"2026-03-18T15:01:04.578Z","type":"CLOSE","msg":"up=0.430 down=0.570 vol=0.304%"}
+{"ts":"2026-03-18T15:01:10.607Z","type":"BUY","msg":"side=UP price=0.4650 vol=0.304%"}
+{"ts":"2026-03-18T15:01:10.612Z","type":"ORDER","msg":"order_id=bf3d27d3-feed-4215-b665-d05266c9cb62"}
+{"ts":"2026-03-18T15:01:16.608Z","type":"FILL","msg":"order_id=bf3d27d3... side=UP price=0.4650"}
+{"ts":"2026-03-18T15:01:26.627Z","type":"CLOSE","msg":"up=0.440 down=0.560 vol=0.304%"}
+{"ts":"2026-03-18T15:01:32.720Z","type":"BUY","msg":"side=UP price=0.4350 vol=0.304%"}
+{"ts":"2026-03-18T15:01:32.720Z","type":"ORDER","msg":"order_id=4fdf27c9-7cfd-4efc-99ad-046a692456b7"}
+{"ts":"2026-03-18T15:01:42.691Z","type":"FILL","msg":"order_id=4fdf27c9... side=UP price=0.4350"}
+{"ts":"2026-03-18T15:01:48.730Z","type":"CLOSE","msg":"up=0.435 down=0.565 vol=0.304%"}
+{"ts":"2026-03-18T15:05:43.955Z","type":"BUY","msg":"side=UP price=0.7300 vol=0.361%"}
+{"ts":"2026-03-18T15:05:43.958Z","type":"ORDER","msg":"order_id=4abc101c-25cd-4d14-8bb4-49587224117f"}
+{"ts":"2026-03-18T15:05:43.959Z","type":"FILL","msg":"order_id=4abc101c... side=UP price=0.7300"}
+{"ts":"2026-03-18T15:06:20.221Z","type":"BUY","msg":"side=UP price=0.9500 vol=0.361%"}
+{"ts":"2026-03-18T15:06:20.222Z","type":"ORDER","msg":"order_id=319678ee-48d3-499a-9805-57f5292cd67f"}
+{"ts":"2026-03-18T15:06:20.222Z","type":"FILL","msg":"order_id=319678ee... side=UP price=0.9500"}
+{"ts":"2026-03-18T15:10:00.838Z","type":"SETTLE_PENDING","msg":"slug=btc-updown-5m-1773846300 orders=2"}
+{"ts":"2026-03-18T15:11:21.595Z","type":"BUY","msg":"side=UP price=0.9500 vol=0.367%"}
+{"ts":"2026-03-18T15:11:21.599Z","type":"ORDER","msg":"order_id=037b24ca-6ee5-49eb-9ce4-574474438caa"}
+{"ts":"2026-03-18T15:11:21.600Z","type":"FILL","msg":"order_id=037b24ca... side=UP price=0.9500"}
+{"ts":"2026-03-18T15:13:27.126Z","type":"SETTLE","msg":"btc-updown-5m-1773846300 → UP wins (prices=1,0)"}
+{"ts":"2026-03-18T15:15:56.520Z","type":"BUY","msg":"side=UP price=0.7400 vol=0.374%"}
+{"ts":"2026-03-18T15:15:56.521Z","type":"ORDER","msg":"order_id=95de7496-0973-4188-863e-f4df59055863"}
+{"ts":"2026-03-18T15:15:56.524Z","type":"FILL","msg":"order_id=95de7496... side=UP price=0.7400"}
+{"ts":"2026-03-18T15:16:22.718Z","type":"BUY","msg":"side=UP price=0.9500 vol=0.374%"}
+{"ts":"2026-03-18T15:16:22.720Z","type":"ORDER","msg":"order_id=166a6699-f797-4d5b-966f-dbfae467a2ac"}
+{"ts":"2026-03-18T15:16:22.721Z","type":"FILL","msg":"order_id=166a6699... side=UP price=0.9500"}
+{"ts":"2026-03-18T15:20:01.351Z","type":"SETTLE_PENDING","msg":"slug=btc-updown-5m-1773846300 orders=2"}
+{"ts":"2026-03-18T15:20:04.348Z","type":"SETTLE","msg":"btc-updown-5m-1773846300 → UP wins (prices=1,0)"}
+{"ts":"2026-03-18T15:21:23.960Z","type":"BUY","msg":"side=UP price=0.9500 vol=0.369%"}
+{"ts":"2026-03-18T15:21:23.961Z","type":"ORDER","msg":"order_id=92d73ae3-6ab2-4610-953e-fde311567172"}
+{"ts":"2026-03-18T15:21:23.962Z","type":"FILL","msg":"order_id=92d73ae3... side=UP price=0.9500"}
+{"ts":"2026-03-18T15:21:43.952Z","type":"BUY","msg":"side=UP price=0.7500 vol=0.369%"}
+{"ts":"2026-03-18T15:21:43.953Z","type":"ORDER","msg":"order_id=dc36ea19-9979-4c14-90e4-6cea558fec68"}
+{"ts":"2026-03-18T15:21:43.954Z","type":"FILL","msg":"order_id=dc36ea19... side=UP price=0.7500"}
+{"ts":"2026-03-18T15:25:00.574Z","type":"SETTLE_PENDING","msg":"slug=btc-updown-5m-1773846300 orders=2"}
+{"ts":"2026-03-18T15:25:01.796Z","type":"SETTLE","msg":"btc-updown-5m-1773846300 → UP wins (prices=1,0)"}
+{"ts":"2026-03-18T15:26:11.031Z","type":"BUY","msg":"side=UP price=0.7300 vol=0.355%"}
+{"ts":"2026-03-18T15:26:11.032Z","type":"ORDER","msg":"order_id=84ed81ee-f09c-4753-b39e-0130420f7c5b"}
+{"ts":"2026-03-18T15:26:11.034Z","type":"FILL","msg":"order_id=84ed81ee... side=UP price=0.7300"}
+{"ts":"2026-03-18T15:26:25.150Z","type":"BUY","msg":"side=UP price=0.9500 vol=0.355%"}
+{"ts":"2026-03-18T15:26:25.151Z","type":"ORDER","msg":"order_id=2c6f5a94-0fa1-4439-be62-4dc1108c6896"}
+{"ts":"2026-03-18T15:26:25.152Z","type":"FILL","msg":"order_id=2c6f5a94... side=UP price=0.9500"}
+{"ts":"2026-03-18T15:30:01.862Z","type":"SETTLE_PENDING","msg":"slug=btc-updown-5m-1773846300 orders=2"}
+{"ts":"2026-03-18T15:30:03.111Z","type":"SETTLE","msg":"btc-updown-5m-1773846300 → UP wins (prices=1,0)"}
+{"ts":"2026-03-18T15:31:26.400Z","type":"BUY","msg":"side=UP price=0.9500 vol=0.355%"}
+{"ts":"2026-03-18T15:31:26.401Z","type":"ORDER","msg":"order_id=1787061d-b0d3-487a-9413-9d87bb06ad07"}
+{"ts":"2026-03-18T15:31:26.402Z","type":"FILL","msg":"order_id=1787061d... side=UP price=0.9500"}
+{"ts":"2026-03-18T15:32:11.103Z","type":"BUY","msg":"side=UP price=0.9500 vol=0.000%"}
+{"ts":"2026-03-18T15:32:11.104Z","type":"ORDER","msg":"order_id=551344c2-1047-46cd-9207-effb82509d3e"}
+{"ts":"2026-03-18T15:32:11.105Z","type":"FILL","msg":"order_id=551344c2... side=UP price=0.9500"}
+{"ts":"2026-03-18T15:32:21.119Z","type":"BUY","msg":"side=UP price=0.7200 vol=0.355%"}
+{"ts":"2026-03-18T15:32:21.121Z","type":"ORDER","msg":"order_id=2de172bf-54fa-47b7-8406-cdd505827c67"}
+{"ts":"2026-03-18T15:32:21.122Z","type":"FILL","msg":"order_id=2de172bf... side=UP price=0.7200"}
+{"ts":"2026-03-18T15:35:01.361Z","type":"SETTLE_PENDING","msg":"slug=btc-updown-5m-1773847800 orders=2"}
+{"ts":"2026-03-18T15:36:11.273Z","type":"BUY","msg":"side=UP price=0.9500 vol=0.367%"}
+{"ts":"2026-03-18T15:36:11.274Z","type":"ORDER","msg":"order_id=ff9e183a-83fb-4ab6-a3dd-530345c68473"}
+{"ts":"2026-03-18T15:36:11.274Z","type":"FILL","msg":"order_id=ff9e183a... side=UP price=0.9500"}
+{"ts":"2026-03-18T15:39:17.048Z","type":"SETTLE","msg":"btc-updown-5m-1773847800 → UP wins (prices=1,0)"}
+{"ts":"2026-03-18T15:41:12.620Z","type":"BUY","msg":"side=UP price=0.9500 vol=0.343%"}
+{"ts":"2026-03-18T15:41:12.621Z","type":"ORDER","msg":"order_id=8a0fb556-a7ad-4419-8389-3094355c7840"}
+{"ts":"2026-03-18T15:41:12.622Z","type":"FILL","msg":"order_id=8a0fb556... side=UP price=0.9500"}
+{"ts":"2026-03-18T15:41:26.621Z","type":"BUY","msg":"side=UP price=0.7200 vol=0.343%"}
+{"ts":"2026-03-18T15:41:26.622Z","type":"ORDER","msg":"order_id=efded950-8b92-4114-b3c2-12b0fde4e0c7"}
+{"ts":"2026-03-18T15:41:26.623Z","type":"FILL","msg":"order_id=efded950... side=UP price=0.7200"}
+{"ts":"2026-03-18T15:45:01.973Z","type":"SETTLE_PENDING","msg":"slug=btc-updown-5m-1773847800 orders=2"}
+{"ts":"2026-03-18T15:45:02.986Z","type":"SETTLE","msg":"btc-updown-5m-1773847800 → UP wins (prices=1,0)"}
+{"ts":"2026-03-18T15:46:13.921Z","type":"BUY","msg":"side=UP price=0.9500 vol=0.333%"}
+{"ts":"2026-03-18T15:46:13.922Z","type":"ORDER","msg":"order_id=2758b64c-c64e-4885-ac66-d9b058923b1f"}
+{"ts":"2026-03-18T15:46:13.923Z","type":"FILL","msg":"order_id=2758b64c... side=UP price=0.9500"}
+{"ts":"2026-03-18T15:50:01.186Z","type":"SETTLE_PENDING","msg":"slug=btc-updown-5m-1773847800 orders=1"}
+{"ts":"2026-03-18T15:50:04.109Z","type":"SETTLE","msg":"btc-updown-5m-1773847800 → UP wins (prices=1,0)"}
+{"ts":"2026-03-18T15:50:42.971Z","type":"BUY","msg":"side=UP price=0.7300 vol=0.328%"}
+{"ts":"2026-03-18T15:50:42.972Z","type":"ORDER","msg":"order_id=9b35c35b-6bf7-4c6d-a363-a88f4205aee6"}
+{"ts":"2026-03-18T15:50:42.973Z","type":"FILL","msg":"order_id=9b35c35b... side=UP price=0.7300"}
+{"ts":"2026-03-18T15:51:15.247Z","type":"BUY","msg":"side=UP price=0.9500 vol=0.328%"}
+{"ts":"2026-03-18T15:51:15.248Z","type":"ORDER","msg":"order_id=9ff80db2-5d8f-4beb-aa75-eab88d7fb741"}
+{"ts":"2026-03-18T15:51:15.249Z","type":"FILL","msg":"order_id=9ff80db2... side=UP price=0.9500"}
+{"ts":"2026-03-18T15:55:00.456Z","type":"SETTLE_PENDING","msg":"slug=btc-updown-5m-1773847800 orders=2"}
+{"ts":"2026-03-18T15:55:01.505Z","type":"SETTLE","msg":"btc-updown-5m-1773847800 → UP wins (prices=1,0)"}
+{"ts":"2026-03-18T15:56:16.335Z","type":"BUY","msg":"side=UP price=0.9500 vol=0.320%"}
+{"ts":"2026-03-18T15:56:16.336Z","type":"ORDER","msg":"order_id=40a81571-0044-42b2-8fd6-975dc936198e"}
+{"ts":"2026-03-18T15:56:16.336Z","type":"FILL","msg":"order_id=40a81571... side=UP price=0.9500"}
+{"ts":"2026-03-18T15:56:36.272Z","type":"BUY","msg":"side=UP price=0.7200 vol=0.320%"}
+{"ts":"2026-03-18T15:56:36.273Z","type":"ORDER","msg":"order_id=cb8cdfdf-ba46-428a-af72-3e4b559be23a"}
+{"ts":"2026-03-18T15:56:36.274Z","type":"FILL","msg":"order_id=cb8cdfdf... side=UP price=0.7200"}
+{"ts":"2026-03-18T16:00:01.673Z","type":"SETTLE_PENDING","msg":"slug=btc-updown-5m-1773847800 orders=2"}
+{"ts":"2026-03-18T16:00:02.254Z","type":"SETTLE","msg":"btc-updown-5m-1773847800 → UP wins (prices=1,0)"}
+{"ts":"2026-03-18T16:01:09.439Z","type":"BUY","msg":"side=UP price=0.7400 vol=0.321%"}
+{"ts":"2026-03-18T16:01:09.440Z","type":"ORDER","msg":"order_id=126a9234-2161-4e93-a688-b22d820868e0"}
+{"ts":"2026-03-18T16:01:09.441Z","type":"FILL","msg":"order_id=126a9234... side=UP price=0.7400"}
+{"ts":"2026-03-18T16:01:17.582Z","type":"BUY","msg":"side=UP price=0.9500 vol=0.321%"}
+{"ts":"2026-03-18T16:01:17.583Z","type":"ORDER","msg":"order_id=a63a3d49-e0cb-4e91-bdd2-6570b2358988"}
+{"ts":"2026-03-18T16:01:17.584Z","type":"FILL","msg":"order_id=a63a3d49... side=UP price=0.9500"}
+{"ts":"2026-03-18T16:05:01.017Z","type":"SETTLE_PENDING","msg":"slug=btc-updown-5m-1773847800 orders=2"}
+{"ts":"2026-03-18T16:05:02.848Z","type":"SETTLE","msg":"btc-updown-5m-1773847800 → UP wins (prices=1,0)"}
+{"ts":"2026-03-18T16:05:42.627Z","type":"BUY","msg":"side=UP price=0.7300 vol=0.314%"}
+{"ts":"2026-03-18T16:05:42.628Z","type":"ORDER","msg":"order_id=41645822-354e-4576-9c48-fbdc28c2249e"}
+{"ts":"2026-03-18T16:05:42.629Z","type":"FILL","msg":"order_id=41645822... side=UP price=0.7300"}
+{"ts":"2026-03-18T16:06:18.844Z","type":"BUY","msg":"side=UP price=0.9500 vol=0.314%"}
+{"ts":"2026-03-18T16:06:18.844Z","type":"ORDER","msg":"order_id=f7de2612-f966-41db-9cc0-de1d243c6929"}
+{"ts":"2026-03-18T16:06:18.845Z","type":"FILL","msg":"order_id=f7de2612... side=UP price=0.9500"}

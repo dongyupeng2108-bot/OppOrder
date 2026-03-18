@@ -186,6 +186,13 @@ async function _checkSettlement() {
 // ── 定时循环（2 秒） ──────────────────────────────────────────────────────
 function _startLoop() {
   _timer = setInterval(_tick, 2000);
+  // 90 秒 watchdog：校准窗口信息，防止时钟漂移
+  _watchdogTimer = setInterval(() => {
+    if (_windowState === 'ready') {
+      _windowState = 'stale';
+      _triggerWindowRefresh();
+    }
+  }, 90000);
 }
 
 // ── 决策核心逻辑 ────────────────────────────────────────────────────────
@@ -259,34 +266,68 @@ function _buildSnapshot(ctx) {
   };
 }
 
-let _windowInfoCache = null;
-let _windowInfoCacheTime = 0;
+// ── 窗口信息（静态元数据 + 本地计算 remaining_sec）──
+let _windowEndTime = null;     // 当前窗口结束时间（ms 时间戳）
+let _windowSlug = null;        // 当前窗口 slug
+let _windowPeriod = null;      // 当前窗口周期 "5m"/"15m"
+let _windowState = 'init';     // 'ready' | 'stale' | 'refreshing' | 'init'
+let _windowReadyAt = 0;        // 窗口就绪时间戳（用于 5 秒护栏）
+let _windowRefreshPromise = null; // single-flight 防并发
+let _watchdogTimer = null;
 
 async function _getWindowInfo() {
-  const now = Date.now();
-  // 30 秒缓存，防止高频调用 scanner API
-  if (_windowInfoCache && (now - _windowInfoCacheTime) < 30000) {
-    return _windowInfoCache;
+  // 本地实时计算 remaining_sec（热路径，零网络开销）
+  if (_windowEndTime && _windowState === 'ready') {
+    const remaining = Math.max(0, Math.floor((_windowEndTime - Date.now()) / 1000));
+    // 检测窗口过期：remaining <= 0 且距上次刷新已超 5 秒
+    if (remaining <= 0 && (Date.now() - _windowReadyAt > 5000)) {
+      _windowState = 'stale';
+      _triggerWindowRefresh();  // 异步刷新，不阻塞返回
+    }
+    return { remaining_sec: remaining, slug: _windowSlug, period: _windowPeriod };
   }
 
-  let remaining_sec = null;
-  let slug = null;
-  let win = null;
-  try {
-    const scanner = global._btcqddGlobalScanner;
-    if (scanner) {
-      win = await scanner.findCurrentWindow();
+  // 冷路径：init 或 stale 状态，需要等 API 返回
+  if (_windowState === 'init') {
+    await _triggerWindowRefresh();
+  }
+
+  const remaining = _windowEndTime
+    ? Math.max(0, Math.floor((_windowEndTime - Date.now()) / 1000))
+    : null;
+  return { remaining_sec: remaining, slug: _windowSlug, period: _windowPeriod };
+}
+
+function _triggerWindowRefresh() {
+  if (_windowRefreshPromise) return _windowRefreshPromise;  // single-flight
+  _windowState = 'refreshing';
+  _windowRefreshPromise = (async () => {
+    try {
+      const scanner = global._btcqddGlobalScanner;
+      if (!scanner) return;
+      const win = await scanner.findCurrentWindow();
       if (win) {
-        slug = win.slug || null;
-        if (win.end_date) {
-          remaining_sec = Math.max(0, Math.floor((new Date(win.end_date) - Date.now()) / 1000));
+        const newEndTime = win.end_date ? new Date(win.end_date).getTime()
+                         : win.end_date_iso ? new Date(win.end_date_iso).getTime()
+                         : null;
+        const newSlug = win.slug || win.window_id || null;
+        const newPeriod = win.period || _windowPeriod;
+        if (newEndTime && newSlug) {
+          _windowEndTime = newEndTime;
+          _windowSlug = newSlug;
+          _windowPeriod = newPeriod;
+          _windowState = 'ready';
+          _windowReadyAt = Date.now();
         }
       }
+    } catch (e) {
+      // API 失败不崩溃，保持上一次的值
+    } finally {
+      _windowRefreshPromise = null;
+      if (_windowState === 'refreshing') _windowState = _windowEndTime ? 'ready' : 'init';
     }
-  } catch (_) {}
-  _windowInfoCache = { remaining_sec, period: _period, slug, _endDate: win?.end_date ? new Date(win.end_date).getTime() : null };
-  _windowInfoCacheTime = now;
-  return _windowInfoCache;
+  })();
+  return _windowRefreshPromise;
 }
 
 // ── Context 构建 ────────────────────────────────────────────────────
@@ -387,6 +428,15 @@ async function _handleAction(result, ctx, tickStartTime, decideEndTime) {
       break;
 
     case 'BUY': {
+      // 窗口护栏：stale/refreshing/init 状态 或 切窗后 5 秒内，禁止开仓
+      if (_windowState !== 'ready') {
+        _appendLog('HOLD', `window not ready (state=${_windowState}), skip BUY`);
+        break;
+      }
+      if (Date.now() - _windowReadyAt < 5000) {
+        _appendLog('HOLD', `window cooldown (${Math.floor((Date.now() - _windowReadyAt)/1000)}s < 5s), skip BUY`);
+        break;
+      }
       // 持仓上限检查
       if (_orderManager) {
         try {
@@ -508,8 +558,13 @@ export function deploy(code, period) {
   _cachedVol   = 0;
   _volWindowSlug = null;
   _lastWindowSlug = null;
-  _windowInfoCache = null;
-  _windowInfoCacheTime = 0;
+  _windowEndTime = null;
+  _windowSlug = null;
+  _windowPeriod = null;
+  _windowState = 'init';
+  _windowReadyAt = 0;
+  _windowRefreshPromise = null;
+  if (_watchdogTimer) { clearInterval(_watchdogTimer); _watchdogTimer = null; }
   _lastTickTime = 0;
   _tickRunning = false;
   _latency = { decide_ms: null, order_ms: null, ts: 0 };
@@ -624,6 +679,9 @@ export function deploy(code, period) {
     // 更新为新窗口 slug（只有非空值才覆写，防止 evt.window_id 为 undefined 时覆写为 null）
     const newSlug = evt.window_id || evt.slug || null;
     if (newSlug) _lastWindowSlug = newSlug;
+    // 刷新窗口静态元数据（冷路径，不阻塞后续逻辑）
+    _windowState = 'stale';
+    _triggerWindowRefresh();
     // 窗口切换后延迟 5 秒检查结算（等 Gamma API 更新结果）
     setTimeout(_checkSettlement, 5000);
   };
@@ -635,6 +693,7 @@ export function deploy(code, period) {
 
 export function stop() {
   if (_timer) { clearInterval(_timer); _timer = null; }
+  if (_watchdogTimer) { clearInterval(_watchdogTimer); _watchdogTimer = null; }
   if (_settlementTimer) { clearInterval(_settlementTimer); _settlementTimer = null; }
   if (_windowSwitchUnsub) { unsubscribeFromBus(_windowSwitchUnsub); _windowSwitchUnsub = null; }
   if (_priceFeed) { _priceFeed.stop(); _priceFeed = null; _lastBtcPrice = null; _lastTriggerPrice = null; }
@@ -650,18 +709,6 @@ export function getStatus() {
   let uptime = 0;
   if (_startTime) uptime = Math.floor((Date.now() - _startTime) / 1000);
 
-  // remaining_sec 实时计算（不走 30s 缓存），slug 用缓存值
-  let _statusRemainingSec = null;
-  let _statusSlug = _windowInfoCache?.slug || null;
-  try {
-    const scanner = global._btcqddGlobalScanner;
-    if (scanner && _windowInfoCache?.slug) {
-      // 用缓存的 end_date 重新算 remaining（纯数学，不调 API）
-      if (_windowInfoCache._endDate) {
-        _statusRemainingSec = Math.max(0, Math.floor((_windowInfoCache._endDate - Date.now()) / 1000));
-      }
-    }
-  } catch (_) {}
 
   // 获取订单状态
   let openOrders = [];
@@ -690,9 +737,9 @@ export function getStatus() {
     stats:      { ..._stats, trades: (_stats.wins || 0) + (_stats.losses || 0) },
     pnl_series: [..._pnlSeries],
     window: {
-      remaining_sec: _statusRemainingSec ?? _windowInfoCache?.remaining_sec ?? null,
-      period: _period,
-      slug: _statusSlug
+      remaining_sec: _windowEndTime ? Math.max(0, Math.floor((_windowEndTime - Date.now()) / 1000)) : null,
+      period: _windowPeriod,
+      slug: _windowSlug
     },
     orders: {
       open: openOrders,
