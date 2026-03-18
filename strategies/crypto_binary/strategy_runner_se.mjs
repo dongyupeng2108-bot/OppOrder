@@ -30,6 +30,7 @@ let _orderbookSubscribed = false;  // orderbook 是否已订阅（全局对象�
 let _latency = { decide_ms: null, order_ms: null, ts: 0 };
 let _cachedVol = 0;       // 缓存的 ATR14 波动率百分比
 let _volWindowSlug = null; // 上次计算波动率时的窗口 slug
+let _lastWindowSlug = null;  // 上一个窗口的 slug，用于结算时查 Gamma API
 
 // ── 内部工具 ──────────────────────────────────────────────────────────────
 function _appendLog(type, msg) {
@@ -100,100 +101,82 @@ async function _checkSettlement() {
   const now = Date.now();
   const TIMEOUT_MS = 10 * 60 * 1000;
   const remaining = [];
+
   for (const entry of [..._pendingSettlement]) {
-    if (!entry || !entry.startedAt) continue; // 防御性检查
+    if (!entry || !entry.startedAt) continue;
+
     // 超时处理
     if (now - entry.startedAt > TIMEOUT_MS) {
-      _appendLog('SETTLE_TIMEOUT', `upToken=${entry.upTokenId?.slice(0,8)} orders=${entry.orders?.length}`);
+      _appendLog('SETTLE_TIMEOUT', `slug=${entry.slug} orders=${entry.orders?.length}`);
       _pushPnlPoint();
-      continue; // 不加入 remaining，相当于删除
+      continue;  // 不加入 remaining → 移除
     }
-    // Group orders by upTokenId
-    const groups = {};
-    const unSettledOrders = [];
 
-    for (const order of entry.orders) {
-      const tId = order.upTokenId || entry.upTokenId;
-      if (!tId) {
-        unSettledOrders.push(order);
+    // 必须有 slug 才能查 Gamma API
+    if (!entry.slug) {
+      _appendLog('SETTLE_ERROR', `no slug for settlement`);
+      continue;  // 无 slug 无法查询，移除
+    }
+
+    try {
+      const res = await fetch(`https://gamma-api.polymarket.com/events?slug=${entry.slug}`);
+      if (!res.ok) {
+        remaining.push(entry);  // API 异常，等下一轮
         continue;
       }
-      if (!groups[tId]) groups[tId] = [];
-      groups[tId].push(order);
-    }
+      const data = await res.json();
+      const market = Array.isArray(data) && data.length > 0 ? data[0]?.markets?.[0] : null;
 
-    // Process groups
-    for (const tId of Object.keys(groups)) {
-      const orders = groups[tId];
-      let settled = false;
+      if (!market) {
+        remaining.push(entry);  // 市场未找到，等下一轮
+        continue;
+      }
+
+      // 检查是否已结算
+      if (market.umaResolutionStatus !== 'resolved') {
+        remaining.push(entry);  // 尚未结算，等下一轮
+        continue;
+      }
+
+      // 解析 outcomePrices
+      // 格式: "[\"1\",\"0\"]" → UP 赢 (UP price=1)
+      // 格式: "[\"0\",\"1\"]" → DOWN 赢 (UP price=0)
+      let outcomePrices;
       try {
-        const res = await fetch(`https://clob.polymarket.com/book?token_id=${tId}`);
-        if (res.ok) {
-          const book = await res.json();
-          const bids = book.bids || [];
-          const asks = book.asks || [];
-          const bestBid = parseFloat(bids[0]?.price ?? 0);
-          const bestAsk = parseFloat(asks[0]?.price ?? 1);
-          let midUp = (bestBid + bestAsk) / 2;
-
-          // 空 book 检测：市场结算后 order book 被清空
-          if (bids.length === 0 && asks.length === 0) {
-            try {
-              const gRes = await fetch(`https://gamma-api.polymarket.com/markets?clob_token_ids=${tId}`);
-              if (gRes.ok) {
-                const gData = await gRes.json();
-                const mkt = Array.isArray(gData) ? gData[0] : null;
-                if (mkt && mkt.outcome_prices) {
-                  // outcome_prices 格式: "[\"1\",\"0\"]" 或 "[\"0\",\"1\"]"
-                  const prices = typeof mkt.outcome_prices === 'string' ? JSON.parse(mkt.outcome_prices) : mkt.outcome_prices;
-                  midUp = parseFloat(prices[0]) || 0.5;
-                  _appendLog('SETTLE', `Gamma fallback: midUp=${midUp.toFixed(2)} resolved=${mkt.resolved}`);
-                }
-              }
-            } catch (e) {
-              // Gamma API 失败，继续等下一次轮询
-            }
-          }
-
-          let upWon = null;
-          if (midUp >= 0.99) upWon = true;
-          else if (midUp <= 0.01) upWon = false;
-          
-          if (upWon !== null) {
-            settled = true;
-            for (const order of orders) {
-              const won = (order.side === 'UP' && upWon) || (order.side === 'DOWN' && !upWon);
-              const pnlDelta = won ? (1.0 - order.price) * order.size : (-order.price) * order.size;
-              _stats.pnl += pnlDelta;
-              if (pnlDelta > 0) _stats.wins++;
-              else _stats.losses++;
-              _appendLog('SETTLE', `side=${order.side} price=${order.price.toFixed(4)} pnl=${pnlDelta.toFixed(4)} upWon=${upWon}`);
-            }
-          }
-          _pushPnlPoint();
-        }
-      } catch(err) {
-        _appendLog('ERROR', `Settle check failed: ${err.message}`);
+        outcomePrices = typeof market.outcomePrices === 'string'
+          ? JSON.parse(market.outcomePrices)
+          : market.outcomePrices;
+      } catch (_) {
+        remaining.push(entry);  // 解析失败，等下一轮
+        continue;
       }
-      
-      if (!settled) {
-        orders.forEach(o => unSettledOrders.push(o));
-      }
-    }
 
-    if (unSettledOrders.length > 0) {
-      entry.orders = unSettledOrders;
+      const upPrice = parseFloat(outcomePrices[0]) || 0;
+      const upWon = upPrice >= 0.5;  // UP price >= 0.5 → UP 赢
+
+      _appendLog('SETTLE', `${entry.slug} → ${upWon ? 'UP' : 'DOWN'} wins (prices=${outcomePrices.join(',')})`);
+
+      for (const order of entry.orders) {
+        const won = (order.side === 'UP' && upWon) || (order.side === 'DOWN' && !upWon);
+        const pnlDelta = won
+          ? (1.0 - order.price) * (order.size || 1)
+          : (-order.price) * (order.size || 1);
+        _stats.pnl += pnlDelta;
+        if (won) _stats.wins++;
+        else _stats.losses++;
+        _appendLog(won ? 'WIN' : 'LOSS',
+          `side=${order.side} price=${order.price.toFixed(4)} pnl=${pnlDelta >= 0 ? '+' : ''}${pnlDelta.toFixed(4)}`);
+      }
+      _pushPnlPoint();
+      // 不加入 remaining → 结算完成，移除
+    } catch (e) {
+      // fetch 失败（网络错误），等下一轮
       remaining.push(entry);
     }
   }
-  // 替换整个数组
-  _pendingSettlement.length = 0;
-  remaining.forEach(e => _pendingSettlement.push(e));
 
-  // 清除所有已结算或已平仓的订单，防止下次窗口切换重复结算或残留显示
-  if (_orderManager && typeof _orderManager.clearSettled === 'function') {
-    _orderManager.clearSettled();
-  }
+  _pendingSettlement.length = 0;
+  for (const r of remaining) _pendingSettlement.push(r);
 }
 
 // ── 定时循环（2 秒） ──────────────────────────────────────────────────────
@@ -410,7 +393,7 @@ async function _handleAction(result, ctx, tickStartTime, decideEndTime) {
               totalPosition += (o.price || 0) * (o.size || 1);
             }
           }
-          if (totalPosition >= 1) {  // max_position_usd = 1
+          if (totalPosition >= 1000) {  // max_position_usd = 1000
             _appendLog('HOLD', `position limit reached: $${totalPosition.toFixed(2)}`);
             break;
           }
@@ -520,6 +503,7 @@ export function deploy(code, period) {
   _pnlSeries   = [{ ts: Date.now(), pnl: 0 }];
   _cachedVol   = 0;
   _volWindowSlug = null;
+  _lastWindowSlug = null;
   _windowInfoCache = null;
   _windowInfoCacheTime = 0;
   _lastTickTime = 0;
@@ -597,6 +581,9 @@ export function deploy(code, period) {
     }
   }
 
+  // 从当前窗口初始化 _lastWindowSlug
+  _getWindowInfo().then(wInfo => { _lastWindowSlug = wInfo?.slug || null; }).catch(() => {});
+
   // 启动结算轮询
   if (_settlementTimer) clearInterval(_settlementTimer);
   _settlementTimer = setInterval(_checkSettlement, 3000);
@@ -605,19 +592,28 @@ export function deploy(code, period) {
   if (_windowSwitchUnsub) { unsubscribeFromBus(_windowSwitchUnsub); _windowSwitchUnsub = null; }
   const _wsHandler = async (evt) => {
     if (evt.type !== EVENT_TYPES.WINDOW_SWITCH) return;
+    // 如果是首次（_lastWindowSlug 为 null），从当前窗口初始化
+    if (!_lastWindowSlug) {
+      _lastWindowSlug = evt.window_id || null;
+    }
     // 将当前所有 FILLED 或 CLOSED 订单加入待结算池
-    if (_orderManager && global._btcqddLastWindowTokenIds) {
+    if (_orderManager) {
       const filledOrders = _orderManager.getAllOrders().filter(o => o.status === 'FILLED' || o.status === 'CLOSED');
       if (filledOrders.length > 0) {
+        const oldSlug = _lastWindowSlug;
         _pendingSettlement.push({
-          upTokenId: global._btcqddLastWindowTokenIds.up,
-          downTokenId: global._btcqddLastWindowTokenIds.down,
+          slug: oldSlug,                     // 旧窗口的 slug（用于 Gamma API 查询）
+          upTokenId: global._btcqddLastWindowTokenIds?.up,
           orders: filledOrders,
           startedAt: Date.now()
         });
-        _appendLog('SETTLE_PENDING', `orders=${filledOrders.length} upToken=${global._btcqddLastWindowTokenIds.up.slice(0,8)}`);
+        _appendLog('SETTLE_PENDING', `slug=${oldSlug} orders=${filledOrders.length}`);
       }
     }
+    // 更新为新窗口 slug
+    _lastWindowSlug = evt.window_id || null;
+    // 窗口切换后延迟 5 秒检查结算（等 Gamma API 更新结果）
+    setTimeout(_checkSettlement, 5000);
   };
   subscribe(_wsHandler);
   _windowSwitchUnsub = _wsHandler;
@@ -689,10 +685,11 @@ export function getStatus() {
     orders: {
       open: openOrders,
       filled: filledOrders,
-      pending_settlement: _pendingSettlement.map(e => ({
-        upTokenId: e.upTokenId.slice(0,8),
-        count: e.orders?.length || 0,
-        startedAt: e.startedAt
+      pending_settlement: _pendingSettlement.map(p => ({
+        slug: p.slug,
+        upTokenId: p.upTokenId,
+        count: p.orders?.length || 0,
+        startedAt: p.startedAt
       }))
     }
   };
