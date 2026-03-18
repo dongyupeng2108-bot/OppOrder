@@ -168,6 +168,10 @@ async function _checkSettlement() {
           `side=${order.side} price=${order.price.toFixed(4)} pnl=${pnlDelta >= 0 ? '+' : ''}${pnlDelta.toFixed(4)}`);
       }
       _pushPnlPoint();
+      // 清除已结算的订单
+      if (_orderManager && typeof _orderManager.clearSettled === 'function') {
+        _orderManager.clearSettled();
+      }
       // 不加入 remaining → 结算完成，移除
     } catch (e) {
       // fetch 失败（网络错误），等下一轮
@@ -611,6 +615,10 @@ export function deploy(code, period) {
           startedAt: Date.now()
         });
         _appendLog('SETTLE_PENDING', `slug=${settleSlug} orders=${filledOrders.length}`);
+      }
+      // 窗口切换时清除上一窗口的 CANCELLED 订单
+      if (typeof _orderManager.clearSettled === 'function') {
+        _orderManager.clearSettled();
       }
     }
     // 更新为新窗口 slug（只有非空值才覆写，防止 evt.window_id 为 undefined 时覆写为 null）
