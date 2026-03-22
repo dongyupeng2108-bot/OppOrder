@@ -194,11 +194,19 @@ function Get-ChangedFilesForTaskProfile {
 function Resolve-TaskProfile {
     param([string[]]$Files)
 
-    $AllowedPatterns = @(
+    $DocsUiLightAllowedPatterns = @(
         '^rules/rules/',
         '^ui/',
         '^rules/LATEST\.json$',
         '^rules/task-reports/'
+    )
+    $WorkflowUpgradeAllowedPatterns = @(
+        '^rules/rules/',
+        '^rules/LATEST\.json$',
+        '^rules/task-reports/',
+        '^scripts/run_task\.ps1$',
+        '^scripts/assemble_evidence\.mjs$',
+        '^scripts/generate_evidence_minimal\.mjs$'
     )
     $ForbiddenPatterns = @(
         '^strategies/crypto_binary/',
@@ -216,7 +224,7 @@ function Resolve-TaskProfile {
         }
     }
 
-    $Invalid = @()
+    $Violations = @()
     foreach ($File in $Files) {
         $Normalized = ($File -replace '\\', '/').Trim()
 
@@ -228,23 +236,32 @@ function Resolve-TaskProfile {
             }
         }
         if ($ForbiddenHit) {
-            $Invalid += $Normalized
-            continue
+            $Violations += $Normalized
         }
+    }
 
+    if ($Violations.Count -gt 0) {
+        return [ordered]@{
+            profile = "standard"
+            eligible = $false
+            reason = "FORBIDDEN_PATHS_DETECTED"
+            invalid_files = $Violations
+        }
+    }
+
+    $DocsInvalid = @()
+    foreach ($File in $Files) {
+        $Normalized = ($File -replace '\\', '/').Trim()
         $Allowed = $false
-        foreach ($Pattern in $AllowedPatterns) {
+        foreach ($Pattern in $DocsUiLightAllowedPatterns) {
             if ($Normalized -match $Pattern) {
                 $Allowed = $true
                 break
             }
         }
-        if (-not $Allowed) {
-            $Invalid += $Normalized
-        }
+        if (-not $Allowed) { $DocsInvalid += $Normalized }
     }
-
-    if ($Invalid.Count -eq 0) {
+    if ($DocsInvalid.Count -eq 0) {
         return [ordered]@{
             profile = "docs/ui-light"
             eligible = $true
@@ -253,11 +270,32 @@ function Resolve-TaskProfile {
         }
     }
 
+    $WorkflowInvalid = @()
+    foreach ($File in $Files) {
+        $Normalized = ($File -replace '\\', '/').Trim()
+        $Allowed = $false
+        foreach ($Pattern in $WorkflowUpgradeAllowedPatterns) {
+            if ($Normalized -match $Pattern) {
+                $Allowed = $true
+                break
+            }
+        }
+        if (-not $Allowed) { $WorkflowInvalid += $Normalized }
+    }
+    if ($WorkflowInvalid.Count -eq 0) {
+        return [ordered]@{
+            profile = "workflow-upgrade-light"
+            eligible = $true
+            reason = "ALL_CHANGED_FILES_MATCH_WORKFLOW_UPGRADE_SCOPE"
+            invalid_files = @()
+        }
+    }
+
     return [ordered]@{
         profile = "standard"
         eligible = $false
         reason = "NON_LIGHT_SCOPE_FILES_DETECTED"
-        invalid_files = $Invalid
+        invalid_files = $WorkflowInvalid
     }
 }
 
@@ -610,11 +648,11 @@ if ($Mode -eq "Integrate") {
 # --- Helper: Find Evidence Directory & Generator ---
 $TaskChangedFiles = Get-ChangedFilesForTaskProfile
 $TaskProfileInfo = Resolve-TaskProfile -Files $TaskChangedFiles
-$DocsUiLightEligible = [bool]$TaskProfileInfo.eligible
+$MinimalEvidenceEligible = [bool]$TaskProfileInfo.eligible
 
 Write-Host "========== TASK_PROFILE =========="
 Write-Host "PROFILE=$($TaskProfileInfo.profile)"
-Write-Host "ELIGIBLE=$DocsUiLightEligible"
+Write-Host "ELIGIBLE=$MinimalEvidenceEligible"
 Write-Host "REASON=$($TaskProfileInfo.reason)"
 if ($TaskChangedFiles.Count -gt 0) {
     Write-Host "CHANGED_FILES_COUNT=$($TaskChangedFiles.Count)"
@@ -632,7 +670,7 @@ $GenerateScript = $null
 if ($TaskSpecificGenerateScript) {
     $GenerateScript = $TaskSpecificGenerateScript
     Write-Host "[RunTask] Evidence generator: task-specific script detected." -ForegroundColor Gray
-} elseif ($DocsUiLightEligible) {
+} elseif ($MinimalEvidenceEligible) {
     if (-not (Test-Path $MinimalGenerateScriptPath)) {
         Write-Host "========== PREASSEMBLE_FAILFAST =========="
         Write-Host "MODE=$Mode"
@@ -645,7 +683,7 @@ if ($TaskSpecificGenerateScript) {
     }
     $GenerateScript = Get-Item $MinimalGenerateScriptPath
     $UsingMinimalEvidencePath = $true
-    Write-Host "[RunTask] Evidence generator: docs/ui-light minimal path enabled." -ForegroundColor Yellow
+    Write-Host "[RunTask] Evidence generator: minimal path enabled for profile $($TaskProfileInfo.profile)." -ForegroundColor Yellow
 }
 
 $EvidenceDir = ""
@@ -1000,7 +1038,7 @@ function Run-Evidence-Gen-And-Preview {
                 "--task_id=$TaskId",
                 "--evidence_dir=$EvidenceDir",
                 "--mode=$Mode",
-                "--profile=docs/ui-light"
+                "--profile=$($TaskProfileInfo.profile)"
             )
         } else {
             $GenCmd = @("node", $GenerateScript.FullName)

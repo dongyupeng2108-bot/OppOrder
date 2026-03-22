@@ -51,11 +51,19 @@ const collectChangedFiles = () => {
 };
 
 const changedFiles = collectChangedFiles();
-const allowPatterns = [
+const docsUiLightAllowPatterns = [
   /^rules\/rules\//,
   /^ui\//,
   /^rules\/LATEST\.json$/,
   /^rules\/task-reports\//
+];
+const workflowUpgradeAllowPatterns = [
+  /^rules\/rules\//,
+  /^rules\/LATEST\.json$/,
+  /^rules\/task-reports\//,
+  /^scripts\/run_task\.ps1$/,
+  /^scripts\/assemble_evidence\.mjs$/,
+  /^scripts\/generate_evidence_minimal\.mjs$/
 ];
 const forbidPatterns = [
   /^strategies\/crypto_binary\//,
@@ -63,13 +71,17 @@ const forbidPatterns = [
   /\.test\./
 ];
 
+const allowPatterns = profile === 'workflow-upgrade-light'
+  ? workflowUpgradeAllowPatterns
+  : docsUiLightAllowPatterns;
+
 const invalidFiles = changedFiles.filter((f) => {
   if (forbidPatterns.some((re) => re.test(f))) return true;
   return !allowPatterns.some((re) => re.test(f));
 });
 
 if (invalidFiles.length > 0) {
-  console.error('[MinimalEvidence] FAIL: task does not satisfy docs/ui-light trigger.');
+  console.error(`[MinimalEvidence] FAIL: task does not satisfy ${profile} trigger.`);
   console.error(`[MinimalEvidence] Invalid files: ${invalidFiles.join(', ')}`);
   process.exit(1);
 }
