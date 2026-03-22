@@ -304,6 +304,24 @@ To ignore a specific blocking PR (e.g., PR #103), you must explicitly declare it
 
 ---
 
+## docs/ui-light 通用最小证据路径
+
+- 触发必须显式判断，不允许“因为没有 task-specific generator 就兜底”。
+- 仅当实际改动文件全部满足以下范围时，才允许走通用最小证据路径：
+  - `rules/rules/**`
+  - `ui/**`
+  - `rules/LATEST.json`
+  - `rules/task-reports/**`
+- 同时必须满足：
+  - 无 `strategies/crypto_binary/**` 改动
+  - 无测试文件改动
+  - 无后端/API/DB/执行器改动
+- 命中条件后使用统一工具 `scripts/generate_evidence_minimal.mjs`。
+- 禁止为普通 docs/ui-light 任务创建 `generate_evidence_<task_id>.mjs`。
+- No Bypass：通用最小证据路径不得生成 fake coverage、fake test XML、placeholder 测试结果。
+
+---
+
 ## 回报模板（Report Template）
 
 Dev完成任务后必须回报以下内容：
