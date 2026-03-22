@@ -28,6 +28,7 @@ import { ProxyAgent, fetch as undiciFetch } from 'undici';
 import { createScanner } from './market_scanner.mjs';
 import { createOrderbookMonitor } from './orderbook_monitor.mjs';
 import * as strategyRunnerSe from './strategy_runner_se.mjs';
+import { createBotLogger } from './bot_logger.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -47,6 +48,8 @@ const args = Object.fromEntries(
 );
 const STRATEGY_ID = args.strategy || null;
 const PORT = parseInt(args.port || '53123', 10);
+const BOT_MODE = process.env.EXECUTOR_MODE || 'paper-staging';
+const botLogger = createBotLogger({ maxEntries: 400 });
 
 // 加载策略配置
 function loadConfig(strategyId) {
@@ -59,6 +62,15 @@ logger.info(EVENTS.SERVER_START, {
   log_level: process.env.LOG_LEVEL || 'info',
   port: PORT,
   strategy: STRATEGY_ID || 'none',
+});
+botLogger.log({
+  level: 'info',
+  source: 'server',
+  event: 'BOT_LOGGER_READY',
+  message: 'bot logger initialized',
+  mode: BOT_MODE,
+  window_id: null,
+  data: { port: PORT, strategy: STRATEGY_ID || 'none' }
 });
 
 // 供 strategy_runner_se.mjs 动态导入使用
@@ -946,6 +958,22 @@ const server = createServer(async (req, res) => {
     return;
   }
 
+  if (req.method === 'GET' && req.url.startsWith('/bot/logs')) {
+    try {
+      const parsed = new URL(req.url, 'http://localhost');
+      const limitText = parsed.searchParams.get('limit');
+      const limit = limitText == null ? 200 : Number.parseInt(limitText, 10);
+      if (!Number.isInteger(limit) || limit <= 0) {
+        sendJson(res, { ok: false, error: 'invalid limit' }, 400);
+        return;
+      }
+      sendJson(res, botLogger.getRecentLogs(Math.min(limit, 500)));
+    } catch (err) {
+      sendJson(res, { ok: false, error: err.message }, 500);
+    }
+    return;
+  }
+
   // 重启服务接口
   if (req.method === 'POST' && req.url === '/server/restart') {
     sendJson(res, { ok: true, msg: '正在重启...' });
@@ -1008,6 +1036,15 @@ const server = createServer(async (req, res) => {
 
 server.listen(PORT, () => {
   logger.info(EVENTS.SERVER_START, { module: 'server', msg: `listening on http://localhost:${PORT}`, strategy: STRATEGY_ID });
+  botLogger.log({
+    level: 'info',
+    source: 'server',
+    event: 'SERVER_LISTENING',
+    message: `server listening on ${PORT}`,
+    mode: BOT_MODE,
+    window_id: null,
+    data: { port: PORT, strategy: STRATEGY_ID || 'none' }
+  });
 });
 
 // ── WebSocket /events/stream ────────────────────────────────────────────

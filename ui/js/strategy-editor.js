@@ -191,7 +191,7 @@ async function initStrategyEditor() {
         <div class="se-left-panels">
           <div class="se-panel" style="flex-shrink: 0; height: 160px;">
             <div class="se-log-header">
-              <span>实时日志</span>
+              <span>Bot 结构化日志</span>
               <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;">
                 <button class="se-restart-inline-btn" onclick="restartServer()">⟳ 重启</button>
                 <span id="se-countdown" style="font-size:11px;color:#aaa;font-family:monospace;display:block;margin-top:6px;text-align:right;">--:--</span>
@@ -262,6 +262,7 @@ async function initStrategyEditor() {
   if (!saved) saved = localStorage.getItem('se_code');
   document.getElementById('se-editor').value = saved || SE_DEFAULT_CODE;
   document.getElementById('se-guide-text').textContent = SE_GUIDE_TEXT;
+  se_startPoll();
 
 }
 
@@ -371,7 +372,6 @@ async function se_stop() {
   } catch (_) {}
   _se_running = false;
   se_updateRunningUI(false);
-  se_stopPoll();
 }
 
 function se_updateRunningUI(running) {
@@ -432,14 +432,14 @@ async function se_poll() {
   try {
     const [statusRes, logsRes] = await Promise.all([
       fetch(`${BASE_URL}/strategy-runner/status`),
-      fetch(`${BASE_URL}/strategy-runner/logs`)
+      fetch(`${BASE_URL}/bot/logs?limit=200`)
     ]);
     const status = await statusRes.json();
     const logsData = await logsRes.json();
 
     se_renderStats(status);
     se_renderPnlChart(status.pnl_series || []);
-    se_renderLogs(logsData.logs || []);
+    se_renderLogs(Array.isArray(logsData) ? logsData : (logsData.logs || []));
     se_renderOrders(status.orders);
 
     // 倒计时更新
@@ -467,7 +467,6 @@ async function se_poll() {
     if (!status.running && _se_running) {
       _se_running = false;
       se_updateRunningUI(false);
-      se_stopPoll();
     }
   } catch (err) {
     console.warn('[se] poll error:', err.message);
@@ -537,25 +536,33 @@ function se_renderOrders(orders) {
 
 function se_renderLogs(logs) {
   const area = document.getElementById('se-log-area');
-  if (!logs.length) return;
+  if (!logs.length) {
+    area.innerHTML = '<div class="se-log-entry se-log-info">暂无 Bot 结构化日志</div>';
+    return;
+  }
 
-  // 只渲染比上次最后一条更新的日志
   const newLogs = _seLastLogTs
     ? logs.filter(l => l.ts > _seLastLogTs)
     : logs;
 
   if (newLogs.length === 0) return;
+  if (area.children.length === 1 && area.textContent.includes('暂无 Bot 结构化日志')) {
+    area.innerHTML = '';
+  }
 
   _seLastLogTs = logs[logs.length - 1].ts;
 
   newLogs.forEach(log => {
     const div = document.createElement('div');
-    div.className = `se-log-entry se-log-${log.type?.toLowerCase() || 'info'}`;
+    const level = (log.level || log.type || 'info').toLowerCase();
+    const event = log.event || log.type || 'LOG';
+    const message = log.message || log.msg || '';
+    div.className = `se-log-entry se-log-${level}`;
     const time = new Date(log.ts).toLocaleTimeString('zh-CN', { hour12: false });
-    div.textContent = `${time} [${log.type}] ${log.msg}`;
+    div.textContent = `${time} [${level.toUpperCase()}] ${event} ${message}`.trim();
     area.appendChild(div);
 
-    if (log.type === 'ERROR') {
+    if (level === 'error') {
       _seErrorCount++;
     } else {
       _seErrorCount = 0;
