@@ -320,3 +320,11 @@ Dev完成任务后必须回报以下内容：
 - 同一任务最多1次FIX重试
 - 第二次仍失败则必须停止上报，由PM重新切片或回滚
 - 禁止在FIX中扩大范围锁
+
+---
+
+## 2. Generate Evidence Step
+Every task **must** generate CI evidence before running `Integrate`.
+
+- **Standard Path**: Business logic / Backend / Strategy tasks must create a task-specific generator (e.g., `rules/task-reports/2026-03/generate_evidence_<task_id>.mjs`) that invokes tests, gathers coverage, and outputs valid XMLs.
+- **Light Task Path (docs/ui-light)**: For tasks that **only** touch `rules/rules/**`, `ui/**`, `rules/LATEST.json`, and evidence files (no backend, no strategy code, no test code), you **must not** create a temporary `generate_evidence_<task_id>.mjs`. The system will automatically use the `scripts/generate_evidence_minimal.mjs` path. This enforces the "No Bypass" rule by generating true minimal evidence without faking coverage logic.

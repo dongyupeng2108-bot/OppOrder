@@ -446,7 +446,11 @@ task_id（任务标识）允许格式：`YYMMDD_NNN` + 可选 1 位字母后缀�
 
 ---
 
-## Hard Gate / Soft Gate 分层
+## Evidence Generation Strict Rules
+- **Task-Specific Generators**: Creating a task-specific `generate_evidence_<task_id>.mjs` is strictly reserved for tasks modifying backend, strategy, or test code. These scripts must execute real tests and gather real coverage.
+- **Docs & UI Light Tasks**: For pure documentation or lightweight frontend tasks (modifying only `rules/rules/**`, `ui/**`, `rules/LATEST.json`), you **MUST** use the generic fallback path. Do not create a task-specific generator file just to produce faked XML files and delete it later. The pipeline will automatically fall back to `scripts/generate_evidence_minimal.mjs` if the task qualifies.
+
+---
 
 ### Hard Gate（必须阻断，不通过则禁止合并）
 - Scope Lock：Files changed必须在范围锁白名单内

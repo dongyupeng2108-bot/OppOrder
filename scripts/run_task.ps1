@@ -1,4 +1,4 @@
-﻿param (
+param (
     [Parameter(Mandatory=$true)]
     [string]$TaskId,
 
@@ -503,6 +503,17 @@ if ($Mode -eq "Integrate") {
 # --- Helper: Find Evidence Directory & Generator ---
 $GenerateScript = Get-ChildItem -Path "$RepoRoot\rules\task-reports" -Recurse | Where-Object { $_.Name -match "^generate_evidence_$TaskId\.(js|mjs)$" } | Select-Object -First 1
 
+# Check if we should fallback to generic minimal generator
+if (-not $GenerateScript) {
+    # If the task only touches docs/ui and LATEST.json, we use minimal path
+    # (Scope lock is checked in gate light, here we just use the tool if it exists and task-specific one is missing)
+    $MinimalGenerator = "$RepoRoot\scripts\generate_evidence_minimal.mjs"
+    if (Test-Path $MinimalGenerator) {
+        $GenerateScript = Get-Item $MinimalGenerator
+        Write-Host "[RunTask] Using Minimal Evidence Generator for Light Task." -ForegroundColor Yellow
+    }
+}
+
 $EvidenceDir = ""
 if ($GenerateScript) {
     $EvidenceDir = $GenerateScript.DirectoryName
@@ -847,7 +858,13 @@ function Run-Evidence-Gen-And-Preview {
              node "$RepoRoot\scripts\ops_delete.mjs" "$EvidenceDir\gate_light_verify_$TaskId.log" --force
         }
 
-        $GenCmd = @("node", $GenerateScript.FullName)
+        # Check if it's the minimal generator, we need to pass args
+        if ($GenerateScript.Name -match "^generate_evidence_minimal") {
+            $GenCmd = @("node", $GenerateScript.FullName, "--task_id=$TaskId", "--evidence_dir=$EvidenceDir")
+        } else {
+            $GenCmd = @("node", $GenerateScript.FullName)
+        }
+        
         $EffectiveTimeoutSec = $StepTimeoutSeconds
         if ($EffectiveTimeoutSec -le 0) { $EffectiveTimeoutSec = 300 }
         Write-Host "STEP_TIMEOUT_SEC=$EffectiveTimeoutSec step=Generate Evidence"
