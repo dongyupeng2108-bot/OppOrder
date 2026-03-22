@@ -214,6 +214,11 @@ async function initStrategyEditor() {
             <div class="se-stat-item"><div class="se-stat-label">tick_size</div><div id="se-ctx-tick-size" class="se-stat-value">—</div></div>
             <div class="se-stat-item"><div class="se-stat-label">stale</div><div id="se-ctx-stale" class="se-stat-value">—</div></div>
           </div>
+          <div class="se-panel" style="flex-shrink:0; padding:10px 12px; border:1px solid #333; background:#161616;">
+            <div style="font-size:12px; color:#bbb; margin-bottom:6px;">当前策略意图</div>
+            <div id="se-decision-value" style="font-size:16px; color:#00e676; font-weight:700;">—</div>
+            <div id="se-decision-reason" style="font-size:12px; color:#999; margin-top:4px;">reason: —</div>
+          </div>
           <div style="flex:1;background:#1e1e1e;border:1px solid #333;padding: 0 16px;display:flex;flex-direction:column;border-bottom:none;">
             <div id="se-pnl-title" style="padding:4px 8px;border-bottom:1px solid #333;font-size:12px;color:#aaa;">累计 PnL</div>
             <div style="flex:1;position:relative;">
@@ -431,16 +436,19 @@ function se_stopPoll() {
 
 async function se_poll() {
   try {
-    const [contextRes, statusRes, logsRes] = await Promise.all([
+    const [contextRes, statusRes, logsRes, decisionRes] = await Promise.all([
       fetch(`${BASE_URL}/bot/context`),
       fetch(`${BASE_URL}/bot/status`),
-      fetch(`${BASE_URL}/bot/logs?limit=200`)
+      fetch(`${BASE_URL}/bot/logs?limit=200`),
+      fetch(`${BASE_URL}/bot/decision-preview`)
     ]);
     const context = await contextRes.json();
     const status = await statusRes.json();
     const logsData = await logsRes.json();
+    const decisionData = await decisionRes.json();
 
     se_renderContext(context);
+    se_renderDecision(decisionData);
     se_renderPnlChart([]);
     se_renderLogs(Array.isArray(logsData) ? logsData : (logsData.logs || []));
     se_renderOrders(null);
@@ -471,6 +479,14 @@ async function se_poll() {
   } catch (err) {
     console.warn('[se] poll error:', err.message);
   }
+}
+
+function se_renderDecision(payload) {
+  const decisionEl = document.getElementById('se-decision-value');
+  const reasonEl = document.getElementById('se-decision-reason');
+  if (!decisionEl || !reasonEl) return;
+  decisionEl.textContent = se_formatStateValue(payload?.decision);
+  reasonEl.textContent = 'reason: ' + se_formatStateValue(payload?.reason);
 }
 
 // 渲染统计、日志、PnL 图

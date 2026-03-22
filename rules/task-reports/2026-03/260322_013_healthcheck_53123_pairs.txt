@@ -1,0 +1,11 @@
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+Access-Control-Allow-Headers: Content-Type
+Content-Type: application/json
+Date: Sun, 22 Mar 2026 20:50:04 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+{"decision":"NOOP","reason":"pre_open_or_open_not_10s","context_snapshot":{"window_id":"btc-updown-5m-1774212600","slug":"btc-updown-5m-1774212600","period":"5m","remaining_sec":295,"btc_price":null,"atr_5m":null,"upper_bound":null,"lower_bound":null,"bid_yes":0.54,"ask_yes":0.55,"bid_no":0.45,"ask_no":0.46,"tick_size":0.01,"stale":false,"updated_at":"2026-03-22T20:50:03.463Z"},"state_snapshot":{"ladder_posted":false},"fixture":null}
