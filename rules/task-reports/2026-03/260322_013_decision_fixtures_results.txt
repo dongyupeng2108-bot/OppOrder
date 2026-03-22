@@ -1,0 +1,5 @@
+PRE_OPEN_10S: NOOP | pre_open_or_open_not_10s
+OPEN_10S_LADDER_EMPTY: PLACE_BOTH_LADDERS | ladder_not_posted
+BREAK_UPPER_BOUND: CANCEL_NO_OPEN | btc_price>=upper_bound
+BREAK_LOWER_BOUND: CANCEL_YES_OPEN | btc_price<=lower_bound
+REMAINING_100S: CANCEL_ALL_OPEN | remaining_sec<=100
