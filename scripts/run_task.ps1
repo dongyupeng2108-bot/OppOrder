@@ -1,4 +1,4 @@
-﻿param (
+param (
     [Parameter(Mandatory=$true)]
     [string]$TaskId,
 
@@ -152,6 +152,113 @@ function Read-LatestTaskId {
         return ""
     }
     return ""
+}
+
+function Get-ChangedFilesForTaskProfile {
+    $Set = New-Object 'System.Collections.Generic.HashSet[string]' ([System.StringComparer]::OrdinalIgnoreCase)
+
+    try {
+        $MergeBase = (git merge-base HEAD origin/main 2>$null).Trim()
+        if ($MergeBase) {
+            $Committed = git diff --name-only $MergeBase HEAD
+            foreach ($f in $Committed) {
+                if (-not [string]::IsNullOrWhiteSpace($f)) { [void]$Set.Add($f.Trim()) }
+            }
+        }
+    } catch {}
+
+    try {
+        $Staged = git diff --name-only --cached
+        foreach ($f in $Staged) {
+            if (-not [string]::IsNullOrWhiteSpace($f)) { [void]$Set.Add($f.Trim()) }
+        }
+    } catch {}
+
+    try {
+        $Worktree = git diff --name-only
+        foreach ($f in $Worktree) {
+            if (-not [string]::IsNullOrWhiteSpace($f)) { [void]$Set.Add($f.Trim()) }
+        }
+    } catch {}
+
+    try {
+        $Untracked = git ls-files --others --exclude-standard
+        foreach ($f in $Untracked) {
+            if (-not [string]::IsNullOrWhiteSpace($f)) { [void]$Set.Add($f.Trim()) }
+        }
+    } catch {}
+
+    return @($Set)
+}
+
+function Resolve-TaskProfile {
+    param([string[]]$Files)
+
+    $AllowedPatterns = @(
+        '^rules/rules/',
+        '^ui/',
+        '^rules/LATEST\.json$',
+        '^rules/task-reports/'
+    )
+    $ForbiddenPatterns = @(
+        '^strategies/crypto_binary/',
+        '^tests/',
+        '\.test\.',
+        '\bscripts/preflight\.ps1$'
+    )
+
+    if (-not $Files -or $Files.Count -eq 0) {
+        return [ordered]@{
+            profile = "unknown"
+            eligible = $false
+            reason = "NO_CHANGED_FILES"
+            invalid_files = @()
+        }
+    }
+
+    $Invalid = @()
+    foreach ($File in $Files) {
+        $Normalized = ($File -replace '\\', '/').Trim()
+
+        $ForbiddenHit = $false
+        foreach ($Pattern in $ForbiddenPatterns) {
+            if ($Normalized -match $Pattern) {
+                $ForbiddenHit = $true
+                break
+            }
+        }
+        if ($ForbiddenHit) {
+            $Invalid += $Normalized
+            continue
+        }
+
+        $Allowed = $false
+        foreach ($Pattern in $AllowedPatterns) {
+            if ($Normalized -match $Pattern) {
+                $Allowed = $true
+                break
+            }
+        }
+        if (-not $Allowed) {
+            $Invalid += $Normalized
+        }
+    }
+
+    if ($Invalid.Count -eq 0) {
+        return [ordered]@{
+            profile = "docs/ui-light"
+            eligible = $true
+            reason = "ALL_CHANGED_FILES_MATCH_LIGHT_SCOPE"
+            invalid_files = @()
+        }
+    }
+
+    return [ordered]@{
+        profile = "standard"
+        eligible = $false
+        reason = "NON_LIGHT_SCOPE_FILES_DETECTED"
+        invalid_files = $Invalid
+    }
 }
 
 function Write-TaskIdBindingFailfast {
@@ -501,7 +608,45 @@ if ($Mode -eq "Integrate") {
 }
 
 # --- Helper: Find Evidence Directory & Generator ---
-$GenerateScript = Get-ChildItem -Path "$RepoRoot\rules\task-reports" -Recurse | Where-Object { $_.Name -match "^generate_evidence_$TaskId\.(js|mjs)$" } | Select-Object -First 1
+$TaskChangedFiles = Get-ChangedFilesForTaskProfile
+$TaskProfileInfo = Resolve-TaskProfile -Files $TaskChangedFiles
+$DocsUiLightEligible = [bool]$TaskProfileInfo.eligible
+
+Write-Host "========== TASK_PROFILE =========="
+Write-Host "PROFILE=$($TaskProfileInfo.profile)"
+Write-Host "ELIGIBLE=$DocsUiLightEligible"
+Write-Host "REASON=$($TaskProfileInfo.reason)"
+if ($TaskChangedFiles.Count -gt 0) {
+    Write-Host "CHANGED_FILES_COUNT=$($TaskChangedFiles.Count)"
+}
+if ($TaskProfileInfo.invalid_files.Count -gt 0) {
+    Write-Host "INVALID_FILES=$($TaskProfileInfo.invalid_files -join ',')"
+}
+Write-Host "=================================="
+
+$TaskSpecificGenerateScript = Get-ChildItem -Path "$RepoRoot\rules\task-reports" -Recurse | Where-Object { $_.Name -match "^generate_evidence_$TaskId\.(js|mjs)$" } | Select-Object -First 1
+$MinimalGenerateScriptPath = "$RepoRoot\scripts\generate_evidence_minimal.mjs"
+$UsingMinimalEvidencePath = $false
+$GenerateScript = $null
+
+if ($TaskSpecificGenerateScript) {
+    $GenerateScript = $TaskSpecificGenerateScript
+    Write-Host "[RunTask] Evidence generator: task-specific script detected." -ForegroundColor Gray
+} elseif ($DocsUiLightEligible) {
+    if (-not (Test-Path $MinimalGenerateScriptPath)) {
+        Write-Host "========== PREASSEMBLE_FAILFAST =========="
+        Write-Host "MODE=$Mode"
+        Write-Host "TASK_ID=$TaskId"
+        Write-Host "TASK_PROFILE=docs/ui-light"
+        Write-Host "FAIL_REASON=MINIMAL_GENERATOR_MISSING"
+        Write-Host "ACTION=Add scripts/generate_evidence_minimal.mjs and re-run"
+        Write-Host "=========================================="
+        Stop-RunTask -Message "PREASSEMBLE_GENERATOR_MISSING" -ErrorClass "PREASSEMBLE_GENERATOR_MISSING" -FailReason "MINIMAL_GENERATOR_MISSING"
+    }
+    $GenerateScript = Get-Item $MinimalGenerateScriptPath
+    $UsingMinimalEvidencePath = $true
+    Write-Host "[RunTask] Evidence generator: docs/ui-light minimal path enabled." -ForegroundColor Yellow
+}
 
 $EvidenceDir = ""
 if ($GenerateScript) {
@@ -543,8 +688,9 @@ function PreassembleFailfast {
         Write-Host "========== PREASSEMBLE_FAILFAST =========="
         Write-Host "MODE=Integrate"
         Write-Host "TASK_ID=$TaskId"
+        Write-Host "TASK_PROFILE=$($TaskProfileInfo.profile)"
         Write-Host "FAIL_REASON=GENERATE_EVIDENCE_SCRIPT_MISSING"
-        Write-Host "ACTION=Create rules/task-reports/$YearMonth/generate_evidence_${TaskId}.mjs to generate result/git_meta/dod_evidence before Integrate"
+        Write-Host "ACTION=Create rules/task-reports/$YearMonth/generate_evidence_${TaskId}.mjs OR satisfy docs/ui-light explicit trigger + scripts/generate_evidence_minimal.mjs"
         Write-Host "=========================================="
         Stop-RunTask -Message "PREASSEMBLE_GENERATOR_MISSING" -ErrorClass "PREASSEMBLE_GENERATOR_MISSING" -FailReason "GENERATE_EVIDENCE_SCRIPT_MISSING"
     }
@@ -847,7 +993,18 @@ function Run-Evidence-Gen-And-Preview {
              node "$RepoRoot\scripts\ops_delete.mjs" "$EvidenceDir\gate_light_verify_$TaskId.log" --force
         }
 
-        $GenCmd = @("node", $GenerateScript.FullName)
+        if ($UsingMinimalEvidencePath) {
+            $GenCmd = @(
+                "node",
+                $GenerateScript.FullName,
+                "--task_id=$TaskId",
+                "--evidence_dir=$EvidenceDir",
+                "--mode=$Mode",
+                "--profile=docs/ui-light"
+            )
+        } else {
+            $GenCmd = @("node", $GenerateScript.FullName)
+        }
         $EffectiveTimeoutSec = $StepTimeoutSeconds
         if ($EffectiveTimeoutSec -le 0) { $EffectiveTimeoutSec = 300 }
         Write-Host "STEP_TIMEOUT_SEC=$EffectiveTimeoutSec step=Generate Evidence"

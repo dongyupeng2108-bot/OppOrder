@@ -121,6 +121,29 @@ const gitMeta = readJson(inputs.gitMeta);
 let resultData = readJson(inputs.resultJson);
 const resolvedMode = mode || resultData.mode || 'Integrate';
 
+const docsUiLightAllowed = (p) => (
+    /^rules\/rules\//.test(p) ||
+    /^ui\//.test(p) ||
+    /^rules\/LATEST\.json$/.test(p) ||
+    /^rules\/task-reports\//.test(p)
+);
+const docsUiLightForbidden = (p) => (
+    /^strategies\/crypto_binary\//.test(p) ||
+    /^tests\//.test(p) ||
+    /\.test\./.test(p)
+);
+
+const artifactsForProfile = Array.isArray(resultData.artifacts) ? resultData.artifacts.map(x => `${x}`.replace(/\\/g, '/')) : [];
+const docsUiLightByArtifacts = artifactsForProfile.length > 0 && artifactsForProfile.every(p => docsUiLightAllowed(p) && !docsUiLightForbidden(p));
+
+if (resultData.task_profile === 'docs/ui-light' && !docsUiLightByArtifacts) {
+    console.error('[Assembler] FAIL: task_profile=docs/ui-light but artifacts contain disallowed files.');
+    process.exit(1);
+}
+if (!resultData.task_profile && docsUiLightByArtifacts) {
+    resultData.task_profile = 'docs/ui-light';
+}
+
 // --- AutoPR Evidence ---
 const autoPrPath = resolvePath(`auto_pr_${taskId}.json`);
 let autoPrBlock = '';
