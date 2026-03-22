@@ -254,6 +254,10 @@ To ignore a specific blocking PR (e.g., PR #103), you must explicitly declare it
 - **Rule**: The standard Task Template structure (as defined in `scripts/scaffold_task.js` or equivalent) is **IMMUTABLE** within a normal feature task.
 - **Change Protocol**: Any change to the Task Template must be performed in a dedicated "Workflow Upgrade" task, explicitly titled as such.
 
+## BTCQDD Feature Development Policy
+- **Rule**: When adding new single-strategy bots to BTCQDD, prioritize the "Bot Mainchain + Shared Console UI" approach over expanding the legacy Strategy Editor (SE) product mode.
+- **Enforcement**: Any task proposing new SE features must be explicitly justified and approved.
+
 ## Hard Rule — Task Release Gate (One-at-a-time) 
 未收到上一任务的正式回报且其中明确写出“DoD 达成/未达成”结论之前，禁止发布任何新的 TraeTask_* 任务。 
 违反该规则的任务视为无效，必须撤回并在上一任务闭环后重新发布。 
