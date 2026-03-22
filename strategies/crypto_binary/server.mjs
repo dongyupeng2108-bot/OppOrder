@@ -29,6 +29,7 @@ import { createScanner } from './market_scanner.mjs';
 import { createOrderbookMonitor } from './orderbook_monitor.mjs';
 import * as strategyRunnerSe from './strategy_runner_se.mjs';
 import { createBotLogger } from './bot_logger.mjs';
+import { createBotStateStore } from './bot_state.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -50,6 +51,7 @@ const STRATEGY_ID = args.strategy || null;
 const PORT = parseInt(args.port || '53123', 10);
 const BOT_MODE = process.env.EXECUTOR_MODE || 'paper-staging';
 const botLogger = createBotLogger({ maxEntries: 400 });
+const botState = createBotStateStore({ mode: BOT_MODE });
 
 // 加载策略配置
 function loadConfig(strategyId) {
@@ -72,6 +74,7 @@ botLogger.log({
   window_id: null,
   data: { port: PORT, strategy: STRATEGY_ID || 'none' }
 });
+botState.patchState({ mode: BOT_MODE, phase: 'IDLE' });
 
 // 供 strategy_runner_se.mjs 动态导入使用
 export function getGlobalSnapshot() {
@@ -968,6 +971,15 @@ const server = createServer(async (req, res) => {
         return;
       }
       sendJson(res, botLogger.getRecentLogs(Math.min(limit, 500)));
+    } catch (err) {
+      sendJson(res, { ok: false, error: err.message }, 500);
+    }
+    return;
+  }
+
+  if (req.method === 'GET' && req.url === '/bot/status') {
+    try {
+      sendJson(res, botState.getState());
     } catch (err) {
       sendJson(res, { ok: false, error: err.message }, 500);
     }
