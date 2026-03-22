@@ -1353,9 +1353,8 @@ if ($Mode -eq "Integrate") {
     Invoke-Step -Name "Archive & Lock" -Cmd $ArchiveCmd
     Write-Host "    Archived evidence and locked task." -ForegroundColor Gray
 
-    # === 回报提示 ===
     $LockExists = Test-Path "$RepoRoot\rules\task-reports\locks\$TaskId.lock.json"
-    $LockStatus = if ($LockExists) { "✅ 存在" } else { "❌ 未找到" }
+    $LockStatus = if ($LockExists) { "LOCK_FOUND" } else { "LOCK_MISSING" }
     $ReportPrPath = "$EvidenceDir\auto_pr_$TaskId.json"
     $ReportPrJson = if (Test-Path $ReportPrPath) { Get-Content $ReportPrPath -Raw | ConvertFrom-Json } else { $null }
     $ReportPrNum = ""
@@ -1367,19 +1366,13 @@ if ($Mode -eq "Integrate") {
         }
     }
     $PrDisplay = if ($ReportPrNum) { "#$ReportPrNum" } else { "(not-created)" }
-    $ReportPrompt = @"
-
-========================================
-⚠  任务完成 — 必须填写以下回报模板
-========================================
-Task ID   : $TaskId
-PR 号     : $PrDisplay
-Lock 文件 : $LockStatus
-----------------------------------------
-请逐行填写胶囊验收 CheckList 各项（✅ 或 ❌），
-然后将完整回报输出给 Owner。
-========================================
-"@
+    $ReportPrompt = @(
+        "TASK_COMPLETE",
+        "Task ID: $TaskId",
+        "PR: $PrDisplay",
+        "Lock: $LockStatus",
+        "Please send final report to Owner with DoD result."
+    ) -join "`n"
     Write-Host $ReportPrompt -ForegroundColor Yellow
     $ReportPromptPath = "$EvidenceDir\report_prompt_$TaskId.txt"
     $Utf8NoBom = New-Object System.Text.UTF8Encoding($false)
