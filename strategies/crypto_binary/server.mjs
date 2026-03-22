@@ -33,6 +33,8 @@ import { createBotStateStore } from './bot_state.mjs';
 import { createBotContextAdapter } from './bot_context_adapter.mjs';
 import { decideBotAction } from './bot_strategy.mjs';
 import { getDecisionFixtures } from './bot_strategy_fixtures.mjs';
+import { createBotOrderLedger } from './bot_order_ledger.mjs';
+import { createBotExecutorPaper, BOT_PAPER_ALLOWED_ACTIONS } from './bot_executor_paper.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -55,6 +57,8 @@ const PORT = parseInt(args.port || '53123', 10);
 const BOT_MODE = process.env.EXECUTOR_MODE || 'paper-staging';
 const botLogger = createBotLogger({ maxEntries: 400 });
 const botState = createBotStateStore({ mode: BOT_MODE });
+const botLedger = createBotOrderLedger();
+const botExecutorPaper = createBotExecutorPaper({ ledger: botLedger });
 
 // 加载策略配置
 function loadConfig(strategyId) {
@@ -78,6 +82,17 @@ botLogger.log({
   data: { port: PORT, strategy: STRATEGY_ID || 'none' }
 });
 botState.patchState({ mode: BOT_MODE, phase: 'IDLE' });
+
+function syncBotStateFromLedger() {
+  const orders = botExecutorPaper.getOrders();
+  const openYes = orders.filter(o => o.status === 'OPEN' && o.side === 'YES').map(o => o.order_id);
+  const openNo = orders.filter(o => o.status === 'OPEN' && o.side === 'NO').map(o => o.order_id);
+  botState.patchState({
+    yes_order_ids: openYes,
+    no_order_ids: openNo,
+    ladder_posted: openYes.length > 0 || openNo.length > 0
+  });
+}
 
 // 供 strategy_runner_se.mjs 动态导入使用
 export function getGlobalSnapshot() {
@@ -1000,6 +1015,45 @@ const server = createServer(async (req, res) => {
     } catch (err) {
       sendJson(res, { ok: false, error: err.message }, 500);
     }
+    return;
+  }
+
+  if (req.method === 'GET' && req.url === '/bot/orders') {
+    try {
+      sendJson(res, {
+        orders: botExecutorPaper.getOrders(),
+        summary: botExecutorPaper.getSummary()
+      });
+    } catch (err) {
+      sendJson(res, { ok: false, error: err.message }, 500);
+    }
+    return;
+  }
+
+  if (req.method === 'POST' && req.url === '/bot/paper/apply-action') {
+    let body = '';
+    req.on('data', d => { body += d; });
+    req.on('end', () => {
+      try {
+        const payload = JSON.parse(body || '{}');
+        const action = payload?.action;
+        if (typeof action !== 'string' || !BOT_PAPER_ALLOWED_ACTIONS.includes(action)) {
+          sendJson(res, { ok: false, error: 'invalid action' }, 400);
+          return;
+        }
+        const result = botExecutorPaper.applyAction(action, { source: 'manual' });
+        syncBotStateFromLedger();
+        sendJson(res, {
+          ok: true,
+          action: result.action,
+          changed: result.changed,
+          summary: result.summary,
+          orders: result.orders
+        });
+      } catch (err) {
+        sendJson(res, { ok: false, error: err.message }, 500);
+      }
+    });
     return;
   }
 
