@@ -194,6 +194,18 @@ function Get-ChangedFilesForTaskProfile {
 function Resolve-TaskProfile {
     param([string[]]$Files)
 
+    $Normalize = {
+        param([string]$Path)
+        return ($Path -replace '\\', '/').Trim()
+    }
+    $MatchAny = {
+        param([string]$Path, [string[]]$Patterns)
+        foreach ($Pattern in $Patterns) {
+            if ($Path -match $Pattern) { return $true }
+        }
+        return $false
+    }
+
     $DocsUiLightAllowedPatterns = @(
         '^rules/rules/',
         '^ui/',
@@ -208,11 +220,29 @@ function Resolve-TaskProfile {
         '^scripts/assemble_evidence\.mjs$',
         '^scripts/generate_evidence_minimal\.mjs$'
     )
-    $ForbiddenPatterns = @(
-        '^strategies/crypto_binary/',
+    $BackendLightAllowedPatterns = @(
+        '^strategies/crypto_binary/server\.mjs$',
+        '^strategies/crypto_binary/.*logger.*\.mjs$',
+        '^strategies/crypto_binary/.*api.*\.mjs$',
+        '^ui/',
+        '^rules/LATEST\.json$',
+        '^rules/task-reports/'
+    )
+    $CommonForbiddenPatterns = @(
         '^tests/',
         '\.test\.',
         '\bscripts/preflight\.ps1$'
+    )
+    $BackendLightForbiddenPatterns = @(
+        '^strategies/crypto_binary/strategy_runner.*\.mjs$',
+        '^strategies/crypto_binary/order_manager\.mjs$',
+        '^strategies/crypto_binary/postmortem.*\.mjs$',
+        '^strategies/crypto_binary/db\.mjs$',
+        '^strategies/crypto_binary/manual_trade\.mjs$',
+        '^strategies/crypto_binary/market_scanner\.mjs$',
+        '^strategies/crypto_binary/price_feed\.mjs$',
+        '^strategies/crypto_binary/orderbook_monitor\.mjs$',
+        '^strategies/crypto_binary/trading_.*'
     )
 
     if (-not $Files -or $Files.Count -eq 0) {
@@ -226,16 +256,8 @@ function Resolve-TaskProfile {
 
     $Violations = @()
     foreach ($File in $Files) {
-        $Normalized = ($File -replace '\\', '/').Trim()
-
-        $ForbiddenHit = $false
-        foreach ($Pattern in $ForbiddenPatterns) {
-            if ($Normalized -match $Pattern) {
-                $ForbiddenHit = $true
-                break
-            }
-        }
-        if ($ForbiddenHit) {
+        $Normalized = & $Normalize $File
+        if (& $MatchAny $Normalized $CommonForbiddenPatterns) {
             $Violations += $Normalized
         }
     }
@@ -251,15 +273,8 @@ function Resolve-TaskProfile {
 
     $DocsInvalid = @()
     foreach ($File in $Files) {
-        $Normalized = ($File -replace '\\', '/').Trim()
-        $Allowed = $false
-        foreach ($Pattern in $DocsUiLightAllowedPatterns) {
-            if ($Normalized -match $Pattern) {
-                $Allowed = $true
-                break
-            }
-        }
-        if (-not $Allowed) { $DocsInvalid += $Normalized }
+        $Normalized = & $Normalize $File
+        if (-not (& $MatchAny $Normalized $DocsUiLightAllowedPatterns)) { $DocsInvalid += $Normalized }
     }
     if ($DocsInvalid.Count -eq 0) {
         return [ordered]@{
@@ -270,17 +285,26 @@ function Resolve-TaskProfile {
         }
     }
 
+    $BackendInvalid = @()
+    foreach ($File in $Files) {
+        $Normalized = & $Normalize $File
+        $Denied = (& $MatchAny $Normalized $BackendLightForbiddenPatterns)
+        $Allowed = (& $MatchAny $Normalized $BackendLightAllowedPatterns)
+        if ($Denied -or -not $Allowed) { $BackendInvalid += $Normalized }
+    }
+    if ($BackendInvalid.Count -eq 0) {
+        return [ordered]@{
+            profile = "backend-light"
+            eligible = $true
+            reason = "ALL_CHANGED_FILES_MATCH_BACKEND_LIGHT_SCOPE"
+            invalid_files = @()
+        }
+    }
+
     $WorkflowInvalid = @()
     foreach ($File in $Files) {
-        $Normalized = ($File -replace '\\', '/').Trim()
-        $Allowed = $false
-        foreach ($Pattern in $WorkflowUpgradeAllowedPatterns) {
-            if ($Normalized -match $Pattern) {
-                $Allowed = $true
-                break
-            }
-        }
-        if (-not $Allowed) { $WorkflowInvalid += $Normalized }
+        $Normalized = & $Normalize $File
+        if (-not (& $MatchAny $Normalized $WorkflowUpgradeAllowedPatterns)) { $WorkflowInvalid += $Normalized }
     }
     if ($WorkflowInvalid.Count -eq 0) {
         return [ordered]@{
@@ -675,7 +699,7 @@ if ($TaskSpecificGenerateScript) {
         Write-Host "========== PREASSEMBLE_FAILFAST =========="
         Write-Host "MODE=$Mode"
         Write-Host "TASK_ID=$TaskId"
-        Write-Host "TASK_PROFILE=docs/ui-light"
+        Write-Host "TASK_PROFILE=$($TaskProfileInfo.profile)"
         Write-Host "FAIL_REASON=MINIMAL_GENERATOR_MISSING"
         Write-Host "ACTION=Add scripts/generate_evidence_minimal.mjs and re-run"
         Write-Host "=========================================="
@@ -728,7 +752,7 @@ function PreassembleFailfast {
         Write-Host "TASK_ID=$TaskId"
         Write-Host "TASK_PROFILE=$($TaskProfileInfo.profile)"
         Write-Host "FAIL_REASON=GENERATE_EVIDENCE_SCRIPT_MISSING"
-        Write-Host "ACTION=Create rules/task-reports/$YearMonth/generate_evidence_${TaskId}.mjs OR satisfy docs/ui-light explicit trigger + scripts/generate_evidence_minimal.mjs"
+        Write-Host "ACTION=Create rules/task-reports/$YearMonth/generate_evidence_${TaskId}.mjs OR satisfy explicit minimal-profile trigger + scripts/generate_evidence_minimal.mjs"
         Write-Host "=========================================="
         Stop-RunTask -Message "PREASSEMBLE_GENERATOR_MISSING" -ErrorClass "PREASSEMBLE_GENERATOR_MISSING" -FailReason "GENERATE_EVIDENCE_SCRIPT_MISSING"
     }

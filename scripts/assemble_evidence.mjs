@@ -121,27 +121,69 @@ const gitMeta = readJson(inputs.gitMeta);
 let resultData = readJson(inputs.resultJson);
 const resolvedMode = mode || resultData.mode || 'Integrate';
 
-const docsUiLightAllowed = (p) => (
-    /^rules\/rules\//.test(p) ||
-    /^ui\//.test(p) ||
-    /^rules\/LATEST\.json$/.test(p) ||
-    /^rules\/task-reports\//.test(p)
-);
-const docsUiLightForbidden = (p) => (
-    /^strategies\/crypto_binary\//.test(p) ||
-    /^tests\//.test(p) ||
-    /\.test\./.test(p)
-);
+const matchAny = (p, patterns) => patterns.some((re) => re.test(p));
+const profileSpecs = {
+    'docs/ui-light': {
+        allow: [
+            /^rules\/rules\//,
+            /^ui\//,
+            /^rules\/LATEST\.json$/,
+            /^rules\/task-reports\//
+        ],
+        deny: [
+            /^strategies\/crypto_binary\//,
+            /^tests\//,
+            /\.test\./,
+            /scripts\/preflight\.ps1$/
+        ]
+    },
+    'backend-light': {
+        allow: [
+            /^strategies\/crypto_binary\/server\.mjs$/,
+            /^strategies\/crypto_binary\/.*logger.*\.mjs$/,
+            /^strategies\/crypto_binary\/.*api.*\.mjs$/,
+            /^ui\//,
+            /^rules\/LATEST\.json$/,
+            /^rules\/task-reports\//
+        ],
+        deny: [
+            /^strategies\/crypto_binary\/strategy_runner.*\.mjs$/,
+            /^strategies\/crypto_binary\/order_manager\.mjs$/,
+            /^strategies\/crypto_binary\/postmortem.*\.mjs$/,
+            /^strategies\/crypto_binary\/db\.mjs$/,
+            /^strategies\/crypto_binary\/manual_trade\.mjs$/,
+            /^strategies\/crypto_binary\/market_scanner\.mjs$/,
+            /^strategies\/crypto_binary\/price_feed\.mjs$/,
+            /^strategies\/crypto_binary\/orderbook_monitor\.mjs$/,
+            /^strategies\/crypto_binary\/trading_.*/,
+            /^tests\//,
+            /\.test\./,
+            /scripts\/preflight\.ps1$/
+        ]
+    }
+};
 
 const artifactsForProfile = Array.isArray(resultData.artifacts) ? resultData.artifacts.map(x => `${x}`.replace(/\\/g, '/')) : [];
-const docsUiLightByArtifacts = artifactsForProfile.length > 0 && artifactsForProfile.every(p => docsUiLightAllowed(p) && !docsUiLightForbidden(p));
+const isProfileMatch = (profileName) => {
+    const spec = profileSpecs[profileName];
+    if (!spec || artifactsForProfile.length === 0) return false;
+    return artifactsForProfile.every((p) => matchAny(p, spec.allow) && !matchAny(p, spec.deny));
+};
+const docsUiLightByArtifacts = isProfileMatch('docs/ui-light');
+const backendLightByArtifacts = isProfileMatch('backend-light');
 
 if (resultData.task_profile === 'docs/ui-light' && !docsUiLightByArtifacts) {
     console.error('[Assembler] FAIL: task_profile=docs/ui-light but artifacts contain disallowed files.');
     process.exit(1);
 }
+if (resultData.task_profile === 'backend-light' && !backendLightByArtifacts) {
+    console.error('[Assembler] FAIL: task_profile=backend-light but artifacts contain disallowed files.');
+    process.exit(1);
+}
 if (!resultData.task_profile && docsUiLightByArtifacts) {
     resultData.task_profile = 'docs/ui-light';
+} else if (!resultData.task_profile && backendLightByArtifacts) {
+    resultData.task_profile = 'backend-light';
 }
 
 // --- AutoPR Evidence ---
