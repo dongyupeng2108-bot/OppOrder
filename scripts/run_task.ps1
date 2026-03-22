@@ -515,10 +515,11 @@ if (-not $GenerateScript) {
 }
 
 $EvidenceDir = ""
-if ($GenerateScript) {
+$YearMonth = Get-Date -Format "yyyy-MM"
+
+if ($GenerateScript -and $GenerateScript.Name -notmatch "^generate_evidence_minimal") {
     $EvidenceDir = $GenerateScript.DirectoryName
 } else {
-    $YearMonth = Get-Date -Format "yyyy-MM"
     $EvidenceDir = "$RepoRoot\rules\task-reports\$YearMonth"
     if (-not (Test-Path $EvidenceDir)) {
         New-Item -ItemType Directory -Path $EvidenceDir | Out-Null
