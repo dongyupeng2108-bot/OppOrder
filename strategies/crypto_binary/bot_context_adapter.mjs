@@ -23,6 +23,11 @@ const asFiniteNumber = (value) => {
   return Number.isFinite(num) ? num : null;
 };
 
+const asPositiveNumber = (value) => {
+  const num = asFiniteNumber(value);
+  return num !== null && num > 0 ? num : null;
+};
+
 const toIso = (value) => {
   if (!value) return null;
   const date = value instanceof Date ? value : new Date(value);
@@ -97,7 +102,7 @@ export function createBotContextAdapter(options = {}) {
     context.slug = windowInfo?.slug ?? null;
     context.period = inferPeriod(windowInfo?.slug ?? null);
     context.remaining_sec = Number.isFinite(endMs) ? Math.max(0, Math.floor((endMs - now) / 1000)) : null;
-    context.btc_price = latestBtcPrice ?? asFiniteNumber(windowInfo?.strike_price);
+    context.btc_price = asPositiveNumber(latestBtcPrice);
     context.atr_5m = null;
     context.upper_bound = null;
     context.lower_bound = null;

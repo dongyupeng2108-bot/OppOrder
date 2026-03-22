@@ -493,7 +493,7 @@ function se_renderContext(context) {
 }
 
 function se_formatStateValue(value) {
-  if (value === null || value === undefined || value === '') return '(null)';
+  if (value === null || value === undefined || value === '') return 'N/A (null)';
   if (Array.isArray(value)) return value.length ? value.join(',') : '[]';
   return `${value}`;
 }
