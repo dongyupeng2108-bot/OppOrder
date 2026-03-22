@@ -160,6 +160,30 @@ const profileSpecs = {
             /\.test\./,
             /scripts\/preflight\.ps1$/
         ]
+    },
+    'bot-helper-light': {
+        allow: [
+            /^strategies\/crypto_binary\/server\.mjs$/,
+            /^strategies\/crypto_binary\/bot_.*\.mjs$/,
+            /^ui\/js\/strategy-editor\.js$/,
+            /^ui\/strategy-editor\.html$/,
+            /^rules\/LATEST\.json$/,
+            /^rules\/task-reports\//
+        ],
+        deny: [
+            /^strategies\/crypto_binary\/strategy_runner.*\.mjs$/,
+            /^strategies\/crypto_binary\/order_manager\.mjs$/,
+            /^strategies\/crypto_binary\/postmortem.*\.mjs$/,
+            /^strategies\/crypto_binary\/db\.mjs$/,
+            /^strategies\/crypto_binary\/manual_trade\.mjs$/,
+            /^strategies\/crypto_binary\/market_scanner\.mjs$/,
+            /^strategies\/crypto_binary\/price_feed\.mjs$/,
+            /^strategies\/crypto_binary\/orderbook_monitor\.mjs$/,
+            /^strategies\/crypto_binary\/trading_.*/,
+            /^tests\//,
+            /\.test\./,
+            /scripts\/preflight\.ps1$/
+        ]
     }
 };
 
@@ -171,6 +195,7 @@ const isProfileMatch = (profileName) => {
 };
 const docsUiLightByArtifacts = isProfileMatch('docs/ui-light');
 const backendLightByArtifacts = isProfileMatch('backend-light');
+const botHelperLightByArtifacts = isProfileMatch('bot-helper-light');
 
 if (resultData.task_profile === 'docs/ui-light' && !docsUiLightByArtifacts) {
     console.error('[Assembler] FAIL: task_profile=docs/ui-light but artifacts contain disallowed files.');
@@ -180,10 +205,16 @@ if (resultData.task_profile === 'backend-light' && !backendLightByArtifacts) {
     console.error('[Assembler] FAIL: task_profile=backend-light but artifacts contain disallowed files.');
     process.exit(1);
 }
+if (resultData.task_profile === 'bot-helper-light' && !botHelperLightByArtifacts) {
+    console.error('[Assembler] FAIL: task_profile=bot-helper-light but artifacts contain disallowed files.');
+    process.exit(1);
+}
 if (!resultData.task_profile && docsUiLightByArtifacts) {
     resultData.task_profile = 'docs/ui-light';
 } else if (!resultData.task_profile && backendLightByArtifacts) {
     resultData.task_profile = 'backend-light';
+} else if (!resultData.task_profile && botHelperLightByArtifacts) {
+    resultData.task_profile = 'bot-helper-light';
 }
 
 // --- AutoPR Evidence ---
