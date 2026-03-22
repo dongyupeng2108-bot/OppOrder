@@ -229,10 +229,16 @@ async function initStrategyEditor() {
 
         <!-- 右侧订单面板 -->
         <div class="se-order-panel">
-          <div class="se-order-title">订单</div>
+          <div class="se-order-title">Bot 账本订单</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:8px 0;">
+            <button class="se-btn" onclick="se_applyPaperAction('PLACE_BOTH_LADDERS')" style="background:#1f6f4a;color:#fff;border:1px solid #2c8f61;padding:6px;border-radius:4px;cursor:pointer;">PLACE_BOTH</button>
+            <button class="se-btn" onclick="se_applyPaperAction('CANCEL_NO_OPEN')" style="background:#7a3a3a;color:#fff;border:1px solid #9a4b4b;padding:6px;border-radius:4px;cursor:pointer;">CANCEL_NO</button>
+            <button class="se-btn" onclick="se_applyPaperAction('CANCEL_YES_OPEN')" style="background:#7a3a3a;color:#fff;border:1px solid #9a4b4b;padding:6px;border-radius:4px;cursor:pointer;">CANCEL_YES</button>
+            <button class="se-btn" onclick="se_applyPaperAction('CANCEL_ALL_OPEN')" style="background:#5a2d7a;color:#fff;border:1px solid #7a3f9f;padding:6px;border-radius:4px;cursor:pointer;">CANCEL_ALL</button>
+          </div>
           <table class="se-order-table" style="table-layout:fixed;width:100%;">
             <colgroup><col style="width:22%"><col style="width:22%"><col style="width:28%"><col style="width:28%"></colgroup>
-            <thead><tr><th>类型</th><th>方向</th><th>价格</th><th>PNL</th></tr></thead>
+            <thead><tr><th>来源</th><th>方向</th><th>价格</th><th>状态</th></tr></thead>
             <tbody id="se-order-body">
               <tr><td colspan="4" style="color:#555;text-align:center">暂无</td></tr>
             </tbody>
@@ -436,22 +442,24 @@ function se_stopPoll() {
 
 async function se_poll() {
   try {
-    const [contextRes, statusRes, logsRes, decisionRes] = await Promise.all([
+    const [contextRes, statusRes, logsRes, decisionRes, ordersRes] = await Promise.all([
       fetch(`${BASE_URL}/bot/context`),
       fetch(`${BASE_URL}/bot/status`),
       fetch(`${BASE_URL}/bot/logs?limit=200`),
-      fetch(`${BASE_URL}/bot/decision-preview`)
+      fetch(`${BASE_URL}/bot/decision-preview`),
+      fetch(`${BASE_URL}/bot/orders`)
     ]);
     const context = await contextRes.json();
     const status = await statusRes.json();
     const logsData = await logsRes.json();
     const decisionData = await decisionRes.json();
+    const ordersData = await ordersRes.json();
 
     se_renderContext(context);
     se_renderDecision(decisionData);
     se_renderPnlChart([]);
     se_renderLogs(Array.isArray(logsData) ? logsData : (logsData.logs || []));
-    se_renderOrders(null);
+    se_renderOrders(ordersData);
 
     const remaining = context.remaining_sec ?? null;
     const el = document.getElementById('se-countdown');
@@ -478,6 +486,24 @@ async function se_poll() {
     }
   } catch (err) {
     console.warn('[se] poll error:', err.message);
+  }
+}
+
+async function se_applyPaperAction(action) {
+  try {
+    const res = await fetch(`${BASE_URL}/bot/paper/apply-action`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action })
+    });
+    const data = await res.json();
+    if (!res.ok || data.ok === false) {
+      alert('动作执行失败: ' + (data.error || res.status));
+      return;
+    }
+    se_renderOrders({ orders: data.orders, summary: data.summary });
+  } catch (err) {
+    alert('动作执行失败: ' + err.message);
   }
 }
 
@@ -517,35 +543,13 @@ function se_formatStateValue(value) {
 function se_renderOrders(orders) {
   const tbody = document.getElementById('se-order-body');
   if (!tbody) return;
-  const rows = [];
-  for (const o of (orders?.open || [])) {
-    const cls = o.side === 'UP' ? 'up-color' : 'down-color';
-    rows.push(`<tr><td>挂单</td><td class="${cls}">${o.side}</td><td>${o.price?.toFixed(3) ?? '--'}</td><td style="color:#555">----</td></tr>`);
-  }
-  for (const o of (orders?.filled || [])) {
-    const cls = o.side === 'UP' ? 'up-color' : 'down-color';
-    let typeText = '持仓';
-    let typeStyle = '';
-    if (o.status === 'closed') {
-      typeText = '已平仓';
-      typeStyle = 'color:#888';
-    } else if (o.status === 'cancelled') {
-      typeText = '已撤单';
-      typeStyle = 'color:#666';
-    } else if (o.status === 'filled') {
-      typeText = '持仓';
-    }
-    
-    rows.push(`<tr>
-      <td style="${typeStyle}">${typeText}</td>
-      <td class="${cls}">${o.side}</td>
-      <td>${o.price?.toFixed(3) ?? '--'}</td>
-      <td style="color:#888">待结算</td>
-    </tr>`);
-  }
-  for (const e of (orders?.pending_settlement || [])) {
-    rows.push(`<tr><td class="pending-color">待结算</td><td>--</td><td>--</td><td class="pending-color">${e.count}单</td></tr>`);
-  }
+  const list = Array.isArray(orders?.orders) ? [...orders.orders] : [];
+  list.sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)));
+  const rows = list.map((o) => {
+    const cls = o.side === 'YES' ? 'up-color' : 'down-color';
+    const statusColor = o.status === 'OPEN' ? '#00e676' : '#888';
+    return `<tr><td>${se_formatStateValue(o.source)}</td><td class="${cls}">${se_formatStateValue(o.side)}</td><td>${typeof o.price === 'number' ? o.price.toFixed(3) : '--'}</td><td style="color:${statusColor}">${se_formatStateValue(o.status)}</td></tr>`;
+  });
   tbody.innerHTML = rows.length ? rows.join('') : '<tr><td colspan="4" style="color:#555;text-align:center">暂无</td></tr>';
 }
 
