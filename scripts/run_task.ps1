@@ -687,7 +687,7 @@ if ($TaskSpecificGenerateScript) {
 }
 
 $EvidenceDir = ""
-if ($GenerateScript) {
+if ($GenerateScript -and -not $UsingMinimalEvidencePath) {
     $EvidenceDir = $GenerateScript.DirectoryName
 } else {
     $YearMonth = Get-Date -Format "yyyy-MM"
