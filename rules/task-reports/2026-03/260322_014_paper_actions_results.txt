@@ -1,0 +1,5 @@
+PLACE_BOTH_LADDERS: changed=8, summary=open_total:8 open_yes:4 open_no:4 cancelled_total:0
+CANCEL_NO_OPEN: changed=4, summary=open_total:4 open_yes:4 open_no:0 cancelled_total:4
+CANCEL_YES_OPEN: changed=4, summary=open_total:0 open_yes:0 open_no:0 cancelled_total:8
+PLACE_BOTH_LADDERS_AGAIN: changed=8, summary=open_total:8 open_yes:4 open_no:4 cancelled_total:8
+CANCEL_ALL_OPEN: changed=8, summary=open_total:0 open_yes:0 open_no:0 cancelled_total:16
