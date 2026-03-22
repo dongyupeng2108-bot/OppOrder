@@ -1366,7 +1366,7 @@ if ($Mode -eq "Integrate") {
             $ReportPrNum = $ReportPrJson.pr_number.ToString()
         }
     }
-    $PrDisplay = if ($ReportPrNum) { "#$ReportPrNum" } else { "（未创建）" }
+    $PrDisplay = if ($ReportPrNum) { "#$ReportPrNum" } else { "(not-created)" }
     $ReportPrompt = @"
 
 ========================================
