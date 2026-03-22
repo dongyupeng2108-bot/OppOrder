@@ -88,6 +88,31 @@ const profileSpecs = {
       /scripts\/preflight\.ps1$/
     ],
     trigger: 'explicit_backend_light'
+  },
+  'bot-helper-light': {
+    allow: [
+      /^strategies\/crypto_binary\/server\.mjs$/,
+      /^strategies\/crypto_binary\/bot_.*\.mjs$/,
+      /^ui\/js\/strategy-editor\.js$/,
+      /^ui\/strategy-editor\.html$/,
+      /^rules\/LATEST\.json$/,
+      /^rules\/task-reports\//
+    ],
+    deny: [
+      /^strategies\/crypto_binary\/strategy_runner.*\.mjs$/,
+      /^strategies\/crypto_binary\/order_manager\.mjs$/,
+      /^strategies\/crypto_binary\/postmortem.*\.mjs$/,
+      /^strategies\/crypto_binary\/db\.mjs$/,
+      /^strategies\/crypto_binary\/manual_trade\.mjs$/,
+      /^strategies\/crypto_binary\/market_scanner\.mjs$/,
+      /^strategies\/crypto_binary\/price_feed\.mjs$/,
+      /^strategies\/crypto_binary\/orderbook_monitor\.mjs$/,
+      /^strategies\/crypto_binary\/trading_.*/,
+      /^tests\//,
+      /\.test\./,
+      /scripts\/preflight\.ps1$/
+    ],
+    trigger: 'explicit_bot_helper_light'
   }
 };
 
@@ -156,7 +181,7 @@ if (classifyOnly) {
 }
 
 if (!taskId || !evidenceDir) {
-  console.error('[MinimalEvidence] Usage: node scripts/generate_evidence_minimal.mjs --task_id=<id> --evidence_dir=<dir> [--mode=Integrate|Dev] [--profile=docs/ui-light|workflow-upgrade-light|backend-light]');
+  console.error('[MinimalEvidence] Usage: node scripts/generate_evidence_minimal.mjs --task_id=<id> --evidence_dir=<dir> [--mode=Integrate|Dev] [--profile=docs/ui-light|workflow-upgrade-light|backend-light|bot-helper-light]');
   process.exit(1);
 }
 if (!classification.eligible) {

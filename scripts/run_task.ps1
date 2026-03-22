@@ -228,12 +228,31 @@ function Resolve-TaskProfile {
         '^rules/LATEST\.json$',
         '^rules/task-reports/'
     )
+    $BotHelperLightAllowedPatterns = @(
+        '^strategies/crypto_binary/server\.mjs$',
+        '^strategies/crypto_binary/bot_.*\.mjs$',
+        '^ui/js/strategy-editor\.js$',
+        '^ui/strategy-editor\.html$',
+        '^rules/LATEST\.json$',
+        '^rules/task-reports/'
+    )
     $CommonForbiddenPatterns = @(
         '^tests/',
         '\.test\.',
         '\bscripts/preflight\.ps1$'
     )
     $BackendLightForbiddenPatterns = @(
+        '^strategies/crypto_binary/strategy_runner.*\.mjs$',
+        '^strategies/crypto_binary/order_manager\.mjs$',
+        '^strategies/crypto_binary/postmortem.*\.mjs$',
+        '^strategies/crypto_binary/db\.mjs$',
+        '^strategies/crypto_binary/manual_trade\.mjs$',
+        '^strategies/crypto_binary/market_scanner\.mjs$',
+        '^strategies/crypto_binary/price_feed\.mjs$',
+        '^strategies/crypto_binary/orderbook_monitor\.mjs$',
+        '^strategies/crypto_binary/trading_.*'
+    )
+    $BotHelperLightForbiddenPatterns = @(
         '^strategies/crypto_binary/strategy_runner.*\.mjs$',
         '^strategies/crypto_binary/order_manager\.mjs$',
         '^strategies/crypto_binary/postmortem.*\.mjs$',
@@ -297,6 +316,22 @@ function Resolve-TaskProfile {
             profile = "backend-light"
             eligible = $true
             reason = "ALL_CHANGED_FILES_MATCH_BACKEND_LIGHT_SCOPE"
+            invalid_files = @()
+        }
+    }
+
+    $BotHelperInvalid = @()
+    foreach ($File in $Files) {
+        $Normalized = & $Normalize $File
+        $Denied = (& $MatchAny $Normalized $BotHelperLightForbiddenPatterns)
+        $Allowed = (& $MatchAny $Normalized $BotHelperLightAllowedPatterns)
+        if ($Denied -or -not $Allowed) { $BotHelperInvalid += $Normalized }
+    }
+    if ($BotHelperInvalid.Count -eq 0) {
+        return [ordered]@{
+            profile = "bot-helper-light"
+            eligible = $true
+            reason = "ALL_CHANGED_FILES_MATCH_BOT_HELPER_LIGHT_SCOPE"
             invalid_files = @()
         }
     }

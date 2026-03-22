@@ -458,6 +458,13 @@ task_id（任务标识）允许格式：`YYMMDD_NNN` + 可选 1 位字母后缀�
 - **Unified Tool**: backend-light 任务统一使用 `scripts/generate_evidence_minimal.mjs`，禁止 task-specific generator。
 - **No Bypass**: 严禁生成 fake coverage、fake test XML、placeholder 测试结果工件。
 
+### bot-helper-light 通用最小证据路径
+- **Explicit Trigger Only**: bot-helper-light 只能由显式条件命中触发，禁止隐式兜底。
+- **Trigger Scope**: 实际改动文件必须全部落在 `strategies/crypto_binary/server.mjs`、`strategies/crypto_binary/bot_*.mjs`、`ui/js/strategy-editor.js`、`ui/strategy-editor.html`、`rules/LATEST.json`、`rules/task-reports/**`。
+- **Hard Negative Conditions**: 只要包含 `strategy_runner*.mjs`、`order_manager.mjs`、`postmortem*.mjs`、`db.mjs`、`manual_trade.mjs`、`market_scanner.mjs`、`price_feed.mjs`、`orderbook_monitor.mjs`、`trading_*`、测试文件或 `scripts/preflight.ps1`，就不得走 bot-helper-light。
+- **Unified Tool**: bot-helper-light 任务统一使用 `scripts/generate_evidence_minimal.mjs`，禁止 task-specific generator。
+- **No Bypass**: 严禁生成 fake coverage、fake test XML、placeholder 测试结果工件。
+
 ---
 
 ## Hard Gate / Soft Gate 分层
