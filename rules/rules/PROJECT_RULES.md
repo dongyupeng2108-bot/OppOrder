@@ -422,9 +422,27 @@ task_id（任务标识）允许格式：`YYMMDD_NNN` + 可选 1 位字母后缀�
 
 ### Engineering System Snapshot Protocol
 - **Rule**: `PROJECT_MASTER_PLAN.md` is a **System Mirror**, NOT a Workflow Driver.
-- **Constraint**: Manual status edits are **STRICTLY FORBIDDEN**.
+- **Constraint**: Manual status edits are **STRICTLY FORBIDDEN**. This includes manual edits to the System Snapshot, Task Ledger, or any Bot decisions in `rules/rules/PROJECT_MASTER_PLAN.md`.
 - **Principle**: Engineering state must be **derived**, never declared.
 - **Enforcement**: `sync_plan_status.js` is the ONLY allowed writer for the Snapshot sections.
+
+## BTCQDD Specific Rules (Bot Focus)
+
+### Bot Product Mode
+- **Definition**: The primary product delivery mode for BTCQDD is the "Bot Console".
+- **SE Deprecation**: Strategy Editor (SE) is NO LONGER considered a product mode. The UI shell is retained but repurposed as the Bot Console.
+- **Parameter Focus**: The UI emphasizes parameter configuration over free-form code editing.
+
+### Paper-Staging & Live
+- **paper-staging**: The primary engineering validation mode. All bots must run in `paper-staging` and pass acceptance before progressing.
+- **live**: Live execution is strictly deferred until `paper-staging` is fully verified.
+
+### Bot Structured Logging
+- **Requirement**: Structured logs emitted by the Bot are a **First-Class Artifact**. They are mandatory core business outputs, not optional debug info.
+
+### Lightweight Automated Acceptance
+- **Principle**: Automated acceptance tests for bots must be "Minimum Coverage, Conditionally Enabled, and Failure-Locatable" (最小覆盖、条件启用、失败可定位).
+- **Healthcheck**: The `53123` healthcheck remains conditionally enabled based on this lightweight principle.
 
 ---
 
