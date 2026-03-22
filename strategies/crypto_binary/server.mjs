@@ -31,6 +31,8 @@ import * as strategyRunnerSe from './strategy_runner_se.mjs';
 import { createBotLogger } from './bot_logger.mjs';
 import { createBotStateStore } from './bot_state.mjs';
 import { createBotContextAdapter } from './bot_context_adapter.mjs';
+import { decideBotAction } from './bot_strategy.mjs';
+import { getDecisionFixtures } from './bot_strategy_fixtures.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -995,6 +997,36 @@ const server = createServer(async (req, res) => {
     try {
       const context = await botContextAdapter.getContext();
       sendJson(res, context);
+    } catch (err) {
+      sendJson(res, { ok: false, error: err.message }, 500);
+    }
+    return;
+  }
+
+  if (req.method === 'GET' && req.url.startsWith('/bot/decision-preview')) {
+    try {
+      const parsed = new URL(req.url, 'http://localhost');
+      const fixtureId = parsed.searchParams.get('fixture');
+      let context = await botContextAdapter.getContext();
+      let state = botState.getState();
+      let fixture = null;
+      if (fixtureId) {
+        fixture = getDecisionFixtures().find(item => item.id === fixtureId) || null;
+        if (!fixture) {
+          sendJson(res, { ok: false, error: `unknown fixture: ${fixtureId}` }, 404);
+          return;
+        }
+        context = { ...context, ...fixture.context };
+        state = { ...state, ...fixture.state };
+      }
+      const decision = decideBotAction(context, state);
+      sendJson(res, {
+        decision: decision.decision,
+        reason: decision.reason,
+        context_snapshot: context,
+        state_snapshot: { ladder_posted: state.ladder_posted === true },
+        fixture: fixture ? { id: fixture.id, label: fixture.label } : null
+      });
     } catch (err) {
       sendJson(res, { ok: false, error: err.message }, 500);
     }
