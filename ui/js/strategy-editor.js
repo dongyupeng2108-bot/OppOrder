@@ -81,6 +81,18 @@ async function restartServer() {
   }
 }
 
+// Bot 参数默认值与缓存 Key
+const BOT_PARAMS_CACHE_KEY = 'btcqdd_bot_params';
+const BOT_DEFAULT_PARAMS = {
+  executor_mode: 'paper-staging',
+  open_delay_sec: 10,
+  max_position_usd: 100,
+  cancel_all_before_expiry_sec: 100,
+  atr_multiplier: 1.2,
+  ladder_size: 5,
+  ladder_prices: '0.27,0.24,0.21,0.18'
+};
+
 // 初始化
 async function initStrategyEditor() {
   const container = document.getElementById('se-container');
@@ -94,32 +106,71 @@ async function initStrategyEditor() {
       <!-- 左栏 -->
       <div class="se-left">
         <div class="se-toolbar" style="justify-content: space-between;">
-          <span style="font-weight:bold; color:#00e676; padding-left:10px;">参数配置 (暂不可用)</span>
+          <span style="font-weight:bold; color:#00e676; padding-left:10px;">参数配置 (Bot Console)</span>
           <div>
             <button class="se-btn-guide" onclick="se_showGuide()">查看说明</button>
-            <select id="se-period-select" class="se-btn" style="background:#333;color:#eee;border:1px solid #555;padding:4px;border-radius:4px;" onchange="se_setPeriod(this.value)">
-              <option value="5m">5m 窗口</option>
-              <option value="15m" selected>15m 窗口</option>
-            </select>
+            <button class="se-btn" onclick="se_restoreDefaultParams()" style="background:#444;color:#eee;border:1px solid #555;padding:4px 8px;border-radius:4px;margin-left:5px;cursor:pointer;">恢复默认</button>
+            <button class="se-btn-save" onclick="se_saveParams()" style="background:#007acc;color:#fff;border:none;padding:4px 8px;border-radius:4px;margin-left:5px;cursor:pointer;">保存参数</button>
           </div>
         </div>
-        <div class="se-editor-container" style="flex:1;display:flex;flex-direction:column;position:relative;">
-          <!-- 占位式参数区 -->
-          <div style="padding: 20px; color: #888; display: flex; flex-direction: column; gap: 15px; flex:1;">
-            <div>
-              <label style="display:block; margin-bottom:5px;">基础买入金额 ($):</label>
-              <input type="number" value="10" disabled style="background:#333; border:1px solid #444; color:#888; padding:5px; border-radius:3px; width:100px;">
+        <div class="se-editor-container" style="flex:1;display:flex;flex-direction:column;position:relative;overflow-y:auto;">
+          <!-- 静态参数区骨架 -->
+          <div id="se-params-form" style="padding: 20px; color: #ddd; display: flex; flex-direction: column; gap: 15px; flex:1;">
+            
+            <div style="display:flex; gap:20px; flex-wrap:wrap;">
+              <!-- executor_mode (只读) -->
+              <div style="flex:1; min-width:200px;">
+                <label style="display:block; margin-bottom:5px; font-weight:bold;">运行环境 (executor_mode):</label>
+                <select id="param_executor_mode" disabled style="background:#222; border:1px solid #444; color:#aaa; padding:6px; border-radius:4px; width:100%;">
+                  <option value="paper-staging" selected>paper-staging (可用)</option>
+                  <option value="live">live (未开放)</option>
+                </select>
+                <div style="font-size:0.8em; color:#888; margin-top:4px;">* 当前仅支持 paper-staging，Live 模式已后置。</div>
+              </div>
+
+              <!-- open_delay_sec -->
+              <div style="flex:1; min-width:200px;">
+                <label style="display:block; margin-bottom:5px; font-weight:bold;">开仓延迟秒数 (open_delay_sec):</label>
+                <input type="number" id="param_open_delay_sec" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
+              </div>
             </div>
-            <div>
-              <label style="display:block; margin-bottom:5px;">最大持仓上限 ($):</label>
-              <input type="number" value="100" disabled style="background:#333; border:1px solid #444; color:#888; padding:5px; border-radius:3px; width:100px;">
+
+            <div style="display:flex; gap:20px; flex-wrap:wrap;">
+              <!-- max_position_usd -->
+              <div style="flex:1; min-width:200px;">
+                <label style="display:block; margin-bottom:5px; font-weight:bold;">最大持仓上限 (max_position_usd):</label>
+                <input type="number" id="param_max_position_usd" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
+              </div>
+
+              <!-- cancel_all_before_expiry_sec -->
+              <div style="flex:1; min-width:200px;">
+                <label style="display:block; margin-bottom:5px; font-weight:bold;">平仓保护倒计时 (cancel_all_before_expiry_sec):</label>
+                <input type="number" id="param_cancel_all_before_expiry_sec" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
+              </div>
             </div>
-            <div>
-              <label style="display:block; margin-bottom:5px;">止盈比例 (%):</label>
-              <input type="number" value="50" disabled style="background:#333; border:1px solid #444; color:#888; padding:5px; border-radius:3px; width:100px;">
+
+            <div style="display:flex; gap:20px; flex-wrap:wrap;">
+              <!-- atr_multiplier -->
+              <div style="flex:1; min-width:200px;">
+                <label style="display:block; margin-bottom:5px; font-weight:bold;">ATR 乘数 (atr_multiplier):</label>
+                <input type="number" step="0.1" id="param_atr_multiplier" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
+              </div>
+
+              <!-- ladder_size -->
+              <div style="flex:1; min-width:200px;">
+                <label style="display:block; margin-bottom:5px; font-weight:bold;">阶梯下单份数 (ladder_size):</label>
+                <input type="number" id="param_ladder_size" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
+              </div>
             </div>
-            <div style="margin-top: 20px; font-style: italic;">
-              注：当前为壳收敛阶段，暂不保存参数。Bot 将按默认配置运行。
+
+            <div>
+              <!-- ladder_prices -->
+              <label style="display:block; margin-bottom:5px; font-weight:bold;">阶梯挂单价格列表 (ladder_prices) [逗号分隔]:</label>
+              <input type="text" id="param_ladder_prices" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
+            </div>
+
+            <div style="margin-top: 20px; padding: 10px; background: rgba(255, 152, 0, 0.1); border-left: 4px solid #ff9800; border-radius: 4px; font-style: italic; color: #ffb74d;">
+              <strong>提示：</strong>当前页面仅为前端参数骨架，尚未连接真实的 Bot 主链。点击"保存参数"仅会保存在浏览器本地缓存(localStorage)中，不会影响后端运行逻辑。
             </div>
           </div>
           <!-- 隐藏原代码编辑框以防报错 -->
@@ -198,6 +249,9 @@ async function initStrategyEditor() {
     </div>
   `;
 
+  // 加载并渲染 Bot 参数
+  se_loadParams();
+
   // 恢复上次代码：优先服务端 → 回退 localStorage → 最后用默认模板
   let saved = null;
   try {
@@ -210,6 +264,62 @@ async function initStrategyEditor() {
   document.getElementById('se-guide-text').textContent = SE_GUIDE_TEXT;
 
 }
+
+// ── Bot 参数管理逻辑 ────────────────────────────────────────────────────────
+function se_loadParams() {
+  let params = { ...BOT_DEFAULT_PARAMS };
+  try {
+    const cached = localStorage.getItem(BOT_PARAMS_CACHE_KEY);
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      params = { ...params, ...parsed }; // 合并缓存值
+    }
+  } catch (e) {
+    console.warn('[SE] Failed to load params from localStorage', e);
+  }
+  se_renderParams(params);
+}
+
+function se_renderParams(params) {
+  document.getElementById('param_executor_mode').value = params.executor_mode || 'paper-staging';
+  document.getElementById('param_open_delay_sec').value = params.open_delay_sec;
+  document.getElementById('param_max_position_usd').value = params.max_position_usd;
+  document.getElementById('param_cancel_all_before_expiry_sec').value = params.cancel_all_before_expiry_sec;
+  document.getElementById('param_atr_multiplier').value = params.atr_multiplier;
+  document.getElementById('param_ladder_size').value = params.ladder_size;
+  document.getElementById('param_ladder_prices').value = params.ladder_prices;
+}
+
+function se_restoreDefaultParams() {
+  if (confirm('确定要恢复为默认参数吗？')) {
+    se_renderParams(BOT_DEFAULT_PARAMS);
+    se_saveParams(true);
+  }
+}
+
+function se_saveParams(silent = false) {
+  const params = {
+    executor_mode: document.getElementById('param_executor_mode').value,
+    open_delay_sec: Number(document.getElementById('param_open_delay_sec').value),
+    max_position_usd: Number(document.getElementById('param_max_position_usd').value),
+    cancel_all_before_expiry_sec: Number(document.getElementById('param_cancel_all_before_expiry_sec').value),
+    atr_multiplier: Number(document.getElementById('param_atr_multiplier').value),
+    ladder_size: Number(document.getElementById('param_ladder_size').value),
+    ladder_prices: document.getElementById('param_ladder_prices').value
+  };
+
+  try {
+    localStorage.setItem(BOT_PARAMS_CACHE_KEY, JSON.stringify(params));
+    if (!silent) {
+      alert('参数已保存到本地缓存 (localStorage)！\n注意：当前为壳收敛阶段，暂未接后端 API。');
+    }
+  } catch (e) {
+    console.error('[SE] Failed to save params', e);
+    alert('保存参数失败！');
+  }
+}
+
+// ── 以下为原有逻辑 ──────────────────────────────────────────────────────────
 
 // 部署 / 停止
 async function se_deploy() {
