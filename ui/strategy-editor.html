@@ -3,9 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BTCQDD 策略编辑器</title>
+  <title>BTCQDD Bot Console</title>
   <link rel="stylesheet" href="css/btcqdd.css">
   <style>
+    :root {
+      --bg-color: #1e1e1e;
+      --panel-bg: #2d2d2d;
+      --text-color: #d4d4d4;
+      --border-color: #404040;
+      --accent-color: #007acc;
+      --success-color: #4caf50;
+      --danger-color: #f44336;
+      --warning-color: #ff9800;
+    }
+    .header-tags {
+      display: flex; gap: 10px;
+    }
+    .tag {
+      padding: 4px 8px; border-radius: 4px; font-size: 0.85em; font-weight: bold;
+    }
+    .tag.mode { background: #4caf5022; color: var(--success-color); border: 1px solid var(--success-color); }
+    .tag.warn { background: #ff980022; color: var(--warning-color); border: 1px solid var(--warning-color); }
     body, html {
       margin: 0;
       padding: 0;
@@ -84,6 +102,16 @@
   </style>
 </head>
 <body>
+  <div class="header">
+    <h1>BTCQDD Bot Console</h1>
+    <div class="header-tags">
+      <span class="tag mode">Paper-Staging</span>
+      <span class="tag warn">Live 后置</span>
+    </div>
+    <div class="se-status">
+      状态: <span id="se-status-text" class="status-offline">已停止</span>
+    </div>
+  </div>
   <!-- 容器：由 strategy-editor.js 填充 -->
   <div id="se-container" style="height:100%"></div>
 
