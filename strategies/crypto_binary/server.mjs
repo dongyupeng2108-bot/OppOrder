@@ -30,6 +30,7 @@ import { createOrderbookMonitor } from './orderbook_monitor.mjs';
 import * as strategyRunnerSe from './strategy_runner_se.mjs';
 import { createBotLogger } from './bot_logger.mjs';
 import { createBotStateStore } from './bot_state.mjs';
+import { createBotContextAdapter } from './bot_context_adapter.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -87,6 +88,10 @@ export function getGlobalRegime() {
 // 全局盘口监控（不依赖 runner，服务启动即开始）
 let _globalOrderbookMonitor = null;
 let _globalScanner          = null;
+const botContextAdapter = createBotContextAdapter({
+  getScanner: () => _globalScanner,
+  getOrderbookMonitor: () => _globalOrderbookMonitor
+});
 
 async function initGlobalOrderbook() {
   try {
@@ -980,6 +985,16 @@ const server = createServer(async (req, res) => {
   if (req.method === 'GET' && req.url === '/bot/status') {
     try {
       sendJson(res, botState.getState());
+    } catch (err) {
+      sendJson(res, { ok: false, error: err.message }, 500);
+    }
+    return;
+  }
+
+  if (req.method === 'GET' && req.url === '/bot/context') {
+    try {
+      const context = await botContextAdapter.getContext();
+      sendJson(res, context);
     } catch (err) {
       sendJson(res, { ok: false, error: err.message }, 500);
     }

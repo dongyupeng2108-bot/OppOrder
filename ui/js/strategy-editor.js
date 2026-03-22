@@ -203,14 +203,16 @@ async function initStrategyEditor() {
             <div id="se-log-area" class="se-log-area"></div>
           </div>
           <div class="se-panel se-stats-panel" style="flex-shrink: 0;">
-            <div class="se-stat-item"><div class="se-stat-label">mode</div><div id="se-bot-mode" class="se-stat-value">—</div></div>
-            <div class="se-stat-item"><div class="se-stat-label">phase</div><div id="se-bot-phase" class="se-stat-value">—</div></div>
-            <div class="se-stat-item"><div class="se-stat-label">current_window_id</div><div id="se-bot-window" class="se-stat-value">—</div></div>
-            <div class="se-stat-item"><div class="se-stat-label">remaining_sec</div><div id="se-bot-remaining" class="se-stat-value">—</div></div>
-            <div class="se-stat-item"><div class="se-stat-label">anchor_btc</div><div id="se-bot-anchor" class="se-stat-value">—</div></div>
-            <div class="se-stat-item"><div class="se-stat-label">atr_5m</div><div id="se-bot-atr" class="se-stat-value">—</div></div>
-            <div class="se-stat-item"><div class="se-stat-label">upper_bound</div><div id="se-bot-upper" class="se-stat-value">—</div></div>
-            <div class="se-stat-item"><div class="se-stat-label">lower_bound</div><div id="se-bot-lower" class="se-stat-value">—</div></div>
+            <div class="se-stat-item"><div class="se-stat-label">slug</div><div id="se-ctx-slug" class="se-stat-value">—</div></div>
+            <div class="se-stat-item"><div class="se-stat-label">remaining_sec</div><div id="se-ctx-remaining" class="se-stat-value">—</div></div>
+            <div class="se-stat-item"><div class="se-stat-label">btc_price</div><div id="se-ctx-btc-price" class="se-stat-value">—</div></div>
+            <div class="se-stat-item"><div class="se-stat-label">atr_5m</div><div id="se-ctx-atr" class="se-stat-value">—</div></div>
+            <div class="se-stat-item"><div class="se-stat-label">bid_yes</div><div id="se-ctx-bid-yes" class="se-stat-value">—</div></div>
+            <div class="se-stat-item"><div class="se-stat-label">ask_yes</div><div id="se-ctx-ask-yes" class="se-stat-value">—</div></div>
+            <div class="se-stat-item"><div class="se-stat-label">bid_no</div><div id="se-ctx-bid-no" class="se-stat-value">—</div></div>
+            <div class="se-stat-item"><div class="se-stat-label">ask_no</div><div id="se-ctx-ask-no" class="se-stat-value">—</div></div>
+            <div class="se-stat-item"><div class="se-stat-label">tick_size</div><div id="se-ctx-tick-size" class="se-stat-value">—</div></div>
+            <div class="se-stat-item"><div class="se-stat-label">stale</div><div id="se-ctx-stale" class="se-stat-value">—</div></div>
           </div>
           <div style="flex:1;background:#1e1e1e;border:1px solid #333;padding: 0 16px;display:flex;flex-direction:column;border-bottom:none;">
             <div id="se-pnl-title" style="padding:4px 8px;border-bottom:1px solid #333;font-size:12px;color:#aaa;">累计 PnL</div>
@@ -429,20 +431,21 @@ function se_stopPoll() {
 
 async function se_poll() {
   try {
-    const [statusRes, logsRes] = await Promise.all([
+    const [contextRes, statusRes, logsRes] = await Promise.all([
+      fetch(`${BASE_URL}/bot/context`),
       fetch(`${BASE_URL}/bot/status`),
       fetch(`${BASE_URL}/bot/logs?limit=200`)
     ]);
+    const context = await contextRes.json();
     const status = await statusRes.json();
     const logsData = await logsRes.json();
 
-    se_renderStats(status);
+    se_renderContext(context);
     se_renderPnlChart([]);
     se_renderLogs(Array.isArray(logsData) ? logsData : (logsData.logs || []));
     se_renderOrders(null);
 
-    // 倒计时更新
-    const remaining = status.remaining_sec ?? null;
+    const remaining = context.remaining_sec ?? null;
     const el = document.getElementById('se-countdown');
     if (el) {
       if (remaining != null) {
@@ -471,15 +474,17 @@ async function se_poll() {
 }
 
 // 渲染统计、日志、PnL 图
-function se_renderStats(status) {
-  document.getElementById('se-bot-mode').textContent = se_formatStateValue(status.mode);
-  document.getElementById('se-bot-phase').textContent = se_formatStateValue(status.phase);
-  document.getElementById('se-bot-window').textContent = se_formatStateValue(status.current_window_id);
-  document.getElementById('se-bot-remaining').textContent = se_formatStateValue(status.remaining_sec);
-  document.getElementById('se-bot-anchor').textContent = se_formatStateValue(status.anchor_btc);
-  document.getElementById('se-bot-atr').textContent = se_formatStateValue(status.atr_5m);
-  document.getElementById('se-bot-upper').textContent = se_formatStateValue(status.upper_bound);
-  document.getElementById('se-bot-lower').textContent = se_formatStateValue(status.lower_bound);
+function se_renderContext(context) {
+  document.getElementById('se-ctx-slug').textContent = se_formatStateValue(context.slug);
+  document.getElementById('se-ctx-remaining').textContent = se_formatStateValue(context.remaining_sec);
+  document.getElementById('se-ctx-btc-price').textContent = se_formatStateValue(context.btc_price);
+  document.getElementById('se-ctx-atr').textContent = se_formatStateValue(context.atr_5m);
+  document.getElementById('se-ctx-bid-yes').textContent = se_formatStateValue(context.bid_yes);
+  document.getElementById('se-ctx-ask-yes').textContent = se_formatStateValue(context.ask_yes);
+  document.getElementById('se-ctx-bid-no').textContent = se_formatStateValue(context.bid_no);
+  document.getElementById('se-ctx-ask-no').textContent = se_formatStateValue(context.ask_no);
+  document.getElementById('se-ctx-tick-size').textContent = se_formatStateValue(context.tick_size);
+  document.getElementById('se-ctx-stale').textContent = se_formatStateValue(context.stale);
   const pnlTitleEl = document.getElementById('se-pnl-title');
   if (pnlTitleEl) {
     pnlTitleEl.style.color = '#aaa';
