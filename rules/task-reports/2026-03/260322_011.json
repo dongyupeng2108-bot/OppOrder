@@ -1,0 +1,39 @@
+{
+  "task_id": "260322_011",
+  "timestamp": "2026-03-22T17:37:03.419Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "smoke_test": "PASS",
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260322_011",
+      "status": "DONE",
+      "artifacts": [
+        "rules/LATEST.json",
+        "strategies/crypto_binary/bot_state.mjs",
+        "strategies/crypto_binary/server.mjs",
+        "ui/js/strategy-editor.js"
+      ],
+      "summary": "Automation Pack V1 Validation for Task 260322_011",
+      "mode": "Integrate",
+      "task_profile": "bot-helper-light",
+      "dod_evidence": {
+        "gate_light_exit": 0,
+        "healthcheck": [
+          "rules/task-reports/2026-03/260322_011_healthcheck_53122_root.txt",
+          "rules/task-reports/2026-03/260322_011_healthcheck_53122_pairs.txt"
+        ]
+      },
+      "report_file": "notify_260322_011.txt",
+      "report_sha256_short": "5931765c"
+    }
+  }
+}

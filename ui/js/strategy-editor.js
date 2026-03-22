@@ -177,9 +177,12 @@ async function initStrategyEditor() {
           <textarea id="se-editor" style="display:none;">function decide(ctx) { return 'HOLD'; }</textarea>
           <div class="se-actions">
             <button id="se-btn-deploy" class="se-btn-deploy" onclick="se_deploy()">▶ 启动 Bot</button>
-            <div class="se-status" style="margin-left:auto; display:flex; align-items:center; gap:8px;">
-              <span id="se-status-dot" class="se-dot se-dot-off"></span>
-              <span id="se-status-label">已停止</span>
+            <div class="se-status" style="margin-left:auto; display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span id="se-status-dot" class="se-dot se-dot-off"></span>
+                <span id="se-status-label">已停止</span>
+              </div>
+              <div id="se-bot-state-tip" style="font-size:11px;color:#999;">当前为只读 Bot 状态骨架，尚未接主循环</div>
             </div>
           </div>
         </div>
@@ -200,18 +203,14 @@ async function initStrategyEditor() {
             <div id="se-log-area" class="se-log-area"></div>
           </div>
           <div class="se-panel se-stats-panel" style="flex-shrink: 0;">
-            <div class="se-stat-item">
-              <div class="se-stat-label">交易次数</div>
-              <div id="se-stat-trades" class="se-stat-value">0</div>
-            </div>
-            <div class="se-stat-item">
-              <div class="se-stat-label">胜率</div>
-              <div id="se-stat-winrate" class="se-stat-value">—</div>
-            </div>
-            <div class="se-stat-item">
-              <div class="se-stat-label">运行时长</div>
-              <div id="se-stat-uptime" class="se-stat-value">0s</div>
-            </div>
+            <div class="se-stat-item"><div class="se-stat-label">mode</div><div id="se-bot-mode" class="se-stat-value">—</div></div>
+            <div class="se-stat-item"><div class="se-stat-label">phase</div><div id="se-bot-phase" class="se-stat-value">—</div></div>
+            <div class="se-stat-item"><div class="se-stat-label">current_window_id</div><div id="se-bot-window" class="se-stat-value">—</div></div>
+            <div class="se-stat-item"><div class="se-stat-label">remaining_sec</div><div id="se-bot-remaining" class="se-stat-value">—</div></div>
+            <div class="se-stat-item"><div class="se-stat-label">anchor_btc</div><div id="se-bot-anchor" class="se-stat-value">—</div></div>
+            <div class="se-stat-item"><div class="se-stat-label">atr_5m</div><div id="se-bot-atr" class="se-stat-value">—</div></div>
+            <div class="se-stat-item"><div class="se-stat-label">upper_bound</div><div id="se-bot-upper" class="se-stat-value">—</div></div>
+            <div class="se-stat-item"><div class="se-stat-label">lower_bound</div><div id="se-bot-lower" class="se-stat-value">—</div></div>
           </div>
           <div style="flex:1;background:#1e1e1e;border:1px solid #333;padding: 0 16px;display:flex;flex-direction:column;border-bottom:none;">
             <div id="se-pnl-title" style="padding:4px 8px;border-bottom:1px solid #333;font-size:12px;color:#aaa;">累计 PnL</div>
@@ -431,19 +430,19 @@ function se_stopPoll() {
 async function se_poll() {
   try {
     const [statusRes, logsRes] = await Promise.all([
-      fetch(`${BASE_URL}/strategy-runner/status`),
+      fetch(`${BASE_URL}/bot/status`),
       fetch(`${BASE_URL}/bot/logs?limit=200`)
     ]);
     const status = await statusRes.json();
     const logsData = await logsRes.json();
 
     se_renderStats(status);
-    se_renderPnlChart(status.pnl_series || []);
+    se_renderPnlChart([]);
     se_renderLogs(Array.isArray(logsData) ? logsData : (logsData.logs || []));
-    se_renderOrders(status.orders);
+    se_renderOrders(null);
 
     // 倒计时更新
-    const remaining = status.window?.remaining_sec ?? null;
+    const remaining = status.remaining_sec ?? null;
     const el = document.getElementById('se-countdown');
     if (el) {
       if (remaining != null) {
@@ -457,14 +456,12 @@ async function se_poll() {
 
     // 延迟显示
     const latEl = document.getElementById('se-latency');
-    if (latEl && status.latency) {
-      const d = status.latency.decide_ms;
-      const o = status.latency.order_ms;
-      latEl.textContent = '\u5ef6\u8fdf: \u51b3\u7b56 ' + d + 'ms | \u4e0b\u5355 ' + o + 'ms';
+    if (latEl) {
+      latEl.textContent = '';
     }
 
     // 如果服务端显示已停止，同步前端状态
-    if (!status.running && _se_running) {
+    if (status.phase === 'IDLE' && _se_running) {
       _se_running = false;
       se_updateRunningUI(false);
     }
@@ -475,17 +472,14 @@ async function se_poll() {
 
 // 渲染统计、日志、PnL 图
 function se_renderStats(status) {
-  const stats = status.stats || {};
-  document.getElementById('se-stat-trades').textContent = stats.trades ?? 0;
-  const totalSettled = (stats.wins || 0) + (stats.losses || 0);
-  const winRate = totalSettled > 0
-    ? Math.round((stats.wins / totalSettled) * 100) + '%'
-    : '—';
-  document.getElementById('se-stat-winrate').textContent = winRate;
-  document.getElementById('se-stat-uptime').textContent =
-    se_formatUptime(status.uptime_sec || 0);
-
-  // PnL 标题颜色：盈利绿色，亏损红色
+  document.getElementById('se-bot-mode').textContent = se_formatStateValue(status.mode);
+  document.getElementById('se-bot-phase').textContent = se_formatStateValue(status.phase);
+  document.getElementById('se-bot-window').textContent = se_formatStateValue(status.current_window_id);
+  document.getElementById('se-bot-remaining').textContent = se_formatStateValue(status.remaining_sec);
+  document.getElementById('se-bot-anchor').textContent = se_formatStateValue(status.anchor_btc);
+  document.getElementById('se-bot-atr').textContent = se_formatStateValue(status.atr_5m);
+  document.getElementById('se-bot-upper').textContent = se_formatStateValue(status.upper_bound);
+  document.getElementById('se-bot-lower').textContent = se_formatStateValue(status.lower_bound);
   const pnlTitleEl = document.getElementById('se-pnl-title');
   if (pnlTitleEl) {
     pnlTitleEl.style.color = '#aaa';
@@ -493,10 +487,10 @@ function se_renderStats(status) {
   }
 }
 
-function se_formatUptime(sec) {
-  if (sec < 60) return sec + 's';
-  if (sec < 3600) return Math.floor(sec / 60) + 'm';
-  return Math.floor(sec / 3600) + 'h ' + Math.floor((sec % 3600) / 60) + 'm';
+function se_formatStateValue(value) {
+  if (value === null || value === undefined || value === '') return '(null)';
+  if (Array.isArray(value)) return value.length ? value.join(',') : '[]';
+  return `${value}`;
 }
 
 function se_renderOrders(orders) {
