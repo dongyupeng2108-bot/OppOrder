@@ -66,6 +66,7 @@ const BOT_STRATEGY_DEFAULT_CONFIG = {
   ladder_prices: [...BOT_STRATEGY_CONTRACT.defaults.ladder_prices]
 };
 const BOT_DEBUG_SCENARIO_MAIN_PATH_V1 = 'main_path_v1';
+const BOT_DEBUG_SCENARIO_FILL_YES_PATH_V1 = 'fill_yes_path_v1';
 const createMainPathV1Frames = () => ([
   { window_id: 'debug-main-path-v1-w1', slug: 'debug-main-path-v1-w1', period: '5m', remaining_sec: 299, btc_price: 100, atr_5m: 2, bid_yes: 0.55, ask_yes: 0.56, bid_no: 0.44, ask_no: 0.45 },
   { window_id: 'debug-main-path-v1-w1', slug: 'debug-main-path-v1-w1', period: '5m', remaining_sec: 295, btc_price: 100, atr_5m: 2, bid_yes: 0.55, ask_yes: 0.56, bid_no: 0.44, ask_no: 0.45 },
@@ -73,6 +74,14 @@ const createMainPathV1Frames = () => ([
   { window_id: 'debug-main-path-v1-w1', slug: 'debug-main-path-v1-w1', period: '5m', remaining_sec: 250, btc_price: 103, atr_5m: 2, bid_yes: 0.55, ask_yes: 0.56, bid_no: 0.44, ask_no: 0.45 },
   { window_id: 'debug-main-path-v1-w1', slug: 'debug-main-path-v1-w1', period: '5m', remaining_sec: 220, btc_price: 97, atr_5m: 2, bid_yes: 0.55, ask_yes: 0.56, bid_no: 0.44, ask_no: 0.45 },
   { window_id: 'debug-main-path-v1-w1', slug: 'debug-main-path-v1-w1', period: '5m', remaining_sec: 100, btc_price: 99, atr_5m: 2, bid_yes: 0.55, ask_yes: 0.56, bid_no: 0.44, ask_no: 0.45 }
+]);
+const createFillYesPathV1Frames = () => ([
+  { window_id: 'debug-fill-yes-path-v1-w1', slug: 'debug-fill-yes-path-v1-w1', period: '5m', remaining_sec: 299, btc_price: 100, atr_5m: 2, bid_yes: 0.3, ask_yes: null, bid_no: 0.7, ask_no: null },
+  { window_id: 'debug-fill-yes-path-v1-w1', slug: 'debug-fill-yes-path-v1-w1', period: '5m', remaining_sec: 295, btc_price: 100, atr_5m: 2, bid_yes: 0.3, ask_yes: null, bid_no: 0.7, ask_no: null },
+  { window_id: 'debug-fill-yes-path-v1-w1', slug: 'debug-fill-yes-path-v1-w1', period: '5m', remaining_sec: 290, btc_price: 100, atr_5m: 2, bid_yes: 0.3, ask_yes: null, bid_no: 0.7, ask_no: null },
+  { window_id: 'debug-fill-yes-path-v1-w1', slug: 'debug-fill-yes-path-v1-w1', period: '5m', remaining_sec: 280, btc_price: 101, atr_5m: 2, bid_yes: 0.3, ask_yes: 0.27, bid_no: 0.7, ask_no: null },
+  { window_id: 'debug-fill-yes-path-v1-w1', slug: 'debug-fill-yes-path-v1-w1', period: '5m', remaining_sec: 250, btc_price: 103, atr_5m: 2, bid_yes: 0.31, ask_yes: null, bid_no: 0.69, ask_no: null },
+  { window_id: 'debug-fill-yes-path-v1-w1', slug: 'debug-fill-yes-path-v1-w1', period: '5m', remaining_sec: 100, btc_price: 102, atr_5m: 2, bid_yes: 0.31, ask_yes: null, bid_no: 0.69, ask_no: null }
 ]);
 const botLogger = createBotLogger({ maxEntries: 400 });
 const botState = createBotStateStore({ mode: BOT_MODE });
@@ -94,10 +103,12 @@ const clearBotDebugScenario = () => {
   botState.patchState({ debug_scenario: null, debug_frame_index: 0, debug_completed: false });
 };
 const enableBotDebugScenario = (name) => {
-  if (name !== BOT_DEBUG_SCENARIO_MAIN_PATH_V1) {
+  if (name !== BOT_DEBUG_SCENARIO_MAIN_PATH_V1 && name !== BOT_DEBUG_SCENARIO_FILL_YES_PATH_V1) {
     throw new Error(`unsupported debugScenario: ${name}`);
   }
-  const frames = createMainPathV1Frames();
+  const frames = name === BOT_DEBUG_SCENARIO_FILL_YES_PATH_V1
+    ? createFillYesPathV1Frames()
+    : createMainPathV1Frames();
   botDebugRuntime.name = name;
   botDebugRuntime.frames = frames;
   botDebugRuntime.index = 0;
