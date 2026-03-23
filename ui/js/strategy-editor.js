@@ -52,6 +52,7 @@ let _se_pollTimer = null;
 let _seLastLogTs = '';
 let _seErrorCount = 0;
 let _seLastPollError = null;
+let _seActionPending = false;
 const BASE_URL = ''; // 相对路径
 
 async function restartServer() {
@@ -176,8 +177,9 @@ async function initStrategyEditor() {
           </div>
           <!-- 隐藏原代码编辑框以防报错 -->
           <textarea id="se-editor" style="display:none;">function decide(ctx) { return 'HOLD'; }</textarea>
-          <div class="se-actions">
-            <button id="se-btn-deploy" class="se-btn-deploy" onclick="se_deploy()">▶ 启动 Bot</button>
+          <div class="se-actions" style="display:flex;gap:8px;align-items:center;">
+            <button id="se-btn-start" class="se-btn-deploy" onclick="se_startBot()">▶ Start</button>
+            <button id="se-btn-stop" class="se-btn se-btn-stop" onclick="se_stopBot()" style="background:#7a3a3a;color:#fff;border:1px solid #9a4b4b;padding:6px 10px;border-radius:4px;cursor:pointer;">■ Stop</button>
             <div class="se-status" style="margin-left:auto; display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
               <div style="display:flex; align-items:center; gap:8px;">
                 <span id="se-status-dot" class="se-dot se-dot-off"></span>
@@ -285,6 +287,7 @@ async function initStrategyEditor() {
   if (!saved) saved = localStorage.getItem('se_code');
   document.getElementById('se-editor').value = saved || SE_DEFAULT_CODE;
   document.getElementById('se-guide-text').textContent = SE_GUIDE_TEXT;
+  se_updateRunningUI(false);
   se_startPoll();
 
 }
@@ -346,74 +349,69 @@ function se_saveParams(silent = false) {
 // ── 以下为原有逻辑 ──────────────────────────────────────────────────────────
 
 // 部署 / 停止
-async function se_deploy() {
-  const code = document.getElementById('se-editor').value.trim();
-  if (!code) { alert('请先编写策略代码'); return; }
-
+async function se_startBot() {
+  if (_se_running || _seActionPending) return;
+  _seActionPending = true;
+  se_updateRunningUI(_se_running);
+  se_renderPollError('Start 请求中...');
   try {
-    new Function(code);
-  } catch (e) {
-    alert('语法错误：' + e.message);
-    return;
-  }
-
-  if (_se_running) {
-    // 当前运行中 → 停止
-    await se_stop();
-    return;
-  }
-
-  try {
-    const res = await fetch(`${BASE_URL}/strategy-runner/deploy`, {
+    const res = await fetch(`${BASE_URL}/bot/start`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code, period: _se_period })
+      body: JSON.stringify({ tick_interval_ms: 1000 })
     });
     const data = await res.json();
-    if (data.ok) {
-      _se_running = true;
-      _seLastLogTs = '';
-      _seErrorCount = 0;
-      const logArea = document.getElementById('se-log-area');
-      if (logArea) logArea.innerHTML = '';
-      se_appendLog('SYSTEM', '策略已启动');
-      se_updateRunningUI(true);
-     // 清空旧数据
-      _seLastLogTs = '';
-      if (typeof se_startPoll === 'function') se_startPoll();
-    } else {
-      se_appendLog('ERROR', data.error || '部署失败');
+    if (!res.ok || data?.ok === false) {
+      throw new Error(data?.error || `HTTP ${res.status}`);
     }
+    _se_running = data?.running === true;
+    se_updateRunningUI(_se_running);
+    se_renderPollError(_se_running ? null : 'Start 已返回，但运行态未就绪');
+    se_appendLog('SYSTEM', 'Bot Start 请求成功');
+    await se_poll();
   } catch (err) {
-    se_appendLog('ERROR', err.message);
+    se_renderPollError(`Start 失败: ${err.message}`);
+    se_appendLog('ERROR', `Start 失败: ${err.message}`);
+  } finally {
+    _seActionPending = false;
+    se_updateRunningUI(_se_running);
   }
 }
 
-async function se_stop() {
+async function se_stopBot() {
+  if (!_se_running || _seActionPending) return;
+  _seActionPending = true;
+  se_updateRunningUI(_se_running);
+  se_renderPollError('Stop 请求中...');
   try {
-    await fetch(`${BASE_URL}/strategy-runner/stop`, { method: 'POST' });
-  } catch (_) {}
-  _se_running = false;
-  se_updateRunningUI(false);
+    const res = await fetch(`${BASE_URL}/bot/stop`, { method: 'POST' });
+    const data = await res.json();
+    if (!res.ok || data?.ok === false) {
+      throw new Error(data?.error || `HTTP ${res.status}`);
+    }
+    _se_running = data?.running === true;
+    se_updateRunningUI(_se_running);
+    se_renderPollError(_se_running ? 'Stop 已返回，但仍在运行' : null);
+    se_appendLog('SYSTEM', 'Bot Stop 请求成功');
+    await se_poll();
+  } catch (err) {
+    se_renderPollError(`Stop 失败: ${err.message}`);
+    se_appendLog('ERROR', `Stop 失败: ${err.message}`);
+  } finally {
+    _seActionPending = false;
+    se_updateRunningUI(_se_running);
+  }
 }
 
 function se_updateRunningUI(running) {
-  const btn = document.getElementById('se-btn-deploy');
+  const startBtn = document.getElementById('se-btn-start');
+  const stopBtn = document.getElementById('se-btn-stop');
   const dot = document.getElementById('se-status-dot');
   const label = document.getElementById('se-status-label');
-  if (running) {
-    btn.textContent = '⏹ 停止 Bot';
-    btn.classList.add('se-btn-stop');
-    btn.classList.remove('se-btn-deploy');
-    dot.className = 'se-dot se-dot-on';
-    label.textContent = '运行中';
-  } else {
-    btn.textContent = '▶ 启动 Bot';
-    btn.classList.remove('se-btn-stop');
-    btn.classList.add('se-btn-deploy');
-    dot.className = 'se-dot se-dot-off';
-    label.textContent = '已停止';
-  }
+  if (startBtn) startBtn.disabled = running || _seActionPending;
+  if (stopBtn) stopBtn.disabled = !running || _seActionPending;
+  if (dot) dot.className = running ? 'se-dot se-dot-on' : 'se-dot se-dot-off';
+  if (label) label.textContent = running ? '运行中' : '已停止';
 }
 
 // 保存 / 周期切换
@@ -488,10 +486,8 @@ async function se_poll() {
     }
 
     // 如果服务端显示已停止，同步前端状态
-    if (status?.phase === 'IDLE' && _se_running) {
-      _se_running = false;
-      se_updateRunningUI(false);
-    }
+    _se_running = status?.running === true;
+    se_updateRunningUI(_se_running);
     _seLastPollError = null;
     se_renderPollError(null);
   } catch (err) {
@@ -684,7 +680,7 @@ function se_renderLogs(logs) {
   });
 
   if (_seErrorCount >= 3 && _se_running) {
-    se_stop();
+    se_stopBot();
     alert('连续报错 3 次，策略已自动停止');
   }
 
