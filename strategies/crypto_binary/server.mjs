@@ -74,6 +74,7 @@ const botRunner = createBotRunner({
   patchState: (patch) => botState.patchState(patch),
   decide: (input) => decideBotAction(input),
   applyIntents: (intents, params) => botExecutorPaper.applyIntents(intents, params),
+  applyFills: (context) => botExecutorPaper.applyFills(context),
   getOrders: () => botExecutorPaper.getOrders(),
   getSummary: () => botExecutorPaper.getSummary(),
   onRuntimeUpdate: (runtime) => botState.patchState(runtime),

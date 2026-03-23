@@ -34,6 +34,7 @@ export function createBotRunner(options = {}) {
   const patchState = options.patchState;
   const decide = options.decide;
   const applyIntents = options.applyIntents;
+  const applyFills = options.applyFills;
   const getOrders = options.getOrders;
   const getSummary = options.getSummary;
   const log = options.log;
@@ -44,6 +45,7 @@ export function createBotRunner(options = {}) {
   if (typeof patchState !== 'function') throw new Error('patchState required');
   if (typeof decide !== 'function') throw new Error('decide required');
   if (typeof applyIntents !== 'function') throw new Error('applyIntents required');
+  if (typeof applyFills !== 'function') throw new Error('applyFills required');
   if (typeof getOrders !== 'function') throw new Error('getOrders required');
   if (typeof getSummary !== 'function') throw new Error('getSummary required');
   if (typeof log !== 'function') throw new Error('log required');
@@ -78,8 +80,9 @@ export function createBotRunner(options = {}) {
     });
 
     const intentResult = applyIntents(decision.intents, { source: 'runner_tick' });
-    const summary = intentResult.summary || getSummary();
-    const orders = intentResult.orders || getOrders();
+    const fillResult = applyFills(context);
+    const summary = fillResult.summary || intentResult.summary || getSummary();
+    const orders = fillResult.orders || intentResult.orders || getOrders();
     const openYes = orders.filter((order) => order.status === 'OPEN' && order.side === 'YES').map((order) => order.order_id);
     const openNo = orders.filter((order) => order.status === 'OPEN' && order.side === 'NO').map((order) => order.order_id);
     const statePatch = {
@@ -100,6 +103,24 @@ export function createBotRunner(options = {}) {
     const stateAfter = patchState(statePatch);
 
     const beforeLogCount = options.getLogCount ? options.getLogCount() : null;
+    if (Array.isArray(fillResult.filled_orders) && fillResult.filled_orders.length > 0) {
+      log({
+        level: 'info',
+        source: 'bot_runner',
+        event: 'BOT_FILL',
+        message: `filled ${fillResult.filled_orders.length} orders`,
+        mode: state.mode ?? null,
+        window_id: context.window_id ?? null,
+        data: {
+          fills: fillResult.filled_orders.map((order) => ({
+            order_id: order.order_id,
+            side: order.side,
+            order_price: order.price,
+            fill_price: order.fill_price
+          }))
+        }
+      });
+    }
     log({
       level: 'info',
       source: 'bot_runner',
@@ -110,8 +131,10 @@ export function createBotRunner(options = {}) {
       data: {
         intents_summary: summarizeIntents(decision.intents),
         changed: intentResult.changed,
+        filled: fillResult.changed,
         open_total: summary.open_total,
-        cancelled_total: summary.cancelled_total
+        cancelled_total: summary.cancelled_total,
+        filled_total: summary.filled_total
       }
     });
     const afterLogCount = options.getLogCount ? options.getLogCount() : null;
@@ -123,6 +146,7 @@ export function createBotRunner(options = {}) {
       state_before: cloneValue(state),
       state_after: cloneValue(stateAfter),
       order_summary: cloneValue(summary),
+      fills: cloneValue(fillResult.filled_orders || []),
       logs_added: logsAdded
     };
   };
