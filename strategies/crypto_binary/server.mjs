@@ -65,10 +65,107 @@ const BOT_STRATEGY_DEFAULT_CONFIG = {
   ladder_size: BOT_STRATEGY_CONTRACT.defaults.ladder_size,
   ladder_prices: [...BOT_STRATEGY_CONTRACT.defaults.ladder_prices]
 };
+const BOT_DEBUG_SCENARIO_MAIN_PATH_V1 = 'main_path_v1';
+const createMainPathV1Frames = () => ([
+  { window_id: 'debug-main-path-v1-w1', slug: 'debug-main-path-v1-w1', period: '5m', remaining_sec: 299, btc_price: 100, atr_5m: 2, bid_yes: 0.55, ask_yes: 0.56, bid_no: 0.44, ask_no: 0.45 },
+  { window_id: 'debug-main-path-v1-w1', slug: 'debug-main-path-v1-w1', period: '5m', remaining_sec: 295, btc_price: 100, atr_5m: 2, bid_yes: 0.55, ask_yes: 0.56, bid_no: 0.44, ask_no: 0.45 },
+  { window_id: 'debug-main-path-v1-w1', slug: 'debug-main-path-v1-w1', period: '5m', remaining_sec: 290, btc_price: 100, atr_5m: 2, bid_yes: 0.55, ask_yes: 0.56, bid_no: 0.44, ask_no: 0.45 },
+  { window_id: 'debug-main-path-v1-w1', slug: 'debug-main-path-v1-w1', period: '5m', remaining_sec: 250, btc_price: 103, atr_5m: 2, bid_yes: 0.55, ask_yes: 0.56, bid_no: 0.44, ask_no: 0.45 },
+  { window_id: 'debug-main-path-v1-w1', slug: 'debug-main-path-v1-w1', period: '5m', remaining_sec: 220, btc_price: 97, atr_5m: 2, bid_yes: 0.55, ask_yes: 0.56, bid_no: 0.44, ask_no: 0.45 },
+  { window_id: 'debug-main-path-v1-w1', slug: 'debug-main-path-v1-w1', period: '5m', remaining_sec: 100, btc_price: 99, atr_5m: 2, bid_yes: 0.55, ask_yes: 0.56, bid_no: 0.44, ask_no: 0.45 }
+]);
 const botLogger = createBotLogger({ maxEntries: 400 });
 const botState = createBotStateStore({ mode: BOT_MODE });
 const botLedger = createBotOrderLedger();
 const botExecutorPaper = createBotExecutorPaper({ ledger: botLedger });
+const botDebugRuntime = {
+  name: null,
+  frames: [],
+  index: 0,
+  active: false,
+  completed: false
+};
+const clearBotDebugScenario = () => {
+  botDebugRuntime.name = null;
+  botDebugRuntime.frames = [];
+  botDebugRuntime.index = 0;
+  botDebugRuntime.active = false;
+  botDebugRuntime.completed = false;
+  botState.patchState({ debug_scenario: null, debug_frame_index: 0, debug_completed: false });
+};
+const enableBotDebugScenario = (name) => {
+  if (name !== BOT_DEBUG_SCENARIO_MAIN_PATH_V1) {
+    throw new Error(`unsupported debugScenario: ${name}`);
+  }
+  const frames = createMainPathV1Frames();
+  botDebugRuntime.name = name;
+  botDebugRuntime.frames = frames;
+  botDebugRuntime.index = 0;
+  botDebugRuntime.active = true;
+  botDebugRuntime.completed = false;
+  botState.patchState({ debug_scenario: name, debug_frame_index: 0, debug_completed: false });
+  botLogger.log({
+    level: 'info',
+    source: 'server',
+    event: 'BOT_DEBUG_SCENARIO_ENABLED',
+    message: `debug scenario enabled: ${name}`,
+    mode: BOT_MODE,
+    window_id: null,
+    data: { frame_total: frames.length }
+  });
+};
+const getDebugScheduledTickParams = () => {
+  if (!botDebugRuntime.active) return null;
+  const frame = botDebugRuntime.frames[botDebugRuntime.index] || null;
+  if (!frame) {
+    botDebugRuntime.active = false;
+    botDebugRuntime.completed = true;
+    botState.patchState({
+      debug_scenario: botDebugRuntime.name,
+      debug_frame_index: botDebugRuntime.index,
+      debug_completed: true
+    });
+    return {
+      params: {},
+      stop_after_tick: true,
+      stop_reason: 'debug_scenario_frame_exhausted',
+      debug_scenario: botDebugRuntime.name,
+      frame_index: botDebugRuntime.index
+    };
+  }
+  botDebugRuntime.index += 1;
+  const doneAfter = botDebugRuntime.index >= botDebugRuntime.frames.length;
+  if (doneAfter) {
+    botDebugRuntime.active = false;
+    botDebugRuntime.completed = true;
+  }
+  botState.patchState({
+    debug_scenario: botDebugRuntime.name,
+    debug_frame_index: botDebugRuntime.index,
+    debug_completed: doneAfter
+  });
+  botLogger.log({
+    level: 'info',
+    source: 'server',
+    event: 'BOT_DEBUG_FRAME',
+    message: `debug frame ${botDebugRuntime.index}/${botDebugRuntime.frames.length}`,
+    mode: BOT_MODE,
+    window_id: frame.window_id ?? null,
+    data: {
+      debug_scenario: botDebugRuntime.name,
+      frame_index: botDebugRuntime.index,
+      remaining_sec: frame.remaining_sec ?? null,
+      btc_price: frame.btc_price ?? null
+    }
+  });
+  return {
+    params: { context_override: frame },
+    stop_after_tick: doneAfter,
+    stop_reason: doneAfter ? 'debug_scenario_completed' : null,
+    debug_scenario: botDebugRuntime.name,
+    frame_index: botDebugRuntime.index
+  };
+};
 const botRunner = createBotRunner({
   getContext: () => botContextAdapter.getContext(),
   getState: () => botState.getState(),
@@ -80,6 +177,7 @@ const botRunner = createBotRunner({
   applyFills: (context) => botExecutorPaper.applyFills(context),
   getOrders: () => botExecutorPaper.getOrders(),
   getSummary: () => botExecutorPaper.getSummary(),
+  getScheduledTickParams: () => getDebugScheduledTickParams(),
   onRuntimeUpdate: (runtime) => botState.patchState(runtime),
   log: (entry) => botLogger.log(entry),
   getLogCount: () => botLogger.getCount(),
@@ -1150,13 +1248,30 @@ const server = createServer(async (req, res) => {
       try {
         const payload = JSON.parse(body || '{}');
         const rawInterval = payload?.tick_interval_ms;
+        const debugScenario = payload?.debugScenario;
         const tickIntervalMs = rawInterval == null ? BOT_TICK_INTERVAL_DEFAULT_MS : Number(rawInterval);
         if (!Number.isInteger(tickIntervalMs) || tickIntervalMs < BOT_TICK_INTERVAL_MIN_MS || tickIntervalMs > BOT_TICK_INTERVAL_MAX_MS) {
           sendJson(res, { ok: false, error: 'invalid tick_interval_ms' }, 400);
           return;
         }
+        if (debugScenario != null && typeof debugScenario !== 'string') {
+          sendJson(res, { ok: false, error: 'invalid debugScenario' }, 400);
+          return;
+        }
+        if (typeof debugScenario === 'string' && debugScenario.length > 0) {
+          enableBotDebugScenario(debugScenario);
+        } else {
+          clearBotDebugScenario();
+        }
         const result = botRunner.start(tickIntervalMs);
-        sendJson(res, { ok: true, ...result });
+        const state = botState.getState();
+        sendJson(res, {
+          ok: true,
+          ...result,
+          debugScenario: state.debug_scenario,
+          debug_frame_index: state.debug_frame_index,
+          debug_completed: state.debug_completed
+        });
       } catch (err) {
         sendJson(res, { ok: false, error: err.message }, 500);
       }

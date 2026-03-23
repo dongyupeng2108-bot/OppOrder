@@ -167,6 +167,7 @@ export function createBotRunner(options = {}) {
       context: contextForDecision,
       state
     });
+    const intentsSummary = summarizeIntents(decision.intents);
 
     const intentResult = applyIntents(decision.intents, { source: 'runner_tick' });
     const fillResult = applyFills(contextForDecision);
@@ -215,12 +216,23 @@ export function createBotRunner(options = {}) {
     log({
       level: 'info',
       source: 'bot_runner',
+      event: 'BOT_INTENTS',
+      message: intentsSummary,
+      mode: state.mode ?? null,
+      window_id: contextForDecision.window_id ?? null,
+      data: {
+        reason: decision.reason
+      }
+    });
+    log({
+      level: 'info',
+      source: 'bot_runner',
       event: 'RUNNER_TICK',
       message: `tick ${decision.reason}`,
       mode: stateAfter.mode ?? null,
       window_id: contextForDecision.window_id ?? null,
       data: {
-        intents_summary: summarizeIntents(decision.intents),
+        intents_summary: intentsSummary,
         changed: intentResult.changed,
         filled: fillResult.changed,
         open_total: summary.open_total,
@@ -246,7 +258,9 @@ export function createBotRunner(options = {}) {
     if (!running || tickInProgress) return null;
     tickInProgress = true;
     try {
-      const result = await runSingleTick();
+      const scheduledTick = typeof options.getScheduledTickParams === 'function' ? await options.getScheduledTickParams() : null;
+      const tickParams = scheduledTick && typeof scheduledTick === 'object' && scheduledTick.params ? scheduledTick.params : (scheduledTick || {});
+      const result = await runSingleTick(tickParams);
       lastTickAt = new Date().toISOString();
       publishRuntime();
       log({
@@ -261,6 +275,21 @@ export function createBotRunner(options = {}) {
           intents_summary: result?.decision_preview?.intents_summary ?? null
         }
       });
+      if (scheduledTick && typeof scheduledTick === 'object' && scheduledTick.stop_after_tick === true) {
+        log({
+          level: 'info',
+          source: 'bot_runner',
+          event: 'BOT_DEBUG_SCENARIO_DONE',
+          message: scheduledTick.stop_reason || 'debug scenario completed',
+          mode: result?.state_after?.mode ?? null,
+          window_id: result?.context_snapshot?.window_id ?? null,
+          data: {
+            debug_scenario: scheduledTick.debug_scenario ?? null,
+            frame_index: scheduledTick.frame_index ?? null
+          }
+        });
+        stop();
+      }
       return result;
     } catch (error) {
       lastTickAt = new Date().toISOString();
