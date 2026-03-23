@@ -61,6 +61,7 @@ const BOT_TICK_INTERVAL_DEFAULT_MS = 2000;
 const BOT_TICK_INTERVAL_MIN_MS = 1000;
 const BOT_TICK_INTERVAL_MAX_MS = 5000;
 const BOT_STRATEGY_DEFAULT_CONFIG = {
+  atr_multiplier: 1.2,
   ladder_size: BOT_STRATEGY_CONTRACT.defaults.ladder_size,
   ladder_prices: [...BOT_STRATEGY_CONTRACT.defaults.ladder_prices]
 };
@@ -72,6 +73,8 @@ const botRunner = createBotRunner({
   getContext: () => botContextAdapter.getContext(),
   getState: () => botState.getState(),
   patchState: (patch) => botState.patchState(patch),
+  createWindowResetPatch: (nextWindowId) => botState.createWindowResetPatch(nextWindowId),
+  createWindowInitPatch: (params) => botState.createWindowInitPatch(params),
   decide: (input) => decideBotAction(input),
   applyIntents: (intents, params) => botExecutorPaper.applyIntents(intents, params),
   applyFills: (context) => botExecutorPaper.applyFills(context),
@@ -136,7 +139,8 @@ let _globalOrderbookMonitor = null;
 let _globalScanner          = null;
 const botContextAdapter = createBotContextAdapter({
   getScanner: () => _globalScanner,
-  getOrderbookMonitor: () => _globalOrderbookMonitor
+  getOrderbookMonitor: () => _globalOrderbookMonitor,
+  getState: () => botState.getState()
 });
 
 async function initGlobalOrderbook() {

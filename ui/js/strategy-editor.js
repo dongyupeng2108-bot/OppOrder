@@ -204,9 +204,14 @@ async function initStrategyEditor() {
           </div>
           <div class="se-panel se-stats-panel" style="flex-shrink: 0;">
             <div class="se-stat-item"><div class="se-stat-label">slug</div><div id="se-ctx-slug" class="se-stat-value">—</div></div>
+            <div class="se-stat-item"><div class="se-stat-label">window_id</div><div id="se-ctx-window-id" class="se-stat-value">—</div></div>
+            <div class="se-stat-item"><div class="se-stat-label">last_window_id</div><div id="se-ctx-last-window-id" class="se-stat-value">—</div></div>
             <div class="se-stat-item"><div class="se-stat-label">remaining_sec</div><div id="se-ctx-remaining" class="se-stat-value">—</div></div>
             <div class="se-stat-item"><div class="se-stat-label">btc_price</div><div id="se-ctx-btc-price" class="se-stat-value">—</div></div>
+            <div class="se-stat-item"><div class="se-stat-label">anchor_btc</div><div id="se-ctx-anchor-btc" class="se-stat-value">—</div></div>
             <div class="se-stat-item"><div class="se-stat-label">atr_5m</div><div id="se-ctx-atr" class="se-stat-value">—</div></div>
+            <div class="se-stat-item"><div class="se-stat-label">upper_bound</div><div id="se-ctx-upper-bound" class="se-stat-value">—</div></div>
+            <div class="se-stat-item"><div class="se-stat-label">lower_bound</div><div id="se-ctx-lower-bound" class="se-stat-value">—</div></div>
             <div class="se-stat-item"><div class="se-stat-label">bid_yes</div><div id="se-ctx-bid-yes" class="se-stat-value">—</div></div>
             <div class="se-stat-item"><div class="se-stat-label">ask_yes</div><div id="se-ctx-ask-yes" class="se-stat-value">—</div></div>
             <div class="se-stat-item"><div class="se-stat-label">bid_no</div><div id="se-ctx-bid-no" class="se-stat-value">—</div></div>
@@ -458,7 +463,7 @@ async function se_poll() {
     const ordersData = await ordersRes.json();
     const summaryData = await summaryRes.json();
 
-    se_renderContext(context);
+    se_renderContext(context, status);
     se_renderDecision(decisionData);
     se_renderPnlChart(summaryData);
     se_renderLogs(Array.isArray(logsData) ? logsData : (logsData.logs || []));
@@ -538,11 +543,16 @@ function se_renderDecision(payload) {
 }
 
 // 渲染统计、日志、PnL 图
-function se_renderContext(context) {
+function se_renderContext(context, status) {
   document.getElementById('se-ctx-slug').textContent = se_formatStateValue(context.slug);
+  document.getElementById('se-ctx-window-id').textContent = se_formatStateValue(context.window_id ?? status?.current_window_id);
+  document.getElementById('se-ctx-last-window-id').textContent = se_formatStateValue(context.last_window_id ?? status?.last_window_id);
   document.getElementById('se-ctx-remaining').textContent = se_formatStateValue(context.remaining_sec);
   document.getElementById('se-ctx-btc-price').textContent = se_formatStateValue(context.btc_price);
+  document.getElementById('se-ctx-anchor-btc').textContent = se_formatStateValue(context.anchor_btc ?? status?.anchor_btc);
   document.getElementById('se-ctx-atr').textContent = se_formatStateValue(context.atr_5m);
+  document.getElementById('se-ctx-upper-bound').textContent = se_formatStateValue(context.upper_bound ?? status?.upper_bound);
+  document.getElementById('se-ctx-lower-bound').textContent = se_formatStateValue(context.lower_bound ?? status?.lower_bound);
   document.getElementById('se-ctx-bid-yes').textContent = se_formatStateValue(context.bid_yes);
   document.getElementById('se-ctx-ask-yes').textContent = se_formatStateValue(context.ask_yes);
   document.getElementById('se-ctx-bid-no').textContent = se_formatStateValue(context.bid_no);
