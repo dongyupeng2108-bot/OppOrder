@@ -1,12 +1,14 @@
-const ACTIONS = {
-  NOOP: 'NOOP',
-  PLACE_BOTH_LADDERS: 'PLACE_BOTH_LADDERS',
-  CANCEL_NO_OPEN: 'CANCEL_NO_OPEN',
-  CANCEL_YES_OPEN: 'CANCEL_YES_OPEN',
-  CANCEL_ALL_OPEN: 'CANCEL_ALL_OPEN'
-};
+import {
+  BOT_STRATEGY_CONTRACT,
+  createCancelOpenIntent,
+  createNoopIntent,
+  createPlaceLadderIntent,
+  normalizeStrategyInput,
+  normalizeStrategyOutput
+} from './bot_strategy_contract.mjs';
 
 const toNumberOrNull = (value) => {
+  if (value === null || value === undefined || value === '') return null;
   const num = Number(value);
   return Number.isFinite(num) ? num : null;
 };
@@ -38,51 +40,84 @@ const hasPriceBounds = (context) => {
   };
 };
 
-export function decideBotAction(context = {}, state = {}) {
+export function decideBotAction(inputOrContext = {}, maybeState = {}) {
+  const input = (
+    inputOrContext
+    && typeof inputOrContext === 'object'
+    && ('config' in inputOrContext || 'context' in inputOrContext || 'state' in inputOrContext)
+  )
+    ? inputOrContext
+    : { context: inputOrContext, state: maybeState, config: {} };
+  const { config, context, state } = normalizeStrategyInput(input);
   const remainingSec = toNumberOrNull(context?.remaining_sec);
   const openElapsedSec = toOpenElapsedSec(context);
   const ladderPosted = state?.ladder_posted === true;
   const prices = hasPriceBounds(context);
+  const ladderPrices = Array.isArray(config?.ladder_prices) ? config.ladder_prices : BOT_STRATEGY_CONTRACT.defaults.ladder_prices;
+  const ladderSize = Number.isFinite(Number(config?.ladder_size))
+    ? Number(config.ladder_size)
+    : BOT_STRATEGY_CONTRACT.defaults.ladder_size;
+  const diagnosticsBase = {
+    remaining_sec: remainingSec,
+    open_elapsed_sec: openElapsedSec,
+    ladder_posted: ladderPosted,
+    btc_price: prices.btcPrice,
+    upper_bound: prices.upperBound,
+    lower_bound: prices.lowerBound,
+    bounds_ready: prices.ready
+  };
 
   if (remainingSec !== null && remainingSec <= 100) {
-    return {
-      decision: ACTIONS.CANCEL_ALL_OPEN,
-      reason: 'remaining_sec<=100'
-    };
+    return normalizeStrategyOutput({
+      intents: [createCancelOpenIntent('ALL')],
+      reason: 'remaining_sec<=100',
+      patches: {},
+      diagnostics: diagnosticsBase
+    });
   }
 
   if ((remainingSec !== null && remainingSec > 290) || (openElapsedSec !== null && openElapsedSec < 10)) {
-    return {
-      decision: ACTIONS.NOOP,
-      reason: 'pre_open_or_open_not_10s'
-    };
+    return normalizeStrategyOutput({
+      intents: [createNoopIntent()],
+      reason: 'pre_open_or_open_not_10s',
+      patches: {},
+      diagnostics: diagnosticsBase
+    });
   }
 
   if (!ladderPosted) {
-    return {
-      decision: ACTIONS.PLACE_BOTH_LADDERS,
-      reason: 'ladder_not_posted'
-    };
+    return normalizeStrategyOutput({
+      intents: [createPlaceLadderIntent({ side: 'BOTH', prices: ladderPrices, size: ladderSize })],
+      reason: 'ladder_not_posted',
+      patches: { ladder_posted: true },
+      diagnostics: diagnosticsBase
+    });
   }
 
   if (prices.ready && prices.btcPrice >= prices.upperBound) {
-    return {
-      decision: ACTIONS.CANCEL_NO_OPEN,
-      reason: 'btc_price>=upper_bound'
-    };
+    return normalizeStrategyOutput({
+      intents: [createCancelOpenIntent('NO')],
+      reason: 'btc_price>=upper_bound',
+      patches: {},
+      diagnostics: diagnosticsBase
+    });
   }
 
   if (prices.ready && prices.btcPrice <= prices.lowerBound) {
-    return {
-      decision: ACTIONS.CANCEL_YES_OPEN,
-      reason: 'btc_price<=lower_bound'
-    };
+    return normalizeStrategyOutput({
+      intents: [createCancelOpenIntent('YES')],
+      reason: 'btc_price<=lower_bound',
+      patches: {},
+      diagnostics: diagnosticsBase
+    });
   }
 
-  return {
-    decision: ACTIONS.NOOP,
-    reason: prices.ready ? 'within_bounds_or_no_trigger' : 'price_or_bounds_null'
-  };
+  return normalizeStrategyOutput({
+    intents: [createNoopIntent()],
+    reason: prices.ready ? 'within_bounds_or_no_trigger' : 'price_or_bounds_null',
+    patches: {},
+    diagnostics: diagnosticsBase
+  });
 }
 
-export const BOT_DECISION_ACTIONS = ACTIONS;
+export const BOT_DECISION_ACTIONS = BOT_STRATEGY_CONTRACT.intent_kinds;

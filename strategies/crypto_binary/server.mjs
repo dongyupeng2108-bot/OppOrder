@@ -32,6 +32,7 @@ import { createBotLogger } from './bot_logger.mjs';
 import { createBotStateStore } from './bot_state.mjs';
 import { createBotContextAdapter } from './bot_context_adapter.mjs';
 import { decideBotAction } from './bot_strategy.mjs';
+import { BOT_STRATEGY_CONTRACT, summarizeIntents } from './bot_strategy_contract.mjs';
 import { getDecisionFixtures } from './bot_strategy_fixtures.mjs';
 import { createBotOrderLedger } from './bot_order_ledger.mjs';
 import { createBotExecutorPaper, BOT_PAPER_ALLOWED_ACTIONS } from './bot_executor_paper.mjs';
@@ -55,6 +56,10 @@ const args = Object.fromEntries(
 const STRATEGY_ID = args.strategy || null;
 const PORT = parseInt(args.port || '53123', 10);
 const BOT_MODE = process.env.EXECUTOR_MODE || 'paper-staging';
+const BOT_STRATEGY_DEFAULT_CONFIG = {
+  ladder_size: BOT_STRATEGY_CONTRACT.defaults.ladder_size,
+  ladder_prices: [...BOT_STRATEGY_CONTRACT.defaults.ladder_prices]
+};
 const botLogger = createBotLogger({ maxEntries: 400 });
 const botState = createBotStateStore({ mode: BOT_MODE });
 const botLedger = createBotOrderLedger();
@@ -1073,13 +1078,20 @@ const server = createServer(async (req, res) => {
         context = { ...context, ...fixture.context };
         state = { ...state, ...fixture.state };
       }
-      const decision = decideBotAction(context, state);
+      const decision = decideBotAction({
+        config: BOT_STRATEGY_DEFAULT_CONFIG,
+        context,
+        state
+      });
       sendJson(res, {
-        decision: decision.decision,
+        intents: decision.intents,
+        intents_summary: summarizeIntents(decision.intents),
         reason: decision.reason,
+        patches: decision.patches,
+        diagnostics: decision.diagnostics,
         context_snapshot: context,
         state_snapshot: { ladder_posted: state.ladder_posted === true },
-        fixture: fixture ? { id: fixture.id, label: fixture.label } : null
+        fixture: fixture ? { id: fixture.id, label: fixture.label, expected: fixture.expected || null } : null
       });
     } catch (err) {
       sendJson(res, { ok: false, error: err.message }, 500);

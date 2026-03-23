@@ -218,6 +218,7 @@ async function initStrategyEditor() {
             <div style="font-size:12px; color:#bbb; margin-bottom:6px;">当前策略意图</div>
             <div id="se-decision-value" style="font-size:16px; color:#00e676; font-weight:700;">—</div>
             <div id="se-decision-reason" style="font-size:12px; color:#999; margin-top:4px;">reason: —</div>
+            <div id="se-decision-diag" style="font-size:11px; color:#888; margin-top:4px; line-height:1.45;">diagnostics: —</div>
           </div>
           <div style="flex:1;background:#1e1e1e;border:1px solid #333;padding: 0 16px;display:flex;flex-direction:column;border-bottom:none;">
             <div id="se-pnl-title" style="padding:4px 8px;border-bottom:1px solid #333;font-size:12px;color:#aaa;">累计 PnL</div>
@@ -510,9 +511,28 @@ async function se_applyPaperAction(action) {
 function se_renderDecision(payload) {
   const decisionEl = document.getElementById('se-decision-value');
   const reasonEl = document.getElementById('se-decision-reason');
-  if (!decisionEl || !reasonEl) return;
-  decisionEl.textContent = se_formatStateValue(payload?.decision);
+  const diagEl = document.getElementById('se-decision-diag');
+  if (!decisionEl || !reasonEl || !diagEl) return;
+  const intentsSummary = payload?.intents_summary
+    || (Array.isArray(payload?.intents)
+      ? payload.intents.map((intent) => {
+        if (!intent || typeof intent !== 'object') return 'UNKNOWN';
+        if (intent.kind === 'NOOP') return 'NOOP';
+        if (intent.kind === 'PLACE_LADDER') return `PLACE_LADDER(${se_formatStateValue(intent.side)})`;
+        if (intent.kind === 'CANCEL_OPEN') return `CANCEL_OPEN(${se_formatStateValue(intent.side)})`;
+        return se_formatStateValue(intent.kind);
+      }).join(' + ')
+      : 'NOOP');
+  const diagnostics = payload?.diagnostics && typeof payload.diagnostics === 'object' ? payload.diagnostics : {};
+  const diagnosticsText = [
+    `remaining_sec=${se_formatStateValue(diagnostics.remaining_sec)}`,
+    `open_elapsed_sec=${se_formatStateValue(diagnostics.open_elapsed_sec)}`,
+    `ladder_posted=${se_formatStateValue(diagnostics.ladder_posted)}`,
+    `bounds_ready=${se_formatStateValue(diagnostics.bounds_ready)}`
+  ].join(' | ');
+  decisionEl.textContent = se_formatStateValue(intentsSummary);
   reasonEl.textContent = 'reason: ' + se_formatStateValue(payload?.reason);
+  diagEl.textContent = 'diagnostics: ' + diagnosticsText;
 }
 
 // 渲染统计、日志、PnL 图
