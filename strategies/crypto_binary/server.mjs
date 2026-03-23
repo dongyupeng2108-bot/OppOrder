@@ -60,10 +60,85 @@ const BOT_MODE = process.env.EXECUTOR_MODE || 'paper-staging';
 const BOT_TICK_INTERVAL_DEFAULT_MS = 2000;
 const BOT_TICK_INTERVAL_MIN_MS = 1000;
 const BOT_TICK_INTERVAL_MAX_MS = 5000;
-const BOT_STRATEGY_DEFAULT_CONFIG = {
-  atr_multiplier: 1.2,
+const BOT_CONFIG_DEFAULTS = {
+  open_delay_sec: 10,
+  ladder_prices: [...BOT_STRATEGY_CONTRACT.defaults.ladder_prices],
   ladder_size: BOT_STRATEGY_CONTRACT.defaults.ladder_size,
-  ladder_prices: [...BOT_STRATEGY_CONTRACT.defaults.ladder_prices]
+  atr_multiple: 1.2,
+  cancel_all_remaining_sec: 100
+};
+const BOT_CONFIG_INTERNAL_DEFAULTS = {
+  open_delay_sec: BOT_CONFIG_DEFAULTS.open_delay_sec,
+  ladder_prices: [...BOT_CONFIG_DEFAULTS.ladder_prices],
+  ladder_size: BOT_CONFIG_DEFAULTS.ladder_size,
+  atr_multiplier: BOT_CONFIG_DEFAULTS.atr_multiple,
+  cancel_all_remaining_sec: BOT_CONFIG_DEFAULTS.cancel_all_remaining_sec
+};
+let botConfigCurrent = {
+  ...BOT_CONFIG_DEFAULTS,
+  ladder_prices: [...BOT_CONFIG_DEFAULTS.ladder_prices]
+};
+const botRunnerConfig = {
+  ...BOT_CONFIG_INTERNAL_DEFAULTS,
+  ladder_prices: [...BOT_CONFIG_INTERNAL_DEFAULTS.ladder_prices]
+};
+const cloneBotConfig = (value) => ({
+  open_delay_sec: Number(value.open_delay_sec),
+  ladder_prices: [...value.ladder_prices],
+  ladder_size: Number(value.ladder_size),
+  atr_multiple: Number(value.atr_multiple),
+  cancel_all_remaining_sec: Number(value.cancel_all_remaining_sec)
+});
+const toInternalRunnerConfig = (value) => ({
+  open_delay_sec: Number(value.open_delay_sec),
+  ladder_prices: [...value.ladder_prices],
+  ladder_size: Number(value.ladder_size),
+  atr_multiplier: Number(value.atr_multiple),
+  cancel_all_remaining_sec: Number(value.cancel_all_remaining_sec)
+});
+const setBotConfigCurrent = (nextConfig) => {
+  botConfigCurrent = cloneBotConfig(nextConfig);
+  const internal = toInternalRunnerConfig(botConfigCurrent);
+  botRunnerConfig.open_delay_sec = internal.open_delay_sec;
+  botRunnerConfig.ladder_prices = [...internal.ladder_prices];
+  botRunnerConfig.ladder_size = internal.ladder_size;
+  botRunnerConfig.atr_multiplier = internal.atr_multiplier;
+  botRunnerConfig.cancel_all_remaining_sec = internal.cancel_all_remaining_sec;
+};
+const isNonNegativeInteger = (value) => Number.isInteger(value) && value >= 0;
+const isPositiveInteger = (value) => Number.isInteger(value) && value > 0;
+const isPositiveNumber = (value) => Number.isFinite(value) && value > 0;
+const normalizeLadderPrices = (value) => {
+  if (!Array.isArray(value) || value.length !== 4) return null;
+  const nums = value.map((item) => Number(item));
+  if (nums.some((item) => !Number.isFinite(item) || item <= 0 || item >= 1)) return null;
+  return nums;
+};
+const validateBotConfigPayload = (payload) => {
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return { ok: false, error: 'invalid payload' };
+  const keys = Object.keys(payload);
+  const allowedKeys = ['open_delay_sec', 'ladder_prices', 'ladder_size', 'atr_multiple', 'cancel_all_remaining_sec'];
+  if (keys.some((key) => !allowedKeys.includes(key))) return { ok: false, error: 'unknown config field' };
+  const openDelaySec = Number(payload.open_delay_sec);
+  const ladderSize = Number(payload.ladder_size);
+  const atrMultiple = Number(payload.atr_multiple);
+  const cancelAllRemainingSec = Number(payload.cancel_all_remaining_sec);
+  const ladderPrices = normalizeLadderPrices(payload.ladder_prices);
+  if (!isNonNegativeInteger(openDelaySec)) return { ok: false, error: 'open_delay_sec must be non-negative integer' };
+  if (!isPositiveInteger(ladderSize)) return { ok: false, error: 'ladder_size must be positive integer' };
+  if (!isPositiveNumber(atrMultiple)) return { ok: false, error: 'atr_multiple must be positive number' };
+  if (!isNonNegativeInteger(cancelAllRemainingSec)) return { ok: false, error: 'cancel_all_remaining_sec must be non-negative integer' };
+  if (!ladderPrices) return { ok: false, error: 'ladder_prices must be an array of 4 numbers between 0 and 1' };
+  return {
+    ok: true,
+    value: {
+      open_delay_sec: openDelaySec,
+      ladder_prices: ladderPrices,
+      ladder_size: ladderSize,
+      atr_multiple: atrMultiple,
+      cancel_all_remaining_sec: cancelAllRemainingSec
+    }
+  };
 };
 const BOT_DEBUG_SCENARIO_MAIN_PATH_V1 = 'main_path_v1';
 const BOT_DEBUG_SCENARIO_FILL_YES_PATH_V1 = 'fill_yes_path_v1';
@@ -221,7 +296,7 @@ const botRunner = createBotRunner({
   onRuntimeUpdate: (runtime) => botState.patchState(runtime),
   log: (entry) => botLogger.log(entry),
   getLogCount: () => botLogger.getCount(),
-  config: BOT_STRATEGY_DEFAULT_CONFIG
+  config: botRunnerConfig
 });
 
 // 加载策略配置
@@ -1281,6 +1356,47 @@ const server = createServer(async (req, res) => {
     return;
   }
 
+  if (req.method === 'GET' && req.url === '/bot/config') {
+    sendJson(res, {
+      current: cloneBotConfig(botConfigCurrent),
+      defaults: cloneBotConfig(BOT_CONFIG_DEFAULTS)
+    });
+    return;
+  }
+
+  if (req.method === 'POST' && req.url === '/bot/config') {
+    let body = '';
+    req.on('data', d => { body += d; });
+    req.on('end', () => {
+      try {
+        const payload = JSON.parse(body || '{}');
+        const validated = validateBotConfigPayload(payload);
+        if (!validated.ok) {
+          sendJson(res, { ok: false, error: validated.error }, 400);
+          return;
+        }
+        setBotConfigCurrent(validated.value);
+        botLogger.log({
+          level: 'info',
+          source: 'server',
+          event: 'BOT_CONFIG_UPDATED',
+          message: 'bot config updated',
+          mode: BOT_MODE,
+          window_id: null,
+          data: cloneBotConfig(botConfigCurrent)
+        });
+        sendJson(res, {
+          ok: true,
+          current: cloneBotConfig(botConfigCurrent),
+          defaults: cloneBotConfig(BOT_CONFIG_DEFAULTS)
+        });
+      } catch (err) {
+        sendJson(res, { ok: false, error: err.message }, 500);
+      }
+    });
+    return;
+  }
+
   if (req.method === 'POST' && req.url === '/bot/start') {
     let body = '';
     req.on('data', d => { body += d; });
@@ -1346,7 +1462,7 @@ const server = createServer(async (req, res) => {
         state = { ...state, ...fixture.state };
       }
       const decision = decideBotAction({
-        config: BOT_STRATEGY_DEFAULT_CONFIG,
+        config: botRunnerConfig,
         context,
         state
       });
