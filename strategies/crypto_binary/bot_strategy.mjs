@@ -59,7 +59,9 @@ export function decideBotAction(inputOrContext = {}, maybeState = {}) {
     ? Number(config.ladder_size)
     : BOT_STRATEGY_CONTRACT.defaults.ladder_size;
   const flattenYesNow = context?.exit_yes_now === true;
-  const flattenPrice = toNumberOrNull(context?.exit_yes_price);
+  const flattenNoNow = context?.exit_no_now === true;
+  const flattenYesPrice = toNumberOrNull(context?.exit_yes_price);
+  const flattenNoPrice = toNumberOrNull(context?.exit_no_price);
   const diagnosticsBase = {
     remaining_sec: remainingSec,
     open_elapsed_sec: openElapsedSec,
@@ -72,13 +74,26 @@ export function decideBotAction(inputOrContext = {}, maybeState = {}) {
 
   if (flattenYesNow) {
     return normalizeStrategyOutput({
-      intents: [createFlattenPositionIntent({ side: 'YES', price: flattenPrice })],
+      intents: [createFlattenPositionIntent({ side: 'YES', price: flattenYesPrice })],
       reason: 'exit_yes_now',
       patches: {},
       diagnostics: {
         ...diagnosticsBase,
         exit_yes_now: true,
-        exit_yes_price: flattenPrice
+        exit_yes_price: flattenYesPrice
+      }
+    });
+  }
+
+  if (flattenNoNow) {
+    return normalizeStrategyOutput({
+      intents: [createFlattenPositionIntent({ side: 'NO', price: flattenNoPrice })],
+      reason: 'exit_no_now',
+      patches: {},
+      diagnostics: {
+        ...diagnosticsBase,
+        exit_no_now: true,
+        exit_no_price: flattenNoPrice
       }
     });
   }

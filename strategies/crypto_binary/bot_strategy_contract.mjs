@@ -15,7 +15,8 @@ const PAPER_ACTIONS = {
   CANCEL_NO_OPEN: 'CANCEL_NO_OPEN',
   CANCEL_YES_OPEN: 'CANCEL_YES_OPEN',
   CANCEL_ALL_OPEN: 'CANCEL_ALL_OPEN',
-  FLATTEN_YES_POSITION: 'FLATTEN_YES_POSITION'
+  FLATTEN_YES_POSITION: 'FLATTEN_YES_POSITION',
+  FLATTEN_NO_POSITION: 'FLATTEN_NO_POSITION'
 };
 
 const toNumberOrNull = (value) => {
@@ -72,7 +73,7 @@ export function createFlattenPositionIntent(payload = {}) {
   const price = toNumberOrNull(payload.price);
   return {
     kind: INTENT_KINDS.FLATTEN_POSITION,
-    side: side === 'YES' ? 'YES' : 'YES',
+    side: side === 'NO' ? 'NO' : 'YES',
     price
   };
 }
@@ -147,14 +148,21 @@ export function mapIntentToPaperAction(intent = {}) {
     if (normalized.side === 'ALL') return { action: PAPER_ACTIONS.CANCEL_ALL_OPEN, params: {}, intent: normalized };
   }
   if (normalized.kind === INTENT_KINDS.FLATTEN_POSITION) {
-    if (normalized.side !== 'YES') {
-      throw new Error(`unsupported FLATTEN_POSITION side: ${normalized.side}`);
+    if (normalized.side === 'YES') {
+      return {
+        action: PAPER_ACTIONS.FLATTEN_YES_POSITION,
+        params: { price: normalized.price },
+        intent: normalized
+      };
     }
-    return {
-      action: PAPER_ACTIONS.FLATTEN_YES_POSITION,
-      params: { price: normalized.price },
-      intent: normalized
-    };
+    if (normalized.side === 'NO') {
+      return {
+        action: PAPER_ACTIONS.FLATTEN_NO_POSITION,
+        params: { price: normalized.price },
+        intent: normalized
+      };
+    }
+    throw new Error(`unsupported FLATTEN_POSITION side: ${normalized.side}`);
   }
   throw new Error(`unsupported intent payload: ${JSON.stringify(normalized)}`);
 }
