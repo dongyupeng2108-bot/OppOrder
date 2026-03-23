@@ -7,6 +7,7 @@ const cloneOrder = (order) => ({ ...order });
 
 const createOrder = ({ side, price, size, source }) => ({
   order_id: `paper_${randomUUID().slice(0, 8)}`,
+  kind: 'ENTRY',
   side,
   price,
   size,
@@ -16,6 +17,22 @@ const createOrder = ({ side, price, size, source }) => ({
   created_at: new Date().toISOString(),
   source
 });
+
+const createExitFill = ({ side, price, size, source }) => {
+  const ts = new Date().toISOString();
+  return {
+    order_id: `paper_${randomUUID().slice(0, 8)}`,
+    kind: 'EXIT',
+    side,
+    price,
+    size,
+    status: 'FILLED',
+    fill_price: price,
+    filled_at: ts,
+    created_at: ts,
+    source
+  };
+};
 
 export function createBotOrderLedger() {
   let orders = [];
@@ -36,6 +53,14 @@ export function createBotOrderLedger() {
       filled_yes: filled.filter(o => o.side === 'YES').length,
       filled_no: filled.filter(o => o.side === 'NO').length
     };
+  };
+
+  const getFilledEntryOrders = (side) => orders.filter((order) => order.status === 'FILLED' && order.side === side && order.kind !== 'EXIT');
+  const getFilledExitOrders = (side) => orders.filter((order) => order.status === 'FILLED' && order.side === side && order.kind === 'EXIT');
+  const getNetPositionSize = (side) => {
+    const entrySize = getFilledEntryOrders(side).reduce((sum, order) => sum + (Number.isFinite(order.size) ? order.size : 0), 0);
+    const exitSize = getFilledExitOrders(side).reduce((sum, order) => sum + (Number.isFinite(order.size) ? order.size : 0), 0);
+    return Math.max(0, entrySize - exitSize);
   };
 
   const cancelOpenBySide = (side) => {
@@ -66,7 +91,7 @@ export function createBotOrderLedger() {
     const filledOrders = [];
     const filledAt = new Date().toISOString();
     orders = orders.map((order) => {
-      if (order.status !== 'OPEN') return order;
+      if (order.status !== 'OPEN' || order.kind === 'EXIT') return order;
       if (order.side === 'YES' && askYes != null && order.price >= askYes) {
         const nextOrder = { ...order, status: 'FILLED', fill_price: askYes, filled_at: filledAt };
         filledOrders.push(cloneOrder(nextOrder));
@@ -88,44 +113,43 @@ export function createBotOrderLedger() {
   };
 
   const getPaperSummary = (context = {}) => {
-    const filledYes = orders.filter((order) => order.status === 'FILLED' && order.side === 'YES');
-    const filledNo = orders.filter((order) => order.status === 'FILLED' && order.side === 'NO');
-    const toSideSummary = (filledOrders, markPrice) => {
-      if (filledOrders.length === 0) {
+    const toSideSummary = (side, markPrice) => {
+      const filledEntries = getFilledEntryOrders(side);
+      const filledExits = getFilledExitOrders(side);
+      const netPositionSize = getNetPositionSize(side);
+      if (filledEntries.length === 0 || netPositionSize <= 0) {
         return {
-          count: 0,
+          count: filledEntries.length,
+          exit_count: filledExits.length,
           position_size: 0,
           avg_fill_price: null,
           mark_price: Number.isFinite(markPrice) ? markPrice : null,
           unrealized_pnl: Number.isFinite(markPrice) ? 0 : null
         };
       }
-      const positionSize = filledOrders.reduce((sum, order) => sum + (Number.isFinite(order.size) ? order.size : 0), 0);
-      const filledNotional = filledOrders.reduce((sum, order) => {
+      const filledNotional = filledEntries.reduce((sum, order) => {
         const fillPrice = Number.isFinite(order.fill_price) ? order.fill_price : null;
         const size = Number.isFinite(order.size) ? order.size : 0;
         if (fillPrice == null) return sum;
         return sum + (fillPrice * size);
       }, 0);
-      const avgFillPrice = positionSize > 0 ? filledNotional / positionSize : null;
+      const entrySize = filledEntries.reduce((sum, order) => sum + (Number.isFinite(order.size) ? order.size : 0), 0);
+      const avgFillPrice = entrySize > 0 ? filledNotional / entrySize : null;
       if (!Number.isFinite(markPrice)) {
         return {
-          count: filledOrders.length,
-          position_size: positionSize,
+          count: filledEntries.length,
+          exit_count: filledExits.length,
+          position_size: netPositionSize,
           avg_fill_price: avgFillPrice,
           mark_price: null,
           unrealized_pnl: null
         };
       }
-      const pnl = filledOrders.reduce((sum, order) => {
-        const fillPrice = Number.isFinite(order.fill_price) ? order.fill_price : null;
-        const size = Number.isFinite(order.size) ? order.size : 0;
-        if (fillPrice == null) return sum;
-        return sum + ((markPrice - fillPrice) * size);
-      }, 0);
+      const pnl = avgFillPrice == null ? 0 : (markPrice - avgFillPrice) * netPositionSize;
       return {
-        count: filledOrders.length,
-        position_size: positionSize,
+        count: filledEntries.length,
+        exit_count: filledExits.length,
+        position_size: netPositionSize,
         avg_fill_price: avgFillPrice,
         mark_price: markPrice,
         unrealized_pnl: pnl
@@ -134,12 +158,14 @@ export function createBotOrderLedger() {
 
     const bidYes = Number.isFinite(context?.bid_yes) ? context.bid_yes : null;
     const bidNo = Number.isFinite(context?.bid_no) ? context.bid_no : null;
-    const yes = toSideSummary(filledYes, bidYes);
-    const no = toSideSummary(filledNo, bidNo);
+    const yes = toSideSummary('YES', bidYes);
+    const no = toSideSummary('NO', bidNo);
     const totalUnrealized = yes.unrealized_pnl == null || no.unrealized_pnl == null ? null : yes.unrealized_pnl + no.unrealized_pnl;
     return {
       yes_filled_count: yes.count,
       no_filled_count: no.count,
+      yes_exit_filled_count: yes.exit_count,
+      no_exit_filled_count: no.exit_count,
       yes_position_size: yes.position_size,
       no_position_size: no.position_size,
       yes_avg_fill_price: yes.avg_fill_price,
@@ -162,6 +188,16 @@ export function createBotOrderLedger() {
     if (action === 'CANCEL_NO_OPEN') changed = cancelOpenBySide('NO');
     if (action === 'CANCEL_YES_OPEN') changed = cancelOpenBySide('YES');
     if (action === 'CANCEL_ALL_OPEN') changed = cancelOpenBySide('ALL');
+    if (action === 'FLATTEN_YES_POSITION') {
+      const positionSize = getNetPositionSize('YES');
+      if (positionSize > 0) {
+        const exitPrice = Number.isFinite(options.price) ? options.price : Number.isFinite(options.bid_yes) ? options.bid_yes : Number.isFinite(options.mark_price) ? options.mark_price : null;
+        if (exitPrice != null) {
+          orders = [...orders, createExitFill({ side: 'YES', price: exitPrice, size: positionSize, source })];
+          changed = 1;
+        }
+      }
+    }
     return {
       action,
       changed,

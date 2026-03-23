@@ -28,6 +28,7 @@ const inferPhase = (decision, summary) => {
   if (firstIntent.kind === 'CANCEL_OPEN') {
     return summary.open_total > 0 ? 'LADDER_POSTED' : 'IDLE';
   }
+  if (firstIntent.kind === 'FLATTEN_POSITION') return 'IDLE';
   return 'IDLE';
 };
 
@@ -210,6 +211,21 @@ export function createBotRunner(options = {}) {
             order_price: order.price,
             fill_price: order.fill_price
           }))
+        }
+      });
+    }
+    const hasExitFill = Array.isArray(intentResult?.applied)
+      && intentResult.applied.some((item) => item?.action === 'FLATTEN_YES_POSITION' && Number(item?.changed) > 0);
+    if (hasExitFill) {
+      log({
+        level: 'info',
+        source: 'bot_runner',
+        event: 'BOT_EXIT_FILL',
+        message: 'flatten yes position filled',
+        mode: state.mode ?? null,
+        window_id: contextForDecision.window_id ?? null,
+        data: {
+          action: 'FLATTEN_YES_POSITION'
         }
       });
     }
