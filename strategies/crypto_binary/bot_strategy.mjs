@@ -1,6 +1,7 @@
 import {
   BOT_STRATEGY_CONTRACT,
   createCancelOpenIntent,
+  createFlattenPositionIntent,
   createNoopIntent,
   createPlaceLadderIntent,
   normalizeStrategyInput,
@@ -57,6 +58,8 @@ export function decideBotAction(inputOrContext = {}, maybeState = {}) {
   const ladderSize = Number.isFinite(Number(config?.ladder_size))
     ? Number(config.ladder_size)
     : BOT_STRATEGY_CONTRACT.defaults.ladder_size;
+  const flattenYesNow = context?.exit_yes_now === true;
+  const flattenPrice = toNumberOrNull(context?.exit_yes_price);
   const diagnosticsBase = {
     remaining_sec: remainingSec,
     open_elapsed_sec: openElapsedSec,
@@ -66,6 +69,19 @@ export function decideBotAction(inputOrContext = {}, maybeState = {}) {
     lower_bound: prices.lowerBound,
     bounds_ready: prices.ready
   };
+
+  if (flattenYesNow) {
+    return normalizeStrategyOutput({
+      intents: [createFlattenPositionIntent({ side: 'YES', price: flattenPrice })],
+      reason: 'exit_yes_now',
+      patches: {},
+      diagnostics: {
+        ...diagnosticsBase,
+        exit_yes_now: true,
+        exit_yes_price: flattenPrice
+      }
+    });
+  }
 
   if (remainingSec !== null && remainingSec <= 100) {
     return normalizeStrategyOutput({

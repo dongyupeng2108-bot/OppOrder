@@ -5,7 +5,8 @@ const ALLOWED_ACTIONS = new Set([
   'PLACE_BOTH_LADDERS',
   'CANCEL_NO_OPEN',
   'CANCEL_YES_OPEN',
-  'CANCEL_ALL_OPEN'
+  'CANCEL_ALL_OPEN',
+  'FLATTEN_YES_POSITION'
 ]);
 
 export function createBotExecutorPaper(options = {}) {
@@ -20,6 +21,9 @@ export function createBotExecutorPaper(options = {}) {
     return ledger.applyAction(action, {
       prices: params.prices ?? BOT_LEDGER_DEFAULTS.prices,
       size: params.size ?? BOT_LEDGER_DEFAULTS.size,
+      price: params.price,
+      bid_yes: params.bid_yes,
+      mark_price: params.mark_price,
       source: params.source || 'manual'
     });
   };
@@ -60,6 +64,8 @@ export function createBotExecutorPaper(options = {}) {
       }
       const result = applyAction(mapped.action, {
         ...mapped.params,
+        bid_yes: latestContext?.bid_yes,
+        mark_price: latestContext?.ask_yes ?? latestContext?.bid_yes ?? null,
         source
       });
       changed += result.changed;
