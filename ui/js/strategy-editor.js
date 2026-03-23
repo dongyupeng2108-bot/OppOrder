@@ -51,6 +51,7 @@ let _se_period = '5m';
 let _se_pollTimer = null;
 let _seLastLogTs = '';
 let _seErrorCount = 0;
+let _seLastPollError = null;
 const BASE_URL = ''; // 相对路径
 
 async function restartServer() {
@@ -182,7 +183,7 @@ async function initStrategyEditor() {
                 <span id="se-status-dot" class="se-dot se-dot-off"></span>
                 <span id="se-status-label">已停止</span>
               </div>
-              <div id="se-bot-state-tip" style="font-size:11px;color:#999;">当前为只读 Bot 状态骨架，尚未接主循环</div>
+              <div id="se-bot-state-tip" style="font-size:11px;color:#999;">Bot Console 只读总览（status/summary/orders/logs）</div>
             </div>
           </div>
         </div>
@@ -219,32 +220,36 @@ async function initStrategyEditor() {
             <div class="se-stat-item"><div class="se-stat-label">tick_size</div><div id="se-ctx-tick-size" class="se-stat-value">—</div></div>
             <div class="se-stat-item"><div class="se-stat-label">stale</div><div id="se-ctx-stale" class="se-stat-value">—</div></div>
           </div>
-          <div class="se-panel" style="flex-shrink:0; padding:10px 12px; border:1px solid #333; background:#161616;">
-            <div style="font-size:12px; color:#bbb; margin-bottom:6px;">当前策略意图</div>
-            <div id="se-decision-value" style="font-size:16px; color:#00e676; font-weight:700;">—</div>
-            <div id="se-decision-reason" style="font-size:12px; color:#999; margin-top:4px;">reason: —</div>
-            <div id="se-decision-diag" style="font-size:11px; color:#888; margin-top:4px; line-height:1.45;">diagnostics: —</div>
-          </div>
-          <div style="flex:1;background:#1e1e1e;border:1px solid #333;padding: 0 16px;display:flex;flex-direction:column;border-bottom:none;">
-            <div id="se-pnl-title" style="padding:4px 8px;border-bottom:1px solid #333;font-size:12px;color:#aaa;">累计 PnL</div>
-            <div style="flex:1;position:relative;">
-              <svg id="se-pnl-chart" viewBox="0 0 300 200" preserveAspectRatio="xMidYMid meet" style="width:100%;height:100%;"></svg>
+          <div class="se-panel" style="flex:1; padding:10px 12px; border:1px solid #333; background:#161616; display:flex; flex-direction:column; gap:8px;">
+            <div style="font-size:12px; color:#bbb;">Bot 只读总览</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
+              <div style="color:#888;">running</div><div id="se-bot-running" style="color:#ddd;">—</div>
+              <div style="color:#888;">phase</div><div id="se-bot-phase" style="color:#ddd;">—</div>
+              <div style="color:#888;">debug_scenario</div><div id="se-bot-debug" style="color:#ddd;">—</div>
+              <div style="color:#888;">window_id</div><div id="se-bot-window" style="color:#ddd;">—</div>
+              <div style="color:#888;">yes_position_size</div><div id="se-summary-yes-position" style="color:#ddd;">—</div>
+              <div style="color:#888;">no_position_size</div><div id="se-summary-no-position" style="color:#ddd;">—</div>
+              <div style="color:#888;">filled_total</div><div id="se-summary-filled-total" style="color:#ddd;">—</div>
+              <div style="color:#888;">realized_gross_pnl_total</div><div id="se-summary-realized-total" style="color:#ddd;">—</div>
+              <div style="color:#888;">unrealized_gross_pnl_total</div><div id="se-summary-unrealized-total" style="color:#ddd;">—</div>
+              <div style="color:#888;">updated_at</div><div id="se-summary-updated-at" style="color:#ddd;">—</div>
             </div>
+            <div id="se-ui-error" style="font-size:11px;color:#ff8a80;min-height:16px;"></div>
           </div>
         </div>
 
         <!-- 右侧订单面板 -->
         <div class="se-order-panel">
-          <div class="se-order-title">Bot 账本订单</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:8px 0;">
-            <button class="se-btn" onclick="se_applyPaperAction('PLACE_BOTH_LADDERS')" style="background:#1f6f4a;color:#fff;border:1px solid #2c8f61;padding:6px;border-radius:4px;cursor:pointer;">PLACE_BOTH</button>
-            <button class="se-btn" onclick="se_applyPaperAction('CANCEL_NO_OPEN')" style="background:#7a3a3a;color:#fff;border:1px solid #9a4b4b;padding:6px;border-radius:4px;cursor:pointer;">CANCEL_NO</button>
-            <button class="se-btn" onclick="se_applyPaperAction('CANCEL_YES_OPEN')" style="background:#7a3a3a;color:#fff;border:1px solid #9a4b4b;padding:6px;border-radius:4px;cursor:pointer;">CANCEL_YES</button>
-            <button class="se-btn" onclick="se_applyPaperAction('CANCEL_ALL_OPEN')" style="background:#5a2d7a;color:#fff;border:1px solid #7a3f9f;padding:6px;border-radius:4px;cursor:pointer;">CANCEL_ALL</button>
+          <div class="se-order-title">订单最小摘要</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;padding:8px 2px 10px 2px;font-size:12px;">
+            <div style="color:#888;">total</div><div id="se-orders-total" style="color:#ddd;">—</div>
+            <div style="color:#888;">open_total</div><div id="se-orders-open-total" style="color:#ddd;">—</div>
+            <div style="color:#888;">filled_total</div><div id="se-orders-filled-total" style="color:#ddd;">—</div>
+            <div style="color:#888;">cancelled_total</div><div id="se-orders-cancelled-total" style="color:#ddd;">—</div>
           </div>
           <table class="se-order-table" style="table-layout:fixed;width:100%;">
             <colgroup><col style="width:22%"><col style="width:22%"><col style="width:28%"><col style="width:28%"></colgroup>
-            <thead><tr><th>来源</th><th>方向</th><th>价格</th><th>状态</th></tr></thead>
+            <thead><tr><th>方向</th><th>类型</th><th>价格</th><th>状态</th></tr></thead>
             <tbody id="se-order-body">
               <tr><td colspan="4" style="color:#555;text-align:center">暂无</td></tr>
             </tbody>
@@ -448,28 +453,23 @@ function se_stopPoll() {
 
 async function se_poll() {
   try {
-    const [contextRes, statusRes, logsRes, decisionRes, ordersRes, summaryRes] = await Promise.all([
-      fetch(`${BASE_URL}/bot/context`),
+    const [statusRes, logsRes, ordersRes, summaryRes] = await Promise.all([
       fetch(`${BASE_URL}/bot/status`),
       fetch(`${BASE_URL}/bot/logs?limit=200`),
-      fetch(`${BASE_URL}/bot/decision-preview`),
       fetch(`${BASE_URL}/bot/orders`),
       fetch(`${BASE_URL}/bot/paper/summary`)
     ]);
-    const context = await contextRes.json();
     const status = await statusRes.json();
     const logsData = await logsRes.json();
-    const decisionData = await decisionRes.json();
     const ordersData = await ordersRes.json();
     const summaryData = await summaryRes.json();
 
-    se_renderContext(context, status);
-    se_renderDecision(decisionData);
-    se_renderPnlChart(summaryData);
+    se_renderContext({}, status);
+    se_renderOverview(status, summaryData, ordersData);
     se_renderLogs(Array.isArray(logsData) ? logsData : (logsData.logs || []));
     se_renderOrders(ordersData);
 
-    const remaining = context.remaining_sec ?? null;
+    const remaining = status?.remaining_sec ?? null;
     const el = document.getElementById('se-countdown');
     if (el) {
       if (remaining != null) {
@@ -488,12 +488,16 @@ async function se_poll() {
     }
 
     // 如果服务端显示已停止，同步前端状态
-    if (status.phase === 'IDLE' && _se_running) {
+    if (status?.phase === 'IDLE' && _se_running) {
       _se_running = false;
       se_updateRunningUI(false);
     }
+    _seLastPollError = null;
+    se_renderPollError(null);
   } catch (err) {
     console.warn('[se] poll error:', err.message);
+    _seLastPollError = err.message;
+    se_renderPollError(err.message);
   }
 }
 
@@ -566,6 +570,61 @@ function se_renderContext(context, status) {
   }
 }
 
+function se_pickSummaryValue(summary, keys, fallback = null) {
+  for (const key of keys) {
+    if (summary && summary[key] !== undefined) return summary[key];
+  }
+  return fallback;
+}
+
+function se_renderOverview(status, summary, ordersData) {
+  const mergedSummary = summary && typeof summary === 'object' ? summary : {};
+  const yesEntry = se_pickSummaryValue(mergedSummary, ['yes_entry_filled_count', 'yes_filled_count'], 0);
+  const yesExit = se_pickSummaryValue(mergedSummary, ['yes_exit_filled_count'], 0);
+  const noEntry = se_pickSummaryValue(mergedSummary, ['no_entry_filled_count', 'no_filled_count'], 0);
+  const noExit = se_pickSummaryValue(mergedSummary, ['no_exit_filled_count'], 0);
+  const filledTotal = se_pickSummaryValue(mergedSummary, ['filled_total'], yesEntry + yesExit + noEntry + noExit);
+  const realizedTotal = se_pickSummaryValue(mergedSummary, ['realized_gross_pnl_total'], null);
+  const unrealizedTotal = se_pickSummaryValue(mergedSummary, ['unrealized_gross_pnl_total', 'total_unrealized_pnl'], null);
+  const yesPos = se_pickSummaryValue(mergedSummary, ['yes_position_size'], null);
+  const noPos = se_pickSummaryValue(mergedSummary, ['no_position_size'], null);
+  const updatedAt = se_pickSummaryValue(mergedSummary, ['updated_at'], null);
+  const yesUnreal = se_pickSummaryValue(mergedSummary, ['yes_unrealized_gross_pnl', 'yes_unrealized_pnl'], null);
+  const noUnreal = se_pickSummaryValue(mergedSummary, ['no_unrealized_gross_pnl', 'no_unrealized_pnl'], null);
+
+  document.getElementById('se-bot-running').textContent = se_formatStateValue(status?.running);
+  document.getElementById('se-bot-phase').textContent = se_formatStateValue(status?.phase);
+  document.getElementById('se-bot-debug').textContent = se_formatStateValue(status?.debug_scenario);
+  document.getElementById('se-bot-window').textContent = se_formatStateValue(status?.current_window_id);
+  document.getElementById('se-summary-yes-position').textContent = se_formatStateValue(yesPos);
+  document.getElementById('se-summary-no-position').textContent = se_formatStateValue(noPos);
+  document.getElementById('se-summary-filled-total').textContent = se_formatStateValue(filledTotal);
+  document.getElementById('se-summary-realized-total').textContent = se_formatStateValue(realizedTotal);
+  document.getElementById('se-summary-unrealized-total').textContent = se_formatStateValue(unrealizedTotal);
+  document.getElementById('se-summary-updated-at').textContent = se_formatStateValue(updatedAt);
+
+  const openOrdersSummary = ordersData?.summary || {};
+  document.getElementById('se-orders-total').textContent = se_formatStateValue(openOrdersSummary.total);
+  document.getElementById('se-orders-open-total').textContent = se_formatStateValue(openOrdersSummary.open_total);
+  document.getElementById('se-orders-filled-total').textContent = se_formatStateValue(openOrdersSummary.filled_total);
+  document.getElementById('se-orders-cancelled-total').textContent = se_formatStateValue(openOrdersSummary.cancelled_total);
+
+  const tip = document.getElementById('se-bot-state-tip');
+  if (tip) {
+    tip.textContent = `YES upnl=${se_formatStateValue(yesUnreal)} | NO upnl=${se_formatStateValue(noUnreal)} | poll=${_seLastPollError ? 'error' : 'ok'}`;
+  }
+}
+
+function se_renderPollError(message) {
+  const el = document.getElementById('se-ui-error');
+  if (!el) return;
+  if (!message) {
+    el.textContent = '';
+    return;
+  }
+  el.textContent = `接口拉取失败: ${message}`;
+}
+
 function se_formatStateValue(value) {
   if (value === null || value === undefined || value === '') return 'N/A (null)';
   if (Array.isArray(value)) return value.length ? value.join(',') : '[]';
@@ -577,13 +636,14 @@ function se_renderOrders(orders) {
   if (!tbody) return;
   const list = Array.isArray(orders?.orders) ? [...orders.orders] : [];
   list.sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)));
-  const rows = list.map((o) => {
+  const topList = list.slice(0, 8);
+  const rows = topList.map((o) => {
     const cls = o.side === 'YES' ? 'up-color' : 'down-color';
     const statusColor = o.status === 'OPEN' ? '#00e676' : (o.status === 'FILLED' ? '#ffb74d' : '#888');
     const orderPriceText = typeof o.price === 'number' ? o.price.toFixed(3) : '--';
     const fillPriceText = typeof o.fill_price === 'number' ? o.fill_price.toFixed(3) : '--';
     const priceCell = `${orderPriceText}<div style="font-size:11px;color:#aaa;">fill:${fillPriceText}</div>`;
-    return `<tr><td>${se_formatStateValue(o.source)}</td><td class="${cls}">${se_formatStateValue(o.side)}</td><td>${priceCell}</td><td style="color:${statusColor}">${se_formatStateValue(o.status)}</td></tr>`;
+    return `<tr><td class="${cls}">${se_formatStateValue(o.side)}</td><td>${se_formatStateValue(o.kind)}</td><td>${priceCell}</td><td style="color:${statusColor}">${se_formatStateValue(o.status)}</td></tr>`;
   });
   tbody.innerHTML = rows.length ? rows.join('') : '<tr><td colspan="4" style="color:#555;text-align:center">暂无</td></tr>';
 }
@@ -707,4 +767,14 @@ document.addEventListener('DOMContentLoaded', () => {
   if (editorPage) {
     _se_observer.observe(editorPage, { attributes: true });
   }
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      se_stopPoll();
+      return;
+    }
+    se_startPoll();
+  });
+  window.addEventListener('beforeunload', () => {
+    se_stopPoll();
+  });
 });
