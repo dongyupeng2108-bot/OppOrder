@@ -36,6 +36,7 @@ import { BOT_STRATEGY_CONTRACT, summarizeIntents } from './bot_strategy_contract
 import { getDecisionFixtures } from './bot_strategy_fixtures.mjs';
 import { createBotOrderLedger } from './bot_order_ledger.mjs';
 import { createBotExecutorPaper, BOT_PAPER_ALLOWED_ACTIONS } from './bot_executor_paper.mjs';
+import { createBotRunner } from './bot_runner.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -64,6 +65,18 @@ const botLogger = createBotLogger({ maxEntries: 400 });
 const botState = createBotStateStore({ mode: BOT_MODE });
 const botLedger = createBotOrderLedger();
 const botExecutorPaper = createBotExecutorPaper({ ledger: botLedger });
+const botRunner = createBotRunner({
+  getContext: () => botContextAdapter.getContext(),
+  getState: () => botState.getState(),
+  patchState: (patch) => botState.patchState(patch),
+  decide: (input) => decideBotAction(input),
+  applyIntents: (intents, params) => botExecutorPaper.applyIntents(intents, params),
+  getOrders: () => botExecutorPaper.getOrders(),
+  getSummary: () => botExecutorPaper.getSummary(),
+  log: (entry) => botLogger.log(entry),
+  getLogCount: () => botLogger.getCount(),
+  config: BOT_STRATEGY_DEFAULT_CONFIG
+});
 
 // 加载策略配置
 function loadConfig(strategyId) {
@@ -1070,6 +1083,34 @@ const server = createServer(async (req, res) => {
           summary: result.summary,
           orders: result.orders
         });
+      } catch (err) {
+        sendJson(res, { ok: false, error: err.message }, 500);
+      }
+    });
+    return;
+  }
+
+  if (req.method === 'POST' && req.url === '/bot/runner/tick') {
+    let body = '';
+    req.on('data', d => { body += d; });
+    req.on('end', async () => {
+      try {
+        const payload = JSON.parse(body || '{}');
+        const contextOverride = payload?.context_override;
+        const stateOverride = payload?.state_override;
+        if (contextOverride !== undefined && (!contextOverride || typeof contextOverride !== 'object' || Array.isArray(contextOverride))) {
+          sendJson(res, { ok: false, error: 'invalid context_override' }, 400);
+          return;
+        }
+        if (stateOverride !== undefined && (!stateOverride || typeof stateOverride !== 'object' || Array.isArray(stateOverride))) {
+          sendJson(res, { ok: false, error: 'invalid state_override' }, 400);
+          return;
+        }
+        const result = await botRunner.runSingleTick({
+          context_override: contextOverride,
+          state_override: stateOverride
+        });
+        sendJson(res, { ok: true, ...result });
       } catch (err) {
         sendJson(res, { ok: false, error: err.message }, 500);
       }

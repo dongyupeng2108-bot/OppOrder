@@ -1,0 +1,4 @@
+HTTP/1.1 200 OK
+Content-Type: text/html
+URL: http://localhost:53123/ui/strategy-editor.html
+BODY_HEAD: <!DOCTYPE html>
