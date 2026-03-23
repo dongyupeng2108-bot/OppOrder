@@ -7,6 +7,20 @@ const mergeOverride = (base, override) => {
   return { ...base, ...override };
 };
 
+const toFiniteNumber = (value) => {
+  if (value === null || value === undefined || value === '') return null;
+  const num = Number(value);
+  return Number.isFinite(num) ? num : null;
+};
+
+const isOrderInCurrentWindow = (order, state) => {
+  if (!state?.window_initialized_at) return false;
+  const orderTs = Date.parse(order?.created_at || '');
+  const initTs = Date.parse(state.window_initialized_at);
+  if (Number.isNaN(orderTs) || Number.isNaN(initTs)) return false;
+  return orderTs >= initTs;
+};
+
 const inferPhase = (decision, summary) => {
   const firstIntent = Array.isArray(decision?.intents) && decision.intents.length > 0 ? decision.intents[0] : null;
   if (!firstIntent || firstIntent.kind === 'NOOP') return 'IDLE';
@@ -69,29 +83,106 @@ export function createBotRunner(options = {}) {
 
   const runSingleTick = async (params = {}) => {
     const contextBase = await getContext();
-    const stateBase = getState();
+    let state = getState();
     const context = mergeOverride(contextBase, params.context_override);
-    const state = mergeOverride(stateBase, params.state_override);
+    state = mergeOverride(state, params.state_override);
+
+    const lifecycleWindowId = context.window_id ?? null;
+    const prevWindowId = state.current_window_id ?? null;
+    if (lifecycleWindowId !== prevWindowId) {
+      const resetPatch = options.createWindowResetPatch
+        ? options.createWindowResetPatch(lifecycleWindowId)
+        : {
+            last_window_id: prevWindowId,
+            current_window_id: lifecycleWindowId,
+            ladder_posted: false,
+            yes_order_ids: [],
+            no_order_ids: [],
+            yes_cancelled: false,
+            no_cancelled: false,
+            anchor_btc: null,
+            atr_5m: null,
+            upper_bound: null,
+            lower_bound: null,
+            phase: 'WAIT_WINDOW_INIT'
+          };
+      state = patchState(resetPatch);
+      log({
+        level: 'info',
+        source: 'bot_runner',
+        event: 'BOT_WINDOW_CHANGED',
+        message: `window changed: ${prevWindowId ?? 'null'} -> ${lifecycleWindowId ?? 'null'}`,
+        mode: state.mode ?? null,
+        window_id: lifecycleWindowId,
+        data: { from_window_id: prevWindowId, to_window_id: lifecycleWindowId }
+      });
+    }
+
+    const lifecycleAtr = toFiniteNumber(context.atr_5m);
+    const lifecycleBtcPrice = toFiniteNumber(context.btc_price);
+    const atrMultiplier = toFiniteNumber(config.atr_multiplier) ?? 1.2;
+    const needWindowInit = state.current_window_id != null && state.anchor_btc == null;
+    if (needWindowInit) {
+      const initPatch = options.createWindowInitPatch
+        ? options.createWindowInitPatch({
+            window_id: state.current_window_id,
+            btc_price: lifecycleBtcPrice,
+            atr_5m: lifecycleAtr,
+            atr_multiplier: atrMultiplier
+          })
+        : {
+            current_window_id: state.current_window_id,
+            anchor_btc: lifecycleBtcPrice,
+            atr_5m: lifecycleAtr,
+            upper_bound: lifecycleBtcPrice != null && lifecycleAtr != null ? lifecycleBtcPrice + (lifecycleAtr * atrMultiplier) : null,
+            lower_bound: lifecycleBtcPrice != null && lifecycleAtr != null ? lifecycleBtcPrice - (lifecycleAtr * atrMultiplier) : null
+          };
+      state = patchState(initPatch);
+      log({
+        level: 'info',
+        source: 'bot_runner',
+        event: 'BOT_WINDOW_INITIALIZED',
+        message: state.upper_bound != null && state.lower_bound != null ? 'window initialized' : 'window init pending required values',
+        mode: state.mode ?? null,
+        window_id: state.current_window_id ?? null,
+        data: {
+          anchor_btc: state.anchor_btc ?? null,
+          atr_5m: state.atr_5m ?? null,
+          upper_bound: state.upper_bound ?? null,
+          lower_bound: state.lower_bound ?? null,
+          atr_multiplier: atrMultiplier
+        }
+      });
+    }
+
+    const contextForDecision = {
+      ...context,
+      atr_5m: state.atr_5m ?? context.atr_5m ?? null,
+      upper_bound: state.upper_bound ?? null,
+      lower_bound: state.lower_bound ?? null
+    };
 
     const decision = decide({
       config,
-      context,
+      context: contextForDecision,
       state
     });
 
     const intentResult = applyIntents(decision.intents, { source: 'runner_tick' });
-    const fillResult = applyFills(context);
+    const fillResult = applyFills(contextForDecision);
     const summary = fillResult.summary || intentResult.summary || getSummary();
     const orders = fillResult.orders || intentResult.orders || getOrders();
-    const openYes = orders.filter((order) => order.status === 'OPEN' && order.side === 'YES').map((order) => order.order_id);
-    const openNo = orders.filter((order) => order.status === 'OPEN' && order.side === 'NO').map((order) => order.order_id);
+    const windowOpenOrders = orders.filter((order) => order.status === 'OPEN' && isOrderInCurrentWindow(order, state));
+    const openYes = windowOpenOrders.filter((order) => order.side === 'YES').map((order) => order.order_id);
+    const openNo = windowOpenOrders.filter((order) => order.side === 'NO').map((order) => order.order_id);
     const statePatch = {
-      current_window_id: context.window_id ?? null,
-      remaining_sec: context.remaining_sec ?? null,
-      anchor_btc: context.btc_price ?? null,
-      atr_5m: context.atr_5m ?? null,
-      upper_bound: context.upper_bound ?? null,
-      lower_bound: context.lower_bound ?? null,
+      current_window_id: state.current_window_id ?? context.window_id ?? null,
+      last_window_id: state.last_window_id ?? null,
+      remaining_sec: contextForDecision.remaining_sec ?? null,
+      anchor_btc: state.anchor_btc ?? null,
+      atr_5m: state.atr_5m ?? contextForDecision.atr_5m ?? null,
+      upper_bound: state.upper_bound ?? null,
+      lower_bound: state.lower_bound ?? null,
       last_reason: decision.reason,
       last_intents: Array.isArray(decision.intents) ? decision.intents : [],
       ladder_posted: openYes.length > 0 || openNo.length > 0,
@@ -110,7 +201,7 @@ export function createBotRunner(options = {}) {
         event: 'BOT_FILL',
         message: `filled ${fillResult.filled_orders.length} orders`,
         mode: state.mode ?? null,
-        window_id: context.window_id ?? null,
+        window_id: contextForDecision.window_id ?? null,
         data: {
           fills: fillResult.filled_orders.map((order) => ({
             order_id: order.order_id,
@@ -127,7 +218,7 @@ export function createBotRunner(options = {}) {
       event: 'RUNNER_TICK',
       message: `tick ${decision.reason}`,
       mode: stateAfter.mode ?? null,
-      window_id: context.window_id ?? null,
+      window_id: contextForDecision.window_id ?? null,
       data: {
         intents_summary: summarizeIntents(decision.intents),
         changed: intentResult.changed,
@@ -141,8 +232,8 @@ export function createBotRunner(options = {}) {
     const logsAdded = beforeLogCount !== null && afterLogCount !== null ? Math.max(0, afterLogCount - beforeLogCount) : 1;
 
     return {
-      context_snapshot: cloneValue(context),
-      decision_preview: toDecisionPreview(decision, context, state),
+      context_snapshot: cloneValue(contextForDecision),
+      decision_preview: toDecisionPreview(decision, contextForDecision, state),
       state_before: cloneValue(state),
       state_after: cloneValue(stateAfter),
       order_summary: cloneValue(summary),

@@ -2,10 +2,12 @@ import { createPriceFeed } from './price_feed.mjs';
 
 const createDefaultContext = () => ({
   window_id: null,
+  last_window_id: null,
   slug: null,
   period: null,
   remaining_sec: null,
   btc_price: null,
+  anchor_btc: null,
   atr_5m: null,
   upper_bound: null,
   lower_bound: null,
@@ -19,6 +21,7 @@ const createDefaultContext = () => ({
 });
 
 const asFiniteNumber = (value) => {
+  if (value === null || value === undefined || value === '') return null;
   const num = Number(value);
   return Number.isFinite(num) ? num : null;
 };
@@ -46,6 +49,7 @@ const inferPeriod = (slug) => {
 export function createBotContextAdapter(options = {}) {
   const getScanner = options.getScanner || (() => null);
   const getOrderbookMonitor = options.getOrderbookMonitor || (() => null);
+  const getState = options.getState || (() => null);
   const refreshMs = Number.isFinite(options.windowRefreshMs) ? options.windowRefreshMs : 2000;
 
   const priceFeed = options.priceFeed || createPriceFeed({
@@ -95,17 +99,20 @@ export function createBotContextAdapter(options = {}) {
     }
 
     const windowInfo = await readWindow();
+    const state = getState() || {};
     const now = Date.now();
     const endMs = windowInfo?.window_end ? new Date(windowInfo.window_end).getTime() : null;
 
     context.window_id = windowInfo?.slug ?? null;
+    context.last_window_id = state.last_window_id ?? null;
     context.slug = windowInfo?.slug ?? null;
     context.period = inferPeriod(windowInfo?.slug ?? null);
     context.remaining_sec = Number.isFinite(endMs) ? Math.max(0, Math.floor((endMs - now) / 1000)) : null;
     context.btc_price = asPositiveNumber(latestBtcPrice);
-    context.atr_5m = null;
-    context.upper_bound = null;
-    context.lower_bound = null;
+    context.anchor_btc = asFiniteNumber(state.anchor_btc);
+    context.atr_5m = asFiniteNumber(windowInfo?.atr_5m ?? windowInfo?.atr ?? state.atr_5m);
+    context.upper_bound = asFiniteNumber(state.upper_bound);
+    context.lower_bound = asFiniteNumber(state.lower_bound);
     context.bid_yes = asFiniteNumber(snapshot?.bid_up);
     context.ask_yes = asFiniteNumber(snapshot?.ask_up);
     context.bid_no = asFiniteNumber(snapshot?.bid_down);
