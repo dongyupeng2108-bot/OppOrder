@@ -9,6 +9,12 @@ const INTENT_KINDS = {
 
 const CANCEL_SIDES = new Set(['YES', 'NO', 'ALL']);
 const LADDER_SIDES = new Set(['BOTH']);
+const PAPER_ACTIONS = {
+  PLACE_BOTH_LADDERS: 'PLACE_BOTH_LADDERS',
+  CANCEL_NO_OPEN: 'CANCEL_NO_OPEN',
+  CANCEL_YES_OPEN: 'CANCEL_YES_OPEN',
+  CANCEL_ALL_OPEN: 'CANCEL_ALL_OPEN'
+};
 
 const toNumberOrNull = (value) => {
   if (value === null || value === undefined || value === '') return null;
@@ -85,6 +91,46 @@ export function summarizeIntents(intents = []) {
   }).join(' + ');
 }
 
+export function normalizePaperIntent(intent = {}) {
+  if (!intent || typeof intent !== 'object') return null;
+  if (intent.kind === INTENT_KINDS.NOOP) {
+    return { kind: INTENT_KINDS.NOOP };
+  }
+  if (intent.kind === INTENT_KINDS.PLACE_LADDER) {
+    return createPlaceLadderIntent(intent);
+  }
+  if (intent.kind === INTENT_KINDS.CANCEL_OPEN) {
+    return createCancelOpenIntent(intent.side);
+  }
+  return null;
+}
+
+export function mapIntentToPaperAction(intent = {}) {
+  const normalized = normalizePaperIntent(intent);
+  if (!normalized) {
+    throw new Error(`unsupported intent kind: ${intent?.kind}`);
+  }
+  if (normalized.kind === INTENT_KINDS.NOOP) {
+    return { action: null, params: {}, intent: normalized };
+  }
+  if (normalized.kind === INTENT_KINDS.PLACE_LADDER) {
+    if (normalized.side !== 'BOTH') {
+      throw new Error(`unsupported PLACE_LADDER side: ${normalized.side}`);
+    }
+    return {
+      action: PAPER_ACTIONS.PLACE_BOTH_LADDERS,
+      params: { prices: normalized.prices, size: normalized.size },
+      intent: normalized
+    };
+  }
+  if (normalized.kind === INTENT_KINDS.CANCEL_OPEN) {
+    if (normalized.side === 'NO') return { action: PAPER_ACTIONS.CANCEL_NO_OPEN, params: {}, intent: normalized };
+    if (normalized.side === 'YES') return { action: PAPER_ACTIONS.CANCEL_YES_OPEN, params: {}, intent: normalized };
+    if (normalized.side === 'ALL') return { action: PAPER_ACTIONS.CANCEL_ALL_OPEN, params: {}, intent: normalized };
+  }
+  throw new Error(`unsupported intent payload: ${JSON.stringify(normalized)}`);
+}
+
 export const BOT_STRATEGY_CONTRACT = {
   version: 'v1',
   input_shape: ['config', 'context', 'state'],
@@ -93,5 +139,6 @@ export const BOT_STRATEGY_CONTRACT = {
   defaults: {
     ladder_prices: [...DEFAULT_LADDER_PRICES],
     ladder_size: DEFAULT_LADDER_SIZE
-  }
+  },
+  paper_actions: PAPER_ACTIONS
 };

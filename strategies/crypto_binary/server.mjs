@@ -1041,6 +1041,20 @@ const server = createServer(async (req, res) => {
     req.on('end', () => {
       try {
         const payload = JSON.parse(body || '{}');
+        const intents = payload?.intents;
+        if (Array.isArray(intents)) {
+          const result = botExecutorPaper.applyIntents(intents, { source: 'manual' });
+          syncBotStateFromLedger();
+          sendJson(res, {
+            ok: true,
+            mode: result.mode,
+            changed: result.changed,
+            applied: result.applied,
+            summary: result.summary,
+            orders: result.orders
+          });
+          return;
+        }
         const action = payload?.action;
         if (typeof action !== 'string' || !BOT_PAPER_ALLOWED_ACTIONS.includes(action)) {
           sendJson(res, { ok: false, error: 'invalid action' }, 400);
@@ -1050,6 +1064,7 @@ const server = createServer(async (req, res) => {
         syncBotStateFromLedger();
         sendJson(res, {
           ok: true,
+          mode: 'ACTION',
           action: result.action,
           changed: result.changed,
           summary: result.summary,
