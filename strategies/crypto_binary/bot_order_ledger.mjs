@@ -213,6 +213,16 @@ export function createBotOrderLedger() {
         }
       }
     }
+    if (action === 'FLATTEN_NO_POSITION') {
+      const positionSize = getNetPositionSize('NO');
+      if (positionSize > 0) {
+        const exitPrice = Number.isFinite(options.price) ? options.price : Number.isFinite(options.bid_no) ? options.bid_no : Number.isFinite(options.mark_price_no) ? options.mark_price_no : null;
+        if (exitPrice != null) {
+          orders = [...orders, createExitFill({ side: 'NO', price: exitPrice, size: positionSize, source })];
+          changed = 1;
+        }
+      }
+    }
     return {
       action,
       changed,

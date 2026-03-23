@@ -214,18 +214,22 @@ export function createBotRunner(options = {}) {
         }
       });
     }
-    const hasExitFill = Array.isArray(intentResult?.applied)
-      && intentResult.applied.some((item) => item?.action === 'FLATTEN_YES_POSITION' && Number(item?.changed) > 0);
-    if (hasExitFill) {
+    const exitFillAction = Array.isArray(intentResult?.applied)
+      ? (intentResult.applied.find((item) => (
+          (item?.action === 'FLATTEN_YES_POSITION' || item?.action === 'FLATTEN_NO_POSITION')
+          && Number(item?.changed) > 0
+        ))?.action ?? null)
+      : null;
+    if (exitFillAction) {
       log({
         level: 'info',
         source: 'bot_runner',
         event: 'BOT_EXIT_FILL',
-        message: 'flatten yes position filled',
+        message: exitFillAction === 'FLATTEN_NO_POSITION' ? 'flatten no position filled' : 'flatten yes position filled',
         mode: state.mode ?? null,
         window_id: contextForDecision.window_id ?? null,
         data: {
-          action: 'FLATTEN_YES_POSITION'
+          action: exitFillAction
         }
       });
     }
