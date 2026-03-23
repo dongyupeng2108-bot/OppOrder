@@ -83,17 +83,9 @@ async function restartServer() {
   }
 }
 
-// Bot 参数默认值与缓存 Key
-const BOT_PARAMS_CACHE_KEY = 'btcqdd_bot_params';
-const BOT_DEFAULT_PARAMS = {
-  executor_mode: 'paper-staging',
-  open_delay_sec: 10,
-  max_position_usd: 100,
-  cancel_all_before_expiry_sec: 100,
-  atr_multiplier: 1.2,
-  ladder_size: 5,
-  ladder_prices: '0.27,0.24,0.21,0.18'
-};
+const BOT_CONFIG_FIELDS = ['open_delay_sec', 'ladder_prices', 'ladder_size', 'atr_multiple', 'cancel_all_remaining_sec'];
+let _seConfigCurrent = null;
+let _seConfigDefaults = null;
 
 // 初始化
 async function initStrategyEditor() {
@@ -116,49 +108,24 @@ async function initStrategyEditor() {
           </div>
         </div>
         <div class="se-editor-container" style="flex:1;display:flex;flex-direction:column;position:relative;overflow-y:auto;">
-          <!-- 静态参数区骨架 -->
           <div id="se-params-form" style="padding: 20px; color: #ddd; display: flex; flex-direction: column; gap: 15px; flex:1;">
             
             <div style="display:flex; gap:20px; flex-wrap:wrap;">
-              <!-- executor_mode (只读) -->
-              <div style="flex:1; min-width:200px;">
-                <label style="display:block; margin-bottom:5px; font-weight:bold;">运行环境 (executor_mode):</label>
-                <select id="param_executor_mode" disabled style="background:#222; border:1px solid #444; color:#aaa; padding:6px; border-radius:4px; width:100%;">
-                  <option value="paper-staging" selected>paper-staging (可用)</option>
-                  <option value="live">live (未开放)</option>
-                </select>
-                <div style="font-size:0.8em; color:#888; margin-top:4px;">* 当前仅支持 paper-staging，Live 模式已后置。</div>
-              </div>
-
-              <!-- open_delay_sec -->
               <div style="flex:1; min-width:200px;">
                 <label style="display:block; margin-bottom:5px; font-weight:bold;">开仓延迟秒数 (open_delay_sec):</label>
                 <input type="number" id="param_open_delay_sec" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
               </div>
-            </div>
-
-            <div style="display:flex; gap:20px; flex-wrap:wrap;">
-              <!-- max_position_usd -->
               <div style="flex:1; min-width:200px;">
-                <label style="display:block; margin-bottom:5px; font-weight:bold;">最大持仓上限 (max_position_usd):</label>
-                <input type="number" id="param_max_position_usd" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
-              </div>
-
-              <!-- cancel_all_before_expiry_sec -->
-              <div style="flex:1; min-width:200px;">
-                <label style="display:block; margin-bottom:5px; font-weight:bold;">平仓保护倒计时 (cancel_all_before_expiry_sec):</label>
-                <input type="number" id="param_cancel_all_before_expiry_sec" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
+                <label style="display:block; margin-bottom:5px; font-weight:bold;">平仓保护倒计时 (cancel_all_remaining_sec):</label>
+                <input type="number" id="param_cancel_all_remaining_sec" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
               </div>
             </div>
 
             <div style="display:flex; gap:20px; flex-wrap:wrap;">
-              <!-- atr_multiplier -->
               <div style="flex:1; min-width:200px;">
-                <label style="display:block; margin-bottom:5px; font-weight:bold;">ATR 乘数 (atr_multiplier):</label>
-                <input type="number" step="0.1" id="param_atr_multiplier" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
+                <label style="display:block; margin-bottom:5px; font-weight:bold;">ATR 乘数 (atr_multiple):</label>
+                <input type="number" step="0.01" id="param_atr_multiple" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
               </div>
-
-              <!-- ladder_size -->
               <div style="flex:1; min-width:200px;">
                 <label style="display:block; margin-bottom:5px; font-weight:bold;">阶梯下单份数 (ladder_size):</label>
                 <input type="number" id="param_ladder_size" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
@@ -166,13 +133,13 @@ async function initStrategyEditor() {
             </div>
 
             <div>
-              <!-- ladder_prices -->
               <label style="display:block; margin-bottom:5px; font-weight:bold;">阶梯挂单价格列表 (ladder_prices) [逗号分隔]:</label>
               <input type="text" id="param_ladder_prices" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
             </div>
 
-            <div style="margin-top: 20px; padding: 10px; background: rgba(255, 152, 0, 0.1); border-left: 4px solid #ff9800; border-radius: 4px; font-style: italic; color: #ffb74d;">
-              <strong>提示：</strong>当前页面仅为前端参数骨架，尚未连接真实的 Bot 主链。点击"保存参数"仅会保存在浏览器本地缓存(localStorage)中，不会影响后端运行逻辑。
+            <div id="se-param-feedback" style="margin-top: 6px; min-height: 18px; font-size: 12px; color: #ff8a80;"></div>
+            <div style="margin-top: 6px; padding: 10px; background: rgba(0, 122, 204, 0.12); border-left: 4px solid #007acc; border-radius: 4px; color: #9fd3ff;">
+              固定参数闭环：读取 current/defaults，恢复默认仅改表单，点击“保存参数”才写回后端。
             </div>
           </div>
           <!-- 隐藏原代码编辑框以防报错 -->
@@ -275,7 +242,7 @@ async function initStrategyEditor() {
   `;
 
   // 加载并渲染 Bot 参数
-  se_loadParams();
+  await se_loadParams();
 
   // 恢复上次代码：优先服务端 → 回退 localStorage → 最后用默认模板
   let saved = null;
@@ -293,57 +260,113 @@ async function initStrategyEditor() {
 }
 
 // ── Bot 参数管理逻辑 ────────────────────────────────────────────────────────
-function se_loadParams() {
-  let params = { ...BOT_DEFAULT_PARAMS };
+async function se_loadParams() {
   try {
-    const cached = localStorage.getItem(BOT_PARAMS_CACHE_KEY);
-    if (cached) {
-      const parsed = JSON.parse(cached);
-      params = { ...params, ...parsed }; // 合并缓存值
+    se_setParamFeedback('读取参数中...', '#9fd3ff');
+    const resp = await fetch(`${BASE_URL}/bot/config`);
+    const data = await resp.json();
+    if (!resp.ok || !data?.current || !data?.defaults) {
+      throw new Error(data?.error || `HTTP ${resp.status}`);
     }
+    _seConfigCurrent = se_pickBotConfig(data.current);
+    _seConfigDefaults = se_pickBotConfig(data.defaults);
+    se_renderParams(_seConfigCurrent);
+    se_setParamFeedback('参数已加载', '#8bc34a');
   } catch (e) {
-    console.warn('[SE] Failed to load params from localStorage', e);
+    _seConfigDefaults = {
+      open_delay_sec: 10,
+      ladder_prices: [0.27, 0.24, 0.21, 0.18],
+      ladder_size: 5,
+      atr_multiple: 1.2,
+      cancel_all_remaining_sec: 100
+    };
+    _seConfigCurrent = { ..._seConfigDefaults, ladder_prices: [..._seConfigDefaults.ladder_prices] };
+    se_renderParams(_seConfigCurrent);
+    se_setParamFeedback(`读取参数失败: ${e.message}`, '#ff8a80');
   }
-  se_renderParams(params);
 }
 
 function se_renderParams(params) {
-  document.getElementById('param_executor_mode').value = params.executor_mode || 'paper-staging';
   document.getElementById('param_open_delay_sec').value = params.open_delay_sec;
-  document.getElementById('param_max_position_usd').value = params.max_position_usd;
-  document.getElementById('param_cancel_all_before_expiry_sec').value = params.cancel_all_before_expiry_sec;
-  document.getElementById('param_atr_multiplier').value = params.atr_multiplier;
+  document.getElementById('param_cancel_all_remaining_sec').value = params.cancel_all_remaining_sec;
+  document.getElementById('param_atr_multiple').value = params.atr_multiple;
   document.getElementById('param_ladder_size').value = params.ladder_size;
-  document.getElementById('param_ladder_prices').value = params.ladder_prices;
+  document.getElementById('param_ladder_prices').value = Array.isArray(params.ladder_prices) ? params.ladder_prices.join(',') : '';
 }
 
 function se_restoreDefaultParams() {
-  if (confirm('确定要恢复为默认参数吗？')) {
-    se_renderParams(BOT_DEFAULT_PARAMS);
-    se_saveParams(true);
+  if (!_seConfigDefaults) return;
+  se_renderParams(_seConfigDefaults);
+  se_setParamFeedback('已恢复默认值（未保存）', '#ffb74d');
+}
+
+async function se_saveParams() {
+  try {
+    const params = se_readParamsFromForm();
+    const validationError = se_validateParams(params);
+    if (validationError) {
+      se_setParamFeedback(validationError, '#ff8a80');
+      return;
+    }
+    se_setParamFeedback('保存参数中...', '#9fd3ff');
+    const resp = await fetch(`${BASE_URL}/bot/config`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(params)
+    });
+    const data = await resp.json();
+    if (!resp.ok || data?.ok === false) {
+      throw new Error(data?.error || `HTTP ${resp.status}`);
+    }
+    _seConfigCurrent = se_pickBotConfig(data.current || params);
+    _seConfigDefaults = data.defaults ? se_pickBotConfig(data.defaults) : _seConfigDefaults;
+    se_renderParams(_seConfigCurrent);
+    se_setParamFeedback('参数保存成功', '#8bc34a');
+  } catch (e) {
+    se_setParamFeedback(`保存参数失败: ${e.message}`, '#ff8a80');
   }
 }
 
-function se_saveParams(silent = false) {
-  const params = {
-    executor_mode: document.getElementById('param_executor_mode').value,
-    open_delay_sec: Number(document.getElementById('param_open_delay_sec').value),
-    max_position_usd: Number(document.getElementById('param_max_position_usd').value),
-    cancel_all_before_expiry_sec: Number(document.getElementById('param_cancel_all_before_expiry_sec').value),
-    atr_multiplier: Number(document.getElementById('param_atr_multiplier').value),
-    ladder_size: Number(document.getElementById('param_ladder_size').value),
-    ladder_prices: document.getElementById('param_ladder_prices').value
+function se_pickBotConfig(input = {}) {
+  const picked = {};
+  for (const key of BOT_CONFIG_FIELDS) picked[key] = input[key];
+  return {
+    open_delay_sec: Number(picked.open_delay_sec ?? 0),
+    ladder_prices: Array.isArray(picked.ladder_prices) ? picked.ladder_prices.map((item) => Number(item)) : [],
+    ladder_size: Number(picked.ladder_size ?? 1),
+    atr_multiple: Number(picked.atr_multiple ?? 1.2),
+    cancel_all_remaining_sec: Number(picked.cancel_all_remaining_sec ?? 100)
   };
+}
 
-  try {
-    localStorage.setItem(BOT_PARAMS_CACHE_KEY, JSON.stringify(params));
-    if (!silent) {
-      alert('参数已保存到本地缓存 (localStorage)！\n注意：当前为壳收敛阶段，暂未接后端 API。');
-    }
-  } catch (e) {
-    console.error('[SE] Failed to save params', e);
-    alert('保存参数失败！');
-  }
+function se_readParamsFromForm() {
+  return {
+    open_delay_sec: Number(document.getElementById('param_open_delay_sec').value),
+    ladder_prices: String(document.getElementById('param_ladder_prices').value || '')
+      .split(',')
+      .map((item) => Number(item.trim()))
+      .filter((item) => Number.isFinite(item)),
+    ladder_size: Number(document.getElementById('param_ladder_size').value),
+    atr_multiple: Number(document.getElementById('param_atr_multiple').value),
+    cancel_all_remaining_sec: Number(document.getElementById('param_cancel_all_remaining_sec').value)
+  };
+}
+
+function se_validateParams(params) {
+  if (!Number.isInteger(params.open_delay_sec) || params.open_delay_sec < 0) return 'open_delay_sec 必须为非负整数';
+  if (!Number.isInteger(params.cancel_all_remaining_sec) || params.cancel_all_remaining_sec < 0) return 'cancel_all_remaining_sec 必须为非负整数';
+  if (!Number.isInteger(params.ladder_size) || params.ladder_size <= 0) return 'ladder_size 必须为正整数';
+  if (!Number.isFinite(params.atr_multiple) || params.atr_multiple <= 0) return 'atr_multiple 必须为正数';
+  if (!Array.isArray(params.ladder_prices) || params.ladder_prices.length !== 4) return 'ladder_prices 必须为 4 个数值';
+  if (params.ladder_prices.some((item) => !Number.isFinite(item) || item <= 0 || item >= 1)) return 'ladder_prices 每项必须满足 0 < p < 1';
+  return null;
+}
+
+function se_setParamFeedback(message, color = '#ff8a80') {
+  const el = document.getElementById('se-param-feedback');
+  if (!el) return;
+  el.style.color = color;
+  el.textContent = message || '';
 }
 
 // ── 以下为原有逻辑 ──────────────────────────────────────────────────────────
