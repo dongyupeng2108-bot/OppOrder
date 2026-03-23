@@ -87,6 +87,72 @@ export function createBotOrderLedger() {
     };
   };
 
+  const getPaperSummary = (context = {}) => {
+    const filledYes = orders.filter((order) => order.status === 'FILLED' && order.side === 'YES');
+    const filledNo = orders.filter((order) => order.status === 'FILLED' && order.side === 'NO');
+    const toSideSummary = (filledOrders, markPrice) => {
+      if (filledOrders.length === 0) {
+        return {
+          count: 0,
+          position_size: 0,
+          avg_fill_price: null,
+          mark_price: Number.isFinite(markPrice) ? markPrice : null,
+          unrealized_pnl: Number.isFinite(markPrice) ? 0 : null
+        };
+      }
+      const positionSize = filledOrders.reduce((sum, order) => sum + (Number.isFinite(order.size) ? order.size : 0), 0);
+      const filledNotional = filledOrders.reduce((sum, order) => {
+        const fillPrice = Number.isFinite(order.fill_price) ? order.fill_price : null;
+        const size = Number.isFinite(order.size) ? order.size : 0;
+        if (fillPrice == null) return sum;
+        return sum + (fillPrice * size);
+      }, 0);
+      const avgFillPrice = positionSize > 0 ? filledNotional / positionSize : null;
+      if (!Number.isFinite(markPrice)) {
+        return {
+          count: filledOrders.length,
+          position_size: positionSize,
+          avg_fill_price: avgFillPrice,
+          mark_price: null,
+          unrealized_pnl: null
+        };
+      }
+      const pnl = filledOrders.reduce((sum, order) => {
+        const fillPrice = Number.isFinite(order.fill_price) ? order.fill_price : null;
+        const size = Number.isFinite(order.size) ? order.size : 0;
+        if (fillPrice == null) return sum;
+        return sum + ((markPrice - fillPrice) * size);
+      }, 0);
+      return {
+        count: filledOrders.length,
+        position_size: positionSize,
+        avg_fill_price: avgFillPrice,
+        mark_price: markPrice,
+        unrealized_pnl: pnl
+      };
+    };
+
+    const bidYes = Number.isFinite(context?.bid_yes) ? context.bid_yes : null;
+    const bidNo = Number.isFinite(context?.bid_no) ? context.bid_no : null;
+    const yes = toSideSummary(filledYes, bidYes);
+    const no = toSideSummary(filledNo, bidNo);
+    const totalUnrealized = yes.unrealized_pnl == null || no.unrealized_pnl == null ? null : yes.unrealized_pnl + no.unrealized_pnl;
+    return {
+      yes_filled_count: yes.count,
+      no_filled_count: no.count,
+      yes_position_size: yes.position_size,
+      no_position_size: no.position_size,
+      yes_avg_fill_price: yes.avg_fill_price,
+      no_avg_fill_price: no.avg_fill_price,
+      yes_mark_price: yes.mark_price,
+      no_mark_price: no.mark_price,
+      yes_unrealized_pnl: yes.unrealized_pnl,
+      no_unrealized_pnl: no.unrealized_pnl,
+      total_unrealized_pnl: totalUnrealized,
+      updated_at: new Date().toISOString()
+    };
+  };
+
   const applyAction = (action, options = {}) => {
     const prices = Array.isArray(options.prices) && options.prices.length ? options.prices : DEFAULT_PRICES;
     const size = Number.isFinite(options.size) ? options.size : DEFAULT_SIZE;
@@ -109,7 +175,7 @@ export function createBotOrderLedger() {
     return { summary: getSummary(), orders: getOrders() };
   };
 
-  return { getOrders, getSummary, applyAction, applyFills, reset };
+  return { getOrders, getSummary, getPaperSummary, applyAction, applyFills, reset };
 }
 
 export const BOT_LEDGER_DEFAULTS = { prices: DEFAULT_PRICES, size: DEFAULT_SIZE };

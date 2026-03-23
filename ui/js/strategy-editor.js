@@ -443,22 +443,24 @@ function se_stopPoll() {
 
 async function se_poll() {
   try {
-    const [contextRes, statusRes, logsRes, decisionRes, ordersRes] = await Promise.all([
+    const [contextRes, statusRes, logsRes, decisionRes, ordersRes, summaryRes] = await Promise.all([
       fetch(`${BASE_URL}/bot/context`),
       fetch(`${BASE_URL}/bot/status`),
       fetch(`${BASE_URL}/bot/logs?limit=200`),
       fetch(`${BASE_URL}/bot/decision-preview`),
-      fetch(`${BASE_URL}/bot/orders`)
+      fetch(`${BASE_URL}/bot/orders`),
+      fetch(`${BASE_URL}/bot/paper/summary`)
     ]);
     const context = await contextRes.json();
     const status = await statusRes.json();
     const logsData = await logsRes.json();
     const decisionData = await decisionRes.json();
     const ordersData = await ordersRes.json();
+    const summaryData = await summaryRes.json();
 
     se_renderContext(context);
     se_renderDecision(decisionData);
-    se_renderPnlChart([]);
+    se_renderPnlChart(summaryData);
     se_renderLogs(Array.isArray(logsData) ? logsData : (logsData.logs || []));
     se_renderOrders(ordersData);
 
@@ -550,7 +552,7 @@ function se_renderContext(context) {
   const pnlTitleEl = document.getElementById('se-pnl-title');
   if (pnlTitleEl) {
     pnlTitleEl.style.color = '#aaa';
-    pnlTitleEl.textContent = '累计 PnL';
+    pnlTitleEl.textContent = 'Paper Summary';
   }
 }
 
@@ -628,80 +630,23 @@ function se_renderLogs(logs) {
 function se_renderPnlChart(pnlSeries) {
   const svg = document.getElementById('se-pnl-chart');
   if (!svg) return;
-  if (!pnlSeries || pnlSeries.length < 1) {
-    svg.innerHTML = '<text x="150" y="100" text-anchor="middle" fill="#666" font-size="12">运行后显示</text>';
+  const summary = pnlSeries && typeof pnlSeries === 'object' ? pnlSeries : null;
+  if (!summary) {
+    svg.innerHTML = '<text x="150" y="100" text-anchor="middle" fill="#666" font-size="12">summary unavailable</text>';
     return;
   }
-
-  const container = svg.parentElement;
-  const W = container ? container.offsetWidth : 300;
-  if (!W || W < 50) return;  // 容器未渲染或太小，跳过
-  const H = container ? Math.min(container.offsetHeight, 250) : 200;
-  const PAD = { top: 15, right: 10, bottom: 28, left: 45 };
-  const chartW = W - PAD.left - PAD.right;
-  const chartH = H - PAD.top - PAD.bottom;
-
-  const pnls = pnlSeries.map(p => p.pnl);
-  const minP = Math.min(...pnls, 0);
-  const maxP = Math.max(...pnls, 0);
-  const range = maxP - minP || 0.01;
-
-  const toX = (i) => PAD.left + (i / Math.max(pnlSeries.length - 1, 1)) * chartW;
-  const toY = (v) => PAD.top + chartH - ((v - minP) / range) * chartH;
-
-  let html = '';
-
-  // 背景
-  html += `<rect x="${PAD.left}" y="${PAD.top}" width="${chartW}" height="${chartH}" fill="#1a1a2e" rx="2"/>`;
-
-  // Y 轴网格线 + 标签（5 档）
-  for (let i = 0; i <= 4; i++) {
-    const val = minP + (range * i / 4);
-    const y = toY(val);
-    html += `<line x1="${PAD.left}" y1="${y}" x2="${W - PAD.right}" y2="${y}" stroke="#333" stroke-width="0.5"/>`;
-    html += `<text x="${PAD.left - 4}" y="${y + 3}" text-anchor="end" fill="#888" font-size="9">${val >= 0 ? '+' : ''}${val.toFixed(3)}</text>`;
-  }
-
-  // 零线（加粗）
-  if (minP < 0 && maxP > 0) {
-    const zeroY = toY(0);
-    html += `<line x1="${PAD.left}" y1="${zeroY}" x2="${W - PAD.right}" y2="${zeroY}" stroke="#555" stroke-width="1" stroke-dasharray="4,2"/>`;
-  }
-
-  // X 轴时间标签（最多 5 个）
-  const step = Math.max(1, Math.floor(pnlSeries.length / 5));
-  for (let i = 0; i < pnlSeries.length; i += step) {
-    const p = pnlSeries[i];
-    if (!p.ts) continue;
-    const d = new Date(p.ts);
-    const label = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
-    const x = toX(i);
-    html += `<text x="${x}" y="${H - 5}" text-anchor="middle" fill="#888" font-size="9">${label}</text>`;
-  }
-
-  // 折线
-  const lastPnl = pnls[pnls.length - 1];
-  const color = lastPnl >= 0 ? '#00c853' : '#ff1744';
-  const points = pnlSeries.map((p, i) => `${toX(i)},${toY(p.pnl)}`).join(' ');
-  html += `<polyline points="${points}" fill="none" stroke="${color}" stroke-width="2"/>`;
-
-  // 区域填充（折线到零线之间半透明填充）
-  const zeroY = toY(0);
-  const areaPoints = pnlSeries.map((p, i) => `${toX(i)},${toY(p.pnl)}`).join(' ');
-  const lastX = toX(pnlSeries.length - 1);
-  const firstX = toX(0);
-  html += `<polygon points="${areaPoints} ${lastX},${zeroY} ${firstX},${zeroY}" fill="${color}" opacity="0.15"/>`;
-
-  // 最新 PnL 数值（右上角，盈绿亏红）
-  html += `<text x="${W - PAD.right}" y="${PAD.top + 12}" text-anchor="end" fill="${color}" font-size="10" font-weight="bold">${lastPnl >= 0 ? '+' : ''}${lastPnl.toFixed(4)}</text>`;
-
-  // Y 轴线 + X 轴线
-  html += `<line x1="${PAD.left}" y1="${PAD.top}" x2="${PAD.left}" y2="${H - PAD.bottom}" stroke="#555" stroke-width="1"/>`;
-  html += `<line x1="${PAD.left}" y1="${H - PAD.bottom}" x2="${W - PAD.right}" y2="${H - PAD.bottom}" stroke="#555" stroke-width="1"/>`;
-
-  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  const fmt = (v) => (typeof v === 'number' ? v.toFixed(4) : 'null');
+  svg.setAttribute('viewBox', '0 0 300 200');
   svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-  svg.innerHTML = html;
+  svg.innerHTML = `
+    <rect x="0" y="0" width="300" height="200" fill="#1a1a2e" />
+    <text x="12" y="24" fill="#bbb" font-size="12">YES count:${se_formatStateValue(summary.yes_filled_count)} avg:${fmt(summary.yes_avg_fill_price)} upnl:${fmt(summary.yes_unrealized_pnl)}</text>
+    <text x="12" y="52" fill="#bbb" font-size="12">NO  count:${se_formatStateValue(summary.no_filled_count)} avg:${fmt(summary.no_avg_fill_price)} upnl:${fmt(summary.no_unrealized_pnl)}</text>
+    <text x="12" y="88" fill="#00e676" font-size="13" font-weight="bold">Total UPNL: ${fmt(summary.total_unrealized_pnl)}</text>
+    <text x="12" y="118" fill="#888" font-size="11">YES mark:${fmt(summary.yes_mark_price)} NO mark:${fmt(summary.no_mark_price)}</text>
+    <text x="12" y="146" fill="#888" font-size="11">YES size:${se_formatStateValue(summary.yes_position_size)} NO size:${se_formatStateValue(summary.no_position_size)}</text>
+    <text x="12" y="174" fill="#666" font-size="10">updated:${se_formatStateValue(summary.updated_at)}</text>
+  `;
 }
 
 // 辅助日志函数

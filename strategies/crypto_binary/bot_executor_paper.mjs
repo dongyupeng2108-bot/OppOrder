@@ -11,6 +11,7 @@ const ALLOWED_ACTIONS = new Set([
 export function createBotExecutorPaper(options = {}) {
   const ledger = options.ledger;
   if (!ledger) throw new Error('ledger required');
+  let latestContext = null;
 
   const applyAction = (action, params = {}) => {
     if (!ALLOWED_ACTIONS.has(action)) {
@@ -25,8 +26,20 @@ export function createBotExecutorPaper(options = {}) {
 
   const getOrders = () => ledger.getOrders();
   const getSummary = () => ledger.getSummary();
+  const getPaperSummary = (context) => {
+    if (context && typeof context === 'object' && !Array.isArray(context)) {
+      latestContext = { ...context };
+      return ledger.getPaperSummary(context);
+    }
+    return ledger.getPaperSummary(latestContext || {});
+  };
   const reset = () => ledger.reset();
-  const applyFills = (context = {}) => ledger.applyFills(context);
+  const applyFills = (context = {}) => {
+    if (context && typeof context === 'object' && !Array.isArray(context)) {
+      latestContext = { ...context };
+    }
+    return ledger.applyFills(context);
+  };
 
   const applyIntents = (intents, params = {}) => {
     if (!Array.isArray(intents)) {
@@ -65,7 +78,7 @@ export function createBotExecutorPaper(options = {}) {
     };
   };
 
-  return { applyAction, applyIntents, applyFills, getOrders, getSummary, reset };
+  return { applyAction, applyIntents, applyFills, getOrders, getSummary, getPaperSummary, reset };
 }
 
 export const BOT_PAPER_ALLOWED_ACTIONS = [...ALLOWED_ACTIONS];

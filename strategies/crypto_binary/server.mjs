@@ -1059,6 +1059,15 @@ const server = createServer(async (req, res) => {
     return;
   }
 
+  if (req.method === 'GET' && req.url === '/bot/paper/summary') {
+    try {
+      sendJson(res, botExecutorPaper.getPaperSummary());
+    } catch (err) {
+      sendJson(res, { ok: false, error: err.message }, 500);
+    }
+    return;
+  }
+
   if (req.method === 'POST' && req.url === '/bot/paper/apply-action') {
     let body = '';
     req.on('data', d => { body += d; });
