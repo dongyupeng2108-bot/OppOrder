@@ -1,6 +1,9 @@
 const createDefaultState = (mode = 'paper-staging') => ({
   mode,
   phase: 'IDLE',
+  running: false,
+  tick_interval_ms: 2000,
+  last_tick_at: null,
   current_window_id: null,
   remaining_sec: null,
   anchor_btc: null,
@@ -18,6 +21,9 @@ const createDefaultState = (mode = 'paper-staging') => ({
 const normalizeState = (input = {}) => ({
   mode: input.mode ?? 'paper-staging',
   phase: input.phase ?? 'IDLE',
+  running: input.running === true,
+  tick_interval_ms: Number.isFinite(Number(input.tick_interval_ms)) ? Number(input.tick_interval_ms) : 2000,
+  last_tick_at: typeof input.last_tick_at === 'string' ? input.last_tick_at : null,
   current_window_id: input.current_window_id ?? null,
   remaining_sec: input.remaining_sec ?? null,
   anchor_btc: input.anchor_btc ?? null,

@@ -37,6 +37,7 @@ export function createBotRunner(options = {}) {
   const getOrders = options.getOrders;
   const getSummary = options.getSummary;
   const log = options.log;
+  const onRuntimeUpdate = typeof options.onRuntimeUpdate === 'function' ? options.onRuntimeUpdate : null;
   const config = options.config || {};
   if (typeof getContext !== 'function') throw new Error('getContext required');
   if (typeof getState !== 'function') throw new Error('getState required');
@@ -46,6 +47,23 @@ export function createBotRunner(options = {}) {
   if (typeof getOrders !== 'function') throw new Error('getOrders required');
   if (typeof getSummary !== 'function') throw new Error('getSummary required');
   if (typeof log !== 'function') throw new Error('log required');
+
+  let running = false;
+  let tickIntervalMs = 2000;
+  let lastTickAt = null;
+  let timerRef = null;
+  let tickInProgress = false;
+
+  const getRuntimeState = () => ({
+    running,
+    tick_interval_ms: tickIntervalMs,
+    last_tick_at: lastTickAt
+  });
+
+  const publishRuntime = () => {
+    if (!onRuntimeUpdate) return;
+    onRuntimeUpdate(getRuntimeState());
+  };
 
   const runSingleTick = async (params = {}) => {
     const contextBase = await getContext();
@@ -109,5 +127,89 @@ export function createBotRunner(options = {}) {
     };
   };
 
-  return { runSingleTick };
+  const runScheduledTick = async () => {
+    if (!running || tickInProgress) return null;
+    tickInProgress = true;
+    try {
+      const result = await runSingleTick();
+      lastTickAt = new Date().toISOString();
+      publishRuntime();
+      log({
+        level: 'info',
+        source: 'bot_runner',
+        event: 'BOT_TICK_OK',
+        message: 'scheduled tick ok',
+        mode: result?.state_after?.mode ?? null,
+        window_id: result?.context_snapshot?.window_id ?? null,
+        data: {
+          reason: result?.decision_preview?.reason ?? null,
+          intents_summary: result?.decision_preview?.intents_summary ?? null
+        }
+      });
+      return result;
+    } catch (error) {
+      lastTickAt = new Date().toISOString();
+      publishRuntime();
+      log({
+        level: 'error',
+        source: 'bot_runner',
+        event: 'BOT_TICK_ERROR',
+        message: error.message,
+        mode: null,
+        window_id: null,
+        data: {}
+      });
+      return null;
+    } finally {
+      tickInProgress = false;
+    }
+  };
+
+  const start = (tickMs = 2000) => {
+    if (running) {
+      return { already_running: true, ...getRuntimeState() };
+    }
+    tickIntervalMs = tickMs;
+    running = true;
+    publishRuntime();
+    log({
+      level: 'info',
+      source: 'bot_runner',
+      event: 'BOT_STARTED',
+      message: 'bot runner started',
+      mode: null,
+      window_id: null,
+      data: { tick_interval_ms: tickIntervalMs }
+    });
+    timerRef = setInterval(() => {
+      runScheduledTick();
+    }, tickIntervalMs);
+    return { already_running: false, ...getRuntimeState() };
+  };
+
+  const stop = () => {
+    if (!running) {
+      return { already_stopped: true, ...getRuntimeState() };
+    }
+    running = false;
+    if (timerRef) {
+      clearInterval(timerRef);
+      timerRef = null;
+    }
+    publishRuntime();
+    log({
+      level: 'info',
+      source: 'bot_runner',
+      event: 'BOT_STOPPED',
+      message: 'bot runner stopped',
+      mode: null,
+      window_id: null,
+      data: {}
+    });
+    return { already_stopped: false, ...getRuntimeState() };
+  };
+
+  publishRuntime();
+
+  return { runSingleTick, start, stop, runScheduledTick, getRuntimeState };
 }

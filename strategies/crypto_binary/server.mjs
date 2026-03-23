@@ -57,6 +57,9 @@ const args = Object.fromEntries(
 const STRATEGY_ID = args.strategy || null;
 const PORT = parseInt(args.port || '53123', 10);
 const BOT_MODE = process.env.EXECUTOR_MODE || 'paper-staging';
+const BOT_TICK_INTERVAL_DEFAULT_MS = 2000;
+const BOT_TICK_INTERVAL_MIN_MS = 1000;
+const BOT_TICK_INTERVAL_MAX_MS = 5000;
 const BOT_STRATEGY_DEFAULT_CONFIG = {
   ladder_size: BOT_STRATEGY_CONTRACT.defaults.ladder_size,
   ladder_prices: [...BOT_STRATEGY_CONTRACT.defaults.ladder_prices]
@@ -73,6 +76,7 @@ const botRunner = createBotRunner({
   applyIntents: (intents, params) => botExecutorPaper.applyIntents(intents, params),
   getOrders: () => botExecutorPaper.getOrders(),
   getSummary: () => botExecutorPaper.getSummary(),
+  onRuntimeUpdate: (runtime) => botState.patchState(runtime),
   log: (entry) => botLogger.log(entry),
   getLogCount: () => botLogger.getCount(),
   config: BOT_STRATEGY_DEFAULT_CONFIG
@@ -99,7 +103,13 @@ botLogger.log({
   window_id: null,
   data: { port: PORT, strategy: STRATEGY_ID || 'none' }
 });
-botState.patchState({ mode: BOT_MODE, phase: 'IDLE' });
+botState.patchState({
+  mode: BOT_MODE,
+  phase: 'IDLE',
+  running: false,
+  tick_interval_ms: BOT_TICK_INTERVAL_DEFAULT_MS,
+  last_tick_at: null
+});
 
 function syncBotStateFromLedger() {
   const orders = botExecutorPaper.getOrders();
@@ -1110,11 +1120,43 @@ const server = createServer(async (req, res) => {
           context_override: contextOverride,
           state_override: stateOverride
         });
+        botState.patchState({ last_tick_at: new Date().toISOString() });
         sendJson(res, { ok: true, ...result });
       } catch (err) {
         sendJson(res, { ok: false, error: err.message }, 500);
       }
     });
+    return;
+  }
+
+  if (req.method === 'POST' && req.url === '/bot/start') {
+    let body = '';
+    req.on('data', d => { body += d; });
+    req.on('end', () => {
+      try {
+        const payload = JSON.parse(body || '{}');
+        const rawInterval = payload?.tick_interval_ms;
+        const tickIntervalMs = rawInterval == null ? BOT_TICK_INTERVAL_DEFAULT_MS : Number(rawInterval);
+        if (!Number.isInteger(tickIntervalMs) || tickIntervalMs < BOT_TICK_INTERVAL_MIN_MS || tickIntervalMs > BOT_TICK_INTERVAL_MAX_MS) {
+          sendJson(res, { ok: false, error: 'invalid tick_interval_ms' }, 400);
+          return;
+        }
+        const result = botRunner.start(tickIntervalMs);
+        sendJson(res, { ok: true, ...result });
+      } catch (err) {
+        sendJson(res, { ok: false, error: err.message }, 500);
+      }
+    });
+    return;
+  }
+
+  if (req.method === 'POST' && req.url === '/bot/stop') {
+    try {
+      const result = botRunner.stop();
+      sendJson(res, { ok: true, ...result });
+    } catch (err) {
+      sendJson(res, { ok: false, error: err.message }, 500);
+    }
     return;
   }
 
