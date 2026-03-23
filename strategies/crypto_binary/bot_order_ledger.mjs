@@ -117,6 +117,22 @@ export function createBotOrderLedger() {
       const filledEntries = getFilledEntryOrders(side);
       const filledExits = getFilledExitOrders(side);
       const netPositionSize = getNetPositionSize(side);
+      const entrySize = filledEntries.reduce((sum, order) => sum + (Number.isFinite(order.size) ? order.size : 0), 0);
+      const filledNotional = filledEntries.reduce((sum, order) => {
+        const fillPrice = Number.isFinite(order.fill_price) ? order.fill_price : null;
+        const size = Number.isFinite(order.size) ? order.size : 0;
+        if (fillPrice == null) return sum;
+        return sum + (fillPrice * size);
+      }, 0);
+      const avgFillPrice = entrySize > 0 ? filledNotional / entrySize : null;
+      const realizedGrossPnl = avgFillPrice == null
+        ? 0
+        : filledExits.reduce((sum, order) => {
+            const fillPrice = Number.isFinite(order.fill_price) ? order.fill_price : null;
+            const size = Number.isFinite(order.size) ? order.size : 0;
+            if (fillPrice == null || size <= 0) return sum;
+            return sum + ((fillPrice - avgFillPrice) * size);
+          }, 0);
       if (filledEntries.length === 0 || netPositionSize <= 0) {
         return {
           count: filledEntries.length,
@@ -124,17 +140,10 @@ export function createBotOrderLedger() {
           position_size: 0,
           avg_fill_price: null,
           mark_price: Number.isFinite(markPrice) ? markPrice : null,
-          unrealized_pnl: Number.isFinite(markPrice) ? 0 : null
+          unrealized_pnl: Number.isFinite(markPrice) ? 0 : null,
+          realized_gross_pnl: realizedGrossPnl
         };
       }
-      const filledNotional = filledEntries.reduce((sum, order) => {
-        const fillPrice = Number.isFinite(order.fill_price) ? order.fill_price : null;
-        const size = Number.isFinite(order.size) ? order.size : 0;
-        if (fillPrice == null) return sum;
-        return sum + (fillPrice * size);
-      }, 0);
-      const entrySize = filledEntries.reduce((sum, order) => sum + (Number.isFinite(order.size) ? order.size : 0), 0);
-      const avgFillPrice = entrySize > 0 ? filledNotional / entrySize : null;
       if (!Number.isFinite(markPrice)) {
         return {
           count: filledEntries.length,
@@ -142,7 +151,8 @@ export function createBotOrderLedger() {
           position_size: netPositionSize,
           avg_fill_price: avgFillPrice,
           mark_price: null,
-          unrealized_pnl: null
+          unrealized_pnl: null,
+          realized_gross_pnl: realizedGrossPnl
         };
       }
       const pnl = avgFillPrice == null ? 0 : (markPrice - avgFillPrice) * netPositionSize;
@@ -152,7 +162,8 @@ export function createBotOrderLedger() {
         position_size: netPositionSize,
         avg_fill_price: avgFillPrice,
         mark_price: markPrice,
-        unrealized_pnl: pnl
+        unrealized_pnl: pnl,
+        realized_gross_pnl: realizedGrossPnl
       };
     };
 
@@ -161,6 +172,7 @@ export function createBotOrderLedger() {
     const yes = toSideSummary('YES', bidYes);
     const no = toSideSummary('NO', bidNo);
     const totalUnrealized = yes.unrealized_pnl == null || no.unrealized_pnl == null ? null : yes.unrealized_pnl + no.unrealized_pnl;
+    const totalRealizedGross = yes.realized_gross_pnl + no.realized_gross_pnl;
     return {
       yes_filled_count: yes.count,
       no_filled_count: no.count,
@@ -175,6 +187,9 @@ export function createBotOrderLedger() {
       yes_unrealized_pnl: yes.unrealized_pnl,
       no_unrealized_pnl: no.unrealized_pnl,
       total_unrealized_pnl: totalUnrealized,
+      yes_realized_gross_pnl: yes.realized_gross_pnl,
+      no_realized_gross_pnl: no.realized_gross_pnl,
+      realized_gross_pnl_total: totalRealizedGross,
       updated_at: new Date().toISOString()
     };
   };
