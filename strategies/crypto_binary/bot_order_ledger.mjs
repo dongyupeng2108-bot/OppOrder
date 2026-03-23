@@ -135,34 +135,31 @@ export function createBotOrderLedger() {
           }, 0);
       if (filledEntries.length === 0 || netPositionSize <= 0) {
         return {
-          count: filledEntries.length,
+          entry_filled_count: filledEntries.length,
           exit_count: filledExits.length,
           position_size: 0,
           avg_fill_price: null,
-          mark_price: Number.isFinite(markPrice) ? markPrice : null,
-          unrealized_pnl: Number.isFinite(markPrice) ? 0 : null,
+          unrealized_gross_pnl: 0,
           realized_gross_pnl: realizedGrossPnl
         };
       }
       if (!Number.isFinite(markPrice)) {
         return {
-          count: filledEntries.length,
+          entry_filled_count: filledEntries.length,
           exit_count: filledExits.length,
           position_size: netPositionSize,
           avg_fill_price: avgFillPrice,
-          mark_price: null,
-          unrealized_pnl: null,
+          unrealized_gross_pnl: null,
           realized_gross_pnl: realizedGrossPnl
         };
       }
       const pnl = avgFillPrice == null ? 0 : (markPrice - avgFillPrice) * netPositionSize;
       return {
-        count: filledEntries.length,
+        entry_filled_count: filledEntries.length,
         exit_count: filledExits.length,
         position_size: netPositionSize,
         avg_fill_price: avgFillPrice,
-        mark_price: markPrice,
-        unrealized_pnl: pnl,
+        unrealized_gross_pnl: pnl,
         realized_gross_pnl: realizedGrossPnl
       };
     };
@@ -171,25 +168,27 @@ export function createBotOrderLedger() {
     const bidNo = Number.isFinite(context?.bid_no) ? context.bid_no : null;
     const yes = toSideSummary('YES', bidYes);
     const no = toSideSummary('NO', bidNo);
-    const totalUnrealized = yes.unrealized_pnl == null || no.unrealized_pnl == null ? null : yes.unrealized_pnl + no.unrealized_pnl;
+    const totalUnrealized = yes.unrealized_gross_pnl == null || no.unrealized_gross_pnl == null
+      ? null
+      : yes.unrealized_gross_pnl + no.unrealized_gross_pnl;
     const totalRealizedGross = yes.realized_gross_pnl + no.realized_gross_pnl;
+    const filledTotal = yes.entry_filled_count + yes.exit_count + no.entry_filled_count + no.exit_count;
     return {
-      yes_filled_count: yes.count,
-      no_filled_count: no.count,
+      yes_entry_filled_count: yes.entry_filled_count,
       yes_exit_filled_count: yes.exit_count,
-      no_exit_filled_count: no.exit_count,
       yes_position_size: yes.position_size,
-      no_position_size: no.position_size,
       yes_avg_fill_price: yes.avg_fill_price,
-      no_avg_fill_price: no.avg_fill_price,
-      yes_mark_price: yes.mark_price,
-      no_mark_price: no.mark_price,
-      yes_unrealized_pnl: yes.unrealized_pnl,
-      no_unrealized_pnl: no.unrealized_pnl,
-      total_unrealized_pnl: totalUnrealized,
       yes_realized_gross_pnl: yes.realized_gross_pnl,
+      yes_unrealized_gross_pnl: yes.unrealized_gross_pnl,
+      no_entry_filled_count: no.entry_filled_count,
+      no_exit_filled_count: no.exit_count,
+      no_position_size: no.position_size,
+      no_avg_fill_price: no.avg_fill_price,
       no_realized_gross_pnl: no.realized_gross_pnl,
+      no_unrealized_gross_pnl: no.unrealized_gross_pnl,
+      filled_total: filledTotal,
       realized_gross_pnl_total: totalRealizedGross,
+      unrealized_gross_pnl_total: totalUnrealized,
       updated_at: new Date().toISOString()
     };
   };
