@@ -44,5 +44,7 @@ export function createBotLogger(options = {}) {
     ring.splice(0, ring.length);
   };
 
-  return { log, getRecentLogs, clear, getLogDir: () => logDir };
+  const getCount = () => ring.length;
+
+  return { log, getRecentLogs, clear, getCount, getLogDir: () => logDir };
 }
