@@ -10,6 +10,8 @@ const createDefaultState = (mode = 'paper-staging') => ({
   ladder_posted: false,
   yes_order_ids: [],
   no_order_ids: [],
+  last_reason: null,
+  last_intents: [],
   updated_at: new Date().toISOString()
 });
 
@@ -25,6 +27,8 @@ const normalizeState = (input = {}) => ({
   ladder_posted: input.ladder_posted === true,
   yes_order_ids: Array.isArray(input.yes_order_ids) ? input.yes_order_ids : [],
   no_order_ids: Array.isArray(input.no_order_ids) ? input.no_order_ids : [],
+  last_reason: typeof input.last_reason === 'string' ? input.last_reason : null,
+  last_intents: Array.isArray(input.last_intents) ? input.last_intents : [],
   updated_at: input.updated_at || new Date().toISOString()
 });
 
