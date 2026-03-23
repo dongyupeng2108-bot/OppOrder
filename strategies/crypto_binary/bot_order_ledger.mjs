@@ -11,6 +11,8 @@ const createOrder = ({ side, price, size, source }) => ({
   price,
   size,
   status: 'OPEN',
+  fill_price: null,
+  filled_at: null,
   created_at: new Date().toISOString(),
   source
 });
@@ -23,12 +25,16 @@ export function createBotOrderLedger() {
   const getSummary = () => {
     const open = orders.filter(o => o.status === 'OPEN');
     const cancelled = orders.filter(o => o.status === 'CANCELLED');
+    const filled = orders.filter(o => o.status === 'FILLED');
     return {
       total: orders.length,
       open_total: open.length,
       cancelled_total: cancelled.length,
+      filled_total: filled.length,
       open_yes: open.filter(o => o.side === 'YES').length,
-      open_no: open.filter(o => o.side === 'NO').length
+      open_no: open.filter(o => o.side === 'NO').length,
+      filled_yes: filled.filter(o => o.side === 'YES').length,
+      filled_no: filled.filter(o => o.side === 'NO').length
     };
   };
 
@@ -54,6 +60,33 @@ export function createBotOrderLedger() {
     return created.length;
   };
 
+  const applyFills = (context = {}) => {
+    const askYes = Number.isFinite(context?.ask_yes) ? context.ask_yes : null;
+    const askNo = Number.isFinite(context?.ask_no) ? context.ask_no : null;
+    const filledOrders = [];
+    const filledAt = new Date().toISOString();
+    orders = orders.map((order) => {
+      if (order.status !== 'OPEN') return order;
+      if (order.side === 'YES' && askYes != null && order.price >= askYes) {
+        const nextOrder = { ...order, status: 'FILLED', fill_price: askYes, filled_at: filledAt };
+        filledOrders.push(cloneOrder(nextOrder));
+        return nextOrder;
+      }
+      if (order.side === 'NO' && askNo != null && order.price >= askNo) {
+        const nextOrder = { ...order, status: 'FILLED', fill_price: askNo, filled_at: filledAt };
+        filledOrders.push(cloneOrder(nextOrder));
+        return nextOrder;
+      }
+      return order;
+    });
+    return {
+      changed: filledOrders.length,
+      filled_orders: filledOrders,
+      summary: getSummary(),
+      orders: getOrders()
+    };
+  };
+
   const applyAction = (action, options = {}) => {
     const prices = Array.isArray(options.prices) && options.prices.length ? options.prices : DEFAULT_PRICES;
     const size = Number.isFinite(options.size) ? options.size : DEFAULT_SIZE;
@@ -76,7 +109,7 @@ export function createBotOrderLedger() {
     return { summary: getSummary(), orders: getOrders() };
   };
 
-  return { getOrders, getSummary, applyAction, reset };
+  return { getOrders, getSummary, applyAction, applyFills, reset };
 }
 
 export const BOT_LEDGER_DEFAULTS = { prices: DEFAULT_PRICES, size: DEFAULT_SIZE };

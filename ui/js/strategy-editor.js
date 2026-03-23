@@ -567,8 +567,11 @@ function se_renderOrders(orders) {
   list.sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)));
   const rows = list.map((o) => {
     const cls = o.side === 'YES' ? 'up-color' : 'down-color';
-    const statusColor = o.status === 'OPEN' ? '#00e676' : '#888';
-    return `<tr><td>${se_formatStateValue(o.source)}</td><td class="${cls}">${se_formatStateValue(o.side)}</td><td>${typeof o.price === 'number' ? o.price.toFixed(3) : '--'}</td><td style="color:${statusColor}">${se_formatStateValue(o.status)}</td></tr>`;
+    const statusColor = o.status === 'OPEN' ? '#00e676' : (o.status === 'FILLED' ? '#ffb74d' : '#888');
+    const orderPriceText = typeof o.price === 'number' ? o.price.toFixed(3) : '--';
+    const fillPriceText = typeof o.fill_price === 'number' ? o.fill_price.toFixed(3) : '--';
+    const priceCell = `${orderPriceText}<div style="font-size:11px;color:#aaa;">fill:${fillPriceText}</div>`;
+    return `<tr><td>${se_formatStateValue(o.source)}</td><td class="${cls}">${se_formatStateValue(o.side)}</td><td>${priceCell}</td><td style="color:${statusColor}">${se_formatStateValue(o.status)}</td></tr>`;
   });
   tbody.innerHTML = rows.length ? rows.join('') : '<tr><td colspan="4" style="color:#555;text-align:center">暂无</td></tr>';
 }

@@ -26,6 +26,7 @@ export function createBotExecutorPaper(options = {}) {
   const getOrders = () => ledger.getOrders();
   const getSummary = () => ledger.getSummary();
   const reset = () => ledger.reset();
+  const applyFills = (context = {}) => ledger.applyFills(context);
 
   const applyIntents = (intents, params = {}) => {
     if (!Array.isArray(intents)) {
@@ -64,7 +65,7 @@ export function createBotExecutorPaper(options = {}) {
     };
   };
 
-  return { applyAction, applyIntents, getOrders, getSummary, reset };
+  return { applyAction, applyIntents, applyFills, getOrders, getSummary, reset };
 }
 
 export const BOT_PAPER_ALLOWED_ACTIONS = [...ALLOWED_ACTIONS];
