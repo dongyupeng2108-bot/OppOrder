@@ -91,6 +91,7 @@ let botLastRunSnapshot = null;
 let botPendingStopReason = null;
 let botRuntimeWasRunning = false;
 let botRunActionSummary = [];
+let botLastTickResult = null;
 const cloneBotConfig = (value) => ({
   open_delay_sec: Number(value.open_delay_sec),
   ladder_prices: [...value.ladder_prices],
@@ -565,6 +566,15 @@ const botRunner = createBotRunner({
       botActiveRuntimeConfig = null;
     }
     botRuntimeWasRunning = isRunning;
+  },
+  onTickResult: (result) => {
+    botLastTickResult = result ? {
+      decision_preview: result.decision_preview || null,
+      context_snapshot: result.context_snapshot || null,
+      state_before: result.state_before || null,
+      state_after: result.state_after || null,
+      order_summary: result.order_summary || null
+    } : null;
   },
   log: (entry) => {
     if (entry?.event === 'BOT_INTENTS') {
@@ -1891,6 +1901,7 @@ const server = createServer(async (req, res) => {
         } else {
           clearBotDebugScenario();
         }
+        botLastTickResult = null;
         syncRunnerConfigFromSavedConfig();
         botPendingStopReason = null;
         botRunActionSummary = [];
@@ -1942,6 +1953,7 @@ const server = createServer(async (req, res) => {
     try {
       botPendingStopReason = 'MANUAL_STOP';
       const result = botRunner.stop();
+      botLastTickResult = null;
       if (result?.already_stopped) {
         botPendingStopReason = null;
       }
@@ -1956,6 +1968,22 @@ const server = createServer(async (req, res) => {
     try {
       const parsed = new URL(req.url, 'http://localhost');
       const fixtureId = parsed.searchParams.get('fixture');
+      const stateCurrent = botState.getState();
+      if (!fixtureId && stateCurrent?.running === true && botLastTickResult?.decision_preview) {
+        const preview = botLastTickResult.decision_preview || {};
+        sendJson(res, {
+          intents: preview.intents || [],
+          intents_summary: preview.intents_summary || summarizeIntents(preview.intents || []),
+          reason: preview.reason || null,
+          patches: preview.patches || null,
+          diagnostics: preview.diagnostics || null,
+          config: getBotConfigSnapshot(),
+          context_snapshot: botLastTickResult.context_snapshot || preview.context_snapshot || null,
+          state_snapshot: { ladder_posted: (botLastTickResult.state_after?.ladder_posted ?? false) === true },
+          fixture: null
+        });
+        return;
+      }
       let context = await botContextAdapter.getContext();
       let state = botState.getState();
       let fixture = null;

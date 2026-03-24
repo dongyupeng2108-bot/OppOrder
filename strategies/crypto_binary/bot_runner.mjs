@@ -54,6 +54,7 @@ export function createBotRunner(options = {}) {
   const getSummary = options.getSummary;
   const log = options.log;
   const onRuntimeUpdate = typeof options.onRuntimeUpdate === 'function' ? options.onRuntimeUpdate : null;
+  const onTickResult = typeof options.onTickResult === 'function' ? options.onTickResult : null;
   const config = options.config || {};
   if (typeof getContext !== 'function') throw new Error('getContext required');
   if (typeof getState !== 'function') throw new Error('getState required');
@@ -70,6 +71,7 @@ export function createBotRunner(options = {}) {
   let lastTickAt = null;
   let timerRef = null;
   let tickInProgress = false;
+  const executedPlaceIntentByWindow = new Map();
 
   const getRuntimeState = () => ({
     running,
@@ -169,8 +171,19 @@ export function createBotRunner(options = {}) {
       state
     });
     const intentsSummary = summarizeIntents(decision.intents);
+    const windowKey = state.current_window_id ?? contextForDecision.window_id ?? '__null_window__';
+    const hasPlaceLadder = Array.isArray(decision.intents) && decision.intents.some((intent) => intent?.kind === 'PLACE_LADDER');
+    const placeSignature = hasPlaceLadder ? intentsSummary : null;
+    const alreadyExecutedSamePlace = hasPlaceLadder
+      && executedPlaceIntentByWindow.get(windowKey) === placeSignature;
+    const intentsForExecution = alreadyExecutedSamePlace
+      ? decision.intents.filter((intent) => intent?.kind !== 'PLACE_LADDER')
+      : decision.intents;
 
-    const intentResult = applyIntents(decision.intents, { source: 'runner_tick' });
+    const intentResult = applyIntents(intentsForExecution, { source: 'runner_tick' });
+    if (hasPlaceLadder && !alreadyExecutedSamePlace && Number(intentResult?.changed) > 0) {
+      executedPlaceIntentByWindow.set(windowKey, placeSignature);
+    }
     const fillResult = applyFills(contextForDecision);
     const summary = fillResult.summary || intentResult.summary || getSummary();
     const orders = fillResult.orders || intentResult.orders || getOrders();
@@ -194,6 +207,12 @@ export function createBotRunner(options = {}) {
       ...(decision.patches && typeof decision.patches === 'object' ? decision.patches : {})
     };
     const stateAfter = patchState(statePatch);
+    const activeWindowAfter = stateAfter?.current_window_id ?? null;
+    for (const key of [...executedPlaceIntentByWindow.keys()]) {
+      if (activeWindowAfter == null || key !== activeWindowAfter) {
+        executedPlaceIntentByWindow.delete(key);
+      }
+    }
 
     const beforeLogCount = options.getLogCount ? options.getLogCount() : null;
     if (Array.isArray(fillResult.filled_orders) && fillResult.filled_orders.length > 0) {
@@ -263,7 +282,7 @@ export function createBotRunner(options = {}) {
     const afterLogCount = options.getLogCount ? options.getLogCount() : null;
     const logsAdded = beforeLogCount !== null && afterLogCount !== null ? Math.max(0, afterLogCount - beforeLogCount) : 1;
 
-    return {
+    const tickResult = {
       context_snapshot: cloneValue(contextForDecision),
       decision_preview: toDecisionPreview(decision, contextForDecision, state),
       state_before: cloneValue(state),
@@ -272,6 +291,10 @@ export function createBotRunner(options = {}) {
       fills: cloneValue(fillResult.filled_orders || []),
       logs_added: logsAdded
     };
+    if (onTickResult) {
+      onTickResult(cloneValue(tickResult));
+    }
+    return tickResult;
   };
 
   const runScheduledTick = async () => {
