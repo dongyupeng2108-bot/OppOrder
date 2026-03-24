@@ -1,0 +1,1025 @@
+{
+  "task_id": "TraeTask_260324_016",
+  "presets": {
+    "today": {
+      "preset": "today",
+      "status": {
+        "status": 200,
+        "body": {
+          "mode": "paper-staging",
+          "phase": "IDLE",
+          "running": false,
+          "debug_scenario": "main_path_v1",
+          "debug_frame_index": 0,
+          "debug_completed": false,
+          "tick_interval_ms": 1000,
+          "last_tick_at": null,
+          "last_window_id": null,
+          "current_window_id": null,
+          "window_initialized_at": null,
+          "remaining_sec": null,
+          "anchor_btc": null,
+          "atr_5m": null,
+          "upper_bound": null,
+          "lower_bound": null,
+          "ladder_posted": false,
+          "yes_cancelled": false,
+          "no_cancelled": false,
+          "yes_order_ids": [],
+          "no_order_ids": [],
+          "last_reason": null,
+          "last_intents": [],
+          "updated_at": "2026-03-24T16:10:57.974Z",
+          "saved_config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "last_run_snapshot": {
+            "stop_reason": "MANUAL_STOP",
+            "completed_at": "2026-03-24T16:10:57.974Z",
+            "current_window_id": null,
+            "phase": "IDLE",
+            "filled_total": 0,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "unrealized_gross_pnl_total": 0,
+            "active_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            }
+          },
+          "active_runtime_snapshot": null
+        }
+      },
+      "summary_response_raw": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "summary": {
+            "preset": "today",
+            "window_count": 1,
+            "filled_total": 0,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "avg_realized_gross_pnl_per_window": 0,
+            "running_window_excluded": true,
+            "sample_postmortem_rows": [
+              {
+                "id": 150,
+                "window_id": null,
+                "completed_at": "2026-03-24T16:10:57.974Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              }
+            ]
+          }
+        }
+      },
+      "ui_equivalent": {
+        "selected_preset": "today",
+        "window_count": "1",
+        "filled_total": "0",
+        "cancelled_total": "0",
+        "realized_gross_pnl_total": "0",
+        "avg_realized_gross_pnl_per_window": "0",
+        "note": "仅统计已完成窗口 | running_excluded=true | running_now=false"
+      }
+    },
+    "last_7d": {
+      "preset": "last_7d",
+      "status": {
+        "status": 200,
+        "body": {
+          "mode": "paper-staging",
+          "phase": "IDLE",
+          "running": false,
+          "debug_scenario": "main_path_v1",
+          "debug_frame_index": 0,
+          "debug_completed": false,
+          "tick_interval_ms": 1000,
+          "last_tick_at": null,
+          "last_window_id": null,
+          "current_window_id": null,
+          "window_initialized_at": null,
+          "remaining_sec": null,
+          "anchor_btc": null,
+          "atr_5m": null,
+          "upper_bound": null,
+          "lower_bound": null,
+          "ladder_posted": false,
+          "yes_cancelled": false,
+          "no_cancelled": false,
+          "yes_order_ids": [],
+          "no_order_ids": [],
+          "last_reason": null,
+          "last_intents": [],
+          "updated_at": "2026-03-24T16:10:57.974Z",
+          "saved_config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "last_run_snapshot": {
+            "stop_reason": "MANUAL_STOP",
+            "completed_at": "2026-03-24T16:10:57.974Z",
+            "current_window_id": null,
+            "phase": "IDLE",
+            "filled_total": 0,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "unrealized_gross_pnl_total": 0,
+            "active_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            }
+          },
+          "active_runtime_snapshot": null
+        }
+      },
+      "summary_response_raw": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "summary": {
+            "preset": "last_7d",
+            "window_count": 14,
+            "filled_total": 6,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "avg_realized_gross_pnl_per_window": 0,
+            "running_window_excluded": true,
+            "sample_postmortem_rows": [
+              {
+                "id": 150,
+                "window_id": null,
+                "completed_at": "2026-03-24T16:10:57.974Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 149,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T15:49:00.459Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 148,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T15:48:58.531Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 147,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T15:48:11.560Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 146,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T15:48:06.787Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 145,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T15:47:09.710Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 144,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T15:47:07.777Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 143,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T15:39:41.849Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 142,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T15:39:37.069Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 141,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T15:19:48.853Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              }
+            ],
+            "participating_postmortem_rows": [
+              {
+                "id": 150,
+                "window_id": null,
+                "completed_at": "2026-03-24T16:10:57.974Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 149,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T15:49:00.459Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 148,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T15:48:58.531Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 147,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T15:48:11.560Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 146,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T15:48:06.787Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 145,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T15:47:09.710Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 144,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T15:47:07.777Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 143,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T15:39:41.849Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 142,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T15:39:37.069Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 141,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T15:19:48.853Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 140,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T15:17:57.356Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 139,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T15:16:37.111Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 138,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T15:15:20.811Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 137,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T11:07:10.206Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              }
+            ]
+          }
+        }
+      },
+      "ui_equivalent": {
+        "selected_preset": "last_7d",
+        "window_count": "14",
+        "filled_total": "6",
+        "cancelled_total": "0",
+        "realized_gross_pnl_total": "0",
+        "avg_realized_gross_pnl_per_window": "0",
+        "note": "仅统计已完成窗口 | running_excluded=true | running_now=false"
+      }
+    },
+    "last_30_windows": {
+      "preset": "last_30_windows",
+      "status": {
+        "status": 200,
+        "body": {
+          "mode": "paper-staging",
+          "phase": "IDLE",
+          "running": false,
+          "debug_scenario": "main_path_v1",
+          "debug_frame_index": 0,
+          "debug_completed": false,
+          "tick_interval_ms": 1000,
+          "last_tick_at": null,
+          "last_window_id": null,
+          "current_window_id": null,
+          "window_initialized_at": null,
+          "remaining_sec": null,
+          "anchor_btc": null,
+          "atr_5m": null,
+          "upper_bound": null,
+          "lower_bound": null,
+          "ladder_posted": false,
+          "yes_cancelled": false,
+          "no_cancelled": false,
+          "yes_order_ids": [],
+          "no_order_ids": [],
+          "last_reason": null,
+          "last_intents": [],
+          "updated_at": "2026-03-24T16:10:57.974Z",
+          "saved_config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "last_run_snapshot": {
+            "stop_reason": "MANUAL_STOP",
+            "completed_at": "2026-03-24T16:10:57.974Z",
+            "current_window_id": null,
+            "phase": "IDLE",
+            "filled_total": 0,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "unrealized_gross_pnl_total": 0,
+            "active_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            }
+          },
+          "active_runtime_snapshot": null
+        }
+      },
+      "summary_response_raw": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "summary": {
+            "preset": "last_30_windows",
+            "window_count": 14,
+            "filled_total": 6,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "avg_realized_gross_pnl_per_window": 0,
+            "running_window_excluded": true,
+            "sample_postmortem_rows": [
+              {
+                "id": 150,
+                "window_id": null,
+                "completed_at": "2026-03-24T16:10:57.974Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 149,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T15:49:00.459Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 148,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T15:48:58.531Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 147,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T15:48:11.560Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 146,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T15:48:06.787Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 145,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T15:47:09.710Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 144,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T15:47:07.777Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 143,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T15:39:41.849Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 142,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T15:39:37.069Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 141,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T15:19:48.853Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              }
+            ]
+          }
+        }
+      },
+      "ui_equivalent": {
+        "selected_preset": "last_30_windows",
+        "window_count": "14",
+        "filled_total": "6",
+        "cancelled_total": "0",
+        "realized_gross_pnl_total": "0",
+        "avg_realized_gross_pnl_per_window": "0",
+        "note": "仅统计已完成窗口 | running_excluded=true | running_now=false"
+      }
+    }
+  },
+  "running_window_exclusion_check": {
+    "start_response": {
+      "status": 200,
+      "body": {
+        "ok": true,
+        "already_running": false,
+        "running": true,
+        "tick_interval_ms": 1000,
+        "last_tick_at": null,
+        "config": {
+          "open_delay_sec": 10,
+          "ladder_prices": [
+            0.27,
+            0.24,
+            0.21,
+            0.18
+          ],
+          "ladder_size": 5,
+          "atr_multiple": 1.2,
+          "cancel_all_remaining_sec": 100
+        },
+        "debugScenario": "main_path_v1",
+        "debug_frame_index": 0,
+        "debug_completed": false
+      }
+    },
+    "stop_response": {
+      "status": 200,
+      "body": {
+        "ok": true,
+        "already_stopped": false,
+        "running": false,
+        "tick_interval_ms": 1000,
+        "last_tick_at": null
+      }
+    },
+    "running_status_observed": {
+      "status": 200,
+      "body": {
+        "mode": "paper-staging",
+        "phase": "IDLE",
+        "running": true,
+        "debug_scenario": "main_path_v1",
+        "debug_frame_index": 0,
+        "debug_completed": false,
+        "tick_interval_ms": 1000,
+        "last_tick_at": null,
+        "last_window_id": null,
+        "current_window_id": null,
+        "window_initialized_at": null,
+        "remaining_sec": null,
+        "anchor_btc": null,
+        "atr_5m": null,
+        "upper_bound": null,
+        "lower_bound": null,
+        "ladder_posted": false,
+        "yes_cancelled": false,
+        "no_cancelled": false,
+        "yes_order_ids": [],
+        "no_order_ids": [],
+        "last_reason": null,
+        "last_intents": [],
+        "updated_at": "2026-03-24T16:11:53.995Z",
+        "saved_config": {
+          "open_delay_sec": 10,
+          "ladder_prices": [
+            0.27,
+            0.24,
+            0.21,
+            0.18
+          ],
+          "ladder_size": 5,
+          "atr_multiple": 1.2,
+          "cancel_all_remaining_sec": 100
+        },
+        "last_run_snapshot": {
+          "stop_reason": "MANUAL_STOP",
+          "completed_at": "2026-03-24T16:10:57.974Z",
+          "current_window_id": null,
+          "phase": "IDLE",
+          "filled_total": 0,
+          "cancelled_total": 0,
+          "realized_gross_pnl_total": 0,
+          "unrealized_gross_pnl_total": 0,
+          "active_config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          }
+        },
+        "active_runtime_snapshot": {
+          "config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "phase": "IDLE",
+          "current_window_id": null,
+          "anchor_btc": null,
+          "upper_bound": null,
+          "lower_bound": null
+        }
+      }
+    },
+    "before_running_today": {
+      "preset": "today",
+      "window_count": 1,
+      "filled_total": 0,
+      "cancelled_total": 0,
+      "realized_gross_pnl_total": 0,
+      "avg_realized_gross_pnl_per_window": 0,
+      "running_window_excluded": true,
+      "sample_postmortem_rows": [
+        {
+          "id": 150,
+          "window_id": null,
+          "completed_at": "2026-03-24T16:10:57.974Z",
+          "filled_total": 0,
+          "cancelled_total": 0,
+          "realized_gross_pnl_total": 0
+        }
+      ]
+    },
+    "during_running_today": {
+      "preset": "today",
+      "window_count": 1,
+      "filled_total": 0,
+      "cancelled_total": 0,
+      "realized_gross_pnl_total": 0,
+      "avg_realized_gross_pnl_per_window": 0,
+      "running_window_excluded": true,
+      "sample_postmortem_rows": [
+        {
+          "id": 150,
+          "window_id": null,
+          "completed_at": "2026-03-24T16:10:57.974Z",
+          "filled_total": 0,
+          "cancelled_total": 0,
+          "realized_gross_pnl_total": 0
+        }
+      ]
+    },
+    "unchanged_while_running": {
+      "window_count": true,
+      "filled_total": true,
+      "cancelled_total": true,
+      "realized_gross_pnl_total": true
+    }
+  },
+  "manual_reconciliation": {
+    "preset": "last_7d",
+    "rows_count": 14,
+    "sample_rows": [
+      {
+        "id": 150,
+        "window_id": null,
+        "completed_at": "2026-03-24T16:10:57.974Z",
+        "filled_total": 0,
+        "cancelled_total": 0,
+        "realized_gross_pnl_total": 0
+      },
+      {
+        "id": 149,
+        "window_id": "debug-fill-yes-path-v1-w1",
+        "completed_at": "2026-03-24T15:49:00.459Z",
+        "filled_total": 1,
+        "cancelled_total": 0,
+        "realized_gross_pnl_total": 0
+      },
+      {
+        "id": 148,
+        "window_id": "debug-main-path-v1-w1",
+        "completed_at": "2026-03-24T15:48:58.531Z",
+        "filled_total": 1,
+        "cancelled_total": 0,
+        "realized_gross_pnl_total": 0
+      },
+      {
+        "id": 147,
+        "window_id": "debug-fill-yes-path-v1-w1",
+        "completed_at": "2026-03-24T15:48:11.560Z",
+        "filled_total": 1,
+        "cancelled_total": 0,
+        "realized_gross_pnl_total": 0
+      },
+      {
+        "id": 146,
+        "window_id": "debug-main-path-v1-w1",
+        "completed_at": "2026-03-24T15:48:06.787Z",
+        "filled_total": 0,
+        "cancelled_total": 0,
+        "realized_gross_pnl_total": 0
+      },
+      {
+        "id": 145,
+        "window_id": "debug-fill-yes-path-v1-w1",
+        "completed_at": "2026-03-24T15:47:09.710Z",
+        "filled_total": 1,
+        "cancelled_total": 0,
+        "realized_gross_pnl_total": 0
+      },
+      {
+        "id": 144,
+        "window_id": "debug-main-path-v1-w1",
+        "completed_at": "2026-03-24T15:47:07.777Z",
+        "filled_total": 1,
+        "cancelled_total": 0,
+        "realized_gross_pnl_total": 0
+      },
+      {
+        "id": 143,
+        "window_id": "debug-fill-yes-path-v1-w1",
+        "completed_at": "2026-03-24T15:39:41.849Z",
+        "filled_total": 1,
+        "cancelled_total": 0,
+        "realized_gross_pnl_total": 0
+      },
+      {
+        "id": 142,
+        "window_id": "debug-main-path-v1-w1",
+        "completed_at": "2026-03-24T15:39:37.069Z",
+        "filled_total": 0,
+        "cancelled_total": 0,
+        "realized_gross_pnl_total": 0
+      },
+      {
+        "id": 141,
+        "window_id": "debug-main-path-v1-w1",
+        "completed_at": "2026-03-24T15:19:48.853Z",
+        "filled_total": 0,
+        "cancelled_total": 0,
+        "realized_gross_pnl_total": 0
+      },
+      {
+        "id": 140,
+        "window_id": "debug-main-path-v1-w1",
+        "completed_at": "2026-03-24T15:17:57.356Z",
+        "filled_total": 0,
+        "cancelled_total": 0,
+        "realized_gross_pnl_total": 0
+      },
+      {
+        "id": 139,
+        "window_id": "debug-main-path-v1-w1",
+        "completed_at": "2026-03-24T15:16:37.111Z",
+        "filled_total": 0,
+        "cancelled_total": 0,
+        "realized_gross_pnl_total": 0
+      }
+    ],
+    "hand_calculated": {
+      "window_count": 14,
+      "filled_total": 6,
+      "cancelled_total": 0,
+      "realized_gross_pnl_total": 0,
+      "avg_realized_gross_pnl_per_window": 0
+    },
+    "summary_reported": {
+      "window_count": 14,
+      "filled_total": 6,
+      "cancelled_total": 0,
+      "realized_gross_pnl_total": 0,
+      "avg_realized_gross_pnl_per_window": 0
+    },
+    "reconciled": {
+      "window_count": true,
+      "filled_total": true,
+      "cancelled_total": true,
+      "realized_gross_pnl_total": true,
+      "avg_realized_gross_pnl_per_window": true
+    }
+  },
+  "non_regression_checks": {
+    "task_007_015_smoke": {
+      "orders_endpoint": {
+        "status": 200,
+        "body": {
+          "orders": [],
+          "window_orders": [],
+          "all_orders": [],
+          "summary": {
+            "total": 0,
+            "open_total": 0,
+            "cancelled_total": 0,
+            "filled_total": 0,
+            "open_yes": 0,
+            "open_no": 0,
+            "filled_yes": 0,
+            "filled_no": 0
+          },
+          "window_scope": {
+            "scope": "none",
+            "running": false,
+            "active_window_id": null,
+            "display_window_id": null,
+            "label": "当前无可展示窗口订单",
+            "ownership_rule": "无当前活动窗口且无可展示上一窗口订单"
+          },
+          "hidden_other_window_count": 0
+        }
+      },
+      "decision_preview": {
+        "status": 200,
+        "body": {
+          "intents": [
+            {
+              "kind": "PLACE_LADDER",
+              "side": "BOTH",
+              "prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "size": 5
+            }
+          ],
+          "intents_summary": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
+          "reason": "ladder_not_posted",
+          "patches": {
+            "ladder_posted": true
+          },
+          "diagnostics": {
+            "remaining_sec": 184,
+            "open_elapsed_sec": 116,
+            "ladder_posted": false,
+            "btc_price": null,
+            "upper_bound": null,
+            "lower_bound": null,
+            "bounds_ready": false,
+            "config_open_delay_sec": 10,
+            "config_cancel_all_remaining_sec": 100,
+            "config_ladder_size": 5,
+            "config_ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ]
+          },
+          "config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "context_snapshot": {
+            "window_id": "btc-updown-5m-1774368600",
+            "last_window_id": null,
+            "slug": "btc-updown-5m-1774368600",
+            "period": "5m",
+            "remaining_sec": 184,
+            "btc_price": null,
+            "anchor_btc": null,
+            "atr_5m": null,
+            "upper_bound": null,
+            "lower_bound": null,
+            "bid_yes": 0.5,
+            "ask_yes": 0.51,
+            "bid_no": 0.49,
+            "ask_no": 0.5,
+            "tick_size": 0.01,
+            "stale": false,
+            "updated_at": "2026-03-24T16:11:53.711Z"
+          },
+          "state_snapshot": {
+            "ladder_posted": false
+          },
+          "fixture": null
+        }
+      },
+      "postmortem_latest": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "postmortem": {
+            "id": 151,
+            "strategy_id": "bot_console",
+            "event_id": "bot-1774368714604",
+            "window_start": "2026-03-24T16:11:54.604Z",
+            "window_end": "2026-03-24T16:11:54.604Z",
+            "created_at": "2026-03-24T16:11:54.604Z",
+            "window_id": null,
+            "stop_reason": "MANUAL_STOP",
+            "completed_at": "2026-03-24T16:11:54.604Z",
+            "filled_total": 0,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "unrealized_gross_pnl_total": 0,
+            "active_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            },
+            "action_summary": [
+              "NO_ACTION"
+            ]
+          }
+        }
+      },
+      "config_roundtrip": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "current": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "defaults": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          }
+        }
+      }
+    }
+  }
+}
