@@ -98,198 +98,172 @@ async function initStrategyEditor() {
   if (container.innerHTML.trim()) return;
 
   container.innerHTML = `
-    <div class="se-layout">
-      <!-- 左栏 -->
-      <div class="se-left">
-        <div class="se-toolbar" style="justify-content: space-between;">
-          <span style="font-weight:bold; color:#00e676; padding-left:10px;">参数配置 (Bot Console)</span>
-          <div>
-            <button class="se-btn-guide" onclick="se_showGuide()">查看说明</button>
-            <button class="se-btn" onclick="se_restoreDefaultParams()" style="background:#444;color:#eee;border:1px solid #555;padding:4px 8px;border-radius:4px;margin-left:5px;cursor:pointer;">恢复默认</button>
-            <button class="se-btn-save" onclick="se_saveParams()" style="background:#007acc;color:#fff;border:none;padding:4px 8px;border-radius:4px;margin-left:5px;cursor:pointer;">保存参数</button>
-          </div>
-        </div>
-        <div class="se-editor-container" style="flex:1;display:flex;flex-direction:column;position:relative;overflow-y:auto;">
-          <div id="se-params-form" style="padding: 20px; color: #ddd; display: flex; flex-direction: column; gap: 15px; flex:1;">
-            
-            <div style="display:flex; gap:20px; flex-wrap:wrap;">
-              <div style="flex:1; min-width:200px;">
-                <label style="display:block; margin-bottom:5px; font-weight:bold;">开仓延迟秒数 (open_delay_sec):</label>
-                <input type="number" id="param_open_delay_sec" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
-              </div>
-              <div style="flex:1; min-width:200px;">
-                <label style="display:block; margin-bottom:5px; font-weight:bold;">平仓保护倒计时 (cancel_all_remaining_sec):</label>
-                <input type="number" id="param_cancel_all_remaining_sec" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
-              </div>
-            </div>
-
-            <div style="display:flex; gap:20px; flex-wrap:wrap;">
-              <div style="flex:1; min-width:200px;">
-                <label style="display:block; margin-bottom:5px; font-weight:bold;">ATR 乘数 (atr_multiple):</label>
-                <input type="number" step="0.01" id="param_atr_multiple" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
-              </div>
-              <div style="flex:1; min-width:200px;">
-                <label style="display:block; margin-bottom:5px; font-weight:bold;">阶梯下单份数 (ladder_size):</label>
-                <input type="number" id="param_ladder_size" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
-              </div>
-            </div>
-
-            <div>
-              <label style="display:block; margin-bottom:5px; font-weight:bold;">阶梯挂单价格列表 (ladder_prices) [逗号分隔]:</label>
-              <input type="text" id="param_ladder_prices" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
-            </div>
-
-            <div id="se-param-feedback" style="margin-top: 6px; min-height: 18px; font-size: 12px; color: #ff8a80;"></div>
-            <div style="margin-top: 6px; padding: 10px; background: rgba(0, 122, 204, 0.12); border-left: 4px solid #007acc; border-radius: 4px; color: #9fd3ff;">
-              固定参数闭环：读取 current/defaults，恢复默认仅改表单，点击“保存参数”才写回后端。
-            </div>
-          </div>
-          <!-- 隐藏原代码编辑框以防报错 -->
-          <textarea id="se-editor" style="display:none;">function decide(ctx) { return 'HOLD'; }</textarea>
-          <div class="se-actions" style="display:flex;gap:8px;align-items:center;">
-            <button id="se-btn-start" class="se-btn-deploy" onclick="se_startBot()">▶ Start</button>
-            <button id="se-btn-stop" class="se-btn se-btn-stop" onclick="se_stopBot()" style="background:#7a3a3a;color:#fff;border:1px solid #9a4b4b;padding:6px 10px;border-radius:4px;cursor:pointer;">■ Stop</button>
-            <div class="se-status" style="margin-left:auto; display:flex; flex-direction:column; align-items:flex-end; gap:4px;">
-              <div style="display:flex; align-items:center; gap:8px;">
-                <span id="se-status-dot" class="se-dot se-dot-off"></span>
-                <span id="se-status-label">已停止</span>
-              </div>
-              <div id="se-bot-state-tip" style="font-size:11px;color:#999;">Bot Console 只读总览（status/summary/orders/logs）</div>
-            </div>
-          </div>
-        </div>
+    <div class="se-layout" style="height:100%;display:flex;flex-direction:column;background:#0b0d10;color:#d6dde5;">
+      <div style="height:62px;border-bottom:1px solid #232a33;background:#0d131a;padding:0 12px;display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr auto auto auto;gap:10px;align-items:center;">
+        <div style="font-size:18px;letter-spacing:.3px;">BTCQDD 执行机器人</div>
+        <div style="border-left:1px solid #1c222b;padding-left:10px;font-size:12px;color:#9aa5b2;line-height:1.5;"><b style="color:#d6dde5;">运行状态</b><span id="se-top-running">已停止</span></div>
+        <div style="border-left:1px solid #1c222b;padding-left:10px;font-size:12px;color:#9aa5b2;line-height:1.5;"><b style="color:#d6dde5;">当前窗口</b><span id="se-top-window">暂无</span></div>
+        <div style="border-left:1px solid #1c222b;padding-left:10px;font-size:12px;color:#9aa5b2;line-height:1.5;"><b style="color:#d6dde5;">上次结束</b><span id="se-top-last-stop">暂无</span></div>
+        <button id="se-btn-param-toggle" onclick="se_toggleParamsPanel()" style="height:34px;width:34px;border:1px solid #2f3946;background:#18202a;color:#d6dde5;border-radius:4px;cursor:pointer;">⚙</button>
+        <button id="se-btn-start" class="se-btn-deploy" onclick="se_startBot()">启动</button>
+        <button id="se-btn-stop" class="se-btn se-btn-stop" onclick="se_stopBot()" style="background:#7a3a3a;color:#fff;border:1px solid #9a4b4b;padding:6px 10px;border-radius:4px;cursor:pointer;">停止</button>
       </div>
 
-      <!-- 右栏 -->
-      <div class="se-right">
-        <!-- 左侧面板组 (日志 + 统计 + PnL) -->
-        <div class="se-left-panels">
-          <div class="se-panel" style="flex-shrink: 0; height: 160px;">
-            <div class="se-log-header">
-              <span>Bot 结构化日志</span>
-              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;">
+      <div style="flex:1;min-height:0;padding:10px;display:grid;grid-template-rows:minmax(340px,1fr) 178px 208px;gap:10px;">
+        <div style="display:grid;grid-template-columns:320px minmax(0,1fr) 360px;gap:10px;min-height:0;">
+          <section style="border:1px solid #232a33;background:#11161c;padding:10px;display:flex;flex-direction:column;min-height:0;gap:8px;">
+            <h3 style="margin:0;font-size:13px;color:#d6dde5;">参数设置</h3>
+            <div id="se-param-summary" style="font-size:12px;color:#9aa5b2;line-height:1.6;">读取中...</div>
+            <div id="se-snapshot-note" style="font-size:11px;color:#7f8a97;line-height:1.5;">saved/active runtime snapshot 读取中...</div>
+            <div style="display:flex;gap:8px;">
+              <button onclick="se_toggleParamsPanel()" style="height:30px;border:1px solid #2f3946;background:#18202a;color:#d6dde5;border-radius:4px;padding:0 12px;cursor:pointer;">展开/收纳</button>
+              <button class="se-btn-guide" onclick="se_showGuide()">查看说明</button>
+            </div>
+            <div id="se-param-collapse" style="display:none;border:1px solid #1c222b;background:#0d1218;padding:10px;overflow:auto;min-height:0;">
+              <div id="se-params-form" style="color:#ddd; display: flex; flex-direction: column; gap: 12px;">
+                <div>
+                  <label style="display:block; margin-bottom:5px; font-weight:bold;">开盘等待</label>
+                  <input type="number" id="param_open_delay_sec" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
+                </div>
+                <div>
+                  <label style="display:block; margin-bottom:5px; font-weight:bold;">全撤提前量</label>
+                  <input type="number" id="param_cancel_all_remaining_sec" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
+                </div>
+                <div>
+                  <label style="display:block; margin-bottom:5px; font-weight:bold;">波动乘数</label>
+                  <input type="number" step="0.01" id="param_atr_multiple" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
+                </div>
+                <div>
+                  <label style="display:block; margin-bottom:5px; font-weight:bold;">单档数量</label>
+                  <input type="number" id="param_ladder_size" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
+                </div>
+                <div>
+                  <label style="display:block; margin-bottom:5px; font-weight:bold;">挂单价格梯队（逗号分隔）</label>
+                  <input type="text" id="param_ladder_prices" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
+                </div>
+                <div style="display:flex;gap:8px;">
+                  <button class="se-btn" onclick="se_restoreDefaultParams()" style="background:#444;color:#eee;border:1px solid #555;padding:4px 8px;border-radius:4px;cursor:pointer;">恢复默认</button>
+                  <button class="se-btn-save" onclick="se_saveParams()" style="background:#007acc;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;">保存参数</button>
+                </div>
+                <div id="se-param-feedback" style="min-height: 18px; font-size: 12px; color: #ff8a80;"></div>
+                <div style="padding: 8px; background: rgba(0, 122, 204, 0.12); border-left: 3px solid #007acc; border-radius: 4px; color: #9fd3ff;font-size:12px;">
+                  保存后将在下一轮启动时生效
+                </div>
+              </div>
+            </div>
+            <textarea id="se-editor" style="display:none;">function decide(ctx) { return 'HOLD'; }</textarea>
+          </section>
+
+          <section style="border:1px solid #232a33;background:#11161c;padding:10px;display:flex;flex-direction:column;min-height:0;gap:8px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <h3 style="margin:0;font-size:13px;color:#d6dde5;">实时日志</h3>
+              <div style="display:flex;align-items:center;gap:8px;">
                 <button class="se-restart-inline-btn" onclick="restartServer()">⟳ 重启</button>
-                <span id="se-countdown" style="font-size:11px;color:#aaa;font-family:monospace;display:block;margin-top:6px;text-align:right;">--:--</span>
+                <span id="se-countdown" style="font-size:11px;color:#aaa;font-family:monospace;">--:--</span>
               </div>
             </div>
-            <div id="se-log-area" class="se-log-area"></div>
-          </div>
-          <div class="se-panel se-stats-panel" style="flex-shrink: 0;">
-            <div class="se-stat-item"><div class="se-stat-label">slug</div><div id="se-ctx-slug" class="se-stat-value">—</div></div>
-            <div class="se-stat-item"><div class="se-stat-label">window_id</div><div id="se-ctx-window-id" class="se-stat-value">—</div></div>
-            <div class="se-stat-item"><div class="se-stat-label">last_window_id</div><div id="se-ctx-last-window-id" class="se-stat-value">—</div></div>
-            <div class="se-stat-item"><div class="se-stat-label">remaining_sec</div><div id="se-ctx-remaining" class="se-stat-value">—</div></div>
-            <div class="se-stat-item"><div class="se-stat-label">btc_price</div><div id="se-ctx-btc-price" class="se-stat-value">—</div></div>
-            <div class="se-stat-item"><div class="se-stat-label">anchor_btc</div><div id="se-ctx-anchor-btc" class="se-stat-value">—</div></div>
-            <div class="se-stat-item"><div class="se-stat-label">atr_5m</div><div id="se-ctx-atr" class="se-stat-value">—</div></div>
-            <div class="se-stat-item"><div class="se-stat-label">upper_bound</div><div id="se-ctx-upper-bound" class="se-stat-value">—</div></div>
-            <div class="se-stat-item"><div class="se-stat-label">lower_bound</div><div id="se-ctx-lower-bound" class="se-stat-value">—</div></div>
-            <div class="se-stat-item"><div class="se-stat-label">bid_yes</div><div id="se-ctx-bid-yes" class="se-stat-value">—</div></div>
-            <div class="se-stat-item"><div class="se-stat-label">ask_yes</div><div id="se-ctx-ask-yes" class="se-stat-value">—</div></div>
-            <div class="se-stat-item"><div class="se-stat-label">bid_no</div><div id="se-ctx-bid-no" class="se-stat-value">—</div></div>
-            <div class="se-stat-item"><div class="se-stat-label">ask_no</div><div id="se-ctx-ask-no" class="se-stat-value">—</div></div>
-            <div class="se-stat-item"><div class="se-stat-label">tick_size</div><div id="se-ctx-tick-size" class="se-stat-value">—</div></div>
-            <div class="se-stat-item"><div class="se-stat-label">stale</div><div id="se-ctx-stale" class="se-stat-value">—</div></div>
-          </div>
-          <div class="se-panel" style="flex:1; padding:10px 12px; border:1px solid #333; background:#161616; display:flex; flex-direction:column; gap:8px;">
-            <div style="font-size:12px; color:#bbb;">Bot 只读总览</div>
+            <div id="se-log-area" class="se-log-area" style="flex:1;min-height:0;"></div>
+            <div id="se-ui-error" style="font-size:11px;color:#ff8a80;min-height:16px;"></div>
+          </section>
+
+          <section class="se-order-panel" style="border:1px solid #232a33;background:#11161c;padding:10px;min-height:0;">
+            <div id="se-order-title" class="se-order-title">当前窗口订单状态</div>
+            <div id="se-order-scope-note" style="font-size:11px;color:#888;padding:4px 2px 8px 2px;">仅展示当前窗口相关订单</div>
+            <table class="se-order-table" style="table-layout:fixed;width:100%;">
+              <colgroup>
+                <col style="width:18%">
+                <col style="width:14%">
+                <col style="width:18%">
+                <col style="width:16%">
+                <col style="width:14%">
+                <col style="width:20%">
+              </colgroup>
+              <thead><tr><th>类型</th><th>方向</th><th>价格</th><th>状态</th><th>数量</th><th>PnL</th></tr></thead>
+              <tbody id="se-order-body">
+                <tr><td colspan="6" style="color:#555;text-align:center">暂无</td></tr>
+              </tbody>
+            </table>
+            <div id="se-latency" style="font-size:10px;color:#888;text-align:right;padding:4px 8px;margin-top:auto;"></div>
+          </section>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;min-height:0;">
+          <section style="border:1px solid #232a33;background:#11161c;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:0;">
+            <h3 style="margin:0;font-size:13px;color:#d6dde5;">本轮运行</h3>
+            <div id="se-runtime-note" style="font-size:12px;color:#9aa5b2;line-height:1.7;">当前未运行；暂无活动窗口。启动后将显示实时运行信息。</div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
-              <div style="color:#888;">running</div><div id="se-bot-running" style="color:#ddd;">—</div>
-              <div style="color:#888;">phase</div><div id="se-bot-phase" style="color:#ddd;">—</div>
-              <div style="color:#888;">debug_scenario</div><div id="se-bot-debug" style="color:#ddd;">—</div>
-              <div style="color:#888;">window_id</div><div id="se-bot-window" style="color:#ddd;">—</div>
-              <div style="color:#888;">yes_position_size</div><div id="se-summary-yes-position" style="color:#ddd;">—</div>
-              <div style="color:#888;">no_position_size</div><div id="se-summary-no-position" style="color:#ddd;">—</div>
-              <div style="color:#888;">filled_total</div><div id="se-summary-filled-total" style="color:#ddd;">—</div>
-              <div style="color:#888;">realized_gross_pnl_total</div><div id="se-summary-realized-total" style="color:#ddd;">—</div>
-              <div style="color:#888;">unrealized_gross_pnl_total</div><div id="se-summary-unrealized-total" style="color:#ddd;">—</div>
-              <div style="color:#888;">updated_at</div><div id="se-summary-updated-at" style="color:#ddd;">—</div>
+              <div style="color:#7f8a97;">当前 BTC 价格</div><div id="se-runtime-btc" style="text-align:right;color:#d6dde5;">—</div>
+              <div style="color:#7f8a97;">窗口基准价</div><div id="se-runtime-anchor" style="text-align:right;color:#d6dde5;">—</div>
+              <div style="color:#7f8a97;">上触发线 / 下触发线</div><div id="se-runtime-bounds" style="text-align:right;color:#d6dde5;">—</div>
+              <div style="color:#7f8a97;">剩余时间</div><div id="se-runtime-remaining" style="text-align:right;color:#d6dde5;">—</div>
             </div>
-            <div style="margin-top:4px;padding-top:6px;border-top:1px solid #2a2a2a;display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
-              <div style="color:#8aa4bf;">saved.open_delay_sec</div><div id="se-saved-open-delay" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">saved.ladder_prices</div><div id="se-saved-ladder-prices" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">saved.ladder_size</div><div id="se-saved-ladder-size" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">saved.atr_multiple</div><div id="se-saved-atr-multiple" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">saved.cancel_all_remaining_sec</div><div id="se-saved-cancel-all" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">active.phase</div><div id="se-active-phase" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">active.window_id</div><div id="se-active-window-id" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">active.open_delay_sec</div><div id="se-active-open-delay" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">active.ladder_prices</div><div id="se-active-ladder-prices" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">active.ladder_size</div><div id="se-active-ladder-size" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">active.atr_multiple</div><div id="se-active-atr-multiple" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">active.cancel_all_remaining_sec</div><div id="se-active-cancel-all" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">active.anchor_btc</div><div id="se-active-anchor-btc" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">active.upper_bound</div><div id="se-active-upper-bound" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">active.lower_bound</div><div id="se-active-lower-bound" style="color:#ddd;">—</div>
+          </section>
+          <section style="border:1px solid #232a33;background:#11161c;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:0;">
+            <h3 style="margin:0;font-size:13px;color:#d6dde5;">下一步动作</h3>
+            <div id="se-next-note" style="font-size:12px;color:#9aa5b2;line-height:1.7;">当前无有效决策预览。启动后将显示动作、触发原因与判断依据。</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
+              <div style="color:#7f8a97;">当前动作</div><div id="se-next-action" style="text-align:right;color:#d6dde5;">—</div>
+              <div style="color:#7f8a97;">触发原因</div><div id="se-next-reason" style="text-align:right;color:#d6dde5;">—</div>
+              <div style="color:#7f8a97;">判断依据</div><div id="se-next-basis" style="text-align:right;color:#d6dde5;">—</div>
             </div>
-            <div id="se-active-runtime-note" style="font-size:11px;color:#9aa0a6;min-height:16px;">—</div>
-            <div style="margin-top:4px;padding-top:6px;border-top:1px solid #2a2a2a;display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
-              <div style="color:#8aa4bf;">last.stop_reason</div><div id="se-last-stop-reason" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">last.completed_at</div><div id="se-last-completed-at" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">last.window_id</div><div id="se-last-window-id" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">last.phase</div><div id="se-last-phase" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">last.filled_total</div><div id="se-last-filled-total" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">last.realized_gross_pnl_total</div><div id="se-last-realized-total" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">last.unrealized_gross_pnl_total</div><div id="se-last-unrealized-total" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">last.active_config</div><div id="se-last-active-config" style="color:#ddd;">—</div>
+          </section>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;min-height:0;">
+          <section style="border:1px solid #232a33;background:#11161c;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:0;">
+            <h3 style="margin:0;font-size:13px;color:#d6dde5;">上一窗口结果</h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
+              <div style="color:#7f8a97;">窗口</div><div id="se-prev-window" style="text-align:right;color:#d6dde5;">—</div>
+              <div style="color:#7f8a97;">结束原因</div><div id="se-prev-stop-reason" style="text-align:right;color:#d6dde5;">—</div>
+              <div style="color:#7f8a97;">完成时间</div><div id="se-prev-completed-at" style="text-align:right;color:#d6dde5;">—</div>
+              <div style="color:#7f8a97;">已成交总数</div><div id="se-prev-filled-total" style="text-align:right;color:#d6dde5;">—</div>
+              <div style="color:#7f8a97;">已撤单总数</div><div id="se-prev-cancelled-total" style="text-align:right;color:#d6dde5;">—</div>
+              <div style="color:#7f8a97;">已实现盈亏</div><div id="se-prev-realized-total" style="text-align:right;color:#d6dde5;">—</div>
+              <div style="color:#7f8a97;">未实现盈亏</div><div id="se-prev-unrealized-total" style="text-align:right;color:#d6dde5;">—</div>
+              <div style="color:#7f8a97;">关键动作链</div><div id="se-prev-action-summary" style="text-align:right;color:#d6dde5;">—</div>
+              <div style="color:#7f8a97;">本轮参数摘要</div><div id="se-prev-param-summary" style="text-align:right;color:#d6dde5;">—</div>
             </div>
-            <div id="se-last-run-note" style="font-size:11px;color:#9aa0a6;min-height:16px;">—</div>
-            <div style="margin-top:4px;padding-top:6px;border-top:1px solid #2a2a2a;display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
-              <div style="color:#8aa4bf;">postmortem.window_id</div><div id="se-pm-window-id" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">postmortem.stop_reason</div><div id="se-pm-stop-reason" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">postmortem.filled_total</div><div id="se-pm-filled-total" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">postmortem.realized_gross_pnl_total</div><div id="se-pm-realized-total" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">postmortem.unrealized_gross_pnl_total</div><div id="se-pm-unrealized-total" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">postmortem.action_summary</div><div id="se-pm-action-summary" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">pnl.match</div><div id="se-pm-pnl-match" style="color:#ddd;">—</div>
+          </section>
+          <section style="border:1px solid #232a33;background:#11161c;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:0;">
+            <h3 style="margin:0;font-size:13px;color:#d6dde5;">近期表现摘要</h3>
+            <div style="display:flex;gap:6px;">
+              <button id="se-perf-btn-today" onclick="se_setPerformancePreset('today')" style="background:#1f1f1f;color:#ddd;border:1px solid #555;border-radius:4px;padding:2px 8px;cursor:pointer;">today</button>
+              <button id="se-perf-btn-last7d" onclick="se_setPerformancePreset('last_7d')" style="background:#111;color:#aaa;border:1px solid #333;border-radius:4px;padding:2px 8px;cursor:pointer;">last_7d</button>
+              <button id="se-perf-btn-last30" onclick="se_setPerformancePreset('last_30_windows')" style="background:#111;color:#aaa;border:1px solid #333;border-radius:4px;padding:2px 8px;cursor:pointer;">last_30_windows</button>
             </div>
-            <div id="se-pm-note" style="font-size:11px;color:#9aa0a6;min-height:16px;">—</div>
-            <div style="margin-top:4px;padding-top:6px;border-top:1px solid #2a2a2a;display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
-              <div style="color:#8aa4bf;">performance.preset</div>
-              <div style="display:flex;justify-content:flex-end;gap:6px;">
-                <button id="se-perf-btn-today" onclick="se_setPerformancePreset('today')" style="background:#1f1f1f;color:#ddd;border:1px solid #555;border-radius:4px;padding:2px 8px;cursor:pointer;">today</button>
-                <button id="se-perf-btn-last7d" onclick="se_setPerformancePreset('last_7d')" style="background:#111;color:#aaa;border:1px solid #333;border-radius:4px;padding:2px 8px;cursor:pointer;">last_7d</button>
-                <button id="se-perf-btn-last30" onclick="se_setPerformancePreset('last_30_windows')" style="background:#111;color:#aaa;border:1px solid #333;border-radius:4px;padding:2px 8px;cursor:pointer;">last_30_windows</button>
-              </div>
-              <div style="color:#8aa4bf;">performance.window_count</div><div id="se-perf-window-count" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">performance.filled_total</div><div id="se-perf-filled-total" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">performance.cancelled_total</div><div id="se-perf-cancelled-total" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">performance.realized_gross_pnl_total</div><div id="se-perf-realized-total" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">performance.avg_realized_gross_pnl_per_window</div><div id="se-perf-avg-realized" style="color:#ddd;">—</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
+              <div style="color:#7f8a97;">窗口数</div><div id="se-perf-window-count" style="text-align:right;color:#d6dde5;">—</div>
+              <div style="color:#7f8a97;">成交总数</div><div id="se-perf-filled-total" style="text-align:right;color:#d6dde5;">—</div>
+              <div style="color:#7f8a97;">撤单总数</div><div id="se-perf-cancelled-total" style="text-align:right;color:#d6dde5;">—</div>
+              <div style="color:#7f8a97;">已实现盈亏</div><div id="se-perf-realized-total" style="text-align:right;color:#d6dde5;">—</div>
+              <div style="color:#7f8a97;">平均每窗口盈亏</div><div id="se-perf-avg-realized" style="text-align:right;color:#d6dde5;">—</div>
             </div>
             <div id="se-perf-note" style="font-size:11px;color:#9aa0a6;min-height:16px;">—</div>
-            <div style="margin-top:4px;padding-top:6px;border-top:1px solid #2a2a2a;display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
-              <div style="color:#8aa4bf;">preview.state</div><div id="se-preview-state" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">preview.intents</div><div id="se-preview-intents" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">preview.reason</div><div id="se-preview-reason" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">context.summary</div><div id="se-preview-context" style="color:#ddd;">—</div>
-              <div style="color:#8aa4bf;">diagnostics.summary</div><div id="se-preview-diag" style="color:#ddd;">—</div>
-            </div>
-            <div id="se-ui-error" style="font-size:11px;color:#ff8a80;min-height:16px;"></div>
-          </div>
-        </div>
-
-        <!-- 右侧订单面板 -->
-        <div class="se-order-panel">
-          <div id="se-order-title" class="se-order-title">当前窗口订单状态</div>
-          <div id="se-order-scope-note" style="font-size:11px;color:#888;padding:4px 2px 8px 2px;">仅展示当前窗口相关订单</div>
-          <table class="se-order-table" style="table-layout:fixed;width:100%;">
-            <colgroup>
-              <col style="width:18%">
-              <col style="width:14%">
-              <col style="width:18%">
-              <col style="width:16%">
-              <col style="width:14%">
-              <col style="width:20%">
-            </colgroup>
-            <thead><tr><th>类型</th><th>方向</th><th>价格</th><th>状态</th><th>数量</th><th>PnL</th></tr></thead>
-            <tbody id="se-order-body">
-              <tr><td colspan="6" style="color:#555;text-align:center">暂无</td></tr>
-            </tbody>
-          </table>
-          <div id="se-latency" style="font-size:10px;color:#888;text-align:right;padding:4px 8px;margin-top:auto;"></div>
+          </section>
         </div>
       </div>
+
+      <div style="display:none;">
+        <span id="se-bot-running">—</span>
+        <span id="se-bot-phase">—</span>
+        <span id="se-bot-debug">—</span>
+        <span id="se-bot-window">—</span>
+        <span id="se-summary-yes-position">—</span>
+        <span id="se-summary-no-position">—</span>
+        <span id="se-summary-filled-total">—</span>
+        <span id="se-summary-realized-total">—</span>
+        <span id="se-summary-unrealized-total">—</span>
+        <span id="se-summary-updated-at">—</span>
+      </div>
+      <div id="se-bot-state-tip" style="display:none;"></div>
+      <div id="se-preview-state" style="display:none;"></div>
+      <div id="se-preview-intents" style="display:none;"></div>
+      <div id="se-preview-reason" style="display:none;"></div>
+      <div id="se-preview-context" style="display:none;"></div>
+      <div id="se-preview-diag" style="display:none;"></div>
+      <div id="se-active-runtime-note" style="display:none;"></div>
+      <div id="se-last-run-note" style="display:none;"></div>
+      <div id="se-pm-note" style="display:none;"></div>
     </div>
 
     <!-- AI 指南 Modal -->
@@ -357,6 +331,14 @@ function se_renderParams(params) {
   document.getElementById('param_atr_multiple').value = params.atr_multiple;
   document.getElementById('param_ladder_size').value = params.ladder_size;
   document.getElementById('param_ladder_prices').value = Array.isArray(params.ladder_prices) ? params.ladder_prices.join(',') : '';
+}
+
+function se_toggleParamsPanel(forceOpen = null) {
+  const panel = document.getElementById('se-param-collapse');
+  if (!panel) return;
+  const open = forceOpen === null ? panel.style.display === 'none' : forceOpen;
+  panel.style.display = open ? 'block' : 'none';
+  panel.dataset.open = open ? '1' : '0';
 }
 
 function se_restoreDefaultParams() {
@@ -641,13 +623,12 @@ async function se_applyPaperAction(action) {
   }
 }
 
+function se_setText(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = se_formatStateValue(value);
+}
+
 function se_renderDecision(status, context, preview, ordersData, previewError) {
-  const stateEl = document.getElementById('se-preview-state');
-  const intentsEl = document.getElementById('se-preview-intents');
-  const reasonEl = document.getElementById('se-preview-reason');
-  const contextEl = document.getElementById('se-preview-context');
-  const diagEl = document.getElementById('se-preview-diag');
-  if (!stateEl || !intentsEl || !reasonEl || !contextEl || !diagEl) return;
   const previewIntentsSummary = preview?.intents_summary
     || (Array.isArray(preview?.intents)
       ? preview.intents.map((intent) => {
@@ -663,57 +644,58 @@ function se_renderDecision(status, context, preview, ordersData, previewError) {
   const previewState = !isRunning
     ? 'EMPTY'
     : (previewError ? 'EMPTY' : (isNoop ? 'NOOP' : (previewIntentsSummary ? 'ACTION' : 'EMPTY')));
-  const contextSummary = [
-    `btc=${se_formatStateValue(context?.btc_price)}`,
-    `anchor=${se_formatStateValue(context?.anchor_btc ?? status?.anchor_btc)}`,
-    `upper=${se_formatStateValue(context?.upper_bound ?? status?.upper_bound)}`,
-    `lower=${se_formatStateValue(context?.lower_bound ?? status?.lower_bound)}`,
-    `remaining=${se_formatStateValue(context?.remaining_sec ?? status?.remaining_sec)}`,
-    `phase=${se_formatStateValue(status?.phase)}`,
-    `window=${se_formatStateValue(status?.current_window_id)}`
-  ].join(' | ');
   const diagnostics = preview?.diagnostics && typeof preview.diagnostics === 'object' ? preview.diagnostics : {};
   const ordersSummary = ordersData?.summary || {};
-  const diagSummary = [
-    `open_elapsed=${se_formatStateValue(diagnostics.open_elapsed_sec)}`,
+  const basisSummary = [
+    `phase=${se_formatStateValue(status?.phase)}`,
+    `window=${se_formatStateValue(status?.current_window_id)}`,
     `ladder_posted=${se_formatStateValue(diagnostics.ladder_posted)}`,
-    `bounds_ready=${se_formatStateValue(diagnostics.bounds_ready)}`,
-    `orders_open=${se_formatStateValue(ordersSummary.open_total)}`,
-    `orders_filled=${se_formatStateValue(ordersSummary.filled_total)}`
+    `orders_open=${se_formatStateValue(ordersSummary.open_total)}`
   ].join(' | ');
-  stateEl.textContent = previewState;
-  intentsEl.textContent = previewState === 'EMPTY'
+  se_setText('se-preview-state', previewState);
+  se_setText('se-preview-intents', previewState === 'EMPTY'
     ? '当前无有效 preview'
-    : (isNoop ? '当前无动作（NOOP）' : se_formatStateValue(previewIntentsSummary));
-  reasonEl.textContent = previewState === 'EMPTY'
-    ? se_formatStateValue(previewError || 'N/A (null)')
-    : se_formatStateValue(preview?.reason);
-  contextEl.textContent = contextSummary;
-  diagEl.textContent = diagSummary;
+    : (isNoop ? '当前无动作（NOOP）' : previewIntentsSummary));
+  se_setText('se-preview-reason', previewState === 'EMPTY'
+    ? (previewError || 'N/A (null)')
+    : preview?.reason);
+  se_setText('se-preview-context', [
+    `btc=${se_formatStateValue(context?.btc_price)}`,
+    `anchor=${se_formatStateValue(context?.anchor_btc ?? status?.anchor_btc)}`,
+    `remaining=${se_formatStateValue(context?.remaining_sec ?? status?.remaining_sec)}`
+  ].join(' | '));
+  se_setText('se-preview-diag', basisSummary);
+  if (!isRunning) {
+    se_setText('se-next-action', '当前无有效决策预览');
+    se_setText('se-next-reason', '当前未运行');
+    se_setText('se-next-basis', '启动后会显示：当前动作、触发原因、判断依据');
+    se_setText('se-next-note', '当前无有效决策预览。启动后将显示动作、触发原因与判断依据。');
+    return;
+  }
+  se_setText('se-next-action', previewState === 'ACTION' ? previewIntentsSummary : (isNoop ? '当前无动作（NOOP）' : '暂无'));
+  se_setText('se-next-reason', previewState === 'EMPTY' ? (previewError || '暂无') : (preview?.reason || '暂无'));
+  se_setText('se-next-basis', basisSummary);
+  se_setText('se-next-note', `决策状态=${previewState} ｜ 仅供观察，不直接执行交易动作`);
 }
 
-// 渲染统计、日志、PnL 图
 function se_renderContext(context, status) {
-  document.getElementById('se-ctx-slug').textContent = se_formatStateValue(context.slug);
-  document.getElementById('se-ctx-window-id').textContent = se_formatStateValue(context.window_id ?? status?.current_window_id);
-  document.getElementById('se-ctx-last-window-id').textContent = se_formatStateValue(context.last_window_id ?? status?.last_window_id);
-  document.getElementById('se-ctx-remaining').textContent = se_formatStateValue(context.remaining_sec);
-  document.getElementById('se-ctx-btc-price').textContent = se_formatStateValue(context.btc_price);
-  document.getElementById('se-ctx-anchor-btc').textContent = se_formatStateValue(context.anchor_btc ?? status?.anchor_btc);
-  document.getElementById('se-ctx-atr').textContent = se_formatStateValue(context.atr_5m);
-  document.getElementById('se-ctx-upper-bound').textContent = se_formatStateValue(context.upper_bound ?? status?.upper_bound);
-  document.getElementById('se-ctx-lower-bound').textContent = se_formatStateValue(context.lower_bound ?? status?.lower_bound);
-  document.getElementById('se-ctx-bid-yes').textContent = se_formatStateValue(context.bid_yes);
-  document.getElementById('se-ctx-ask-yes').textContent = se_formatStateValue(context.ask_yes);
-  document.getElementById('se-ctx-bid-no').textContent = se_formatStateValue(context.bid_no);
-  document.getElementById('se-ctx-ask-no').textContent = se_formatStateValue(context.ask_no);
-  document.getElementById('se-ctx-tick-size').textContent = se_formatStateValue(context.tick_size);
-  document.getElementById('se-ctx-stale').textContent = se_formatStateValue(context.stale);
-  const pnlTitleEl = document.getElementById('se-pnl-title');
-  if (pnlTitleEl) {
-    pnlTitleEl.style.color = '#aaa';
-    pnlTitleEl.textContent = 'Paper Summary';
+  const running = status?.running === true;
+  se_setText('se-top-window', status?.current_window_id || '暂无');
+  if (!running) {
+    se_setText('se-runtime-note', '当前未运行；暂无活动窗口。启动后会显示：当前 BTC 价格、窗口基准价、上触发线 / 下触发线、剩余时间。');
+    se_setText('se-runtime-btc', '—');
+    se_setText('se-runtime-anchor', '—');
+    se_setText('se-runtime-bounds', '—');
+    se_setText('se-runtime-remaining', '—');
+    return;
   }
+  se_setText('se-runtime-note', `运行中，当前窗口=${status?.current_window_id || context?.window_id || 'N/A (null)'}`);
+  se_setText('se-runtime-btc', context?.btc_price);
+  se_setText('se-runtime-anchor', context?.anchor_btc ?? status?.anchor_btc);
+  const up = context?.upper_bound ?? status?.upper_bound;
+  const down = context?.lower_bound ?? status?.lower_bound;
+  se_setText('se-runtime-bounds', `${se_formatStateValue(up)} / ${se_formatStateValue(down)}`);
+  se_setText('se-runtime-remaining', context?.remaining_sec ?? status?.remaining_sec);
 }
 
 function se_pickSummaryValue(summary, keys, fallback = null) {
@@ -738,16 +720,16 @@ function se_renderOverview(status, summary, ordersData, postmortemPayload) {
   const yesUnreal = se_pickSummaryValue(mergedSummary, ['yes_unrealized_gross_pnl', 'yes_unrealized_pnl'], null);
   const noUnreal = se_pickSummaryValue(mergedSummary, ['no_unrealized_gross_pnl', 'no_unrealized_pnl'], null);
 
-  document.getElementById('se-bot-running').textContent = se_formatStateValue(status?.running);
-  document.getElementById('se-bot-phase').textContent = se_formatStateValue(status?.phase);
-  document.getElementById('se-bot-debug').textContent = se_formatStateValue(status?.debug_scenario);
-  document.getElementById('se-bot-window').textContent = se_formatStateValue(status?.current_window_id);
-  document.getElementById('se-summary-yes-position').textContent = se_formatStateValue(yesPos);
-  document.getElementById('se-summary-no-position').textContent = se_formatStateValue(noPos);
-  document.getElementById('se-summary-filled-total').textContent = se_formatStateValue(filledTotal);
-  document.getElementById('se-summary-realized-total').textContent = se_formatStateValue(realizedTotal);
-  document.getElementById('se-summary-unrealized-total').textContent = se_formatStateValue(unrealizedTotal);
-  document.getElementById('se-summary-updated-at').textContent = se_formatStateValue(updatedAt);
+  se_setText('se-bot-running', status?.running);
+  se_setText('se-bot-phase', status?.phase);
+  se_setText('se-bot-debug', status?.debug_scenario);
+  se_setText('se-bot-window', status?.current_window_id);
+  se_setText('se-summary-yes-position', yesPos);
+  se_setText('se-summary-no-position', noPos);
+  se_setText('se-summary-filled-total', filledTotal);
+  se_setText('se-summary-realized-total', realizedTotal);
+  se_setText('se-summary-unrealized-total', unrealizedTotal);
+  se_setText('se-summary-updated-at', updatedAt);
   const savedConfig = status?.saved_config && typeof status.saved_config === 'object' ? status.saved_config : null;
   const activeRuntime = status?.active_runtime_snapshot && typeof status.active_runtime_snapshot === 'object'
     ? status.active_runtime_snapshot
@@ -758,56 +740,49 @@ function se_renderOverview(status, summary, ordersData, postmortemPayload) {
   const postmortem = postmortemPayload?.postmortem && typeof postmortemPayload.postmortem === 'object'
     ? postmortemPayload.postmortem
     : null;
-  document.getElementById('se-saved-open-delay').textContent = se_formatStateValue(savedConfig?.open_delay_sec);
-  document.getElementById('se-saved-ladder-prices').textContent = se_formatStateValue(savedConfig?.ladder_prices);
-  document.getElementById('se-saved-ladder-size').textContent = se_formatStateValue(savedConfig?.ladder_size);
-  document.getElementById('se-saved-atr-multiple').textContent = se_formatStateValue(savedConfig?.atr_multiple);
-  document.getElementById('se-saved-cancel-all').textContent = se_formatStateValue(savedConfig?.cancel_all_remaining_sec);
-  document.getElementById('se-active-phase').textContent = se_formatStateValue(activeRuntime?.phase);
-  document.getElementById('se-active-window-id').textContent = se_formatStateValue(activeRuntime?.current_window_id);
-  document.getElementById('se-active-open-delay').textContent = se_formatStateValue(activeConfig?.open_delay_sec);
-  document.getElementById('se-active-ladder-prices').textContent = se_formatStateValue(activeConfig?.ladder_prices);
-  document.getElementById('se-active-ladder-size').textContent = se_formatStateValue(activeConfig?.ladder_size);
-  document.getElementById('se-active-atr-multiple').textContent = se_formatStateValue(activeConfig?.atr_multiple);
-  document.getElementById('se-active-cancel-all').textContent = se_formatStateValue(activeConfig?.cancel_all_remaining_sec);
-  document.getElementById('se-active-anchor-btc').textContent = se_formatStateValue(activeRuntime?.anchor_btc);
-  document.getElementById('se-active-upper-bound').textContent = se_formatStateValue(activeRuntime?.upper_bound);
-  document.getElementById('se-active-lower-bound').textContent = se_formatStateValue(activeRuntime?.lower_bound);
-  const runtimeNote = document.getElementById('se-active-runtime-note');
-  if (runtimeNote) {
-    runtimeNote.textContent = activeRuntime
-      ? 'active runtime snapshot 来自当前运行实例；save 后未重启时可能与 saved config 不同'
-      : '当前未运行：仅展示 saved config，active runtime snapshot 为空';
-  }
-  document.getElementById('se-last-stop-reason').textContent = se_formatStateValue(lastRun?.stop_reason);
-  document.getElementById('se-last-completed-at').textContent = se_formatStateValue(lastRun?.completed_at);
-  document.getElementById('se-last-window-id').textContent = se_formatStateValue(lastRun?.current_window_id);
-  document.getElementById('se-last-phase').textContent = se_formatStateValue(lastRun?.phase);
-  document.getElementById('se-last-filled-total').textContent = se_formatStateValue(lastRun?.filled_total);
-  document.getElementById('se-last-realized-total').textContent = se_formatStateValue(lastRun?.realized_gross_pnl_total);
-  document.getElementById('se-last-unrealized-total').textContent = se_formatStateValue(lastRun?.unrealized_gross_pnl_total);
+  const stopReasonRaw = lastRun?.stop_reason || postmortem?.stop_reason || null;
+  const stopReasonText = stopReasonRaw === 'AUTO_COMPLETED'
+    ? '自动完成'
+    : (stopReasonRaw === 'MANUAL_STOP' ? '手动停止' : (stopReasonRaw || '暂无'));
+  se_setText('se-top-running', status?.running === true ? '运行中' : '已停止');
+  se_setText('se-top-last-stop', stopReasonText);
+  const paramSummary = savedConfig
+    ? `开盘等待 ${se_formatStateValue(savedConfig.open_delay_sec)} 秒 · 波动 ${se_formatStateValue(savedConfig.atr_multiple)} · 全撤 ${se_formatStateValue(savedConfig.cancel_all_remaining_sec)} 秒`
+    : '参数尚未加载';
+  se_setText('se-param-summary', paramSummary);
+  se_setText('se-snapshot-note', activeRuntime
+    ? `saved 与 active 可能不同：active.window=${se_formatStateValue(activeRuntime.current_window_id)}`
+    : '当前未运行：仅展示 saved 参数，active runtime snapshot 为空');
   const lastActiveConfigText = lastActiveConfig
+    ? `等待 ${se_formatStateValue(lastActiveConfig.open_delay_sec)} · 波动 ${se_formatStateValue(lastActiveConfig.atr_multiple)} · 全撤 ${se_formatStateValue(lastActiveConfig.cancel_all_remaining_sec)}`
+    : 'N/A (null)';
+  const completedAt = postmortem?.completed_at || lastRun?.completed_at;
+  se_setText('se-prev-window', postmortem?.window_id || lastRun?.current_window_id);
+  se_setText('se-prev-stop-reason', stopReasonText);
+  se_setText('se-prev-completed-at', completedAt);
+  se_setText('se-prev-filled-total', postmortem?.filled_total ?? lastRun?.filled_total);
+  se_setText('se-prev-cancelled-total', postmortem?.cancelled_total ?? lastRun?.cancelled_total ?? 0);
+  se_setText('se-prev-realized-total', postmortem?.realized_gross_pnl_total ?? lastRun?.realized_gross_pnl_total);
+  se_setText('se-prev-unrealized-total', postmortem?.unrealized_gross_pnl_total ?? lastRun?.unrealized_gross_pnl_total);
+  se_setText('se-prev-action-summary', postmortem?.action_summary ?? 'N/A (null)');
+  se_setText('se-prev-param-summary', lastActiveConfigText);
+  const lastActiveConfigDebugText = lastActiveConfig
     ? `open_delay=${se_formatStateValue(lastActiveConfig.open_delay_sec)} | prices=${se_formatStateValue(lastActiveConfig.ladder_prices)} | size=${se_formatStateValue(lastActiveConfig.ladder_size)} | atr=${se_formatStateValue(lastActiveConfig.atr_multiple)} | cancel=${se_formatStateValue(lastActiveConfig.cancel_all_remaining_sec)}`
     : 'N/A (null)';
-  document.getElementById('se-last-active-config').textContent = lastActiveConfigText;
-  const lastRunNote = document.getElementById('se-last-run-note');
-  if (lastRunNote) {
-    if (status?.running === true) {
-      lastRunNote.textContent = lastRun
-        ? '当前运行中；下方 last_run_snapshot 为上一轮运行结果'
-        : '当前运行中；尚无上一轮运行结果';
-    } else {
-      lastRunNote.textContent = lastRun
-        ? '当前已停止；下方展示最近一次运行结果'
-        : '当前已停止；尚无最近一次运行结果';
-    }
-  }
-  document.getElementById('se-pm-window-id').textContent = se_formatStateValue(postmortem?.window_id);
-  document.getElementById('se-pm-stop-reason').textContent = se_formatStateValue(postmortem?.stop_reason);
-  document.getElementById('se-pm-filled-total').textContent = se_formatStateValue(postmortem?.filled_total);
-  document.getElementById('se-pm-realized-total').textContent = se_formatStateValue(postmortem?.realized_gross_pnl_total);
-  document.getElementById('se-pm-unrealized-total').textContent = se_formatStateValue(postmortem?.unrealized_gross_pnl_total);
-  document.getElementById('se-pm-action-summary').textContent = se_formatStateValue(postmortem?.action_summary);
+  se_setText('se-last-active-config', lastActiveConfigDebugText);
+  se_setText('se-last-stop-reason', stopReasonText);
+  se_setText('se-last-completed-at', completedAt);
+  se_setText('se-last-window-id', postmortem?.window_id || lastRun?.current_window_id);
+  se_setText('se-last-phase', lastRun?.phase);
+  se_setText('se-last-filled-total', postmortem?.filled_total ?? lastRun?.filled_total);
+  se_setText('se-last-realized-total', postmortem?.realized_gross_pnl_total ?? lastRun?.realized_gross_pnl_total);
+  se_setText('se-last-unrealized-total', postmortem?.unrealized_gross_pnl_total ?? lastRun?.unrealized_gross_pnl_total);
+  se_setText('se-pm-window-id', postmortem?.window_id);
+  se_setText('se-pm-stop-reason', stopReasonText);
+  se_setText('se-pm-filled-total', postmortem?.filled_total);
+  se_setText('se-pm-realized-total', postmortem?.realized_gross_pnl_total);
+  se_setText('se-pm-unrealized-total', postmortem?.unrealized_gross_pnl_total);
+  se_setText('se-pm-action-summary', postmortem?.action_summary);
   const toFinite = (value) => {
     const num = Number(value);
     return Number.isFinite(num) ? num : null;
@@ -822,20 +797,11 @@ function se_renderOverview(status, summary, ordersData, postmortemPayload) {
     && postmortemUnrealizedNum !== null
     && summaryRealizedNum === postmortemRealizedNum
     && summaryUnrealizedNum === postmortemUnrealizedNum;
-  document.getElementById('se-pm-pnl-match').textContent = postmortem
-    ? (pnlMatched ? 'MATCH' : 'MISMATCH')
-    : 'N/A (null)';
-  const pmNote = document.getElementById('se-pm-note');
-  if (pmNote) {
-    pmNote.textContent = postmortem
-      ? `UI pnl(realized=${se_formatStateValue(realizedTotal)}, unrealized=${se_formatStateValue(unrealizedTotal)}) vs postmortem pnl(realized=${se_formatStateValue(postmortem?.realized_gross_pnl_total)}, unrealized=${se_formatStateValue(postmortem?.unrealized_gross_pnl_total)})`
-      : '当前无 postmortem 记录';
-  }
-
-  const tip = document.getElementById('se-bot-state-tip');
-  if (tip) {
-    tip.textContent = `YES upnl=${se_formatStateValue(yesUnreal)} | NO upnl=${se_formatStateValue(noUnreal)} | poll=${_seLastPollError ? 'error' : 'ok'}`;
-  }
+  se_setText('se-pm-pnl-match', postmortem ? (pnlMatched ? 'MATCH' : 'MISMATCH') : 'N/A (null)');
+  se_setText('se-pm-note', postmortem
+    ? `UI pnl(realized=${se_formatStateValue(realizedTotal)}, unrealized=${se_formatStateValue(unrealizedTotal)}) vs postmortem pnl(realized=${se_formatStateValue(postmortem?.realized_gross_pnl_total)}, unrealized=${se_formatStateValue(postmortem?.unrealized_gross_pnl_total)})`
+    : '当前无 postmortem 记录');
+  se_setText('se-bot-state-tip', `YES upnl=${se_formatStateValue(yesUnreal)} | NO upnl=${se_formatStateValue(noUnreal)} | poll=${_seLastPollError ? 'error' : 'ok'}`);
 }
 
 function se_setPerformancePreset(preset, triggerPoll = true) {

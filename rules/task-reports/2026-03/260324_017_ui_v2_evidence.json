@@ -1,0 +1,1466 @@
+{
+  "task_id": "TraeTask_260324_017",
+  "states": {
+    "stopped": {
+      "tag": "stopped",
+      "status_raw": {
+        "status": 200,
+        "body": {
+          "mode": "paper-staging",
+          "phase": "IDLE",
+          "running": false,
+          "debug_scenario": "main_path_v1",
+          "debug_frame_index": 0,
+          "debug_completed": false,
+          "tick_interval_ms": 1000,
+          "last_tick_at": null,
+          "last_window_id": null,
+          "current_window_id": null,
+          "window_initialized_at": null,
+          "remaining_sec": null,
+          "anchor_btc": null,
+          "atr_5m": null,
+          "upper_bound": null,
+          "lower_bound": null,
+          "ladder_posted": false,
+          "yes_cancelled": false,
+          "no_cancelled": false,
+          "yes_order_ids": [],
+          "no_order_ids": [],
+          "last_reason": null,
+          "last_intents": [],
+          "updated_at": "2026-03-24T16:11:54.604Z",
+          "saved_config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "last_run_snapshot": {
+            "stop_reason": "MANUAL_STOP",
+            "completed_at": "2026-03-24T16:11:54.604Z",
+            "current_window_id": null,
+            "phase": "IDLE",
+            "filled_total": 0,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "unrealized_gross_pnl_total": 0,
+            "active_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            }
+          },
+          "active_runtime_snapshot": null
+        }
+      },
+      "orders_raw": {
+        "status": 200,
+        "body": {
+          "orders": [],
+          "window_orders": [],
+          "all_orders": [],
+          "summary": {
+            "total": 0,
+            "open_total": 0,
+            "cancelled_total": 0,
+            "filled_total": 0,
+            "open_yes": 0,
+            "open_no": 0,
+            "filled_yes": 0,
+            "filled_no": 0
+          },
+          "window_scope": {
+            "scope": "none",
+            "running": false,
+            "active_window_id": null,
+            "display_window_id": null,
+            "label": "当前无可展示窗口订单",
+            "ownership_rule": "无当前活动窗口且无可展示上一窗口订单"
+          },
+          "hidden_other_window_count": 0
+        }
+      },
+      "preview_raw": {
+        "status": 200,
+        "body": {
+          "intents": [
+            {
+              "kind": "PLACE_LADDER",
+              "side": "BOTH",
+              "prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "size": 5
+            }
+          ],
+          "intents_summary": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
+          "reason": "ladder_not_posted",
+          "patches": {
+            "ladder_posted": true
+          },
+          "diagnostics": {
+            "remaining_sec": 281,
+            "open_elapsed_sec": 19,
+            "ladder_posted": false,
+            "btc_price": null,
+            "upper_bound": null,
+            "lower_bound": null,
+            "bounds_ready": false,
+            "config_open_delay_sec": 10,
+            "config_cancel_all_remaining_sec": 100,
+            "config_ladder_size": 5,
+            "config_ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ]
+          },
+          "config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "context_snapshot": {
+            "window_id": "btc-updown-5m-1774371000",
+            "last_window_id": null,
+            "slug": "btc-updown-5m-1774371000",
+            "period": "5m",
+            "remaining_sec": 281,
+            "btc_price": null,
+            "anchor_btc": null,
+            "atr_5m": null,
+            "upper_bound": null,
+            "lower_bound": null,
+            "bid_yes": 0.59,
+            "ask_yes": 0.6,
+            "bid_no": 0.4,
+            "ask_no": 0.41,
+            "tick_size": 0.01,
+            "stale": false,
+            "updated_at": "2026-03-24T16:50:18.228Z"
+          },
+          "state_snapshot": {
+            "ladder_posted": false
+          },
+          "fixture": null
+        }
+      },
+      "postmortem_raw": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "postmortem": {
+            "id": 151,
+            "strategy_id": "bot_console",
+            "event_id": "bot-1774368714604",
+            "window_start": "2026-03-24T16:11:54.604Z",
+            "window_end": "2026-03-24T16:11:54.604Z",
+            "created_at": "2026-03-24T16:11:54.604Z",
+            "window_id": null,
+            "stop_reason": "MANUAL_STOP",
+            "completed_at": "2026-03-24T16:11:54.604Z",
+            "filled_total": 0,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "unrealized_gross_pnl_total": 0,
+            "active_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            },
+            "action_summary": [
+              "NO_ACTION"
+            ]
+          }
+        }
+      },
+      "performance_raw": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "summary": {
+            "preset": "today",
+            "window_count": 2,
+            "filled_total": 0,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "avg_realized_gross_pnl_per_window": 0,
+            "running_window_excluded": true,
+            "sample_postmortem_rows": [
+              {
+                "id": 151,
+                "window_id": null,
+                "completed_at": "2026-03-24T16:11:54.604Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 150,
+                "window_id": null,
+                "completed_at": "2026-03-24T16:10:57.974Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              }
+            ]
+          }
+        }
+      },
+      "ui_equivalent": {
+        "layout": {
+          "topbar": [
+            "运行状态",
+            "当前窗口",
+            "上次结束",
+            "启动/停止"
+          ],
+          "row1": [
+            "参数设置",
+            "实时日志",
+            "当前窗口订单状态"
+          ],
+          "row2": [
+            "本轮运行",
+            "下一步动作"
+          ],
+          "row3": [
+            "上一窗口结果",
+            "近期表现摘要"
+          ]
+        },
+        "config_panel_open": false,
+        "top": {
+          "running_status": "已停止",
+          "current_window": "暂无",
+          "last_stop": "MANUAL_STOP"
+        },
+        "runtime": {
+          "note": "当前未运行；暂无活动窗口。启动后会显示：当前 BTC 价格、窗口基准价、上触发线 / 下触发线、剩余时间。",
+          "btc_price": "N/A (null)",
+          "anchor_btc": "N/A (null)",
+          "bounds": "N/A (null) / N/A (null)",
+          "remaining_sec": "N/A (null)"
+        },
+        "next_action": {
+          "state": "EMPTY",
+          "action": "当前无有效决策预览",
+          "reason": "ladder_not_posted",
+          "basis": "phase=IDLE | window=N/A (null)"
+        },
+        "logs": {
+          "is_primary": true,
+          "latest_lines": []
+        },
+        "current_window_orders": {
+          "title": "当前无可展示窗口订单",
+          "scope_note": "窗口=N/A (null) ｜ 无当前活动窗口且无可展示上一窗口订单",
+          "columns": [
+            "类型",
+            "方向",
+            "价格",
+            "状态",
+            "数量",
+            "PnL"
+          ],
+          "rows": []
+        },
+        "last_window_result": {
+          "window": "N/A (null)",
+          "stop_reason": "MANUAL_STOP",
+          "completed_at": "2026-03-24T16:11:54.604Z",
+          "filled_total": "0",
+          "cancelled_total": "0",
+          "realized_total": "0",
+          "unrealized_total": "0",
+          "action_summary": "NO_ACTION"
+        },
+        "performance": {
+          "preset": "today",
+          "window_count": "2",
+          "filled_total": "0",
+          "cancelled_total": "0",
+          "realized_total": "0",
+          "avg_realized_per_window": "0"
+        },
+        "config_summary": {
+          "saved": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "note": "保存后将在下一轮启动时生效"
+        }
+      }
+    },
+    "running": {
+      "tag": "running",
+      "status_raw": {
+        "status": 200,
+        "body": {
+          "mode": "paper-staging",
+          "phase": "IDLE",
+          "running": true,
+          "debug_scenario": "main_path_v1",
+          "debug_frame_index": 1,
+          "debug_completed": false,
+          "tick_interval_ms": 1000,
+          "last_tick_at": "2026-03-24T16:50:19.648Z",
+          "last_window_id": null,
+          "current_window_id": "debug-main-path-v1-w1",
+          "window_initialized_at": "2026-03-24T16:50:19.647Z",
+          "remaining_sec": 299,
+          "anchor_btc": 100,
+          "atr_5m": 2,
+          "upper_bound": 102.4,
+          "lower_bound": 97.6,
+          "ladder_posted": false,
+          "yes_cancelled": false,
+          "no_cancelled": false,
+          "yes_order_ids": [],
+          "no_order_ids": [],
+          "last_reason": "pre_open_or_open_not_open_delay",
+          "last_intents": [
+            {
+              "kind": "NOOP"
+            }
+          ],
+          "updated_at": "2026-03-24T16:50:19.648Z",
+          "saved_config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "last_run_snapshot": {
+            "stop_reason": "MANUAL_STOP",
+            "completed_at": "2026-03-24T16:11:54.604Z",
+            "current_window_id": null,
+            "phase": "IDLE",
+            "filled_total": 0,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "unrealized_gross_pnl_total": 0,
+            "active_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            }
+          },
+          "active_runtime_snapshot": {
+            "config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            },
+            "phase": "IDLE",
+            "current_window_id": "debug-main-path-v1-w1",
+            "anchor_btc": 100,
+            "upper_bound": 102.4,
+            "lower_bound": 97.6
+          }
+        }
+      },
+      "orders_raw": {
+        "status": 200,
+        "body": {
+          "orders": [],
+          "window_orders": [],
+          "all_orders": [],
+          "summary": {
+            "total": 0,
+            "open_total": 0,
+            "cancelled_total": 0,
+            "filled_total": 0,
+            "open_yes": 0,
+            "open_no": 0,
+            "filled_yes": 0,
+            "filled_no": 0
+          },
+          "window_scope": {
+            "scope": "current_window",
+            "running": true,
+            "active_window_id": "debug-main-path-v1-w1",
+            "display_window_id": "debug-main-path-v1-w1",
+            "label": "当前窗口订单",
+            "ownership_rule": "运行中仅展示当前活动窗口订单"
+          },
+          "hidden_other_window_count": 0
+        }
+      },
+      "preview_raw": {
+        "status": 200,
+        "body": {
+          "intents": [
+            {
+              "kind": "PLACE_LADDER",
+              "side": "BOTH",
+              "prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "size": 5
+            }
+          ],
+          "intents_summary": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
+          "reason": "ladder_not_posted",
+          "patches": {
+            "ladder_posted": true
+          },
+          "diagnostics": {
+            "remaining_sec": 279,
+            "open_elapsed_sec": 21,
+            "ladder_posted": false,
+            "btc_price": null,
+            "upper_bound": 102.4,
+            "lower_bound": 97.6,
+            "bounds_ready": false,
+            "config_open_delay_sec": 10,
+            "config_cancel_all_remaining_sec": 100,
+            "config_ladder_size": 5,
+            "config_ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ]
+          },
+          "config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "context_snapshot": {
+            "window_id": "btc-updown-5m-1774371000",
+            "last_window_id": null,
+            "slug": "btc-updown-5m-1774371000",
+            "period": "5m",
+            "remaining_sec": 279,
+            "btc_price": null,
+            "anchor_btc": 100,
+            "atr_5m": 2,
+            "upper_bound": 102.4,
+            "lower_bound": 97.6,
+            "bid_yes": 0.59,
+            "ask_yes": 0.6,
+            "bid_no": 0.4,
+            "ask_no": 0.41,
+            "tick_size": 0.01,
+            "stale": false,
+            "updated_at": "2026-03-24T16:50:18.228Z"
+          },
+          "state_snapshot": {
+            "ladder_posted": false
+          },
+          "fixture": null
+        }
+      },
+      "postmortem_raw": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "postmortem": {
+            "id": 151,
+            "strategy_id": "bot_console",
+            "event_id": "bot-1774368714604",
+            "window_start": "2026-03-24T16:11:54.604Z",
+            "window_end": "2026-03-24T16:11:54.604Z",
+            "created_at": "2026-03-24T16:11:54.604Z",
+            "window_id": null,
+            "stop_reason": "MANUAL_STOP",
+            "completed_at": "2026-03-24T16:11:54.604Z",
+            "filled_total": 0,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "unrealized_gross_pnl_total": 0,
+            "active_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            },
+            "action_summary": [
+              "NO_ACTION"
+            ]
+          }
+        }
+      },
+      "performance_raw": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "summary": {
+            "preset": "today",
+            "window_count": 2,
+            "filled_total": 0,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "avg_realized_gross_pnl_per_window": 0,
+            "running_window_excluded": true,
+            "sample_postmortem_rows": [
+              {
+                "id": 151,
+                "window_id": null,
+                "completed_at": "2026-03-24T16:11:54.604Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 150,
+                "window_id": null,
+                "completed_at": "2026-03-24T16:10:57.974Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              }
+            ]
+          }
+        }
+      },
+      "ui_equivalent": {
+        "layout": {
+          "topbar": [
+            "运行状态",
+            "当前窗口",
+            "上次结束",
+            "启动/停止"
+          ],
+          "row1": [
+            "参数设置",
+            "实时日志",
+            "当前窗口订单状态"
+          ],
+          "row2": [
+            "本轮运行",
+            "下一步动作"
+          ],
+          "row3": [
+            "上一窗口结果",
+            "近期表现摘要"
+          ]
+        },
+        "config_panel_open": false,
+        "top": {
+          "running_status": "运行中",
+          "current_window": "debug-main-path-v1-w1",
+          "last_stop": "MANUAL_STOP"
+        },
+        "runtime": {
+          "note": "运行中，当前窗口=debug-main-path-v1-w1",
+          "btc_price": "N/A (null)",
+          "anchor_btc": "100",
+          "bounds": "102.4 / 97.6",
+          "remaining_sec": "299"
+        },
+        "next_action": {
+          "state": "ACTION",
+          "action": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
+          "reason": "ladder_not_posted",
+          "basis": "phase=IDLE | window=debug-main-path-v1-w1"
+        },
+        "logs": {
+          "is_primary": true,
+          "latest_lines": []
+        },
+        "current_window_orders": {
+          "title": "当前窗口订单",
+          "scope_note": "窗口=debug-main-path-v1-w1 ｜ 运行中仅展示当前活动窗口订单",
+          "columns": [
+            "类型",
+            "方向",
+            "价格",
+            "状态",
+            "数量",
+            "PnL"
+          ],
+          "rows": []
+        },
+        "last_window_result": {
+          "window": "N/A (null)",
+          "stop_reason": "MANUAL_STOP",
+          "completed_at": "2026-03-24T16:11:54.604Z",
+          "filled_total": "0",
+          "cancelled_total": "0",
+          "realized_total": "0",
+          "unrealized_total": "0",
+          "action_summary": "NO_ACTION"
+        },
+        "performance": {
+          "preset": "today",
+          "window_count": "2",
+          "filled_total": "0",
+          "cancelled_total": "0",
+          "realized_total": "0",
+          "avg_realized_per_window": "0"
+        },
+        "config_summary": {
+          "saved": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "note": "保存后将在下一轮启动时生效"
+        }
+      }
+    },
+    "finished": {
+      "tag": "finished",
+      "status_raw": {
+        "status": 200,
+        "body": {
+          "mode": "paper-staging",
+          "phase": "IDLE",
+          "running": false,
+          "debug_scenario": "main_path_v1",
+          "debug_frame_index": 1,
+          "debug_completed": false,
+          "tick_interval_ms": 1000,
+          "last_tick_at": "2026-03-24T16:50:19.648Z",
+          "last_window_id": null,
+          "current_window_id": "debug-main-path-v1-w1",
+          "window_initialized_at": "2026-03-24T16:50:19.647Z",
+          "remaining_sec": 299,
+          "anchor_btc": 100,
+          "atr_5m": 2,
+          "upper_bound": 102.4,
+          "lower_bound": 97.6,
+          "ladder_posted": false,
+          "yes_cancelled": false,
+          "no_cancelled": false,
+          "yes_order_ids": [],
+          "no_order_ids": [],
+          "last_reason": "pre_open_or_open_not_open_delay",
+          "last_intents": [
+            {
+              "kind": "NOOP"
+            }
+          ],
+          "updated_at": "2026-03-24T16:50:20.054Z",
+          "saved_config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "last_run_snapshot": {
+            "stop_reason": "MANUAL_STOP",
+            "completed_at": "2026-03-24T16:50:20.054Z",
+            "current_window_id": "debug-main-path-v1-w1",
+            "phase": "IDLE",
+            "filled_total": 0,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "unrealized_gross_pnl_total": 0,
+            "active_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            }
+          },
+          "active_runtime_snapshot": null
+        }
+      },
+      "orders_raw": {
+        "status": 200,
+        "body": {
+          "orders": [],
+          "window_orders": [],
+          "all_orders": [],
+          "summary": {
+            "total": 0,
+            "open_total": 0,
+            "cancelled_total": 0,
+            "filled_total": 0,
+            "open_yes": 0,
+            "open_no": 0,
+            "filled_yes": 0,
+            "filled_no": 0
+          },
+          "window_scope": {
+            "scope": "last_window",
+            "running": false,
+            "active_window_id": "debug-main-path-v1-w1",
+            "display_window_id": "debug-main-path-v1-w1",
+            "label": "上一窗口订单（停止态）",
+            "ownership_rule": "停止态展示上一窗口订单，不冒充当前活动窗口"
+          },
+          "hidden_other_window_count": 0
+        }
+      },
+      "preview_raw": {
+        "status": 200,
+        "body": {
+          "intents": [
+            {
+              "kind": "PLACE_LADDER",
+              "side": "BOTH",
+              "prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "size": 5
+            }
+          ],
+          "intents_summary": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
+          "reason": "ladder_not_posted",
+          "patches": {
+            "ladder_posted": true
+          },
+          "diagnostics": {
+            "remaining_sec": 279,
+            "open_elapsed_sec": 21,
+            "ladder_posted": false,
+            "btc_price": null,
+            "upper_bound": 102.4,
+            "lower_bound": 97.6,
+            "bounds_ready": false,
+            "config_open_delay_sec": 10,
+            "config_cancel_all_remaining_sec": 100,
+            "config_ladder_size": 5,
+            "config_ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ]
+          },
+          "config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "context_snapshot": {
+            "window_id": "btc-updown-5m-1774371000",
+            "last_window_id": null,
+            "slug": "btc-updown-5m-1774371000",
+            "period": "5m",
+            "remaining_sec": 279,
+            "btc_price": null,
+            "anchor_btc": 100,
+            "atr_5m": 2,
+            "upper_bound": 102.4,
+            "lower_bound": 97.6,
+            "bid_yes": 0.59,
+            "ask_yes": 0.6,
+            "bid_no": 0.4,
+            "ask_no": 0.41,
+            "tick_size": 0.01,
+            "stale": false,
+            "updated_at": "2026-03-24T16:50:20.224Z"
+          },
+          "state_snapshot": {
+            "ladder_posted": false
+          },
+          "fixture": null
+        }
+      },
+      "postmortem_raw": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "postmortem": {
+            "id": 152,
+            "strategy_id": "bot_console",
+            "event_id": "debug-main-path-v1-w1",
+            "window_start": "2026-03-24T16:50:20.054Z",
+            "window_end": "2026-03-24T16:50:20.054Z",
+            "created_at": "2026-03-24T16:50:20.054Z",
+            "window_id": "debug-main-path-v1-w1",
+            "stop_reason": "MANUAL_STOP",
+            "completed_at": "2026-03-24T16:50:20.054Z",
+            "filled_total": 0,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "unrealized_gross_pnl_total": 0,
+            "active_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            },
+            "action_summary": [
+              "NO_ACTION"
+            ]
+          }
+        }
+      },
+      "performance_raw": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "summary": {
+            "preset": "today",
+            "window_count": 3,
+            "filled_total": 0,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "avg_realized_gross_pnl_per_window": 0,
+            "running_window_excluded": true,
+            "sample_postmortem_rows": [
+              {
+                "id": 152,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T16:50:20.054Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 151,
+                "window_id": null,
+                "completed_at": "2026-03-24T16:11:54.604Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 150,
+                "window_id": null,
+                "completed_at": "2026-03-24T16:10:57.974Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              }
+            ]
+          }
+        }
+      },
+      "ui_equivalent": {
+        "layout": {
+          "topbar": [
+            "运行状态",
+            "当前窗口",
+            "上次结束",
+            "启动/停止"
+          ],
+          "row1": [
+            "参数设置",
+            "实时日志",
+            "当前窗口订单状态"
+          ],
+          "row2": [
+            "本轮运行",
+            "下一步动作"
+          ],
+          "row3": [
+            "上一窗口结果",
+            "近期表现摘要"
+          ]
+        },
+        "config_panel_open": false,
+        "top": {
+          "running_status": "已停止",
+          "current_window": "debug-main-path-v1-w1",
+          "last_stop": "MANUAL_STOP"
+        },
+        "runtime": {
+          "note": "当前未运行；暂无活动窗口。启动后会显示：当前 BTC 价格、窗口基准价、上触发线 / 下触发线、剩余时间。",
+          "btc_price": "N/A (null)",
+          "anchor_btc": "100",
+          "bounds": "102.4 / 97.6",
+          "remaining_sec": "299"
+        },
+        "next_action": {
+          "state": "EMPTY",
+          "action": "当前无有效决策预览",
+          "reason": "ladder_not_posted",
+          "basis": "phase=IDLE | window=debug-main-path-v1-w1"
+        },
+        "logs": {
+          "is_primary": true,
+          "latest_lines": []
+        },
+        "current_window_orders": {
+          "title": "上一窗口订单（停止态）",
+          "scope_note": "窗口=debug-main-path-v1-w1 ｜ 停止态展示上一窗口订单，不冒充当前活动窗口",
+          "columns": [
+            "类型",
+            "方向",
+            "价格",
+            "状态",
+            "数量",
+            "PnL"
+          ],
+          "rows": []
+        },
+        "last_window_result": {
+          "window": "debug-main-path-v1-w1",
+          "stop_reason": "MANUAL_STOP",
+          "completed_at": "2026-03-24T16:50:20.054Z",
+          "filled_total": "0",
+          "cancelled_total": "0",
+          "realized_total": "0",
+          "unrealized_total": "0",
+          "action_summary": "NO_ACTION"
+        },
+        "performance": {
+          "preset": "today",
+          "window_count": "3",
+          "filled_total": "0",
+          "cancelled_total": "0",
+          "realized_total": "0",
+          "avg_realized_per_window": "0"
+        },
+        "config_summary": {
+          "saved": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "note": "保存后将在下一轮启动时生效"
+        }
+      }
+    },
+    "config_panel_open": {
+      "tag": "config_panel_open",
+      "status_raw": {
+        "status": 200,
+        "body": {
+          "mode": "paper-staging",
+          "phase": "IDLE",
+          "running": false,
+          "debug_scenario": "main_path_v1",
+          "debug_frame_index": 0,
+          "debug_completed": false,
+          "tick_interval_ms": 1000,
+          "last_tick_at": null,
+          "last_window_id": null,
+          "current_window_id": null,
+          "window_initialized_at": null,
+          "remaining_sec": null,
+          "anchor_btc": null,
+          "atr_5m": null,
+          "upper_bound": null,
+          "lower_bound": null,
+          "ladder_posted": false,
+          "yes_cancelled": false,
+          "no_cancelled": false,
+          "yes_order_ids": [],
+          "no_order_ids": [],
+          "last_reason": null,
+          "last_intents": [],
+          "updated_at": "2026-03-24T16:11:54.604Z",
+          "saved_config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "last_run_snapshot": {
+            "stop_reason": "MANUAL_STOP",
+            "completed_at": "2026-03-24T16:11:54.604Z",
+            "current_window_id": null,
+            "phase": "IDLE",
+            "filled_total": 0,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "unrealized_gross_pnl_total": 0,
+            "active_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            }
+          },
+          "active_runtime_snapshot": null
+        }
+      },
+      "orders_raw": {
+        "status": 200,
+        "body": {
+          "orders": [],
+          "window_orders": [],
+          "all_orders": [],
+          "summary": {
+            "total": 0,
+            "open_total": 0,
+            "cancelled_total": 0,
+            "filled_total": 0,
+            "open_yes": 0,
+            "open_no": 0,
+            "filled_yes": 0,
+            "filled_no": 0
+          },
+          "window_scope": {
+            "scope": "none",
+            "running": false,
+            "active_window_id": null,
+            "display_window_id": null,
+            "label": "当前无可展示窗口订单",
+            "ownership_rule": "无当前活动窗口且无可展示上一窗口订单"
+          },
+          "hidden_other_window_count": 0
+        }
+      },
+      "preview_raw": {
+        "status": 200,
+        "body": {
+          "intents": [
+            {
+              "kind": "PLACE_LADDER",
+              "side": "BOTH",
+              "prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "size": 5
+            }
+          ],
+          "intents_summary": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
+          "reason": "ladder_not_posted",
+          "patches": {
+            "ladder_posted": true
+          },
+          "diagnostics": {
+            "remaining_sec": 281,
+            "open_elapsed_sec": 19,
+            "ladder_posted": false,
+            "btc_price": null,
+            "upper_bound": null,
+            "lower_bound": null,
+            "bounds_ready": false,
+            "config_open_delay_sec": 10,
+            "config_cancel_all_remaining_sec": 100,
+            "config_ladder_size": 5,
+            "config_ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ]
+          },
+          "config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "context_snapshot": {
+            "window_id": "btc-updown-5m-1774371000",
+            "last_window_id": null,
+            "slug": "btc-updown-5m-1774371000",
+            "period": "5m",
+            "remaining_sec": 281,
+            "btc_price": null,
+            "anchor_btc": null,
+            "atr_5m": null,
+            "upper_bound": null,
+            "lower_bound": null,
+            "bid_yes": 0.59,
+            "ask_yes": 0.6,
+            "bid_no": 0.4,
+            "ask_no": 0.41,
+            "tick_size": 0.01,
+            "stale": false,
+            "updated_at": "2026-03-24T16:50:18.228Z"
+          },
+          "state_snapshot": {
+            "ladder_posted": false
+          },
+          "fixture": null
+        }
+      },
+      "postmortem_raw": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "postmortem": {
+            "id": 151,
+            "strategy_id": "bot_console",
+            "event_id": "bot-1774368714604",
+            "window_start": "2026-03-24T16:11:54.604Z",
+            "window_end": "2026-03-24T16:11:54.604Z",
+            "created_at": "2026-03-24T16:11:54.604Z",
+            "window_id": null,
+            "stop_reason": "MANUAL_STOP",
+            "completed_at": "2026-03-24T16:11:54.604Z",
+            "filled_total": 0,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "unrealized_gross_pnl_total": 0,
+            "active_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            },
+            "action_summary": [
+              "NO_ACTION"
+            ]
+          }
+        }
+      },
+      "performance_raw": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "summary": {
+            "preset": "today",
+            "window_count": 2,
+            "filled_total": 0,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "avg_realized_gross_pnl_per_window": 0,
+            "running_window_excluded": true,
+            "sample_postmortem_rows": [
+              {
+                "id": 151,
+                "window_id": null,
+                "completed_at": "2026-03-24T16:11:54.604Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 150,
+                "window_id": null,
+                "completed_at": "2026-03-24T16:10:57.974Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              }
+            ]
+          }
+        }
+      },
+      "ui_equivalent": {
+        "layout": {
+          "topbar": [
+            "运行状态",
+            "当前窗口",
+            "上次结束",
+            "启动/停止"
+          ],
+          "row1": [
+            "参数设置",
+            "实时日志",
+            "当前窗口订单状态"
+          ],
+          "row2": [
+            "本轮运行",
+            "下一步动作"
+          ],
+          "row3": [
+            "上一窗口结果",
+            "近期表现摘要"
+          ]
+        },
+        "config_panel_open": true,
+        "top": {
+          "running_status": "已停止",
+          "current_window": "暂无",
+          "last_stop": "MANUAL_STOP"
+        },
+        "runtime": {
+          "note": "当前未运行；暂无活动窗口。启动后会显示：当前 BTC 价格、窗口基准价、上触发线 / 下触发线、剩余时间。",
+          "btc_price": "N/A (null)",
+          "anchor_btc": "N/A (null)",
+          "bounds": "N/A (null) / N/A (null)",
+          "remaining_sec": "N/A (null)"
+        },
+        "next_action": {
+          "state": "EMPTY",
+          "action": "当前无有效决策预览",
+          "reason": "ladder_not_posted",
+          "basis": "phase=IDLE | window=N/A (null)"
+        },
+        "logs": {
+          "is_primary": true,
+          "latest_lines": []
+        },
+        "current_window_orders": {
+          "title": "当前无可展示窗口订单",
+          "scope_note": "窗口=N/A (null) ｜ 无当前活动窗口且无可展示上一窗口订单",
+          "columns": [
+            "类型",
+            "方向",
+            "价格",
+            "状态",
+            "数量",
+            "PnL"
+          ],
+          "rows": []
+        },
+        "last_window_result": {
+          "window": "N/A (null)",
+          "stop_reason": "MANUAL_STOP",
+          "completed_at": "2026-03-24T16:11:54.604Z",
+          "filled_total": "0",
+          "cancelled_total": "0",
+          "realized_total": "0",
+          "unrealized_total": "0",
+          "action_summary": "NO_ACTION"
+        },
+        "performance": {
+          "preset": "today",
+          "window_count": "2",
+          "filled_total": "0",
+          "cancelled_total": "0",
+          "realized_total": "0",
+          "avg_realized_per_window": "0"
+        },
+        "config_summary": {
+          "saved": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "note": "保存后将在下一轮启动时生效"
+        }
+      }
+    }
+  },
+  "before_after": {
+    "before": {
+      "shape": "调试接线式长面板，字段名暴露底层命名，执行摘要/调试信息堆叠，停机态易出现 N/A 主视觉"
+    },
+    "after": {
+      "shape": "单一固定框架（顶部状态条 + 3行内容区）",
+      "removed_or_merged": [
+        "独立执行摘要区块已删除并并入上一窗口结果/近期表现摘要"
+      ],
+      "null_to_empty_copy": [
+        "本轮运行",
+        "下一步动作"
+      ],
+      "key_placement": {
+        "logs": "第一行中间主区（主视觉核心）",
+        "orders": "第一行右侧（列表主区+说明）",
+        "performance": "第三行右侧（近期表现摘要）"
+      }
+    }
+  },
+  "regression_checks": {
+    "start_stop": {
+      "start": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "already_running": false,
+          "running": true,
+          "tick_interval_ms": 1000,
+          "last_tick_at": null,
+          "config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "debugScenario": "main_path_v1",
+          "debug_frame_index": 0,
+          "debug_completed": false
+        }
+      },
+      "final_running": true
+    },
+    "params_save_restore": {
+      "config_roundtrip": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "current": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "defaults": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          }
+        }
+      }
+    },
+    "saved_vs_active_runtime_snapshot": {
+      "has_saved": true,
+      "has_active": true
+    },
+    "decision_preview_tristate_support": {
+      "stopped_state": "EMPTY",
+      "running_state": "ACTION",
+      "finished_state": "EMPTY"
+    },
+    "last_run_snapshot": {
+      "exists": true
+    },
+    "latest_postmortem": {
+      "exists": true
+    },
+    "current_window_orders": {
+      "scope": "current_window"
+    },
+    "performance_summary": {
+      "preset": "today"
+    }
+  }
+}
