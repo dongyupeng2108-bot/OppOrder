@@ -1,0 +1,540 @@
+{
+  "api_raw": {
+    "stopped_status": {
+      "status": 200,
+      "body": {
+        "mode": "paper-staging",
+        "phase": "IDLE",
+        "running": false,
+        "debug_scenario": null,
+        "debug_frame_index": 0,
+        "debug_completed": false,
+        "tick_interval_ms": 2000,
+        "last_tick_at": null,
+        "last_window_id": null,
+        "current_window_id": null,
+        "window_initialized_at": null,
+        "remaining_sec": null,
+        "anchor_btc": null,
+        "atr_5m": null,
+        "upper_bound": null,
+        "lower_bound": null,
+        "ladder_posted": false,
+        "yes_cancelled": false,
+        "no_cancelled": false,
+        "yes_order_ids": [],
+        "no_order_ids": [],
+        "last_reason": null,
+        "last_intents": [],
+        "updated_at": "2026-03-24T09:35:22.166Z",
+        "saved_config": {
+          "open_delay_sec": 10,
+          "ladder_prices": [
+            0.27,
+            0.24,
+            0.21,
+            0.18
+          ],
+          "ladder_size": 5,
+          "atr_multiple": 1.2,
+          "cancel_all_remaining_sec": 100
+        },
+        "active_runtime_snapshot": null
+      }
+    },
+    "running_status": {
+      "status": 200,
+      "body": {
+        "mode": "paper-staging",
+        "phase": "IDLE",
+        "running": true,
+        "debug_scenario": "main_path_v1",
+        "debug_frame_index": 1,
+        "debug_completed": false,
+        "tick_interval_ms": 1000,
+        "last_tick_at": "2026-03-24T09:36:17.106Z",
+        "last_window_id": null,
+        "current_window_id": "debug-main-path-v1-w1",
+        "window_initialized_at": "2026-03-24T09:36:17.104Z",
+        "remaining_sec": 299,
+        "anchor_btc": 100,
+        "atr_5m": 2,
+        "upper_bound": 102.4,
+        "lower_bound": 97.6,
+        "ladder_posted": false,
+        "yes_cancelled": false,
+        "no_cancelled": false,
+        "yes_order_ids": [],
+        "no_order_ids": [],
+        "last_reason": "pre_open_or_open_not_open_delay",
+        "last_intents": [
+          {
+            "kind": "NOOP"
+          }
+        ],
+        "updated_at": "2026-03-24T09:36:17.106Z",
+        "saved_config": {
+          "open_delay_sec": 10,
+          "ladder_prices": [
+            0.27,
+            0.24,
+            0.21,
+            0.18
+          ],
+          "ladder_size": 5,
+          "atr_multiple": 1.2,
+          "cancel_all_remaining_sec": 100
+        },
+        "active_runtime_snapshot": {
+          "config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "phase": "IDLE",
+          "current_window_id": "debug-main-path-v1-w1",
+          "anchor_btc": 100,
+          "upper_bound": 102.4,
+          "lower_bound": 97.6
+        }
+      }
+    },
+    "context_running": {
+      "status": 200,
+      "body": {
+        "window_id": "btc-updown-5m-1774344900",
+        "last_window_id": null,
+        "slug": "btc-updown-5m-1774344900",
+        "period": "5m",
+        "remaining_sec": 222,
+        "btc_price": null,
+        "anchor_btc": 100,
+        "atr_5m": 2,
+        "upper_bound": 102.4,
+        "lower_bound": 97.6,
+        "bid_yes": 0.62,
+        "ask_yes": 0.64,
+        "bid_no": 0.36,
+        "ask_no": 0.38,
+        "tick_size": 0.01,
+        "stale": false,
+        "updated_at": "2026-03-24T09:36:17.208Z"
+      }
+    },
+    "decision_preview_noop": {
+      "status": 200,
+      "body": {
+        "intents": [
+          {
+            "kind": "NOOP"
+          }
+        ],
+        "intents_summary": "NOOP",
+        "reason": "pre_open_or_open_not_open_delay",
+        "patches": {},
+        "diagnostics": {
+          "remaining_sec": 295,
+          "open_elapsed_sec": 5,
+          "ladder_posted": false,
+          "btc_price": null,
+          "upper_bound": null,
+          "lower_bound": null,
+          "bounds_ready": false,
+          "config_open_delay_sec": 10,
+          "config_cancel_all_remaining_sec": 100,
+          "config_ladder_size": 5,
+          "config_ladder_prices": [
+            0.27,
+            0.24,
+            0.21,
+            0.18
+          ]
+        },
+        "config": {
+          "open_delay_sec": 10,
+          "ladder_prices": [
+            0.27,
+            0.24,
+            0.21,
+            0.18
+          ],
+          "ladder_size": 5,
+          "atr_multiple": 1.2,
+          "cancel_all_remaining_sec": 100
+        },
+        "context_snapshot": {
+          "window_id": "btc-updown-5m-1774344900",
+          "last_window_id": null,
+          "slug": "btc-updown-5m-1774344900",
+          "period": "5m",
+          "remaining_sec": 295,
+          "btc_price": null,
+          "anchor_btc": 100,
+          "atr_5m": 2,
+          "upper_bound": null,
+          "lower_bound": null,
+          "bid_yes": 0.62,
+          "ask_yes": 0.64,
+          "bid_no": 0.36,
+          "ask_no": 0.38,
+          "tick_size": 0.01,
+          "stale": false,
+          "updated_at": "2026-03-24T09:36:17.208Z"
+        },
+        "state_snapshot": {
+          "ladder_posted": false
+        },
+        "fixture": {
+          "id": "PRE_OPEN_10S",
+          "label": "开盘前 10 秒内",
+          "expected": {
+            "reason": "pre_open_or_open_not_10s",
+            "intents": [
+              {
+                "kind": "NOOP"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "decision_preview_place_ladder": {
+      "status": 200,
+      "body": {
+        "intents": [
+          {
+            "kind": "PLACE_LADDER",
+            "side": "BOTH",
+            "prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "size": 5
+          }
+        ],
+        "intents_summary": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
+        "reason": "ladder_not_posted",
+        "patches": {
+          "ladder_posted": true
+        },
+        "diagnostics": {
+          "remaining_sec": 285,
+          "open_elapsed_sec": 15,
+          "ladder_posted": false,
+          "btc_price": null,
+          "upper_bound": null,
+          "lower_bound": null,
+          "bounds_ready": false,
+          "config_open_delay_sec": 10,
+          "config_cancel_all_remaining_sec": 100,
+          "config_ladder_size": 5,
+          "config_ladder_prices": [
+            0.27,
+            0.24,
+            0.21,
+            0.18
+          ]
+        },
+        "config": {
+          "open_delay_sec": 10,
+          "ladder_prices": [
+            0.27,
+            0.24,
+            0.21,
+            0.18
+          ],
+          "ladder_size": 5,
+          "atr_multiple": 1.2,
+          "cancel_all_remaining_sec": 100
+        },
+        "context_snapshot": {
+          "window_id": "btc-updown-5m-1774344900",
+          "last_window_id": null,
+          "slug": "btc-updown-5m-1774344900",
+          "period": "5m",
+          "remaining_sec": 285,
+          "btc_price": null,
+          "anchor_btc": 100,
+          "atr_5m": 2,
+          "upper_bound": null,
+          "lower_bound": null,
+          "bid_yes": 0.62,
+          "ask_yes": 0.64,
+          "bid_no": 0.36,
+          "ask_no": 0.38,
+          "tick_size": 0.01,
+          "stale": false,
+          "updated_at": "2026-03-24T09:36:17.208Z"
+        },
+        "state_snapshot": {
+          "ladder_posted": false
+        },
+        "fixture": {
+          "id": "OPEN_10S_LADDER_EMPTY",
+          "label": "开盘满 10 秒",
+          "expected": {
+            "reason": "ladder_not_posted",
+            "intents": [
+              {
+                "kind": "PLACE_LADDER",
+                "side": "BOTH",
+                "prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "size": 5
+              }
+            ]
+          }
+        }
+      }
+    },
+    "decision_preview_cancel_open": {
+      "status": 200,
+      "body": {
+        "intents": [
+          {
+            "kind": "CANCEL_OPEN",
+            "side": "ALL"
+          }
+        ],
+        "intents_summary": "CANCEL_OPEN(ALL)",
+        "reason": "remaining_sec<=cancel_all_remaining_sec",
+        "patches": {},
+        "diagnostics": {
+          "remaining_sec": 100,
+          "open_elapsed_sec": 200,
+          "ladder_posted": true,
+          "btc_price": null,
+          "upper_bound": null,
+          "lower_bound": null,
+          "bounds_ready": false,
+          "config_open_delay_sec": 10,
+          "config_cancel_all_remaining_sec": 100,
+          "config_ladder_size": 5,
+          "config_ladder_prices": [
+            0.27,
+            0.24,
+            0.21,
+            0.18
+          ]
+        },
+        "config": {
+          "open_delay_sec": 10,
+          "ladder_prices": [
+            0.27,
+            0.24,
+            0.21,
+            0.18
+          ],
+          "ladder_size": 5,
+          "atr_multiple": 1.2,
+          "cancel_all_remaining_sec": 100
+        },
+        "context_snapshot": {
+          "window_id": "btc-updown-5m-1774344900",
+          "last_window_id": null,
+          "slug": "btc-updown-5m-1774344900",
+          "period": "5m",
+          "remaining_sec": 100,
+          "btc_price": null,
+          "anchor_btc": 100,
+          "atr_5m": 2,
+          "upper_bound": null,
+          "lower_bound": null,
+          "bid_yes": 0.62,
+          "ask_yes": 0.64,
+          "bid_no": 0.36,
+          "ask_no": 0.38,
+          "tick_size": 0.01,
+          "stale": false,
+          "updated_at": "2026-03-24T09:36:17.208Z"
+        },
+        "state_snapshot": {
+          "ladder_posted": true
+        },
+        "fixture": {
+          "id": "REMAINING_100S",
+          "label": "剩余 100 秒",
+          "expected": {
+            "reason": "remaining_sec<=100",
+            "intents": [
+              {
+                "kind": "CANCEL_OPEN",
+                "side": "ALL"
+              }
+            ]
+          }
+        }
+      }
+    }
+  },
+  "ui_states": {
+    "empty": {
+      "preview_state": "EMPTY",
+      "phase": "IDLE",
+      "window_id": "N/A (null)",
+      "context_summary": {
+        "btc_price": "N/A (null)",
+        "anchor_btc": "N/A (null)",
+        "upper_bound": "N/A (null)",
+        "lower_bound": "N/A (null)",
+        "remaining_sec": "224",
+        "phase": "IDLE"
+      },
+      "intents": "当前无有效 preview",
+      "reason": "N/A (null)",
+      "diagnostics": {
+        "open_elapsed_sec": "N/A (null)",
+        "ladder_posted": "N/A (null)",
+        "bounds_ready": "N/A (null)",
+        "orders_open": "0",
+        "orders_filled": "0"
+      }
+    },
+    "noop": {
+      "preview_state": "NOOP",
+      "phase": "IDLE",
+      "window_id": "debug-main-path-v1-w1",
+      "context_summary": {
+        "btc_price": "N/A (null)",
+        "anchor_btc": "100",
+        "upper_bound": "102.4",
+        "lower_bound": "97.6",
+        "remaining_sec": "295",
+        "phase": "IDLE"
+      },
+      "intents": "当前无动作（NOOP）",
+      "reason": "pre_open_or_open_not_open_delay",
+      "diagnostics": {
+        "open_elapsed_sec": "5",
+        "ladder_posted": "false",
+        "bounds_ready": "false",
+        "orders_open": "0",
+        "orders_filled": "0"
+      }
+    },
+    "place_ladder": {
+      "preview_state": "ACTION",
+      "phase": "IDLE",
+      "window_id": "debug-main-path-v1-w1",
+      "context_summary": {
+        "btc_price": "N/A (null)",
+        "anchor_btc": "100",
+        "upper_bound": "102.4",
+        "lower_bound": "97.6",
+        "remaining_sec": "285",
+        "phase": "IDLE"
+      },
+      "intents": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
+      "reason": "ladder_not_posted",
+      "diagnostics": {
+        "open_elapsed_sec": "15",
+        "ladder_posted": "false",
+        "bounds_ready": "false",
+        "orders_open": "0",
+        "orders_filled": "0"
+      }
+    },
+    "cancel_open": {
+      "preview_state": "ACTION",
+      "phase": "IDLE",
+      "window_id": "debug-main-path-v1-w1",
+      "context_summary": {
+        "btc_price": "N/A (null)",
+        "anchor_btc": "100",
+        "upper_bound": "102.4",
+        "lower_bound": "97.6",
+        "remaining_sec": "100",
+        "phase": "IDLE"
+      },
+      "intents": "CANCEL_OPEN(ALL)",
+      "reason": "remaining_sec<=cancel_all_remaining_sec",
+      "diagnostics": {
+        "open_elapsed_sec": "200",
+        "ladder_posted": "true",
+        "bounds_ready": "false",
+        "orders_open": "0",
+        "orders_filled": "0"
+      }
+    }
+  },
+  "regression_checks": {
+    "start_response": {
+      "status": 200,
+      "body": {
+        "ok": true,
+        "already_running": false,
+        "running": true,
+        "tick_interval_ms": 1000,
+        "last_tick_at": null,
+        "config": {
+          "open_delay_sec": 10,
+          "ladder_prices": [
+            0.27,
+            0.24,
+            0.21,
+            0.18
+          ],
+          "ladder_size": 5,
+          "atr_multiple": 1.2,
+          "cancel_all_remaining_sec": 100
+        },
+        "debugScenario": "main_path_v1",
+        "debug_frame_index": 0,
+        "debug_completed": false
+      }
+    },
+    "stop_response": {
+      "status": 200,
+      "body": {
+        "ok": true,
+        "already_stopped": false,
+        "running": false,
+        "tick_interval_ms": 1000,
+        "last_tick_at": "2026-03-24T09:36:17.106Z"
+      }
+    },
+    "config_roundtrip": {
+      "status": 200,
+      "body": {
+        "ok": true,
+        "current": {
+          "open_delay_sec": 10,
+          "ladder_prices": [
+            0.27,
+            0.24,
+            0.21,
+            0.18
+          ],
+          "ladder_size": 5,
+          "atr_multiple": 1.2,
+          "cancel_all_remaining_sec": 100
+        },
+        "defaults": {
+          "open_delay_sec": 10,
+          "ladder_prices": [
+            0.27,
+            0.24,
+            0.21,
+            0.18
+          ],
+          "ladder_size": 5,
+          "atr_multiple": 1.2,
+          "cancel_all_remaining_sec": 100
+        }
+      }
+    }
+  }
+}
