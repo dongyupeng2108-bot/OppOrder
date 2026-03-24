@@ -83,6 +83,9 @@ const botRunnerConfig = {
   ladder_prices: [...BOT_CONFIG_INTERNAL_DEFAULTS.ladder_prices]
 };
 let botActiveRuntimeConfig = null;
+let botLastRunSnapshot = null;
+let botPendingStopReason = null;
+let botRuntimeWasRunning = false;
 const cloneBotConfig = (value) => ({
   open_delay_sec: Number(value.open_delay_sec),
   ladder_prices: [...value.ladder_prices],
@@ -110,6 +113,7 @@ const setBotConfigCurrent = (nextConfig) => {
 };
 const getBotConfigSnapshot = () => cloneBotConfig(botConfigCurrent);
 const getBotActiveRuntimeConfig = () => (botActiveRuntimeConfig ? cloneBotConfig(botActiveRuntimeConfig) : null);
+const getBotLastRunSnapshot = () => (botLastRunSnapshot ? { ...botLastRunSnapshot, active_config: cloneBotConfig(botLastRunSnapshot.active_config) } : null);
 const syncRunnerConfigFromSavedConfig = () => {
   const internal = toInternalRunnerConfig(botConfigCurrent);
   botRunnerConfig.open_delay_sec = internal.open_delay_sec;
@@ -117,6 +121,34 @@ const syncRunnerConfigFromSavedConfig = () => {
   botRunnerConfig.ladder_size = internal.ladder_size;
   botRunnerConfig.atr_multiplier = internal.atr_multiplier;
   botRunnerConfig.cancel_all_remaining_sec = internal.cancel_all_remaining_sec;
+};
+const toFiniteOrNull = (value) => {
+  const num = Number(value);
+  return Number.isFinite(num) ? num : null;
+};
+const finalizeBotRunSnapshot = (stopReason) => {
+  const state = botState.getState();
+  const summary = botExecutorPaper.getPaperSummary();
+  const activeConfig = getBotActiveRuntimeConfig() || getBotConfigSnapshot();
+  botLastRunSnapshot = {
+    stop_reason: stopReason,
+    completed_at: new Date().toISOString(),
+    current_window_id: state.current_window_id ?? null,
+    phase: state.phase ?? null,
+    filled_total: toFiniteOrNull(summary?.filled_total) ?? 0,
+    realized_gross_pnl_total: toFiniteOrNull(summary?.realized_gross_pnl_total) ?? 0,
+    unrealized_gross_pnl_total: toFiniteOrNull(summary?.unrealized_gross_pnl_total),
+    active_config: cloneBotConfig(activeConfig)
+  };
+  botLogger.log({
+    level: 'info',
+    source: 'server',
+    event: 'BOT_RUN_SNAPSHOT',
+    message: stopReason,
+    mode: BOT_MODE,
+    window_id: state.current_window_id ?? null,
+    data: { ...botLastRunSnapshot, active_config: cloneBotConfig(botLastRunSnapshot.active_config) }
+  });
 };
 const isNonNegativeInteger = (value) => Number.isInteger(value) && value >= 0;
 const isPositiveInteger = (value) => Number.isInteger(value) && value > 0;
@@ -308,9 +340,14 @@ const botRunner = createBotRunner({
   getScheduledTickParams: () => getDebugScheduledTickParams(),
   onRuntimeUpdate: (runtime) => {
     botState.patchState(runtime);
-    if (runtime?.running !== true) {
+    const isRunning = runtime?.running === true;
+    if (botRuntimeWasRunning && !isRunning) {
+      const stopReason = botPendingStopReason || 'AUTO_COMPLETED';
+      finalizeBotRunSnapshot(stopReason);
+      botPendingStopReason = null;
       botActiveRuntimeConfig = null;
     }
+    botRuntimeWasRunning = isRunning;
   },
   log: (entry) => botLogger.log(entry),
   getLogCount: () => botLogger.getCount(),
@@ -1269,6 +1306,7 @@ const server = createServer(async (req, res) => {
       sendJson(res, {
         ...state,
         saved_config: getBotConfigSnapshot(),
+        last_run_snapshot: getBotLastRunSnapshot(),
         active_runtime_snapshot: state.running === true
           ? {
               config: getBotActiveRuntimeConfig(),
@@ -1452,6 +1490,7 @@ const server = createServer(async (req, res) => {
           clearBotDebugScenario();
         }
         syncRunnerConfigFromSavedConfig();
+        botPendingStopReason = null;
         const configSnapshot = getBotConfigSnapshot();
         const prevWindowId = botState.getState().current_window_id ?? null;
         botState.patchState({
@@ -1498,8 +1537,11 @@ const server = createServer(async (req, res) => {
 
   if (req.method === 'POST' && req.url === '/bot/stop') {
     try {
+      botPendingStopReason = 'MANUAL_STOP';
       const result = botRunner.stop();
-      botActiveRuntimeConfig = null;
+      if (result?.already_stopped) {
+        botPendingStopReason = null;
+      }
       sendJson(res, { ok: true, ...result });
     } catch (err) {
       sendJson(res, { ok: false, error: err.message }, 500);
