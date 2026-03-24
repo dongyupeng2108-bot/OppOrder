@@ -31,7 +31,7 @@
       "ticks": [
         {
           "tick": 1,
-          "time": "2026-03-24T23:12:57.739Z",
+          "time": "2026-03-24T23:45:27.101Z",
           "window_id": null,
           "intents_summary": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
           "reason": "ladder_not_posted",
@@ -41,7 +41,7 @@
         },
         {
           "tick": 2,
-          "time": "2026-03-24T23:12:58.457Z",
+          "time": "2026-03-24T23:45:27.812Z",
           "window_id": "debug-main-path-v1-w1",
           "intents_summary": "NOOP",
           "reason": "pre_open_or_open_not_open_delay",
@@ -51,7 +51,7 @@
         },
         {
           "tick": 3,
-          "time": "2026-03-24T23:12:59.165Z",
+          "time": "2026-03-24T23:45:28.523Z",
           "window_id": "debug-main-path-v1-w1",
           "intents_summary": "NOOP",
           "reason": "pre_open_or_open_not_open_delay",
@@ -61,7 +61,7 @@
         },
         {
           "tick": 4,
-          "time": "2026-03-24T23:12:59.876Z",
+          "time": "2026-03-24T23:45:29.234Z",
           "window_id": "debug-main-path-v1-w1",
           "intents_summary": "NOOP",
           "reason": "pre_open_or_open_not_open_delay",
@@ -71,7 +71,7 @@
         },
         {
           "tick": 5,
-          "time": "2026-03-24T23:13:00.595Z",
+          "time": "2026-03-24T23:45:29.952Z",
           "window_id": "debug-main-path-v1-w1",
           "intents_summary": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
           "reason": "ladder_not_posted",
@@ -81,7 +81,7 @@
         },
         {
           "tick": 6,
-          "time": "2026-03-24T23:13:01.313Z",
+          "time": "2026-03-24T23:45:30.655Z",
           "window_id": "debug-main-path-v1-w1",
           "intents_summary": "CANCEL_OPEN(NO)",
           "reason": "btc_price>=upper_bound",
@@ -91,7 +91,7 @@
         },
         {
           "tick": 7,
-          "time": "2026-03-24T23:13:02.023Z",
+          "time": "2026-03-24T23:45:31.366Z",
           "window_id": "debug-main-path-v1-w1",
           "intents_summary": "CANCEL_OPEN(NO)",
           "reason": "btc_price>=upper_bound",
@@ -101,7 +101,7 @@
         },
         {
           "tick": 8,
-          "time": "2026-03-24T23:13:02.734Z",
+          "time": "2026-03-24T23:45:32.075Z",
           "window_id": "debug-main-path-v1-w1",
           "intents_summary": "CANCEL_OPEN(YES)",
           "reason": "btc_price<=lower_bound",
@@ -111,7 +111,7 @@
         },
         {
           "tick": 9,
-          "time": "2026-03-24T23:13:03.448Z",
+          "time": "2026-03-24T23:45:32.789Z",
           "window_id": "debug-main-path-v1-w1",
           "intents_summary": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
           "reason": "ladder_not_posted",
@@ -121,7 +121,7 @@
         },
         {
           "tick": 10,
-          "time": "2026-03-24T23:13:04.332Z",
+          "time": "2026-03-24T23:45:33.683Z",
           "window_id": "debug-main-path-v1-w1",
           "intents_summary": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
           "reason": "ladder_not_posted",
@@ -131,7 +131,7 @@
         },
         {
           "tick": 11,
-          "time": "2026-03-24T23:13:05.049Z",
+          "time": "2026-03-24T23:45:34.400Z",
           "window_id": "debug-main-path-v1-w1",
           "intents_summary": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
           "reason": "ladder_not_posted",
@@ -141,7 +141,7 @@
         },
         {
           "tick": 12,
-          "time": "2026-03-24T23:13:05.757Z",
+          "time": "2026-03-24T23:45:35.118Z",
           "window_id": "debug-main-path-v1-w1",
           "intents_summary": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
           "reason": "ladder_not_posted",
@@ -151,7 +151,7 @@
         },
         {
           "tick": 13,
-          "time": "2026-03-24T23:13:06.634Z",
+          "time": "2026-03-24T23:45:36.010Z",
           "window_id": "debug-main-path-v1-w1",
           "intents_summary": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
           "reason": "ladder_not_posted",
@@ -161,7 +161,7 @@
         },
         {
           "tick": 14,
-          "time": "2026-03-24T23:13:07.345Z",
+          "time": "2026-03-24T23:45:36.717Z",
           "window_id": "debug-main-path-v1-w1",
           "intents_summary": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
           "reason": "ladder_not_posted",
