@@ -1,0 +1,3447 @@
+{
+  "run_meta": {
+    "config_save_response": {
+      "status": 200,
+      "body": {
+        "ok": true,
+        "current": {
+          "open_delay_sec": 2,
+          "ladder_prices": [
+            0.31,
+            0.28,
+            0.25,
+            0.22
+          ],
+          "ladder_size": 7,
+          "atr_multiple": 2,
+          "cancel_all_remaining_sec": 100
+        },
+        "defaults": {
+          "open_delay_sec": 10,
+          "ladder_prices": [
+            0.27,
+            0.24,
+            0.21,
+            0.18
+          ],
+          "ladder_size": 5,
+          "atr_multiple": 1.2,
+          "cancel_all_remaining_sec": 100
+        }
+      }
+    },
+    "start_response": {
+      "status": 200,
+      "body": {
+        "ok": true,
+        "already_running": false,
+        "running": true,
+        "tick_interval_ms": 1000,
+        "last_tick_at": null,
+        "config": {
+          "open_delay_sec": 2,
+          "ladder_prices": [
+            0.31,
+            0.28,
+            0.25,
+            0.22
+          ],
+          "ladder_size": 7,
+          "atr_multiple": 2,
+          "cancel_all_remaining_sec": 100
+        },
+        "debugScenario": "main_path_v1",
+        "debug_frame_index": 0,
+        "debug_completed": false
+      }
+    },
+    "window_id": "debug-main-path-v1-w1",
+    "stop_reason": "AUTO_COMPLETED",
+    "filled_total": 0,
+    "realized_gross_pnl_total": 0,
+    "unrealized_gross_pnl_total": 0
+  },
+  "page_states_raw": {
+    "pre_start": {
+      "tag": "pre_start",
+      "status": {
+        "status": 200,
+        "body": {
+          "mode": "paper-staging",
+          "phase": "IDLE",
+          "running": false,
+          "debug_scenario": null,
+          "debug_frame_index": 0,
+          "debug_completed": false,
+          "tick_interval_ms": 2000,
+          "last_tick_at": null,
+          "last_window_id": null,
+          "current_window_id": null,
+          "window_initialized_at": null,
+          "remaining_sec": null,
+          "anchor_btc": null,
+          "atr_5m": null,
+          "upper_bound": null,
+          "lower_bound": null,
+          "ladder_posted": false,
+          "yes_cancelled": false,
+          "no_cancelled": false,
+          "yes_order_ids": [],
+          "no_order_ids": [],
+          "last_reason": null,
+          "last_intents": [],
+          "updated_at": "2026-03-24T11:06:30.400Z",
+          "saved_config": {
+            "open_delay_sec": 2,
+            "ladder_prices": [
+              0.31,
+              0.28,
+              0.25,
+              0.22
+            ],
+            "ladder_size": 7,
+            "atr_multiple": 2,
+            "cancel_all_remaining_sec": 100
+          },
+          "last_run_snapshot": null,
+          "active_runtime_snapshot": null
+        }
+      },
+      "summary": {
+        "status": 200,
+        "body": {
+          "yes_entry_filled_count": 0,
+          "yes_exit_filled_count": 0,
+          "yes_position_size": 0,
+          "yes_avg_fill_price": null,
+          "yes_realized_gross_pnl": 0,
+          "yes_unrealized_gross_pnl": 0,
+          "no_entry_filled_count": 0,
+          "no_exit_filled_count": 0,
+          "no_position_size": 0,
+          "no_avg_fill_price": null,
+          "no_realized_gross_pnl": 0,
+          "no_unrealized_gross_pnl": 0,
+          "filled_total": 0,
+          "realized_gross_pnl_total": 0,
+          "unrealized_gross_pnl_total": 0,
+          "updated_at": "2026-03-24T11:07:04.152Z"
+        }
+      },
+      "postmortem": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "postmortem": null
+        }
+      },
+      "decision_preview": {
+        "status": 200,
+        "body": {
+          "intents": [
+            {
+              "kind": "PLACE_LADDER",
+              "side": "BOTH",
+              "prices": [
+                0.31,
+                0.28,
+                0.25,
+                0.22
+              ],
+              "size": 7
+            }
+          ],
+          "intents_summary": "PLACE_LADDER(BOTH|0.31,0.28,0.25,0.22|size=7)",
+          "reason": "ladder_not_posted",
+          "patches": {
+            "ladder_posted": true
+          },
+          "diagnostics": {
+            "remaining_sec": 175,
+            "open_elapsed_sec": 125,
+            "ladder_posted": false,
+            "btc_price": null,
+            "upper_bound": null,
+            "lower_bound": null,
+            "bounds_ready": false,
+            "config_open_delay_sec": 2,
+            "config_cancel_all_remaining_sec": 100,
+            "config_ladder_size": 7,
+            "config_ladder_prices": [
+              0.31,
+              0.28,
+              0.25,
+              0.22
+            ]
+          },
+          "config": {
+            "open_delay_sec": 2,
+            "ladder_prices": [
+              0.31,
+              0.28,
+              0.25,
+              0.22
+            ],
+            "ladder_size": 7,
+            "atr_multiple": 2,
+            "cancel_all_remaining_sec": 100
+          },
+          "context_snapshot": {
+            "window_id": "btc-updown-5m-1774350300",
+            "last_window_id": null,
+            "slug": "btc-updown-5m-1774350300",
+            "period": "5m",
+            "remaining_sec": 175,
+            "btc_price": null,
+            "anchor_btc": null,
+            "atr_5m": null,
+            "upper_bound": null,
+            "lower_bound": null,
+            "bid_yes": 0.81,
+            "ask_yes": 0.82,
+            "bid_no": 0.18,
+            "ask_no": 0.19,
+            "tick_size": 0.01,
+            "stale": false,
+            "updated_at": "2026-03-24T11:07:03.360Z"
+          },
+          "state_snapshot": {
+            "ladder_posted": false
+          },
+          "fixture": null
+        }
+      },
+      "orders": {
+        "status": 200,
+        "body": {
+          "orders": [],
+          "summary": {
+            "total": 0,
+            "open_total": 0,
+            "cancelled_total": 0,
+            "filled_total": 0,
+            "open_yes": 0,
+            "open_no": 0,
+            "filled_yes": 0,
+            "filled_no": 0
+          }
+        }
+      },
+      "logs": {
+        "status": 200,
+        "body": [
+          {
+            "ts": "2026-03-24T11:06:30.400Z",
+            "level": "info",
+            "source": "server",
+            "event": "BOT_LOGGER_READY",
+            "message": "bot logger initialized",
+            "mode": "paper-staging",
+            "window_id": null,
+            "data": {
+              "port": 53123,
+              "strategy": "none"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:06:30.425Z",
+            "level": "info",
+            "source": "server",
+            "event": "SERVER_LISTENING",
+            "message": "server listening on 53123",
+            "mode": "paper-staging",
+            "window_id": null,
+            "data": {
+              "port": 53123,
+              "strategy": "none"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:04.145Z",
+            "level": "info",
+            "source": "server",
+            "event": "BOT_CONFIG_UPDATED",
+            "message": "bot config updated",
+            "mode": "paper-staging",
+            "window_id": null,
+            "data": {
+              "open_delay_sec": 2,
+              "ladder_prices": [
+                0.31,
+                0.28,
+                0.25,
+                0.22
+              ],
+              "ladder_size": 7,
+              "atr_multiple": 2,
+              "cancel_all_remaining_sec": 100
+            }
+          }
+        ]
+      }
+    },
+    "running": {
+      "tag": "loop_1",
+      "status": {
+        "status": 200,
+        "body": {
+          "mode": "paper-staging",
+          "phase": "IDLE",
+          "running": true,
+          "debug_scenario": "main_path_v1",
+          "debug_frame_index": 1,
+          "debug_completed": false,
+          "tick_interval_ms": 1000,
+          "last_tick_at": "2026-03-24T11:07:05.165Z",
+          "last_window_id": null,
+          "current_window_id": "debug-main-path-v1-w1",
+          "window_initialized_at": "2026-03-24T11:07:05.163Z",
+          "remaining_sec": 299,
+          "anchor_btc": 100,
+          "atr_5m": 2,
+          "upper_bound": 104,
+          "lower_bound": 96,
+          "ladder_posted": false,
+          "yes_cancelled": false,
+          "no_cancelled": false,
+          "yes_order_ids": [],
+          "no_order_ids": [],
+          "last_reason": "pre_open_or_open_not_open_delay",
+          "last_intents": [
+            {
+              "kind": "NOOP"
+            }
+          ],
+          "updated_at": "2026-03-24T11:07:05.165Z",
+          "saved_config": {
+            "open_delay_sec": 2,
+            "ladder_prices": [
+              0.31,
+              0.28,
+              0.25,
+              0.22
+            ],
+            "ladder_size": 7,
+            "atr_multiple": 2,
+            "cancel_all_remaining_sec": 100
+          },
+          "last_run_snapshot": null,
+          "active_runtime_snapshot": {
+            "config": {
+              "open_delay_sec": 2,
+              "ladder_prices": [
+                0.31,
+                0.28,
+                0.25,
+                0.22
+              ],
+              "ladder_size": 7,
+              "atr_multiple": 2,
+              "cancel_all_remaining_sec": 100
+            },
+            "phase": "IDLE",
+            "current_window_id": "debug-main-path-v1-w1",
+            "anchor_btc": 100,
+            "upper_bound": 104,
+            "lower_bound": 96
+          }
+        }
+      },
+      "summary": {
+        "status": 200,
+        "body": {
+          "yes_entry_filled_count": 0,
+          "yes_exit_filled_count": 0,
+          "yes_position_size": 0,
+          "yes_avg_fill_price": null,
+          "yes_realized_gross_pnl": 0,
+          "yes_unrealized_gross_pnl": 0,
+          "no_entry_filled_count": 0,
+          "no_exit_filled_count": 0,
+          "no_position_size": 0,
+          "no_avg_fill_price": null,
+          "no_realized_gross_pnl": 0,
+          "no_unrealized_gross_pnl": 0,
+          "filled_total": 0,
+          "realized_gross_pnl_total": 0,
+          "unrealized_gross_pnl_total": 0,
+          "updated_at": "2026-03-24T11:07:05.165Z"
+        }
+      },
+      "postmortem": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "postmortem": null
+        }
+      },
+      "decision_preview": {
+        "status": 200,
+        "body": {
+          "intents": [
+            {
+              "kind": "PLACE_LADDER",
+              "side": "BOTH",
+              "prices": [
+                0.31,
+                0.28,
+                0.25,
+                0.22
+              ],
+              "size": 7
+            }
+          ],
+          "intents_summary": "PLACE_LADDER(BOTH|0.31,0.28,0.25,0.22|size=7)",
+          "reason": "ladder_not_posted",
+          "patches": {
+            "ladder_posted": true
+          },
+          "diagnostics": {
+            "remaining_sec": 174,
+            "open_elapsed_sec": 126,
+            "ladder_posted": false,
+            "btc_price": null,
+            "upper_bound": 104,
+            "lower_bound": 96,
+            "bounds_ready": false,
+            "config_open_delay_sec": 2,
+            "config_cancel_all_remaining_sec": 100,
+            "config_ladder_size": 7,
+            "config_ladder_prices": [
+              0.31,
+              0.28,
+              0.25,
+              0.22
+            ]
+          },
+          "config": {
+            "open_delay_sec": 2,
+            "ladder_prices": [
+              0.31,
+              0.28,
+              0.25,
+              0.22
+            ],
+            "ladder_size": 7,
+            "atr_multiple": 2,
+            "cancel_all_remaining_sec": 100
+          },
+          "context_snapshot": {
+            "window_id": "btc-updown-5m-1774350300",
+            "last_window_id": null,
+            "slug": "btc-updown-5m-1774350300",
+            "period": "5m",
+            "remaining_sec": 174,
+            "btc_price": null,
+            "anchor_btc": 100,
+            "atr_5m": 2,
+            "upper_bound": 104,
+            "lower_bound": 96,
+            "bid_yes": 0.81,
+            "ask_yes": 0.82,
+            "bid_no": 0.18,
+            "ask_no": 0.19,
+            "tick_size": 0.01,
+            "stale": false,
+            "updated_at": "2026-03-24T11:07:03.360Z"
+          },
+          "state_snapshot": {
+            "ladder_posted": false
+          },
+          "fixture": null
+        }
+      },
+      "orders": {
+        "status": 200,
+        "body": {
+          "orders": [],
+          "summary": {
+            "total": 0,
+            "open_total": 0,
+            "cancelled_total": 0,
+            "filled_total": 0,
+            "open_yes": 0,
+            "open_no": 0,
+            "filled_yes": 0,
+            "filled_no": 0
+          }
+        }
+      },
+      "logs": {
+        "status": 200,
+        "body": [
+          {
+            "ts": "2026-03-24T11:06:30.400Z",
+            "level": "info",
+            "source": "server",
+            "event": "BOT_LOGGER_READY",
+            "message": "bot logger initialized",
+            "mode": "paper-staging",
+            "window_id": null,
+            "data": {
+              "port": 53123,
+              "strategy": "none"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:06:30.425Z",
+            "level": "info",
+            "source": "server",
+            "event": "SERVER_LISTENING",
+            "message": "server listening on 53123",
+            "mode": "paper-staging",
+            "window_id": null,
+            "data": {
+              "port": 53123,
+              "strategy": "none"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:04.145Z",
+            "level": "info",
+            "source": "server",
+            "event": "BOT_CONFIG_UPDATED",
+            "message": "bot config updated",
+            "mode": "paper-staging",
+            "window_id": null,
+            "data": {
+              "open_delay_sec": 2,
+              "ladder_prices": [
+                0.31,
+                0.28,
+                0.25,
+                0.22
+              ],
+              "ladder_size": 7,
+              "atr_multiple": 2,
+              "cancel_all_remaining_sec": 100
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:04.158Z",
+            "level": "info",
+            "source": "server",
+            "event": "BOT_DEBUG_SCENARIO_ENABLED",
+            "message": "debug scenario enabled: main_path_v1",
+            "mode": "paper-staging",
+            "window_id": null,
+            "data": {
+              "frame_total": 6
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:04.158Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_STARTED",
+            "message": "bot runner started",
+            "mode": null,
+            "window_id": null,
+            "data": {
+              "tick_interval_ms": 1000
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:04.158Z",
+            "level": "info",
+            "source": "server",
+            "event": "BOT_CONFIG_APPLIED",
+            "message": "bot start using current config",
+            "mode": "paper-staging",
+            "window_id": null,
+            "data": {
+              "open_delay_sec": 2,
+              "ladder_prices": [
+                0.31,
+                0.28,
+                0.25,
+                0.22
+              ],
+              "ladder_size": 7,
+              "atr_multiple": 2,
+              "cancel_all_remaining_sec": 100
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:05.162Z",
+            "level": "info",
+            "source": "server",
+            "event": "BOT_DEBUG_FRAME",
+            "message": "debug frame 1/6",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "debug_scenario": "main_path_v1",
+              "frame_index": 1,
+              "remaining_sec": 299,
+              "btc_price": 100
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:05.163Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_WINDOW_CHANGED",
+            "message": "window changed: null -> debug-main-path-v1-w1",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "from_window_id": null,
+              "to_window_id": "debug-main-path-v1-w1"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:05.163Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_WINDOW_INITIALIZED",
+            "message": "window initialized",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "anchor_btc": 100,
+              "atr_5m": 2,
+              "upper_bound": 104,
+              "lower_bound": 96,
+              "atr_multiplier": 2
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:05.164Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_INTENTS",
+            "message": "NOOP",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "reason": "pre_open_or_open_not_open_delay"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:05.165Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "RUNNER_TICK",
+            "message": "tick pre_open_or_open_not_open_delay",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "intents_summary": "NOOP",
+              "changed": 0,
+              "filled": 0,
+              "open_total": 0,
+              "cancelled_total": 0,
+              "filled_total": 0
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:05.165Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_TICK_OK",
+            "message": "scheduled tick ok",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "reason": "pre_open_or_open_not_open_delay",
+              "intents_summary": "NOOP"
+            }
+          }
+        ]
+      }
+    },
+    "finished_last_run": {
+      "tag": "loop_6",
+      "status": {
+        "status": 200,
+        "body": {
+          "mode": "paper-staging",
+          "phase": "IDLE",
+          "running": false,
+          "debug_scenario": "main_path_v1",
+          "debug_frame_index": 6,
+          "debug_completed": true,
+          "tick_interval_ms": 1000,
+          "last_tick_at": "2026-03-24T11:07:10.205Z",
+          "last_window_id": null,
+          "current_window_id": "debug-main-path-v1-w1",
+          "window_initialized_at": "2026-03-24T11:07:05.163Z",
+          "remaining_sec": 100,
+          "anchor_btc": 100,
+          "atr_5m": 2,
+          "upper_bound": 104,
+          "lower_bound": 96,
+          "ladder_posted": false,
+          "yes_cancelled": false,
+          "no_cancelled": false,
+          "yes_order_ids": [],
+          "no_order_ids": [],
+          "last_reason": "remaining_sec<=cancel_all_remaining_sec",
+          "last_intents": [
+            {
+              "kind": "CANCEL_OPEN",
+              "side": "ALL"
+            }
+          ],
+          "updated_at": "2026-03-24T11:07:10.206Z",
+          "saved_config": {
+            "open_delay_sec": 2,
+            "ladder_prices": [
+              0.31,
+              0.28,
+              0.25,
+              0.22
+            ],
+            "ladder_size": 7,
+            "atr_multiple": 2,
+            "cancel_all_remaining_sec": 100
+          },
+          "last_run_snapshot": {
+            "stop_reason": "AUTO_COMPLETED",
+            "completed_at": "2026-03-24T11:07:10.206Z",
+            "current_window_id": "debug-main-path-v1-w1",
+            "phase": "IDLE",
+            "filled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "unrealized_gross_pnl_total": 0,
+            "active_config": {
+              "open_delay_sec": 2,
+              "ladder_prices": [
+                0.31,
+                0.28,
+                0.25,
+                0.22
+              ],
+              "ladder_size": 7,
+              "atr_multiple": 2,
+              "cancel_all_remaining_sec": 100
+            }
+          },
+          "active_runtime_snapshot": null
+        }
+      },
+      "summary": {
+        "status": 200,
+        "body": {
+          "yes_entry_filled_count": 0,
+          "yes_exit_filled_count": 0,
+          "yes_position_size": 0,
+          "yes_avg_fill_price": null,
+          "yes_realized_gross_pnl": 0,
+          "yes_unrealized_gross_pnl": 0,
+          "no_entry_filled_count": 0,
+          "no_exit_filled_count": 0,
+          "no_position_size": 0,
+          "no_avg_fill_price": null,
+          "no_realized_gross_pnl": 0,
+          "no_unrealized_gross_pnl": 0,
+          "filled_total": 0,
+          "realized_gross_pnl_total": 0,
+          "unrealized_gross_pnl_total": 0,
+          "updated_at": "2026-03-24T11:07:10.390Z"
+        }
+      },
+      "postmortem": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "postmortem": {
+            "id": 137,
+            "strategy_id": "bot_console",
+            "event_id": "debug-main-path-v1-w1",
+            "window_start": "2026-03-24T11:07:10.206Z",
+            "window_end": "2026-03-24T11:07:10.206Z",
+            "created_at": "2026-03-24T11:07:10.206Z",
+            "window_id": "debug-main-path-v1-w1",
+            "stop_reason": "AUTO_COMPLETED",
+            "completed_at": "2026-03-24T11:07:10.206Z",
+            "filled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "unrealized_gross_pnl_total": 0,
+            "active_config": {
+              "open_delay_sec": 2,
+              "ladder_prices": [
+                0.31,
+                0.28,
+                0.25,
+                0.22
+              ],
+              "ladder_size": 7,
+              "atr_multiple": 2,
+              "cancel_all_remaining_sec": 100
+            },
+            "action_summary": [
+              "PLACE_LADDER",
+              "CANCEL_OPEN"
+            ]
+          }
+        }
+      },
+      "decision_preview": {
+        "status": 200,
+        "body": {
+          "intents": [
+            {
+              "kind": "PLACE_LADDER",
+              "side": "BOTH",
+              "prices": [
+                0.31,
+                0.28,
+                0.25,
+                0.22
+              ],
+              "size": 7
+            }
+          ],
+          "intents_summary": "PLACE_LADDER(BOTH|0.31,0.28,0.25,0.22|size=7)",
+          "reason": "ladder_not_posted",
+          "patches": {
+            "ladder_posted": true
+          },
+          "diagnostics": {
+            "remaining_sec": 169,
+            "open_elapsed_sec": 131,
+            "ladder_posted": false,
+            "btc_price": null,
+            "upper_bound": 104,
+            "lower_bound": 96,
+            "bounds_ready": false,
+            "config_open_delay_sec": 2,
+            "config_cancel_all_remaining_sec": 100,
+            "config_ladder_size": 7,
+            "config_ladder_prices": [
+              0.31,
+              0.28,
+              0.25,
+              0.22
+            ]
+          },
+          "config": {
+            "open_delay_sec": 2,
+            "ladder_prices": [
+              0.31,
+              0.28,
+              0.25,
+              0.22
+            ],
+            "ladder_size": 7,
+            "atr_multiple": 2,
+            "cancel_all_remaining_sec": 100
+          },
+          "context_snapshot": {
+            "window_id": "btc-updown-5m-1774350300",
+            "last_window_id": null,
+            "slug": "btc-updown-5m-1774350300",
+            "period": "5m",
+            "remaining_sec": 169,
+            "btc_price": null,
+            "anchor_btc": 100,
+            "atr_5m": 2,
+            "upper_bound": 104,
+            "lower_bound": 96,
+            "bid_yes": 0.8,
+            "ask_yes": 0.81,
+            "bid_no": 0.19,
+            "ask_no": 0.2,
+            "tick_size": 0.01,
+            "stale": false,
+            "updated_at": "2026-03-24T11:07:09.392Z"
+          },
+          "state_snapshot": {
+            "ladder_posted": false
+          },
+          "fixture": null
+        }
+      },
+      "orders": {
+        "status": 200,
+        "body": {
+          "orders": [
+            {
+              "order_id": "paper_0f327d41",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.31,
+              "size": 7,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T11:07:06.164Z",
+              "source": "runner_tick"
+            },
+            {
+              "order_id": "paper_151cc3f9",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.31,
+              "size": 7,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T11:07:06.164Z",
+              "source": "runner_tick"
+            },
+            {
+              "order_id": "paper_b5c4d275",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.28,
+              "size": 7,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T11:07:06.164Z",
+              "source": "runner_tick"
+            },
+            {
+              "order_id": "paper_7e403c3f",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.28,
+              "size": 7,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T11:07:06.164Z",
+              "source": "runner_tick"
+            },
+            {
+              "order_id": "paper_2f8d56dd",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.25,
+              "size": 7,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T11:07:06.164Z",
+              "source": "runner_tick"
+            },
+            {
+              "order_id": "paper_99650c8c",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.25,
+              "size": 7,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T11:07:06.164Z",
+              "source": "runner_tick"
+            },
+            {
+              "order_id": "paper_7aa5921a",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.22,
+              "size": 7,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T11:07:06.164Z",
+              "source": "runner_tick"
+            },
+            {
+              "order_id": "paper_cbca3b67",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.22,
+              "size": 7,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T11:07:06.164Z",
+              "source": "runner_tick"
+            }
+          ],
+          "summary": {
+            "total": 8,
+            "open_total": 0,
+            "cancelled_total": 8,
+            "filled_total": 0,
+            "open_yes": 0,
+            "open_no": 0,
+            "filled_yes": 0,
+            "filled_no": 0
+          }
+        }
+      },
+      "logs": {
+        "status": 200,
+        "body": [
+          {
+            "ts": "2026-03-24T11:06:30.400Z",
+            "level": "info",
+            "source": "server",
+            "event": "BOT_LOGGER_READY",
+            "message": "bot logger initialized",
+            "mode": "paper-staging",
+            "window_id": null,
+            "data": {
+              "port": 53123,
+              "strategy": "none"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:06:30.425Z",
+            "level": "info",
+            "source": "server",
+            "event": "SERVER_LISTENING",
+            "message": "server listening on 53123",
+            "mode": "paper-staging",
+            "window_id": null,
+            "data": {
+              "port": 53123,
+              "strategy": "none"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:04.145Z",
+            "level": "info",
+            "source": "server",
+            "event": "BOT_CONFIG_UPDATED",
+            "message": "bot config updated",
+            "mode": "paper-staging",
+            "window_id": null,
+            "data": {
+              "open_delay_sec": 2,
+              "ladder_prices": [
+                0.31,
+                0.28,
+                0.25,
+                0.22
+              ],
+              "ladder_size": 7,
+              "atr_multiple": 2,
+              "cancel_all_remaining_sec": 100
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:04.158Z",
+            "level": "info",
+            "source": "server",
+            "event": "BOT_DEBUG_SCENARIO_ENABLED",
+            "message": "debug scenario enabled: main_path_v1",
+            "mode": "paper-staging",
+            "window_id": null,
+            "data": {
+              "frame_total": 6
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:04.158Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_STARTED",
+            "message": "bot runner started",
+            "mode": null,
+            "window_id": null,
+            "data": {
+              "tick_interval_ms": 1000
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:04.158Z",
+            "level": "info",
+            "source": "server",
+            "event": "BOT_CONFIG_APPLIED",
+            "message": "bot start using current config",
+            "mode": "paper-staging",
+            "window_id": null,
+            "data": {
+              "open_delay_sec": 2,
+              "ladder_prices": [
+                0.31,
+                0.28,
+                0.25,
+                0.22
+              ],
+              "ladder_size": 7,
+              "atr_multiple": 2,
+              "cancel_all_remaining_sec": 100
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:05.162Z",
+            "level": "info",
+            "source": "server",
+            "event": "BOT_DEBUG_FRAME",
+            "message": "debug frame 1/6",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "debug_scenario": "main_path_v1",
+              "frame_index": 1,
+              "remaining_sec": 299,
+              "btc_price": 100
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:05.163Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_WINDOW_CHANGED",
+            "message": "window changed: null -> debug-main-path-v1-w1",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "from_window_id": null,
+              "to_window_id": "debug-main-path-v1-w1"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:05.163Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_WINDOW_INITIALIZED",
+            "message": "window initialized",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "anchor_btc": 100,
+              "atr_5m": 2,
+              "upper_bound": 104,
+              "lower_bound": 96,
+              "atr_multiplier": 2
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:05.164Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_INTENTS",
+            "message": "NOOP",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "reason": "pre_open_or_open_not_open_delay"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:05.165Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "RUNNER_TICK",
+            "message": "tick pre_open_or_open_not_open_delay",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "intents_summary": "NOOP",
+              "changed": 0,
+              "filled": 0,
+              "open_total": 0,
+              "cancelled_total": 0,
+              "filled_total": 0
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:05.165Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_TICK_OK",
+            "message": "scheduled tick ok",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "reason": "pre_open_or_open_not_open_delay",
+              "intents_summary": "NOOP"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:06.163Z",
+            "level": "info",
+            "source": "server",
+            "event": "BOT_DEBUG_FRAME",
+            "message": "debug frame 2/6",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "debug_scenario": "main_path_v1",
+              "frame_index": 2,
+              "remaining_sec": 295,
+              "btc_price": 100
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:06.164Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_INTENTS",
+            "message": "PLACE_LADDER(BOTH|0.31,0.28,0.25,0.22|size=7)",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "reason": "ladder_not_posted"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:06.165Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "RUNNER_TICK",
+            "message": "tick ladder_not_posted",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "intents_summary": "PLACE_LADDER(BOTH|0.31,0.28,0.25,0.22|size=7)",
+              "changed": 8,
+              "filled": 0,
+              "open_total": 8,
+              "cancelled_total": 0,
+              "filled_total": 0
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:06.165Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_TICK_OK",
+            "message": "scheduled tick ok",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "reason": "ladder_not_posted",
+              "intents_summary": "PLACE_LADDER(BOTH|0.31,0.28,0.25,0.22|size=7)"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:07.163Z",
+            "level": "info",
+            "source": "server",
+            "event": "BOT_DEBUG_FRAME",
+            "message": "debug frame 3/6",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "debug_scenario": "main_path_v1",
+              "frame_index": 3,
+              "remaining_sec": 290,
+              "btc_price": 100
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:07.163Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_INTENTS",
+            "message": "NOOP",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "reason": "within_bounds_or_no_trigger"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:07.164Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "RUNNER_TICK",
+            "message": "tick within_bounds_or_no_trigger",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "intents_summary": "NOOP",
+              "changed": 0,
+              "filled": 0,
+              "open_total": 8,
+              "cancelled_total": 0,
+              "filled_total": 0
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:07.164Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_TICK_OK",
+            "message": "scheduled tick ok",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "reason": "within_bounds_or_no_trigger",
+              "intents_summary": "NOOP"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:08.176Z",
+            "level": "info",
+            "source": "server",
+            "event": "BOT_DEBUG_FRAME",
+            "message": "debug frame 4/6",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "debug_scenario": "main_path_v1",
+              "frame_index": 4,
+              "remaining_sec": 250,
+              "btc_price": 103
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:08.176Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_INTENTS",
+            "message": "NOOP",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "reason": "within_bounds_or_no_trigger"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:08.177Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "RUNNER_TICK",
+            "message": "tick within_bounds_or_no_trigger",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "intents_summary": "NOOP",
+              "changed": 0,
+              "filled": 0,
+              "open_total": 8,
+              "cancelled_total": 0,
+              "filled_total": 0
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:08.177Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_TICK_OK",
+            "message": "scheduled tick ok",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "reason": "within_bounds_or_no_trigger",
+              "intents_summary": "NOOP"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:09.189Z",
+            "level": "info",
+            "source": "server",
+            "event": "BOT_DEBUG_FRAME",
+            "message": "debug frame 5/6",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "debug_scenario": "main_path_v1",
+              "frame_index": 5,
+              "remaining_sec": 220,
+              "btc_price": 97
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:09.189Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_INTENTS",
+            "message": "NOOP",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "reason": "within_bounds_or_no_trigger"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:09.190Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "RUNNER_TICK",
+            "message": "tick within_bounds_or_no_trigger",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "intents_summary": "NOOP",
+              "changed": 0,
+              "filled": 0,
+              "open_total": 8,
+              "cancelled_total": 0,
+              "filled_total": 0
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:09.191Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_TICK_OK",
+            "message": "scheduled tick ok",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "reason": "within_bounds_or_no_trigger",
+              "intents_summary": "NOOP"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:10.204Z",
+            "level": "info",
+            "source": "server",
+            "event": "BOT_DEBUG_FRAME",
+            "message": "debug frame 6/6",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "debug_scenario": "main_path_v1",
+              "frame_index": 6,
+              "remaining_sec": 100,
+              "btc_price": 99
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:10.205Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_INTENTS",
+            "message": "CANCEL_OPEN(ALL)",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "reason": "remaining_sec<=cancel_all_remaining_sec"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:10.205Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "RUNNER_TICK",
+            "message": "tick remaining_sec<=cancel_all_remaining_sec",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "intents_summary": "CANCEL_OPEN(ALL)",
+              "changed": 8,
+              "filled": 0,
+              "open_total": 0,
+              "cancelled_total": 8,
+              "filled_total": 0
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:10.205Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_TICK_OK",
+            "message": "scheduled tick ok",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "reason": "remaining_sec<=cancel_all_remaining_sec",
+              "intents_summary": "CANCEL_OPEN(ALL)"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:10.206Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_DEBUG_SCENARIO_DONE",
+            "message": "debug_scenario_completed",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "debug_scenario": "main_path_v1",
+              "frame_index": 6
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:10.207Z",
+            "level": "info",
+            "source": "server",
+            "event": "BOT_RUN_SNAPSHOT",
+            "message": "AUTO_COMPLETED",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "stop_reason": "AUTO_COMPLETED",
+              "completed_at": "2026-03-24T11:07:10.206Z",
+              "current_window_id": "debug-main-path-v1-w1",
+              "phase": "IDLE",
+              "filled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0,
+              "active_config": {
+                "open_delay_sec": 2,
+                "ladder_prices": [
+                  0.31,
+                  0.28,
+                  0.25,
+                  0.22
+                ],
+                "ladder_size": 7,
+                "atr_multiple": 2,
+                "cancel_all_remaining_sec": 100
+              }
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:10.207Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_STOPPED",
+            "message": "bot runner stopped",
+            "mode": null,
+            "window_id": null,
+            "data": {}
+          }
+        ]
+      }
+    },
+    "postmortem_visible": {
+      "tag": "postmortem_visible",
+      "status": {
+        "status": 200,
+        "body": {
+          "mode": "paper-staging",
+          "phase": "IDLE",
+          "running": false,
+          "debug_scenario": "main_path_v1",
+          "debug_frame_index": 6,
+          "debug_completed": true,
+          "tick_interval_ms": 1000,
+          "last_tick_at": "2026-03-24T11:07:10.205Z",
+          "last_window_id": null,
+          "current_window_id": "debug-main-path-v1-w1",
+          "window_initialized_at": "2026-03-24T11:07:05.163Z",
+          "remaining_sec": 100,
+          "anchor_btc": 100,
+          "atr_5m": 2,
+          "upper_bound": 104,
+          "lower_bound": 96,
+          "ladder_posted": false,
+          "yes_cancelled": false,
+          "no_cancelled": false,
+          "yes_order_ids": [],
+          "no_order_ids": [],
+          "last_reason": "remaining_sec<=cancel_all_remaining_sec",
+          "last_intents": [
+            {
+              "kind": "CANCEL_OPEN",
+              "side": "ALL"
+            }
+          ],
+          "updated_at": "2026-03-24T11:07:10.206Z",
+          "saved_config": {
+            "open_delay_sec": 2,
+            "ladder_prices": [
+              0.31,
+              0.28,
+              0.25,
+              0.22
+            ],
+            "ladder_size": 7,
+            "atr_multiple": 2,
+            "cancel_all_remaining_sec": 100
+          },
+          "last_run_snapshot": {
+            "stop_reason": "AUTO_COMPLETED",
+            "completed_at": "2026-03-24T11:07:10.206Z",
+            "current_window_id": "debug-main-path-v1-w1",
+            "phase": "IDLE",
+            "filled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "unrealized_gross_pnl_total": 0,
+            "active_config": {
+              "open_delay_sec": 2,
+              "ladder_prices": [
+                0.31,
+                0.28,
+                0.25,
+                0.22
+              ],
+              "ladder_size": 7,
+              "atr_multiple": 2,
+              "cancel_all_remaining_sec": 100
+            }
+          },
+          "active_runtime_snapshot": null
+        }
+      },
+      "summary": {
+        "status": 200,
+        "body": {
+          "yes_entry_filled_count": 0,
+          "yes_exit_filled_count": 0,
+          "yes_position_size": 0,
+          "yes_avg_fill_price": null,
+          "yes_realized_gross_pnl": 0,
+          "yes_unrealized_gross_pnl": 0,
+          "no_entry_filled_count": 0,
+          "no_exit_filled_count": 0,
+          "no_position_size": 0,
+          "no_avg_fill_price": null,
+          "no_realized_gross_pnl": 0,
+          "no_unrealized_gross_pnl": 0,
+          "filled_total": 0,
+          "realized_gross_pnl_total": 0,
+          "unrealized_gross_pnl_total": 0,
+          "updated_at": "2026-03-24T11:07:10.393Z"
+        }
+      },
+      "postmortem": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "postmortem": {
+            "id": 137,
+            "strategy_id": "bot_console",
+            "event_id": "debug-main-path-v1-w1",
+            "window_start": "2026-03-24T11:07:10.206Z",
+            "window_end": "2026-03-24T11:07:10.206Z",
+            "created_at": "2026-03-24T11:07:10.206Z",
+            "window_id": "debug-main-path-v1-w1",
+            "stop_reason": "AUTO_COMPLETED",
+            "completed_at": "2026-03-24T11:07:10.206Z",
+            "filled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "unrealized_gross_pnl_total": 0,
+            "active_config": {
+              "open_delay_sec": 2,
+              "ladder_prices": [
+                0.31,
+                0.28,
+                0.25,
+                0.22
+              ],
+              "ladder_size": 7,
+              "atr_multiple": 2,
+              "cancel_all_remaining_sec": 100
+            },
+            "action_summary": [
+              "PLACE_LADDER",
+              "CANCEL_OPEN"
+            ]
+          }
+        }
+      },
+      "decision_preview": {
+        "status": 200,
+        "body": {
+          "intents": [
+            {
+              "kind": "PLACE_LADDER",
+              "side": "BOTH",
+              "prices": [
+                0.31,
+                0.28,
+                0.25,
+                0.22
+              ],
+              "size": 7
+            }
+          ],
+          "intents_summary": "PLACE_LADDER(BOTH|0.31,0.28,0.25,0.22|size=7)",
+          "reason": "ladder_not_posted",
+          "patches": {
+            "ladder_posted": true
+          },
+          "diagnostics": {
+            "remaining_sec": 169,
+            "open_elapsed_sec": 131,
+            "ladder_posted": false,
+            "btc_price": null,
+            "upper_bound": 104,
+            "lower_bound": 96,
+            "bounds_ready": false,
+            "config_open_delay_sec": 2,
+            "config_cancel_all_remaining_sec": 100,
+            "config_ladder_size": 7,
+            "config_ladder_prices": [
+              0.31,
+              0.28,
+              0.25,
+              0.22
+            ]
+          },
+          "config": {
+            "open_delay_sec": 2,
+            "ladder_prices": [
+              0.31,
+              0.28,
+              0.25,
+              0.22
+            ],
+            "ladder_size": 7,
+            "atr_multiple": 2,
+            "cancel_all_remaining_sec": 100
+          },
+          "context_snapshot": {
+            "window_id": "btc-updown-5m-1774350300",
+            "last_window_id": null,
+            "slug": "btc-updown-5m-1774350300",
+            "period": "5m",
+            "remaining_sec": 169,
+            "btc_price": null,
+            "anchor_btc": 100,
+            "atr_5m": 2,
+            "upper_bound": 104,
+            "lower_bound": 96,
+            "bid_yes": 0.8,
+            "ask_yes": 0.81,
+            "bid_no": 0.19,
+            "ask_no": 0.2,
+            "tick_size": 0.01,
+            "stale": false,
+            "updated_at": "2026-03-24T11:07:09.392Z"
+          },
+          "state_snapshot": {
+            "ladder_posted": false
+          },
+          "fixture": null
+        }
+      },
+      "orders": {
+        "status": 200,
+        "body": {
+          "orders": [
+            {
+              "order_id": "paper_0f327d41",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.31,
+              "size": 7,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T11:07:06.164Z",
+              "source": "runner_tick"
+            },
+            {
+              "order_id": "paper_151cc3f9",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.31,
+              "size": 7,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T11:07:06.164Z",
+              "source": "runner_tick"
+            },
+            {
+              "order_id": "paper_b5c4d275",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.28,
+              "size": 7,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T11:07:06.164Z",
+              "source": "runner_tick"
+            },
+            {
+              "order_id": "paper_7e403c3f",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.28,
+              "size": 7,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T11:07:06.164Z",
+              "source": "runner_tick"
+            },
+            {
+              "order_id": "paper_2f8d56dd",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.25,
+              "size": 7,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T11:07:06.164Z",
+              "source": "runner_tick"
+            },
+            {
+              "order_id": "paper_99650c8c",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.25,
+              "size": 7,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T11:07:06.164Z",
+              "source": "runner_tick"
+            },
+            {
+              "order_id": "paper_7aa5921a",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.22,
+              "size": 7,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T11:07:06.164Z",
+              "source": "runner_tick"
+            },
+            {
+              "order_id": "paper_cbca3b67",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.22,
+              "size": 7,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T11:07:06.164Z",
+              "source": "runner_tick"
+            }
+          ],
+          "summary": {
+            "total": 8,
+            "open_total": 0,
+            "cancelled_total": 8,
+            "filled_total": 0,
+            "open_yes": 0,
+            "open_no": 0,
+            "filled_yes": 0,
+            "filled_no": 0
+          }
+        }
+      },
+      "logs": {
+        "status": 200,
+        "body": [
+          {
+            "ts": "2026-03-24T11:06:30.400Z",
+            "level": "info",
+            "source": "server",
+            "event": "BOT_LOGGER_READY",
+            "message": "bot logger initialized",
+            "mode": "paper-staging",
+            "window_id": null,
+            "data": {
+              "port": 53123,
+              "strategy": "none"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:06:30.425Z",
+            "level": "info",
+            "source": "server",
+            "event": "SERVER_LISTENING",
+            "message": "server listening on 53123",
+            "mode": "paper-staging",
+            "window_id": null,
+            "data": {
+              "port": 53123,
+              "strategy": "none"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:04.145Z",
+            "level": "info",
+            "source": "server",
+            "event": "BOT_CONFIG_UPDATED",
+            "message": "bot config updated",
+            "mode": "paper-staging",
+            "window_id": null,
+            "data": {
+              "open_delay_sec": 2,
+              "ladder_prices": [
+                0.31,
+                0.28,
+                0.25,
+                0.22
+              ],
+              "ladder_size": 7,
+              "atr_multiple": 2,
+              "cancel_all_remaining_sec": 100
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:04.158Z",
+            "level": "info",
+            "source": "server",
+            "event": "BOT_DEBUG_SCENARIO_ENABLED",
+            "message": "debug scenario enabled: main_path_v1",
+            "mode": "paper-staging",
+            "window_id": null,
+            "data": {
+              "frame_total": 6
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:04.158Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_STARTED",
+            "message": "bot runner started",
+            "mode": null,
+            "window_id": null,
+            "data": {
+              "tick_interval_ms": 1000
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:04.158Z",
+            "level": "info",
+            "source": "server",
+            "event": "BOT_CONFIG_APPLIED",
+            "message": "bot start using current config",
+            "mode": "paper-staging",
+            "window_id": null,
+            "data": {
+              "open_delay_sec": 2,
+              "ladder_prices": [
+                0.31,
+                0.28,
+                0.25,
+                0.22
+              ],
+              "ladder_size": 7,
+              "atr_multiple": 2,
+              "cancel_all_remaining_sec": 100
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:05.162Z",
+            "level": "info",
+            "source": "server",
+            "event": "BOT_DEBUG_FRAME",
+            "message": "debug frame 1/6",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "debug_scenario": "main_path_v1",
+              "frame_index": 1,
+              "remaining_sec": 299,
+              "btc_price": 100
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:05.163Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_WINDOW_CHANGED",
+            "message": "window changed: null -> debug-main-path-v1-w1",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "from_window_id": null,
+              "to_window_id": "debug-main-path-v1-w1"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:05.163Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_WINDOW_INITIALIZED",
+            "message": "window initialized",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "anchor_btc": 100,
+              "atr_5m": 2,
+              "upper_bound": 104,
+              "lower_bound": 96,
+              "atr_multiplier": 2
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:05.164Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_INTENTS",
+            "message": "NOOP",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "reason": "pre_open_or_open_not_open_delay"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:05.165Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "RUNNER_TICK",
+            "message": "tick pre_open_or_open_not_open_delay",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "intents_summary": "NOOP",
+              "changed": 0,
+              "filled": 0,
+              "open_total": 0,
+              "cancelled_total": 0,
+              "filled_total": 0
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:05.165Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_TICK_OK",
+            "message": "scheduled tick ok",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "reason": "pre_open_or_open_not_open_delay",
+              "intents_summary": "NOOP"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:06.163Z",
+            "level": "info",
+            "source": "server",
+            "event": "BOT_DEBUG_FRAME",
+            "message": "debug frame 2/6",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "debug_scenario": "main_path_v1",
+              "frame_index": 2,
+              "remaining_sec": 295,
+              "btc_price": 100
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:06.164Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_INTENTS",
+            "message": "PLACE_LADDER(BOTH|0.31,0.28,0.25,0.22|size=7)",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "reason": "ladder_not_posted"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:06.165Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "RUNNER_TICK",
+            "message": "tick ladder_not_posted",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "intents_summary": "PLACE_LADDER(BOTH|0.31,0.28,0.25,0.22|size=7)",
+              "changed": 8,
+              "filled": 0,
+              "open_total": 8,
+              "cancelled_total": 0,
+              "filled_total": 0
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:06.165Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_TICK_OK",
+            "message": "scheduled tick ok",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "reason": "ladder_not_posted",
+              "intents_summary": "PLACE_LADDER(BOTH|0.31,0.28,0.25,0.22|size=7)"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:07.163Z",
+            "level": "info",
+            "source": "server",
+            "event": "BOT_DEBUG_FRAME",
+            "message": "debug frame 3/6",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "debug_scenario": "main_path_v1",
+              "frame_index": 3,
+              "remaining_sec": 290,
+              "btc_price": 100
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:07.163Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_INTENTS",
+            "message": "NOOP",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "reason": "within_bounds_or_no_trigger"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:07.164Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "RUNNER_TICK",
+            "message": "tick within_bounds_or_no_trigger",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "intents_summary": "NOOP",
+              "changed": 0,
+              "filled": 0,
+              "open_total": 8,
+              "cancelled_total": 0,
+              "filled_total": 0
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:07.164Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_TICK_OK",
+            "message": "scheduled tick ok",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "reason": "within_bounds_or_no_trigger",
+              "intents_summary": "NOOP"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:08.176Z",
+            "level": "info",
+            "source": "server",
+            "event": "BOT_DEBUG_FRAME",
+            "message": "debug frame 4/6",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "debug_scenario": "main_path_v1",
+              "frame_index": 4,
+              "remaining_sec": 250,
+              "btc_price": 103
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:08.176Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_INTENTS",
+            "message": "NOOP",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "reason": "within_bounds_or_no_trigger"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:08.177Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "RUNNER_TICK",
+            "message": "tick within_bounds_or_no_trigger",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "intents_summary": "NOOP",
+              "changed": 0,
+              "filled": 0,
+              "open_total": 8,
+              "cancelled_total": 0,
+              "filled_total": 0
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:08.177Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_TICK_OK",
+            "message": "scheduled tick ok",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "reason": "within_bounds_or_no_trigger",
+              "intents_summary": "NOOP"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:09.189Z",
+            "level": "info",
+            "source": "server",
+            "event": "BOT_DEBUG_FRAME",
+            "message": "debug frame 5/6",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "debug_scenario": "main_path_v1",
+              "frame_index": 5,
+              "remaining_sec": 220,
+              "btc_price": 97
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:09.189Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_INTENTS",
+            "message": "NOOP",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "reason": "within_bounds_or_no_trigger"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:09.190Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "RUNNER_TICK",
+            "message": "tick within_bounds_or_no_trigger",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "intents_summary": "NOOP",
+              "changed": 0,
+              "filled": 0,
+              "open_total": 8,
+              "cancelled_total": 0,
+              "filled_total": 0
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:09.191Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_TICK_OK",
+            "message": "scheduled tick ok",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "reason": "within_bounds_or_no_trigger",
+              "intents_summary": "NOOP"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:10.204Z",
+            "level": "info",
+            "source": "server",
+            "event": "BOT_DEBUG_FRAME",
+            "message": "debug frame 6/6",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "debug_scenario": "main_path_v1",
+              "frame_index": 6,
+              "remaining_sec": 100,
+              "btc_price": 99
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:10.205Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_INTENTS",
+            "message": "CANCEL_OPEN(ALL)",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "reason": "remaining_sec<=cancel_all_remaining_sec"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:10.205Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "RUNNER_TICK",
+            "message": "tick remaining_sec<=cancel_all_remaining_sec",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "intents_summary": "CANCEL_OPEN(ALL)",
+              "changed": 8,
+              "filled": 0,
+              "open_total": 0,
+              "cancelled_total": 8,
+              "filled_total": 0
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:10.205Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_TICK_OK",
+            "message": "scheduled tick ok",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "reason": "remaining_sec<=cancel_all_remaining_sec",
+              "intents_summary": "CANCEL_OPEN(ALL)"
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:10.206Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_DEBUG_SCENARIO_DONE",
+            "message": "debug_scenario_completed",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "debug_scenario": "main_path_v1",
+              "frame_index": 6
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:10.207Z",
+            "level": "info",
+            "source": "server",
+            "event": "BOT_RUN_SNAPSHOT",
+            "message": "AUTO_COMPLETED",
+            "mode": "paper-staging",
+            "window_id": "debug-main-path-v1-w1",
+            "data": {
+              "stop_reason": "AUTO_COMPLETED",
+              "completed_at": "2026-03-24T11:07:10.206Z",
+              "current_window_id": "debug-main-path-v1-w1",
+              "phase": "IDLE",
+              "filled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0,
+              "active_config": {
+                "open_delay_sec": 2,
+                "ladder_prices": [
+                  0.31,
+                  0.28,
+                  0.25,
+                  0.22
+                ],
+                "ladder_size": 7,
+                "atr_multiple": 2,
+                "cancel_all_remaining_sec": 100
+              }
+            }
+          },
+          {
+            "ts": "2026-03-24T11:07:10.207Z",
+            "level": "info",
+            "source": "bot_runner",
+            "event": "BOT_STOPPED",
+            "message": "bot runner stopped",
+            "mode": null,
+            "window_id": null,
+            "data": {}
+          }
+        ]
+      }
+    }
+  },
+  "page_states_ui_equivalent": {
+    "pre_start": {
+      "running": "false",
+      "phase": "IDLE",
+      "current_window_id": "N/A (null)",
+      "summary_realized_gross_pnl_total": "0",
+      "summary_unrealized_gross_pnl_total": "0",
+      "postmortem_window_id": "N/A (null)",
+      "postmortem_stop_reason": "N/A (null)",
+      "postmortem_filled_total": "N/A (null)",
+      "postmortem_realized_gross_pnl_total": "N/A (null)",
+      "postmortem_unrealized_gross_pnl_total": "N/A (null)",
+      "postmortem_action_summary": "N/A (null)",
+      "pnl_match": "N/A (null)"
+    },
+    "running": {
+      "running": "true",
+      "phase": "IDLE",
+      "current_window_id": "debug-main-path-v1-w1",
+      "summary_realized_gross_pnl_total": "0",
+      "summary_unrealized_gross_pnl_total": "0",
+      "postmortem_window_id": "N/A (null)",
+      "postmortem_stop_reason": "N/A (null)",
+      "postmortem_filled_total": "N/A (null)",
+      "postmortem_realized_gross_pnl_total": "N/A (null)",
+      "postmortem_unrealized_gross_pnl_total": "N/A (null)",
+      "postmortem_action_summary": "N/A (null)",
+      "pnl_match": "N/A (null)"
+    },
+    "finished_last_run": {
+      "running": "false",
+      "phase": "IDLE",
+      "current_window_id": "debug-main-path-v1-w1",
+      "summary_realized_gross_pnl_total": "0",
+      "summary_unrealized_gross_pnl_total": "0",
+      "postmortem_window_id": "debug-main-path-v1-w1",
+      "postmortem_stop_reason": "AUTO_COMPLETED",
+      "postmortem_filled_total": "0",
+      "postmortem_realized_gross_pnl_total": "0",
+      "postmortem_unrealized_gross_pnl_total": "0",
+      "postmortem_action_summary": "PLACE_LADDER,CANCEL_OPEN",
+      "pnl_match": "MATCH"
+    },
+    "postmortem_visible": {
+      "running": "false",
+      "phase": "IDLE",
+      "current_window_id": "debug-main-path-v1-w1",
+      "summary_realized_gross_pnl_total": "0",
+      "summary_unrealized_gross_pnl_total": "0",
+      "postmortem_window_id": "debug-main-path-v1-w1",
+      "postmortem_stop_reason": "AUTO_COMPLETED",
+      "postmortem_filled_total": "0",
+      "postmortem_realized_gross_pnl_total": "0",
+      "postmortem_unrealized_gross_pnl_total": "0",
+      "postmortem_action_summary": "PLACE_LADDER,CANCEL_OPEN",
+      "pnl_match": "MATCH"
+    }
+  },
+  "alignment_check": {
+    "ui_summary": {
+      "filled_total": 0,
+      "realized_gross_pnl_total": 0,
+      "unrealized_gross_pnl_total": 0
+    },
+    "postmortem": {
+      "filled_total": 0,
+      "realized_gross_pnl_total": 0,
+      "unrealized_gross_pnl_total": 0
+    },
+    "last_run_snapshot": {
+      "filled_total": 0,
+      "realized_gross_pnl_total": 0,
+      "unrealized_gross_pnl_total": 0
+    }
+  },
+  "api_raw_extracts": {
+    "status": {
+      "pre_start": {
+        "status": 200,
+        "body": {
+          "mode": "paper-staging",
+          "phase": "IDLE",
+          "running": false,
+          "debug_scenario": null,
+          "debug_frame_index": 0,
+          "debug_completed": false,
+          "tick_interval_ms": 2000,
+          "last_tick_at": null,
+          "last_window_id": null,
+          "current_window_id": null,
+          "window_initialized_at": null,
+          "remaining_sec": null,
+          "anchor_btc": null,
+          "atr_5m": null,
+          "upper_bound": null,
+          "lower_bound": null,
+          "ladder_posted": false,
+          "yes_cancelled": false,
+          "no_cancelled": false,
+          "yes_order_ids": [],
+          "no_order_ids": [],
+          "last_reason": null,
+          "last_intents": [],
+          "updated_at": "2026-03-24T11:06:30.400Z",
+          "saved_config": {
+            "open_delay_sec": 2,
+            "ladder_prices": [
+              0.31,
+              0.28,
+              0.25,
+              0.22
+            ],
+            "ladder_size": 7,
+            "atr_multiple": 2,
+            "cancel_all_remaining_sec": 100
+          },
+          "last_run_snapshot": null,
+          "active_runtime_snapshot": null
+        }
+      },
+      "running": {
+        "status": 200,
+        "body": {
+          "mode": "paper-staging",
+          "phase": "IDLE",
+          "running": true,
+          "debug_scenario": "main_path_v1",
+          "debug_frame_index": 1,
+          "debug_completed": false,
+          "tick_interval_ms": 1000,
+          "last_tick_at": "2026-03-24T11:07:05.165Z",
+          "last_window_id": null,
+          "current_window_id": "debug-main-path-v1-w1",
+          "window_initialized_at": "2026-03-24T11:07:05.163Z",
+          "remaining_sec": 299,
+          "anchor_btc": 100,
+          "atr_5m": 2,
+          "upper_bound": 104,
+          "lower_bound": 96,
+          "ladder_posted": false,
+          "yes_cancelled": false,
+          "no_cancelled": false,
+          "yes_order_ids": [],
+          "no_order_ids": [],
+          "last_reason": "pre_open_or_open_not_open_delay",
+          "last_intents": [
+            {
+              "kind": "NOOP"
+            }
+          ],
+          "updated_at": "2026-03-24T11:07:05.165Z",
+          "saved_config": {
+            "open_delay_sec": 2,
+            "ladder_prices": [
+              0.31,
+              0.28,
+              0.25,
+              0.22
+            ],
+            "ladder_size": 7,
+            "atr_multiple": 2,
+            "cancel_all_remaining_sec": 100
+          },
+          "last_run_snapshot": null,
+          "active_runtime_snapshot": {
+            "config": {
+              "open_delay_sec": 2,
+              "ladder_prices": [
+                0.31,
+                0.28,
+                0.25,
+                0.22
+              ],
+              "ladder_size": 7,
+              "atr_multiple": 2,
+              "cancel_all_remaining_sec": 100
+            },
+            "phase": "IDLE",
+            "current_window_id": "debug-main-path-v1-w1",
+            "anchor_btc": 100,
+            "upper_bound": 104,
+            "lower_bound": 96
+          }
+        }
+      },
+      "finished_last_run": {
+        "status": 200,
+        "body": {
+          "mode": "paper-staging",
+          "phase": "IDLE",
+          "running": false,
+          "debug_scenario": "main_path_v1",
+          "debug_frame_index": 6,
+          "debug_completed": true,
+          "tick_interval_ms": 1000,
+          "last_tick_at": "2026-03-24T11:07:10.205Z",
+          "last_window_id": null,
+          "current_window_id": "debug-main-path-v1-w1",
+          "window_initialized_at": "2026-03-24T11:07:05.163Z",
+          "remaining_sec": 100,
+          "anchor_btc": 100,
+          "atr_5m": 2,
+          "upper_bound": 104,
+          "lower_bound": 96,
+          "ladder_posted": false,
+          "yes_cancelled": false,
+          "no_cancelled": false,
+          "yes_order_ids": [],
+          "no_order_ids": [],
+          "last_reason": "remaining_sec<=cancel_all_remaining_sec",
+          "last_intents": [
+            {
+              "kind": "CANCEL_OPEN",
+              "side": "ALL"
+            }
+          ],
+          "updated_at": "2026-03-24T11:07:10.206Z",
+          "saved_config": {
+            "open_delay_sec": 2,
+            "ladder_prices": [
+              0.31,
+              0.28,
+              0.25,
+              0.22
+            ],
+            "ladder_size": 7,
+            "atr_multiple": 2,
+            "cancel_all_remaining_sec": 100
+          },
+          "last_run_snapshot": {
+            "stop_reason": "AUTO_COMPLETED",
+            "completed_at": "2026-03-24T11:07:10.206Z",
+            "current_window_id": "debug-main-path-v1-w1",
+            "phase": "IDLE",
+            "filled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "unrealized_gross_pnl_total": 0,
+            "active_config": {
+              "open_delay_sec": 2,
+              "ladder_prices": [
+                0.31,
+                0.28,
+                0.25,
+                0.22
+              ],
+              "ladder_size": 7,
+              "atr_multiple": 2,
+              "cancel_all_remaining_sec": 100
+            }
+          },
+          "active_runtime_snapshot": null
+        }
+      },
+      "postmortem_visible": {
+        "status": 200,
+        "body": {
+          "mode": "paper-staging",
+          "phase": "IDLE",
+          "running": false,
+          "debug_scenario": "main_path_v1",
+          "debug_frame_index": 6,
+          "debug_completed": true,
+          "tick_interval_ms": 1000,
+          "last_tick_at": "2026-03-24T11:07:10.205Z",
+          "last_window_id": null,
+          "current_window_id": "debug-main-path-v1-w1",
+          "window_initialized_at": "2026-03-24T11:07:05.163Z",
+          "remaining_sec": 100,
+          "anchor_btc": 100,
+          "atr_5m": 2,
+          "upper_bound": 104,
+          "lower_bound": 96,
+          "ladder_posted": false,
+          "yes_cancelled": false,
+          "no_cancelled": false,
+          "yes_order_ids": [],
+          "no_order_ids": [],
+          "last_reason": "remaining_sec<=cancel_all_remaining_sec",
+          "last_intents": [
+            {
+              "kind": "CANCEL_OPEN",
+              "side": "ALL"
+            }
+          ],
+          "updated_at": "2026-03-24T11:07:10.206Z",
+          "saved_config": {
+            "open_delay_sec": 2,
+            "ladder_prices": [
+              0.31,
+              0.28,
+              0.25,
+              0.22
+            ],
+            "ladder_size": 7,
+            "atr_multiple": 2,
+            "cancel_all_remaining_sec": 100
+          },
+          "last_run_snapshot": {
+            "stop_reason": "AUTO_COMPLETED",
+            "completed_at": "2026-03-24T11:07:10.206Z",
+            "current_window_id": "debug-main-path-v1-w1",
+            "phase": "IDLE",
+            "filled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "unrealized_gross_pnl_total": 0,
+            "active_config": {
+              "open_delay_sec": 2,
+              "ladder_prices": [
+                0.31,
+                0.28,
+                0.25,
+                0.22
+              ],
+              "ladder_size": 7,
+              "atr_multiple": 2,
+              "cancel_all_remaining_sec": 100
+            }
+          },
+          "active_runtime_snapshot": null
+        }
+      }
+    },
+    "paper_summary": {
+      "pre_start": {
+        "status": 200,
+        "body": {
+          "yes_entry_filled_count": 0,
+          "yes_exit_filled_count": 0,
+          "yes_position_size": 0,
+          "yes_avg_fill_price": null,
+          "yes_realized_gross_pnl": 0,
+          "yes_unrealized_gross_pnl": 0,
+          "no_entry_filled_count": 0,
+          "no_exit_filled_count": 0,
+          "no_position_size": 0,
+          "no_avg_fill_price": null,
+          "no_realized_gross_pnl": 0,
+          "no_unrealized_gross_pnl": 0,
+          "filled_total": 0,
+          "realized_gross_pnl_total": 0,
+          "unrealized_gross_pnl_total": 0,
+          "updated_at": "2026-03-24T11:07:04.152Z"
+        }
+      },
+      "running": {
+        "status": 200,
+        "body": {
+          "yes_entry_filled_count": 0,
+          "yes_exit_filled_count": 0,
+          "yes_position_size": 0,
+          "yes_avg_fill_price": null,
+          "yes_realized_gross_pnl": 0,
+          "yes_unrealized_gross_pnl": 0,
+          "no_entry_filled_count": 0,
+          "no_exit_filled_count": 0,
+          "no_position_size": 0,
+          "no_avg_fill_price": null,
+          "no_realized_gross_pnl": 0,
+          "no_unrealized_gross_pnl": 0,
+          "filled_total": 0,
+          "realized_gross_pnl_total": 0,
+          "unrealized_gross_pnl_total": 0,
+          "updated_at": "2026-03-24T11:07:05.165Z"
+        }
+      },
+      "finished_last_run": {
+        "status": 200,
+        "body": {
+          "yes_entry_filled_count": 0,
+          "yes_exit_filled_count": 0,
+          "yes_position_size": 0,
+          "yes_avg_fill_price": null,
+          "yes_realized_gross_pnl": 0,
+          "yes_unrealized_gross_pnl": 0,
+          "no_entry_filled_count": 0,
+          "no_exit_filled_count": 0,
+          "no_position_size": 0,
+          "no_avg_fill_price": null,
+          "no_realized_gross_pnl": 0,
+          "no_unrealized_gross_pnl": 0,
+          "filled_total": 0,
+          "realized_gross_pnl_total": 0,
+          "unrealized_gross_pnl_total": 0,
+          "updated_at": "2026-03-24T11:07:10.390Z"
+        }
+      },
+      "postmortem_visible": {
+        "status": 200,
+        "body": {
+          "yes_entry_filled_count": 0,
+          "yes_exit_filled_count": 0,
+          "yes_position_size": 0,
+          "yes_avg_fill_price": null,
+          "yes_realized_gross_pnl": 0,
+          "yes_unrealized_gross_pnl": 0,
+          "no_entry_filled_count": 0,
+          "no_exit_filled_count": 0,
+          "no_position_size": 0,
+          "no_avg_fill_price": null,
+          "no_realized_gross_pnl": 0,
+          "no_unrealized_gross_pnl": 0,
+          "filled_total": 0,
+          "realized_gross_pnl_total": 0,
+          "unrealized_gross_pnl_total": 0,
+          "updated_at": "2026-03-24T11:07:10.393Z"
+        }
+      }
+    },
+    "postmortem_raw": {
+      "status": 200,
+      "body": {
+        "ok": true,
+        "postmortem": {
+          "id": 137,
+          "strategy_id": "bot_console",
+          "event_id": "debug-main-path-v1-w1",
+          "window_start": "2026-03-24T11:07:10.206Z",
+          "window_end": "2026-03-24T11:07:10.206Z",
+          "created_at": "2026-03-24T11:07:10.206Z",
+          "window_id": "debug-main-path-v1-w1",
+          "stop_reason": "AUTO_COMPLETED",
+          "completed_at": "2026-03-24T11:07:10.206Z",
+          "filled_total": 0,
+          "realized_gross_pnl_total": 0,
+          "unrealized_gross_pnl_total": 0,
+          "active_config": {
+            "open_delay_sec": 2,
+            "ladder_prices": [
+              0.31,
+              0.28,
+              0.25,
+              0.22
+            ],
+            "ladder_size": 7,
+            "atr_multiple": 2,
+            "cancel_all_remaining_sec": 100
+          },
+          "action_summary": [
+            "PLACE_LADDER",
+            "CANCEL_OPEN"
+          ]
+        }
+      }
+    },
+    "decision_preview_running": {
+      "status": 200,
+      "body": {
+        "intents": [
+          {
+            "kind": "PLACE_LADDER",
+            "side": "BOTH",
+            "prices": [
+              0.31,
+              0.28,
+              0.25,
+              0.22
+            ],
+            "size": 7
+          }
+        ],
+        "intents_summary": "PLACE_LADDER(BOTH|0.31,0.28,0.25,0.22|size=7)",
+        "reason": "ladder_not_posted",
+        "patches": {
+          "ladder_posted": true
+        },
+        "diagnostics": {
+          "remaining_sec": 174,
+          "open_elapsed_sec": 126,
+          "ladder_posted": false,
+          "btc_price": null,
+          "upper_bound": 104,
+          "lower_bound": 96,
+          "bounds_ready": false,
+          "config_open_delay_sec": 2,
+          "config_cancel_all_remaining_sec": 100,
+          "config_ladder_size": 7,
+          "config_ladder_prices": [
+            0.31,
+            0.28,
+            0.25,
+            0.22
+          ]
+        },
+        "config": {
+          "open_delay_sec": 2,
+          "ladder_prices": [
+            0.31,
+            0.28,
+            0.25,
+            0.22
+          ],
+          "ladder_size": 7,
+          "atr_multiple": 2,
+          "cancel_all_remaining_sec": 100
+        },
+        "context_snapshot": {
+          "window_id": "btc-updown-5m-1774350300",
+          "last_window_id": null,
+          "slug": "btc-updown-5m-1774350300",
+          "period": "5m",
+          "remaining_sec": 174,
+          "btc_price": null,
+          "anchor_btc": 100,
+          "atr_5m": 2,
+          "upper_bound": 104,
+          "lower_bound": 96,
+          "bid_yes": 0.81,
+          "ask_yes": 0.82,
+          "bid_no": 0.18,
+          "ask_no": 0.19,
+          "tick_size": 0.01,
+          "stale": false,
+          "updated_at": "2026-03-24T11:07:03.360Z"
+        },
+        "state_snapshot": {
+          "ladder_posted": false
+        },
+        "fixture": null
+      }
+    },
+    "logs_tail": {
+      "status": 200,
+      "body": [
+        {
+          "ts": "2026-03-24T11:06:30.400Z",
+          "level": "info",
+          "source": "server",
+          "event": "BOT_LOGGER_READY",
+          "message": "bot logger initialized",
+          "mode": "paper-staging",
+          "window_id": null,
+          "data": {
+            "port": 53123,
+            "strategy": "none"
+          }
+        },
+        {
+          "ts": "2026-03-24T11:06:30.425Z",
+          "level": "info",
+          "source": "server",
+          "event": "SERVER_LISTENING",
+          "message": "server listening on 53123",
+          "mode": "paper-staging",
+          "window_id": null,
+          "data": {
+            "port": 53123,
+            "strategy": "none"
+          }
+        },
+        {
+          "ts": "2026-03-24T11:07:04.145Z",
+          "level": "info",
+          "source": "server",
+          "event": "BOT_CONFIG_UPDATED",
+          "message": "bot config updated",
+          "mode": "paper-staging",
+          "window_id": null,
+          "data": {
+            "open_delay_sec": 2,
+            "ladder_prices": [
+              0.31,
+              0.28,
+              0.25,
+              0.22
+            ],
+            "ladder_size": 7,
+            "atr_multiple": 2,
+            "cancel_all_remaining_sec": 100
+          }
+        },
+        {
+          "ts": "2026-03-24T11:07:04.158Z",
+          "level": "info",
+          "source": "server",
+          "event": "BOT_DEBUG_SCENARIO_ENABLED",
+          "message": "debug scenario enabled: main_path_v1",
+          "mode": "paper-staging",
+          "window_id": null,
+          "data": {
+            "frame_total": 6
+          }
+        },
+        {
+          "ts": "2026-03-24T11:07:04.158Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_STARTED",
+          "message": "bot runner started",
+          "mode": null,
+          "window_id": null,
+          "data": {
+            "tick_interval_ms": 1000
+          }
+        },
+        {
+          "ts": "2026-03-24T11:07:04.158Z",
+          "level": "info",
+          "source": "server",
+          "event": "BOT_CONFIG_APPLIED",
+          "message": "bot start using current config",
+          "mode": "paper-staging",
+          "window_id": null,
+          "data": {
+            "open_delay_sec": 2,
+            "ladder_prices": [
+              0.31,
+              0.28,
+              0.25,
+              0.22
+            ],
+            "ladder_size": 7,
+            "atr_multiple": 2,
+            "cancel_all_remaining_sec": 100
+          }
+        },
+        {
+          "ts": "2026-03-24T11:07:05.162Z",
+          "level": "info",
+          "source": "server",
+          "event": "BOT_DEBUG_FRAME",
+          "message": "debug frame 1/6",
+          "mode": "paper-staging",
+          "window_id": "debug-main-path-v1-w1",
+          "data": {
+            "debug_scenario": "main_path_v1",
+            "frame_index": 1,
+            "remaining_sec": 299,
+            "btc_price": 100
+          }
+        },
+        {
+          "ts": "2026-03-24T11:07:05.163Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_WINDOW_CHANGED",
+          "message": "window changed: null -> debug-main-path-v1-w1",
+          "mode": "paper-staging",
+          "window_id": "debug-main-path-v1-w1",
+          "data": {
+            "from_window_id": null,
+            "to_window_id": "debug-main-path-v1-w1"
+          }
+        },
+        {
+          "ts": "2026-03-24T11:07:05.163Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_WINDOW_INITIALIZED",
+          "message": "window initialized",
+          "mode": "paper-staging",
+          "window_id": "debug-main-path-v1-w1",
+          "data": {
+            "anchor_btc": 100,
+            "atr_5m": 2,
+            "upper_bound": 104,
+            "lower_bound": 96,
+            "atr_multiplier": 2
+          }
+        },
+        {
+          "ts": "2026-03-24T11:07:05.164Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_INTENTS",
+          "message": "NOOP",
+          "mode": "paper-staging",
+          "window_id": "debug-main-path-v1-w1",
+          "data": {
+            "reason": "pre_open_or_open_not_open_delay"
+          }
+        },
+        {
+          "ts": "2026-03-24T11:07:05.165Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "RUNNER_TICK",
+          "message": "tick pre_open_or_open_not_open_delay",
+          "mode": "paper-staging",
+          "window_id": "debug-main-path-v1-w1",
+          "data": {
+            "intents_summary": "NOOP",
+            "changed": 0,
+            "filled": 0,
+            "open_total": 0,
+            "cancelled_total": 0,
+            "filled_total": 0
+          }
+        },
+        {
+          "ts": "2026-03-24T11:07:05.165Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_TICK_OK",
+          "message": "scheduled tick ok",
+          "mode": "paper-staging",
+          "window_id": "debug-main-path-v1-w1",
+          "data": {
+            "reason": "pre_open_or_open_not_open_delay",
+            "intents_summary": "NOOP"
+          }
+        },
+        {
+          "ts": "2026-03-24T11:07:06.163Z",
+          "level": "info",
+          "source": "server",
+          "event": "BOT_DEBUG_FRAME",
+          "message": "debug frame 2/6",
+          "mode": "paper-staging",
+          "window_id": "debug-main-path-v1-w1",
+          "data": {
+            "debug_scenario": "main_path_v1",
+            "frame_index": 2,
+            "remaining_sec": 295,
+            "btc_price": 100
+          }
+        },
+        {
+          "ts": "2026-03-24T11:07:06.164Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_INTENTS",
+          "message": "PLACE_LADDER(BOTH|0.31,0.28,0.25,0.22|size=7)",
+          "mode": "paper-staging",
+          "window_id": "debug-main-path-v1-w1",
+          "data": {
+            "reason": "ladder_not_posted"
+          }
+        },
+        {
+          "ts": "2026-03-24T11:07:06.165Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "RUNNER_TICK",
+          "message": "tick ladder_not_posted",
+          "mode": "paper-staging",
+          "window_id": "debug-main-path-v1-w1",
+          "data": {
+            "intents_summary": "PLACE_LADDER(BOTH|0.31,0.28,0.25,0.22|size=7)",
+            "changed": 8,
+            "filled": 0,
+            "open_total": 8,
+            "cancelled_total": 0,
+            "filled_total": 0
+          }
+        },
+        {
+          "ts": "2026-03-24T11:07:06.165Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_TICK_OK",
+          "message": "scheduled tick ok",
+          "mode": "paper-staging",
+          "window_id": "debug-main-path-v1-w1",
+          "data": {
+            "reason": "ladder_not_posted",
+            "intents_summary": "PLACE_LADDER(BOTH|0.31,0.28,0.25,0.22|size=7)"
+          }
+        },
+        {
+          "ts": "2026-03-24T11:07:07.163Z",
+          "level": "info",
+          "source": "server",
+          "event": "BOT_DEBUG_FRAME",
+          "message": "debug frame 3/6",
+          "mode": "paper-staging",
+          "window_id": "debug-main-path-v1-w1",
+          "data": {
+            "debug_scenario": "main_path_v1",
+            "frame_index": 3,
+            "remaining_sec": 290,
+            "btc_price": 100
+          }
+        },
+        {
+          "ts": "2026-03-24T11:07:07.163Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_INTENTS",
+          "message": "NOOP",
+          "mode": "paper-staging",
+          "window_id": "debug-main-path-v1-w1",
+          "data": {
+            "reason": "within_bounds_or_no_trigger"
+          }
+        },
+        {
+          "ts": "2026-03-24T11:07:07.164Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "RUNNER_TICK",
+          "message": "tick within_bounds_or_no_trigger",
+          "mode": "paper-staging",
+          "window_id": "debug-main-path-v1-w1",
+          "data": {
+            "intents_summary": "NOOP",
+            "changed": 0,
+            "filled": 0,
+            "open_total": 8,
+            "cancelled_total": 0,
+            "filled_total": 0
+          }
+        },
+        {
+          "ts": "2026-03-24T11:07:07.164Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_TICK_OK",
+          "message": "scheduled tick ok",
+          "mode": "paper-staging",
+          "window_id": "debug-main-path-v1-w1",
+          "data": {
+            "reason": "within_bounds_or_no_trigger",
+            "intents_summary": "NOOP"
+          }
+        },
+        {
+          "ts": "2026-03-24T11:07:08.176Z",
+          "level": "info",
+          "source": "server",
+          "event": "BOT_DEBUG_FRAME",
+          "message": "debug frame 4/6",
+          "mode": "paper-staging",
+          "window_id": "debug-main-path-v1-w1",
+          "data": {
+            "debug_scenario": "main_path_v1",
+            "frame_index": 4,
+            "remaining_sec": 250,
+            "btc_price": 103
+          }
+        },
+        {
+          "ts": "2026-03-24T11:07:08.176Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_INTENTS",
+          "message": "NOOP",
+          "mode": "paper-staging",
+          "window_id": "debug-main-path-v1-w1",
+          "data": {
+            "reason": "within_bounds_or_no_trigger"
+          }
+        },
+        {
+          "ts": "2026-03-24T11:07:08.177Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "RUNNER_TICK",
+          "message": "tick within_bounds_or_no_trigger",
+          "mode": "paper-staging",
+          "window_id": "debug-main-path-v1-w1",
+          "data": {
+            "intents_summary": "NOOP",
+            "changed": 0,
+            "filled": 0,
+            "open_total": 8,
+            "cancelled_total": 0,
+            "filled_total": 0
+          }
+        },
+        {
+          "ts": "2026-03-24T11:07:08.177Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_TICK_OK",
+          "message": "scheduled tick ok",
+          "mode": "paper-staging",
+          "window_id": "debug-main-path-v1-w1",
+          "data": {
+            "reason": "within_bounds_or_no_trigger",
+            "intents_summary": "NOOP"
+          }
+        },
+        {
+          "ts": "2026-03-24T11:07:09.189Z",
+          "level": "info",
+          "source": "server",
+          "event": "BOT_DEBUG_FRAME",
+          "message": "debug frame 5/6",
+          "mode": "paper-staging",
+          "window_id": "debug-main-path-v1-w1",
+          "data": {
+            "debug_scenario": "main_path_v1",
+            "frame_index": 5,
+            "remaining_sec": 220,
+            "btc_price": 97
+          }
+        },
+        {
+          "ts": "2026-03-24T11:07:09.189Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_INTENTS",
+          "message": "NOOP",
+          "mode": "paper-staging",
+          "window_id": "debug-main-path-v1-w1",
+          "data": {
+            "reason": "within_bounds_or_no_trigger"
+          }
+        },
+        {
+          "ts": "2026-03-24T11:07:09.190Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "RUNNER_TICK",
+          "message": "tick within_bounds_or_no_trigger",
+          "mode": "paper-staging",
+          "window_id": "debug-main-path-v1-w1",
+          "data": {
+            "intents_summary": "NOOP",
+            "changed": 0,
+            "filled": 0,
+            "open_total": 8,
+            "cancelled_total": 0,
+            "filled_total": 0
+          }
+        },
+        {
+          "ts": "2026-03-24T11:07:09.191Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_TICK_OK",
+          "message": "scheduled tick ok",
+          "mode": "paper-staging",
+          "window_id": "debug-main-path-v1-w1",
+          "data": {
+            "reason": "within_bounds_or_no_trigger",
+            "intents_summary": "NOOP"
+          }
+        },
+        {
+          "ts": "2026-03-24T11:07:10.204Z",
+          "level": "info",
+          "source": "server",
+          "event": "BOT_DEBUG_FRAME",
+          "message": "debug frame 6/6",
+          "mode": "paper-staging",
+          "window_id": "debug-main-path-v1-w1",
+          "data": {
+            "debug_scenario": "main_path_v1",
+            "frame_index": 6,
+            "remaining_sec": 100,
+            "btc_price": 99
+          }
+        },
+        {
+          "ts": "2026-03-24T11:07:10.205Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_INTENTS",
+          "message": "CANCEL_OPEN(ALL)",
+          "mode": "paper-staging",
+          "window_id": "debug-main-path-v1-w1",
+          "data": {
+            "reason": "remaining_sec<=cancel_all_remaining_sec"
+          }
+        },
+        {
+          "ts": "2026-03-24T11:07:10.205Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "RUNNER_TICK",
+          "message": "tick remaining_sec<=cancel_all_remaining_sec",
+          "mode": "paper-staging",
+          "window_id": "debug-main-path-v1-w1",
+          "data": {
+            "intents_summary": "CANCEL_OPEN(ALL)",
+            "changed": 8,
+            "filled": 0,
+            "open_total": 0,
+            "cancelled_total": 8,
+            "filled_total": 0
+          }
+        },
+        {
+          "ts": "2026-03-24T11:07:10.205Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_TICK_OK",
+          "message": "scheduled tick ok",
+          "mode": "paper-staging",
+          "window_id": "debug-main-path-v1-w1",
+          "data": {
+            "reason": "remaining_sec<=cancel_all_remaining_sec",
+            "intents_summary": "CANCEL_OPEN(ALL)"
+          }
+        },
+        {
+          "ts": "2026-03-24T11:07:10.206Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_DEBUG_SCENARIO_DONE",
+          "message": "debug_scenario_completed",
+          "mode": "paper-staging",
+          "window_id": "debug-main-path-v1-w1",
+          "data": {
+            "debug_scenario": "main_path_v1",
+            "frame_index": 6
+          }
+        },
+        {
+          "ts": "2026-03-24T11:07:10.207Z",
+          "level": "info",
+          "source": "server",
+          "event": "BOT_RUN_SNAPSHOT",
+          "message": "AUTO_COMPLETED",
+          "mode": "paper-staging",
+          "window_id": "debug-main-path-v1-w1",
+          "data": {
+            "stop_reason": "AUTO_COMPLETED",
+            "completed_at": "2026-03-24T11:07:10.206Z",
+            "current_window_id": "debug-main-path-v1-w1",
+            "phase": "IDLE",
+            "filled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "unrealized_gross_pnl_total": 0,
+            "active_config": {
+              "open_delay_sec": 2,
+              "ladder_prices": [
+                0.31,
+                0.28,
+                0.25,
+                0.22
+              ],
+              "ladder_size": 7,
+              "atr_multiple": 2,
+              "cancel_all_remaining_sec": 100
+            }
+          }
+        },
+        {
+          "ts": "2026-03-24T11:07:10.207Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_STOPPED",
+          "message": "bot runner stopped",
+          "mode": null,
+          "window_id": null,
+          "data": {}
+        }
+      ]
+    }
+  },
+  "non_regression_checks": {
+    "task_007_start_stop_ok": true,
+    "task_008_config_saved": {
+      "status": 200,
+      "body": {
+        "ok": true,
+        "current": {
+          "open_delay_sec": 2,
+          "ladder_prices": [
+            0.31,
+            0.28,
+            0.25,
+            0.22
+          ],
+          "ladder_size": 7,
+          "atr_multiple": 2,
+          "cancel_all_remaining_sec": 100
+        },
+        "defaults": {
+          "open_delay_sec": 10,
+          "ladder_prices": [
+            0.27,
+            0.24,
+            0.21,
+            0.18
+          ],
+          "ladder_size": 5,
+          "atr_multiple": 1.2,
+          "cancel_all_remaining_sec": 100
+        }
+      }
+    },
+    "task_009_saved_to_runtime": {
+      "start_config": {
+        "open_delay_sec": 2,
+        "ladder_prices": [
+          0.31,
+          0.28,
+          0.25,
+          0.22
+        ],
+        "ladder_size": 7,
+        "atr_multiple": 2,
+        "cancel_all_remaining_sec": 100
+      },
+      "active_runtime_config": {
+        "open_delay_sec": 2,
+        "ladder_prices": [
+          0.31,
+          0.28,
+          0.25,
+          0.22
+        ],
+        "ladder_size": 7,
+        "atr_multiple": 2,
+        "cancel_all_remaining_sec": 100
+      }
+    },
+    "task_010_saved_vs_active_visible": {
+      "has_saved": true,
+      "has_active": true
+    },
+    "task_011_preview_visible": {
+      "intents": "PLACE_LADDER(BOTH|0.31,0.28,0.25,0.22|size=7)",
+      "reason": "ladder_not_posted"
+    },
+    "task_012_last_run_semantics": {
+      "stop_reason": "AUTO_COMPLETED",
+      "has_last_run_snapshot": true
+    },
+    "task_013_single_window_acceptance_path": {
+      "has_action_summary": true
+    }
+  }
+}

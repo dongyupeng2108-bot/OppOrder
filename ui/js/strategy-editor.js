@@ -234,6 +234,16 @@ async function initStrategyEditor() {
             </div>
             <div id="se-last-run-note" style="font-size:11px;color:#9aa0a6;min-height:16px;">—</div>
             <div style="margin-top:4px;padding-top:6px;border-top:1px solid #2a2a2a;display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
+              <div style="color:#8aa4bf;">postmortem.window_id</div><div id="se-pm-window-id" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">postmortem.stop_reason</div><div id="se-pm-stop-reason" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">postmortem.filled_total</div><div id="se-pm-filled-total" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">postmortem.realized_gross_pnl_total</div><div id="se-pm-realized-total" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">postmortem.unrealized_gross_pnl_total</div><div id="se-pm-unrealized-total" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">postmortem.action_summary</div><div id="se-pm-action-summary" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">pnl.match</div><div id="se-pm-pnl-match" style="color:#ddd;">—</div>
+            </div>
+            <div id="se-pm-note" style="font-size:11px;color:#9aa0a6;min-height:16px;">—</div>
+            <div style="margin-top:4px;padding-top:6px;border-top:1px solid #2a2a2a;display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
               <div style="color:#8aa4bf;">preview.state</div><div id="se-preview-state" style="color:#ddd;">—</div>
               <div style="color:#8aa4bf;">preview.intents</div><div id="se-preview-intents" style="color:#ddd;">—</div>
               <div style="color:#8aa4bf;">preview.reason</div><div id="se-preview-reason" style="color:#ddd;">—</div>
@@ -523,6 +533,7 @@ async function se_poll() {
     const summaryData = await summaryRes.json();
     let contextData = {};
     let previewData = null;
+    let postmortemData = null;
     let previewError = null;
     try {
       const contextRes = await fetch(`${BASE_URL}/bot/context`);
@@ -540,8 +551,16 @@ async function se_poll() {
       previewData = null;
       previewError = previewError || err.message;
     }
+    try {
+      const postmortemRes = await fetch(`${BASE_URL}/bot/postmortem/latest`);
+      postmortemData = await postmortemRes.json();
+      if (!postmortemRes.ok || postmortemData?.ok === false) throw new Error(postmortemData?.error || `postmortem HTTP ${postmortemRes.status}`);
+    } catch (err) {
+      postmortemData = null;
+      previewError = previewError || err.message;
+    }
     se_renderContext(contextData, status);
-    se_renderOverview(status, summaryData, ordersData);
+    se_renderOverview(status, summaryData, ordersData, postmortemData);
     se_renderDecision(status, contextData, previewData, ordersData, previewError);
     se_renderLogs(Array.isArray(logsData) ? logsData : (logsData.logs || []));
     se_renderOrders(ordersData);
@@ -676,7 +695,7 @@ function se_pickSummaryValue(summary, keys, fallback = null) {
   return fallback;
 }
 
-function se_renderOverview(status, summary, ordersData) {
+function se_renderOverview(status, summary, ordersData, postmortemPayload) {
   const mergedSummary = summary && typeof summary === 'object' ? summary : {};
   const yesEntry = se_pickSummaryValue(mergedSummary, ['yes_entry_filled_count', 'yes_filled_count'], 0);
   const yesExit = se_pickSummaryValue(mergedSummary, ['yes_exit_filled_count'], 0);
@@ -708,6 +727,9 @@ function se_renderOverview(status, summary, ordersData) {
   const activeConfig = activeRuntime?.config && typeof activeRuntime.config === 'object' ? activeRuntime.config : null;
   const lastRun = status?.last_run_snapshot && typeof status.last_run_snapshot === 'object' ? status.last_run_snapshot : null;
   const lastActiveConfig = lastRun?.active_config && typeof lastRun.active_config === 'object' ? lastRun.active_config : null;
+  const postmortem = postmortemPayload?.postmortem && typeof postmortemPayload.postmortem === 'object'
+    ? postmortemPayload.postmortem
+    : null;
   document.getElementById('se-saved-open-delay').textContent = se_formatStateValue(savedConfig?.open_delay_sec);
   document.getElementById('se-saved-ladder-prices').textContent = se_formatStateValue(savedConfig?.ladder_prices);
   document.getElementById('se-saved-ladder-size').textContent = se_formatStateValue(savedConfig?.ladder_size);
@@ -751,6 +773,35 @@ function se_renderOverview(status, summary, ordersData) {
         ? '当前已停止；下方展示最近一次运行结果'
         : '当前已停止；尚无最近一次运行结果';
     }
+  }
+  document.getElementById('se-pm-window-id').textContent = se_formatStateValue(postmortem?.window_id);
+  document.getElementById('se-pm-stop-reason').textContent = se_formatStateValue(postmortem?.stop_reason);
+  document.getElementById('se-pm-filled-total').textContent = se_formatStateValue(postmortem?.filled_total);
+  document.getElementById('se-pm-realized-total').textContent = se_formatStateValue(postmortem?.realized_gross_pnl_total);
+  document.getElementById('se-pm-unrealized-total').textContent = se_formatStateValue(postmortem?.unrealized_gross_pnl_total);
+  document.getElementById('se-pm-action-summary').textContent = se_formatStateValue(postmortem?.action_summary);
+  const toFinite = (value) => {
+    const num = Number(value);
+    return Number.isFinite(num) ? num : null;
+  };
+  const summaryRealizedNum = toFinite(realizedTotal);
+  const summaryUnrealizedNum = toFinite(unrealizedTotal);
+  const postmortemRealizedNum = toFinite(postmortem?.realized_gross_pnl_total);
+  const postmortemUnrealizedNum = toFinite(postmortem?.unrealized_gross_pnl_total);
+  const pnlMatched = summaryRealizedNum !== null
+    && summaryUnrealizedNum !== null
+    && postmortemRealizedNum !== null
+    && postmortemUnrealizedNum !== null
+    && summaryRealizedNum === postmortemRealizedNum
+    && summaryUnrealizedNum === postmortemUnrealizedNum;
+  document.getElementById('se-pm-pnl-match').textContent = postmortem
+    ? (pnlMatched ? 'MATCH' : 'MISMATCH')
+    : 'N/A (null)';
+  const pmNote = document.getElementById('se-pm-note');
+  if (pmNote) {
+    pmNote.textContent = postmortem
+      ? `UI pnl(realized=${se_formatStateValue(realizedTotal)}, unrealized=${se_formatStateValue(unrealizedTotal)}) vs postmortem pnl(realized=${se_formatStateValue(postmortem?.realized_gross_pnl_total)}, unrealized=${se_formatStateValue(postmortem?.unrealized_gross_pnl_total)})`
+      : '当前无 postmortem 记录';
   }
 
   const openOrdersSummary = ordersData?.summary || {};
