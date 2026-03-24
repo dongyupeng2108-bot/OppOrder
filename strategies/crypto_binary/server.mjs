@@ -105,6 +105,7 @@ const setBotConfigCurrent = (nextConfig) => {
   botRunnerConfig.atr_multiplier = internal.atr_multiplier;
   botRunnerConfig.cancel_all_remaining_sec = internal.cancel_all_remaining_sec;
 };
+const getBotConfigSnapshot = () => cloneBotConfig(botConfigCurrent);
 const isNonNegativeInteger = (value) => Number.isInteger(value) && value >= 0;
 const isPositiveInteger = (value) => Number.isInteger(value) && value > 0;
 const isPositiveNumber = (value) => Number.isFinite(value) && value > 0;
@@ -1358,7 +1359,7 @@ const server = createServer(async (req, res) => {
 
   if (req.method === 'GET' && req.url === '/bot/config') {
     sendJson(res, {
-      current: cloneBotConfig(botConfigCurrent),
+      current: getBotConfigSnapshot(),
       defaults: cloneBotConfig(BOT_CONFIG_DEFAULTS)
     });
     return;
@@ -1383,11 +1384,11 @@ const server = createServer(async (req, res) => {
           message: 'bot config updated',
           mode: BOT_MODE,
           window_id: null,
-          data: cloneBotConfig(botConfigCurrent)
+          data: getBotConfigSnapshot()
         });
         sendJson(res, {
           ok: true,
-          current: cloneBotConfig(botConfigCurrent),
+          current: getBotConfigSnapshot(),
           defaults: cloneBotConfig(BOT_CONFIG_DEFAULTS)
         });
       } catch (err) {
@@ -1419,11 +1420,22 @@ const server = createServer(async (req, res) => {
         } else {
           clearBotDebugScenario();
         }
+        const configSnapshot = getBotConfigSnapshot();
         const result = botRunner.start(tickIntervalMs);
+        botLogger.log({
+          level: 'info',
+          source: 'server',
+          event: 'BOT_CONFIG_APPLIED',
+          message: 'bot start using current config',
+          mode: BOT_MODE,
+          window_id: null,
+          data: configSnapshot
+        });
         const state = botState.getState();
         sendJson(res, {
           ok: true,
           ...result,
+          config: configSnapshot,
           debugScenario: state.debug_scenario,
           debug_frame_index: state.debug_frame_index,
           debug_completed: state.debug_completed
@@ -1472,6 +1484,7 @@ const server = createServer(async (req, res) => {
         reason: decision.reason,
         patches: decision.patches,
         diagnostics: decision.diagnostics,
+        config: getBotConfigSnapshot(),
         context_snapshot: context,
         state_snapshot: { ladder_posted: state.ladder_posted === true },
         fixture: fixture ? { id: fixture.id, label: fixture.label, expected: fixture.expected || null } : null
