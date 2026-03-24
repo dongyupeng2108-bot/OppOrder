@@ -31,17 +31,17 @@
       "ticks": [
         {
           "tick": 1,
-          "time": "2026-03-24T23:45:27.101Z",
+          "time": "2026-03-24T23:58:25.498Z",
           "window_id": null,
-          "intents_summary": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
-          "reason": "ladder_not_posted",
+          "intents_summary": "CANCEL_OPEN(ALL)",
+          "reason": "remaining_sec<=cancel_all_remaining_sec",
           "open_orders_count": 0,
           "new_orders_this_tick": 0,
-          "place_ladder_this_tick": true
+          "place_ladder_this_tick": false
         },
         {
           "tick": 2,
-          "time": "2026-03-24T23:45:27.812Z",
+          "time": "2026-03-24T23:58:26.205Z",
           "window_id": "debug-main-path-v1-w1",
           "intents_summary": "NOOP",
           "reason": "pre_open_or_open_not_open_delay",
@@ -51,7 +51,7 @@
         },
         {
           "tick": 3,
-          "time": "2026-03-24T23:45:28.523Z",
+          "time": "2026-03-24T23:58:26.914Z",
           "window_id": "debug-main-path-v1-w1",
           "intents_summary": "NOOP",
           "reason": "pre_open_or_open_not_open_delay",
@@ -61,7 +61,7 @@
         },
         {
           "tick": 4,
-          "time": "2026-03-24T23:45:29.234Z",
+          "time": "2026-03-24T23:58:27.623Z",
           "window_id": "debug-main-path-v1-w1",
           "intents_summary": "NOOP",
           "reason": "pre_open_or_open_not_open_delay",
@@ -71,7 +71,7 @@
         },
         {
           "tick": 5,
-          "time": "2026-03-24T23:45:29.952Z",
+          "time": "2026-03-24T23:58:28.343Z",
           "window_id": "debug-main-path-v1-w1",
           "intents_summary": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
           "reason": "ladder_not_posted",
@@ -81,7 +81,7 @@
         },
         {
           "tick": 6,
-          "time": "2026-03-24T23:45:30.655Z",
+          "time": "2026-03-24T23:58:29.067Z",
           "window_id": "debug-main-path-v1-w1",
           "intents_summary": "CANCEL_OPEN(NO)",
           "reason": "btc_price>=upper_bound",
@@ -91,7 +91,7 @@
         },
         {
           "tick": 7,
-          "time": "2026-03-24T23:45:31.366Z",
+          "time": "2026-03-24T23:58:29.775Z",
           "window_id": "debug-main-path-v1-w1",
           "intents_summary": "CANCEL_OPEN(NO)",
           "reason": "btc_price>=upper_bound",
@@ -101,7 +101,7 @@
         },
         {
           "tick": 8,
-          "time": "2026-03-24T23:45:32.075Z",
+          "time": "2026-03-24T23:58:30.485Z",
           "window_id": "debug-main-path-v1-w1",
           "intents_summary": "CANCEL_OPEN(YES)",
           "reason": "btc_price<=lower_bound",
@@ -111,63 +111,63 @@
         },
         {
           "tick": 9,
-          "time": "2026-03-24T23:45:32.789Z",
+          "time": "2026-03-24T23:58:31.191Z",
           "window_id": "debug-main-path-v1-w1",
-          "intents_summary": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
-          "reason": "ladder_not_posted",
+          "intents_summary": "CANCEL_OPEN(ALL)",
+          "reason": "remaining_sec<=cancel_all_remaining_sec",
           "open_orders_count": 0,
           "new_orders_this_tick": 0,
-          "place_ladder_this_tick": true
+          "place_ladder_this_tick": false
         },
         {
           "tick": 10,
-          "time": "2026-03-24T23:45:33.683Z",
+          "time": "2026-03-24T23:58:32.065Z",
           "window_id": "debug-main-path-v1-w1",
-          "intents_summary": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
-          "reason": "ladder_not_posted",
+          "intents_summary": "CANCEL_OPEN(ALL)",
+          "reason": "remaining_sec<=cancel_all_remaining_sec",
           "open_orders_count": 0,
           "new_orders_this_tick": 0,
-          "place_ladder_this_tick": true
+          "place_ladder_this_tick": false
         },
         {
           "tick": 11,
-          "time": "2026-03-24T23:45:34.400Z",
+          "time": "2026-03-24T23:58:32.768Z",
           "window_id": "debug-main-path-v1-w1",
-          "intents_summary": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
-          "reason": "ladder_not_posted",
+          "intents_summary": "CANCEL_OPEN(ALL)",
+          "reason": "remaining_sec<=cancel_all_remaining_sec",
           "open_orders_count": 0,
           "new_orders_this_tick": 0,
-          "place_ladder_this_tick": true
+          "place_ladder_this_tick": false
         },
         {
           "tick": 12,
-          "time": "2026-03-24T23:45:35.118Z",
+          "time": "2026-03-24T23:58:33.479Z",
           "window_id": "debug-main-path-v1-w1",
-          "intents_summary": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
-          "reason": "ladder_not_posted",
+          "intents_summary": "CANCEL_OPEN(ALL)",
+          "reason": "remaining_sec<=cancel_all_remaining_sec",
           "open_orders_count": 0,
           "new_orders_this_tick": 0,
-          "place_ladder_this_tick": true
+          "place_ladder_this_tick": false
         },
         {
           "tick": 13,
-          "time": "2026-03-24T23:45:36.010Z",
+          "time": "2026-03-24T23:58:34.379Z",
           "window_id": "debug-main-path-v1-w1",
-          "intents_summary": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
-          "reason": "ladder_not_posted",
+          "intents_summary": "CANCEL_OPEN(ALL)",
+          "reason": "remaining_sec<=cancel_all_remaining_sec",
           "open_orders_count": 0,
           "new_orders_this_tick": 0,
-          "place_ladder_this_tick": true
+          "place_ladder_this_tick": false
         },
         {
           "tick": 14,
-          "time": "2026-03-24T23:45:36.717Z",
+          "time": "2026-03-24T23:58:35.088Z",
           "window_id": "debug-main-path-v1-w1",
-          "intents_summary": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
-          "reason": "ladder_not_posted",
+          "intents_summary": "CANCEL_OPEN(ALL)",
+          "reason": "remaining_sec<=cancel_all_remaining_sec",
           "open_orders_count": 0,
           "new_orders_this_tick": 0,
-          "place_ladder_this_tick": true
+          "place_ladder_this_tick": false
         }
       ],
       "summary": {
