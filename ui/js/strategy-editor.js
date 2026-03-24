@@ -222,6 +222,13 @@ async function initStrategyEditor() {
               <div style="color:#8aa4bf;">active.lower_bound</div><div id="se-active-lower-bound" style="color:#ddd;">—</div>
             </div>
             <div id="se-active-runtime-note" style="font-size:11px;color:#9aa0a6;min-height:16px;">—</div>
+            <div style="margin-top:4px;padding-top:6px;border-top:1px solid #2a2a2a;display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
+              <div style="color:#8aa4bf;">preview.state</div><div id="se-preview-state" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">preview.intents</div><div id="se-preview-intents" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">preview.reason</div><div id="se-preview-reason" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">context.summary</div><div id="se-preview-context" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">diagnostics.summary</div><div id="se-preview-diag" style="color:#ddd;">—</div>
+            </div>
             <div id="se-ui-error" style="font-size:11px;color:#ff8a80;min-height:16px;"></div>
           </div>
         </div>
@@ -503,9 +510,28 @@ async function se_poll() {
     const logsData = await logsRes.json();
     const ordersData = await ordersRes.json();
     const summaryData = await summaryRes.json();
-
-    se_renderContext({}, status);
+    let contextData = {};
+    let previewData = null;
+    let previewError = null;
+    try {
+      const contextRes = await fetch(`${BASE_URL}/bot/context`);
+      contextData = await contextRes.json();
+      if (!contextRes.ok) throw new Error(contextData?.error || `context HTTP ${contextRes.status}`);
+    } catch (err) {
+      contextData = {};
+      previewError = err.message;
+    }
+    try {
+      const previewRes = await fetch(`${BASE_URL}/bot/decision-preview`);
+      previewData = await previewRes.json();
+      if (!previewRes.ok) throw new Error(previewData?.error || `decision-preview HTTP ${previewRes.status}`);
+    } catch (err) {
+      previewData = null;
+      previewError = previewError || err.message;
+    }
+    se_renderContext(contextData, status);
     se_renderOverview(status, summaryData, ordersData);
+    se_renderDecision(status, contextData, previewData, ordersData, previewError);
     se_renderLogs(Array.isArray(logsData) ? logsData : (logsData.logs || []));
     se_renderOrders(ordersData);
 
@@ -557,31 +583,55 @@ async function se_applyPaperAction(action) {
   }
 }
 
-function se_renderDecision(payload) {
-  const decisionEl = document.getElementById('se-decision-value');
-  const reasonEl = document.getElementById('se-decision-reason');
-  const diagEl = document.getElementById('se-decision-diag');
-  if (!decisionEl || !reasonEl || !diagEl) return;
-  const intentsSummary = payload?.intents_summary
-    || (Array.isArray(payload?.intents)
-      ? payload.intents.map((intent) => {
+function se_renderDecision(status, context, preview, ordersData, previewError) {
+  const stateEl = document.getElementById('se-preview-state');
+  const intentsEl = document.getElementById('se-preview-intents');
+  const reasonEl = document.getElementById('se-preview-reason');
+  const contextEl = document.getElementById('se-preview-context');
+  const diagEl = document.getElementById('se-preview-diag');
+  if (!stateEl || !intentsEl || !reasonEl || !contextEl || !diagEl) return;
+  const previewIntentsSummary = preview?.intents_summary
+    || (Array.isArray(preview?.intents)
+      ? preview.intents.map((intent) => {
         if (!intent || typeof intent !== 'object') return 'UNKNOWN';
         if (intent.kind === 'NOOP') return 'NOOP';
-        if (intent.kind === 'PLACE_LADDER') return `PLACE_LADDER(${se_formatStateValue(intent.side)})`;
+        if (intent.kind === 'PLACE_LADDER') return `PLACE_LADDER(${se_formatStateValue(intent.side)}|${se_formatStateValue(intent.prices)}|size=${se_formatStateValue(intent.size)})`;
         if (intent.kind === 'CANCEL_OPEN') return `CANCEL_OPEN(${se_formatStateValue(intent.side)})`;
         return se_formatStateValue(intent.kind);
       }).join(' + ')
-      : 'NOOP');
-  const diagnostics = payload?.diagnostics && typeof payload.diagnostics === 'object' ? payload.diagnostics : {};
-  const diagnosticsText = [
-    `remaining_sec=${se_formatStateValue(diagnostics.remaining_sec)}`,
-    `open_elapsed_sec=${se_formatStateValue(diagnostics.open_elapsed_sec)}`,
-    `ladder_posted=${se_formatStateValue(diagnostics.ladder_posted)}`,
-    `bounds_ready=${se_formatStateValue(diagnostics.bounds_ready)}`
+      : null);
+  const isRunning = status?.running === true;
+  const isNoop = previewIntentsSummary === 'NOOP' || (Array.isArray(preview?.intents) && preview.intents.length === 1 && preview.intents[0]?.kind === 'NOOP');
+  const previewState = !isRunning
+    ? 'EMPTY'
+    : (previewError ? 'EMPTY' : (isNoop ? 'NOOP' : (previewIntentsSummary ? 'ACTION' : 'EMPTY')));
+  const contextSummary = [
+    `btc=${se_formatStateValue(context?.btc_price)}`,
+    `anchor=${se_formatStateValue(context?.anchor_btc ?? status?.anchor_btc)}`,
+    `upper=${se_formatStateValue(context?.upper_bound ?? status?.upper_bound)}`,
+    `lower=${se_formatStateValue(context?.lower_bound ?? status?.lower_bound)}`,
+    `remaining=${se_formatStateValue(context?.remaining_sec ?? status?.remaining_sec)}`,
+    `phase=${se_formatStateValue(status?.phase)}`,
+    `window=${se_formatStateValue(status?.current_window_id)}`
   ].join(' | ');
-  decisionEl.textContent = se_formatStateValue(intentsSummary);
-  reasonEl.textContent = 'reason: ' + se_formatStateValue(payload?.reason);
-  diagEl.textContent = 'diagnostics: ' + diagnosticsText;
+  const diagnostics = preview?.diagnostics && typeof preview.diagnostics === 'object' ? preview.diagnostics : {};
+  const ordersSummary = ordersData?.summary || {};
+  const diagSummary = [
+    `open_elapsed=${se_formatStateValue(diagnostics.open_elapsed_sec)}`,
+    `ladder_posted=${se_formatStateValue(diagnostics.ladder_posted)}`,
+    `bounds_ready=${se_formatStateValue(diagnostics.bounds_ready)}`,
+    `orders_open=${se_formatStateValue(ordersSummary.open_total)}`,
+    `orders_filled=${se_formatStateValue(ordersSummary.filled_total)}`
+  ].join(' | ');
+  stateEl.textContent = previewState;
+  intentsEl.textContent = previewState === 'EMPTY'
+    ? '当前无有效 preview'
+    : (isNoop ? '当前无动作（NOOP）' : se_formatStateValue(previewIntentsSummary));
+  reasonEl.textContent = previewState === 'EMPTY'
+    ? se_formatStateValue(previewError || 'N/A (null)')
+    : se_formatStateValue(preview?.reason);
+  contextEl.textContent = contextSummary;
+  diagEl.textContent = diagSummary;
 }
 
 // 渲染统计、日志、PnL 图
