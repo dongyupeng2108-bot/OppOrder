@@ -61,6 +61,9 @@ const BOT_TICK_INTERVAL_DEFAULT_MS = 2000;
 const BOT_TICK_INTERVAL_MIN_MS = 1000;
 const BOT_TICK_INTERVAL_MAX_MS = 5000;
 const BOT_POSTMORTEM_STRATEGY_ID = 'bot_console';
+const BOT_PERF_PRESET_TODAY = 'today';
+const BOT_PERF_PRESET_LAST_7D = 'last_7d';
+const BOT_PERF_PRESET_LAST_30_WINDOWS = 'last_30_windows';
 const BOT_CONFIG_DEFAULTS = {
   open_delay_sec: 10,
   ladder_prices: [...BOT_STRATEGY_CONTRACT.defaults.ladder_prices],
@@ -149,6 +152,7 @@ const ensureBotPostmortemColumns = async () => {
     'ALTER TABLE cb_postmortem ADD COLUMN bot_completed_at TEXT',
     'ALTER TABLE cb_postmortem ADD COLUMN bot_window_id TEXT',
     'ALTER TABLE cb_postmortem ADD COLUMN bot_filled_total REAL',
+    'ALTER TABLE cb_postmortem ADD COLUMN bot_cancelled_total REAL',
     'ALTER TABLE cb_postmortem ADD COLUMN bot_realized_gross_pnl_total REAL',
     'ALTER TABLE cb_postmortem ADD COLUMN bot_unrealized_gross_pnl_total REAL',
     'ALTER TABLE cb_postmortem ADD COLUMN bot_active_config_json TEXT',
@@ -178,11 +182,12 @@ const writeBotPostmortem = async (snapshot) => {
       bot_completed_at,
       bot_window_id,
       bot_filled_total,
+      bot_cancelled_total,
       bot_realized_gross_pnl_total,
       bot_unrealized_gross_pnl_total,
       bot_active_config_json,
       bot_action_summary
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `, [
     BOT_POSTMORTEM_STRATEGY_ID,
     eventId,
@@ -196,6 +201,7 @@ const writeBotPostmortem = async (snapshot) => {
     completedAt,
     windowId,
     snapshot.filled_total ?? 0,
+    snapshot.cancelled_total ?? 0,
     snapshot.realized_gross_pnl_total ?? 0,
     snapshot.unrealized_gross_pnl_total ?? 0,
     JSON.stringify(snapshot.active_config || {}),
@@ -216,6 +222,7 @@ const queryLatestBotPostmortem = async () => {
       bot_completed_at,
       bot_window_id,
       bot_filled_total,
+      bot_cancelled_total,
       bot_realized_gross_pnl_total,
       bot_unrealized_gross_pnl_total,
       bot_active_config_json,
@@ -241,11 +248,86 @@ const queryLatestBotPostmortem = async () => {
     stop_reason: row.bot_stop_reason ?? null,
     completed_at: row.bot_completed_at ?? null,
     filled_total: toFiniteOrNull(row.bot_filled_total) ?? 0,
+    cancelled_total: toFiniteOrNull(row.bot_cancelled_total) ?? 0,
     realized_gross_pnl_total: toFiniteOrNull(row.bot_realized_gross_pnl_total) ?? 0,
     unrealized_gross_pnl_total: toFiniteOrNull(row.bot_unrealized_gross_pnl_total) ?? 0,
     active_config: activeConfig,
     action_summary: Array.isArray(actionSummary) ? actionSummary : []
   };
+};
+const normalizePerformancePreset = (value) => {
+  if (value === BOT_PERF_PRESET_LAST_7D) return BOT_PERF_PRESET_LAST_7D;
+  if (value === BOT_PERF_PRESET_LAST_30_WINDOWS) return BOT_PERF_PRESET_LAST_30_WINDOWS;
+  return BOT_PERF_PRESET_TODAY;
+};
+const queryBotPerformanceSummary = async (presetRaw, includeRows = false) => {
+  if (!db) return null;
+  const preset = normalizePerformancePreset(presetRaw);
+  const rows = await db.all(`
+    SELECT
+      id,
+      bot_completed_at,
+      bot_window_id,
+      bot_filled_total,
+      bot_cancelled_total,
+      bot_realized_gross_pnl_total
+    FROM cb_postmortem
+    WHERE strategy_id = ? AND bot_completed_at IS NOT NULL
+    ORDER BY bot_completed_at DESC, id DESC
+    LIMIT 2000
+  `, [BOT_POSTMORTEM_STRATEGY_ID]);
+  const now = Date.now();
+  let filtered = rows;
+  if (preset === BOT_PERF_PRESET_TODAY) {
+    const start = new Date();
+    start.setHours(0, 0, 0, 0);
+    const startTs = start.getTime();
+    filtered = rows.filter((row) => {
+      const ts = Date.parse(row.bot_completed_at || '');
+      return !Number.isNaN(ts) && ts >= startTs && ts <= now;
+    });
+  } else if (preset === BOT_PERF_PRESET_LAST_7D) {
+    const startTs = now - (7 * 24 * 60 * 60 * 1000);
+    filtered = rows.filter((row) => {
+      const ts = Date.parse(row.bot_completed_at || '');
+      return !Number.isNaN(ts) && ts >= startTs && ts <= now;
+    });
+  } else if (preset === BOT_PERF_PRESET_LAST_30_WINDOWS) {
+    filtered = rows.slice(0, 30);
+  }
+  const windowCount = filtered.length;
+  const filledTotal = filtered.reduce((acc, row) => acc + (toFiniteOrNull(row.bot_filled_total) ?? 0), 0);
+  const cancelledTotal = filtered.reduce((acc, row) => acc + (toFiniteOrNull(row.bot_cancelled_total) ?? 0), 0);
+  const realizedTotal = filtered.reduce((acc, row) => acc + (toFiniteOrNull(row.bot_realized_gross_pnl_total) ?? 0), 0);
+  const avgRealized = windowCount > 0 ? (realizedTotal / windowCount) : 0;
+  const payload = {
+    preset,
+    window_count: windowCount,
+    filled_total: filledTotal,
+    cancelled_total: cancelledTotal,
+    realized_gross_pnl_total: realizedTotal,
+    avg_realized_gross_pnl_per_window: avgRealized,
+    running_window_excluded: true,
+    sample_postmortem_rows: filtered.slice(0, 10).map((row) => ({
+      id: row.id ?? null,
+      window_id: row.bot_window_id ?? null,
+      completed_at: row.bot_completed_at ?? null,
+      filled_total: toFiniteOrNull(row.bot_filled_total) ?? 0,
+      cancelled_total: toFiniteOrNull(row.bot_cancelled_total) ?? 0,
+      realized_gross_pnl_total: toFiniteOrNull(row.bot_realized_gross_pnl_total) ?? 0
+    }))
+  };
+  if (includeRows) {
+    payload.participating_postmortem_rows = filtered.map((row) => ({
+      id: row.id ?? null,
+      window_id: row.bot_window_id ?? null,
+      completed_at: row.bot_completed_at ?? null,
+      filled_total: toFiniteOrNull(row.bot_filled_total) ?? 0,
+      cancelled_total: toFiniteOrNull(row.bot_cancelled_total) ?? 0,
+      realized_gross_pnl_total: toFiniteOrNull(row.bot_realized_gross_pnl_total) ?? 0
+    }));
+  }
+  return payload;
 };
 const finalizeBotRunSnapshot = (stopReason) => {
   const state = botState.getState();
@@ -258,6 +340,7 @@ const finalizeBotRunSnapshot = (stopReason) => {
     current_window_id: state.current_window_id ?? null,
     phase: state.phase ?? null,
     filled_total: toFiniteOrNull(summary?.filled_total) ?? 0,
+    cancelled_total: toFiniteOrNull(summary?.cancelled_total) ?? 0,
     realized_gross_pnl_total: toFiniteOrNull(summary?.realized_gross_pnl_total) ?? 0,
     unrealized_gross_pnl_total: toFiniteOrNull(summary?.unrealized_gross_pnl_total) ?? 0,
     active_config: cloneBotConfig(activeConfig)
@@ -1513,6 +1596,22 @@ const server = createServer(async (req, res) => {
       sendJson(res, {
         ok: true,
         postmortem: latest
+      });
+    } catch (err) {
+      sendJson(res, { ok: false, error: err.message }, 500);
+    }
+    return;
+  }
+
+  if (req.method === 'GET' && req.url.startsWith('/bot/performance/summary')) {
+    try {
+      const parsed = new URL(req.url, 'http://localhost');
+      const presetRaw = parsed.searchParams.get('preset');
+      const includeRows = parsed.searchParams.get('detail') === '1';
+      const summary = await queryBotPerformanceSummary(presetRaw, includeRows);
+      sendJson(res, {
+        ok: true,
+        summary
       });
     } catch (err) {
       sendJson(res, { ok: false, error: err.message }, 500);
