@@ -60,6 +60,7 @@ const BOT_MODE = process.env.EXECUTOR_MODE || 'paper-staging';
 const BOT_TICK_INTERVAL_DEFAULT_MS = 2000;
 const BOT_TICK_INTERVAL_MIN_MS = 1000;
 const BOT_TICK_INTERVAL_MAX_MS = 5000;
+const BOT_POSTMORTEM_STRATEGY_ID = 'bot_console';
 const BOT_CONFIG_DEFAULTS = {
   open_delay_sec: 10,
   ladder_prices: [...BOT_STRATEGY_CONTRACT.defaults.ladder_prices],
@@ -86,6 +87,7 @@ let botActiveRuntimeConfig = null;
 let botLastRunSnapshot = null;
 let botPendingStopReason = null;
 let botRuntimeWasRunning = false;
+let botRunActionSummary = [];
 const cloneBotConfig = (value) => ({
   open_delay_sec: Number(value.open_delay_sec),
   ladder_prices: [...value.ladder_prices],
@@ -126,20 +128,151 @@ const toFiniteOrNull = (value) => {
   const num = Number(value);
   return Number.isFinite(num) ? num : null;
 };
+const normalizeBotActionType = (message) => {
+  const text = String(message || '');
+  if (text.includes('PLACE_LADDER')) return 'PLACE_LADDER';
+  if (text.includes('CANCEL_OPEN')) return 'CANCEL_OPEN';
+  if (text.includes('FLATTEN_POSITION')) return 'FLATTEN_POSITION';
+  return null;
+};
+const registerBotRunAction = (message) => {
+  const actionType = normalizeBotActionType(message);
+  if (!actionType) return;
+  if (!botRunActionSummary.includes(actionType)) {
+    botRunActionSummary = [...botRunActionSummary, actionType];
+  }
+};
+const ensureBotPostmortemColumns = async () => {
+  if (!db) return;
+  const statements = [
+    'ALTER TABLE cb_postmortem ADD COLUMN bot_stop_reason TEXT',
+    'ALTER TABLE cb_postmortem ADD COLUMN bot_completed_at TEXT',
+    'ALTER TABLE cb_postmortem ADD COLUMN bot_window_id TEXT',
+    'ALTER TABLE cb_postmortem ADD COLUMN bot_filled_total REAL',
+    'ALTER TABLE cb_postmortem ADD COLUMN bot_realized_gross_pnl_total REAL',
+    'ALTER TABLE cb_postmortem ADD COLUMN bot_unrealized_gross_pnl_total REAL',
+    'ALTER TABLE cb_postmortem ADD COLUMN bot_active_config_json TEXT',
+    'ALTER TABLE cb_postmortem ADD COLUMN bot_action_summary TEXT'
+  ];
+  for (const sql of statements) {
+    try { await db.run(sql); } catch (_) {}
+  }
+};
+const writeBotPostmortem = async (snapshot) => {
+  if (!db || !snapshot) return;
+  const completedAt = snapshot.completed_at || new Date().toISOString();
+  const windowId = snapshot.current_window_id || null;
+  const eventId = windowId || `bot-${Date.parse(completedAt) || Date.now()}`;
+  const actionSummary = botRunActionSummary.length ? botRunActionSummary : ['NO_ACTION'];
+  await db.run(`
+    INSERT INTO cb_postmortem (
+      strategy_id,
+      event_id,
+      window_start,
+      window_end,
+      paper_pnl,
+      strategy_type,
+      config_snapshot_json,
+      created_at,
+      bot_stop_reason,
+      bot_completed_at,
+      bot_window_id,
+      bot_filled_total,
+      bot_realized_gross_pnl_total,
+      bot_unrealized_gross_pnl_total,
+      bot_active_config_json,
+      bot_action_summary
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `, [
+    BOT_POSTMORTEM_STRATEGY_ID,
+    eventId,
+    snapshot.completed_at || completedAt,
+    completedAt,
+    snapshot.realized_gross_pnl_total ?? 0,
+    'bot_console',
+    JSON.stringify(snapshot.active_config || {}),
+    completedAt,
+    snapshot.stop_reason || null,
+    completedAt,
+    windowId,
+    snapshot.filled_total ?? 0,
+    snapshot.realized_gross_pnl_total ?? 0,
+    snapshot.unrealized_gross_pnl_total ?? 0,
+    JSON.stringify(snapshot.active_config || {}),
+    JSON.stringify(actionSummary)
+  ]);
+};
+const queryLatestBotPostmortem = async () => {
+  if (!db) return null;
+  const row = await db.get(`
+    SELECT
+      id,
+      strategy_id,
+      event_id,
+      window_start,
+      window_end,
+      created_at,
+      bot_stop_reason,
+      bot_completed_at,
+      bot_window_id,
+      bot_filled_total,
+      bot_realized_gross_pnl_total,
+      bot_unrealized_gross_pnl_total,
+      bot_active_config_json,
+      bot_action_summary
+    FROM cb_postmortem
+    WHERE strategy_id = ? AND bot_completed_at IS NOT NULL
+    ORDER BY created_at DESC, id DESC
+    LIMIT 1
+  `, [BOT_POSTMORTEM_STRATEGY_ID]);
+  if (!row) return null;
+  let activeConfig = null;
+  let actionSummary = [];
+  try { activeConfig = row.bot_active_config_json ? JSON.parse(row.bot_active_config_json) : null; } catch (_) { activeConfig = null; }
+  try { actionSummary = row.bot_action_summary ? JSON.parse(row.bot_action_summary) : []; } catch (_) { actionSummary = []; }
+  return {
+    id: row.id ?? null,
+    strategy_id: row.strategy_id ?? null,
+    event_id: row.event_id ?? null,
+    window_start: row.window_start ?? null,
+    window_end: row.window_end ?? null,
+    created_at: row.created_at ?? null,
+    window_id: row.bot_window_id ?? null,
+    stop_reason: row.bot_stop_reason ?? null,
+    completed_at: row.bot_completed_at ?? null,
+    filled_total: toFiniteOrNull(row.bot_filled_total) ?? 0,
+    realized_gross_pnl_total: toFiniteOrNull(row.bot_realized_gross_pnl_total) ?? 0,
+    unrealized_gross_pnl_total: toFiniteOrNull(row.bot_unrealized_gross_pnl_total) ?? 0,
+    active_config: activeConfig,
+    action_summary: Array.isArray(actionSummary) ? actionSummary : []
+  };
+};
 const finalizeBotRunSnapshot = (stopReason) => {
   const state = botState.getState();
   const summary = botExecutorPaper.getPaperSummary();
   const activeConfig = getBotActiveRuntimeConfig() || getBotConfigSnapshot();
+  const completedAt = new Date().toISOString();
   botLastRunSnapshot = {
     stop_reason: stopReason,
-    completed_at: new Date().toISOString(),
+    completed_at: completedAt,
     current_window_id: state.current_window_id ?? null,
     phase: state.phase ?? null,
     filled_total: toFiniteOrNull(summary?.filled_total) ?? 0,
     realized_gross_pnl_total: toFiniteOrNull(summary?.realized_gross_pnl_total) ?? 0,
-    unrealized_gross_pnl_total: toFiniteOrNull(summary?.unrealized_gross_pnl_total),
+    unrealized_gross_pnl_total: toFiniteOrNull(summary?.unrealized_gross_pnl_total) ?? 0,
     active_config: cloneBotConfig(activeConfig)
   };
+  const postmortemSnapshot = { ...botLastRunSnapshot, action_summary: [...botRunActionSummary] };
+  writeBotPostmortem(postmortemSnapshot).catch((err) => {
+    botLogger.log({
+      level: 'error',
+      source: 'server',
+      event: 'BOT_POSTMORTEM_WRITE_FAILED',
+      message: err.message,
+      mode: BOT_MODE,
+      window_id: state.current_window_id ?? null
+    });
+  });
   botLogger.log({
     level: 'info',
     source: 'server',
@@ -349,7 +482,12 @@ const botRunner = createBotRunner({
     }
     botRuntimeWasRunning = isRunning;
   },
-  log: (entry) => botLogger.log(entry),
+  log: (entry) => {
+    if (entry?.event === 'BOT_INTENTS') {
+      registerBotRunAction(entry?.message);
+    }
+    botLogger.log(entry);
+  },
   getLogCount: () => botLogger.getCount(),
   config: botRunnerConfig
 });
@@ -471,6 +609,7 @@ let db = null;
 (async () => {
   db = await getDb();
   await initPostmortem();
+  await ensureBotPostmortemColumns();
   await initManualTrade(db);
   console.log('[BTCQDD] DB migration completed (initPostmortem + initManualTrade)');
 
@@ -1324,6 +1463,19 @@ const server = createServer(async (req, res) => {
     return;
   }
 
+  if (req.method === 'GET' && req.url === '/bot/postmortem/latest') {
+    try {
+      const latest = await queryLatestBotPostmortem();
+      sendJson(res, {
+        ok: true,
+        postmortem: latest
+      });
+    } catch (err) {
+      sendJson(res, { ok: false, error: err.message }, 500);
+    }
+    return;
+  }
+
   if (req.method === 'GET' && req.url === '/bot/context') {
     try {
       const context = await botContextAdapter.getContext();
@@ -1491,6 +1643,7 @@ const server = createServer(async (req, res) => {
         }
         syncRunnerConfigFromSavedConfig();
         botPendingStopReason = null;
+        botRunActionSummary = [];
         const configSnapshot = getBotConfigSnapshot();
         const prevWindowId = botState.getState().current_window_id ?? null;
         botState.patchState({
