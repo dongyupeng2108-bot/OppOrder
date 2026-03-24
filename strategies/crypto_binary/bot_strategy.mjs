@@ -29,6 +29,12 @@ const toOpenElapsedSec = (context) => {
   return Math.max(0, periodSec - remainingSec);
 };
 
+const toNonNegativeIntegerOrNull = (value) => {
+  const num = Number(value);
+  if (!Number.isInteger(num) || num < 0) return null;
+  return num;
+};
+
 const hasPriceBounds = (context) => {
   const btcPrice = toNumberOrNull(context?.btc_price);
   const upperBound = toNumberOrNull(context?.upper_bound);
@@ -54,6 +60,8 @@ export function decideBotAction(inputOrContext = {}, maybeState = {}) {
   const openElapsedSec = toOpenElapsedSec(context);
   const ladderPosted = state?.ladder_posted === true;
   const prices = hasPriceBounds(context);
+  const openDelaySec = toNonNegativeIntegerOrNull(config?.open_delay_sec) ?? 10;
+  const cancelAllRemainingSec = toNonNegativeIntegerOrNull(config?.cancel_all_remaining_sec) ?? 100;
   const ladderPrices = Array.isArray(config?.ladder_prices) ? config.ladder_prices : BOT_STRATEGY_CONTRACT.defaults.ladder_prices;
   const ladderSize = Number.isFinite(Number(config?.ladder_size))
     ? Number(config.ladder_size)
@@ -69,7 +77,11 @@ export function decideBotAction(inputOrContext = {}, maybeState = {}) {
     btc_price: prices.btcPrice,
     upper_bound: prices.upperBound,
     lower_bound: prices.lowerBound,
-    bounds_ready: prices.ready
+    bounds_ready: prices.ready,
+    config_open_delay_sec: openDelaySec,
+    config_cancel_all_remaining_sec: cancelAllRemainingSec,
+    config_ladder_size: ladderSize,
+    config_ladder_prices: ladderPrices
   };
 
   if (flattenYesNow) {
@@ -98,19 +110,19 @@ export function decideBotAction(inputOrContext = {}, maybeState = {}) {
     });
   }
 
-  if (remainingSec !== null && remainingSec <= 100) {
+  if (remainingSec !== null && remainingSec <= cancelAllRemainingSec) {
     return normalizeStrategyOutput({
       intents: [createCancelOpenIntent('ALL')],
-      reason: 'remaining_sec<=100',
+      reason: 'remaining_sec<=cancel_all_remaining_sec',
       patches: {},
       diagnostics: diagnosticsBase
     });
   }
 
-  if ((remainingSec !== null && remainingSec > 290) || (openElapsedSec !== null && openElapsedSec < 10)) {
+  if (openElapsedSec !== null && openElapsedSec < openDelaySec) {
     return normalizeStrategyOutput({
       intents: [createNoopIntent()],
-      reason: 'pre_open_or_open_not_10s',
+      reason: 'pre_open_or_open_not_open_delay',
       patches: {},
       diagnostics: diagnosticsBase
     });
