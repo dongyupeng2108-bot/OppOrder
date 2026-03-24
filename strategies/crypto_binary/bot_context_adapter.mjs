@@ -61,6 +61,8 @@ export function createBotContextAdapter(options = {}) {
   let latestPriceAt = null;
   let lastWindow = null;
   let lastWindowCheckAt = 0;
+  let lastDirectPriceFetchAt = 0;
+  let directPriceFetchInFlight = null;
 
   try {
     priceFeed.subscribe((snapshot) => {
@@ -88,6 +90,29 @@ export function createBotContextAdapter(options = {}) {
       return lastWindow;
     }
   };
+  const refreshPriceFromFeed = async () => {
+    if (!priceFeed?.getCurrentPrice) return null;
+    const now = Date.now();
+    if (directPriceFetchInFlight) return directPriceFetchInFlight;
+    if (now - lastDirectPriceFetchAt < 800) return asPositiveNumber(latestBtcPrice);
+    lastDirectPriceFetchAt = now;
+    directPriceFetchInFlight = (async () => {
+      try {
+        const fetched = await priceFeed.getCurrentPrice();
+        const parsed = asPositiveNumber(fetched);
+        if (parsed !== null) {
+          latestBtcPrice = parsed;
+          latestPriceAt = new Date().toISOString();
+        }
+        return parsed;
+      } catch {
+        return asPositiveNumber(latestBtcPrice);
+      } finally {
+        directPriceFetchInFlight = null;
+      }
+    })();
+    return directPriceFetchInFlight;
+  };
 
   const getContext = async () => {
     const context = createDefaultContext();
@@ -102,13 +127,29 @@ export function createBotContextAdapter(options = {}) {
     const state = getState() || {};
     const now = Date.now();
     const endMs = windowInfo?.window_end ? new Date(windowInfo.window_end).getTime() : null;
+    const runningWindowReady = state?.running === true && state?.current_window_id != null;
+    if (runningWindowReady && asPositiveNumber(latestBtcPrice) === null) {
+      await refreshPriceFromFeed();
+    }
+
+    let resolvedBtcPrice = asPositiveNumber(latestBtcPrice);
+    if (resolvedBtcPrice === null && runningWindowReady) {
+      resolvedBtcPrice = asPositiveNumber(state?.anchor_btc);
+    }
+    if (resolvedBtcPrice === null && runningWindowReady) {
+      const up = asFiniteNumber(state?.upper_bound);
+      const down = asFiniteNumber(state?.lower_bound);
+      if (up !== null && down !== null) {
+        resolvedBtcPrice = asPositiveNumber((up + down) / 2);
+      }
+    }
 
     context.window_id = windowInfo?.slug ?? null;
     context.last_window_id = state.last_window_id ?? null;
     context.slug = windowInfo?.slug ?? null;
     context.period = inferPeriod(windowInfo?.slug ?? null);
     context.remaining_sec = Number.isFinite(endMs) ? Math.max(0, Math.floor((endMs - now) / 1000)) : null;
-    context.btc_price = asPositiveNumber(latestBtcPrice);
+    context.btc_price = resolvedBtcPrice;
     context.anchor_btc = asFiniteNumber(state.anchor_btc);
     context.atr_5m = asFiniteNumber(windowInfo?.atr_5m ?? windowInfo?.atr ?? state.atr_5m);
     context.upper_bound = asFiniteNumber(state.upper_bound);
