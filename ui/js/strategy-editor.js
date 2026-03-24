@@ -256,18 +256,20 @@ async function initStrategyEditor() {
 
         <!-- 右侧订单面板 -->
         <div class="se-order-panel">
-          <div class="se-order-title">订单最小摘要</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;padding:8px 2px 10px 2px;font-size:12px;">
-            <div style="color:#888;">total</div><div id="se-orders-total" style="color:#ddd;">—</div>
-            <div style="color:#888;">open_total</div><div id="se-orders-open-total" style="color:#ddd;">—</div>
-            <div style="color:#888;">filled_total</div><div id="se-orders-filled-total" style="color:#ddd;">—</div>
-            <div style="color:#888;">cancelled_total</div><div id="se-orders-cancelled-total" style="color:#ddd;">—</div>
-          </div>
+          <div id="se-order-title" class="se-order-title">当前窗口订单状态</div>
+          <div id="se-order-scope-note" style="font-size:11px;color:#888;padding:4px 2px 8px 2px;">仅展示当前窗口相关订单</div>
           <table class="se-order-table" style="table-layout:fixed;width:100%;">
-            <colgroup><col style="width:22%"><col style="width:22%"><col style="width:28%"><col style="width:28%"></colgroup>
-            <thead><tr><th>方向</th><th>类型</th><th>价格</th><th>状态</th></tr></thead>
+            <colgroup>
+              <col style="width:18%">
+              <col style="width:14%">
+              <col style="width:18%">
+              <col style="width:16%">
+              <col style="width:14%">
+              <col style="width:20%">
+            </colgroup>
+            <thead><tr><th>类型</th><th>方向</th><th>价格</th><th>状态</th><th>数量</th><th>PnL</th></tr></thead>
             <tbody id="se-order-body">
-              <tr><td colspan="4" style="color:#555;text-align:center">暂无</td></tr>
+              <tr><td colspan="6" style="color:#555;text-align:center">暂无</td></tr>
             </tbody>
           </table>
           <div id="se-latency" style="font-size:10px;color:#888;text-align:right;padding:4px 8px;margin-top:auto;"></div>
@@ -563,7 +565,7 @@ async function se_poll() {
     se_renderOverview(status, summaryData, ordersData, postmortemData);
     se_renderDecision(status, contextData, previewData, ordersData, previewError);
     se_renderLogs(Array.isArray(logsData) ? logsData : (logsData.logs || []));
-    se_renderOrders(ordersData);
+    se_renderOrders(ordersData, status);
 
     const remaining = status?.remaining_sec ?? null;
     const el = document.getElementById('se-countdown');
@@ -607,7 +609,7 @@ async function se_applyPaperAction(action) {
       alert('动作执行失败: ' + (data.error || res.status));
       return;
     }
-    se_renderOrders({ orders: data.orders, summary: data.summary });
+    se_renderOrders({ orders: data.orders, summary: data.summary }, null);
   } catch (err) {
     alert('动作执行失败: ' + err.message);
   }
@@ -804,12 +806,6 @@ function se_renderOverview(status, summary, ordersData, postmortemPayload) {
       : '当前无 postmortem 记录';
   }
 
-  const openOrdersSummary = ordersData?.summary || {};
-  document.getElementById('se-orders-total').textContent = se_formatStateValue(openOrdersSummary.total);
-  document.getElementById('se-orders-open-total').textContent = se_formatStateValue(openOrdersSummary.open_total);
-  document.getElementById('se-orders-filled-total').textContent = se_formatStateValue(openOrdersSummary.filled_total);
-  document.getElementById('se-orders-cancelled-total').textContent = se_formatStateValue(openOrdersSummary.cancelled_total);
-
   const tip = document.getElementById('se-bot-state-tip');
   if (tip) {
     tip.textContent = `YES upnl=${se_formatStateValue(yesUnreal)} | NO upnl=${se_formatStateValue(noUnreal)} | poll=${_seLastPollError ? 'error' : 'ok'}`;
@@ -832,21 +828,35 @@ function se_formatStateValue(value) {
   return `${value}`;
 }
 
-function se_renderOrders(orders) {
+function se_renderOrders(orders, status) {
   const tbody = document.getElementById('se-order-body');
   if (!tbody) return;
-  const list = Array.isArray(orders?.orders) ? [...orders.orders] : [];
+  const titleEl = document.getElementById('se-order-title');
+  const scopeNoteEl = document.getElementById('se-order-scope-note');
+  const scope = orders?.window_scope && typeof orders.window_scope === 'object' ? orders.window_scope : {};
+  if (titleEl) {
+    titleEl.textContent = se_formatStateValue(scope?.label || '当前窗口订单状态');
+  }
+  if (scopeNoteEl) {
+    const displayWindow = scope?.display_window_id || status?.current_window_id || 'N/A';
+    scopeNoteEl.textContent = `窗口=${se_formatStateValue(displayWindow)} ｜ ${se_formatStateValue(scope?.ownership_rule || '仅展示当前/上一窗口相关订单')}`;
+  }
+  const list = Array.isArray(orders?.window_orders)
+    ? [...orders.window_orders]
+    : (Array.isArray(orders?.orders) ? [...orders.orders] : []);
   list.sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)));
   const topList = list.slice(0, 8);
   const rows = topList.map((o) => {
-    const cls = o.side === 'YES' ? 'up-color' : 'down-color';
     const statusColor = o.status === 'OPEN' ? '#00e676' : (o.status === 'FILLED' ? '#ffb74d' : '#888');
     const orderPriceText = typeof o.price === 'number' ? o.price.toFixed(3) : '--';
     const fillPriceText = typeof o.fill_price === 'number' ? o.fill_price.toFixed(3) : '--';
     const priceCell = `${orderPriceText}<div style="font-size:11px;color:#aaa;">fill:${fillPriceText}</div>`;
-    return `<tr><td class="${cls}">${se_formatStateValue(o.side)}</td><td>${se_formatStateValue(o.kind)}</td><td>${priceCell}</td><td style="color:${statusColor}">${se_formatStateValue(o.status)}</td></tr>`;
+    const typeLabel = o.kind === 'EXIT' ? '平仓' : (o.kind === 'ENTRY' ? '挂单' : se_formatStateValue(o.kind));
+    const statusLabel = o.status === 'FILLED' ? '成交' : (o.status === 'CANCELLED' ? '撤单' : (o.status === 'OPEN' ? '挂单' : se_formatStateValue(o.status)));
+    const pnlCell = o.pnl != null ? o.pnl : '—';
+    return `<tr><td>${typeLabel}</td><td>${se_formatStateValue(o.side)}</td><td>${priceCell}</td><td style="color:${statusColor}">${statusLabel}</td><td>${se_formatStateValue(o.size)}</td><td>${se_formatStateValue(pnlCell)}</td></tr>`;
   });
-  tbody.innerHTML = rows.length ? rows.join('') : '<tr><td colspan="4" style="color:#555;text-align:center">暂无</td></tr>';
+  tbody.innerHTML = rows.length ? rows.join('') : '<tr><td colspan="6" style="color:#555;text-align:center">暂无</td></tr>';
 }
 
 function se_renderLogs(logs) {

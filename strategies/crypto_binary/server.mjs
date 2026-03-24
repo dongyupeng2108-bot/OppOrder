@@ -532,6 +532,50 @@ function syncBotStateFromLedger() {
   });
 }
 
+const toEpochMs = (value) => {
+  const ts = Date.parse(value || '');
+  return Number.isNaN(ts) ? null : ts;
+};
+
+const buildWindowRangesFromLogs = (logs = []) => {
+  const markers = logs
+    .filter((entry) => (
+      (entry?.event === 'BOT_WINDOW_CHANGED' || entry?.event === 'BOT_WINDOW_INITIALIZED')
+      && typeof entry?.window_id === 'string'
+      && entry.window_id.length > 0
+    ))
+    .map((entry) => ({
+      window_id: entry.window_id,
+      ts_ms: toEpochMs(entry.ts)
+    }))
+    .filter((entry) => entry.ts_ms != null)
+    .sort((a, b) => a.ts_ms - b.ts_ms);
+  if (!markers.length) return [];
+  const starts = [];
+  for (const marker of markers) {
+    const last = starts.length ? starts[starts.length - 1] : null;
+    if (!last || last.window_id !== marker.window_id) {
+      starts.push(marker);
+    }
+  }
+  return starts.map((start, index) => ({
+    window_id: start.window_id,
+    start_ts_ms: start.ts_ms,
+    end_ts_ms: starts[index + 1]?.ts_ms ?? null
+  }));
+};
+
+const inferWindowIdForOrder = (order, ranges = []) => {
+  const createdTs = toEpochMs(order?.created_at);
+  if (createdTs == null || !ranges.length) return null;
+  for (const range of ranges) {
+    if (createdTs >= range.start_ts_ms && (range.end_ts_ms == null || createdTs < range.end_ts_ms)) {
+      return range.window_id;
+    }
+  }
+  return null;
+};
+
 // 供 strategy_runner_se.mjs 动态导入使用
 export function getGlobalSnapshot() {
   return _globalOrderbookMonitor?.getLatestSnapshot?.() || null;
@@ -1488,9 +1532,55 @@ const server = createServer(async (req, res) => {
 
   if (req.method === 'GET' && req.url === '/bot/orders') {
     try {
+      const state = botState.getState();
+      const allOrdersRaw = botExecutorPaper.getOrders();
+      const logs = botLogger.getRecentLogs(500);
+      const ranges = buildWindowRangesFromLogs(logs);
+      const allOrders = Array.isArray(allOrdersRaw)
+        ? allOrdersRaw.map((order) => ({
+            ...order,
+            inferred_window_id: inferWindowIdForOrder(order, ranges)
+          }))
+        : [];
+      const running = state?.running === true;
+      const activeWindowId = state?.current_window_id ?? null;
+      const lastRunWindowId = getBotLastRunSnapshot()?.current_window_id ?? state?.last_window_id ?? null;
+      const displayWindowId = running ? activeWindowId : (lastRunWindowId ?? null);
+      const scope = running ? 'current_window' : (displayWindowId ? 'last_window' : 'none');
+      let windowOrders = [];
+      if (displayWindowId) {
+        windowOrders = allOrders.filter((order) => order.inferred_window_id === displayWindowId);
+      }
+      if (running && displayWindowId && windowOrders.length === 0 && state?.window_initialized_at) {
+        const initTs = toEpochMs(state.window_initialized_at);
+        if (initTs != null) {
+          windowOrders = allOrders.filter((order) => {
+            const createdTs = toEpochMs(order.created_at);
+            return createdTs != null && createdTs >= initTs;
+          });
+        }
+      }
+      windowOrders.sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)));
       sendJson(res, {
-        orders: botExecutorPaper.getOrders(),
-        summary: botExecutorPaper.getSummary()
+        orders: windowOrders,
+        window_orders: windowOrders,
+        all_orders: allOrders,
+        summary: botExecutorPaper.getSummary(),
+        window_scope: {
+          scope,
+          running,
+          active_window_id: activeWindowId,
+          display_window_id: displayWindowId,
+          label: scope === 'current_window'
+            ? '当前窗口订单'
+            : (scope === 'last_window' ? '上一窗口订单（停止态）' : '当前无可展示窗口订单'),
+          ownership_rule: scope === 'current_window'
+            ? '运行中仅展示当前活动窗口订单'
+            : (scope === 'last_window'
+              ? '停止态展示上一窗口订单，不冒充当前活动窗口'
+              : '无当前活动窗口且无可展示上一窗口订单')
+        },
+        hidden_other_window_count: Math.max(0, allOrders.length - windowOrders.length)
       });
     } catch (err) {
       sendJson(res, { ok: false, error: err.message }, 500);
