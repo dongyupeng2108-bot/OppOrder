@@ -1556,10 +1556,22 @@ const server = createServer(async (req, res) => {
         if (initTs != null) {
           windowOrders = allOrders.filter((order) => {
             const createdTs = toEpochMs(order.created_at);
-            return createdTs != null && createdTs >= initTs;
+            return createdTs != null
+              && createdTs >= initTs
+              && (order.inferred_window_id == null || order.inferred_window_id === displayWindowId);
           });
         }
       }
+      if (displayWindowId) {
+        windowOrders = windowOrders.filter((order) => (
+          order.inferred_window_id == null || order.inferred_window_id === displayWindowId
+        ));
+      }
+      const hiddenOtherWindowCount = displayWindowId
+        ? windowOrders.filter((order) => (
+            order.inferred_window_id != null && order.inferred_window_id !== displayWindowId
+          )).length
+        : 0;
       windowOrders.sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)));
       sendJson(res, {
         orders: windowOrders,
@@ -1580,7 +1592,7 @@ const server = createServer(async (req, res) => {
               ? '停止态展示上一窗口订单，不冒充当前活动窗口'
               : '无当前活动窗口且无可展示上一窗口订单')
         },
-        hidden_other_window_count: Math.max(0, allOrders.length - windowOrders.length)
+        hidden_other_window_count: hiddenOtherWindowCount
       });
     } catch (err) {
       sendJson(res, { ok: false, error: err.message }, 500);
