@@ -223,6 +223,17 @@ async function initStrategyEditor() {
             </div>
             <div id="se-active-runtime-note" style="font-size:11px;color:#9aa0a6;min-height:16px;">—</div>
             <div style="margin-top:4px;padding-top:6px;border-top:1px solid #2a2a2a;display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
+              <div style="color:#8aa4bf;">last.stop_reason</div><div id="se-last-stop-reason" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">last.completed_at</div><div id="se-last-completed-at" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">last.window_id</div><div id="se-last-window-id" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">last.phase</div><div id="se-last-phase" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">last.filled_total</div><div id="se-last-filled-total" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">last.realized_gross_pnl_total</div><div id="se-last-realized-total" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">last.unrealized_gross_pnl_total</div><div id="se-last-unrealized-total" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">last.active_config</div><div id="se-last-active-config" style="color:#ddd;">—</div>
+            </div>
+            <div id="se-last-run-note" style="font-size:11px;color:#9aa0a6;min-height:16px;">—</div>
+            <div style="margin-top:4px;padding-top:6px;border-top:1px solid #2a2a2a;display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
               <div style="color:#8aa4bf;">preview.state</div><div id="se-preview-state" style="color:#ddd;">—</div>
               <div style="color:#8aa4bf;">preview.intents</div><div id="se-preview-intents" style="color:#ddd;">—</div>
               <div style="color:#8aa4bf;">preview.reason</div><div id="se-preview-reason" style="color:#ddd;">—</div>
@@ -695,6 +706,8 @@ function se_renderOverview(status, summary, ordersData) {
     ? status.active_runtime_snapshot
     : null;
   const activeConfig = activeRuntime?.config && typeof activeRuntime.config === 'object' ? activeRuntime.config : null;
+  const lastRun = status?.last_run_snapshot && typeof status.last_run_snapshot === 'object' ? status.last_run_snapshot : null;
+  const lastActiveConfig = lastRun?.active_config && typeof lastRun.active_config === 'object' ? lastRun.active_config : null;
   document.getElementById('se-saved-open-delay').textContent = se_formatStateValue(savedConfig?.open_delay_sec);
   document.getElementById('se-saved-ladder-prices').textContent = se_formatStateValue(savedConfig?.ladder_prices);
   document.getElementById('se-saved-ladder-size').textContent = se_formatStateValue(savedConfig?.ladder_size);
@@ -715,6 +728,29 @@ function se_renderOverview(status, summary, ordersData) {
     runtimeNote.textContent = activeRuntime
       ? 'active runtime snapshot 来自当前运行实例；save 后未重启时可能与 saved config 不同'
       : '当前未运行：仅展示 saved config，active runtime snapshot 为空';
+  }
+  document.getElementById('se-last-stop-reason').textContent = se_formatStateValue(lastRun?.stop_reason);
+  document.getElementById('se-last-completed-at').textContent = se_formatStateValue(lastRun?.completed_at);
+  document.getElementById('se-last-window-id').textContent = se_formatStateValue(lastRun?.current_window_id);
+  document.getElementById('se-last-phase').textContent = se_formatStateValue(lastRun?.phase);
+  document.getElementById('se-last-filled-total').textContent = se_formatStateValue(lastRun?.filled_total);
+  document.getElementById('se-last-realized-total').textContent = se_formatStateValue(lastRun?.realized_gross_pnl_total);
+  document.getElementById('se-last-unrealized-total').textContent = se_formatStateValue(lastRun?.unrealized_gross_pnl_total);
+  const lastActiveConfigText = lastActiveConfig
+    ? `open_delay=${se_formatStateValue(lastActiveConfig.open_delay_sec)} | prices=${se_formatStateValue(lastActiveConfig.ladder_prices)} | size=${se_formatStateValue(lastActiveConfig.ladder_size)} | atr=${se_formatStateValue(lastActiveConfig.atr_multiple)} | cancel=${se_formatStateValue(lastActiveConfig.cancel_all_remaining_sec)}`
+    : 'N/A (null)';
+  document.getElementById('se-last-active-config').textContent = lastActiveConfigText;
+  const lastRunNote = document.getElementById('se-last-run-note');
+  if (lastRunNote) {
+    if (status?.running === true) {
+      lastRunNote.textContent = lastRun
+        ? '当前运行中；下方 last_run_snapshot 为上一轮运行结果'
+        : '当前运行中；尚无上一轮运行结果';
+    } else {
+      lastRunNote.textContent = lastRun
+        ? '当前已停止；下方展示最近一次运行结果'
+        : '当前已停止；尚无最近一次运行结果';
+    }
   }
 
   const openOrdersSummary = ordersData?.summary || {};
