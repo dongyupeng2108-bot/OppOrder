@@ -1,5 +1,6 @@
 /**
- * strategy-editor.js/**
+ * strategy-editor.js
+/**
  * SE-2: Bot Console UI 逻辑
  */
 
@@ -203,6 +204,24 @@ async function initStrategyEditor() {
               <div style="color:#888;">unrealized_gross_pnl_total</div><div id="se-summary-unrealized-total" style="color:#ddd;">—</div>
               <div style="color:#888;">updated_at</div><div id="se-summary-updated-at" style="color:#ddd;">—</div>
             </div>
+            <div style="margin-top:4px;padding-top:6px;border-top:1px solid #2a2a2a;display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
+              <div style="color:#8aa4bf;">saved.open_delay_sec</div><div id="se-saved-open-delay" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">saved.ladder_prices</div><div id="se-saved-ladder-prices" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">saved.ladder_size</div><div id="se-saved-ladder-size" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">saved.atr_multiple</div><div id="se-saved-atr-multiple" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">saved.cancel_all_remaining_sec</div><div id="se-saved-cancel-all" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">active.phase</div><div id="se-active-phase" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">active.window_id</div><div id="se-active-window-id" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">active.open_delay_sec</div><div id="se-active-open-delay" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">active.ladder_prices</div><div id="se-active-ladder-prices" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">active.ladder_size</div><div id="se-active-ladder-size" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">active.atr_multiple</div><div id="se-active-atr-multiple" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">active.cancel_all_remaining_sec</div><div id="se-active-cancel-all" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">active.anchor_btc</div><div id="se-active-anchor-btc" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">active.upper_bound</div><div id="se-active-upper-bound" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">active.lower_bound</div><div id="se-active-lower-bound" style="color:#ddd;">—</div>
+            </div>
+            <div id="se-active-runtime-note" style="font-size:11px;color:#9aa0a6;min-height:16px;">—</div>
             <div id="se-ui-error" style="font-size:11px;color:#ff8a80;min-height:16px;"></div>
           </div>
         </div>
@@ -621,6 +640,32 @@ function se_renderOverview(status, summary, ordersData) {
   document.getElementById('se-summary-realized-total').textContent = se_formatStateValue(realizedTotal);
   document.getElementById('se-summary-unrealized-total').textContent = se_formatStateValue(unrealizedTotal);
   document.getElementById('se-summary-updated-at').textContent = se_formatStateValue(updatedAt);
+  const savedConfig = status?.saved_config && typeof status.saved_config === 'object' ? status.saved_config : null;
+  const activeRuntime = status?.active_runtime_snapshot && typeof status.active_runtime_snapshot === 'object'
+    ? status.active_runtime_snapshot
+    : null;
+  const activeConfig = activeRuntime?.config && typeof activeRuntime.config === 'object' ? activeRuntime.config : null;
+  document.getElementById('se-saved-open-delay').textContent = se_formatStateValue(savedConfig?.open_delay_sec);
+  document.getElementById('se-saved-ladder-prices').textContent = se_formatStateValue(savedConfig?.ladder_prices);
+  document.getElementById('se-saved-ladder-size').textContent = se_formatStateValue(savedConfig?.ladder_size);
+  document.getElementById('se-saved-atr-multiple').textContent = se_formatStateValue(savedConfig?.atr_multiple);
+  document.getElementById('se-saved-cancel-all').textContent = se_formatStateValue(savedConfig?.cancel_all_remaining_sec);
+  document.getElementById('se-active-phase').textContent = se_formatStateValue(activeRuntime?.phase);
+  document.getElementById('se-active-window-id').textContent = se_formatStateValue(activeRuntime?.current_window_id);
+  document.getElementById('se-active-open-delay').textContent = se_formatStateValue(activeConfig?.open_delay_sec);
+  document.getElementById('se-active-ladder-prices').textContent = se_formatStateValue(activeConfig?.ladder_prices);
+  document.getElementById('se-active-ladder-size').textContent = se_formatStateValue(activeConfig?.ladder_size);
+  document.getElementById('se-active-atr-multiple').textContent = se_formatStateValue(activeConfig?.atr_multiple);
+  document.getElementById('se-active-cancel-all').textContent = se_formatStateValue(activeConfig?.cancel_all_remaining_sec);
+  document.getElementById('se-active-anchor-btc').textContent = se_formatStateValue(activeRuntime?.anchor_btc);
+  document.getElementById('se-active-upper-bound').textContent = se_formatStateValue(activeRuntime?.upper_bound);
+  document.getElementById('se-active-lower-bound').textContent = se_formatStateValue(activeRuntime?.lower_bound);
+  const runtimeNote = document.getElementById('se-active-runtime-note');
+  if (runtimeNote) {
+    runtimeNote.textContent = activeRuntime
+      ? 'active runtime snapshot 来自当前运行实例；save 后未重启时可能与 saved config 不同'
+      : '当前未运行：仅展示 saved config，active runtime snapshot 为空';
+  }
 
   const openOrdersSummary = ordersData?.summary || {};
   document.getElementById('se-orders-total').textContent = se_formatStateValue(openOrdersSummary.total);
