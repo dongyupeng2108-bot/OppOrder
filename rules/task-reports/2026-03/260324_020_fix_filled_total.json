@@ -1,0 +1,3899 @@
+{
+  "task_id": "TraeTask_FIX_260324_020",
+  "root_cause_category": "错误聚合源 + 重复累计",
+  "before_after_reconciliation": {
+    "before_from_260324_019": {
+      "window_id": "debug-fill-yes-path-v1-w1",
+      "total_orders": 8,
+      "unique_order_id_count": 8,
+      "unique_filled_order_id_count": 1,
+      "unique_cancelled_order_id_count": 0,
+      "summary_filled_total": 2520,
+      "last_run_filled_total": 2520,
+      "postmortem_filled_total": 2520,
+      "performance_filled_total": 11188,
+      "performance_target_window_filled_total": 2520,
+      "ui_display_value": {
+        "previous_window_filled_total": 2520,
+        "runtime_btc_display_when_running": "数据未就绪"
+      }
+    },
+    "after_fix": {
+      "window_id": "debug-fill-yes-path-v1-w1",
+      "total_orders": 8,
+      "unique_order_id_count": 8,
+      "unique_filled_order_id_count": 1,
+      "unique_cancelled_order_id_count": 7,
+      "summary_filled_total": 1,
+      "last_run_filled_total": 1,
+      "postmortem_filled_total": 1,
+      "performance_filled_total": 26312,
+      "performance_target_window_filled_total": 1
+    },
+    "pass": true
+  },
+  "raw_evidence": {
+    "running_snapshot": {
+      "tag": "running_2",
+      "orders": {
+        "status": 200,
+        "body": {
+          "orders": [
+            {
+              "order_id": "paper_9e9145c2",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.27,
+              "size": 5,
+              "status": "FILLED",
+              "fill_price": 0.27,
+              "filled_at": "2026-03-24T18:39:31.966Z",
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_9763b513",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.27,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_d8f0f1e5",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_999618ec",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_ec045e01",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_67182ac8",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_88d3ba98",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_fce47cbc",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            }
+          ],
+          "window_orders": [
+            {
+              "order_id": "paper_9e9145c2",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.27,
+              "size": 5,
+              "status": "FILLED",
+              "fill_price": 0.27,
+              "filled_at": "2026-03-24T18:39:31.966Z",
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_9763b513",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.27,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_d8f0f1e5",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_999618ec",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_ec045e01",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_67182ac8",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_88d3ba98",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_fce47cbc",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            }
+          ],
+          "all_orders": [
+            {
+              "order_id": "paper_9e9145c2",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.27,
+              "size": 5,
+              "status": "FILLED",
+              "fill_price": 0.27,
+              "filled_at": "2026-03-24T18:39:31.966Z",
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_9763b513",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.27,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_d8f0f1e5",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_999618ec",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_ec045e01",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_67182ac8",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_88d3ba98",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_fce47cbc",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_3552f251",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.27,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_8f777f80",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.27,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_f2c90b20",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_a10a4b95",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_08cf5a3f",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_887019e1",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_b3e22830",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_10567c2d",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            }
+          ],
+          "summary": {
+            "total": 16,
+            "open_total": 0,
+            "cancelled_total": 15,
+            "filled_total": 1,
+            "open_yes": 0,
+            "open_no": 0,
+            "filled_yes": 1,
+            "filled_no": 0
+          },
+          "window_scope": {
+            "scope": "current_window",
+            "running": true,
+            "active_window_id": "debug-fill-yes-path-v1-w1",
+            "display_window_id": "debug-fill-yes-path-v1-w1",
+            "label": "当前窗口订单",
+            "ownership_rule": "运行中仅展示当前活动窗口订单"
+          },
+          "hidden_other_window_count": 0
+        },
+        "path": "/bot/orders"
+      },
+      "summary": {
+        "status": 200,
+        "body": {
+          "yes_entry_filled_count": 1,
+          "yes_exit_filled_count": 0,
+          "yes_position_size": 5,
+          "yes_avg_fill_price": 0.27,
+          "yes_realized_gross_pnl": 0,
+          "yes_unrealized_gross_pnl": 0.14999999999999986,
+          "no_entry_filled_count": 0,
+          "no_exit_filled_count": 0,
+          "no_position_size": 0,
+          "no_avg_fill_price": null,
+          "no_realized_gross_pnl": 0,
+          "no_unrealized_gross_pnl": 0,
+          "filled_total": 1,
+          "realized_gross_pnl_total": 0,
+          "unrealized_gross_pnl_total": 0.14999999999999986,
+          "updated_at": "2026-03-24T18:42:49.382Z"
+        },
+        "path": "/bot/paper/summary"
+      },
+      "status": {
+        "status": 200,
+        "body": {
+          "mode": "paper-staging",
+          "phase": "IDLE",
+          "running": true,
+          "debug_scenario": "fill_yes_path_v1",
+          "debug_frame_index": 1,
+          "debug_completed": false,
+          "tick_interval_ms": 1000,
+          "last_tick_at": "2026-03-24T18:42:49.144Z",
+          "last_window_id": null,
+          "current_window_id": "debug-fill-yes-path-v1-w1",
+          "window_initialized_at": "2026-03-24T18:42:49.143Z",
+          "remaining_sec": 299,
+          "anchor_btc": 100,
+          "atr_5m": 2,
+          "upper_bound": 102.4,
+          "lower_bound": 97.6,
+          "ladder_posted": false,
+          "yes_cancelled": false,
+          "no_cancelled": false,
+          "yes_order_ids": [],
+          "no_order_ids": [],
+          "last_reason": "pre_open_or_open_not_open_delay",
+          "last_intents": [
+            {
+              "kind": "NOOP"
+            }
+          ],
+          "updated_at": "2026-03-24T18:42:49.144Z",
+          "saved_config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "last_run_snapshot": {
+            "stop_reason": "MANUAL_STOP",
+            "completed_at": "2026-03-24T18:42:02.115Z",
+            "current_window_id": "debug-fill-yes-path-v1-w1",
+            "phase": "IDLE",
+            "filled_total": 1,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "unrealized_gross_pnl_total": 0.14999999999999986,
+            "active_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            }
+          },
+          "active_runtime_snapshot": {
+            "config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            },
+            "phase": "IDLE",
+            "current_window_id": "debug-fill-yes-path-v1-w1",
+            "anchor_btc": 100,
+            "upper_bound": 102.4,
+            "lower_bound": 97.6
+          }
+        },
+        "path": "/bot/status"
+      },
+      "postmortem": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "postmortem": {
+            "id": 169,
+            "strategy_id": "bot_console",
+            "event_id": "debug-fill-yes-path-v1-w1",
+            "window_start": "2026-03-24T18:42:02.115Z",
+            "window_end": "2026-03-24T18:42:02.115Z",
+            "created_at": "2026-03-24T18:42:02.115Z",
+            "window_id": "debug-fill-yes-path-v1-w1",
+            "stop_reason": "MANUAL_STOP",
+            "completed_at": "2026-03-24T18:42:02.115Z",
+            "filled_total": 1,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "unrealized_gross_pnl_total": 0.14999999999999986,
+            "active_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            },
+            "action_summary": [
+              "NO_ACTION"
+            ]
+          }
+        },
+        "path": "/bot/postmortem/latest"
+      },
+      "performance": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "summary": {
+            "preset": "today",
+            "window_count": 20,
+            "filled_total": 26311,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "avg_realized_gross_pnl_per_window": 0,
+            "running_window_excluded": true,
+            "sample_postmortem_rows": [
+              {
+                "id": 169,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:42:02.115Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 168,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:39:36.857Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 167,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T18:39:35.108Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 166,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:39:32.218Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 165,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:38:00.775Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 164,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T18:37:58.999Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 163,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:37:55.406Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 162,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:35:33.335Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 161,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T18:35:31.564Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 160,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:35:28.642Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              }
+            ],
+            "participating_postmortem_rows": [
+              {
+                "id": 169,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:42:02.115Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 168,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:39:36.857Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 167,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T18:39:35.108Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 166,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:39:32.218Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 165,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:38:00.775Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 164,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T18:37:58.999Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 163,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:37:55.406Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 162,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:35:33.335Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 161,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T18:35:31.564Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 160,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:35:28.642Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 159,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:25:16.402Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 158,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T18:25:08.784Z",
+                "filled_total": 2519,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 157,
+                "window_id": "btc-updown-5m-1774376700",
+                "completed_at": "2026-03-24T18:25:02.344Z",
+                "filled_total": 2519,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 156,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T18:00:01.329Z",
+                "filled_total": 1763,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 155,
+                "window_id": "btc-updown-5m-1774374900",
+                "completed_at": "2026-03-24T17:59:59.301Z",
+                "filled_total": 1763,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 154,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T17:17:24.029Z",
+                "filled_total": 52,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 153,
+                "window_id": "btc-updown-5m-1774371900",
+                "completed_at": "2026-03-24T17:06:39.798Z",
+                "filled_total": 52,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 152,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T16:50:20.054Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 151,
+                "window_id": null,
+                "completed_at": "2026-03-24T16:11:54.604Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 150,
+                "window_id": null,
+                "completed_at": "2026-03-24T16:10:57.974Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              }
+            ]
+          }
+        },
+        "path": "/bot/performance/summary?preset=today&detail=1"
+      }
+    },
+    "finished_snapshot": {
+      "tag": "finished",
+      "orders": {
+        "status": 200,
+        "body": {
+          "orders": [
+            {
+              "order_id": "paper_9e9145c2",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.27,
+              "size": 5,
+              "status": "FILLED",
+              "fill_price": 0.27,
+              "filled_at": "2026-03-24T18:39:31.966Z",
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_9763b513",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.27,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_d8f0f1e5",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_999618ec",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_ec045e01",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_67182ac8",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_88d3ba98",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_fce47cbc",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            }
+          ],
+          "window_orders": [
+            {
+              "order_id": "paper_9e9145c2",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.27,
+              "size": 5,
+              "status": "FILLED",
+              "fill_price": 0.27,
+              "filled_at": "2026-03-24T18:39:31.966Z",
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_9763b513",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.27,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_d8f0f1e5",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_999618ec",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_ec045e01",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_67182ac8",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_88d3ba98",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_fce47cbc",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            }
+          ],
+          "all_orders": [
+            {
+              "order_id": "paper_9e9145c2",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.27,
+              "size": 5,
+              "status": "FILLED",
+              "fill_price": 0.27,
+              "filled_at": "2026-03-24T18:39:31.966Z",
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_9763b513",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.27,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_d8f0f1e5",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_999618ec",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_ec045e01",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_67182ac8",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_88d3ba98",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_fce47cbc",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_3552f251",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.27,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_8f777f80",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.27,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_f2c90b20",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_a10a4b95",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_08cf5a3f",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_887019e1",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_b3e22830",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_10567c2d",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            }
+          ],
+          "summary": {
+            "total": 16,
+            "open_total": 0,
+            "cancelled_total": 15,
+            "filled_total": 1,
+            "open_yes": 0,
+            "open_no": 0,
+            "filled_yes": 1,
+            "filled_no": 0
+          },
+          "window_scope": {
+            "scope": "last_window",
+            "running": false,
+            "active_window_id": "debug-fill-yes-path-v1-w1",
+            "display_window_id": "debug-fill-yes-path-v1-w1",
+            "label": "上一窗口订单（停止态）",
+            "ownership_rule": "停止态展示上一窗口订单，不冒充当前活动窗口"
+          },
+          "hidden_other_window_count": 0
+        },
+        "path": "/bot/orders"
+      },
+      "summary": {
+        "status": 200,
+        "body": {
+          "yes_entry_filled_count": 1,
+          "yes_exit_filled_count": 0,
+          "yes_position_size": 5,
+          "yes_avg_fill_price": 0.27,
+          "yes_realized_gross_pnl": 0,
+          "yes_unrealized_gross_pnl": 0.14999999999999986,
+          "no_entry_filled_count": 0,
+          "no_exit_filled_count": 0,
+          "no_position_size": 0,
+          "no_avg_fill_price": null,
+          "no_realized_gross_pnl": 0,
+          "no_unrealized_gross_pnl": 0,
+          "filled_total": 1,
+          "realized_gross_pnl_total": 0,
+          "unrealized_gross_pnl_total": 0.14999999999999986,
+          "updated_at": "2026-03-24T18:42:50.093Z"
+        },
+        "path": "/bot/paper/summary"
+      },
+      "status": {
+        "status": 200,
+        "body": {
+          "mode": "paper-staging",
+          "phase": "IDLE",
+          "running": false,
+          "debug_scenario": "fill_yes_path_v1",
+          "debug_frame_index": 1,
+          "debug_completed": false,
+          "tick_interval_ms": 1000,
+          "last_tick_at": "2026-03-24T18:42:49.144Z",
+          "last_window_id": null,
+          "current_window_id": "debug-fill-yes-path-v1-w1",
+          "window_initialized_at": "2026-03-24T18:42:49.143Z",
+          "remaining_sec": 299,
+          "anchor_btc": 100,
+          "atr_5m": 2,
+          "upper_bound": 102.4,
+          "lower_bound": 97.6,
+          "ladder_posted": false,
+          "yes_cancelled": false,
+          "no_cancelled": false,
+          "yes_order_ids": [],
+          "no_order_ids": [],
+          "last_reason": "pre_open_or_open_not_open_delay",
+          "last_intents": [
+            {
+              "kind": "NOOP"
+            }
+          ],
+          "updated_at": "2026-03-24T18:42:49.385Z",
+          "saved_config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "last_run_snapshot": {
+            "stop_reason": "MANUAL_STOP",
+            "completed_at": "2026-03-24T18:42:49.385Z",
+            "current_window_id": "debug-fill-yes-path-v1-w1",
+            "phase": "IDLE",
+            "filled_total": 1,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "unrealized_gross_pnl_total": 0.14999999999999986,
+            "active_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            }
+          },
+          "active_runtime_snapshot": null
+        },
+        "path": "/bot/status"
+      },
+      "postmortem": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "postmortem": {
+            "id": 170,
+            "strategy_id": "bot_console",
+            "event_id": "debug-fill-yes-path-v1-w1",
+            "window_start": "2026-03-24T18:42:49.385Z",
+            "window_end": "2026-03-24T18:42:49.385Z",
+            "created_at": "2026-03-24T18:42:49.385Z",
+            "window_id": "debug-fill-yes-path-v1-w1",
+            "stop_reason": "MANUAL_STOP",
+            "completed_at": "2026-03-24T18:42:49.385Z",
+            "filled_total": 1,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "unrealized_gross_pnl_total": 0.14999999999999986,
+            "active_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            },
+            "action_summary": [
+              "NO_ACTION"
+            ]
+          }
+        },
+        "path": "/bot/postmortem/latest"
+      },
+      "performance": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "summary": {
+            "preset": "today",
+            "window_count": 21,
+            "filled_total": 26312,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "avg_realized_gross_pnl_per_window": 0,
+            "running_window_excluded": true,
+            "sample_postmortem_rows": [
+              {
+                "id": 170,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:42:49.385Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 169,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:42:02.115Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 168,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:39:36.857Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 167,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T18:39:35.108Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 166,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:39:32.218Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 165,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:38:00.775Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 164,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T18:37:58.999Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 163,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:37:55.406Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 162,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:35:33.335Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 161,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T18:35:31.564Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              }
+            ],
+            "participating_postmortem_rows": [
+              {
+                "id": 170,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:42:49.385Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 169,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:42:02.115Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 168,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:39:36.857Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 167,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T18:39:35.108Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 166,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:39:32.218Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 165,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:38:00.775Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 164,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T18:37:58.999Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 163,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:37:55.406Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 162,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:35:33.335Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 161,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T18:35:31.564Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 160,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:35:28.642Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 159,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:25:16.402Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 158,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T18:25:08.784Z",
+                "filled_total": 2519,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 157,
+                "window_id": "btc-updown-5m-1774376700",
+                "completed_at": "2026-03-24T18:25:02.344Z",
+                "filled_total": 2519,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 156,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T18:00:01.329Z",
+                "filled_total": 1763,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 155,
+                "window_id": "btc-updown-5m-1774374900",
+                "completed_at": "2026-03-24T17:59:59.301Z",
+                "filled_total": 1763,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 154,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T17:17:24.029Z",
+                "filled_total": 52,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 153,
+                "window_id": "btc-updown-5m-1774371900",
+                "completed_at": "2026-03-24T17:06:39.798Z",
+                "filled_total": 52,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 152,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T16:50:20.054Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 151,
+                "window_id": null,
+                "completed_at": "2026-03-24T16:11:54.604Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 150,
+                "window_id": null,
+                "completed_at": "2026-03-24T16:10:57.974Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              }
+            ]
+          }
+        },
+        "path": "/bot/performance/summary?preset=today&detail=1"
+      }
+    },
+    "isolation_non_regression": {
+      "round1_window_id": "debug-main-path-v1-w1",
+      "round2_window_id": "debug-fill-yes-path-v1-w1",
+      "hidden_other_window_count": 0,
+      "overlap_order_ids": [],
+      "scope": "current_window",
+      "pass": true
+    },
+    "isolation_round1": {
+      "tag": "isolation_r1",
+      "orders": {
+        "status": 200,
+        "body": {
+          "orders": [
+            {
+              "order_id": "paper_ec04e0a7",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.27,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:42:51.745Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_0784d906",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.27,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:42:51.745Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_06d77c04",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:42:51.745Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_5380665e",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:42:51.745Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_5234cdf4",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:42:51.745Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_e3bed082",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:42:51.745Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_6bc95a37",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:42:51.745Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_9814c98b",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:42:51.745Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_3552f251",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.27,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_8f777f80",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.27,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_f2c90b20",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_a10a4b95",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_08cf5a3f",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_887019e1",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_b3e22830",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_10567c2d",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            }
+          ],
+          "window_orders": [
+            {
+              "order_id": "paper_ec04e0a7",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.27,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:42:51.745Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_0784d906",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.27,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:42:51.745Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_06d77c04",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:42:51.745Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_5380665e",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:42:51.745Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_5234cdf4",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:42:51.745Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_e3bed082",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:42:51.745Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_6bc95a37",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:42:51.745Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_9814c98b",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:42:51.745Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_3552f251",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.27,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_8f777f80",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.27,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_f2c90b20",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_a10a4b95",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_08cf5a3f",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_887019e1",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_b3e22830",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_10567c2d",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            }
+          ],
+          "all_orders": [
+            {
+              "order_id": "paper_9e9145c2",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.27,
+              "size": 5,
+              "status": "FILLED",
+              "fill_price": 0.27,
+              "filled_at": "2026-03-24T18:39:31.966Z",
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_9763b513",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.27,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_d8f0f1e5",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_999618ec",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_ec045e01",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_67182ac8",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_88d3ba98",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_fce47cbc",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_3552f251",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.27,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_8f777f80",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.27,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_f2c90b20",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_a10a4b95",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_08cf5a3f",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_887019e1",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_b3e22830",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_10567c2d",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_ec04e0a7",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.27,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:42:51.745Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_0784d906",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.27,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:42:51.745Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_06d77c04",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:42:51.745Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_5380665e",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:42:51.745Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_5234cdf4",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:42:51.745Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_e3bed082",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:42:51.745Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_6bc95a37",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:42:51.745Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_9814c98b",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:42:51.745Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            }
+          ],
+          "summary": {
+            "total": 24,
+            "open_total": 0,
+            "cancelled_total": 23,
+            "filled_total": 1,
+            "open_yes": 0,
+            "open_no": 0,
+            "filled_yes": 1,
+            "filled_no": 0
+          },
+          "window_scope": {
+            "scope": "current_window",
+            "running": true,
+            "active_window_id": "debug-main-path-v1-w1",
+            "display_window_id": "debug-main-path-v1-w1",
+            "label": "当前窗口订单",
+            "ownership_rule": "运行中仅展示当前活动窗口订单"
+          },
+          "hidden_other_window_count": 0
+        },
+        "path": "/bot/orders"
+      },
+      "summary": {
+        "status": 200,
+        "body": {
+          "yes_entry_filled_count": 1,
+          "yes_exit_filled_count": 0,
+          "yes_position_size": 5,
+          "yes_avg_fill_price": 0.27,
+          "yes_realized_gross_pnl": 0,
+          "yes_unrealized_gross_pnl": 1.4000000000000001,
+          "no_entry_filled_count": 0,
+          "no_exit_filled_count": 0,
+          "no_position_size": 0,
+          "no_avg_fill_price": null,
+          "no_realized_gross_pnl": 0,
+          "no_unrealized_gross_pnl": 0,
+          "filled_total": 0,
+          "realized_gross_pnl_total": 0,
+          "unrealized_gross_pnl_total": 1.4000000000000001,
+          "updated_at": "2026-03-24T18:42:52.266Z"
+        },
+        "path": "/bot/paper/summary"
+      },
+      "status": {
+        "status": 200,
+        "body": {
+          "mode": "paper-staging",
+          "phase": "IDLE",
+          "running": true,
+          "debug_scenario": "main_path_v1",
+          "debug_frame_index": 1,
+          "debug_completed": false,
+          "tick_interval_ms": 1000,
+          "last_tick_at": "2026-03-24T18:42:51.600Z",
+          "last_window_id": null,
+          "current_window_id": "debug-main-path-v1-w1",
+          "window_initialized_at": "2026-03-24T18:42:51.599Z",
+          "remaining_sec": 299,
+          "anchor_btc": 100,
+          "atr_5m": 2,
+          "upper_bound": 102.4,
+          "lower_bound": 97.6,
+          "ladder_posted": false,
+          "yes_cancelled": false,
+          "no_cancelled": false,
+          "yes_order_ids": [],
+          "no_order_ids": [],
+          "last_reason": "pre_open_or_open_not_open_delay",
+          "last_intents": [
+            {
+              "kind": "NOOP"
+            }
+          ],
+          "updated_at": "2026-03-24T18:42:52.006Z",
+          "saved_config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "last_run_snapshot": {
+            "stop_reason": "MANUAL_STOP",
+            "completed_at": "2026-03-24T18:42:49.385Z",
+            "current_window_id": "debug-fill-yes-path-v1-w1",
+            "phase": "IDLE",
+            "filled_total": 1,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "unrealized_gross_pnl_total": 0.14999999999999986,
+            "active_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            }
+          },
+          "active_runtime_snapshot": {
+            "config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            },
+            "phase": "IDLE",
+            "current_window_id": "debug-main-path-v1-w1",
+            "anchor_btc": 100,
+            "upper_bound": 102.4,
+            "lower_bound": 97.6
+          }
+        },
+        "path": "/bot/status"
+      },
+      "postmortem": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "postmortem": {
+            "id": 170,
+            "strategy_id": "bot_console",
+            "event_id": "debug-fill-yes-path-v1-w1",
+            "window_start": "2026-03-24T18:42:49.385Z",
+            "window_end": "2026-03-24T18:42:49.385Z",
+            "created_at": "2026-03-24T18:42:49.385Z",
+            "window_id": "debug-fill-yes-path-v1-w1",
+            "stop_reason": "MANUAL_STOP",
+            "completed_at": "2026-03-24T18:42:49.385Z",
+            "filled_total": 1,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "unrealized_gross_pnl_total": 0.14999999999999986,
+            "active_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            },
+            "action_summary": [
+              "NO_ACTION"
+            ]
+          }
+        },
+        "path": "/bot/postmortem/latest"
+      },
+      "performance": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "summary": {
+            "preset": "today",
+            "window_count": 21,
+            "filled_total": 26312,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "avg_realized_gross_pnl_per_window": 0,
+            "running_window_excluded": true,
+            "sample_postmortem_rows": [
+              {
+                "id": 170,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:42:49.385Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 169,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:42:02.115Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 168,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:39:36.857Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 167,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T18:39:35.108Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 166,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:39:32.218Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 165,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:38:00.775Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 164,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T18:37:58.999Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 163,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:37:55.406Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 162,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:35:33.335Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 161,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T18:35:31.564Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              }
+            ],
+            "participating_postmortem_rows": [
+              {
+                "id": 170,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:42:49.385Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 169,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:42:02.115Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 168,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:39:36.857Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 167,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T18:39:35.108Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 166,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:39:32.218Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 165,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:38:00.775Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 164,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T18:37:58.999Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 163,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:37:55.406Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 162,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:35:33.335Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 161,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T18:35:31.564Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 160,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:35:28.642Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 159,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:25:16.402Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 158,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T18:25:08.784Z",
+                "filled_total": 2519,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 157,
+                "window_id": "btc-updown-5m-1774376700",
+                "completed_at": "2026-03-24T18:25:02.344Z",
+                "filled_total": 2519,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 156,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T18:00:01.329Z",
+                "filled_total": 1763,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 155,
+                "window_id": "btc-updown-5m-1774374900",
+                "completed_at": "2026-03-24T17:59:59.301Z",
+                "filled_total": 1763,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 154,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T17:17:24.029Z",
+                "filled_total": 52,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 153,
+                "window_id": "btc-updown-5m-1774371900",
+                "completed_at": "2026-03-24T17:06:39.798Z",
+                "filled_total": 52,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 152,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T16:50:20.054Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 151,
+                "window_id": null,
+                "completed_at": "2026-03-24T16:11:54.604Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 150,
+                "window_id": null,
+                "completed_at": "2026-03-24T16:10:57.974Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              }
+            ]
+          }
+        },
+        "path": "/bot/performance/summary?preset=today&detail=1"
+      }
+    },
+    "isolation_round2": {
+      "tag": "isolation_r2_2",
+      "orders": {
+        "status": 200,
+        "body": {
+          "orders": [
+            {
+              "order_id": "paper_9e9145c2",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.27,
+              "size": 5,
+              "status": "FILLED",
+              "fill_price": 0.27,
+              "filled_at": "2026-03-24T18:39:31.966Z",
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_9763b513",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.27,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_d8f0f1e5",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_999618ec",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_ec045e01",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_67182ac8",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_88d3ba98",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_fce47cbc",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            }
+          ],
+          "window_orders": [
+            {
+              "order_id": "paper_9e9145c2",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.27,
+              "size": 5,
+              "status": "FILLED",
+              "fill_price": 0.27,
+              "filled_at": "2026-03-24T18:39:31.966Z",
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_9763b513",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.27,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_d8f0f1e5",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_999618ec",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_ec045e01",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_67182ac8",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_88d3ba98",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_fce47cbc",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            }
+          ],
+          "all_orders": [
+            {
+              "order_id": "paper_9e9145c2",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.27,
+              "size": 5,
+              "status": "FILLED",
+              "fill_price": 0.27,
+              "filled_at": "2026-03-24T18:39:31.966Z",
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_9763b513",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.27,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_d8f0f1e5",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_999618ec",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_ec045e01",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_67182ac8",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_88d3ba98",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_fce47cbc",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:31.145Z",
+              "source": "runner_tick",
+              "inferred_window_id": "debug-fill-yes-path-v1-w1"
+            },
+            {
+              "order_id": "paper_3552f251",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.27,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_8f777f80",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.27,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_f2c90b20",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_a10a4b95",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_08cf5a3f",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_887019e1",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_b3e22830",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_10567c2d",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:39:34.584Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_ec04e0a7",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.27,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:42:51.745Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_0784d906",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.27,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:42:51.745Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_06d77c04",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:42:51.745Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_5380665e",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.24,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:42:51.745Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_5234cdf4",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:42:51.745Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_e3bed082",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.21,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:42:51.745Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_6bc95a37",
+              "kind": "ENTRY",
+              "side": "YES",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:42:51.745Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            },
+            {
+              "order_id": "paper_9814c98b",
+              "kind": "ENTRY",
+              "side": "NO",
+              "price": 0.18,
+              "size": 5,
+              "status": "CANCELLED",
+              "fill_price": null,
+              "filled_at": null,
+              "created_at": "2026-03-24T18:42:51.745Z",
+              "source": "manual",
+              "inferred_window_id": "debug-main-path-v1-w1"
+            }
+          ],
+          "summary": {
+            "total": 24,
+            "open_total": 0,
+            "cancelled_total": 23,
+            "filled_total": 1,
+            "open_yes": 0,
+            "open_no": 0,
+            "filled_yes": 1,
+            "filled_no": 0
+          },
+          "window_scope": {
+            "scope": "current_window",
+            "running": true,
+            "active_window_id": "debug-fill-yes-path-v1-w1",
+            "display_window_id": "debug-fill-yes-path-v1-w1",
+            "label": "当前窗口订单",
+            "ownership_rule": "运行中仅展示当前活动窗口订单"
+          },
+          "hidden_other_window_count": 0
+        },
+        "path": "/bot/orders"
+      },
+      "summary": {
+        "status": 200,
+        "body": {
+          "yes_entry_filled_count": 1,
+          "yes_exit_filled_count": 0,
+          "yes_position_size": 5,
+          "yes_avg_fill_price": 0.27,
+          "yes_realized_gross_pnl": 0,
+          "yes_unrealized_gross_pnl": 0.14999999999999986,
+          "no_entry_filled_count": 0,
+          "no_exit_filled_count": 0,
+          "no_position_size": 0,
+          "no_avg_fill_price": null,
+          "no_realized_gross_pnl": 0,
+          "no_unrealized_gross_pnl": 0,
+          "filled_total": 1,
+          "realized_gross_pnl_total": 0,
+          "unrealized_gross_pnl_total": 0.14999999999999986,
+          "updated_at": "2026-03-24T18:42:53.957Z"
+        },
+        "path": "/bot/paper/summary"
+      },
+      "status": {
+        "status": 200,
+        "body": {
+          "mode": "paper-staging",
+          "phase": "IDLE",
+          "running": true,
+          "debug_scenario": "fill_yes_path_v1",
+          "debug_frame_index": 1,
+          "debug_completed": false,
+          "tick_interval_ms": 1000,
+          "last_tick_at": "2026-03-24T18:42:53.822Z",
+          "last_window_id": null,
+          "current_window_id": "debug-fill-yes-path-v1-w1",
+          "window_initialized_at": "2026-03-24T18:42:53.821Z",
+          "remaining_sec": 299,
+          "anchor_btc": 100,
+          "atr_5m": 2,
+          "upper_bound": 102.4,
+          "lower_bound": 97.6,
+          "ladder_posted": false,
+          "yes_cancelled": false,
+          "no_cancelled": false,
+          "yes_order_ids": [],
+          "no_order_ids": [],
+          "last_reason": "pre_open_or_open_not_open_delay",
+          "last_intents": [
+            {
+              "kind": "NOOP"
+            }
+          ],
+          "updated_at": "2026-03-24T18:42:53.822Z",
+          "saved_config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "last_run_snapshot": {
+            "stop_reason": "MANUAL_STOP",
+            "completed_at": "2026-03-24T18:42:52.269Z",
+            "current_window_id": "debug-main-path-v1-w1",
+            "phase": "IDLE",
+            "filled_total": 0,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "unrealized_gross_pnl_total": 1.4000000000000001,
+            "active_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            }
+          },
+          "active_runtime_snapshot": {
+            "config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            },
+            "phase": "IDLE",
+            "current_window_id": "debug-fill-yes-path-v1-w1",
+            "anchor_btc": 100,
+            "upper_bound": 102.4,
+            "lower_bound": 97.6
+          }
+        },
+        "path": "/bot/status"
+      },
+      "postmortem": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "postmortem": {
+            "id": 171,
+            "strategy_id": "bot_console",
+            "event_id": "debug-main-path-v1-w1",
+            "window_start": "2026-03-24T18:42:52.269Z",
+            "window_end": "2026-03-24T18:42:52.269Z",
+            "created_at": "2026-03-24T18:42:52.269Z",
+            "window_id": "debug-main-path-v1-w1",
+            "stop_reason": "MANUAL_STOP",
+            "completed_at": "2026-03-24T18:42:52.269Z",
+            "filled_total": 0,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "unrealized_gross_pnl_total": 1.4000000000000001,
+            "active_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            },
+            "action_summary": [
+              "NO_ACTION"
+            ]
+          }
+        },
+        "path": "/bot/postmortem/latest"
+      },
+      "performance": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "summary": {
+            "preset": "today",
+            "window_count": 22,
+            "filled_total": 26312,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "avg_realized_gross_pnl_per_window": 0,
+            "running_window_excluded": true,
+            "sample_postmortem_rows": [
+              {
+                "id": 171,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T18:42:52.269Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 170,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:42:49.385Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 169,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:42:02.115Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 168,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:39:36.857Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 167,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T18:39:35.108Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 166,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:39:32.218Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 165,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:38:00.775Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 164,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T18:37:58.999Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 163,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:37:55.406Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 162,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:35:33.335Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              }
+            ],
+            "participating_postmortem_rows": [
+              {
+                "id": 171,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T18:42:52.269Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 170,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:42:49.385Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 169,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:42:02.115Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 168,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:39:36.857Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 167,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T18:39:35.108Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 166,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:39:32.218Z",
+                "filled_total": 1,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 165,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:38:00.775Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 164,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T18:37:58.999Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 163,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:37:55.406Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 162,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:35:33.335Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 161,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T18:35:31.564Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 160,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:35:28.642Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 159,
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "completed_at": "2026-03-24T18:25:16.402Z",
+                "filled_total": 2520,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 158,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T18:25:08.784Z",
+                "filled_total": 2519,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 157,
+                "window_id": "btc-updown-5m-1774376700",
+                "completed_at": "2026-03-24T18:25:02.344Z",
+                "filled_total": 2519,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 156,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T18:00:01.329Z",
+                "filled_total": 1763,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 155,
+                "window_id": "btc-updown-5m-1774374900",
+                "completed_at": "2026-03-24T17:59:59.301Z",
+                "filled_total": 1763,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 154,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T17:17:24.029Z",
+                "filled_total": 52,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 153,
+                "window_id": "btc-updown-5m-1774371900",
+                "completed_at": "2026-03-24T17:06:39.798Z",
+                "filled_total": 52,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 152,
+                "window_id": "debug-main-path-v1-w1",
+                "completed_at": "2026-03-24T16:50:20.054Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 151,
+                "window_id": null,
+                "completed_at": "2026-03-24T16:11:54.604Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              },
+              {
+                "id": 150,
+                "window_id": null,
+                "completed_at": "2026-03-24T16:10:57.974Z",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0
+              }
+            ]
+          }
+        },
+        "path": "/bot/performance/summary?preset=today&detail=1"
+      }
+    }
+  }
+}
