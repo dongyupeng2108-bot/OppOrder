@@ -98,77 +98,23 @@ async function initStrategyEditor() {
   if (container.innerHTML.trim()) return;
 
   container.innerHTML = `
-    <div class="se-layout" style="height:100%;display:flex;flex-direction:column;background:#0b0d10;color:#d6dde5;">
-      <div style="height:62px;border-bottom:1px solid #232a33;background:#0d131a;padding:0 12px;display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr auto auto auto;gap:10px;align-items:center;">
+    <div class="se-layout" style="height:100%;display:flex;flex-direction:column;background:#0b0d10;color:#d6dde5;position:relative;">
+      <div style="height:62px;border-bottom:1px solid #232a33;background:#0d131a;padding:0 12px;display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr 1fr auto auto auto;gap:10px;align-items:center;">
         <div style="font-size:18px;letter-spacing:.3px;">BTCQDD 执行机器人</div>
         <div style="border-left:1px solid #1c222b;padding-left:10px;font-size:12px;color:#9aa5b2;line-height:1.5;"><b style="color:#d6dde5;">运行状态</b><span id="se-top-running">已停止</span></div>
-        <div style="border-left:1px solid #1c222b;padding-left:10px;font-size:12px;color:#9aa5b2;line-height:1.5;"><b style="color:#d6dde5;">当前窗口</b><span id="se-top-window">暂无</span></div>
+        <div style="border-left:1px solid #1c222b;padding-left:10px;font-size:12px;color:#9aa5b2;line-height:1.5;"><b style="color:#d6dde5;">当前</b><span id="se-top-activity">当前无活动窗口</span></div>
         <div style="border-left:1px solid #1c222b;padding-left:10px;font-size:12px;color:#9aa5b2;line-height:1.5;"><b style="color:#d6dde5;">上次结束</b><span id="se-top-last-stop">暂无</span></div>
+        <div style="border-left:1px solid #1c222b;padding-left:10px;font-size:12px;color:#9aa5b2;line-height:1.5;"><b style="color:#d6dde5;">最近窗口</b><span id="se-top-window">暂无</span></div>
         <button id="se-btn-param-toggle" onclick="se_toggleParamsPanel()" style="height:34px;width:34px;border:1px solid #2f3946;background:#18202a;color:#d6dde5;border-radius:4px;cursor:pointer;">⚙</button>
         <button id="se-btn-start" class="se-btn-deploy" onclick="se_startBot()">启动</button>
         <button id="se-btn-stop" class="se-btn se-btn-stop" onclick="se_stopBot()" style="background:#7a3a3a;color:#fff;border:1px solid #9a4b4b;padding:6px 10px;border-radius:4px;cursor:pointer;">停止</button>
       </div>
 
-      <div style="flex:1;min-height:0;padding:10px;display:grid;grid-template-rows:minmax(340px,1fr) 178px 208px;gap:10px;">
-        <div style="display:grid;grid-template-columns:320px minmax(0,1fr) 360px;gap:10px;min-height:0;">
-          <section style="border:1px solid #232a33;background:#11161c;padding:10px;display:flex;flex-direction:column;min-height:0;gap:8px;">
-            <h3 style="margin:0;font-size:13px;color:#d6dde5;">参数设置</h3>
-            <div id="se-param-summary" style="font-size:12px;color:#9aa5b2;line-height:1.6;">读取中...</div>
-            <div id="se-snapshot-note" style="font-size:11px;color:#7f8a97;line-height:1.5;">saved/active runtime snapshot 读取中...</div>
-            <div style="display:flex;gap:8px;">
-              <button onclick="se_toggleParamsPanel()" style="height:30px;border:1px solid #2f3946;background:#18202a;color:#d6dde5;border-radius:4px;padding:0 12px;cursor:pointer;">展开/收纳</button>
-              <button class="se-btn-guide" onclick="se_showGuide()">查看说明</button>
-            </div>
-            <div id="se-param-collapse" style="display:none;border:1px solid #1c222b;background:#0d1218;padding:10px;overflow:auto;min-height:0;">
-              <div id="se-params-form" style="color:#ddd; display: flex; flex-direction: column; gap: 12px;">
-                <div>
-                  <label style="display:block; margin-bottom:5px; font-weight:bold;">开盘等待</label>
-                  <input type="number" id="param_open_delay_sec" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
-                </div>
-                <div>
-                  <label style="display:block; margin-bottom:5px; font-weight:bold;">全撤提前量</label>
-                  <input type="number" id="param_cancel_all_remaining_sec" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
-                </div>
-                <div>
-                  <label style="display:block; margin-bottom:5px; font-weight:bold;">波动乘数</label>
-                  <input type="number" step="0.01" id="param_atr_multiple" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
-                </div>
-                <div>
-                  <label style="display:block; margin-bottom:5px; font-weight:bold;">单档数量</label>
-                  <input type="number" id="param_ladder_size" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
-                </div>
-                <div>
-                  <label style="display:block; margin-bottom:5px; font-weight:bold;">挂单价格梯队（逗号分隔）</label>
-                  <input type="text" id="param_ladder_prices" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
-                </div>
-                <div style="display:flex;gap:8px;">
-                  <button class="se-btn" onclick="se_restoreDefaultParams()" style="background:#444;color:#eee;border:1px solid #555;padding:4px 8px;border-radius:4px;cursor:pointer;">恢复默认</button>
-                  <button class="se-btn-save" onclick="se_saveParams()" style="background:#007acc;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;">保存参数</button>
-                </div>
-                <div id="se-param-feedback" style="min-height: 18px; font-size: 12px; color: #ff8a80;"></div>
-                <div style="padding: 8px; background: rgba(0, 122, 204, 0.12); border-left: 3px solid #007acc; border-radius: 4px; color: #9fd3ff;font-size:12px;">
-                  保存后将在下一轮启动时生效
-                </div>
-              </div>
-            </div>
-            <textarea id="se-editor" style="display:none;">function decide(ctx) { return 'HOLD'; }</textarea>
-          </section>
-
-          <section style="border:1px solid #232a33;background:#11161c;padding:10px;display:flex;flex-direction:column;min-height:0;gap:8px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-              <h3 style="margin:0;font-size:13px;color:#d6dde5;">实时日志</h3>
-              <div style="display:flex;align-items:center;gap:8px;">
-                <button class="se-restart-inline-btn" onclick="restartServer()">⟳ 重启</button>
-                <span id="se-countdown" style="font-size:11px;color:#aaa;font-family:monospace;">--:--</span>
-              </div>
-            </div>
-            <div id="se-log-area" class="se-log-area" style="flex:1;min-height:0;"></div>
-            <div id="se-ui-error" style="font-size:11px;color:#ff8a80;min-height:16px;"></div>
-          </section>
-
-          <section class="se-order-panel" style="border:1px solid #232a33;background:#11161c;padding:10px;min-height:0;">
-            <div id="se-order-title" class="se-order-title">当前窗口订单状态</div>
-            <div id="se-order-scope-note" style="font-size:11px;color:#888;padding:4px 2px 8px 2px;">仅展示当前窗口相关订单</div>
+      <div style="flex:1;min-height:0;padding:10px;display:grid;grid-template-columns:320px 12px minmax(0,1fr);gap:0;">
+        <section class="se-order-panel" style="border:1px solid #232a33;background:#11161c;padding:10px;min-height:0;width:100%;max-width:none;overflow:hidden;display:flex;flex-direction:column;">
+          <div id="se-order-title" class="se-order-title">当前窗口订单状态</div>
+          <div id="se-order-scope-note" style="font-size:11px;color:#888;padding:4px 2px 8px 2px;">当前无活动窗口，以下展示最近订单样例</div>
+          <div style="flex:1;min-height:0;overflow:auto;">
             <table class="se-order-table" style="table-layout:fixed;width:100%;">
               <colgroup>
                 <col style="width:18%">
@@ -183,65 +129,123 @@ async function initStrategyEditor() {
                 <tr><td colspan="6" style="color:#555;text-align:center">暂无</td></tr>
               </tbody>
             </table>
-            <div id="se-latency" style="font-size:10px;color:#888;text-align:right;padding:4px 8px;margin-top:auto;"></div>
-          </section>
-        </div>
+          </div>
+          <div id="se-latency" style="font-size:10px;color:#888;text-align:right;padding:4px 8px 0 8px;"></div>
+        </section>
+        <div style="background:#0b0d10;border-left:1px solid #1a2028;border-right:1px solid #1a2028;"></div>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;min-height:0;">
-          <section style="border:1px solid #232a33;background:#11161c;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:0;">
-            <h3 style="margin:0;font-size:13px;color:#d6dde5;">本轮运行</h3>
-            <div id="se-runtime-note" style="font-size:12px;color:#9aa5b2;line-height:1.7;">当前未运行；暂无活动窗口。启动后将显示实时运行信息。</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
-              <div style="color:#7f8a97;">当前 BTC 价格</div><div id="se-runtime-btc" style="text-align:right;color:#d6dde5;">—</div>
-              <div style="color:#7f8a97;">窗口基准价</div><div id="se-runtime-anchor" style="text-align:right;color:#d6dde5;">—</div>
-              <div style="color:#7f8a97;">上触发线 / 下触发线</div><div id="se-runtime-bounds" style="text-align:right;color:#d6dde5;">—</div>
-              <div style="color:#7f8a97;">剩余时间</div><div id="se-runtime-remaining" style="text-align:right;color:#d6dde5;">—</div>
-            </div>
-          </section>
+        <div style="min-height:0;display:grid;grid-template-rows:minmax(260px,1fr) 168px 208px;gap:10px;">
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) 12px 360px;gap:0;min-height:0;">
+            <section style="border:1px solid #232a33;background:#11161c;padding:10px;display:flex;flex-direction:column;min-height:0;gap:8px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <h3 style="margin:0;font-size:13px;color:#d6dde5;">实时日志</h3>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <button class="se-restart-inline-btn" onclick="restartServer()">⟳ 重启</button>
+                  <span id="se-countdown" style="font-size:11px;color:#aaa;font-family:monospace;">--:--</span>
+                </div>
+              </div>
+              <div id="se-log-area" class="se-log-area" style="flex:1;min-height:0;"></div>
+              <div id="se-ui-error" style="font-size:11px;color:#ff8a80;min-height:16px;"></div>
+            </section>
+            <div style="background:#0b0d10;border-left:1px solid #1a2028;border-right:1px solid #1a2028;"></div>
+
+            <section style="border:1px solid #232a33;background:#11161c;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:0;">
+              <h3 style="margin:0;font-size:13px;color:#d6dde5;">本轮运行</h3>
+              <div id="se-runtime-note" style="font-size:12px;color:#9aa5b2;line-height:1.7;">当前未运行；暂无活动窗口。启动后会显示：当前 BTC 价格、窗口基准价、上触发线 / 下触发线、剩余时间。</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
+                <div style="color:#7f8a97;">当前 BTC 价格</div><div id="se-runtime-btc" style="text-align:right;color:#d6dde5;">—</div>
+                <div style="color:#7f8a97;">窗口基准价</div><div id="se-runtime-anchor" style="text-align:right;color:#d6dde5;">—</div>
+                <div style="color:#7f8a97;">上触发线 / 下触发线</div><div id="se-runtime-bounds" style="text-align:right;color:#d6dde5;">—</div>
+                <div style="color:#7f8a97;">剩余时间</div><div id="se-runtime-remaining" style="text-align:right;color:#d6dde5;">—</div>
+              </div>
+            </section>
+          </div>
+
           <section style="border:1px solid #232a33;background:#11161c;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:0;">
             <h3 style="margin:0;font-size:13px;color:#d6dde5;">下一步动作</h3>
-            <div id="se-next-note" style="font-size:12px;color:#9aa5b2;line-height:1.7;">当前无有效决策预览。启动后将显示动作、触发原因与判断依据。</div>
+            <div id="se-next-note" style="font-size:12px;color:#9aa5b2;line-height:1.7;">当前无有效决策预览。启动后会显示：当前动作、触发原因、判断依据。</div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
               <div style="color:#7f8a97;">当前动作</div><div id="se-next-action" style="text-align:right;color:#d6dde5;">—</div>
               <div style="color:#7f8a97;">触发原因</div><div id="se-next-reason" style="text-align:right;color:#d6dde5;">—</div>
               <div style="color:#7f8a97;">判断依据</div><div id="se-next-basis" style="text-align:right;color:#d6dde5;">—</div>
             </div>
           </section>
-        </div>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;min-height:0;">
-          <section style="border:1px solid #232a33;background:#11161c;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:0;">
-            <h3 style="margin:0;font-size:13px;color:#d6dde5;">上一窗口结果</h3>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
-              <div style="color:#7f8a97;">窗口</div><div id="se-prev-window" style="text-align:right;color:#d6dde5;">—</div>
-              <div style="color:#7f8a97;">结束原因</div><div id="se-prev-stop-reason" style="text-align:right;color:#d6dde5;">—</div>
-              <div style="color:#7f8a97;">完成时间</div><div id="se-prev-completed-at" style="text-align:right;color:#d6dde5;">—</div>
-              <div style="color:#7f8a97;">已成交总数</div><div id="se-prev-filled-total" style="text-align:right;color:#d6dde5;">—</div>
-              <div style="color:#7f8a97;">已撤单总数</div><div id="se-prev-cancelled-total" style="text-align:right;color:#d6dde5;">—</div>
-              <div style="color:#7f8a97;">已实现盈亏</div><div id="se-prev-realized-total" style="text-align:right;color:#d6dde5;">—</div>
-              <div style="color:#7f8a97;">未实现盈亏</div><div id="se-prev-unrealized-total" style="text-align:right;color:#d6dde5;">—</div>
-              <div style="color:#7f8a97;">关键动作链</div><div id="se-prev-action-summary" style="text-align:right;color:#d6dde5;">—</div>
-              <div style="color:#7f8a97;">本轮参数摘要</div><div id="se-prev-param-summary" style="text-align:right;color:#d6dde5;">—</div>
-            </div>
-          </section>
-          <section style="border:1px solid #232a33;background:#11161c;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:0;">
-            <h3 style="margin:0;font-size:13px;color:#d6dde5;">近期表现摘要</h3>
-            <div style="display:flex;gap:6px;">
-              <button id="se-perf-btn-today" onclick="se_setPerformancePreset('today')" style="background:#1f1f1f;color:#ddd;border:1px solid #555;border-radius:4px;padding:2px 8px;cursor:pointer;">today</button>
-              <button id="se-perf-btn-last7d" onclick="se_setPerformancePreset('last_7d')" style="background:#111;color:#aaa;border:1px solid #333;border-radius:4px;padding:2px 8px;cursor:pointer;">last_7d</button>
-              <button id="se-perf-btn-last30" onclick="se_setPerformancePreset('last_30_windows')" style="background:#111;color:#aaa;border:1px solid #333;border-radius:4px;padding:2px 8px;cursor:pointer;">last_30_windows</button>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
-              <div style="color:#7f8a97;">窗口数</div><div id="se-perf-window-count" style="text-align:right;color:#d6dde5;">—</div>
-              <div style="color:#7f8a97;">成交总数</div><div id="se-perf-filled-total" style="text-align:right;color:#d6dde5;">—</div>
-              <div style="color:#7f8a97;">撤单总数</div><div id="se-perf-cancelled-total" style="text-align:right;color:#d6dde5;">—</div>
-              <div style="color:#7f8a97;">已实现盈亏</div><div id="se-perf-realized-total" style="text-align:right;color:#d6dde5;">—</div>
-              <div style="color:#7f8a97;">平均每窗口盈亏</div><div id="se-perf-avg-realized" style="text-align:right;color:#d6dde5;">—</div>
-            </div>
-            <div id="se-perf-note" style="font-size:11px;color:#9aa0a6;min-height:16px;">—</div>
-          </section>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;min-height:0;">
+            <section style="border:1px solid #232a33;background:#11161c;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:0;">
+              <h3 style="margin:0;font-size:13px;color:#d6dde5;">上一窗口结果</h3>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
+                <div style="color:#7f8a97;">窗口</div><div id="se-prev-window" style="text-align:right;color:#d6dde5;">—</div>
+                <div style="color:#7f8a97;">结束原因</div><div id="se-prev-stop-reason" style="text-align:right;color:#d6dde5;">—</div>
+                <div style="color:#7f8a97;">完成时间</div><div id="se-prev-completed-at" style="text-align:right;color:#d6dde5;">—</div>
+                <div style="color:#7f8a97;">已成交总数</div><div id="se-prev-filled-total" style="text-align:right;color:#d6dde5;">—</div>
+                <div style="color:#7f8a97;">已撤单总数</div><div id="se-prev-cancelled-total" style="text-align:right;color:#d6dde5;">—</div>
+                <div style="color:#7f8a97;">已实现盈亏</div><div id="se-prev-realized-total" style="text-align:right;color:#d6dde5;">—</div>
+                <div style="color:#7f8a97;">未实现盈亏</div><div id="se-prev-unrealized-total" style="text-align:right;color:#d6dde5;">—</div>
+                <div style="color:#7f8a97;">关键动作链</div><div id="se-prev-action-summary" style="text-align:right;color:#d6dde5;">—</div>
+                <div style="color:#7f8a97;">本轮参数摘要</div><div id="se-prev-param-summary" style="text-align:right;color:#d6dde5;">—</div>
+              </div>
+            </section>
+            <section style="border:1px solid #232a33;background:#11161c;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:0;">
+              <h3 style="margin:0;font-size:13px;color:#d6dde5;">近期表现摘要</h3>
+              <div style="display:flex;gap:6px;">
+                <button id="se-perf-btn-today" onclick="se_setPerformancePreset('today')" style="background:#1f1f1f;color:#ddd;border:1px solid #555;border-radius:4px;padding:2px 8px;cursor:pointer;">今日</button>
+                <button id="se-perf-btn-last7d" onclick="se_setPerformancePreset('last_7d')" style="background:#111;color:#aaa;border:1px solid #333;border-radius:4px;padding:2px 8px;cursor:pointer;">近7天</button>
+                <button id="se-perf-btn-last30" onclick="se_setPerformancePreset('last_30_windows')" style="background:#111;color:#aaa;border:1px solid #333;border-radius:4px;padding:2px 8px;cursor:pointer;">近30窗口</button>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
+                <div style="color:#7f8a97;">统计区间</div><div id="se-perf-range" style="text-align:right;color:#d6dde5;">今日</div>
+              </div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
+                <div style="color:#7f8a97;">窗口数</div><div id="se-perf-window-count" style="text-align:right;color:#d6dde5;">—</div>
+                <div style="color:#7f8a97;">总成交单数</div><div id="se-perf-filled-total" style="text-align:right;color:#d6dde5;">—</div>
+                <div style="color:#7f8a97;">总撤单单数</div><div id="se-perf-cancelled-total" style="text-align:right;color:#d6dde5;">—</div>
+                <div style="color:#7f8a97;">总已实现盈亏</div><div id="se-perf-realized-total" style="text-align:right;color:#d6dde5;">—</div>
+                <div style="color:#7f8a97;">总未实现盈亏</div><div id="se-perf-unrealized-total" style="text-align:right;color:#d6dde5;">—</div>
+                <div style="color:#7f8a97;">平均每窗口盈亏</div><div id="se-perf-avg-realized" style="text-align:right;color:#d6dde5;">—</div>
+              </div>
+              <div id="se-perf-note" style="font-size:11px;color:#9aa0a6;min-height:16px;">—</div>
+            </section>
+          </div>
         </div>
       </div>
+      <aside id="se-param-collapse" style="display:none;position:absolute;top:62px;left:10px;width:320px;max-height:calc(100% - 74px);border:1px solid #1c222b;background:#0d1218;padding:10px;overflow:auto;z-index:20;">
+        <h3 style="margin:0 0 8px 0;font-size:13px;color:#d6dde5;">参数设置</h3>
+        <div id="se-param-summary" style="font-size:12px;color:#9aa5b2;line-height:1.6;margin-bottom:6px;">读取中...</div>
+        <div id="se-snapshot-note" style="font-size:11px;color:#7f8a97;line-height:1.5;margin-bottom:8px;">saved/active runtime snapshot 读取中...</div>
+        <div id="se-params-form" style="color:#ddd; display: flex; flex-direction: column; gap: 12px;">
+          <div>
+            <label style="display:block; margin-bottom:5px; font-weight:bold;">开盘等待</label>
+            <input type="number" id="param_open_delay_sec" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
+          </div>
+          <div>
+            <label style="display:block; margin-bottom:5px; font-weight:bold;">全撤提前量</label>
+            <input type="number" id="param_cancel_all_remaining_sec" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
+          </div>
+          <div>
+            <label style="display:block; margin-bottom:5px; font-weight:bold;">波动乘数</label>
+            <input type="number" step="0.01" id="param_atr_multiple" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
+          </div>
+          <div>
+            <label style="display:block; margin-bottom:5px; font-weight:bold;">单档数量</label>
+            <input type="number" id="param_ladder_size" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
+          </div>
+          <div>
+            <label style="display:block; margin-bottom:5px; font-weight:bold;">挂单价格梯队（逗号分隔）</label>
+            <input type="text" id="param_ladder_prices" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="se-btn" onclick="se_restoreDefaultParams()" style="background:#444;color:#eee;border:1px solid #555;padding:4px 8px;border-radius:4px;cursor:pointer;">恢复默认</button>
+            <button class="se-btn-save" onclick="se_saveParams()" style="background:#007acc;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;">保存参数</button>
+            <button class="se-btn-guide" onclick="se_showGuide()">说明</button>
+          </div>
+          <div id="se-param-feedback" style="min-height: 18px; font-size: 12px; color: #ff8a80;"></div>
+          <div style="padding: 8px; background: rgba(0, 122, 204, 0.12); border-left: 3px solid #007acc; border-radius: 4px; color: #9fd3ff;font-size:12px;">
+            保存后将在下一轮启动时生效
+          </div>
+        </div>
+      </aside>
+      <textarea id="se-editor" style="display:none;">function decide(ctx) { return 'HOLD'; }</textarea>
 
       <div style="display:none;">
         <span id="se-bot-running">—</span>
@@ -680,7 +684,8 @@ function se_renderDecision(status, context, preview, ordersData, previewError) {
 
 function se_renderContext(context, status) {
   const running = status?.running === true;
-  se_setText('se-top-window', status?.current_window_id || '暂无');
+  se_setText('se-top-window', status?.last_window_id || status?.current_window_id || '暂无');
+  se_setText('se-top-activity', running ? `窗口 ${se_formatStateValue(status?.current_window_id)}` : '当前无活动窗口');
   if (!running) {
     se_setText('se-runtime-note', '当前未运行；暂无活动窗口。启动后会显示：当前 BTC 价格、窗口基准价、上触发线 / 下触发线、剩余时间。');
     se_setText('se-runtime-btc', '—');
@@ -689,13 +694,17 @@ function se_renderContext(context, status) {
     se_setText('se-runtime-remaining', '—');
     return;
   }
-  se_setText('se-runtime-note', `运行中，当前窗口=${status?.current_window_id || context?.window_id || 'N/A (null)'}`);
-  se_setText('se-runtime-btc', context?.btc_price);
-  se_setText('se-runtime-anchor', context?.anchor_btc ?? status?.anchor_btc);
+  const toRuntimeValue = (value, emptyText) => (value === null || value === undefined || value === '') ? emptyText : value;
+  se_setText('se-runtime-note', `运行中，当前窗口=${status?.current_window_id || context?.window_id || '等待窗口初始化'}`);
+  se_setText('se-runtime-btc', toRuntimeValue(context?.btc_price, '数据未就绪'));
+  se_setText('se-runtime-anchor', toRuntimeValue(context?.anchor_btc ?? status?.anchor_btc, '等待窗口初始化'));
   const up = context?.upper_bound ?? status?.upper_bound;
   const down = context?.lower_bound ?? status?.lower_bound;
-  se_setText('se-runtime-bounds', `${se_formatStateValue(up)} / ${se_formatStateValue(down)}`);
-  se_setText('se-runtime-remaining', context?.remaining_sec ?? status?.remaining_sec);
+  const boundsText = (up === null || up === undefined || down === null || down === undefined)
+    ? '等待窗口初始化'
+    : `${se_formatStateValue(up)} / ${se_formatStateValue(down)}`;
+  se_setText('se-runtime-bounds', boundsText);
+  se_setText('se-runtime-remaining', toRuntimeValue(context?.remaining_sec ?? status?.remaining_sec, '数据未就绪'));
 }
 
 function se_pickSummaryValue(summary, keys, fallback = null) {
@@ -823,19 +832,27 @@ function se_setPerformancePreset(preset, triggerPoll = true) {
   }
 }
 
+function se_perfPresetLabel(preset) {
+  if (preset === 'last_7d') return '近7天';
+  if (preset === 'last_30_windows') return '近30窗口';
+  return '今日';
+}
+
 function se_renderPerformance(perfPayload, status) {
   const summary = perfPayload?.summary && typeof perfPayload.summary === 'object' ? perfPayload.summary : null;
+  se_setText('se-perf-range', se_perfPresetLabel(summary?.preset || _sePerformancePreset));
   document.getElementById('se-perf-window-count').textContent = se_formatStateValue(summary?.window_count);
   document.getElementById('se-perf-filled-total').textContent = se_formatStateValue(summary?.filled_total);
   document.getElementById('se-perf-cancelled-total').textContent = se_formatStateValue(summary?.cancelled_total);
   document.getElementById('se-perf-realized-total').textContent = se_formatStateValue(summary?.realized_gross_pnl_total);
+  document.getElementById('se-perf-unrealized-total').textContent = '0';
   document.getElementById('se-perf-avg-realized').textContent = se_formatStateValue(summary?.avg_realized_gross_pnl_per_window);
   const noteEl = document.getElementById('se-perf-note');
   if (!noteEl) return;
   const empty = (summary?.window_count ?? 0) === 0;
   noteEl.textContent = empty
-    ? `preset=${_sePerformancePreset} 当前无已完成窗口数据（running 窗口不计入）`
-    : `preset=${se_formatStateValue(summary?.preset)} | 仅统计已完成窗口 | running_excluded=${se_formatStateValue(summary?.running_window_excluded)} | running_now=${se_formatStateValue(status?.running)}`;
+    ? `${se_perfPresetLabel(_sePerformancePreset)} 当前无已完成窗口数据（running 窗口不计入）`
+    : `${se_perfPresetLabel(summary?.preset)} | 仅统计已完成窗口 | running_excluded=${se_formatStateValue(summary?.running_window_excluded)} | running_now=${se_formatStateValue(status?.running)} | 未实现盈亏按已完成窗口口径记为0`;
 }
 
 function se_renderPollError(message) {
@@ -860,18 +877,24 @@ function se_renderOrders(orders, status) {
   const titleEl = document.getElementById('se-order-title');
   const scopeNoteEl = document.getElementById('se-order-scope-note');
   const scope = orders?.window_scope && typeof orders.window_scope === 'object' ? orders.window_scope : {};
-  if (titleEl) {
-    titleEl.textContent = se_formatStateValue(scope?.label || '当前窗口订单状态');
-  }
+  const isCurrentWindowScope = scope?.scope === 'current_window';
+  if (titleEl) titleEl.textContent = '当前窗口订单状态';
   if (scopeNoteEl) {
-    const displayWindow = scope?.display_window_id || status?.current_window_id || 'N/A';
-    scopeNoteEl.textContent = `窗口=${se_formatStateValue(displayWindow)} ｜ ${se_formatStateValue(scope?.ownership_rule || '仅展示当前/上一窗口相关订单')}`;
+    const activeWindow = status?.current_window_id || null;
+    scopeNoteEl.textContent = activeWindow
+      ? `窗口=${se_formatStateValue(activeWindow)} ｜ 仅展示当前活动窗口订单`
+      : '当前无活动窗口';
   }
   const list = Array.isArray(orders?.window_orders)
     ? [...orders.window_orders]
     : (Array.isArray(orders?.orders) ? [...orders.orders] : []);
-  list.sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)));
-  const topList = list.slice(0, 8);
+  const scopedList = isCurrentWindowScope
+    ? list.filter((item) => item?.inferred_window_id == null || item.inferred_window_id === scope?.display_window_id)
+    : [];
+  const activeList = scopedList.filter((item) => item?.status === 'OPEN');
+  const finalList = activeList.length ? activeList : scopedList;
+  finalList.sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)));
+  const topList = finalList.slice(0, 200);
   const rows = topList.map((o) => {
     const statusColor = o.status === 'OPEN' ? '#00e676' : (o.status === 'FILLED' ? '#ffb74d' : '#888');
     const orderPriceText = typeof o.price === 'number' ? o.price.toFixed(3) : '--';
@@ -882,7 +905,9 @@ function se_renderOrders(orders, status) {
     const pnlCell = o.pnl != null ? o.pnl : '—';
     return `<tr><td>${typeLabel}</td><td>${se_formatStateValue(o.side)}</td><td>${priceCell}</td><td style="color:${statusColor}">${statusLabel}</td><td>${se_formatStateValue(o.size)}</td><td>${se_formatStateValue(pnlCell)}</td></tr>`;
   });
-  tbody.innerHTML = rows.length ? rows.join('') : '<tr><td colspan="6" style="color:#555;text-align:center">暂无</td></tr>';
+  tbody.innerHTML = rows.length
+    ? rows.join('')
+    : `<tr><td colspan="6" style="color:#555;text-align:center">${isCurrentWindowScope ? '当前窗口暂无活跃订单' : '当前无活动窗口订单'}</td></tr>`;
 }
 
 function se_renderLogs(logs) {
@@ -903,6 +928,18 @@ function se_renderLogs(logs) {
 
   _seLastLogTs = logs[logs.length - 1].ts;
 
+  const eventLabel = (event) => ({
+    BOT_STARTED: '已启动',
+    BOT_WINDOW_INITIALIZED: '窗口初始化',
+    BOT_DECISION: '策略决策',
+    BOT_ORDER_APPLY: '挂单提交',
+    BOT_ORDER_CANCEL: '撤单',
+    BOT_FILL: '成交',
+    BOT_STOPPED: '已停止',
+    BOT_RUN_SNAPSHOT: '运行快照',
+    BOT_POSTMORTEM_WRITTEN: '复盘记录已写入'
+  }[event] || null);
+
   newLogs.forEach(log => {
     const div = document.createElement('div');
     const level = (log.level || log.type || 'info').toLowerCase();
@@ -910,7 +947,10 @@ function se_renderLogs(logs) {
     const message = log.message || log.msg || '';
     div.className = `se-log-entry se-log-${level}`;
     const time = new Date(log.ts).toLocaleTimeString('zh-CN', { hour12: false });
-    div.textContent = `${time} [${level.toUpperCase()}] ${event} ${message}`.trim();
+    const mapped = eventLabel(event);
+    const mainText = mapped ? `${mapped}：${message || '—'}` : `${event} ${message}`;
+    const rawText = mapped ? `（原始:${event}）` : '';
+    div.textContent = `${time} [${level.toUpperCase()}] ${mainText} ${rawText}`.trim();
     area.appendChild(div);
 
     if (level === 'error') {
