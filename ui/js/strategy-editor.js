@@ -54,6 +54,7 @@ let _seLastLogTs = '';
 let _seErrorCount = 0;
 let _seLastPollError = null;
 let _seActionPending = false;
+let _sePerformancePreset = 'today';
 const BASE_URL = ''; // 相对路径
 
 async function restartServer() {
@@ -244,6 +245,20 @@ async function initStrategyEditor() {
             </div>
             <div id="se-pm-note" style="font-size:11px;color:#9aa0a6;min-height:16px;">—</div>
             <div style="margin-top:4px;padding-top:6px;border-top:1px solid #2a2a2a;display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
+              <div style="color:#8aa4bf;">performance.preset</div>
+              <div style="display:flex;justify-content:flex-end;gap:6px;">
+                <button id="se-perf-btn-today" onclick="se_setPerformancePreset('today')" style="background:#1f1f1f;color:#ddd;border:1px solid #555;border-radius:4px;padding:2px 8px;cursor:pointer;">today</button>
+                <button id="se-perf-btn-last7d" onclick="se_setPerformancePreset('last_7d')" style="background:#111;color:#aaa;border:1px solid #333;border-radius:4px;padding:2px 8px;cursor:pointer;">last_7d</button>
+                <button id="se-perf-btn-last30" onclick="se_setPerformancePreset('last_30_windows')" style="background:#111;color:#aaa;border:1px solid #333;border-radius:4px;padding:2px 8px;cursor:pointer;">last_30_windows</button>
+              </div>
+              <div style="color:#8aa4bf;">performance.window_count</div><div id="se-perf-window-count" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">performance.filled_total</div><div id="se-perf-filled-total" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">performance.cancelled_total</div><div id="se-perf-cancelled-total" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">performance.realized_gross_pnl_total</div><div id="se-perf-realized-total" style="color:#ddd;">—</div>
+              <div style="color:#8aa4bf;">performance.avg_realized_gross_pnl_per_window</div><div id="se-perf-avg-realized" style="color:#ddd;">—</div>
+            </div>
+            <div id="se-perf-note" style="font-size:11px;color:#9aa0a6;min-height:16px;">—</div>
+            <div style="margin-top:4px;padding-top:6px;border-top:1px solid #2a2a2a;display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
               <div style="color:#8aa4bf;">preview.state</div><div id="se-preview-state" style="color:#ddd;">—</div>
               <div style="color:#8aa4bf;">preview.intents</div><div id="se-preview-intents" style="color:#ddd;">—</div>
               <div style="color:#8aa4bf;">preview.reason</div><div id="se-preview-reason" style="color:#ddd;">—</div>
@@ -303,6 +318,7 @@ async function initStrategyEditor() {
   if (!saved) saved = localStorage.getItem('se_code');
   document.getElementById('se-editor').value = saved || SE_DEFAULT_CODE;
   document.getElementById('se-guide-text').textContent = SE_GUIDE_TEXT;
+  se_setPerformancePreset('today', false);
   se_updateRunningUI(false);
   se_startPoll();
 
@@ -536,6 +552,7 @@ async function se_poll() {
     let contextData = {};
     let previewData = null;
     let postmortemData = null;
+    let performanceData = null;
     let previewError = null;
     try {
       const contextRes = await fetch(`${BASE_URL}/bot/context`);
@@ -561,8 +578,17 @@ async function se_poll() {
       postmortemData = null;
       previewError = previewError || err.message;
     }
+    try {
+      const perfRes = await fetch(`${BASE_URL}/bot/performance/summary?preset=${encodeURIComponent(_sePerformancePreset)}`);
+      performanceData = await perfRes.json();
+      if (!perfRes.ok || performanceData?.ok === false) throw new Error(performanceData?.error || `performance HTTP ${perfRes.status}`);
+    } catch (err) {
+      performanceData = null;
+      previewError = previewError || err.message;
+    }
     se_renderContext(contextData, status);
     se_renderOverview(status, summaryData, ordersData, postmortemData);
+    se_renderPerformance(performanceData, status);
     se_renderDecision(status, contextData, previewData, ordersData, previewError);
     se_renderLogs(Array.isArray(logsData) ? logsData : (logsData.logs || []));
     se_renderOrders(ordersData, status);
@@ -810,6 +836,40 @@ function se_renderOverview(status, summary, ordersData, postmortemPayload) {
   if (tip) {
     tip.textContent = `YES upnl=${se_formatStateValue(yesUnreal)} | NO upnl=${se_formatStateValue(noUnreal)} | poll=${_seLastPollError ? 'error' : 'ok'}`;
   }
+}
+
+function se_setPerformancePreset(preset, triggerPoll = true) {
+  _sePerformancePreset = preset === 'last_7d' || preset === 'last_30_windows' ? preset : 'today';
+  const activeStyle = 'background:#1f1f1f;color:#ddd;border:1px solid #555;';
+  const idleStyle = 'background:#111;color:#aaa;border:1px solid #333;';
+  const buttons = [
+    ['se-perf-btn-today', 'today'],
+    ['se-perf-btn-last7d', 'last_7d'],
+    ['se-perf-btn-last30', 'last_30_windows']
+  ];
+  buttons.forEach(([id, value]) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.style.cssText = `${el.style.cssText};${value === _sePerformancePreset ? activeStyle : idleStyle}`;
+  });
+  if (triggerPoll) {
+    se_poll();
+  }
+}
+
+function se_renderPerformance(perfPayload, status) {
+  const summary = perfPayload?.summary && typeof perfPayload.summary === 'object' ? perfPayload.summary : null;
+  document.getElementById('se-perf-window-count').textContent = se_formatStateValue(summary?.window_count);
+  document.getElementById('se-perf-filled-total').textContent = se_formatStateValue(summary?.filled_total);
+  document.getElementById('se-perf-cancelled-total').textContent = se_formatStateValue(summary?.cancelled_total);
+  document.getElementById('se-perf-realized-total').textContent = se_formatStateValue(summary?.realized_gross_pnl_total);
+  document.getElementById('se-perf-avg-realized').textContent = se_formatStateValue(summary?.avg_realized_gross_pnl_per_window);
+  const noteEl = document.getElementById('se-perf-note');
+  if (!noteEl) return;
+  const empty = (summary?.window_count ?? 0) === 0;
+  noteEl.textContent = empty
+    ? `preset=${_sePerformancePreset} 当前无已完成窗口数据（running 窗口不计入）`
+    : `preset=${se_formatStateValue(summary?.preset)} | 仅统计已完成窗口 | running_excluded=${se_formatStateValue(summary?.running_window_excluded)} | running_now=${se_formatStateValue(status?.running)}`;
 }
 
 function se_renderPollError(message) {
