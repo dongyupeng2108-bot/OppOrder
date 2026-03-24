@@ -82,6 +82,7 @@ const botRunnerConfig = {
   ...BOT_CONFIG_INTERNAL_DEFAULTS,
   ladder_prices: [...BOT_CONFIG_INTERNAL_DEFAULTS.ladder_prices]
 };
+let botActiveRuntimeConfig = null;
 const cloneBotConfig = (value) => ({
   open_delay_sec: Number(value.open_delay_sec),
   ladder_prices: [...value.ladder_prices],
@@ -98,6 +99,18 @@ const toInternalRunnerConfig = (value) => ({
 });
 const setBotConfigCurrent = (nextConfig) => {
   botConfigCurrent = cloneBotConfig(nextConfig);
+  if (botState.getState().running !== true) {
+    const internal = toInternalRunnerConfig(botConfigCurrent);
+    botRunnerConfig.open_delay_sec = internal.open_delay_sec;
+    botRunnerConfig.ladder_prices = [...internal.ladder_prices];
+    botRunnerConfig.ladder_size = internal.ladder_size;
+    botRunnerConfig.atr_multiplier = internal.atr_multiplier;
+    botRunnerConfig.cancel_all_remaining_sec = internal.cancel_all_remaining_sec;
+  }
+};
+const getBotConfigSnapshot = () => cloneBotConfig(botConfigCurrent);
+const getBotActiveRuntimeConfig = () => (botActiveRuntimeConfig ? cloneBotConfig(botActiveRuntimeConfig) : null);
+const syncRunnerConfigFromSavedConfig = () => {
   const internal = toInternalRunnerConfig(botConfigCurrent);
   botRunnerConfig.open_delay_sec = internal.open_delay_sec;
   botRunnerConfig.ladder_prices = [...internal.ladder_prices];
@@ -105,7 +118,6 @@ const setBotConfigCurrent = (nextConfig) => {
   botRunnerConfig.atr_multiplier = internal.atr_multiplier;
   botRunnerConfig.cancel_all_remaining_sec = internal.cancel_all_remaining_sec;
 };
-const getBotConfigSnapshot = () => cloneBotConfig(botConfigCurrent);
 const isNonNegativeInteger = (value) => Number.isInteger(value) && value >= 0;
 const isPositiveInteger = (value) => Number.isInteger(value) && value > 0;
 const isPositiveNumber = (value) => Number.isFinite(value) && value > 0;
@@ -294,7 +306,12 @@ const botRunner = createBotRunner({
   getOrders: () => botExecutorPaper.getOrders(),
   getSummary: () => botExecutorPaper.getSummary(),
   getScheduledTickParams: () => getDebugScheduledTickParams(),
-  onRuntimeUpdate: (runtime) => botState.patchState(runtime),
+  onRuntimeUpdate: (runtime) => {
+    botState.patchState(runtime);
+    if (runtime?.running !== true) {
+      botActiveRuntimeConfig = null;
+    }
+  },
   log: (entry) => botLogger.log(entry),
   getLogCount: () => botLogger.getCount(),
   config: botRunnerConfig
@@ -1248,7 +1265,21 @@ const server = createServer(async (req, res) => {
 
   if (req.method === 'GET' && req.url === '/bot/status') {
     try {
-      sendJson(res, botState.getState());
+      const state = botState.getState();
+      sendJson(res, {
+        ...state,
+        saved_config: getBotConfigSnapshot(),
+        active_runtime_snapshot: state.running === true
+          ? {
+              config: getBotActiveRuntimeConfig(),
+              phase: state.phase ?? null,
+              current_window_id: state.current_window_id ?? null,
+              anchor_btc: state.anchor_btc ?? null,
+              upper_bound: state.upper_bound ?? null,
+              lower_bound: state.lower_bound ?? null
+            }
+          : null
+      });
     } catch (err) {
       sendJson(res, { ok: false, error: err.message }, 500);
     }
@@ -1420,7 +1451,25 @@ const server = createServer(async (req, res) => {
         } else {
           clearBotDebugScenario();
         }
+        syncRunnerConfigFromSavedConfig();
         const configSnapshot = getBotConfigSnapshot();
+        const prevWindowId = botState.getState().current_window_id ?? null;
+        botState.patchState({
+          last_window_id: prevWindowId,
+          current_window_id: null,
+          window_initialized_at: null,
+          anchor_btc: null,
+          atr_5m: null,
+          upper_bound: null,
+          lower_bound: null,
+          ladder_posted: false,
+          yes_cancelled: false,
+          no_cancelled: false,
+          yes_order_ids: [],
+          no_order_ids: [],
+          phase: 'IDLE'
+        });
+        botActiveRuntimeConfig = cloneBotConfig(configSnapshot);
         const result = botRunner.start(tickIntervalMs);
         botLogger.log({
           level: 'info',
@@ -1450,6 +1499,7 @@ const server = createServer(async (req, res) => {
   if (req.method === 'POST' && req.url === '/bot/stop') {
     try {
       const result = botRunner.stop();
+      botActiveRuntimeConfig = null;
       sendJson(res, { ok: true, ...result });
     } catch (err) {
       sendJson(res, { ok: false, error: err.message }, 500);
@@ -1474,7 +1524,7 @@ const server = createServer(async (req, res) => {
         state = { ...state, ...fixture.state };
       }
       const decision = decideBotAction({
-        config: botRunnerConfig,
+        config: toInternalRunnerConfig(getBotConfigSnapshot()),
         context,
         state
       });
