@@ -1,0 +1,22 @@
+{
+  "task_id": "260324_032",
+  "before": {
+    "naming": "脚本输出字段不统一，文件命名虽近似但无统一标准字段",
+    "output_schema": "各脚本 result 结构不同，缺少 script_name/sample/message/first_break_layer 等统一字段",
+    "cli": "均支持 --task_id，但未统一声明 --sample 口径"
+  },
+  "after": {
+    "naming": "统一命名为 {task_id}_{verify_slug}.json 与同名 .log",
+    "output_schema": "4 条脚本均输出统一字段：script_name/task_id/sample_name/pass/message/first_break_layer/evidence_file/summary/raw_excerpt/generated_at",
+    "cli": "统一支持 node scripts/<script>.mjs --task_id=<id> --sample=<name>"
+  },
+  "mode": {
+    "wrapped": [],
+    "direct_modified": [
+      "verify_btc_source_chain.mjs",
+      "verify_context_truth.mjs",
+      "verify_window_lifecycle.mjs",
+      "verify_executor_idempotency.mjs"
+    ]
+  }
+}

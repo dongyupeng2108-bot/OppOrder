@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { spawn } from 'child_process';
+import { buildStandardResult, parseVerifyArgs, writeStandardLog } from './verify_standard_v1.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -11,23 +12,12 @@ const DEFAULT_PORT = 53123;
 const DEFAULT_BASE_URL = `http://localhost:${DEFAULT_PORT}`;
 const DEFAULT_TASK_ID = '260324_025';
 
-const parseArgs = () => {
-  const args = Object.fromEntries(
-    process.argv
-      .slice(2)
-      .filter((item) => item.startsWith('--'))
-      .map((item) => {
-        const [k, ...rest] = item.slice(2).split('=');
-        return [k, rest.join('=') || 'true'];
-      })
-  );
-  const baseUrl = args.base_url || DEFAULT_BASE_URL;
-  const taskId = args.task_id || DEFAULT_TASK_ID;
-  const output = args.output
-    || path.join(REPO_ROOT, 'rules', 'task-reports', new Date().toISOString().slice(0, 7), `${taskId}_context_truth.json`);
-  const spawnServer = args.spawn_server !== 'false';
-  return { baseUrl, taskId, output, spawnServer };
-};
+const parseArgs = () => parseVerifyArgs({
+  defaultTaskId: DEFAULT_TASK_ID,
+  defaultBaseUrl: DEFAULT_BASE_URL,
+  defaultOutputSuffix: 'context_truth',
+  defaultSampleName: 'debug_main_path_v1+debug_fill_yes_path_v1'
+});
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -226,7 +216,29 @@ const main = async () => {
     const bounds = evaluateBounds(runningNormal);
     const boundsConsistencyPass = bounds.status === 'PASS' ? true : (bounds.status === 'SKIP' ? 'SKIP' : false);
 
+    const pass = stoppedPass && runningEarlyPass && runningNormalPass && boundsConsistencyPass !== false;
+    const firstBreakLayer = pass ? null : (!runningNormalPass ? 'context truth / btc 链未达标' : 'bounds formula');
+    const standard = buildStandardResult({
+      scriptName: 'verify_context_truth',
+      taskId: args.taskId,
+      sampleName: args.sampleName,
+      pass,
+      message: pass ? 'context truth 校验通过' : 'context truth 校验失败',
+      firstBreakLayer,
+      evidenceFile: args.output,
+      summary: {
+        context_truth_pass: stoppedPass && runningEarlyPass && runningNormalPass,
+        btc_price_chain_pass: runningNormalPass,
+        bounds_consistency_pass: boundsConsistencyPass
+      },
+      rawExcerpt: {
+        running_normal_label: runningNormal?.label ?? null,
+        running_normal_reason: runningNormal?.status?.body?.reason ?? null,
+        bounds_status: bounds.status
+      }
+    });
     const output = {
+      ...standard,
       task_id: args.taskId,
       command: `node scripts/verify_context_truth.mjs --task_id=${args.taskId}`,
       boundary_conditions: {
@@ -262,7 +274,9 @@ const main = async () => {
 
     ensureDir(args.output);
     fs.writeFileSync(args.output, JSON.stringify(output, null, 2));
+    const logPath = writeStandardLog(args.output, standard);
     console.log(`VERIFY_OUTPUT=${args.output}`);
+    console.log(`VERIFY_LOG=${logPath}`);
     console.log(JSON.stringify(output.result));
 
     if (!output.result.context_truth_pass || !output.result.btc_price_chain_pass || output.result.bounds_consistency_pass === false) {

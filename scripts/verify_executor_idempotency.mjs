@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { spawn } from 'child_process';
+import { buildStandardResult, parseVerifyArgs, writeStandardLog } from './verify_standard_v1.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -11,23 +12,12 @@ const DEFAULT_PORT = 53123;
 const DEFAULT_BASE_URL = `http://localhost:${DEFAULT_PORT}`;
 const DEFAULT_TASK_ID = '260324_024';
 
-const parseArgs = () => {
-  const args = Object.fromEntries(
-    process.argv
-      .slice(2)
-      .filter((item) => item.startsWith('--'))
-      .map((item) => {
-        const [k, ...rest] = item.slice(2).split('=');
-        return [k, rest.join('=') || 'true'];
-      })
-  );
-  const baseUrl = args.base_url || DEFAULT_BASE_URL;
-  const taskId = args.task_id || DEFAULT_TASK_ID;
-  const output = args.output
-    || path.join(REPO_ROOT, 'rules', 'task-reports', new Date().toISOString().slice(0, 7), `${taskId}_executor_idempotency.json`);
-  const spawnServer = args.spawn_server !== 'false';
-  return { baseUrl, taskId, output, spawnServer };
-};
+const parseArgs = () => parseVerifyArgs({
+  defaultTaskId: DEFAULT_TASK_ID,
+  defaultBaseUrl: DEFAULT_BASE_URL,
+  defaultOutputSuffix: 'executor_idempotency',
+  defaultSampleName: 'debug_main_path_v1+debug_fill_yes_path_v1'
+});
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -265,7 +255,33 @@ const main = async () => {
     const fillPath = await captureFillPath(http);
     const isolation = await captureWindowIsolation(http);
 
+    const pass = mainPath.summary.executor_idempotency_pass
+      && isolation.window_isolation_pass
+      && fillPath.filled_total_chain_pass;
+    const firstBreakLayer = pass ? null : (!mainPath.summary.executor_idempotency_pass
+      ? 'executor idempotency'
+      : (!isolation.window_isolation_pass ? 'window isolation' : 'filled_total chain'));
+    const standard = buildStandardResult({
+      scriptName: 'verify_executor_idempotency',
+      taskId: args.taskId,
+      sampleName: args.sampleName,
+      pass,
+      message: pass ? 'executor idempotency 校验通过' : 'executor idempotency 校验失败',
+      firstBreakLayer,
+      evidenceFile: args.output,
+      summary: {
+        executor_idempotency_pass: mainPath.summary.executor_idempotency_pass,
+        window_isolation_pass: isolation.window_isolation_pass,
+        filled_total_chain_pass: fillPath.filled_total_chain_pass
+      },
+      rawExcerpt: {
+        repeated_place_tick_count: mainPath.summary.repeated_place_tick_count,
+        non_place_added_count: mainPath.summary.non_place_added_count,
+        unique_filled_order_id_count: fillPath.table.unique_filled_order_id_count
+      }
+    });
     output = {
+      ...standard,
       task_id: args.taskId,
       command: `node scripts/verify_executor_idempotency.mjs --task_id=${args.taskId}`,
       scenarios: {
@@ -282,7 +298,9 @@ const main = async () => {
 
     ensureDir(args.output);
     fs.writeFileSync(args.output, JSON.stringify(output, null, 2));
+    const logPath = writeStandardLog(args.output, standard);
     console.log(`VERIFY_OUTPUT=${args.output}`);
+    console.log(`VERIFY_LOG=${logPath}`);
     console.log(JSON.stringify(output.result));
 
     if (!output.result.executor_idempotency_pass || !output.result.window_isolation_pass || !output.result.filled_total_chain_pass) {

@@ -1,0 +1,38 @@
+{
+  "version": "v1",
+  "updated_at": "2026-03-25",
+  "scripts": [
+    {
+      "script_name": "verify_btc_source_chain",
+      "entry": "scripts/verify_btc_source_chain.mjs",
+      "purpose": "验证 real runtime BTC source init/feed/cache/context 链路与 ready 可达性",
+      "samples": ["real_no_debug", "debug_main_path_v1"],
+      "output_file": "{task_id}_btc_source_chain.json",
+      "pass_condition": "source_chain_pass=true 且 real_runtime_ready_reached=true 且 btc_price_chain_pass=true"
+    },
+    {
+      "script_name": "verify_context_truth",
+      "entry": "scripts/verify_context_truth.mjs",
+      "purpose": "验证 context 字段真值链（running/stopped 语义与 bounds 公式一致性）",
+      "samples": ["debug_main_path_v1", "debug_fill_yes_path_v1"],
+      "output_file": "{task_id}_context_truth.json",
+      "pass_condition": "context_truth_pass=true 且 btc_price_chain_pass=true 且 bounds_consistency_pass!=false"
+    },
+    {
+      "script_name": "verify_window_lifecycle",
+      "entry": "scripts/verify_window_lifecycle.mjs",
+      "purpose": "验证窗口生命周期、stop_reason、running exclusion、readiness consistency、decision gating",
+      "samples": ["debug_main_path_v1", "real_no_debug"],
+      "output_file": "{task_id}_window_lifecycle.json",
+      "pass_condition": "window_state_semantics_pass=true 且 stop_reason_pass=true 且 running_window_exclusion_pass=true 且 readiness_consistency_pass=true 且 decision_gating_pass=true"
+    },
+    {
+      "script_name": "verify_executor_idempotency",
+      "entry": "scripts/verify_executor_idempotency.mjs",
+      "purpose": "验证执行层幂等、窗口隔离、filled_total 真值链",
+      "samples": ["debug_main_path_v1", "debug_fill_yes_path_v1"],
+      "output_file": "{task_id}_executor_idempotency.json",
+      "pass_condition": "executor_idempotency_pass=true 且 window_isolation_pass=true 且 filled_total_chain_pass=true"
+    }
+  ]
+}

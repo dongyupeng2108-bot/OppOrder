@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { spawn } from 'child_process';
+import { buildStandardResult, parseVerifyArgs, writeStandardLog } from './verify_standard_v1.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,18 +14,12 @@ const DEFAULT_TASK_ID = '260324_029';
 const MAX_TICKS = 26;
 const TICK_WAIT_MS = 700;
 
-const parseArgs = () => {
-  const args = Object.fromEntries(
-    process.argv.slice(2).filter((item) => item.startsWith('--')).map((item) => {
-      const [k, ...rest] = item.slice(2).split('=');
-      return [k, rest.join('=') || 'true'];
-    })
-  );
-  const taskId = args.task_id || DEFAULT_TASK_ID;
-  const baseUrl = args.base_url || DEFAULT_BASE_URL;
-  const output = args.output || path.join(REPO_ROOT, 'rules', 'task-reports', new Date().toISOString().slice(0, 7), `${taskId}_btc_source_chain.json`);
-  return { taskId, baseUrl, output, spawnServer: args.spawn_server !== 'false' };
-};
+const parseArgs = () => parseVerifyArgs({
+  defaultTaskId: DEFAULT_TASK_ID,
+  defaultBaseUrl: DEFAULT_BASE_URL,
+  defaultOutputSuffix: 'btc_source_chain',
+  defaultSampleName: 'real_no_debug+debug_main_path_v1'
+});
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const ensureDir = (filePath) => {
@@ -199,7 +194,35 @@ const main = async () => {
     const debugRows = await captureSample(http, 'debug_main_path_v1', { tick_interval_ms: 1000, debugScenario: 'main_path_v1' });
     const realSummary = makeChainSummary(realRows);
     const debugSummary = makeChainSummary(debugRows);
+    const pass = realSummary.btc_price_chain_pass === true;
+    const firstBreakLayer = pass ? null : (!realSummary.source_init_pass
+      ? 'source 未启动'
+      : (!realSummary.source_feed_pass
+        ? 'source feed 未到达'
+        : (!realSummary.latest_cache_pass
+          ? 'latest cache 未更新'
+          : (!realSummary.context_read_pass ? 'context 读取失败' : 'unknown'))));
+    const standard = buildStandardResult({
+      scriptName: 'verify_btc_source_chain',
+      taskId: args.taskId,
+      sampleName: args.sampleName,
+      pass,
+      message: pass ? 'BTC source 链路通过' : 'BTC source 链路未通过',
+      firstBreakLayer,
+      evidenceFile: args.output,
+      summary: {
+        source_chain_pass: realSummary.source_chain_pass,
+        real_runtime_ready_reached: realSummary.real_runtime_ready_reached,
+        btc_price_chain_pass: realSummary.btc_price_chain_pass
+      },
+      rawExcerpt: {
+        real_row_count: realRows.length,
+        debug_row_count: debugRows.length,
+        real_source_feed_count_max: Math.max(0, ...realRows.map((r) => Number(r.source_feed_count || 0)))
+      }
+    });
     const output = {
+      ...standard,
       task_id: args.taskId,
       command: `node scripts/verify_btc_source_chain.mjs --task_id=${args.taskId}`,
       real_runtime: {
@@ -220,7 +243,9 @@ const main = async () => {
     };
     ensureDir(args.output);
     fs.writeFileSync(args.output, JSON.stringify(output, null, 2));
-    console.log(`SOURCE_CHAIN_OUTPUT=${args.output}`);
+    const logPath = writeStandardLog(args.output, standard);
+    console.log(`VERIFY_OUTPUT=${args.output}`);
+    console.log(`VERIFY_LOG=${logPath}`);
     console.log(JSON.stringify(output.result));
     if (!output.result.btc_price_chain_pass) process.exitCode = 1;
   } finally {
