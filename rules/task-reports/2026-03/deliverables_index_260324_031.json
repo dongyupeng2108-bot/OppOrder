@@ -1,0 +1,30 @@
+{
+  "task_id": "260324_031",
+  "files": [
+    {
+      "name": "rules/rules/WORKFLOW.md",
+      "size": 4383,
+      "sha256_short": "5abbc11d"
+    },
+    {
+      "name": "rules/rules/PROJECT_RULES.md",
+      "size": 3335,
+      "sha256_short": "2b446e7b"
+    },
+    {
+      "name": "rules/rules/PROJECT_MASTER_PLAN.md",
+      "size": 3101,
+      "sha256_short": "6c2c087b"
+    },
+    {
+      "name": "rules/task-reports/2026-03/doc_rewrite_summary_260324_031.json",
+      "size": 778,
+      "sha256_short": "bac8ed7e"
+    },
+    {
+      "name": "rules/task-reports/2026-03/notify_260324_031.txt",
+      "size": 216,
+      "sha256_short": "6e341971"
+    }
+  ]
+}
