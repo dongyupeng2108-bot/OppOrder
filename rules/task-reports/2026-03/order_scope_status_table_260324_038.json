@@ -1,0 +1,22 @@
+{
+  "task_id": "260324_038",
+  "table": {
+    "running_current_window_id": "debug-fill-yes-path-v1-w1",
+    "running_order_count": 16,
+    "running_hidden_other_window_count": 0,
+    "running_overlap_order_ids": [],
+    "stopped_target_window_id": "debug-fill-yes-path-v1-w1",
+    "stopped_order_count": 16,
+    "stopped_mismatch_order_count": 0,
+    "open_visible": true,
+    "filled_visible": true,
+    "cancelled_visible": true,
+    "cross_window_overlap_count": 0,
+    "terminal_conflict_count": 0
+  },
+  "summary": {
+    "window_isolation_pass": true,
+    "order_status_semantics_pass": true,
+    "cross_window_overlap_pass": true
+  }
+}
