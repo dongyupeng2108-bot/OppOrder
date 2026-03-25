@@ -1,0 +1,79 @@
+RESULT_JSON
+LOG_HEAD
+[Runtime To Business Result v1] script added and integrated into verify_all_manual.
+LOG_TAIL
+node scripts/verify_runtime_to_business_result.mjs --task_id=260324_041 --sample=debug_fill_yes_path_v1+debug_main_path_v1+debug_exit_yes_path_v1
+standalone_exit_code=0
+node scripts/verify_all_manual.mjs --task_id=260324_041
+verify_all_exit_code=1
+node scripts/verify_btc_source_chain.mjs --task_id=260324_041_regression --sample=real_no_debug+debug_main_path_v1
+node scripts/verify_context_truth.mjs --task_id=260324_041_regression --sample=debug_main_path_v1+debug_fill_yes_path_v1
+node scripts/verify_window_lifecycle.mjs --task_id=260324_041_regression --sample=debug_main_path_v1+real_no_debug
+node scripts/verify_executor_idempotency.mjs --task_id=260324_041_regression --sample=debug_main_path_v1+debug_fill_yes_path_v1
+node scripts/verify_result_chain_consistency.mjs --task_id=260324_041_regression --sample=debug_fill_yes_path_v1
+node scripts/verify_order_scope_and_status.mjs --task_id=260324_041_regression --sample=debug_fill_yes_path_v1
+node scripts/verify_pnl_chain_consistency.mjs --task_id=260324_041_regression --sample=debug_exit_yes_path_v1+debug_fill_yes_path_v1
+node scripts/verify_config_effect_chain.mjs --task_id=260324_041_regression --sample=debug_main_path_v1+debug_fill_yes_path_v1+real_no_debug
+verify_all_total_scripts=9
+GATE_LIGHT_EXIT=0
+INDEX
+{
+  "task_id": "260324_041",
+  "files": [
+    {
+      "name": "rules/task-reports/2026-03/260324_041_runtime_to_business_result.json",
+      "size": 950177,
+      "sha256_short": "747520e0"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_041_runtime_to_business_result.log",
+      "size": 228,
+      "sha256_short": "2ebd2fdd"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_041_verify_all_manual.json",
+      "size": 3243,
+      "sha256_short": "d9d11da0"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_041_verify_all_manual.log",
+      "size": 1548,
+      "sha256_short": "99dc700c"
+    },
+    {
+      "name": "rules/task-reports/2026-03/runtime_business_stage_table_260324_041.json",
+      "size": 1202,
+      "sha256_short": "b82e69c2"
+    },
+    {
+      "name": "rules/task-reports/2026-03/verify_all_integration_260324_041.json",
+      "size": 521,
+      "sha256_short": "6c71a799"
+    },
+    {
+      "name": "rules/task-reports/2026-03/standalone_old8_proof_260324_041.json",
+      "size": 1511,
+      "sha256_short": "f5a59202"
+    },
+    {
+      "name": "scripts/verify_manifest.json",
+      "size": 4699,
+      "sha256_short": "bec25a4d"
+    },
+    {
+      "name": "scripts/verify_all_manual.mjs",
+      "size": 5112,
+      "sha256_short": "85223c12"
+    },
+    {
+      "name": "scripts/verify_runtime_to_business_result.mjs",
+      "size": 12321,
+      "sha256_short": "214f88e1"
+    },
+    {
+      "name": "rules/task-reports/2026-03/notify_260324_041.txt",
+      "size": 1389,
+      "sha256_short": "473df013"
+    }
+  ]
+}

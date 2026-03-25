@@ -1,0 +1,42 @@
+{
+  "task_id": "260324_041",
+  "table": [
+    {
+      "seq": 1,
+      "ts": "2026-03-25T20:08:10.020Z",
+      "running": true,
+      "current_window_id": "btc-updown-5m-1774469100",
+      "phase": "wait_window_id_not_ready",
+      "btc_price": 70674.465,
+      "intents_summary": "NOOP",
+      "orders_open": 0,
+      "orders_filled": 0,
+      "filled_total": 0,
+      "realized_gross_pnl_total": 6.204632768361553,
+      "stage_reached": "result_materialized"
+    },
+    {
+      "seq": 2,
+      "ts": "2026-03-25T20:08:10.636Z",
+      "running": true,
+      "current_window_id": "debug-fill-yes-path-v1-w1",
+      "phase": "pre_open_or_open_not_open_delay",
+      "btc_price": 70707.895,
+      "intents_summary": "NOOP",
+      "orders_open": 0,
+      "orders_filled": 0,
+      "filled_total": 3,
+      "realized_gross_pnl_total": 6.204632768361553,
+      "stage_reached": "result_materialized"
+    }
+  ],
+  "conclusion": "系统能从 running 走到有效业务结果",
+  "result": {
+    "runtime_start_pass": true,
+    "window_ready_pass": true,
+    "action_emitted_pass": true,
+    "orders_materialized_pass": true,
+    "business_result_pass": true,
+    "runtime_to_business_result_pass": true
+  }
+}
