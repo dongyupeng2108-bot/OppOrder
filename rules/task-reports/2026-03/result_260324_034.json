@@ -1,0 +1,18 @@
+{
+  "task_id": "260324_034",
+  "status": "DONE",
+  "summary": "后端测试运行器 v1（run/status/logs/result）完成，状态流转与并发防护通过。",
+  "report_file": "notify_260324_034.txt",
+  "report_sha256_short": "f36a3e7c",
+  "evidence": [
+    "rules/task-reports/2026-03/260324_034_test_runner_api.json",
+    "rules/task-reports/2026-03/notify_260324_034.txt",
+    "rules/task-reports/2026-03/deliverables_index_260324_034.json"
+  ],
+  "metrics": {
+    "endpoints_checked": 4,
+    "duplicate_protection_pass": true,
+    "final_state_terminal": true,
+    "simulate_fail_state_failed": true
+  }
+}

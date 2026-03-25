@@ -1,0 +1,37 @@
+RESULT_JSON
+LOG_HEAD
+[Test Runner v1] backend runner endpoints verified.
+LOG_TAIL
+POST /bot/test/run => 200
+GET /bot/test/status(running) => 200
+GET /bot/test/logs => 200
+GET /bot/test/result => 200
+duplicate_guard=true
+simulate_fail_state=failed
+GATE_LIGHT_EXIT=0
+INDEX
+{
+  "task_id": "260324_034",
+  "files": [
+    {
+      "name": "rules/task-reports/2026-03/260324_034_test_runner_api.json",
+      "size": 10763,
+      "sha256_short": "f4fae449"
+    },
+    {
+      "name": "rules/task-reports/2026-03/notify_260324_034.txt",
+      "size": 270,
+      "sha256_short": "a3502920"
+    },
+    {
+      "name": "scripts/verify_all_manual.mjs",
+      "size": 4415,
+      "sha256_short": "01336639"
+    },
+    {
+      "name": "strategies/crypto_binary/server.mjs",
+      "size": 96251,
+      "sha256_short": "c4ae6e41"
+    }
+  ]
+}
