@@ -1,0 +1,31 @@
+{
+  "task_id": "260324_035",
+  "timestamp": "2026-03-25T16:25:29.112Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "ui_idle_running_passed_failed": "PASS",
+    "duplicate_click_protection": "PASS",
+    "failed_modal_coverage": "PASS"
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260324_035",
+      "status": "DONE",
+      "summary": "Bot Console 版本测试按钮 v1 已接入四接口并形成四态证据。",
+      "report_file": "notify_260324_035.txt",
+      "report_sha256_short": "ebd05f47",
+      "evidence": [
+        "rules/task-reports/2026-03/260324_035_ui_test_button_evidence.json",
+        "rules/task-reports/2026-03/notify_260324_035.txt",
+        "rules/task-reports/2026-03/deliverables_index_260324_035.json"
+      ],
+      "metrics": {
+        "ui_states_covered": 4,
+        "duplicate_guard": true,
+        "running_log_refresh": true,
+        "failed_modal_triggered": true
+      }
+    }
+  }
+}

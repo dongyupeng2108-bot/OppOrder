@@ -55,6 +55,11 @@ let _seErrorCount = 0;
 let _seLastPollError = null;
 let _seActionPending = false;
 let _sePerformancePreset = 'today';
+let _seTestRunPending = false;
+let _seTestStatus = { state: 'idle' };
+let _seTestLastResultFile = null;
+let _seTestFailModalShownRunId = null;
+let _seTestLogTail = [];
 const BASE_URL = ''; // 相对路径
 
 async function restartServer() {
@@ -99,13 +104,14 @@ async function initStrategyEditor() {
 
   container.innerHTML = `
     <div class="se-layout" style="height:100%;display:flex;flex-direction:column;background:#0b0d10;color:#d6dde5;position:relative;">
-      <div style="height:62px;border-bottom:1px solid #232a33;background:#0d131a;padding:0 12px;display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr 1fr auto auto auto;gap:10px;align-items:center;">
+      <div style="height:62px;border-bottom:1px solid #232a33;background:#0d131a;padding:0 12px;display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr 1fr auto auto auto auto;gap:10px;align-items:center;">
         <div style="font-size:18px;letter-spacing:.3px;">BTCQDD 执行机器人</div>
         <div style="border-left:1px solid #1c222b;padding-left:10px;font-size:12px;color:#9aa5b2;line-height:1.5;"><b style="color:#d6dde5;">运行状态</b><span id="se-top-running">已停止</span></div>
         <div style="border-left:1px solid #1c222b;padding-left:10px;font-size:12px;color:#9aa5b2;line-height:1.5;"><b style="color:#d6dde5;">当前</b><span id="se-top-activity">当前无活动窗口</span></div>
         <div style="border-left:1px solid #1c222b;padding-left:10px;font-size:12px;color:#9aa5b2;line-height:1.5;"><b style="color:#d6dde5;">上次结束</b><span id="se-top-last-stop">暂无</span></div>
         <div style="border-left:1px solid #1c222b;padding-left:10px;font-size:12px;color:#9aa5b2;line-height:1.5;"><b style="color:#d6dde5;">最近窗口</b><span id="se-top-window">暂无</span></div>
         <button id="se-btn-param-toggle" onclick="se_toggleParamsPanel()" style="height:34px;width:34px;border:1px solid #2f3946;background:#18202a;color:#d6dde5;border-radius:4px;cursor:pointer;">⚙</button>
+        <button id="se-btn-test" onclick="se_runVersionTest()" style="height:34px;border:1px solid #35506b;background:#1a2a3a;color:#c8e6ff;border-radius:4px;padding:0 10px;cursor:pointer;">版本测试</button>
         <button id="se-btn-start" class="se-btn-deploy" onclick="se_startBot()">启动</button>
         <button id="se-btn-stop" class="se-btn se-btn-stop" onclick="se_stopBot()" style="background:#7a3a3a;color:#fff;border:1px solid #9a4b4b;padding:6px 10px;border-radius:4px;cursor:pointer;">停止</button>
       </div>
@@ -146,6 +152,20 @@ async function initStrategyEditor() {
               </div>
               <div id="se-log-area" class="se-log-area" style="flex:1;min-height:0;"></div>
               <div id="se-ui-error" style="font-size:11px;color:#ff8a80;min-height:16px;"></div>
+              <section style="border:1px solid #2a313b;background:#0d1218;padding:8px;border-radius:4px;display:flex;flex-direction:column;gap:6px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;">
+                  <span style="color:#9aa5b2;">版本测试状态</span>
+                  <span id="se-test-state" style="color:#9aa5b2;">idle</span>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 8px;font-size:11px;color:#7f8a97;">
+                  <div>开始时间</div><div id="se-test-started-at" style="text-align:right;color:#d6dde5;">—</div>
+                  <div>结束时间</div><div id="se-test-finished-at" style="text-align:right;color:#d6dde5;">—</div>
+                  <div>overall_pass</div><div id="se-test-overall-pass" style="text-align:right;color:#d6dde5;">—</div>
+                  <div>current_step</div><div id="se-test-current-step" style="text-align:right;color:#d6dde5;">—</div>
+                </div>
+                <div id="se-test-summary" style="font-size:11px;color:#9aa5b2;">总脚本数=— | PASS=— | FAIL=— | overall=—</div>
+                <div id="se-test-log-area" class="se-log-area" style="height:100px;min-height:100px;"></div>
+              </section>
             </section>
             <div style="background:#0b0d10;border-left:1px solid #1a2028;border-right:1px solid #1a2028;"></div>
 
@@ -281,6 +301,15 @@ async function initStrategyEditor() {
         </div>
       </div>
     </div>
+    <div id="se-test-fail-overlay" class="se-overlay" onclick="se_closeTestFailModal()" style="display:none">
+      <div class="se-modal" onclick="event.stopPropagation()">
+        <div class="se-modal-title">版本测试失败项</div>
+        <pre id="se-test-fail-content" class="se-guide-pre"></pre>
+        <div class="se-modal-actions">
+          <button class="se-btn-close" onclick="se_closeTestFailModal()">关闭</button>
+        </div>
+      </div>
+    </div>
   `;
 
   // 加载并渲染 Bot 参数
@@ -298,6 +327,10 @@ async function initStrategyEditor() {
   document.getElementById('se-guide-text').textContent = SE_GUIDE_TEXT;
   se_setPerformancePreset('today', false);
   se_updateRunningUI(false);
+  se_renderTestStatus({ state: 'idle', overall_pass: null, current_step: null });
+  se_renderTestSummary(null);
+  se_renderTestLogs([]);
+  se_updateTestButton();
   se_startPoll();
 
 }
@@ -488,6 +521,139 @@ function se_updateRunningUI(running) {
   if (label) label.textContent = running ? '运行中' : '已停止';
 }
 
+function se_updateTestButton() {
+  const btn = document.getElementById('se-btn-test');
+  if (!btn) return;
+  const running = _seTestStatus?.state === 'running';
+  btn.disabled = _seTestRunPending || running;
+  btn.textContent = running ? '测试中...' : (_seTestRunPending ? '启动中...' : '版本测试');
+}
+
+function se_makeTestTaskId() {
+  const now = new Date();
+  const yy = String(now.getFullYear()).slice(-2);
+  const mm = String(now.getMonth() + 1).padStart(2, '0');
+  const dd = String(now.getDate()).padStart(2, '0');
+  const hh = String(now.getHours()).padStart(2, '0');
+  const mi = String(now.getMinutes()).padStart(2, '0');
+  const ss = String(now.getSeconds()).padStart(2, '0');
+  return `${yy}${mm}${dd}_${hh}${mi}${ss}`;
+}
+
+async function se_runVersionTest() {
+  if (_seTestRunPending || _seTestStatus?.state === 'running') return;
+  _seTestRunPending = true;
+  se_updateTestButton();
+  try {
+    const taskId = se_makeTestTaskId();
+    const res = await fetch(`${BASE_URL}/bot/test/run`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ task_id: taskId })
+    });
+    const data = await res.json();
+    if (!res.ok && data?.already_running !== true) {
+      throw new Error(data?.error || `HTTP ${res.status}`);
+    }
+    if (data?.already_running === true) {
+      se_setText('se-test-summary', '已有版本测试正在运行，已阻止重复启动');
+      se_appendLog('SYSTEM', '版本测试重复启动被阻止');
+      alert('版本测试已在运行中，请等待完成后再试。');
+      return;
+    }
+    se_appendLog('SYSTEM', `版本测试已启动 task_id=${taskId}`);
+    await se_pollTestRunner();
+  } catch (err) {
+    se_setText('se-test-summary', `版本测试启动失败: ${err.message}`);
+    se_appendLog('ERROR', `版本测试启动失败: ${err.message}`);
+  } finally {
+    _seTestRunPending = false;
+    se_updateTestButton();
+  }
+}
+
+function se_renderTestStatus(status) {
+  _seTestStatus = status && typeof status === 'object' ? status : { state: 'idle' };
+  const state = _seTestStatus.state || 'idle';
+  const stateEl = document.getElementById('se-test-state');
+  if (stateEl) {
+    stateEl.textContent = state;
+    stateEl.style.color = state === 'passed'
+      ? '#8bc34a'
+      : (state === 'failed' ? '#ff8a80' : (state === 'running' ? '#ffb74d' : '#9aa5b2'));
+  }
+  se_setText('se-test-started-at', _seTestStatus.started_at);
+  se_setText('se-test-finished-at', _seTestStatus.finished_at);
+  se_setText('se-test-overall-pass', _seTestStatus.overall_pass);
+  se_setText('se-test-current-step', _seTestStatus.current_step);
+}
+
+function se_renderTestLogs(lines) {
+  const area = document.getElementById('se-test-log-area');
+  if (!area) return;
+  const safeLines = Array.isArray(lines) ? lines : [];
+  _seTestLogTail = safeLines.slice(-80);
+  if (!safeLines.length) {
+    area.innerHTML = '<div class="se-log-entry se-log-info">暂无测试日志</div>';
+    return;
+  }
+  area.innerHTML = safeLines
+    .slice(-120)
+    .map((line) => `<div class="se-log-entry se-log-info">${String(line).replaceAll('<', '&lt;').replaceAll('>', '&gt;')}</div>`)
+    .join('');
+  area.scrollTop = area.scrollHeight;
+}
+
+function se_renderTestSummary(resultPayload) {
+  const summaryEl = document.getElementById('se-test-summary');
+  if (!summaryEl) return;
+  const result = resultPayload?.result && typeof resultPayload.result === 'object'
+    ? resultPayload.result
+    : (resultPayload && typeof resultPayload === 'object' ? resultPayload : null);
+  if (!result) {
+    summaryEl.textContent = '总脚本数=— | PASS=— | FAIL=— | overall=—';
+    return;
+  }
+  summaryEl.textContent = `总脚本数=${se_formatStateValue(result.total_scripts)} | PASS=${se_formatStateValue(result.pass_count)} | FAIL=${se_formatStateValue(result.fail_count)} | overall=${se_formatStateValue(result.overall_pass)}`;
+}
+
+function se_showTestFailModal(resultPayload) {
+  const result = resultPayload?.result && typeof resultPayload.result === 'object'
+    ? resultPayload.result
+    : (resultPayload && typeof resultPayload === 'object' ? resultPayload : null);
+  if (!result) return;
+  const runId = _seTestStatus?.run_id || _seTestStatus?.result_file || `${result.task_id || 'unknown'}:${result.generated_at || ''}`;
+  if (_seTestFailModalShownRunId === runId) return;
+  const failed = Array.isArray(result.results) ? result.results.filter((item) => item?.pass !== true) : [];
+  if (!failed.length) return;
+  const overlay = document.getElementById('se-test-fail-overlay');
+  const content = document.getElementById('se-test-fail-content');
+  if (!overlay || !content) return;
+  const detail = failed.map((item, idx) => {
+    const name = item?.script_name || `script_${idx + 1}`;
+    const message = item?.message || '无 message';
+    return `${idx + 1}. ${name}\n   ${message}`;
+  }).join('\n');
+  const logTail = _seTestLogTail.slice(-20).join('\n');
+  content.textContent = [
+    `overall_pass=${se_formatStateValue(result.overall_pass)}`,
+    `fail_count=${se_formatStateValue(result.fail_count)}`,
+    '',
+    '失败项：',
+    detail,
+    '',
+    '日志摘要（最近20行）：',
+    logTail || '暂无'
+  ].join('\n');
+  overlay.style.display = 'flex';
+  _seTestFailModalShownRunId = runId;
+}
+
+function se_closeTestFailModal() {
+  const overlay = document.getElementById('se-test-fail-overlay');
+  if (overlay) overlay.style.display = 'none';
+}
+
 // 保存 / 周期切换
 async function se_save() {
   const code = document.getElementById('se-editor').value;
@@ -521,6 +687,47 @@ function se_startPoll() {
 
 function se_stopPoll() {
   if (_se_pollTimer) { clearInterval(_se_pollTimer); _se_pollTimer = null; }
+}
+
+async function se_pollTestRunner() {
+  try {
+    const statusRes = await fetch(`${BASE_URL}/bot/test/status`);
+    const statusData = await statusRes.json();
+    const status = statusData && typeof statusData === 'object' ? statusData : { state: 'idle' };
+    se_renderTestStatus(status);
+    se_updateTestButton();
+    const logsRes = await fetch(`${BASE_URL}/bot/test/logs?limit=120`);
+    const logsData = await logsRes.json();
+    se_renderTestLogs(Array.isArray(logsData?.lines) ? logsData.lines : []);
+    const terminal = status.state === 'passed' || status.state === 'failed';
+    if (!terminal) return;
+    if (status.result_file && status.result_file !== _seTestLastResultFile) {
+      _seTestLastResultFile = status.result_file;
+      const resultRes = await fetch(`${BASE_URL}/bot/test/result`);
+      const resultData = await resultRes.json();
+      if (resultRes.ok && resultData?.ok !== false) {
+        se_renderTestSummary(resultData);
+        if (resultData?.result?.overall_pass === false) {
+          se_showTestFailModal(resultData);
+        }
+      }
+      return;
+    }
+    if (!status.result_file) {
+      se_renderTestSummary(null);
+      return;
+    }
+    const resultRes = await fetch(`${BASE_URL}/bot/test/result`);
+    const resultData = await resultRes.json();
+    if (resultRes.ok && resultData?.ok !== false) {
+      se_renderTestSummary(resultData);
+      if (resultData?.result?.overall_pass === false) {
+        se_showTestFailModal(resultData);
+      }
+    }
+  } catch (err) {
+    se_setText('se-test-summary', `测试接口异常: ${err.message}`);
+  }
 }
 
 async function se_poll() {
@@ -578,6 +785,7 @@ async function se_poll() {
     se_renderDecision(status, contextData, previewData, ordersData, previewError);
     se_renderLogs(Array.isArray(logsData) ? logsData : (logsData.logs || []));
     se_renderOrders(ordersData, status);
+    await se_pollTestRunner();
 
     const remaining = status?.remaining_sec ?? null;
     const el = document.getElementById('se-countdown');
