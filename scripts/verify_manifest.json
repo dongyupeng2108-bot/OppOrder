@@ -33,6 +33,14 @@
       "samples": ["debug_main_path_v1", "debug_fill_yes_path_v1"],
       "output_file": "{task_id}_executor_idempotency.json",
       "pass_condition": "executor_idempotency_pass=true 且 window_isolation_pass=true 且 filled_total_chain_pass=true"
+    },
+    {
+      "script_name": "verify_result_chain_consistency",
+      "entry": "scripts/verify_result_chain_consistency.mjs",
+      "purpose": "验证 summary / last_run_snapshot / postmortem / performance 的结果链一致性",
+      "samples": ["debug_fill_yes_path_v1", "debug_exit_yes_path_v1"],
+      "output_file": "{task_id}_result_chain_consistency.json",
+      "pass_condition": "filled_total==unique_filled_order_id_count 且 last_run==summary 且 postmortem==summary 且 performance_target_window==summary"
     }
   ]
 }

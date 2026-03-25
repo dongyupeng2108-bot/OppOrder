@@ -1,0 +1,33 @@
+{
+  "task_id": "260324_036",
+  "timestamp": "2026-03-25T16:54:41.234Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "standalone_result_chain_script": "PASS",
+    "verify_all_integrated_to_5": "PASS",
+    "old4_standalone_not_regressed": "PASS"
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260324_036",
+      "status": "DONE",
+      "summary": "verify_result_chain_consistency 已补齐并接入 verify_all_manual（总入口脚本数=5）。",
+      "report_file": "notify_260324_036.txt",
+      "report_sha256_short": "8df526ba",
+      "evidence": [
+        "rules/task-reports/2026-03/260324_036_result_chain_consistency.json",
+        "rules/task-reports/2026-03/260324_036_result_chain_consistency.log",
+        "rules/task-reports/2026-03/result_chain_table_260324_036.json",
+        "rules/task-reports/2026-03/verify_all_integration_260324_036.json",
+        "rules/task-reports/2026-03/standalone_old4_proof_260324_036.json"
+      ],
+      "metrics": {
+        "verify_all_exit_code": 1,
+        "verify_all_total_scripts": 5,
+        "includes_result_chain_consistency": true,
+        "old4_independent_executed": true
+      }
+    }
+  }
+}
