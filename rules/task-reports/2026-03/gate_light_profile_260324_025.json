@@ -1,0 +1,9 @@
+{
+  "task_id": "260324_025",
+  "profile_version": "1.0",
+  "metrics": {
+    "context_truth_pass": true,
+    "btc_price_chain_pass": true,
+    "bounds_consistency_pass": true
+  }
+}

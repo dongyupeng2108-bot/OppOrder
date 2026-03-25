@@ -14,15 +14,15 @@
   "stages": {
     "stopped": {
       "label": "stopped",
-      "captured_at": "2026-03-25T00:27:38.478Z",
+      "captured_at": "2026-03-25T00:43:54.834Z",
       "context": {
         "status": 200,
         "body": {
-          "window_id": "btc-updown-5m-1774398300",
+          "window_id": "btc-updown-5m-1774399200",
           "last_window_id": null,
-          "slug": "btc-updown-5m-1774398300",
+          "slug": "btc-updown-5m-1774399200",
           "period": "5m",
-          "remaining_sec": 141,
+          "remaining_sec": 65,
           "btc_price": null,
           "anchor_btc": null,
           "atr_5m": null,
@@ -34,7 +34,7 @@
           "ask_no": null,
           "tick_size": 0.01,
           "stale": false,
-          "updated_at": "2026-03-25T00:27:38.477Z"
+          "updated_at": "2026-03-25T00:43:54.833Z"
         }
       },
       "status": {
@@ -63,7 +63,7 @@
           "no_order_ids": [],
           "last_reason": null,
           "last_intents": [],
-          "updated_at": "2026-03-25T00:27:37.468Z",
+          "updated_at": "2026-03-25T00:43:53.847Z",
           "saved_config": {
             "open_delay_sec": 10,
             "ladder_prices": [
@@ -94,21 +94,21 @@
         "lower_bound": null,
         "atr_5m": null,
         "atr_multiple": 1.2,
-        "remaining_sec": 141,
+        "remaining_sec": 65,
         "active_runtime_snapshot": null
       }
     },
     "running_early": {
       "label": "running_early",
-      "captured_at": "2026-03-25T00:27:38.614Z",
+      "captured_at": "2026-03-25T00:43:54.961Z",
       "context": {
         "status": 200,
         "body": {
-          "window_id": "btc-updown-5m-1774398300",
+          "window_id": "btc-updown-5m-1774399200",
           "last_window_id": null,
-          "slug": "btc-updown-5m-1774398300",
+          "slug": "btc-updown-5m-1774399200",
           "period": "5m",
-          "remaining_sec": 141,
+          "remaining_sec": 65,
           "btc_price": null,
           "anchor_btc": null,
           "atr_5m": null,
@@ -120,7 +120,7 @@
           "ask_no": null,
           "tick_size": 0.01,
           "stale": false,
-          "updated_at": "2026-03-25T00:27:38.613Z"
+          "updated_at": "2026-03-25T00:43:54.960Z"
         }
       },
       "status": {
@@ -149,7 +149,7 @@
           "no_order_ids": [],
           "last_reason": null,
           "last_intents": [],
-          "updated_at": "2026-03-25T00:27:38.479Z",
+          "updated_at": "2026-03-25T00:43:54.836Z",
           "saved_config": {
             "open_delay_sec": 10,
             "ladder_prices": [
@@ -198,7 +198,7 @@
         "lower_bound": null,
         "atr_5m": null,
         "atr_multiple": 1.2,
-        "remaining_sec": 141,
+        "remaining_sec": 65,
         "active_runtime_snapshot": {
           "config": {
             "open_delay_sec": 10,
@@ -222,15 +222,15 @@
     },
     "running_normal": {
       "label": "running_normal_probe_2",
-      "captured_at": "2026-03-25T00:27:40.158Z",
+      "captured_at": "2026-03-25T00:43:56.446Z",
       "context": {
         "status": 200,
         "body": {
-          "window_id": "btc-updown-5m-1774398300",
+          "window_id": "btc-updown-5m-1774399200",
           "last_window_id": null,
-          "slug": "btc-updown-5m-1774398300",
+          "slug": "btc-updown-5m-1774399200",
           "period": "5m",
-          "remaining_sec": 140,
+          "remaining_sec": 64,
           "btc_price": 100,
           "anchor_btc": 100,
           "atr_5m": 2,
@@ -242,7 +242,7 @@
           "ask_no": 0.21,
           "tick_size": 0.01,
           "stale": false,
-          "updated_at": "2026-03-25T00:27:38.624Z"
+          "updated_at": "2026-03-25T00:43:55.034Z"
         }
       },
       "status": {
@@ -255,10 +255,10 @@
           "debug_frame_index": 1,
           "debug_completed": false,
           "tick_interval_ms": 1000,
-          "last_tick_at": "2026-03-25T00:27:39.493Z",
+          "last_tick_at": "2026-03-25T00:43:55.842Z",
           "last_window_id": null,
           "current_window_id": "debug-main-path-v1-w1",
-          "window_initialized_at": "2026-03-25T00:27:39.491Z",
+          "window_initialized_at": "2026-03-25T00:43:55.839Z",
           "remaining_sec": 299,
           "anchor_btc": 100,
           "atr_5m": 2,
@@ -275,7 +275,7 @@
               "kind": "NOOP"
             }
           ],
-          "updated_at": "2026-03-25T00:27:39.493Z",
+          "updated_at": "2026-03-25T00:43:55.842Z",
           "saved_config": {
             "open_delay_sec": 10,
             "ladder_prices": [
@@ -324,7 +324,7 @@
         "lower_bound": 97.6,
         "atr_5m": 2,
         "atr_multiple": 1.2,
-        "remaining_sec": 140,
+        "remaining_sec": 64,
         "active_runtime_snapshot": {
           "config": {
             "open_delay_sec": 10,

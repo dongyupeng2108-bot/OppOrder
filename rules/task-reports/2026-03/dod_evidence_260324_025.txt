@@ -1,0 +1,5 @@
+DoD Evidence for 260324_025
+- Added repeatable context truth verifier script
+- Verified stopped / running_early / running_normal truth snapshots
+- Verified btc_price chain semantics and remaining_sec validity
+- Verified bounds consistency or explicit SKIP reason
