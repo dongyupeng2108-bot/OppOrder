@@ -1,0 +1,3 @@
+seq	captured_at	running	current_window_id	phase	btc_price	anchor_btc	upper_bound	lower_bound	remaining_sec	intents_summary	reason	log_event	log_message
+2	2026-03-25T04:16:04.014Z	true	btc-updown-5m-1774412100	LADDER_POSTED	70777.385	70777.385			235	PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)	ladder_not_posted		
+3	2026-03-25T04:16:04.720Z	true	btc-updown-5m-1774412100	IDLE	70777.385	70777.385			235	NOOP	price_or_bounds_null		

@@ -1,0 +1,2 @@
+seq	captured_at	running	current_window_id	phase	btc_price	anchor_btc	upper_bound	lower_bound	remaining_sec	intents_summary	reason	log_event	log_message
+2	2026-03-25T04:16:07.081Z	true	debug-main-path-v1-w1	IDLE	70787.495	100	102.4	97.6	232	NOOP	pre_open_or_open_not_open_delay		

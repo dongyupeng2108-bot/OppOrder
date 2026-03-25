@@ -8,6 +8,7 @@ import { logger, EVENTS } from './logger.mjs';
 import { randomUUID } from 'crypto';
 
 const BINANCE_REST = 'https://api.binance.com';
+const COINBASE_SPOT = 'https://api.coinbase.com/v2/prices/BTC-USD/spot';
 
 // Use undici.fetch with explicit ProxyAgent so the dispatcher is never ignored.
 // Node.js built-in fetch does not honour the `dispatcher` option; undici.fetch does.
@@ -69,6 +70,10 @@ export function createPriceFeed(config) {
 
   // 订阅者列表
   const subscribers = [];
+  const normalizePrice = (value) => {
+    const parsed = Number.parseFloat(value);
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+  };
 
   // ─── 成交量分桶 ───────────────────────────────────────
 
@@ -120,11 +125,13 @@ export function createPriceFeed(config) {
   // ─── 通知订阅者 ────────────────────────────────────────
 
   function notify(price, source) {
-    currentPrice  = price;
+    const normalized = normalizePrice(price);
+    if (normalized === null) return;
+    currentPrice  = normalized;
     lastUpdatedAt = new Date();
     const volStats = calcVolumeStats();
     const snapshot = {
-      price,
+      price: normalized,
       timestamp:        lastUpdatedAt.getTime(),
       source,           // 'ws' | 'rest'
       ...volStats,
@@ -140,12 +147,22 @@ export function createPriceFeed(config) {
 
   async function fetchRest() {
     try {
+      let price = null;
+      let source = 'rest_binance';
       const res = await proxyFetch(`${BINANCE_REST}/api/v3/ticker/price?symbol=${symbol.toUpperCase()}`);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      const price = parseFloat(data.price);
-      // REST 模式下无法获得单笔成交量，只更新价格
-      notify(price, 'rest');
+      if (res.ok) {
+        const data = await res.json();
+        price = normalizePrice(data.price);
+      }
+      if (price === null) {
+        const backup = await proxyFetch(COINBASE_SPOT);
+        if (!backup.ok) throw new Error(`HTTP ${res.status}/${backup.status}`);
+        const backupData = await backup.json();
+        price = normalizePrice(backupData?.data?.amount);
+        source = 'rest_coinbase';
+      }
+      if (price === null) throw new Error('invalid price payload');
+      notify(price, source);
     } catch (e) {
       console.error('[PriceFeed] REST fetch error:', e.message);
     }
@@ -318,6 +335,7 @@ export function createPriceFeed(config) {
     const currentMode = config.price_feed?.mode || 'rest';
     console.log(`[PriceFeed] Starting in ${currentMode} mode (symbol=${symbol.toUpperCase()})`);
     if (currentMode === 'ws') {
+      startRest();
       connectWs();
     } else {
       startRest();
@@ -357,11 +375,23 @@ export function createPriceFeed(config) {
   // ─── 向后兼容接口（供 strategy_runner / 旧测试使用）────
 
   async function getCurrentPrice() {
-    if (currentPrice !== null) return currentPrice;
+    if (normalizePrice(currentPrice) !== null) return currentPrice;
+    let parsed = null;
     const res = await proxyFetch(`${BINANCE_REST}/api/v3/ticker/price?symbol=${symbol.toUpperCase()}`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    return parseFloat(data.price);
+    if (res.ok) {
+      const data = await res.json();
+      parsed = normalizePrice(data.price);
+    }
+    if (parsed === null) {
+      const backup = await proxyFetch(COINBASE_SPOT);
+      if (!backup.ok) throw new Error(`HTTP ${res.status}/${backup.status}`);
+      const backupData = await backup.json();
+      parsed = normalizePrice(backupData?.data?.amount);
+    }
+    if (parsed === null) throw new Error('invalid price payload');
+    currentPrice = parsed;
+    lastUpdatedAt = new Date();
+    return parsed;
   }
 
   async function getKlines() {

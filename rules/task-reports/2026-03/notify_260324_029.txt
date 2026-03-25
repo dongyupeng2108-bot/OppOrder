@@ -1,0 +1,36 @@
+RESULT_JSON
+LOG_HEAD
+[Fix 260324_029] BTC source chain audit complete.
+LOG_TAIL
+source_chain_pass=true
+real_runtime_ready_reached=true
+btc_price_chain_pass=true
+ready_028_reached=true
+ready_028_first_break_layer=null
+GATE_LIGHT_EXIT=0
+INDEX
+{
+  "task_id": "260324_029",
+  "files": [
+    {
+      "name": "rules/task-reports/2026-03/260324_029_btc_source_chain.json",
+      "size": 13888,
+      "sha256_short": "dd0f37ae"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_028_ready_reachability.json",
+      "size": 13144,
+      "sha256_short": "bea50d72"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_029_regression_023_executor_idempotency.json",
+      "size": 4581,
+      "sha256_short": "4861eece"
+    },
+    {
+      "name": "rules/task-reports/2026-03/notify_260324_029.txt",
+      "size": 240,
+      "sha256_short": "0d85e71d"
+    }
+  ]
+}
