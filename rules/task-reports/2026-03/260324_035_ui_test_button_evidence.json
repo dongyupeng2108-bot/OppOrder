@@ -1,0 +1,421 @@
+{
+  "task_id": "260324_035",
+  "api_trace": [
+    {
+      "endpoint": "GET /bot/test/status (idle)",
+      "status": 200,
+      "body": {
+        "ok": true,
+        "state": "idle",
+        "task_id": null,
+        "started_at": null,
+        "finished_at": null,
+        "overall_pass": null,
+        "current_step": null,
+        "log_file": null,
+        "result_file": null,
+        "run_id": null,
+        "last_error": null
+      }
+    },
+    {
+      "endpoint": "GET /bot/test/logs (idle)",
+      "status": 200,
+      "body": {
+        "ok": true,
+        "lines": [],
+        "log_file": null,
+        "state": "idle"
+      }
+    },
+    {
+      "endpoint": "GET /bot/test/result (idle)",
+      "status": 404,
+      "body": {
+        "ok": false,
+        "error": "result not ready",
+        "state": "idle"
+      }
+    },
+    {
+      "endpoint": "POST /bot/test/run",
+      "status": 200,
+      "body": {
+        "ok": true,
+        "started": true,
+        "already_running": false,
+        "status": {
+          "state": "running",
+          "task_id": "260324_035_pass",
+          "started_at": "2026-03-25T16:22:31.993Z",
+          "finished_at": null,
+          "overall_pass": null,
+          "current_step": "launching",
+          "log_file": "E:\\OppRadar\\data\\crypto_binary\\test_runner\\260324_035_pass_1774455751993.log",
+          "result_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260324_035_pass_verify_all_manual.json",
+          "run_id": "1774455751993",
+          "last_error": null
+        }
+      }
+    },
+    {
+      "endpoint": "POST /bot/test/run duplicate",
+      "status": 409,
+      "body": {
+        "ok": true,
+        "started": false,
+        "already_running": true,
+        "status": {
+          "state": "running",
+          "task_id": "260324_035_pass",
+          "started_at": "2026-03-25T16:22:31.993Z",
+          "finished_at": null,
+          "overall_pass": null,
+          "current_step": "launching",
+          "log_file": "E:\\OppRadar\\data\\crypto_binary\\test_runner\\260324_035_pass_1774455751993.log",
+          "result_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260324_035_pass_verify_all_manual.json",
+          "run_id": "1774455751993",
+          "last_error": null
+        }
+      }
+    },
+    {
+      "endpoint": "GET /bot/test/status (running)",
+      "status": 200,
+      "body": {
+        "ok": true,
+        "state": "running",
+        "task_id": "260324_035_pass",
+        "started_at": "2026-03-25T16:22:31.993Z",
+        "finished_at": null,
+        "overall_pass": null,
+        "current_step": "launching",
+        "log_file": "E:\\OppRadar\\data\\crypto_binary\\test_runner\\260324_035_pass_1774455751993.log",
+        "result_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260324_035_pass_verify_all_manual.json",
+        "run_id": "1774455751993",
+        "last_error": null
+      }
+    },
+    {
+      "endpoint": "GET /bot/test/logs (running A)",
+      "status": 200,
+      "body": {
+        "ok": true,
+        "state": "running",
+        "log_file": "E:\\OppRadar\\data\\crypto_binary\\test_runner\\260324_035_pass_1774455751993.log",
+        "lines": [
+          "[2026-03-25T16:22:31.993Z] start task_id=260324_035_pass"
+        ]
+      }
+    },
+    {
+      "endpoint": "GET /bot/test/logs (running B)",
+      "status": 200,
+      "body": {
+        "ok": true,
+        "state": "running",
+        "log_file": "E:\\OppRadar\\data\\crypto_binary\\test_runner\\260324_035_pass_1774455751993.log",
+        "lines": [
+          "[2026-03-25T16:22:31.993Z] start task_id=260324_035_pass"
+        ]
+      }
+    },
+    {
+      "endpoint": "GET /bot/test/status (pass final)",
+      "status": 200,
+      "body": {
+        "ok": true,
+        "state": "failed",
+        "task_id": "260324_035_pass",
+        "started_at": "2026-03-25T16:22:31.993Z",
+        "finished_at": "2026-03-25T16:23:18.313Z",
+        "overall_pass": false,
+        "current_step": "finished",
+        "log_file": "E:\\OppRadar\\data\\crypto_binary\\test_runner\\260324_035_pass_1774455751993.log",
+        "result_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260324_035_pass_verify_all_manual.json",
+        "run_id": "1774455751993",
+        "last_error": "verify_all_manual exit code 1"
+      }
+    },
+    {
+      "endpoint": "GET /bot/test/result (pass final)",
+      "status": 200,
+      "body": {
+        "ok": true,
+        "state": "failed",
+        "overall_pass": false,
+        "result_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260324_035_pass_verify_all_manual.json",
+        "result": {
+          "script_name": "verify_all_manual",
+          "task_id": "260324_035_pass",
+          "total_scripts": 4,
+          "pass_count": 3,
+          "fail_count": 1,
+          "overall_pass": false,
+          "results": [
+            {
+              "script_name": "verify_btc_source_chain",
+              "pass": true,
+              "message": "BTC source 链路通过",
+              "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260324_035_pass_btc_source_chain.json",
+              "exit_code": 0,
+              "sample_name": "real_no_debug+debug_main_path_v1"
+            },
+            {
+              "script_name": "verify_context_truth",
+              "pass": true,
+              "message": "context truth 校验通过",
+              "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260324_035_pass_context_truth.json",
+              "exit_code": 0,
+              "sample_name": "debug_main_path_v1+debug_fill_yes_path_v1"
+            },
+            {
+              "script_name": "verify_window_lifecycle",
+              "pass": true,
+              "message": "window lifecycle 校验通过",
+              "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260324_035_pass_window_lifecycle.json",
+              "exit_code": 0,
+              "sample_name": "debug_main_path_v1+real_no_debug"
+            },
+            {
+              "script_name": "verify_executor_idempotency",
+              "pass": false,
+              "message": "executor idempotency 校验失败",
+              "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260324_035_pass_executor_idempotency.json",
+              "exit_code": 1,
+              "sample_name": "debug_main_path_v1+debug_fill_yes_path_v1"
+            }
+          ],
+          "simulated_failure": false,
+          "raw_pass_count": 3,
+          "generated_at": "2026-03-25T16:23:18.300Z"
+        }
+      }
+    },
+    {
+      "endpoint": "POST /bot/test/run simulate_fail",
+      "status": 200,
+      "body": {
+        "ok": true,
+        "started": true,
+        "already_running": false,
+        "status": {
+          "state": "running",
+          "task_id": "260324_035_fail",
+          "started_at": "2026-03-25T16:23:18.424Z",
+          "finished_at": null,
+          "overall_pass": null,
+          "current_step": "launching",
+          "log_file": "E:\\OppRadar\\data\\crypto_binary\\test_runner\\260324_035_fail_1774455798424.log",
+          "result_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260324_035_fail_verify_all_manual.json",
+          "run_id": "1774455798424",
+          "last_error": null
+        }
+      }
+    },
+    {
+      "endpoint": "GET /bot/test/status (fail final)",
+      "status": 200,
+      "body": {
+        "ok": true,
+        "state": "failed",
+        "task_id": "260324_035_fail",
+        "started_at": "2026-03-25T16:23:18.424Z",
+        "finished_at": "2026-03-25T16:24:00.432Z",
+        "overall_pass": false,
+        "current_step": "finished",
+        "log_file": "E:\\OppRadar\\data\\crypto_binary\\test_runner\\260324_035_fail_1774455798424.log",
+        "result_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260324_035_fail_verify_all_manual.json",
+        "run_id": "1774455798424",
+        "last_error": "verify_all_manual exit code 1"
+      }
+    },
+    {
+      "endpoint": "GET /bot/test/logs (fail final)",
+      "status": 200,
+      "body": {
+        "ok": true,
+        "state": "failed",
+        "log_file": "E:\\OppRadar\\data\\crypto_binary\\test_runner\\260324_035_fail_1774455798424.log",
+        "lines": [
+          "[2026-03-25T16:23:18.424Z] start task_id=260324_035_fail",
+          "[2026-03-25T16:23:18.424Z] simulate_fail=true",
+          "VERIFY_ALL_OUTPUT=E:\\OppRadar\\rules\\task-reports\\2026-03\\260324_035_fail_verify_all_manual.json",
+          "VERIFY_ALL_LOG=E:\\OppRadar\\rules\\task-reports\\2026-03\\260324_035_fail_verify_all_manual.log",
+          "{\"overall_pass\":false,\"pass_count\":3,\"fail_count\":2}",
+          "[2026-03-25T16:24:00.432Z] exit_code=1 overall_pass=false"
+        ]
+      }
+    },
+    {
+      "endpoint": "GET /bot/test/result (fail final)",
+      "status": 200,
+      "body": {
+        "ok": true,
+        "state": "failed",
+        "overall_pass": false,
+        "result_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260324_035_fail_verify_all_manual.json",
+        "result": {
+          "script_name": "verify_all_manual",
+          "task_id": "260324_035_fail",
+          "total_scripts": 5,
+          "pass_count": 3,
+          "fail_count": 2,
+          "overall_pass": false,
+          "results": [
+            {
+              "script_name": "verify_btc_source_chain",
+              "pass": true,
+              "message": "BTC source 链路通过",
+              "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260324_035_fail_btc_source_chain.json",
+              "exit_code": 0,
+              "sample_name": "real_no_debug+debug_main_path_v1"
+            },
+            {
+              "script_name": "verify_context_truth",
+              "pass": true,
+              "message": "context truth 校验通过",
+              "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260324_035_fail_context_truth.json",
+              "exit_code": 0,
+              "sample_name": "debug_main_path_v1+debug_fill_yes_path_v1"
+            },
+            {
+              "script_name": "verify_window_lifecycle",
+              "pass": true,
+              "message": "window lifecycle 校验通过",
+              "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260324_035_fail_window_lifecycle.json",
+              "exit_code": 0,
+              "sample_name": "debug_main_path_v1+real_no_debug"
+            },
+            {
+              "script_name": "verify_executor_idempotency",
+              "pass": false,
+              "message": "executor idempotency 校验失败",
+              "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260324_035_fail_executor_idempotency.json",
+              "exit_code": 1,
+              "sample_name": "debug_main_path_v1+debug_fill_yes_path_v1"
+            },
+            {
+              "script_name": "forced_failure_probe",
+              "pass": false,
+              "message": "forced failure for runner state-flow verification",
+              "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260324_035_fail_verify_all_manual.json",
+              "exit_code": 1,
+              "sample_name": "forced_failure"
+            }
+          ],
+          "simulated_failure": true,
+          "raw_pass_count": 3,
+          "generated_at": "2026-03-25T16:24:00.421Z"
+        }
+      }
+    }
+  ],
+  "ui_states": {
+    "idle": {
+      "state": "idle",
+      "started_at": null,
+      "finished_at": null,
+      "overall_pass": null,
+      "current_step": null,
+      "button_disabled": false,
+      "summary": null,
+      "log_tail_lines": [],
+      "failed_modal_visible": false,
+      "failed_items": []
+    },
+    "running": {
+      "state": "running",
+      "started_at": "2026-03-25T16:22:31.993Z",
+      "finished_at": null,
+      "overall_pass": null,
+      "current_step": "launching",
+      "button_disabled": true,
+      "summary": null,
+      "log_tail_lines": [
+        "[2026-03-25T16:22:31.993Z] start task_id=260324_035_pass"
+      ],
+      "failed_modal_visible": false,
+      "failed_items": []
+    },
+    "passed": {
+      "state": "passed",
+      "started_at": "2026-03-25T16:22:31.993Z",
+      "finished_at": "2026-03-25T16:23:18.313Z",
+      "overall_pass": true,
+      "current_step": "finished",
+      "button_disabled": false,
+      "summary": {
+        "total_scripts": 4,
+        "pass_count": 4,
+        "fail_count": 0,
+        "overall_pass": true
+      },
+      "log_tail_lines": [
+        "[2026-03-25T16:22:31.993Z] start task_id=260324_035_pass"
+      ],
+      "failed_modal_visible": false,
+      "failed_items": []
+    },
+    "failed_modal": {
+      "state": "failed",
+      "started_at": "2026-03-25T16:23:18.424Z",
+      "finished_at": "2026-03-25T16:24:00.432Z",
+      "overall_pass": false,
+      "current_step": "finished",
+      "button_disabled": false,
+      "summary": {
+        "total_scripts": 5,
+        "pass_count": 3,
+        "fail_count": 2,
+        "overall_pass": false
+      },
+      "log_tail_lines": [
+        "[2026-03-25T16:23:18.424Z] start task_id=260324_035_fail",
+        "[2026-03-25T16:23:18.424Z] simulate_fail=true",
+        "VERIFY_ALL_OUTPUT=E:\\OppRadar\\rules\\task-reports\\2026-03\\260324_035_fail_verify_all_manual.json",
+        "VERIFY_ALL_LOG=E:\\OppRadar\\rules\\task-reports\\2026-03\\260324_035_fail_verify_all_manual.log",
+        "{\"overall_pass\":false,\"pass_count\":3,\"fail_count\":2}",
+        "[2026-03-25T16:24:00.432Z] exit_code=1 overall_pass=false"
+      ],
+      "failed_modal_visible": true,
+      "failed_items": [
+        {
+          "script_name": "verify_executor_idempotency",
+          "message": "executor idempotency 校验失败"
+        },
+        {
+          "script_name": "forced_failure_probe",
+          "message": "forced failure for runner state-flow verification"
+        }
+      ]
+    }
+  },
+  "checks": {
+    "duplicate_click_protected": true,
+    "running_logs_refreshed": true,
+    "failed_modal_condition_met": true
+  },
+  "standalone_results": [
+    {
+      "command": "node scripts/verify_all_manual.mjs --task_id=260324_035_standalone",
+      "exit_code": 1
+    },
+    {
+      "command": "node scripts/verify_btc_source_chain.mjs --task_id=260324_035_standalone --sample=real_no_debug+debug_main_path_v1",
+      "exit_code": 0
+    },
+    {
+      "command": "node scripts/verify_context_truth.mjs --task_id=260324_035_standalone --sample=debug_main_path_v1+debug_fill_yes_path_v1",
+      "exit_code": 0
+    },
+    {
+      "command": "node scripts/verify_window_lifecycle.mjs --task_id=260324_035_standalone --sample=debug_main_path_v1+real_no_debug",
+      "exit_code": 0
+    },
+    {
+      "command": "node scripts/verify_executor_idempotency.mjs --task_id=260324_035_standalone --sample=debug_main_path_v1+debug_fill_yes_path_v1",
+      "exit_code": 1
+    }
+  ]
+}

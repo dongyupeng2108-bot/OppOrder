@@ -1,0 +1,20 @@
+{
+  "task_id": "260324_035",
+  "files": [
+    {
+      "name": "rules/task-reports/2026-03/260324_035_ui_test_button_evidence.json",
+      "size": 14796,
+      "sha256_short": "9c5ae561"
+    },
+    {
+      "name": "rules/task-reports/2026-03/notify_260324_035.txt",
+      "size": 311,
+      "sha256_short": "8551c696"
+    },
+    {
+      "name": "ui/js/strategy-editor.js",
+      "size": 65954,
+      "sha256_short": "08573509"
+    }
+  ]
+}
