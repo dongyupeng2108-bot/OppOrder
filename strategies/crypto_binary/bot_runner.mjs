@@ -32,6 +32,19 @@ const inferPhase = (decision, summary) => {
   return 'IDLE';
 };
 
+const isCriticalBtcReady = (value) => toFiniteNumber(value) !== null;
+
+const isBoundsReady = (state = {}, context = {}) => (
+  toFiniteNumber(state.anchor_btc ?? context.anchor_btc) !== null
+  && toFiniteNumber(state.upper_bound ?? context.upper_bound) !== null
+  && toFiniteNumber(state.lower_bound ?? context.lower_bound) !== null
+);
+
+const hasBoundsDependentIntent = (intents = []) => intents.some((intent) => (
+  intent?.kind === 'CANCEL_OPEN'
+  && (String(intent?.side || 'ALL').toUpperCase() === 'YES' || String(intent?.side || 'ALL').toUpperCase() === 'NO')
+));
+
 const toDecisionPreview = (decision, context, state) => ({
   intents: decision.intents,
   intents_summary: summarizeIntents(decision.intents),
@@ -122,9 +135,13 @@ export function createBotRunner(options = {}) {
     }
 
     const lifecycleAtr = toFiniteNumber(context.atr_5m);
-    const lifecycleBtcPrice = toFiniteNumber(context.btc_price);
+    const lifecycleBtcPrice = toFiniteNumber(context.btc_price) ?? toFiniteNumber(context.strike_price);
     const atrMultiplier = toFiniteNumber(config.atr_multiplier) ?? 1.2;
-    const needWindowInit = state.current_window_id != null && state.anchor_btc == null;
+    const needWindowInit = state.current_window_id != null && (
+      state.anchor_btc == null
+      || state.upper_bound == null
+      || state.lower_bound == null
+    );
     if (needWindowInit) {
       const initPatch = options.createWindowInitPatch
         ? options.createWindowInitPatch({
@@ -165,11 +182,42 @@ export function createBotRunner(options = {}) {
       lower_bound: state.lower_bound ?? null
     };
 
-    const decision = decide({
+    const decisionRaw = decide({
       config,
       context: contextForDecision,
       state
     });
+    const currentWindowPresent = state.current_window_id != null;
+    const btcReady = isCriticalBtcReady(contextForDecision.btc_price);
+    const boundsReady = isBoundsReady(state, contextForDecision);
+    const rawIntents = Array.isArray(decisionRaw?.intents) ? decisionRaw.intents : [];
+    const hasActionIntent = rawIntents.some((intent) => intent?.kind && intent.kind !== 'NOOP');
+    const boundsDependentIntent = hasBoundsDependentIntent(rawIntents);
+    const gateByBtcNotReady = currentWindowPresent && hasActionIntent && !btcReady;
+    const gateByWindowNotInitialized = currentWindowPresent && hasActionIntent && !state.window_initialized_at;
+    const gateByBoundsNotReady = currentWindowPresent && boundsDependentIntent && !boundsReady;
+    const shouldGate = gateByBtcNotReady || gateByWindowNotInitialized || gateByBoundsNotReady;
+    const gatedReason = gateByBtcNotReady
+      ? 'gate_context_not_ready_btc_price'
+      : (gateByWindowNotInitialized
+        ? 'gate_context_not_ready_window_init'
+        : (gateByBoundsNotReady ? 'gate_context_not_ready_bounds' : null));
+    const decision = shouldGate
+      ? {
+          intents: [{ kind: 'NOOP' }],
+          reason: gatedReason,
+          patches: {},
+          diagnostics: {
+            ...(decisionRaw?.diagnostics && typeof decisionRaw.diagnostics === 'object' ? decisionRaw.diagnostics : {}),
+            gate_context_not_ready: true,
+            gate_reason: gatedReason,
+            gate_current_window_present: currentWindowPresent,
+            gate_btc_ready: btcReady,
+            gate_bounds_ready: boundsReady,
+            gate_window_initialized: Boolean(state.window_initialized_at)
+          }
+        }
+      : decisionRaw;
     const intentsSummary = summarizeIntents(decision.intents);
     const windowKey = state.current_window_id ?? contextForDecision.window_id ?? '__null_window__';
     const hasPlaceLadder = Array.isArray(decision.intents) && decision.intents.some((intent) => intent?.kind === 'PLACE_LADDER');
@@ -263,6 +311,21 @@ export function createBotRunner(options = {}) {
         reason: decision.reason
       }
     });
+    if (shouldGate) {
+      log({
+        level: 'info',
+        source: 'bot_runner',
+        event: 'BOT_DECISION_GATED',
+        message: gatedReason || 'gate_context_not_ready',
+        mode: state.mode ?? null,
+        window_id: contextForDecision.window_id ?? null,
+        data: {
+          btc_ready: btcReady,
+          bounds_ready: boundsReady,
+          window_initialized: Boolean(state.window_initialized_at)
+        }
+      });
+    }
     log({
       level: 'info',
       source: 'bot_runner',

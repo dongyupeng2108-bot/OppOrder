@@ -560,10 +560,25 @@ const botRunner = createBotRunner({
     botState.patchState(runtime);
     const isRunning = runtime?.running === true;
     if (botRuntimeWasRunning && !isRunning) {
+      const stateAtStop = botState.getState();
+      const completedWindowId = stateAtStop?.current_window_id ?? null;
       const stopReason = botPendingStopReason || 'AUTO_COMPLETED';
       finalizeBotRunSnapshot(stopReason);
       botPendingStopReason = null;
       botActiveRuntimeConfig = null;
+      botLastTickResult = null;
+      botState.patchState({
+        current_window_id: null,
+        last_window_id: completedWindowId ?? stateAtStop?.last_window_id ?? null,
+        window_initialized_at: null,
+        anchor_btc: null,
+        atr_5m: null,
+        upper_bound: null,
+        lower_bound: null,
+        phase: 'IDLE',
+        last_reason: null,
+        last_intents: []
+      });
     }
     botRuntimeWasRunning = isRunning;
   },
@@ -1661,15 +1676,17 @@ const server = createServer(async (req, res) => {
   if (req.method === 'GET' && req.url === '/bot/status') {
     try {
       const state = botState.getState();
+      const currentWindowId = state.running === true ? (state.current_window_id ?? null) : null;
       sendJson(res, {
         ...state,
+        current_window_id: currentWindowId,
         saved_config: getBotConfigSnapshot(),
         last_run_snapshot: getBotLastRunSnapshot(),
         active_runtime_snapshot: state.running === true
           ? {
               config: getBotActiveRuntimeConfig(),
               phase: state.phase ?? null,
-              current_window_id: state.current_window_id ?? null,
+              current_window_id: currentWindowId,
               anchor_btc: state.anchor_btc ?? null,
               upper_bound: state.upper_bound ?? null,
               lower_bound: state.lower_bound ?? null
@@ -1986,6 +2003,38 @@ const server = createServer(async (req, res) => {
       }
       let context = await botContextAdapter.getContext();
       let state = botState.getState();
+      if (state?.running === true) {
+        const btcRaw = context?.btc_price;
+        const btcReady = btcRaw !== null && btcRaw !== undefined && Number.isFinite(Number(btcRaw));
+        const boundsReady = Number.isFinite(Number(state?.anchor_btc))
+          && Number.isFinite(Number(state?.upper_bound))
+          && Number.isFinite(Number(state?.lower_bound));
+        const currentWindowPresent = state?.current_window_id != null;
+        const waitReason = !currentWindowPresent
+          ? 'wait_window_id_not_ready'
+          : (!btcReady
+            ? 'gate_context_not_ready_btc_price'
+            : (!boundsReady ? 'wait_context_bounds_not_ready' : 'wait_runner_tick_result'));
+        sendJson(res, {
+          intents: [{ kind: 'NOOP' }],
+          intents_summary: 'NOOP',
+          reason: waitReason,
+          patches: {},
+          diagnostics: {
+            gate_context_not_ready: waitReason.startsWith('gate_context_not_ready'),
+            gate_reason: waitReason,
+            gate_current_window_present: currentWindowPresent,
+            gate_btc_ready: btcReady,
+            gate_bounds_ready: boundsReady,
+            gate_window_initialized: Boolean(state?.window_initialized_at)
+          },
+          config: getBotConfigSnapshot(),
+          context_snapshot: context,
+          state_snapshot: { ladder_posted: state?.ladder_posted === true },
+          fixture: null
+        });
+        return;
+      }
       let fixture = null;
       if (fixtureId) {
         fixture = getDecisionFixtures().find(item => item.id === fixtureId) || null;

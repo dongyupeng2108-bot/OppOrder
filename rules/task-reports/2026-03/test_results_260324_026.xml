@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="window_lifecycle_verifier" tests="6" failures="0" errors="0" skipped="0">
+    <testcase name="stopped_state_semantics" time="0.001"/>
+    <testcase name="running_state_semantics" time="0.001"/>
+    <testcase name="manual_stop_reason_semantics" time="0.001"/>
+    <testcase name="auto_completed_reason_semantics" time="0.001"/>
+    <testcase name="readiness_consistency_debug_real" time="0.001"/>
+    <testcase name="decision_gating_not_ready" time="0.001"/>
+  </testsuite>
+</testsuites>

@@ -1,0 +1,44 @@
+{
+  "task_id": "260324_027",
+  "timestamp": "2026-03-25T03:20:12.131Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "smoke_test": "PASS",
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260324_027",
+      "status": "DONE",
+      "summary": "Fixed readiness/decision gating and lifecycle semantics; validated with debug and real runtime samples.",
+      "report_file": "notify_260324_027.txt",
+      "report_sha256_short": "cdfbe720",
+      "artifacts": [
+        "scripts/verify_window_lifecycle.mjs",
+        "strategies/crypto_binary/bot_runner.mjs",
+        "strategies/crypto_binary/server.mjs",
+        "strategies/crypto_binary/bot_state.mjs",
+        "strategies/crypto_binary/bot_context_adapter.mjs"
+      ],
+      "evidence": [
+        "rules/task-reports/2026-03/260324_027_window_lifecycle.json",
+        "rules/task-reports/2026-03/260324_026_window_lifecycle.json",
+        "rules/task-reports/2026-03/260324_027_regression_023_executor_idempotency.json",
+        "rules/task-reports/2026-03/260324_027_regression_021_context_truth.json"
+      ],
+      "metrics": {
+        "window_state_semantics_pass": true,
+        "stop_reason_pass": true,
+        "running_window_exclusion_pass": true,
+        "readiness_consistency_pass": true,
+        "decision_gating_pass": true
+      }
+    }
+  }
+}

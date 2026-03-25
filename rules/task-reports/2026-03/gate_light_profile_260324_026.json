@@ -1,0 +1,11 @@
+{
+  "task_id": "260324_026",
+  "profile_version": "1.0",
+  "metrics": {
+    "window_state_semantics_pass": true,
+    "stop_reason_pass": true,
+    "running_window_exclusion_pass": true,
+    "readiness_consistency_pass": true,
+    "decision_gating_pass": true
+  }
+}

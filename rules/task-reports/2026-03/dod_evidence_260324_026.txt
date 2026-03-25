@@ -1,0 +1,7 @@
+DoD Evidence for 260324_026
+- Added repeatable window lifecycle verifier script
+- Verified stopped/running_early/running_window_present_but_not_ready/running_ready/manual_stop/auto_completed
+- Verified stop_reason transitions (MANUAL_STOP / AUTO_COMPLETED)
+- Verified readiness consistency with debug + real_no_debug samples
+- Verified decision gating on not-ready window context
+- Verified running window exclusion from completed performance summary

@@ -1,0 +1,44 @@
+RESULT_JSON
+LOG_HEAD
+[Gate Light] Window lifecycle verifier package generated.
+LOG_TAIL
+[Gate Light] PASS
+DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-03/260324_026_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-03/260324_026_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+GATE_LIGHT_EXIT=0
+INDEX
+{
+  "task_id": "260324_026",
+  "files": [
+    {
+      "name": "rules/task-reports/2026-03/notify_260324_026.txt",
+      "size": 361,
+      "sha256_short": "a4ef6307"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_026_healthcheck_53122_root.txt",
+      "size": 24,
+      "sha256_short": "4c0468b1"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_026_healthcheck_53122_pairs.txt",
+      "size": 29,
+      "sha256_short": "b5d4204a"
+    },
+    {
+      "name": "rules/task-reports/2026-03/manual_verification_260324_026.json",
+      "size": 364,
+      "sha256_short": "a12d318d"
+    },
+    {
+      "name": "scripts/postflight_validate_envelope.mjs",
+      "size": 44573,
+      "sha256_short": "65a8eed7"
+    },
+    {
+      "name": "rules/task-reports/2026-03/run_260324_026.log",
+      "size": 260,
+      "sha256_short": "3f4f82a6"
+    }
+  ]
+}

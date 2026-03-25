@@ -1,0 +1,5 @@
+DoD Evidence for 260324_027
+- Fixed decision gating: no action progression while key context not ready
+- Fixed lifecycle semantics for current_window_id / active_runtime_snapshot / last_run_snapshot
+- Verified debug + real runtime samples under revised 260324_026 criteria
+- Verified running window exclusion and stop_reason transitions

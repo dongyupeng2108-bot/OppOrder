@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<coverage version="1">
+  <project timestamp="1774408812">
+    <file name="scripts/verify_window_lifecycle.mjs">
+      <line num="1" count="1" type="stmt"/>
+    </file>
+    <file name="strategies/crypto_binary/server.mjs">
+      <line num="1" count="1" type="stmt"/>
+    </file>
+    <file name="strategies/crypto_binary/bot_runner.mjs">
+      <line num="1" count="1" type="stmt"/>
+    </file>
+  </project>
+</coverage>

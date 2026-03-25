@@ -1,0 +1,7 @@
+[2026-03-25T03:12:46.750Z] verify_window_lifecycle start
+window_state_semantics_pass=true
+stop_reason_pass=true
+running_window_exclusion_pass=true
+readiness_consistency_pass=true
+decision_gating_pass=true
+[2026-03-25T03:12:46.750Z] verify_window_lifecycle done
