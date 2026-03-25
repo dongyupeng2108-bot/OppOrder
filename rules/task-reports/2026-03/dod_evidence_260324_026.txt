@@ -1,0 +1,5 @@
+DoD Evidence for 260324_026
+- Added repeatable window lifecycle verifier script
+- Verified stopped/running/manual_stop/auto_completed status-machine semantics
+- Verified stop_reason transitions (MANUAL_STOP / AUTO_COMPLETED)
+- Verified running window exclusion from completed performance summary

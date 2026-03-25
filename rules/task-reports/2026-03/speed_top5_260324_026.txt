@@ -1,0 +1,5 @@
+150ms: stopped status/performance capture
+130ms: running status/performance capture
+120ms: manual_stop semantics capture
+110ms: auto_completed semantics capture
+90ms: running-window exclusion reconciliation

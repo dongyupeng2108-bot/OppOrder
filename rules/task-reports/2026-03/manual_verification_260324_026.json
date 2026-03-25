@@ -1,0 +1,10 @@
+{
+  "task_id": "260324_026",
+  "states": [
+    "stopped",
+    "running",
+    "manual_stop",
+    "auto_completed"
+  ],
+  "window_state_semantics_pass": true
+}
