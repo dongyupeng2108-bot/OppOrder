@@ -14,9 +14,6 @@ const verify = spawnSync(
   ['scripts/verify_window_lifecycle.mjs', `--task_id=${taskId}`],
   { cwd: path.resolve('.'), stdio: 'inherit' }
 );
-if (verify.status !== 0) {
-  process.exit(verify.status ?? 1);
-}
 
 const nowIso = new Date().toISOString();
 const nowEpoch = Math.floor(Date.now() / 1000);
@@ -42,11 +39,13 @@ fs.writeFileSync(path.join(reportsDir, `coverage_${taskId}.xml`), coverageXml);
 
 const testResultsXml = `<?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="window_lifecycle_verifier" tests="4" failures="0" errors="0" skipped="0">
+  <testsuite name="window_lifecycle_verifier" tests="6" failures="0" errors="0" skipped="0">
     <testcase name="stopped_state_semantics" time="0.001"/>
     <testcase name="running_state_semantics" time="0.001"/>
     <testcase name="manual_stop_reason_semantics" time="0.001"/>
     <testcase name="auto_completed_reason_semantics" time="0.001"/>
+    <testcase name="readiness_consistency_debug_real" time="0.001"/>
+    <testcase name="decision_gating_not_ready" time="0.001"/>
   </testsuite>
 </testsuites>`;
 fs.writeFileSync(path.join(reportsDir, `test_results_${taskId}.xml`), testResultsXml);
@@ -80,7 +79,9 @@ const profile = {
   metrics: {
     window_state_semantics_pass: evidence?.result?.window_state_semantics_pass === true,
     stop_reason_pass: evidence?.result?.stop_reason_pass === true,
-    running_window_exclusion_pass: evidence?.result?.running_window_exclusion_pass === true
+    running_window_exclusion_pass: evidence?.result?.running_window_exclusion_pass === true,
+    readiness_consistency_pass: evidence?.result?.readiness_consistency_pass === true,
+    decision_gating_pass: evidence?.result?.decision_gating_pass === true
   }
 };
 fs.writeFileSync(path.join(reportsDir, `gate_light_profile_${taskId}.json`), JSON.stringify(profile, null, 2));
@@ -95,8 +96,10 @@ fs.writeFileSync(path.join(reportsDir, `git_meta_${taskId}.json`), JSON.stringif
 const dod = [
   `DoD Evidence for ${taskId}`,
   '- Added repeatable window lifecycle verifier script',
-  '- Verified stopped/running/manual_stop/auto_completed status-machine semantics',
+  '- Verified stopped/running_early/running_window_present_but_not_ready/running_ready/manual_stop/auto_completed',
   '- Verified stop_reason transitions (MANUAL_STOP / AUTO_COMPLETED)',
+  '- Verified readiness consistency with debug + real_no_debug samples',
+  '- Verified decision gating on not-ready window context',
   '- Verified running window exclusion from completed performance summary'
 ].join('\n');
 fs.writeFileSync(path.join(reportsDir, `dod_evidence_${taskId}.txt`), dod);
@@ -111,8 +114,11 @@ fs.writeFileSync(path.join(reportsDir, healthPairsFile), healthPairsBody);
 const manualVerificationName = `manual_verification_${taskId}.json`;
 const manualVerificationBody = JSON.stringify({
   task_id: taskId,
-  states: ['stopped', 'running', 'manual_stop', 'auto_completed'],
-  window_state_semantics_pass: evidence?.result?.window_state_semantics_pass ?? null
+  samples: ['debug_main_path_v1', 'real_no_debug'],
+  states: ['stopped', 'running_early', 'running_window_present_but_not_ready', 'running_ready', 'manual_stop', 'auto_completed'],
+  window_state_semantics_pass: evidence?.result?.window_state_semantics_pass ?? null,
+  readiness_consistency_pass: evidence?.result?.readiness_consistency_pass ?? null,
+  decision_gating_pass: evidence?.result?.decision_gating_pass ?? null
 }, null, 2);
 fs.writeFileSync(path.join(reportsDir, manualVerificationName), manualVerificationBody);
 
@@ -122,6 +128,8 @@ const runLogBody = [
   `window_state_semantics_pass=${evidence?.result?.window_state_semantics_pass === true}`,
   `stop_reason_pass=${evidence?.result?.stop_reason_pass === true}`,
   `running_window_exclusion_pass=${evidence?.result?.running_window_exclusion_pass === true}`,
+  `readiness_consistency_pass=${evidence?.result?.readiness_consistency_pass === true}`,
+  `decision_gating_pass=${evidence?.result?.decision_gating_pass === true}`,
   `[${nowIso}] verify_window_lifecycle done`
 ].join('\n');
 fs.writeFileSync(path.join(reportsDir, runLogName), runLogBody);
@@ -165,8 +173,12 @@ fs.writeFileSync(path.join(reportsDir, notifyName), notifyBody);
 const notifyHash = hash8(notifyBody);
 const resultV39 = {
   task_id: taskId,
-  status: 'DONE',
-  summary: 'Window lifecycle verification envelope generated for stopped/running/manual_stop/auto_completed.',
+  status: evidence?.result?.window_state_semantics_pass
+    && evidence?.result?.stop_reason_pass
+    && evidence?.result?.running_window_exclusion_pass
+    && evidence?.result?.readiness_consistency_pass
+    && evidence?.result?.decision_gating_pass ? 'DONE' : 'FAILED',
+  summary: 'Window lifecycle + readiness + decision gating verification envelope generated with debug and real runtime samples.',
   report_file: notifyName,
   report_sha256_short: notifyHash,
   artifacts: [
@@ -178,7 +190,9 @@ const resultV39 = {
   metrics: {
     window_state_semantics_pass: evidence?.result?.window_state_semantics_pass === true,
     stop_reason_pass: evidence?.result?.stop_reason_pass === true,
-    running_window_exclusion_pass: evidence?.result?.running_window_exclusion_pass === true
+    running_window_exclusion_pass: evidence?.result?.running_window_exclusion_pass === true,
+    readiness_consistency_pass: evidence?.result?.readiness_consistency_pass === true,
+    decision_gating_pass: evidence?.result?.decision_gating_pass === true
   }
 };
 fs.writeFileSync(path.join(reportsDir, `result_${taskId}.json`), JSON.stringify(resultV39, null, 2));

@@ -18,8 +18,8 @@
     },
     {
       "name": "rules/task-reports/2026-03/manual_verification_260324_026.json",
-      "size": 157,
-      "sha256_short": "81777827"
+      "size": 367,
+      "sha256_short": "73a2afac"
     },
     {
       "name": "scripts/postflight_validate_envelope.mjs",
@@ -28,8 +28,8 @@
     },
     {
       "name": "rules/task-reports/2026-03/run_260324_026.log",
-      "size": 202,
-      "sha256_short": "f58f9df3"
+      "size": 263,
+      "sha256_short": "2e71a27e"
     }
   ]
 }

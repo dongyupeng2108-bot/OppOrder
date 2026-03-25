@@ -1,6 +1,6 @@
 {
   "task_id": "260324_026",
-  "timestamp": "2026-03-25T01:38:31.133Z",
+  "timestamp": "2026-03-25T02:16:18.459Z",
   "valid": true,
   "errors": [],
   "checks": {
@@ -15,10 +15,10 @@
   "context": {
     "resultData": {
       "task_id": "260324_026",
-      "status": "DONE",
-      "summary": "Window lifecycle verification envelope generated for stopped/running/manual_stop/auto_completed.",
+      "status": "FAILED",
+      "summary": "Window lifecycle + readiness + decision gating verification envelope generated with debug and real runtime samples.",
       "report_file": "notify_260324_026.txt",
-      "report_sha256_short": "21b74e49",
+      "report_sha256_short": "57b0fd9b",
       "artifacts": [
         "scripts/verify_window_lifecycle.mjs"
       ],
@@ -26,9 +26,11 @@
         "rules/task-reports/2026-03/260324_026_window_lifecycle.json"
       ],
       "metrics": {
-        "window_state_semantics_pass": true,
+        "window_state_semantics_pass": false,
         "stop_reason_pass": true,
-        "running_window_exclusion_pass": true
+        "running_window_exclusion_pass": true,
+        "readiness_consistency_pass": false,
+        "decision_gating_pass": false
       }
     }
   }
