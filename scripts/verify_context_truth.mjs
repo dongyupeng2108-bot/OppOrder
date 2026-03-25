@@ -167,6 +167,8 @@ const main = async () => {
   const args = parseArgs();
   const http = createHttp(args.baseUrl);
   const boot = await ensureServer(args);
+  const todayLogPath = path.join(REPO_ROOT, 'data', 'crypto_binary', 'logs', `bot_${new Date().toISOString().slice(0, 10)}.jsonl`);
+  const runtimeLogExistedBefore = fs.existsSync(todayLogPath);
 
   try {
     await http.post('/bot/stop', {});
@@ -269,6 +271,9 @@ const main = async () => {
   } finally {
     if (boot.spawned && !boot.spawned.killed) {
       boot.spawned.kill();
+    }
+    if (!runtimeLogExistedBefore && fs.existsSync(todayLogPath)) {
+      fs.unlinkSync(todayLogPath);
     }
   }
 };

@@ -14,15 +14,15 @@
   "stages": {
     "stopped": {
       "label": "stopped",
-      "captured_at": "2026-03-25T00:16:16.418Z",
+      "captured_at": "2026-03-25T00:27:38.478Z",
       "context": {
         "status": 200,
         "body": {
-          "window_id": "btc-updown-5m-1774397700",
+          "window_id": "btc-updown-5m-1774398300",
           "last_window_id": null,
-          "slug": "btc-updown-5m-1774397700",
+          "slug": "btc-updown-5m-1774398300",
           "period": "5m",
-          "remaining_sec": 223,
+          "remaining_sec": 141,
           "btc_price": null,
           "anchor_btc": null,
           "atr_5m": null,
@@ -34,7 +34,7 @@
           "ask_no": null,
           "tick_size": 0.01,
           "stale": false,
-          "updated_at": "2026-03-25T00:16:16.417Z"
+          "updated_at": "2026-03-25T00:27:38.477Z"
         }
       },
       "status": {
@@ -63,7 +63,7 @@
           "no_order_ids": [],
           "last_reason": null,
           "last_intents": [],
-          "updated_at": "2026-03-25T00:16:15.437Z",
+          "updated_at": "2026-03-25T00:27:37.468Z",
           "saved_config": {
             "open_delay_sec": 10,
             "ladder_prices": [
@@ -94,21 +94,21 @@
         "lower_bound": null,
         "atr_5m": null,
         "atr_multiple": 1.2,
-        "remaining_sec": 223,
+        "remaining_sec": 141,
         "active_runtime_snapshot": null
       }
     },
     "running_early": {
       "label": "running_early",
-      "captured_at": "2026-03-25T00:16:16.561Z",
+      "captured_at": "2026-03-25T00:27:38.614Z",
       "context": {
         "status": 200,
         "body": {
-          "window_id": "btc-updown-5m-1774397700",
+          "window_id": "btc-updown-5m-1774398300",
           "last_window_id": null,
-          "slug": "btc-updown-5m-1774397700",
+          "slug": "btc-updown-5m-1774398300",
           "period": "5m",
-          "remaining_sec": 223,
+          "remaining_sec": 141,
           "btc_price": null,
           "anchor_btc": null,
           "atr_5m": null,
@@ -120,7 +120,7 @@
           "ask_no": null,
           "tick_size": 0.01,
           "stale": false,
-          "updated_at": "2026-03-25T00:16:16.558Z"
+          "updated_at": "2026-03-25T00:27:38.613Z"
         }
       },
       "status": {
@@ -149,7 +149,7 @@
           "no_order_ids": [],
           "last_reason": null,
           "last_intents": [],
-          "updated_at": "2026-03-25T00:16:16.420Z",
+          "updated_at": "2026-03-25T00:27:38.479Z",
           "saved_config": {
             "open_delay_sec": 10,
             "ladder_prices": [
@@ -198,7 +198,7 @@
         "lower_bound": null,
         "atr_5m": null,
         "atr_multiple": 1.2,
-        "remaining_sec": 223,
+        "remaining_sec": 141,
         "active_runtime_snapshot": {
           "config": {
             "open_delay_sec": 10,
@@ -222,27 +222,27 @@
     },
     "running_normal": {
       "label": "running_normal_probe_2",
-      "captured_at": "2026-03-25T00:16:18.050Z",
+      "captured_at": "2026-03-25T00:27:40.158Z",
       "context": {
         "status": 200,
         "body": {
-          "window_id": "btc-updown-5m-1774397700",
+          "window_id": "btc-updown-5m-1774398300",
           "last_window_id": null,
-          "slug": "btc-updown-5m-1774397700",
+          "slug": "btc-updown-5m-1774398300",
           "period": "5m",
-          "remaining_sec": 222,
+          "remaining_sec": 140,
           "btc_price": 100,
           "anchor_btc": 100,
           "atr_5m": 2,
           "upper_bound": 102.4,
           "lower_bound": 97.6,
-          "bid_yes": 0.41,
-          "ask_yes": 0.42,
-          "bid_no": 0.58,
-          "ask_no": 0.59,
+          "bid_yes": 0.79,
+          "ask_yes": 0.8,
+          "bid_no": 0.2,
+          "ask_no": 0.21,
           "tick_size": 0.01,
           "stale": false,
-          "updated_at": "2026-03-25T00:16:16.644Z"
+          "updated_at": "2026-03-25T00:27:38.624Z"
         }
       },
       "status": {
@@ -255,10 +255,10 @@
           "debug_frame_index": 1,
           "debug_completed": false,
           "tick_interval_ms": 1000,
-          "last_tick_at": "2026-03-25T00:16:17.441Z",
+          "last_tick_at": "2026-03-25T00:27:39.493Z",
           "last_window_id": null,
           "current_window_id": "debug-main-path-v1-w1",
-          "window_initialized_at": "2026-03-25T00:16:17.439Z",
+          "window_initialized_at": "2026-03-25T00:27:39.491Z",
           "remaining_sec": 299,
           "anchor_btc": 100,
           "atr_5m": 2,
@@ -275,7 +275,7 @@
               "kind": "NOOP"
             }
           ],
-          "updated_at": "2026-03-25T00:16:17.441Z",
+          "updated_at": "2026-03-25T00:27:39.493Z",
           "saved_config": {
             "open_delay_sec": 10,
             "ladder_prices": [
@@ -324,7 +324,7 @@
         "lower_bound": 97.6,
         "atr_5m": 2,
         "atr_multiple": 1.2,
-        "remaining_sec": 222,
+        "remaining_sec": 140,
         "active_runtime_snapshot": {
           "config": {
             "open_delay_sec": 10,
