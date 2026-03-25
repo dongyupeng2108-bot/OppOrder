@@ -59,22 +59,35 @@ export function createBotContextAdapter(options = {}) {
 
   let latestBtcPrice = null;
   let latestPriceAt = null;
+  let latestPriceSource = null;
   let lastWindow = null;
   let lastWindowCheckAt = 0;
   let lastDirectPriceFetchAt = 0;
   let directPriceFetchInFlight = null;
+  let sourceInitStarted = false;
+  let sourceInitError = null;
+  let sourceFeedSeen = false;
+  let sourceFeedCount = 0;
+  let sourceLastFeedAt = null;
 
   try {
+    sourceInitStarted = true;
     priceFeed.subscribe((snapshot) => {
       const price = typeof snapshot === 'number' ? snapshot : snapshot?.price;
       const parsed = asFiniteNumber(price);
       if (parsed !== null) {
         latestBtcPrice = parsed;
         latestPriceAt = new Date().toISOString();
+        latestPriceSource = typeof snapshot === 'object' ? (snapshot?.source ?? 'feed') : 'feed';
+        sourceFeedSeen = true;
+        sourceFeedCount += 1;
+        sourceLastFeedAt = latestPriceAt;
       }
     });
     priceFeed.start();
-  } catch {}
+  } catch (error) {
+    sourceInitError = error?.message || 'source_init_failed';
+  }
 
   const readWindow = async () => {
     const scanner = getScanner();
@@ -103,6 +116,7 @@ export function createBotContextAdapter(options = {}) {
         if (parsed !== null) {
           latestBtcPrice = parsed;
           latestPriceAt = new Date().toISOString();
+          latestPriceSource = 'direct_fetch';
         }
         return parsed;
       } catch {
@@ -157,6 +171,16 @@ export function createBotContextAdapter(options = {}) {
     context.tick_size = asFiniteNumber(snapshot?.tick_size);
     context.stale = snapshot?.stale ?? true;
     context.updated_at = toIso(snapshot?.sampled_at) || latestPriceAt || new Date().toISOString();
+    context._btc_source_trace = {
+      source_init_started: sourceInitStarted,
+      source_init_error: sourceInitError,
+      source_feed_seen: sourceFeedSeen,
+      source_feed_count: sourceFeedCount,
+      source_last_feed_at: sourceLastFeedAt,
+      latest_cache_price: asPositiveNumber(latestBtcPrice),
+      latest_cache_at: latestPriceAt,
+      latest_cache_source: latestPriceSource
+    };
     return context;
   };
 

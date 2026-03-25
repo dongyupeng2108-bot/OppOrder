@@ -1,0 +1,35 @@
+{
+  "task_id": "260324_029",
+  "timestamp": "2026-03-25T04:16:28.795Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "source_chain": "PASS",
+    "ready_028": "PASS",
+    "regression_023_020_015": "PASS"
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260324_029",
+      "status": "DONE",
+      "summary": "real runtime BTC price source chain fixed and ready reached.",
+      "report_file": "notify_260324_029.txt",
+      "report_sha256_short": "2c4c721e",
+      "evidence": [
+        "rules/task-reports/2026-03/260324_029_btc_source_chain.json",
+        "rules/task-reports/2026-03/260324_028_ready_reachability.json",
+        "rules/task-reports/2026-03/260324_029_regression_023_executor_idempotency.json"
+      ],
+      "metrics": {
+        "source_chain_pass": true,
+        "real_runtime_ready_reached": true,
+        "btc_price_chain_pass": true,
+        "ready_028_reached": true,
+        "ready_028_first_break_layer": null,
+        "regression_023_executor_idempotency_pass": true,
+        "regression_015_window_isolation_pass": true,
+        "regression_020_filled_total_chain_pass": true
+      }
+    }
+  }
+}
