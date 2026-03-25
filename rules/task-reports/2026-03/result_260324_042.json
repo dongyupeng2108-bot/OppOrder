@@ -1,0 +1,21 @@
+{
+  "task_id": "260324_042",
+  "status": "DONE",
+  "summary": "修复 performance_target_window.unrealized_gross_pnl_total 缺失，unrealized 链收口。",
+  "report_file": "notify_260324_042.txt",
+  "report_sha256_short": "7e51f74c",
+  "evidence": [
+    "rules/task-reports/2026-03/260324_042_pnl_chain_consistency.json",
+    "rules/task-reports/2026-03/260324_042_pnl_chain_consistency.log",
+    "rules/task-reports/2026-03/unrealized_reconciliation_260324_042.json",
+    "rules/task-reports/2026-03/no_regression_020_038_041_260324_042.json"
+  ],
+  "metrics": {
+    "realized_pnl_chain_pass": true,
+    "unrealized_pnl_chain_pass": true,
+    "pnl_chain_consistency_pass": true,
+    "guard_020_exit_code": 0,
+    "guard_038_exit_code": 0,
+    "guard_041_exit_code": 0
+  }
+}

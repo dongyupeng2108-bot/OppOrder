@@ -1,0 +1,17 @@
+{
+  "task_id": "260324_042",
+  "checks": {
+    "chain_020_filled_total": {
+      "command": "node scripts/verify_executor_idempotency.mjs --task_id=260324_042_regression --sample=debug_main_path_v1+debug_fill_yes_path_v1",
+      "exit_code": 0
+    },
+    "chain_038_order_scope_status": {
+      "command": "node scripts/verify_order_scope_and_status.mjs --task_id=260324_042_regression --sample=debug_fill_yes_path_v1",
+      "exit_code": 0
+    },
+    "chain_041_runtime_to_business_result": {
+      "command": "node scripts/verify_runtime_to_business_result.mjs --task_id=260324_042_regression --sample=debug_fill_yes_path_v1+debug_main_path_v1+debug_exit_yes_path_v1",
+      "exit_code": 0
+    }
+  }
+}

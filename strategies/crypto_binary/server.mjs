@@ -407,7 +407,8 @@ const queryBotPerformanceSummary = async (presetRaw, includeRows = false) => {
       bot_window_id,
       bot_filled_total,
       bot_cancelled_total,
-      bot_realized_gross_pnl_total
+      bot_realized_gross_pnl_total,
+      bot_unrealized_gross_pnl_total
     FROM cb_postmortem
     WHERE strategy_id = ? AND bot_completed_at IS NOT NULL
     ORDER BY bot_completed_at DESC, id DESC
@@ -436,14 +437,18 @@ const queryBotPerformanceSummary = async (presetRaw, includeRows = false) => {
   const filledTotal = filtered.reduce((acc, row) => acc + (toFiniteOrNull(row.bot_filled_total) ?? 0), 0);
   const cancelledTotal = filtered.reduce((acc, row) => acc + (toFiniteOrNull(row.bot_cancelled_total) ?? 0), 0);
   const realizedTotal = filtered.reduce((acc, row) => acc + (toFiniteOrNull(row.bot_realized_gross_pnl_total) ?? 0), 0);
+  const unrealizedTotal = filtered.reduce((acc, row) => acc + (toFiniteOrNull(row.bot_unrealized_gross_pnl_total) ?? 0), 0);
   const avgRealized = windowCount > 0 ? (realizedTotal / windowCount) : 0;
+  const avgUnrealized = windowCount > 0 ? (unrealizedTotal / windowCount) : 0;
   const payload = {
     preset,
     window_count: windowCount,
     filled_total: filledTotal,
     cancelled_total: cancelledTotal,
     realized_gross_pnl_total: realizedTotal,
+    unrealized_gross_pnl_total: unrealizedTotal,
     avg_realized_gross_pnl_per_window: avgRealized,
+    avg_unrealized_gross_pnl_per_window: avgUnrealized,
     running_window_excluded: true,
     sample_postmortem_rows: filtered.slice(0, 10).map((row) => ({
       id: row.id ?? null,
@@ -451,7 +456,8 @@ const queryBotPerformanceSummary = async (presetRaw, includeRows = false) => {
       completed_at: row.bot_completed_at ?? null,
       filled_total: toFiniteOrNull(row.bot_filled_total) ?? 0,
       cancelled_total: toFiniteOrNull(row.bot_cancelled_total) ?? 0,
-      realized_gross_pnl_total: toFiniteOrNull(row.bot_realized_gross_pnl_total) ?? 0
+      realized_gross_pnl_total: toFiniteOrNull(row.bot_realized_gross_pnl_total) ?? 0,
+      unrealized_gross_pnl_total: toFiniteOrNull(row.bot_unrealized_gross_pnl_total) ?? 0
     }))
   };
   if (includeRows) {
@@ -461,7 +467,8 @@ const queryBotPerformanceSummary = async (presetRaw, includeRows = false) => {
       completed_at: row.bot_completed_at ?? null,
       filled_total: toFiniteOrNull(row.bot_filled_total) ?? 0,
       cancelled_total: toFiniteOrNull(row.bot_cancelled_total) ?? 0,
-      realized_gross_pnl_total: toFiniteOrNull(row.bot_realized_gross_pnl_total) ?? 0
+      realized_gross_pnl_total: toFiniteOrNull(row.bot_realized_gross_pnl_total) ?? 0,
+      unrealized_gross_pnl_total: toFiniteOrNull(row.bot_unrealized_gross_pnl_total) ?? 0
     }));
   }
   return payload;

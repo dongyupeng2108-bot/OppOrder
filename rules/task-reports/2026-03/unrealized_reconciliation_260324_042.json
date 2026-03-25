@@ -1,0 +1,18 @@
+{
+  "task_id": "260324_042",
+  "sample": "debug_exit_yes_path_v1",
+  "window_id": "debug-exit-yes-path-v1-w1",
+  "summary_unrealized_gross_pnl_total": 0,
+  "last_run_snapshot_unrealized_gross_pnl_total": 0,
+  "postmortem_unrealized_gross_pnl_total": 0,
+  "performance_target_window_unrealized_gross_pnl_total": 0,
+  "summary_basis": "summary.unrealized_gross_pnl_total",
+  "last_run_snapshot_basis": "last_run_snapshot.unrealized_gross_pnl_total",
+  "postmortem_basis": "postmortem.unrealized_gross_pnl_total",
+  "performance_target_window_basis": "performance_target_window.unrealized_gross_pnl_total",
+  "result": {
+    "realized_pnl_chain_pass": true,
+    "unrealized_pnl_chain_pass": true,
+    "pnl_chain_consistency_pass": true
+  }
+}
