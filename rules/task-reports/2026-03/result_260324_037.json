@@ -1,0 +1,17 @@
+{
+  "task_id": "260324_037",
+  "status": "DONE",
+  "summary": "Bot Console UI 收口 v1 完成：去冗余头部、单按钮运行控制、版本测试信息退出主区并改结果弹窗。",
+  "report_file": "notify_260324_037.txt",
+  "report_sha256_short": "d2e68682",
+  "evidence": [
+    "rules/task-reports/2026-03/260324_037_ui_compaction_evidence.json",
+    "rules/task-reports/2026-03/notify_260324_037.txt",
+    "rules/task-reports/2026-03/deliverables_index_260324_037.json"
+  ],
+  "metrics": {
+    "page_states_covered": 4,
+    "no_main_test_panel": true,
+    "duplicate_test_trigger_blocked": true
+  }
+}
