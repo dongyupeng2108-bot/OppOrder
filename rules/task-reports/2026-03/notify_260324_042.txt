@@ -1,0 +1,61 @@
+RESULT_JSON
+LOG_HEAD
+[FIX unrealized pnl performance chain] performance_target_window.unrealized_gross_pnl_total added.
+LOG_TAIL
+node scripts/verify_pnl_chain_consistency.mjs --task_id=260324_042 --sample=debug_exit_yes_path_v1+debug_fill_yes_path_v1
+pnl_exit_code=0
+node scripts/verify_executor_idempotency.mjs --task_id=260324_042_regression --sample=debug_main_path_v1+debug_fill_yes_path_v1 => exit_code=0
+node scripts/verify_order_scope_and_status.mjs --task_id=260324_042_regression --sample=debug_fill_yes_path_v1 => exit_code=0
+node scripts/verify_runtime_to_business_result.mjs --task_id=260324_042_regression --sample=debug_fill_yes_path_v1+debug_main_path_v1+debug_exit_yes_path_v1 => exit_code=0
+GATE_LIGHT_EXIT=0
+INDEX
+{
+  "task_id": "260324_042",
+  "files": [
+    {
+      "name": "strategies/crypto_binary/server.mjs",
+      "size": 96778,
+      "sha256_short": "3176520d"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_042_pnl_chain_consistency.json",
+      "size": 339668,
+      "sha256_short": "c3f9ecee"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_042_pnl_chain_consistency.log",
+      "size": 190,
+      "sha256_short": "2c8b2c8e"
+    },
+    {
+      "name": "rules/task-reports/2026-03/unrealized_reconciliation_260324_042.json",
+      "size": 738,
+      "sha256_short": "9e9614f6"
+    },
+    {
+      "name": "rules/task-reports/2026-03/no_regression_020_038_041_260324_042.json",
+      "size": 703,
+      "sha256_short": "0b86b000"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_042_regression_executor_idempotency.json",
+      "size": 7371,
+      "sha256_short": "85cf0c7b"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_042_regression_order_scope_and_status.json",
+      "size": 43717,
+      "sha256_short": "100b2e93"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_042_regression_runtime_to_business_result.json",
+      "size": 90888,
+      "sha256_short": "ac96d2ba"
+    },
+    {
+      "name": "rules/task-reports/2026-03/notify_260324_042.txt",
+      "size": 731,
+      "sha256_short": "56b37cee"
+    }
+  ]
+}
