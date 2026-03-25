@@ -1,0 +1,73 @@
+RESULT_JSON
+LOG_HEAD
+[Result Chain Consistency v1] script added and integrated into verify_all_manual.
+LOG_TAIL
+node scripts/verify_result_chain_consistency.mjs --task_id=260324_036 --sample=debug_fill_yes_path_v1
+node scripts/verify_all_manual.mjs --task_id=260324_036
+node scripts/verify_btc_source_chain.mjs --task_id=260324_036_regression --sample=real_no_debug+debug_main_path_v1
+node scripts/verify_context_truth.mjs --task_id=260324_036_regression --sample=debug_main_path_v1+debug_fill_yes_path_v1
+node scripts/verify_window_lifecycle.mjs --task_id=260324_036_regression --sample=debug_main_path_v1+real_no_debug
+node scripts/verify_executor_idempotency.mjs --task_id=260324_036_regression --sample=debug_main_path_v1+debug_fill_yes_path_v1
+verify_all_total_scripts=5
+GATE_LIGHT_EXIT=0
+INDEX
+{
+  "task_id": "260324_036",
+  "files": [
+    {
+      "name": "rules/task-reports/2026-03/260324_036_result_chain_consistency.json",
+      "size": 69886,
+      "sha256_short": "ab9139a7"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_036_result_chain_consistency.log",
+      "size": 173,
+      "sha256_short": "a228624f"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_036_verify_all_manual.json",
+      "size": 1857,
+      "sha256_short": "e5af8d03"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_036_verify_all_manual.log",
+      "size": 856,
+      "sha256_short": "88bfa6ea"
+    },
+    {
+      "name": "rules/task-reports/2026-03/result_chain_table_260324_036.json",
+      "size": 629,
+      "sha256_short": "f8bcd60d"
+    },
+    {
+      "name": "rules/task-reports/2026-03/verify_all_integration_260324_036.json",
+      "size": 371,
+      "sha256_short": "2d2003fc"
+    },
+    {
+      "name": "rules/task-reports/2026-03/standalone_old4_proof_260324_036.json",
+      "size": 797,
+      "sha256_short": "fb908fd9"
+    },
+    {
+      "name": "scripts/verify_manifest.json",
+      "size": 2482,
+      "sha256_short": "fca76f3f"
+    },
+    {
+      "name": "scripts/verify_all_manual.mjs",
+      "size": 4538,
+      "sha256_short": "ff456ec0"
+    },
+    {
+      "name": "scripts/verify_result_chain_consistency.mjs",
+      "size": 8954,
+      "sha256_short": "dcea864a"
+    },
+    {
+      "name": "rules/task-reports/2026-03/notify_260324_036.txt",
+      "size": 799,
+      "sha256_short": "8f7dd560"
+    }
+  ]
+}

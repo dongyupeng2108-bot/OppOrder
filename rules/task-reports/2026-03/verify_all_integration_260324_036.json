@@ -1,0 +1,14 @@
+{
+  "task_id": "260324_036",
+  "verify_all_exit_code": 1,
+  "verify_all_overall_pass": false,
+  "verify_all_total_scripts": 5,
+  "verify_all_result_names": [
+    "verify_btc_source_chain",
+    "verify_context_truth",
+    "verify_window_lifecycle",
+    "verify_executor_idempotency",
+    "verify_result_chain_consistency"
+  ],
+  "includes_result_chain_consistency": true
+}

@@ -1,0 +1,21 @@
+{
+  "task_id": "260324_036",
+  "table": {
+    "window_id": "debug-fill-yes-path-v1-w1",
+    "unique_order_id_count": 8,
+    "unique_filled_order_id_count": 1,
+    "unique_cancelled_order_id_count": 7,
+    "summary_filled_total": 1,
+    "summary_cancelled_total": null,
+    "summary_cancelled_total_basis": "missing",
+    "last_run_filled_total": 1,
+    "postmortem_filled_total": 1,
+    "performance_target_window_filled_total": 1
+  },
+  "checks": {
+    "filled_total_equals_unique_filled_order_count": true,
+    "last_run_equals_summary": true,
+    "postmortem_equals_summary": true,
+    "performance_equals_summary": true
+  }
+}
