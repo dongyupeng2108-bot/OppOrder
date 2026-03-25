@@ -1,0 +1,21 @@
+{
+  "task_id": "260324_039",
+  "status": "DONE",
+  "summary": "verify_pnl_chain_consistency 已补齐并接入 verify_all_manual（总入口脚本数=7）。",
+  "report_file": "notify_260324_039.txt",
+  "report_sha256_short": "09dd007f",
+  "evidence": [
+    "rules/task-reports/2026-03/260324_039_pnl_chain_consistency.json",
+    "rules/task-reports/2026-03/260324_039_pnl_chain_consistency.log",
+    "rules/task-reports/2026-03/pnl_realized_table_260324_039.json",
+    "rules/task-reports/2026-03/pnl_unrealized_table_260324_039.json",
+    "rules/task-reports/2026-03/verify_all_integration_260324_039.json",
+    "rules/task-reports/2026-03/standalone_old6_proof_260324_039.json"
+  ],
+  "metrics": {
+    "verify_all_exit_code": 1,
+    "verify_all_total_scripts": 7,
+    "includes_pnl_chain_consistency": true,
+    "old6_independent_executed": true
+  }
+}

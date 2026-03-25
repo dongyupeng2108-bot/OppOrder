@@ -1,0 +1,20 @@
+{
+  "task_id": "260324_039",
+  "table": {
+    "sample": "debug_exit_yes_path_v1",
+    "window_id": "debug-exit-yes-path-v1-w1",
+    "summary_unrealized_gross_pnl_total": 39.349999999999994,
+    "summary_basis": "summary.unrealized_gross_pnl_total",
+    "last_run_snapshot_unrealized_gross_pnl_total": 39.349999999999994,
+    "last_run_snapshot_basis": "last_run_snapshot.unrealized_gross_pnl_total",
+    "postmortem_unrealized_gross_pnl_total": 39.349999999999994,
+    "postmortem_basis": "postmortem.unrealized_gross_pnl_total",
+    "performance_target_window_unrealized_gross_pnl_total": null,
+    "performance_target_window_basis": "missing"
+  },
+  "result": {
+    "realized_pnl_chain_pass": true,
+    "unrealized_pnl_chain_pass": false,
+    "pnl_chain_consistency_pass": false
+  }
+}

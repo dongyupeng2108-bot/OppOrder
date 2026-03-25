@@ -49,6 +49,14 @@
       "samples": ["debug_fill_yes_path_v1", "debug_main_path_v1"],
       "output_file": "{task_id}_order_scope_and_status.json",
       "pass_condition": "window_isolation_pass=true 且 order_status_semantics_pass=true 且 cross_window_overlap_pass=true"
+    },
+    {
+      "script_name": "verify_pnl_chain_consistency",
+      "entry": "scripts/verify_pnl_chain_consistency.mjs",
+      "purpose": "验证 summary / last_run_snapshot / postmortem / performance 的 realized/unrealized pnl 口径一致性",
+      "samples": ["debug_exit_yes_path_v1", "debug_fill_yes_path_v1"],
+      "output_file": "{task_id}_pnl_chain_consistency.json",
+      "pass_condition": "realized_pnl_chain_pass=true 且 unrealized_pnl_chain_pass=true 且 pnl_chain_consistency_pass=true"
     }
   ]
 }

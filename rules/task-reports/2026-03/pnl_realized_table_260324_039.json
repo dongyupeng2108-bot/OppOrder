@@ -1,0 +1,16 @@
+{
+  "task_id": "260324_039",
+  "table": {
+    "sample": "debug_exit_yes_path_v1",
+    "window_id": "debug-exit-yes-path-v1-w1",
+    "summary_realized_gross_pnl_total": 3.4499999999999984,
+    "last_run_snapshot_realized_gross_pnl_total": 3.4499999999999984,
+    "postmortem_realized_gross_pnl_total": 3.4499999999999984,
+    "performance_target_window_realized_gross_pnl_total": 3.4499999999999984
+  },
+  "result": {
+    "realized_pnl_chain_pass": true,
+    "unrealized_pnl_chain_pass": false,
+    "pnl_chain_consistency_pass": false
+  }
+}
