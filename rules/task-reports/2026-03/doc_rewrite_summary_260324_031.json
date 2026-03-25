@@ -1,0 +1,21 @@
+{
+  "task_id": "260324_031",
+  "removed": [
+    "OppRadar/Opportunity Radar 作为主项目身份的表述",
+    "旧实体模型与旧 API 契约正文主导内容",
+    "PROJECT_MASTER_PLAN 自动快照与禁止人工维护口径"
+  ],
+  "retained": [
+    "一次一单与范围锁纪律",
+    "Gate Light / CI 作为合并前硬门禁",
+    "Owner/PM/Dev 角色契约"
+  ],
+  "rewritten_or_added": [
+    "BTCQDD 主身份与技术别名边界",
+    "三类任务定义（定位/修复验收/防回归）",
+    "一键手动测试体系（模块脚本+总入口）",
+    "验证脚本统一规范（目标/样本/真值/通过条件/输出）",
+    "Core CI / Manual Packs / Release Checks 分层",
+    "高风险不变量与真实运行约束（含 bounds readiness）"
+  ]
+}

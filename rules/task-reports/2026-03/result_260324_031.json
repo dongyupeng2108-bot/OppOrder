@@ -1,0 +1,19 @@
+{
+  "task_id": "260324_031",
+  "status": "DONE",
+  "summary": "三大文档已重构为 BTCQDD 当前口径，并补齐测试体系规范。",
+  "report_file": "notify_260324_031.txt",
+  "report_sha256_short": "8ea11dbe",
+  "evidence": [
+    "rules/rules/WORKFLOW.md",
+    "rules/rules/PROJECT_RULES.md",
+    "rules/rules/PROJECT_MASTER_PLAN.md",
+    "rules/task-reports/2026-03/doc_rewrite_summary_260324_031.json"
+  ],
+  "metrics": {
+    "project_identity_btcqdd": true,
+    "task_types_defined": true,
+    "test_system_layers_defined": true,
+    "master_plan_manual_driver": true
+  }
+}
