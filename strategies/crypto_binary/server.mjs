@@ -4,7 +4,7 @@ import fs from 'fs';
 // 提供：GET / 健康检查，POST /config/reload 热更新
 
 import { createServer } from 'http';
-import { execSync } from 'child_process';
+import { execSync, spawn } from 'child_process';
 import { readFileSync, readdirSync, existsSync, mkdirSync, writeFileSync, unlinkSync, createReadStream, statSync } from 'fs';
 import { resolve, dirname, extname } from 'path';
 import { fileURLToPath } from 'url';
@@ -64,6 +64,13 @@ const BOT_POSTMORTEM_STRATEGY_ID = 'bot_console';
 const BOT_PERF_PRESET_TODAY = 'today';
 const BOT_PERF_PRESET_LAST_7D = 'last_7d';
 const BOT_PERF_PRESET_LAST_30_WINDOWS = 'last_30_windows';
+const BOT_TEST_REPO_ROOT = resolve(__dirname, '..', '..');
+const BOT_TEST_RUNNER_DIR = resolve(BOT_TEST_REPO_ROOT, 'data', 'crypto_binary', 'test_runner');
+const BOT_TEST_REPORTS_ROOT = resolve(BOT_TEST_REPO_ROOT, 'rules', 'task-reports');
+const BOT_TEST_STATE_IDLE = 'idle';
+const BOT_TEST_STATE_RUNNING = 'running';
+const BOT_TEST_STATE_PASSED = 'passed';
+const BOT_TEST_STATE_FAILED = 'failed';
 const BOT_CONFIG_DEFAULTS = {
   open_delay_sec: 10,
   ladder_prices: [...BOT_STRATEGY_CONTRACT.defaults.ladder_prices],
@@ -92,6 +99,135 @@ let botPendingStopReason = null;
 let botRuntimeWasRunning = false;
 let botRunActionSummary = [];
 let botLastTickResult = null;
+let botTestRunnerState = {
+  state: BOT_TEST_STATE_IDLE,
+  task_id: null,
+  run_id: null,
+  started_at: null,
+  finished_at: null,
+  overall_pass: null,
+  current_step: null,
+  log_file: null,
+  result_file: null,
+  last_error: null,
+  child: null
+};
+const ensureBotTestRunnerDir = () => {
+  if (!existsSync(BOT_TEST_RUNNER_DIR)) {
+    mkdirSync(BOT_TEST_RUNNER_DIR, { recursive: true });
+  }
+};
+const resolveBotTestReportMonth = (taskId) => {
+  const m = String(taskId || '').match(/^(\d{2})(\d{2})\d{2}_\d+$/);
+  if (m) return `20${m[1]}-${m[2]}`;
+  return new Date().toISOString().slice(0, 7);
+};
+const resolveBotTestResultPath = (taskId) => {
+  const month = resolveBotTestReportMonth(taskId);
+  return resolve(BOT_TEST_REPORTS_ROOT, month, `${taskId}_verify_all_manual.json`);
+};
+const appendBotTestRunnerLog = (text) => {
+  if (!botTestRunnerState.log_file) return;
+  try {
+    fs.appendFileSync(botTestRunnerState.log_file, text);
+  } catch {}
+};
+const getBotTestStatusSnapshot = () => ({
+  state: botTestRunnerState.state,
+  task_id: botTestRunnerState.task_id,
+  started_at: botTestRunnerState.started_at,
+  finished_at: botTestRunnerState.finished_at,
+  overall_pass: botTestRunnerState.overall_pass,
+  current_step: botTestRunnerState.current_step,
+  log_file: botTestRunnerState.log_file,
+  result_file: botTestRunnerState.result_file,
+  run_id: botTestRunnerState.run_id,
+  last_error: botTestRunnerState.last_error
+});
+const launchBotTestRun = ({ taskId, simulateFail = false }) => {
+  if (botTestRunnerState.state === BOT_TEST_STATE_RUNNING) {
+    return { ok: true, started: false, already_running: true, status: getBotTestStatusSnapshot() };
+  }
+  ensureBotTestRunnerDir();
+  const startedAt = new Date().toISOString();
+  const runId = `${Date.now()}`;
+  const logFile = resolve(BOT_TEST_RUNNER_DIR, `${taskId}_${runId}.log`);
+  const resultFile = resolveBotTestResultPath(taskId);
+  writeFileSync(logFile, '');
+  botTestRunnerState = {
+    ...botTestRunnerState,
+    state: BOT_TEST_STATE_RUNNING,
+    task_id: taskId,
+    run_id: runId,
+    started_at: startedAt,
+    finished_at: null,
+    overall_pass: null,
+    current_step: 'launching',
+    log_file: logFile,
+    result_file: resultFile,
+    last_error: null,
+    child: null
+  };
+  appendBotTestRunnerLog(`[${startedAt}] start task_id=${taskId}\n`);
+  const env = { ...process.env };
+  if (simulateFail) {
+    env.VERIFY_ALL_FORCE_FAIL = '1';
+    appendBotTestRunnerLog(`[${startedAt}] simulate_fail=true\n`);
+  }
+  const child = spawn(process.execPath, ['scripts/verify_all_manual.mjs', `--task_id=${taskId}`], {
+    cwd: BOT_TEST_REPO_ROOT,
+    env,
+    stdio: ['ignore', 'pipe', 'pipe']
+  });
+  botTestRunnerState.child = child;
+  child.stdout.on('data', (chunk) => {
+    const text = String(chunk);
+    appendBotTestRunnerLog(text);
+    if (text.includes('VERIFY_ALL_OUTPUT=')) {
+      botTestRunnerState.current_step = 'collecting_results';
+    } else {
+      botTestRunnerState.current_step = 'running';
+    }
+  });
+  child.stderr.on('data', (chunk) => {
+    appendBotTestRunnerLog(String(chunk));
+    botTestRunnerState.current_step = 'running';
+  });
+  child.on('error', (err) => {
+    const finishedAt = new Date().toISOString();
+    appendBotTestRunnerLog(`[${finishedAt}] child_error=${err.message}\n`);
+    botTestRunnerState = {
+      ...botTestRunnerState,
+      state: BOT_TEST_STATE_FAILED,
+      finished_at: finishedAt,
+      overall_pass: false,
+      current_step: 'finished',
+      last_error: err.message,
+      child: null
+    };
+  });
+  child.on('close', (code) => {
+    const finishedAt = new Date().toISOString();
+    let parsed = null;
+    try {
+      if (existsSync(resultFile)) {
+        parsed = JSON.parse(readFileSync(resultFile, 'utf8'));
+      }
+    } catch {}
+    const overallPass = code === 0 && parsed?.overall_pass === true;
+    appendBotTestRunnerLog(`[${finishedAt}] exit_code=${code ?? 1} overall_pass=${overallPass}\n`);
+    botTestRunnerState = {
+      ...botTestRunnerState,
+      state: overallPass ? BOT_TEST_STATE_PASSED : BOT_TEST_STATE_FAILED,
+      finished_at: finishedAt,
+      overall_pass: overallPass,
+      current_step: 'finished',
+      last_error: overallPass ? null : `verify_all_manual exit code ${code ?? 1}`,
+      child: null
+    };
+  });
+  return { ok: true, started: true, already_running: false, status: getBotTestStatusSnapshot() };
+};
 const cloneBotConfig = (value) => ({
   open_delay_sec: Number(value.open_delay_sec),
   ladder_prices: [...value.ladder_prices],
@@ -1651,6 +1787,77 @@ const server = createServer(async (req, res) => {
   if (req.method === 'GET' && req.url === '/strategy-runner/logs') {
     try {
       sendJson(res, strategyRunnerSe.getLogs());
+    } catch (err) {
+      sendJson(res, { ok: false, error: err.message }, 500);
+    }
+    return;
+  }
+
+  if (req.method === 'POST' && req.url === '/bot/test/run') {
+    let body = '';
+    req.on('data', d => { body += d; });
+    req.on('end', () => {
+      try {
+        const payload = JSON.parse(body || '{}');
+        const taskIdRaw = String(payload?.task_id || '').trim();
+        const taskId = taskIdRaw || `${new Date().toISOString().slice(2, 10).replace(/-/g, '')}_900`;
+        const simulateFail = payload?.simulate_fail === true;
+        const started = launchBotTestRun({ taskId, simulateFail });
+        sendJson(res, started, started.started ? 200 : 409);
+      } catch (err) {
+        sendJson(res, { ok: false, error: err.message }, 500);
+      }
+    });
+    return;
+  }
+
+  if (req.method === 'GET' && req.url.startsWith('/bot/test/status')) {
+    sendJson(res, { ok: true, ...getBotTestStatusSnapshot() });
+    return;
+  }
+
+  if (req.method === 'GET' && req.url.startsWith('/bot/test/logs')) {
+    try {
+      const parsed = new URL(req.url, 'http://localhost');
+      const limitText = parsed.searchParams.get('limit');
+      const limit = limitText == null ? 200 : Number.parseInt(limitText, 10);
+      if (!Number.isInteger(limit) || limit <= 0) {
+        sendJson(res, { ok: false, error: 'invalid limit' }, 400);
+        return;
+      }
+      const logFile = botTestRunnerState.log_file;
+      if (!logFile || !existsSync(logFile)) {
+        sendJson(res, { ok: true, lines: [], log_file: null, state: botTestRunnerState.state });
+        return;
+      }
+      const lines = readFileSync(logFile, 'utf8').split(/\r?\n/).filter(Boolean);
+      sendJson(res, {
+        ok: true,
+        state: botTestRunnerState.state,
+        log_file: logFile,
+        lines: lines.slice(Math.max(0, lines.length - Math.min(limit, 500)))
+      });
+    } catch (err) {
+      sendJson(res, { ok: false, error: err.message }, 500);
+    }
+    return;
+  }
+
+  if (req.method === 'GET' && req.url.startsWith('/bot/test/result')) {
+    try {
+      const resultFile = botTestRunnerState.result_file;
+      if (!resultFile || !existsSync(resultFile)) {
+        sendJson(res, { ok: false, error: 'result not ready', state: botTestRunnerState.state }, 404);
+        return;
+      }
+      const result = JSON.parse(readFileSync(resultFile, 'utf8'));
+      sendJson(res, {
+        ok: true,
+        state: botTestRunnerState.state,
+        overall_pass: botTestRunnerState.overall_pass,
+        result_file: resultFile,
+        result
+      });
     } catch (err) {
       sendJson(res, { ok: false, error: err.message }, 500);
     }

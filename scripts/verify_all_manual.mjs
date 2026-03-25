@@ -21,7 +21,8 @@ const parseArgs = () => {
   const taskId = args.task_id || DEFAULT_TASK_ID;
   const month = new Date().toISOString().slice(0, 7);
   const output = args.output || path.join(REPO_ROOT, 'rules', 'task-reports', month, `${taskId}_verify_all_manual.json`);
-  return { taskId, output };
+  const simulateFail = args.simulate_fail === 'true' || process.env.VERIFY_ALL_FORCE_FAIL === '1';
+  return { taskId, output, simulateFail };
 };
 
 const ensureDir = (filePath) => {
@@ -73,15 +74,28 @@ const main = () => {
   ensureDir(args.output);
   const reportsDir = path.dirname(args.output);
   const results = verifyTargets.map((target) => runVerify(target, args.taskId, reportsDir));
-  const passCount = results.filter((item) => item.pass).length;
+  const passCountRaw = results.filter((item) => item.pass).length;
+  const resultsFinal = args.simulateFail
+    ? [...results, {
+      script_name: 'forced_failure_probe',
+      pass: false,
+      message: 'forced failure for runner state-flow verification',
+      evidence_file: args.output,
+      exit_code: 1,
+      sample_name: 'forced_failure'
+    }]
+    : results;
+  const passCount = resultsFinal.filter((item) => item.pass).length;
   const output = {
     script_name: 'verify_all_manual',
     task_id: args.taskId,
-    total_scripts: results.length,
+    total_scripts: resultsFinal.length,
     pass_count: passCount,
-    fail_count: results.length - passCount,
-    overall_pass: passCount === results.length,
-    results,
+    fail_count: resultsFinal.length - passCount,
+    overall_pass: passCount === resultsFinal.length,
+    results: resultsFinal,
+    simulated_failure: args.simulateFail,
+    raw_pass_count: passCountRaw,
     generated_at: new Date().toISOString()
   };
   const logPath = args.output.replace(/\.json$/i, '.log');
