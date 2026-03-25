@@ -1,0 +1,9 @@
+{
+  "task_id": "260324_025",
+  "phases": [
+    "stopped",
+    "running_early",
+    "running_normal"
+  ],
+  "runtime_btc_display": "100"
+}

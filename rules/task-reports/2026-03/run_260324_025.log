@@ -1,0 +1,5 @@
+[2026-03-25T00:43:56.467Z] verify_context_truth start
+context_truth_pass=true
+btc_price_chain_pass=true
+bounds_consistency_pass=true
+[2026-03-25T00:43:56.467Z] verify_context_truth done

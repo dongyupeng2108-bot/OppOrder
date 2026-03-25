@@ -1,0 +1,5 @@
+120ms: stopped state context/status capture
+110ms: running_early boundary capture
+100ms: running_normal truth capture
+80ms: bounds formula reconciliation
+60ms: evidence serialization

@@ -1,0 +1,44 @@
+RESULT_JSON
+LOG_HEAD
+[Gate Light] Context truth verifier package generated.
+LOG_TAIL
+[Gate Light] PASS
+DOD_EVIDENCE_HEALTHCHECK_ROOT: rules/task-reports/2026-03/260324_025_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: rules/task-reports/2026-03/260324_025_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+GATE_LIGHT_EXIT=0
+INDEX
+{
+  "task_id": "260324_025",
+  "files": [
+    {
+      "name": "rules/task-reports/2026-03/notify_260324_025.txt",
+      "size": 358,
+      "sha256_short": "2c45b991"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_025_healthcheck_53122_root.txt",
+      "size": 24,
+      "sha256_short": "4c0468b1"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_025_healthcheck_53122_pairs.txt",
+      "size": 29,
+      "sha256_short": "b5d4204a"
+    },
+    {
+      "name": "rules/task-reports/2026-03/ui_copy_details_260324_025.json",
+      "size": 137,
+      "sha256_short": "74ff4851"
+    },
+    {
+      "name": "scripts/postflight_validate_envelope.mjs",
+      "size": 44573,
+      "sha256_short": "65a8eed7"
+    },
+    {
+      "name": "rules/task-reports/2026-03/run_260324_025.log",
+      "size": 185,
+      "sha256_short": "e584cdfe"
+    }
+  ]
+}

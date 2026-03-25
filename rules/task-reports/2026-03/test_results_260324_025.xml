@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="context_truth_verifier" tests="3" failures="0" errors="0" skipped="0">
+    <testcase name="stopped_truth_snapshot" time="0.001"/>
+    <testcase name="running_early_boundary_snapshot" time="0.001"/>
+    <testcase name="running_normal_truth_snapshot" time="0.001"/>
+  </testsuite>
+</testsuites>
