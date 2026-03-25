@@ -1,0 +1,34 @@
+{
+  "task_id": "260324_040",
+  "timestamp": "2026-03-25T19:40:31.505Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "standalone_config_effect_script": "PASS",
+    "verify_all_integrated_to_8": "PASS",
+    "old7_standalone_not_regressed": "PASS"
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260324_040",
+      "status": "DONE",
+      "summary": "verify_config_effect_chain 已补齐并接入 verify_all_manual（总入口脚本数=8）。",
+      "report_file": "notify_260324_040.txt",
+      "report_sha256_short": "b2a61c9a",
+      "evidence": [
+        "rules/task-reports/2026-03/260324_040_config_effect_chain.json",
+        "rules/task-reports/2026-03/260324_040_config_effect_chain.log",
+        "rules/task-reports/2026-03/config_effect_compare_260324_040.json",
+        "rules/task-reports/2026-03/decision_runtime_effect_260324_040.json",
+        "rules/task-reports/2026-03/verify_all_integration_260324_040.json",
+        "rules/task-reports/2026-03/standalone_old7_proof_260324_040.json"
+      ],
+      "metrics": {
+        "verify_all_exit_code": 1,
+        "verify_all_total_scripts": 8,
+        "includes_config_effect_chain": true,
+        "old7_independent_executed": true
+      }
+    }
+  }
+}

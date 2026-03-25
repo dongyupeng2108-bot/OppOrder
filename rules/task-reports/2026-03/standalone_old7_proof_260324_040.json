@@ -1,0 +1,34 @@
+{
+  "task_id": "260324_040",
+  "note": "原 7 条脚本保持独立运行能力",
+  "commands": [
+    {
+      "command": "node scripts/verify_btc_source_chain.mjs --task_id=260324_040_regression --sample=real_no_debug+debug_main_path_v1",
+      "exit_code": 0
+    },
+    {
+      "command": "node scripts/verify_context_truth.mjs --task_id=260324_040_regression --sample=debug_main_path_v1+debug_fill_yes_path_v1",
+      "exit_code": 0
+    },
+    {
+      "command": "node scripts/verify_window_lifecycle.mjs --task_id=260324_040_regression --sample=debug_main_path_v1+real_no_debug",
+      "exit_code": 0
+    },
+    {
+      "command": "node scripts/verify_executor_idempotency.mjs --task_id=260324_040_regression --sample=debug_main_path_v1+debug_fill_yes_path_v1",
+      "exit_code": 1
+    },
+    {
+      "command": "node scripts/verify_result_chain_consistency.mjs --task_id=260324_040_regression --sample=debug_fill_yes_path_v1",
+      "exit_code": 0
+    },
+    {
+      "command": "node scripts/verify_order_scope_and_status.mjs --task_id=260324_040_regression --sample=debug_fill_yes_path_v1",
+      "exit_code": 0
+    },
+    {
+      "command": "node scripts/verify_pnl_chain_consistency.mjs --task_id=260324_040_regression --sample=debug_exit_yes_path_v1+debug_fill_yes_path_v1",
+      "exit_code": 1
+    }
+  ]
+}

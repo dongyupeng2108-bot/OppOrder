@@ -1,0 +1,65 @@
+{
+  "task_id": "260324_040",
+  "files": [
+    {
+      "name": "rules/task-reports/2026-03/260324_040_config_effect_chain.json",
+      "size": 12604,
+      "sha256_short": "7babc6e7"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_040_config_effect_chain.log",
+      "size": 199,
+      "sha256_short": "294dfb9e"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_040_verify_all_manual.json",
+      "size": 2863,
+      "sha256_short": "ae24241d"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_040_verify_all_manual.log",
+      "size": 1359,
+      "sha256_short": "f0c14767"
+    },
+    {
+      "name": "rules/task-reports/2026-03/config_effect_compare_260324_040.json",
+      "size": 1946,
+      "sha256_short": "5150185e"
+    },
+    {
+      "name": "rules/task-reports/2026-03/decision_runtime_effect_260324_040.json",
+      "size": 9823,
+      "sha256_short": "2f8fe6c1"
+    },
+    {
+      "name": "rules/task-reports/2026-03/verify_all_integration_260324_040.json",
+      "size": 473,
+      "sha256_short": "ca116fd5"
+    },
+    {
+      "name": "rules/task-reports/2026-03/standalone_old7_proof_260324_040.json",
+      "size": 1316,
+      "sha256_short": "d01313bb"
+    },
+    {
+      "name": "scripts/verify_manifest.json",
+      "size": 4071,
+      "sha256_short": "525f09d4"
+    },
+    {
+      "name": "scripts/verify_all_manual.mjs",
+      "size": 4943,
+      "sha256_short": "06e6c430"
+    },
+    {
+      "name": "scripts/verify_config_effect_chain.mjs",
+      "size": 14949,
+      "sha256_short": "98e46138"
+    },
+    {
+      "name": "rules/task-reports/2026-03/notify_260324_040.txt",
+      "size": 1225,
+      "sha256_short": "c51fa592"
+    }
+  ]
+}

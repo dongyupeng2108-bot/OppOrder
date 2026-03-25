@@ -57,6 +57,14 @@
       "samples": ["debug_exit_yes_path_v1", "debug_fill_yes_path_v1"],
       "output_file": "{task_id}_pnl_chain_consistency.json",
       "pass_condition": "realized_pnl_chain_pass=true 且 unrealized_pnl_chain_pass=true 且 pnl_chain_consistency_pass=true"
+    },
+    {
+      "script_name": "verify_config_effect_chain",
+      "entry": "scripts/verify_config_effect_chain.mjs",
+      "purpose": "验证 saved_config → active_runtime_snapshot.config → decision-preview → runtime 的配置生效链一致性",
+      "samples": ["debug_main_path_v1", "debug_fill_yes_path_v1", "real_no_debug"],
+      "output_file": "{task_id}_config_effect_chain.json",
+      "pass_condition": "saved_config_pass=true 且 active_runtime_sync_pass=true 且 decision_preview_config_pass=true 且 runtime_config_effect_pass=true 且 config_effect_chain_pass=true"
     }
   ]
 }
