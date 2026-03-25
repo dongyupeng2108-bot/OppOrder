@@ -1,0 +1,20 @@
+{
+  "task_id": "260324_041",
+  "status": "DONE",
+  "summary": "verify_runtime_to_business_result 已补齐并接入 verify_all_manual（总入口脚本数=9）。",
+  "report_file": "notify_260324_041.txt",
+  "report_sha256_short": "2630cd3b",
+  "evidence": [
+    "rules/task-reports/2026-03/260324_041_runtime_to_business_result.json",
+    "rules/task-reports/2026-03/260324_041_runtime_to_business_result.log",
+    "rules/task-reports/2026-03/runtime_business_stage_table_260324_041.json",
+    "rules/task-reports/2026-03/verify_all_integration_260324_041.json",
+    "rules/task-reports/2026-03/standalone_old8_proof_260324_041.json"
+  ],
+  "metrics": {
+    "verify_all_exit_code": 1,
+    "verify_all_total_scripts": 9,
+    "includes_runtime_to_business_result": true,
+    "old8_independent_executed": true
+  }
+}
