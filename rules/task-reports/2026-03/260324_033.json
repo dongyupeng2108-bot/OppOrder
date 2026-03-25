@@ -1,0 +1,32 @@
+{
+  "task_id": "260324_033",
+  "timestamp": "2026-03-25T14:45:22.354Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "aggregate_entrypoint": "PASS",
+    "standalone_scripts_preserved": "PASS",
+    "thin_orchestrator": "PASS"
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260324_033",
+      "status": "DONE",
+      "summary": "一键总测试入口 v1 已交付并完成 4 条脚本汇总。",
+      "report_file": "notify_260324_033.txt",
+      "report_sha256_short": "c9f6284e",
+      "evidence": [
+        "rules/task-reports/2026-03/260324_033_verify_all_manual.json",
+        "rules/task-reports/2026-03/260324_033_verify_all_manual.log",
+        "rules/task-reports/2026-03/standalone_proof_260324_033.json",
+        "rules/task-reports/2026-03/thin_entrypoint_note_260324_033.txt"
+      ],
+      "metrics": {
+        "total_scripts": 4,
+        "pass_count": 4,
+        "fail_count": 0,
+        "overall_pass": true
+      }
+    }
+  }
+}

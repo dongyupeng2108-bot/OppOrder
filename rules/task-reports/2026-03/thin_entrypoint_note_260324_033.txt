@@ -1,0 +1,5 @@
+verify_all_manual.mjs is a thin orchestrator only:
+- serially runs 4 existing verify scripts
+- reads standardized child result JSON
+- writes aggregated json/log
+- no business decision logic embedded
