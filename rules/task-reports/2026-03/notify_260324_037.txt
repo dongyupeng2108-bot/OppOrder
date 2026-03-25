@@ -1,0 +1,34 @@
+RESULT_JSON
+LOG_HEAD
+[UI Compaction v1] header removed, single run button, test info out of main area.
+LOG_TAIL
+duplicate_test_trigger_blocked=true
+passed_modal_available=true
+failed_modal_available=true
+GATE_LIGHT_EXIT=0
+INDEX
+{
+  "task_id": "260324_037",
+  "files": [
+    {
+      "name": "rules/task-reports/2026-03/260324_037_ui_compaction_evidence.json",
+      "size": 12688,
+      "sha256_short": "a8ba43b8"
+    },
+    {
+      "name": "ui/strategy-editor.html",
+      "size": 4392,
+      "sha256_short": "387849db"
+    },
+    {
+      "name": "ui/js/strategy-editor.js",
+      "size": 62794,
+      "sha256_short": "beb9b10f"
+    },
+    {
+      "name": "rules/task-reports/2026-03/notify_260324_037.txt",
+      "size": 227,
+      "sha256_short": "09b15acf"
+    }
+  ]
+}
