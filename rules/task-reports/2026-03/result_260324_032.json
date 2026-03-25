@@ -1,0 +1,25 @@
+{
+  "task_id": "260324_032",
+  "status": "DONE",
+  "summary": "4 条验证脚本完成统一 schema / CLI / 命名标准化 v1（未实现总入口）。",
+  "report_file": "notify_260324_032.txt",
+  "report_sha256_short": "592adcd7",
+  "evidence": [
+    "rules/task-reports/2026-03/260324_032_btc_source_chain.json",
+    "rules/task-reports/2026-03/260324_032_context_truth.json",
+    "rules/task-reports/2026-03/260324_032_window_lifecycle.json",
+    "rules/task-reports/2026-03/260324_032_executor_idempotency.json",
+    "rules/task-reports/2026-03/260324_032_btc_source_chain.log",
+    "rules/task-reports/2026-03/260324_032_context_truth.log",
+    "rules/task-reports/2026-03/260324_032_window_lifecycle.log",
+    "rules/task-reports/2026-03/260324_032_executor_idempotency.log",
+    "scripts/verify_manifest.json",
+    "rules/task-reports/2026-03/standardization_diff_260324_032.json"
+  ],
+  "metrics": {
+    "standardized_script_count": 4,
+    "manifest_generated": true,
+    "wrapper_mode_count": 0,
+    "direct_modified_count": 4
+  }
+}

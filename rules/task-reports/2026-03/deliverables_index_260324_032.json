@@ -1,0 +1,60 @@
+{
+  "task_id": "260324_032",
+  "files": [
+    {
+      "name": "rules/task-reports/2026-03/260324_032_btc_source_chain.json",
+      "size": 24731,
+      "sha256_short": "91c510a7"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_032_context_truth.json",
+      "size": 13059,
+      "sha256_short": "a695aea6"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_032_window_lifecycle.json",
+      "size": 2358979,
+      "sha256_short": "93693334"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_032_executor_idempotency.json",
+      "size": 7374,
+      "sha256_short": "cd6040e5"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_032_btc_source_chain.log",
+      "size": 164,
+      "sha256_short": "fbe9233f"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_032_context_truth.log",
+      "size": 173,
+      "sha256_short": "07f11c58"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_032_window_lifecycle.log",
+      "size": 170,
+      "sha256_short": "da5a784a"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_032_executor_idempotency.log",
+      "size": 187,
+      "sha256_short": "399aefaa"
+    },
+    {
+      "name": "rules/task-reports/2026-03/standardization_diff_260324_032.json",
+      "size": 897,
+      "sha256_short": "2ef03bd6"
+    },
+    {
+      "name": "scripts/verify_manifest.json",
+      "size": 1958,
+      "sha256_short": "6b1d835b"
+    },
+    {
+      "name": "rules/task-reports/2026-03/notify_260324_032.txt",
+      "size": 549,
+      "sha256_short": "5a91dd25"
+    }
+  ]
+}

@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { spawn } from 'child_process';
+import { buildStandardResult, parseVerifyArgs, writeStandardLog } from './verify_standard_v1.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -12,23 +13,12 @@ const DEFAULT_BASE_URL = `http://localhost:${DEFAULT_PORT}`;
 const DEFAULT_TASK_ID = '260324_026';
 const NOT_READY_MAX_MS = 30000;
 
-const parseArgs = () => {
-  const args = Object.fromEntries(
-    process.argv
-      .slice(2)
-      .filter((item) => item.startsWith('--'))
-      .map((item) => {
-        const [k, ...rest] = item.slice(2).split('=');
-        return [k, rest.join('=') || 'true'];
-      })
-  );
-  const baseUrl = args.base_url || DEFAULT_BASE_URL;
-  const taskId = args.task_id || DEFAULT_TASK_ID;
-  const output = args.output
-    || path.join(REPO_ROOT, 'rules', 'task-reports', new Date().toISOString().slice(0, 7), `${taskId}_window_lifecycle.json`);
-  const spawnServer = args.spawn_server !== 'false';
-  return { baseUrl, taskId, output, spawnServer };
-};
+const parseArgs = () => parseVerifyArgs({
+  defaultTaskId: DEFAULT_TASK_ID,
+  defaultBaseUrl: DEFAULT_BASE_URL,
+  defaultOutputSuffix: 'window_lifecycle',
+  defaultSampleName: 'debug_main_path_v1+real_no_debug'
+});
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -379,7 +369,36 @@ const main = async () => {
         ? 'context readiness 一致性断裂'
         : (!decisionGatingPass ? 'decision gating 门控断裂' : null));
 
+    const pass = stoppedPass
+      && runningPass
+      && manualStopPass
+      && autoStopPass
+      && runningWindowExclusionPass
+      && readinessConsistencyPass
+      && decisionGatingPass;
+    const standard = buildStandardResult({
+      scriptName: 'verify_window_lifecycle',
+      taskId: args.taskId,
+      sampleName: args.sampleName,
+      pass,
+      message: pass ? 'window lifecycle 校验通过' : 'window lifecycle 校验失败',
+      firstBreakLayer,
+      evidenceFile: args.output,
+      summary: {
+        window_state_semantics_pass: stoppedPass && runningPass && manualStopPass && autoStopPass,
+        stop_reason_pass: manualStopPass && autoStopPass,
+        running_window_exclusion_pass: runningWindowExclusionPass,
+        readiness_consistency_pass: readinessConsistencyPass,
+        decision_gating_pass: decisionGatingPass
+      },
+      rawExcerpt: {
+        debug_not_ready_max_duration_ms: debugEval.not_ready_max_duration_ms,
+        real_not_ready_max_duration_ms: realEval.not_ready_max_duration_ms,
+        real_dependent_action_on_not_ready_count: realEval.dependent_action_on_not_ready_count
+      }
+    });
     const output = {
+      ...standard,
       task_id: args.taskId,
       command: `node scripts/verify_window_lifecycle.mjs --task_id=${args.taskId}`,
       sample_conclusions: {
@@ -470,7 +489,9 @@ const main = async () => {
 
     ensureDir(args.output);
     fs.writeFileSync(args.output, JSON.stringify(output, null, 2));
+    const logPath = writeStandardLog(args.output, standard);
     console.log(`VERIFY_OUTPUT=${args.output}`);
+    console.log(`VERIFY_LOG=${logPath}`);
     console.log(JSON.stringify(output.result));
 
     if (
