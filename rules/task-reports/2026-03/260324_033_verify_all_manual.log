@@ -1,0 +1,9 @@
+task_id=260324_033
+overall_pass=true
+total=4
+pass_count=4
+fail_count=0
+verify_btc_source_chain|pass=true|message=BTC source 链路通过|evidence=E:\OppRadar\rules\task-reports\2026-03\260324_033_btc_source_chain.json
+verify_context_truth|pass=true|message=context truth 校验通过|evidence=E:\OppRadar\rules\task-reports\2026-03\260324_033_context_truth.json
+verify_window_lifecycle|pass=true|message=window lifecycle 校验通过|evidence=E:\OppRadar\rules\task-reports\2026-03\260324_033_window_lifecycle.json
+verify_executor_idempotency|pass=true|message=executor idempotency 校验通过|evidence=E:\OppRadar\rules\task-reports\2026-03\260324_033_executor_idempotency.json

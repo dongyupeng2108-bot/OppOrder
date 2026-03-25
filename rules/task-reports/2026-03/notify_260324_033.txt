@@ -1,0 +1,62 @@
+RESULT_JSON
+LOG_HEAD
+[Verify All Manual v1] aggregate entrypoint completed.
+LOG_TAIL
+node scripts/verify_all_manual.mjs --task_id=260324_033
+node scripts/verify_btc_source_chain.mjs --task_id=260324_033 --sample=real_no_debug+debug_main_path_v1
+node scripts/verify_context_truth.mjs --task_id=260324_033 --sample=debug_main_path_v1+debug_fill_yes_path_v1
+node scripts/verify_window_lifecycle.mjs --task_id=260324_033 --sample=debug_main_path_v1+real_no_debug
+node scripts/verify_executor_idempotency.mjs --task_id=260324_033 --sample=debug_main_path_v1+debug_fill_yes_path_v1
+overall_pass=true
+GATE_LIGHT_EXIT=0
+INDEX
+{
+  "task_id": "260324_033",
+  "files": [
+    {
+      "name": "rules/task-reports/2026-03/260324_033_verify_all_manual.json",
+      "size": 1479,
+      "sha256_short": "3ae1694b"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_033_verify_all_manual.log",
+      "size": 680,
+      "sha256_short": "beb18cf2"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_033_btc_source_chain.json",
+      "size": 16613,
+      "sha256_short": "e059a35c"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_033_context_truth.json",
+      "size": 13065,
+      "sha256_short": "74883c58"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_033_window_lifecycle.json",
+      "size": 2590361,
+      "sha256_short": "8cbc3091"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_033_executor_idempotency.json",
+      "size": 7348,
+      "sha256_short": "9ed028d5"
+    },
+    {
+      "name": "rules/task-reports/2026-03/standalone_proof_260324_033.json",
+      "size": 602,
+      "sha256_short": "a8bf539f"
+    },
+    {
+      "name": "rules/task-reports/2026-03/thin_entrypoint_note_260324_033.txt",
+      "size": 198,
+      "sha256_short": "8b4d4a3e"
+    },
+    {
+      "name": "rules/task-reports/2026-03/notify_260324_033.txt",
+      "size": 617,
+      "sha256_short": "6b5dd75a"
+    }
+  ]
+}
