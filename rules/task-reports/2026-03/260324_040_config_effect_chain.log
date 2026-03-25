@@ -1,0 +1,6 @@
+script_name=verify_config_effect_chain
+task_id=260324_040
+sample_name=debug_main_path_v1+debug_fill_yes_path_v1+real_no_debug
+pass=true
+first_break_layer=null
+message=config effect chain 校验通过
