@@ -41,6 +41,14 @@
       "samples": ["debug_fill_yes_path_v1", "debug_exit_yes_path_v1"],
       "output_file": "{task_id}_result_chain_consistency.json",
       "pass_condition": "filled_total==unique_filled_order_id_count 且 last_run==summary 且 postmortem==summary 且 performance_target_window==summary"
+    },
+    {
+      "script_name": "verify_order_scope_and_status",
+      "entry": "scripts/verify_order_scope_and_status.mjs",
+      "purpose": "验证当前窗口/上一窗口订单归属纯净与 OPEN/FILLED/CANCELLED 状态语义",
+      "samples": ["debug_fill_yes_path_v1", "debug_main_path_v1"],
+      "output_file": "{task_id}_order_scope_and_status.json",
+      "pass_condition": "window_isolation_pass=true 且 order_status_semantics_pass=true 且 cross_window_overlap_pass=true"
     }
   ]
 }

@@ -1,0 +1,20 @@
+{
+  "task_id": "260324_038",
+  "status": "DONE",
+  "summary": "verify_order_scope_and_status 已补齐并接入 verify_all_manual（总入口脚本数=6）。",
+  "report_file": "notify_260324_038.txt",
+  "report_sha256_short": "46501d80",
+  "evidence": [
+    "rules/task-reports/2026-03/260324_038_order_scope_and_status.json",
+    "rules/task-reports/2026-03/260324_038_order_scope_and_status.log",
+    "rules/task-reports/2026-03/order_scope_status_table_260324_038.json",
+    "rules/task-reports/2026-03/verify_all_integration_260324_038.json",
+    "rules/task-reports/2026-03/standalone_old5_proof_260324_038.json"
+  ],
+  "metrics": {
+    "verify_all_exit_code": 1,
+    "verify_all_total_scripts": 6,
+    "includes_order_scope_and_status": true,
+    "old5_independent_executed": true
+  }
+}

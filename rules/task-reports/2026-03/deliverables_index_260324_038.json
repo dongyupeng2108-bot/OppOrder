@@ -1,0 +1,60 @@
+{
+  "task_id": "260324_038",
+  "files": [
+    {
+      "name": "rules/task-reports/2026-03/260324_038_order_scope_and_status.json",
+      "size": 403178,
+      "sha256_short": "449653e8"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_038_order_scope_and_status.log",
+      "size": 176,
+      "sha256_short": "08fd756d"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_038_verify_all_manual.json",
+      "size": 2181,
+      "sha256_short": "3e003f87"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_038_verify_all_manual.log",
+      "size": 1031,
+      "sha256_short": "83373613"
+    },
+    {
+      "name": "rules/task-reports/2026-03/order_scope_status_table_260324_038.json",
+      "size": 641,
+      "sha256_short": "23ca3d1a"
+    },
+    {
+      "name": "rules/task-reports/2026-03/verify_all_integration_260324_038.json",
+      "size": 406,
+      "sha256_short": "d1f19684"
+    },
+    {
+      "name": "rules/task-reports/2026-03/standalone_old5_proof_260324_038.json",
+      "size": 964,
+      "sha256_short": "552c4407"
+    },
+    {
+      "name": "scripts/verify_manifest.json",
+      "size": 2971,
+      "sha256_short": "46e8e628"
+    },
+    {
+      "name": "scripts/verify_all_manual.mjs",
+      "size": 4657,
+      "sha256_short": "871da24c"
+    },
+    {
+      "name": "scripts/verify_order_scope_and_status.mjs",
+      "size": 10757,
+      "sha256_short": "d3735515"
+    },
+    {
+      "name": "rules/task-reports/2026-03/notify_260324_038.txt",
+      "size": 908,
+      "sha256_short": "e9aa4476"
+    }
+  ]
+}
