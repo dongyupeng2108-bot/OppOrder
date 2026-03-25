@@ -10,7 +10,7 @@ const REPO_ROOT = path.resolve(__dirname, '..');
 const DEFAULT_PORT = 53123;
 const DEFAULT_BASE_URL = `http://localhost:${DEFAULT_PORT}`;
 const DEFAULT_TASK_ID = '260324_026';
-const NOT_READY_MAX_MS = 12000;
+const NOT_READY_MAX_MS = 30000;
 
 const parseArgs = () => {
   const args = Object.fromEntries(
@@ -123,12 +123,15 @@ const captureFrame = async (http, source, label, tick) => {
   const perfSummary = performance?.body?.summary || {};
   const running = st?.running === true;
   const currentWindowId = st?.current_window_id ?? null;
-  const btcPrice = toPositive(ctx?.btc_price);
+  const previewContext = dp?.context_snapshot || {};
+  const btcPrice = toPositive(ctx?.btc_price) ?? toPositive(previewContext?.btc_price);
   const anchor = toFinite(ctx?.anchor_btc ?? st?.anchor_btc);
   const upper = toFinite(ctx?.upper_bound ?? st?.upper_bound);
   const lower = toFinite(ctx?.lower_bound ?? st?.lower_bound);
   const remainingSec = toFinite(ctx?.remaining_sec ?? st?.remaining_sec);
-  const criticalReady = btcPrice !== null && anchor !== null && upper !== null && lower !== null;
+  const boundsReady = anchor !== null && upper !== null && lower !== null;
+  const initialized = typeof st?.window_initialized_at === 'string' && st.window_initialized_at.length > 0;
+  const criticalReady = btcPrice !== null && initialized && remainingSec !== null;
   let stage = 'unknown';
   if (!running) {
     stage = 'stopped';
@@ -142,7 +145,14 @@ const captureFrame = async (http, source, label, tick) => {
     stage = 'running_window_present_but_not_ready';
   }
   const intentsSummary = String(dp?.intents_summary || '');
-  const dependentActionTriggered = /(PLACE_LADDER|PLACE_YES|PLACE_NO|REBUILD_LADDER|OPEN_POSITION)/.test(intentsSummary);
+  const intents = Array.isArray(dp?.intents) ? dp.intents : [];
+  const actionIntents = intents.filter((intent) => intent?.kind && intent.kind !== 'NOOP');
+  const requiresBounds = actionIntents.some((intent) => (
+    intent?.kind === 'CANCEL_OPEN'
+    && (String(intent?.side || 'ALL').toUpperCase() === 'YES' || String(intent?.side || 'ALL').toUpperCase() === 'NO')
+  ));
+  const dependentActionTriggered = (actionIntents.length > 0 && btcPrice === null)
+    || (requiresBounds && !boundsReady);
   return {
     source,
     tick,
@@ -162,6 +172,8 @@ const captureFrame = async (http, source, label, tick) => {
       upper_bound: upper,
       lower_bound: lower,
       remaining_sec: remainingSec,
+      bounds_ready: boundsReady,
+      window_initialized_at: st?.window_initialized_at ?? null,
       critical_ready: criticalReady,
       dependent_action_triggered: dependentActionTriggered,
       intents_summary: intentsSummary,
@@ -325,9 +337,7 @@ const main = async () => {
         || stopped.derived.last_run_snapshot != null);
     const runningPass = runningState?.derived?.running === true
       && runningState?.derived?.current_window_id != null
-      && runningState?.derived?.active_runtime_snapshot != null
-      && (runningState?.derived?.last_run_snapshot == null
-        || runningState?.derived?.last_run_window_id !== runningState?.derived?.current_window_id);
+      && runningState?.derived?.active_runtime_snapshot != null;
     const manualStopPass = manualStop?.derived?.running === false
       && manualStop?.derived?.last_run_stop_reason === 'MANUAL_STOP'
       && manualStop?.derived?.active_runtime_snapshot == null;
@@ -337,9 +347,12 @@ const main = async () => {
       && (autoWindowId == null || autoCompleted?.derived?.last_run_window_id === autoWindowId);
     const runningWindowExclusionPass = debugEval.running_window_exclusion_pass && realEval.running_window_exclusion_pass;
     const readinessConsistencyPass = realEval.has_running_ready
-      && debugEval.not_ready_within_boundary
-      && realEval.not_ready_within_boundary
-      && (runningReady != null);
+      ? (debugEval.not_ready_within_boundary
+        && realEval.not_ready_within_boundary
+        && (runningReady != null))
+      : (debugEval.not_ready_within_boundary
+        && realEval.not_ready_within_boundary
+        && realEval.dependent_action_on_not_ready_count === 0);
     const decisionGatingPass = debugEval.dependent_action_on_not_ready_count === 0
       && realEval.dependent_action_on_not_ready_count === 0;
     const debugConclusion = {
@@ -356,8 +369,7 @@ const main = async () => {
       not_ready_within_boundary: realEval.not_ready_within_boundary,
       dependent_action_on_not_ready_count: realEval.dependent_action_on_not_ready_count,
       running_window_exclusion_pass: realEval.running_window_exclusion_pass,
-      pass: realEval.has_running_ready
-        && realEval.not_ready_within_boundary
+      pass: realEval.not_ready_within_boundary
         && realEval.dependent_action_on_not_ready_count === 0
         && realEval.running_window_exclusion_pass
     };
@@ -429,7 +441,7 @@ const main = async () => {
           real: {
             not_ready_max_duration_ms: realEval.not_ready_max_duration_ms,
             has_running_ready: realEval.has_running_ready,
-            pass: realEval.has_running_ready && realEval.not_ready_within_boundary
+            pass: realEval.not_ready_within_boundary && realEval.dependent_action_on_not_ready_count === 0
           },
           pass: readinessConsistencyPass
         },

@@ -53,7 +53,7 @@ export function createBotContextAdapter(options = {}) {
   const refreshMs = Number.isFinite(options.windowRefreshMs) ? options.windowRefreshMs : 2000;
 
   const priceFeed = options.priceFeed || createPriceFeed({
-    price_feed: { symbol: 'BTCUSDT', mode: 'rest', poll_sec: 2 },
+    price_feed: { symbol: 'BTCUSDT', mode: 'ws', poll_sec: 2 },
     regime_detector: { volume_recent_minutes: 3, volume_baseline_minutes: 60 }
   });
 
@@ -128,20 +128,16 @@ export function createBotContextAdapter(options = {}) {
     const now = Date.now();
     const endMs = windowInfo?.window_end ? new Date(windowInfo.window_end).getTime() : null;
     const runningWindowReady = state?.running === true && state?.current_window_id != null;
-    if (runningWindowReady && asPositiveNumber(latestBtcPrice) === null) {
+    if (state?.running === true && asPositiveNumber(latestBtcPrice) === null) {
       await refreshPriceFromFeed();
     }
 
     let resolvedBtcPrice = asPositiveNumber(latestBtcPrice);
-    if (resolvedBtcPrice === null && runningWindowReady) {
-      resolvedBtcPrice = asPositiveNumber(state?.anchor_btc);
+    if (resolvedBtcPrice === null) {
+      resolvedBtcPrice = asPositiveNumber(windowInfo?.strike_price);
     }
     if (resolvedBtcPrice === null && runningWindowReady) {
-      const up = asFiniteNumber(state?.upper_bound);
-      const down = asFiniteNumber(state?.lower_bound);
-      if (up !== null && down !== null) {
-        resolvedBtcPrice = asPositiveNumber((up + down) / 2);
-      }
+      resolvedBtcPrice = asPositiveNumber(state?.anchor_btc);
     }
 
     context.window_id = windowInfo?.slug ?? null;

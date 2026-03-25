@@ -92,9 +92,10 @@ export function createBotStateStore(options = {}) {
     const anchor = toFiniteNumber(btc_price);
     const atr = toFiniteNumber(atr_5m);
     const mult = toFiniteNumber(atr_multiplier);
-    if (window_id == null || anchor == null || atr == null || mult == null) {
+    if (window_id == null || anchor == null) {
       return {
         current_window_id: window_id ?? state.current_window_id ?? null,
+        window_initialized_at: null,
         anchor_btc: null,
         atr_5m: atr,
         upper_bound: null,
@@ -102,10 +103,21 @@ export function createBotStateStore(options = {}) {
         phase: 'WAIT_WINDOW_INIT'
       };
     }
+    if (atr == null || mult == null) {
+      return {
+        current_window_id: window_id,
+        window_initialized_at: state.window_initialized_at || new Date().toISOString(),
+        anchor_btc: anchor,
+        atr_5m: atr,
+        upper_bound: null,
+        lower_bound: null,
+        phase: 'WAIT_CONTEXT_READY'
+      };
+    }
     const boundDelta = atr * mult;
     return {
       current_window_id: window_id,
-      window_initialized_at: new Date().toISOString(),
+      window_initialized_at: state.window_initialized_at || new Date().toISOString(),
       anchor_btc: anchor,
       atr_5m: atr,
       upper_bound: anchor + boundDelta,

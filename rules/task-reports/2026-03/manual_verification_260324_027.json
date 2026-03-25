@@ -1,0 +1,22 @@
+{
+  "task_id": "260324_027",
+  "samples": [
+    "debug_main_path_v1",
+    "real_no_debug"
+  ],
+  "states": [
+    "stopped",
+    "running_early",
+    "running_window_present_but_not_ready",
+    "running_ready",
+    "manual_stop",
+    "auto_completed"
+  ],
+  "result": {
+    "window_state_semantics_pass": true,
+    "stop_reason_pass": true,
+    "running_window_exclusion_pass": true,
+    "readiness_consistency_pass": true,
+    "decision_gating_pass": true
+  }
+}

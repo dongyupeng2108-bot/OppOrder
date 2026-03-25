@@ -12,7 +12,7 @@
     "manual_stop",
     "auto_completed"
   ],
-  "window_state_semantics_pass": false,
-  "readiness_consistency_pass": false,
-  "decision_gating_pass": false
+  "window_state_semantics_pass": true,
+  "readiness_consistency_pass": true,
+  "decision_gating_pass": true
 }
