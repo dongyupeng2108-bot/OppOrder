@@ -1,0 +1,65 @@
+{
+  "task_id": "260324_039",
+  "files": [
+    {
+      "name": "rules/task-reports/2026-03/260324_039_pnl_chain_consistency.json",
+      "size": 539922,
+      "sha256_short": "c755d3d2"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_039_pnl_chain_consistency.log",
+      "size": 207,
+      "sha256_short": "a2934dc2"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_039_verify_all_manual.json",
+      "size": 2519,
+      "sha256_short": "ba666df1"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_039_verify_all_manual.log",
+      "size": 1197,
+      "sha256_short": "a274da4f"
+    },
+    {
+      "name": "rules/task-reports/2026-03/pnl_realized_table_260324_039.json",
+      "size": 539,
+      "sha256_short": "ccae84be"
+    },
+    {
+      "name": "rules/task-reports/2026-03/pnl_unrealized_table_260324_039.json",
+      "size": 786,
+      "sha256_short": "0ba9f83e"
+    },
+    {
+      "name": "rules/task-reports/2026-03/verify_all_integration_260324_039.json",
+      "size": 441,
+      "sha256_short": "786da27f"
+    },
+    {
+      "name": "rules/task-reports/2026-03/standalone_old6_proof_260324_039.json",
+      "size": 1129,
+      "sha256_short": "da368bad"
+    },
+    {
+      "name": "scripts/verify_manifest.json",
+      "size": 3480,
+      "sha256_short": "4d58b6d6"
+    },
+    {
+      "name": "scripts/verify_all_manual.mjs",
+      "size": 4797,
+      "sha256_short": "92b921f7"
+    },
+    {
+      "name": "scripts/verify_pnl_chain_consistency.mjs",
+      "size": 16026,
+      "sha256_short": "83851c9e"
+    },
+    {
+      "name": "rules/task-reports/2026-03/notify_260324_039.txt",
+      "size": 1086,
+      "sha256_short": "f7deb837"
+    }
+  ]
+}
