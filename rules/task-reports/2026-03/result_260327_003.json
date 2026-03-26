@@ -1,0 +1,22 @@
+{
+  "task_id": "260327_003",
+  "status": "DONE",
+  "scope_guard": "仅删除本轮运行 + 上一窗口结果重排与字段精简",
+  "changes": {
+    "runtime_panel_removed": true,
+    "prev_panel_moved_to_log_right": true,
+    "prev_removed_labels": ["窗口", "结束原因", "完成时间", "关键动作链", "本轮参数摘要"],
+    "prev_added_label": "PNL"
+  },
+  "pnl_binding": {
+    "target_dom_id": "se-prev-pnl",
+    "source": "postmortem.realized_gross_pnl_total ?? last_run_snapshot.realized_gross_pnl_total",
+    "api_origin": "GET /bot/postmortem/latest + GET /bot/status"
+  },
+  "validation": {
+    "dom_facts_file": "rules/task-reports/2026-03/dom_facts_260327_003.txt",
+    "page_loadable": true,
+    "api_status_ok": true,
+    "npm_test_pass": true
+  }
+}
