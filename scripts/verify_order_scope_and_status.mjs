@@ -118,11 +118,43 @@ const collectTerminalConflict = (rows) => {
     .map(([orderId, statuses]) => ({ order_id: orderId, terminal_statuses: [...statuses] }));
 };
 
+const waitForStopped = async (http, maxTicks = 20, waitMs = 250) => {
+  for (let i = 0; i < maxTicks; i += 1) {
+    const status = await http.get('/bot/status');
+    if (status?.body?.running === false) return status;
+    await sleep(waitMs);
+  }
+  return http.get('/bot/status');
+};
+
+const ensureFreshStart = async (http, scenario) => {
+  for (let i = 0; i < 3; i += 1) {
+    await http.post('/bot/stop', {});
+    await waitForStopped(http, 20, 250);
+    const start = await http.post('/bot/start', { tick_interval_ms: 1000, debugScenario: scenario });
+    if (start?.body?.already_running === true) {
+      await sleep(350);
+      continue;
+    }
+    for (let j = 0; j < 8; j += 1) {
+      await sleep(250);
+      const status = await http.get('/bot/status');
+      const running = status?.body?.running === true;
+      const scenarioMatched = status?.body?.debug_scenario === scenario;
+      const frameIndex = Number(status?.body?.debug_frame_index ?? 0);
+      if (running && scenarioMatched && frameIndex <= 1) {
+        return { start, status };
+      }
+    }
+  }
+  const status = await http.get('/bot/status');
+  return { start: { status: 500, body: { error: 'fresh_start_failed' } }, status };
+};
+
 const captureOrderScopeAndStatus = async (http, sampleName) => {
-  await http.post('/bot/stop', {});
-  await sleep(350);
   const scenario = normalizeScenario(sampleName);
-  const start = await http.post('/bot/start', { tick_interval_ms: 1000, debugScenario: scenario });
+  const boot = await ensureFreshStart(http, scenario);
+  const start = boot.start;
 
   let runningProbe = null;
   let sawOpen = false;
@@ -156,7 +188,8 @@ const captureOrderScopeAndStatus = async (http, sampleName) => {
   }
 
   await http.post('/bot/stop', {});
-  await sleep(900);
+  await waitForStopped(http, 24, 300);
+  await sleep(300);
 
   const [stoppedOrders, stoppedStatus, postmortem] = await Promise.all([
     http.get('/bot/orders'),
@@ -228,6 +261,7 @@ const captureOrderScopeAndStatus = async (http, sampleName) => {
       terminal_conflict_count: terminalConflicts.length
     },
     raw_excerpt: {
+      start_ok: start?.status === 200 && start?.body?.already_running !== true,
       sample_sufficient: sampleSufficient,
       running_mismatch_sample: runningMismatchRows.slice(0, 5),
       stopped_mismatch_sample: stoppedMismatchRows.slice(0, 5),

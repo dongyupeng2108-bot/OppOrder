@@ -1,0 +1,50 @@
+{
+  "task_id": "260326_050",
+  "root_cause_type": "B",
+  "root_cause_summary": "脚本前置控制不足（未严格确保 debug 场景 fresh start），导致偶发采样落在非新鲜运行态，出现 sample insufficiency（orders 全空）并误判语义失败。",
+  "before": {
+    "source_task_id": "260326_195345",
+    "script_pass": false,
+    "first_break_layer": "sample insufficiency",
+    "summary": {
+      "window_isolation_pass": true,
+      "order_status_semantics_pass": false,
+      "cross_window_overlap_pass": true
+    },
+    "order_scope_status_table": {
+      "running_order_count": 0,
+      "stopped_order_count": 0,
+      "open_visible": false,
+      "filled_visible": false,
+      "cancelled_visible": false
+    },
+    "evidence_file": "rules/task-reports/2026-03/260326_195345_order_scope_and_status.json"
+  },
+  "after": {
+    "source_task_id": "260326_050",
+    "script_pass": true,
+    "first_break_layer": null,
+    "summary": {
+      "window_isolation_pass": true,
+      "order_status_semantics_pass": true,
+      "cross_window_overlap_pass": true
+    },
+    "raw_excerpt": {
+      "start_ok": true,
+      "sample_sufficient": true
+    },
+    "order_scope_status_table": {
+      "running_order_count": 8,
+      "stopped_order_count": 8,
+      "open_visible": true,
+      "filled_visible": true,
+      "cancelled_visible": true
+    },
+    "evidence_file": "rules/task-reports/2026-03/260326_050_order_scope_and_status.json"
+  },
+  "fix_points": [
+    "新增 waitForStopped，确保 stop 已落地后再 start",
+    "新增 ensureFreshStart，避免 already_running/旧态污染并等待场景与初始帧稳定",
+    "将 start_ok 纳入 raw_excerpt，沉淀为后续自动可见证据"
+  ]
+}
