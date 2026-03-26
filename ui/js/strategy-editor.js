@@ -63,7 +63,7 @@ let _seTestLogTail = [];
 const BASE_URL = ''; // 相对路径
 
 async function restartServer() {
-  const btn = document.querySelector('.se-restart-inline-btn');
+  const btn = document.getElementById('se-btn-restart');
   if (btn) {
     btn.textContent = '重启中...';
     btn.style.opacity = '0.7';
@@ -74,7 +74,7 @@ async function restartServer() {
     if (btn) {
       btn.textContent = '已重启';
       setTimeout(() => {
-        btn.textContent = '⟳ 重启';
+        btn.textContent = '重启服务';
         btn.style.opacity = '1';
         btn.disabled = false;
       }, 2000);
@@ -83,7 +83,7 @@ async function restartServer() {
     console.error('[SE] restart failed', e);
     alert('重启失败: ' + e.message);
     if (btn) {
-      btn.textContent = '⟳ 重启';
+      btn.textContent = '重启服务';
       btn.style.opacity = '1';
       btn.disabled = false;
     }
@@ -104,20 +104,20 @@ async function initStrategyEditor() {
 
   container.innerHTML = `
     <div class="se-layout" style="height:100%;display:flex;flex-direction:column;background:#0b0d10;color:#d6dde5;position:relative;">
-      <div style="height:62px;border-bottom:1px solid #232a33;background:#0d131a;padding:0 12px;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr auto auto auto;gap:10px;align-items:center;">
+      <div style="height:62px;border-bottom:1px solid #232a33;background:#0d131a;padding:0 12px;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr auto auto auto auto;gap:10px;align-items:center;">
         <div style="font-size:18px;letter-spacing:.3px;">BTCQDD 执行机器人</div>
         <div style="border-left:1px solid #1c222b;padding-left:10px;font-size:12px;color:#9aa5b2;line-height:1.5;"><b style="color:#d6dde5;">运行状态</b><span id="se-top-running">已停止</span></div>
         <div style="border-left:1px solid #1c222b;padding-left:10px;font-size:12px;color:#9aa5b2;line-height:1.5;"><b style="color:#d6dde5;">当前</b><span id="se-top-activity">当前无活动窗口</span></div>
         <div style="border-left:1px solid #1c222b;padding-left:10px;font-size:12px;color:#9aa5b2;line-height:1.5;"><b style="color:#d6dde5;">上次结束</b><span id="se-top-last-stop">暂无</span></div>
         <button id="se-btn-param-toggle" onclick="se_toggleParamsPanel()" style="height:34px;width:34px;border:1px solid #2f3946;background:#18202a;color:#d6dde5;border-radius:4px;cursor:pointer;">⚙</button>
         <button id="se-btn-test" onclick="se_runVersionTest()" style="height:34px;border:1px solid #35506b;background:#1a2a3a;color:#c8e6ff;border-radius:4px;padding:0 10px;cursor:pointer;">版本测试</button>
+        <button id="se-btn-restart" onclick="restartServer()" style="height:34px;border:1px solid #35506b;background:#1a2a3a;color:#c8e6ff;border-radius:4px;padding:0 10px;cursor:pointer;">重启服务</button>
         <button id="se-btn-run-toggle" class="se-btn-deploy" onclick="se_toggleBotRun()">启动</button>
       </div>
 
       <div style="flex:1;min-height:0;padding:10px;display:grid;grid-template-columns:320px 12px minmax(0,1fr);gap:0;">
         <section class="se-order-panel" style="border:1px solid #232a33;background:#11161c;padding:10px;min-height:0;width:100%;max-width:none;overflow:hidden;display:flex;flex-direction:column;">
           <div id="se-order-title" class="se-order-title">当前窗口订单状态</div>
-          <div id="se-order-scope-note" style="font-size:11px;color:#888;padding:4px 2px 8px 2px;">当前无活动窗口</div>
           <div style="flex:1;min-height:0;overflow:auto;">
             <table class="se-order-table" style="table-layout:fixed;width:100%;">
               <colgroup>
@@ -143,7 +143,6 @@ async function initStrategyEditor() {
               <div style="display:flex;justify-content:space-between;align-items:center;">
                 <h3 style="margin:0;font-size:13px;color:#d6dde5;">实时日志（中文主显示）</h3>
                 <div style="display:flex;align-items:center;gap:8px;">
-                  <button class="se-restart-inline-btn" onclick="restartServer()">⟳ 重启</button>
                   <span id="se-countdown" style="font-size:11px;color:#aaa;font-family:monospace;">--:--</span>
                 </div>
               </div>
@@ -1002,13 +1001,9 @@ function se_renderOrders(orders, status) {
   const tbody = document.getElementById('se-order-body');
   if (!tbody) return;
   const titleEl = document.getElementById('se-order-title');
-  const scopeNoteEl = document.getElementById('se-order-scope-note');
   const scope = orders?.window_scope && typeof orders.window_scope === 'object' ? orders.window_scope : {};
   const isCurrentWindowScope = scope?.scope === 'current_window';
   if (titleEl) titleEl.textContent = '当前窗口订单状态';
-  if (scopeNoteEl) {
-    scopeNoteEl.textContent = status?.current_window_id ? '仅展示当前活动窗口订单' : '当前无活动窗口';
-  }
   const list = Array.isArray(orders?.window_orders)
     ? [...orders.window_orders]
     : (Array.isArray(orders?.orders) ? [...orders.orders] : []);

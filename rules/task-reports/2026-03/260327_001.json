@@ -1,0 +1,17 @@
+{
+  "task_id": "260327_001",
+  "timestamp": "2026-03-27T00:55:00.000Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "top_buttons_order": "PASS",
+    "restart_style_and_text": "PASS",
+    "order_empty_hint_removed": "PASS",
+    "ui_actions_smoke": "PASS",
+    "npm_test": "PASS"
+  },
+  "context": {
+    "result_file": "rules/task-reports/2026-03/result_260327_001.json",
+    "notify_file": "rules/task-reports/2026-03/notify_260327_001.txt"
+  }
+}

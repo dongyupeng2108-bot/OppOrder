@@ -1,0 +1,29 @@
+{
+  "task_id": "260327_001",
+  "status": "DONE",
+  "scope_guard": "仅顶部控制区与订单空态提示文案",
+  "changes": {
+    "top_buttons_order": ["版本测试", "重启服务", "启动"],
+    "restart_button_text": "重启服务",
+    "restart_button_style_match_target": "版本测试",
+    "order_empty_hint_removed": true
+  },
+  "screenshots": {
+    "before_top_controls": "rules/task-reports/2026-03/screenshots_260327_001/before_top_controls.png",
+    "after_top_controls": "rules/task-reports/2026-03/screenshots_260327_001/after_top_controls.png",
+    "before_order_empty": "rules/task-reports/2026-03/screenshots_260327_001/before_order_empty.png",
+    "after_order_empty": "rules/task-reports/2026-03/screenshots_260327_001/after_order_empty.png"
+  },
+  "validation": {
+    "version_test_click_path": "se-btn-test -> se_runVersionTest -> POST /bot/test/run",
+    "restart_click_path": "se-btn-restart -> restartServer -> POST /server/restart",
+    "start_click_path": "se-btn-run-toggle -> se_toggleBotRun -> POST /bot/start",
+    "api_smoke": {
+      "bot_test_run_status": 200,
+      "bot_start_status": 200,
+      "bot_stop_status": 200,
+      "server_restart_status": 200
+    },
+    "npm_test_pass": true
+  }
+}
