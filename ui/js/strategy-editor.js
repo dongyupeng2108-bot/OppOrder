@@ -142,8 +142,8 @@ async function initStrategyEditor() {
           <div id="se-latency" style="font-size:10px;color:#888;text-align:right;padding:4px 8px 0 8px;"></div>
         </section>
         <div style="background:#0b0d10;border-left:1px solid #1a2028;border-right:1px solid #1a2028;"></div>
-        <div style="min-height:0;display:grid;grid-template-rows:minmax(260px,1fr) 208px 208px;gap:10px;">
-          <div style="display:grid;grid-template-columns:minmax(0,1fr);gap:0;min-height:0;">
+        <div style="min-height:0;display:grid;grid-template-rows:minmax(260px,1fr) 208px;gap:10px;">
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;min-height:0;">
             <section style="border:1px solid #232a33;background:#11161c;padding:10px;display:flex;flex-direction:column;min-height:0;gap:8px;">
               <div style="display:flex;justify-content:space-between;align-items:center;">
                 <h3 style="margin:0;font-size:13px;color:#d6dde5;">实时日志（中文主显示）</h3>
@@ -154,30 +154,12 @@ async function initStrategyEditor() {
               <div id="se-log-area" class="se-log-area" style="flex:1;min-height:0;"></div>
               <div id="se-ui-error" style="font-size:11px;color:#ff8a80;min-height:16px;"></div>
             </section>
-          </div>
-
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;min-height:0;">
-            <section style="border:1px solid #232a33;background:#11161c;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:0;">
-              <h3 style="margin:0;font-size:13px;color:#d6dde5;">本轮运行</h3>
-              <div id="se-runtime-note" style="font-size:12px;color:#9aa5b2;line-height:1.7;">当前未运行；启动后将显示关键执行状态。</div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
-                <div style="color:#7f8a97;">YES 持仓</div><div id="se-runtime-yes-position" style="text-align:right;color:#d6dde5;">—</div>
-                <div style="color:#7f8a97;">NO 持仓</div><div id="se-runtime-no-position" style="text-align:right;color:#d6dde5;">—</div>
-                <div style="color:#7f8a97;">已成交总数</div><div id="se-runtime-filled-total" style="text-align:right;color:#d6dde5;">—</div>
-                <div style="color:#7f8a97;">已实现盈亏</div><div id="se-runtime-realized-total" style="text-align:right;color:#d6dde5;">—</div>
-              </div>
-            </section>
             <section style="border:1px solid #232a33;background:#11161c;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:0;">
               <h3 style="margin:0;font-size:13px;color:#d6dde5;">上一窗口结果</h3>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
-                <div style="color:#7f8a97;">窗口</div><div id="se-prev-window" style="text-align:right;color:#d6dde5;">—</div>
-                <div style="color:#7f8a97;">结束原因</div><div id="se-prev-stop-reason" style="text-align:right;color:#d6dde5;">—</div>
-                <div style="color:#7f8a97;">完成时间</div><div id="se-prev-completed-at" style="text-align:right;color:#d6dde5;">—</div>
                 <div style="color:#7f8a97;">已成交总数</div><div id="se-prev-filled-total" style="text-align:right;color:#d6dde5;">—</div>
                 <div style="color:#7f8a97;">已撤单总数</div><div id="se-prev-cancelled-total" style="text-align:right;color:#d6dde5;">—</div>
-                <div style="color:#7f8a97;">已实现盈亏</div><div id="se-prev-realized-total" style="text-align:right;color:#d6dde5;">—</div>
-                <div style="color:#7f8a97;">关键动作链</div><div id="se-prev-action-summary" style="text-align:right;color:#d6dde5;">—</div>
-                <div style="color:#7f8a97;">本轮参数摘要</div><div id="se-prev-param-summary" style="text-align:right;color:#d6dde5;">—</div>
+                <div style="color:#7f8a97;">PNL</div><div id="se-prev-pnl" style="text-align:right;color:#d6dde5;">—</div>
               </div>
             </section>
           </div>
@@ -920,6 +902,7 @@ function se_renderOverview(status, summary, ordersData, postmortemPayload) {
   se_setText('se-prev-completed-at', completedAt);
   se_setText('se-prev-filled-total', postmortem?.filled_total ?? lastRun?.filled_total);
   se_setText('se-prev-cancelled-total', postmortem?.cancelled_total ?? lastRun?.cancelled_total ?? 0);
+  se_setText('se-prev-pnl', postmortem?.realized_gross_pnl_total ?? lastRun?.realized_gross_pnl_total);
   se_setText('se-prev-realized-total', postmortem?.realized_gross_pnl_total ?? lastRun?.realized_gross_pnl_total);
   se_setText('se-prev-action-summary', postmortem?.action_summary ?? 'N/A (null)');
   se_setText('se-prev-param-summary', lastActiveConfigText);
