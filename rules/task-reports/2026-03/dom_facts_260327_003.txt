@@ -1,0 +1,15 @@
+﻿TASK_ID=260327_003
+HAS_本轮运行=False
+HAS_上一窗口结果=True
+HAS_LABEL_窗口=False
+HAS_LABEL_结束原因=False
+HAS_LABEL_完成时间=False
+HAS_LABEL_关键动作链=False
+HAS_LABEL_本轮参数摘要=False
+HAS_LABEL_PNL=True
+LAYOUT_LOG_RIGHT_PREV=True
+PNL_BINDING=se-prev-pnl <- postmortem.realized_gross_pnl_total ?? last_run_snapshot.realized_gross_pnl_total
+API_FACT_bot_status=200
+API_FACT_bot_postmortem_latest=200
+API_FACT_last_run_snapshot_realized=
+API_FACT_postmortem_realized=0

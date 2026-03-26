@@ -1,0 +1,18 @@
+{
+  "task_id": "260327_003",
+  "timestamp": "2026-03-27T01:20:00.000Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "runtime_panel_removed": "PASS",
+    "prev_removed_labels_absent": "PASS",
+    "prev_has_pnl": "PASS",
+    "prev_right_of_logs": "PASS",
+    "api_read_ok": "PASS",
+    "npm_test": "PASS"
+  },
+  "context": {
+    "result_file": "rules/task-reports/2026-03/result_260327_003.json",
+    "notify_file": "rules/task-reports/2026-03/notify_260327_003.txt"
+  }
+}
