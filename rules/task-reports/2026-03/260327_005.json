@@ -1,13 +1,15 @@
 {
   "task_id": "260327_005",
-  "timestamp": "2026-03-27T01:45:00.000Z",
+  "timestamp": "2026-03-27T02:05:00.000Z",
   "valid": true,
   "errors": [],
   "checks": {
-    "runtime_panel_removed": "PASS",
-    "previous_panel_compact": "PASS",
-    "node_check": "PASS",
-    "npm_test": "PASS"
+    "workflow_updated": "PASS",
+    "project_rules_updated": "PASS",
+    "master_plan_updated": "PASS",
+    "light_heavy_split_present": "PASS",
+    "no_screenshot_default_present": "PASS",
+    "recent_tasks_synced": "PASS"
   },
   "context": {
     "result_file": "rules/task-reports/2026-03/result_260327_005.json",

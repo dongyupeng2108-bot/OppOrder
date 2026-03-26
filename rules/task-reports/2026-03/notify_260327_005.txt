@@ -1,11 +1,13 @@
 RESULT_JSON
 rules/task-reports/2026-03/result_260327_005.json
 LOG_HEAD
-[Hotfix] 已修复 main 上“本轮运行”回退问题，恢复 260327_003 目标布局。
+[Docs] 三大文档已按当前协作口径、轻重任务分流与近期事实完成同步升级。
 LOG_TAIL
-node --check ui/js/strategy-editor.js
-npm test
+文档治理任务，无代码与接口变更
 EVIDENCE
-ui/js/strategy-editor.js
+rules/rules/WORKFLOW.md
+rules/rules/PROJECT_RULES.md
+rules/rules/PROJECT_MASTER_PLAN.md
+rules/task-reports/2026-03/docs_delta_260327_005.txt
 INDEX
 rules/task-reports/2026-03/result_260327_005.json
