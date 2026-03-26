@@ -2132,6 +2132,7 @@ const server = createServer(async (req, res) => {
         } else {
           clearBotDebugScenario();
         }
+        botExecutorPaper.reset();
         botLastTickResult = null;
         syncRunnerConfigFromSavedConfig();
         botPendingStopReason = null;

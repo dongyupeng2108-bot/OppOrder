@@ -1,0 +1,56 @@
+RESULT_JSON
+LOG_HEAD
+[NOOP tick order leak fix] clear executor ledger on /bot/start to prevent historical orders from appearing in current tick.
+LOG_TAIL
+node scripts/verify_executor_idempotency.mjs --task_id=260324_043_pre2 --sample=debug_main_path_v1+debug_fill_yes_path_v1
+node scripts/verify_executor_idempotency.mjs --task_id=260324_043_post_fix --sample=debug_main_path_v1+debug_fill_yes_path_v1
+node scripts/verify_window_lifecycle.mjs --task_id=260324_043_regression --sample=debug_main_path_v1+real_no_debug
+node scripts/verify_result_chain_consistency.mjs --task_id=260324_043_regression --sample=debug_fill_yes_path_v1
+node scripts/verify_btc_source_chain.mjs --task_id=260324_043_regression --sample=real_no_debug+debug_main_path_v1
+GATE_LIGHT_EXIT=0
+INDEX
+{
+  "task_id": "260324_043",
+  "files": [
+    {
+      "name": "strategies/crypto_binary/server.mjs",
+      "size": 96812,
+      "sha256_short": "ce8e4456"
+    },
+    {
+      "name": "rules/task-reports/2026-03/tick2_source_table_260324_043.json",
+      "size": 2184,
+      "sha256_short": "d7ad1f28"
+    },
+    {
+      "name": "rules/task-reports/2026-03/executor_idempotency_before_after_260324_043.json",
+      "size": 452,
+      "sha256_short": "d1158b44"
+    },
+    {
+      "name": "rules/task-reports/2026-03/no_regression_015_020_029_260324_043.json",
+      "size": 490,
+      "sha256_short": "424e718f"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_043_pre2_executor_idempotency.json",
+      "size": 7457,
+      "sha256_short": "04ecec0a"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_043_post_fix_executor_idempotency.json",
+      "size": 7365,
+      "sha256_short": "78a6c13f"
+    },
+    {
+      "name": "rules/task-reports/2026-03/tick2_order_source_post_260324_043.json",
+      "size": 287,
+      "sha256_short": "d21c1293"
+    },
+    {
+      "name": "rules/task-reports/2026-03/notify_260324_043.txt",
+      "size": 768,
+      "sha256_short": "c2e56e7d"
+    }
+  ]
+}

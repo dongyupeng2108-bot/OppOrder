@@ -1,0 +1,6 @@
+script_name=verify_executor_idempotency
+task_id=260324_043_pre2
+sample_name=debug_main_path_v1+debug_fill_yes_path_v1
+pass=false
+first_break_layer=executor idempotency
+message=executor idempotency 校验失败
