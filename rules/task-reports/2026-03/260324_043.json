@@ -1,0 +1,33 @@
+{
+  "task_id": "260324_043",
+  "timestamp": "2026-03-26T10:21:46.217Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "noop_tick_new_orders_zero": "PASS",
+    "verify_executor_idempotency_pass": "PASS",
+    "non_regression_015_020_029": "PASS"
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260324_043",
+      "status": "DONE",
+      "root_cause": "历史订单账本未在 /bot/start 清空，导致 NOOP tick 读取到旧 run 同 window_id 订单并被计为本 tick 新增",
+      "summary": "NOOP tick 新增订单已归零，verify_executor_idempotency 已 PASS。",
+      "report_file": "notify_260324_043.txt",
+      "report_sha256_short": "0f321956",
+      "evidence": [
+        "rules/task-reports/2026-03/tick2_source_table_260324_043.json",
+        "rules/task-reports/2026-03/executor_idempotency_before_after_260324_043.json",
+        "rules/task-reports/2026-03/no_regression_015_020_029_260324_043.json"
+      ],
+      "metrics": {
+        "before_tick2_new_orders": 8,
+        "after_tick2_new_orders": 0,
+        "before_non_place_added_count": 1,
+        "after_non_place_added_count": 0,
+        "executor_idempotency_pass_after": true
+      }
+    }
+  }
+}

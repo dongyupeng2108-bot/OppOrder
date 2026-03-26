@@ -1,0 +1,19 @@
+{
+  "task_id": "260324_043",
+  "before": {
+    "pass": false,
+    "non_place_added_count": 1,
+    "tick2_new_orders_this_tick": 8
+  },
+  "after": {
+    "pass": true,
+    "non_place_added_count": 0,
+    "tick2_new_orders_this_tick": 0
+  },
+  "tick2_noop_context_after": {
+    "captured_at": "2026-03-26T10:12:49.576Z",
+    "intents_summary": "NOOP",
+    "reason": "pre_open_or_open_not_open_delay",
+    "current_window_id": "debug-main-path-v1-w1"
+  }
+}

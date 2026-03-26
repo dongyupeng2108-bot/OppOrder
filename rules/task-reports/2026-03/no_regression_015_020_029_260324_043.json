@@ -1,0 +1,18 @@
+{
+  "task_id": "260324_043",
+  "check_015_window_isolation": {
+    "window_state_semantics_pass": true,
+    "stop_reason_pass": true,
+    "running_window_exclusion_pass": true,
+    "readiness_consistency_pass": true,
+    "decision_gating_pass": true
+  },
+  "check_020_filled_total_chain": {
+    "result_chain_consistency_pass": true
+  },
+  "check_029_real_runtime_price_source": {
+    "source_chain_pass": true,
+    "real_runtime_ready_reached": true,
+    "btc_price_chain_pass": true
+  }
+}

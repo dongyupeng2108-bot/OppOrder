@@ -1,0 +1,11 @@
+{
+  "task_id": "260324_043_pre",
+  "tick2_context": {
+    "captured_at": "2026-03-26T10:12:49.576Z",
+    "intents_summary": "NOOP",
+    "reason": "pre_open_or_open_not_open_delay",
+    "current_window_id": "debug-main-path-v1-w1"
+  },
+  "new_orders_this_tick_observed": 0,
+  "rows": []
+}
