@@ -1,0 +1,14 @@
+{
+  "task_id": "260327_005",
+  "status": "DONE",
+  "summary": "定位并修复 UI 回退：重新去除“本轮运行”，并恢复“上一窗口结果”在实时日志右侧的精简展示。",
+  "root_cause": "260327_004 合并后同文件区域发生回退，旧模板片段被重新带回 main。",
+  "changes": {
+    "runtime_panel_removed": true,
+    "previous_window_compact_restored": true
+  },
+  "validation": {
+    "node_check_pass": true,
+    "npm_test_pass": true
+  }
+}
