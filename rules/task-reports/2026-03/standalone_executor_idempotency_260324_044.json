@@ -1,0 +1,17 @@
+{
+  "task_id": "260324_044",
+  "command": "node scripts/verify_executor_idempotency.mjs --task_id=260324_044",
+  "result": {
+    "executor_idempotency_pass": true,
+    "window_isolation_pass": true,
+    "filled_total_chain_pass": true,
+    "dirty_restart_pass": true
+  },
+  "summary": {
+    "executor_idempotency_pass": true,
+    "window_isolation_pass": true,
+    "filled_total_chain_pass": true,
+    "dirty_restart_pass": true
+  },
+  "first_break_layer": null
+}

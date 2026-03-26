@@ -1,0 +1,80 @@
+{
+  "task_id": "260324_044",
+  "protect_against": "历史 run 残留污染新 run（非幂等重复挂单）",
+  "tick2_context": {
+    "tick": 2,
+    "time": "2026-03-26T11:39:14.509Z",
+    "window_id": "debug-main-path-v1-w1",
+    "intents_summary": "NOOP",
+    "reason": "pre_open_or_open_not_open_delay",
+    "new_orders_this_tick": 0
+  },
+  "source_table": [
+    {
+      "order_id": "paper_637b1b17",
+      "window_id": "debug-main-path-v1-w1",
+      "created_at": "2026-03-26T11:39:12.105Z",
+      "source_action": "PLACE_BOTH_LADDERS",
+      "source_tick": "historical_run1",
+      "counted_as_new_in_run2": false
+    },
+    {
+      "order_id": "paper_ad31f365",
+      "window_id": "debug-main-path-v1-w1",
+      "created_at": "2026-03-26T11:39:12.105Z",
+      "source_action": "PLACE_BOTH_LADDERS",
+      "source_tick": "historical_run1",
+      "counted_as_new_in_run2": false
+    },
+    {
+      "order_id": "paper_6db768c4",
+      "window_id": "debug-main-path-v1-w1",
+      "created_at": "2026-03-26T11:39:12.105Z",
+      "source_action": "PLACE_BOTH_LADDERS",
+      "source_tick": "historical_run1",
+      "counted_as_new_in_run2": false
+    },
+    {
+      "order_id": "paper_3812eed2",
+      "window_id": "debug-main-path-v1-w1",
+      "created_at": "2026-03-26T11:39:12.105Z",
+      "source_action": "PLACE_BOTH_LADDERS",
+      "source_tick": "historical_run1",
+      "counted_as_new_in_run2": false
+    },
+    {
+      "order_id": "paper_3712ce1a",
+      "window_id": "debug-main-path-v1-w1",
+      "created_at": "2026-03-26T11:39:12.105Z",
+      "source_action": "PLACE_BOTH_LADDERS",
+      "source_tick": "historical_run1",
+      "counted_as_new_in_run2": false
+    },
+    {
+      "order_id": "paper_c82858af",
+      "window_id": "debug-main-path-v1-w1",
+      "created_at": "2026-03-26T11:39:12.105Z",
+      "source_action": "PLACE_BOTH_LADDERS",
+      "source_tick": "historical_run1",
+      "counted_as_new_in_run2": false
+    },
+    {
+      "order_id": "paper_f571d9e0",
+      "window_id": "debug-main-path-v1-w1",
+      "created_at": "2026-03-26T11:39:12.105Z",
+      "source_action": "PLACE_BOTH_LADDERS",
+      "source_tick": "historical_run1",
+      "counted_as_new_in_run2": false
+    },
+    {
+      "order_id": "paper_566eea1a",
+      "window_id": "debug-main-path-v1-w1",
+      "created_at": "2026-03-26T11:39:12.105Z",
+      "source_action": "PLACE_BOTH_LADDERS",
+      "source_tick": "historical_run1",
+      "counted_as_new_in_run2": false
+    }
+  ],
+  "overlap_order_ids": [],
+  "dirty_restart_pass": true
+}

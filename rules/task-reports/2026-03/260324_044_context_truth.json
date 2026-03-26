@@ -1,0 +1,505 @@
+{
+  "script_name": "verify_context_truth",
+  "task_id": "260324_044",
+  "sample_name": "debug_main_path_v1+debug_fill_yes_path_v1",
+  "pass": true,
+  "message": "context truth 校验通过",
+  "first_break_layer": null,
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260324_044_context_truth.json",
+  "summary": {
+    "context_truth_pass": true,
+    "btc_price_chain_pass": true,
+    "bounds_consistency_pass": true
+  },
+  "raw_excerpt": {
+    "running_normal_label": "running_normal_probe_2",
+    "running_normal_reason": null,
+    "bounds_status": "PASS"
+  },
+  "generated_at": "2026-03-26T11:38:30.599Z",
+  "command": "node scripts/verify_context_truth.mjs --task_id=260324_044",
+  "boundary_conditions": {
+    "allowed_empty_when": [
+      "running_early 且 current_window_id 未就绪",
+      "running_early 且首次拉价/初始化尚未完成（anchor_btc 为空）"
+    ],
+    "must_be_non_empty_when": [
+      "running=true 且 current_window_id 已存在（running_normal）时 btc_price 必须有效",
+      "running_normal 时 remaining_sec 必须为有效数值"
+    ]
+  },
+  "stages": {
+    "stopped": {
+      "label": "stopped",
+      "captured_at": "2026-03-26T11:38:29.282Z",
+      "context": {
+        "status": 200,
+        "body": {
+          "window_id": "btc-updown-5m-1774524900",
+          "last_window_id": "debug-main-path-v1-w1",
+          "slug": "btc-updown-5m-1774524900",
+          "period": "5m",
+          "remaining_sec": 90,
+          "btc_price": 69392.665,
+          "anchor_btc": null,
+          "atr_5m": null,
+          "upper_bound": null,
+          "lower_bound": null,
+          "bid_yes": 0.95,
+          "ask_yes": 0.96,
+          "bid_no": 0.04,
+          "ask_no": 0.05,
+          "tick_size": 0.01,
+          "stale": false,
+          "updated_at": "2026-03-26T11:38:29.132Z",
+          "_btc_source_trace": {
+            "source_init_started": true,
+            "source_init_error": null,
+            "source_feed_seen": true,
+            "source_feed_count": 2709,
+            "source_last_feed_at": "2026-03-26T11:38:28.911Z",
+            "latest_cache_price": 69392.665,
+            "latest_cache_at": "2026-03-26T11:38:28.911Z",
+            "latest_cache_source": "rest_coinbase"
+          }
+        }
+      },
+      "status": {
+        "status": 200,
+        "body": {
+          "mode": "paper-staging",
+          "phase": "IDLE",
+          "running": false,
+          "debug_scenario": "main_path_v1",
+          "debug_frame_index": 1,
+          "debug_completed": false,
+          "tick_interval_ms": 1000,
+          "last_tick_at": "2026-03-26T11:38:27.728Z",
+          "last_window_id": "debug-main-path-v1-w1",
+          "current_window_id": null,
+          "window_initialized_at": null,
+          "remaining_sec": 299,
+          "anchor_btc": null,
+          "atr_5m": null,
+          "upper_bound": null,
+          "lower_bound": null,
+          "ladder_posted": false,
+          "yes_cancelled": false,
+          "no_cancelled": false,
+          "yes_order_ids": [],
+          "no_order_ids": [],
+          "last_reason": null,
+          "last_intents": [],
+          "updated_at": "2026-03-26T11:38:28.308Z",
+          "saved_config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "last_run_snapshot": {
+            "stop_reason": "MANUAL_STOP",
+            "completed_at": "2026-03-26T11:38:28.306Z",
+            "current_window_id": "debug-main-path-v1-w1",
+            "phase": "IDLE",
+            "filled_total": 0,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "unrealized_gross_pnl_total": 0,
+            "active_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            }
+          },
+          "active_runtime_snapshot": null
+        }
+      },
+      "ui_equivalent": {
+        "status_text": "已停止",
+        "runtime_btc_display": "—",
+        "runtime_current_window": "—"
+      },
+      "derived": {
+        "running": false,
+        "current_window_id": null,
+        "btc_price": 69392.665,
+        "anchor_btc": null,
+        "upper_bound": null,
+        "lower_bound": null,
+        "atr_5m": null,
+        "atr_multiple": 1.2,
+        "remaining_sec": 90,
+        "active_runtime_snapshot": null
+      }
+    },
+    "running_early": {
+      "label": "running_early",
+      "captured_at": "2026-03-26T11:38:29.422Z",
+      "context": {
+        "status": 200,
+        "body": {
+          "window_id": "btc-updown-5m-1774524900",
+          "last_window_id": null,
+          "slug": "btc-updown-5m-1774524900",
+          "period": "5m",
+          "remaining_sec": 90,
+          "btc_price": 69392.665,
+          "anchor_btc": null,
+          "atr_5m": null,
+          "upper_bound": null,
+          "lower_bound": null,
+          "bid_yes": 0.95,
+          "ask_yes": 0.96,
+          "bid_no": 0.04,
+          "ask_no": 0.05,
+          "tick_size": 0.01,
+          "stale": false,
+          "updated_at": "2026-03-26T11:38:29.132Z",
+          "_btc_source_trace": {
+            "source_init_started": true,
+            "source_init_error": null,
+            "source_feed_seen": true,
+            "source_feed_count": 2709,
+            "source_last_feed_at": "2026-03-26T11:38:28.911Z",
+            "latest_cache_price": 69392.665,
+            "latest_cache_at": "2026-03-26T11:38:28.911Z",
+            "latest_cache_source": "rest_coinbase"
+          }
+        }
+      },
+      "status": {
+        "status": 200,
+        "body": {
+          "mode": "paper-staging",
+          "phase": "IDLE",
+          "running": true,
+          "debug_scenario": "main_path_v1",
+          "debug_frame_index": 0,
+          "debug_completed": false,
+          "tick_interval_ms": 1000,
+          "last_tick_at": "2026-03-26T11:38:27.728Z",
+          "last_window_id": null,
+          "current_window_id": null,
+          "window_initialized_at": null,
+          "remaining_sec": 299,
+          "anchor_btc": null,
+          "atr_5m": null,
+          "upper_bound": null,
+          "lower_bound": null,
+          "ladder_posted": false,
+          "yes_cancelled": false,
+          "no_cancelled": false,
+          "yes_order_ids": [],
+          "no_order_ids": [],
+          "last_reason": null,
+          "last_intents": [],
+          "updated_at": "2026-03-26T11:38:29.283Z",
+          "saved_config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "last_run_snapshot": {
+            "stop_reason": "MANUAL_STOP",
+            "completed_at": "2026-03-26T11:38:28.306Z",
+            "current_window_id": "debug-main-path-v1-w1",
+            "phase": "IDLE",
+            "filled_total": 0,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "unrealized_gross_pnl_total": 0,
+            "active_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            }
+          },
+          "active_runtime_snapshot": {
+            "config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            },
+            "phase": "IDLE",
+            "current_window_id": null,
+            "anchor_btc": null,
+            "upper_bound": null,
+            "lower_bound": null
+          }
+        }
+      },
+      "ui_equivalent": {
+        "status_text": "运行中",
+        "runtime_btc_display": "69392.665",
+        "runtime_current_window": "等待窗口初始化"
+      },
+      "derived": {
+        "running": true,
+        "current_window_id": null,
+        "btc_price": 69392.665,
+        "anchor_btc": null,
+        "upper_bound": null,
+        "lower_bound": null,
+        "atr_5m": null,
+        "atr_multiple": 1.2,
+        "remaining_sec": 90,
+        "active_runtime_snapshot": {
+          "config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "phase": "IDLE",
+          "current_window_id": null,
+          "anchor_btc": null,
+          "upper_bound": null,
+          "lower_bound": null
+        }
+      }
+    },
+    "running_normal": {
+      "label": "running_normal_probe_2",
+      "captured_at": "2026-03-26T11:38:30.597Z",
+      "context": {
+        "status": 200,
+        "body": {
+          "window_id": "btc-updown-5m-1774524900",
+          "last_window_id": null,
+          "slug": "btc-updown-5m-1774524900",
+          "period": "5m",
+          "remaining_sec": 89,
+          "btc_price": 69392.665,
+          "anchor_btc": 100,
+          "atr_5m": 2,
+          "upper_bound": 102.4,
+          "lower_bound": 97.6,
+          "bid_yes": 0.95,
+          "ask_yes": 0.96,
+          "bid_no": 0.04,
+          "ask_no": 0.05,
+          "tick_size": 0.01,
+          "stale": false,
+          "updated_at": "2026-03-26T11:38:29.132Z",
+          "_btc_source_trace": {
+            "source_init_started": true,
+            "source_init_error": null,
+            "source_feed_seen": true,
+            "source_feed_count": 2709,
+            "source_last_feed_at": "2026-03-26T11:38:28.911Z",
+            "latest_cache_price": 69392.665,
+            "latest_cache_at": "2026-03-26T11:38:28.911Z",
+            "latest_cache_source": "rest_coinbase"
+          }
+        }
+      },
+      "status": {
+        "status": 200,
+        "body": {
+          "mode": "paper-staging",
+          "phase": "IDLE",
+          "running": true,
+          "debug_scenario": "main_path_v1",
+          "debug_frame_index": 1,
+          "debug_completed": false,
+          "tick_interval_ms": 1000,
+          "last_tick_at": "2026-03-26T11:38:30.286Z",
+          "last_window_id": null,
+          "current_window_id": "debug-main-path-v1-w1",
+          "window_initialized_at": "2026-03-26T11:38:30.285Z",
+          "remaining_sec": 299,
+          "anchor_btc": 100,
+          "atr_5m": 2,
+          "upper_bound": 102.4,
+          "lower_bound": 97.6,
+          "ladder_posted": false,
+          "yes_cancelled": false,
+          "no_cancelled": false,
+          "yes_order_ids": [],
+          "no_order_ids": [],
+          "last_reason": "pre_open_or_open_not_open_delay",
+          "last_intents": [
+            {
+              "kind": "NOOP"
+            }
+          ],
+          "updated_at": "2026-03-26T11:38:30.286Z",
+          "saved_config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "last_run_snapshot": {
+            "stop_reason": "MANUAL_STOP",
+            "completed_at": "2026-03-26T11:38:28.306Z",
+            "current_window_id": "debug-main-path-v1-w1",
+            "phase": "IDLE",
+            "filled_total": 0,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "unrealized_gross_pnl_total": 0,
+            "active_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            }
+          },
+          "active_runtime_snapshot": {
+            "config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            },
+            "phase": "IDLE",
+            "current_window_id": "debug-main-path-v1-w1",
+            "anchor_btc": 100,
+            "upper_bound": 102.4,
+            "lower_bound": 97.6
+          }
+        }
+      },
+      "ui_equivalent": {
+        "status_text": "运行中",
+        "runtime_btc_display": "69392.665",
+        "runtime_current_window": "debug-main-path-v1-w1"
+      },
+      "derived": {
+        "running": true,
+        "current_window_id": "debug-main-path-v1-w1",
+        "btc_price": 69392.665,
+        "anchor_btc": 100,
+        "upper_bound": 102.4,
+        "lower_bound": 97.6,
+        "atr_5m": 2,
+        "atr_multiple": 1.2,
+        "remaining_sec": 89,
+        "active_runtime_snapshot": {
+          "config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "phase": "IDLE",
+          "current_window_id": "debug-main-path-v1-w1",
+          "anchor_btc": 100,
+          "upper_bound": 102.4,
+          "lower_bound": 97.6
+        }
+      }
+    }
+  },
+  "truth_table": {
+    "stopped_pass": true,
+    "running_early_pass": true,
+    "running_normal_pass": true,
+    "bounds_consistency": {
+      "status": "PASS",
+      "reason": "bounds 与 anchor/atr/mult 公式一致",
+      "expected_upper_bound": 102.4,
+      "expected_lower_bound": 97.6,
+      "actual_upper_bound": 102.4,
+      "actual_lower_bound": 97.6
+    }
+  },
+  "result": {
+    "context_truth_pass": true,
+    "btc_price_chain_pass": true,
+    "bounds_consistency_pass": true
+  },
+  "meta": {
+    "start_main_response": {
+      "status": 200,
+      "body": {
+        "ok": true,
+        "already_running": false,
+        "running": true,
+        "tick_interval_ms": 1000,
+        "last_tick_at": "2026-03-26T11:38:27.728Z",
+        "config": {
+          "open_delay_sec": 10,
+          "ladder_prices": [
+            0.27,
+            0.24,
+            0.21,
+            0.18
+          ],
+          "ladder_size": 5,
+          "atr_multiple": 1.2,
+          "cancel_all_remaining_sec": 100
+        },
+        "debugScenario": "main_path_v1",
+        "debug_frame_index": 0,
+        "debug_completed": false
+      }
+    }
+  }
+}

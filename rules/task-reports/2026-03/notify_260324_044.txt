@@ -1,0 +1,73 @@
+RESULT_JSON
+LOG_HEAD
+[Dirty Restart Guard] 固化历史 run 残留污染新 run 回归验证到 verify_executor_idempotency。
+LOG_TAIL
+node scripts/verify_executor_idempotency.mjs --task_id=260324_044 --sample=debug_main_path_v1+debug_fill_yes_path_v1
+node scripts/verify_all_manual.mjs --task_id=260324_044
+GATE_LIGHT_EXIT=0
+INDEX
+{
+  "task_id": "260324_044",
+  "files": [
+    {
+      "name": "scripts/verify_executor_idempotency.mjs",
+      "size": 15824,
+      "sha256_short": "41726164"
+    },
+    {
+      "name": "scripts/verify_manifest.json",
+      "size": 4772,
+      "sha256_short": "05b99e3b"
+    },
+    {
+      "name": "scripts/verify_all_manual.mjs",
+      "size": 5112,
+      "sha256_short": "85223c12"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_044_executor_idempotency.json",
+      "size": 10656,
+      "sha256_short": "3faba245"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_044_executor_idempotency.log",
+      "size": 187,
+      "sha256_short": "cb67f540"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_044_verify_all_manual.json",
+      "size": 3242,
+      "sha256_short": "40c93079"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_044_verify_all_manual.log",
+      "size": 1547,
+      "sha256_short": "65eacf28"
+    },
+    {
+      "name": "rules/task-reports/2026-03/dirty_restart_source_table_260324_044.json",
+      "size": 2537,
+      "sha256_short": "a974af3c"
+    },
+    {
+      "name": "rules/task-reports/2026-03/standalone_executor_idempotency_260324_044.json",
+      "size": 463,
+      "sha256_short": "caadda8e"
+    },
+    {
+      "name": "rules/task-reports/2026-03/verify_all_integration_260324_044.json",
+      "size": 194,
+      "sha256_short": "21841251"
+    },
+    {
+      "name": "rules/task-reports/2026-03/no_regression_executor_window_filled_260324_044.json",
+      "size": 164,
+      "sha256_short": "e7fc284e"
+    },
+    {
+      "name": "rules/task-reports/2026-03/notify_260324_044.txt",
+      "size": 332,
+      "sha256_short": "84a45f93"
+    }
+  ]
+}

@@ -29,10 +29,10 @@
     {
       "script_name": "verify_executor_idempotency",
       "entry": "scripts/verify_executor_idempotency.mjs",
-      "purpose": "验证执行层幂等、窗口隔离、filled_total 真值链",
+      "purpose": "验证执行层幂等、dirty restart 历史残留不污染新 run、窗口隔离、filled_total 真值链",
       "samples": ["debug_main_path_v1", "debug_fill_yes_path_v1"],
       "output_file": "{task_id}_executor_idempotency.json",
-      "pass_condition": "executor_idempotency_pass=true 且 window_isolation_pass=true 且 filled_total_chain_pass=true"
+      "pass_condition": "executor_idempotency_pass=true 且 dirty_restart_pass=true 且 window_isolation_pass=true 且 filled_total_chain_pass=true"
     },
     {
       "script_name": "verify_result_chain_consistency",
