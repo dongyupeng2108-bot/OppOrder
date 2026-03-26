@@ -1,0 +1,22 @@
+{
+  "task_id": "260324_046",
+  "mapped_events": [
+    "BOT_STARTED",
+    "BOT_STOPPED",
+    "BOT_WINDOW_INITIALIZED",
+    "BOT_DECISION",
+    "BOT_ORDER_APPLY",
+    "BOT_ORDER_CANCEL",
+    "BOT_FILL",
+    "BOT_RUN_SNAPSHOT",
+    "BOT_POSTMORTEM_WRITTEN",
+    "BOT_TICK_OK",
+    "RUNNER_TICK",
+    "BOT_CONTEXT_READY",
+    "BOT_CONTEXT_PENDING"
+  ],
+  "fallback_rule": {
+    "main": "未归类日志事件：<中文化详情或请查看原始信息>",
+    "raw": "原始:<EVENT> | 原文:<message>"
+  }
+}

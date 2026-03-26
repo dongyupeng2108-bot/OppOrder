@@ -114,12 +114,34 @@ async function initStrategyEditor() {
         <button id="se-btn-run-toggle" class="se-btn-deploy" onclick="se_toggleBotRun()">启动</button>
       </div>
 
-      <div style="flex:1;min-height:0;padding:10px;display:grid;grid-template-columns:minmax(0,1fr);gap:0;">
+      <div style="flex:1;min-height:0;padding:10px;display:grid;grid-template-columns:320px 12px minmax(0,1fr);gap:0;">
+        <section class="se-order-panel" style="border:1px solid #232a33;background:#11161c;padding:10px;min-height:0;width:100%;max-width:none;overflow:hidden;display:flex;flex-direction:column;">
+          <div id="se-order-title" class="se-order-title">当前窗口订单状态</div>
+          <div id="se-order-scope-note" style="font-size:11px;color:#888;padding:4px 2px 8px 2px;">当前无活动窗口</div>
+          <div style="flex:1;min-height:0;overflow:auto;">
+            <table class="se-order-table" style="table-layout:fixed;width:100%;">
+              <colgroup>
+                <col style="width:18%">
+                <col style="width:14%">
+                <col style="width:18%">
+                <col style="width:16%">
+                <col style="width:14%">
+                <col style="width:20%">
+              </colgroup>
+              <thead><tr><th>类型</th><th>方向</th><th>价格</th><th>状态</th><th>数量</th><th>PnL</th></tr></thead>
+              <tbody id="se-order-body">
+                <tr><td colspan="6" style="color:#555;text-align:center">暂无</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="se-latency" style="font-size:10px;color:#888;text-align:right;padding:4px 8px 0 8px;"></div>
+        </section>
+        <div style="background:#0b0d10;border-left:1px solid #1a2028;border-right:1px solid #1a2028;"></div>
         <div style="min-height:0;display:grid;grid-template-rows:minmax(260px,1fr) 208px 208px;gap:10px;">
-          <div style="display:grid;grid-template-columns:minmax(0,1fr) 12px 360px;gap:0;min-height:0;">
+          <div style="display:grid;grid-template-columns:minmax(0,1fr);gap:0;min-height:0;">
             <section style="border:1px solid #232a33;background:#11161c;padding:10px;display:flex;flex-direction:column;min-height:0;gap:8px;">
               <div style="display:flex;justify-content:space-between;align-items:center;">
-                <h3 style="margin:0;font-size:13px;color:#d6dde5;">实时日志</h3>
+                <h3 style="margin:0;font-size:13px;color:#d6dde5;">实时日志（中文主显示）</h3>
                 <div style="display:flex;align-items:center;gap:8px;">
                   <button class="se-restart-inline-btn" onclick="restartServer()">⟳ 重启</button>
                   <span id="se-countdown" style="font-size:11px;color:#aaa;font-family:monospace;">--:--</span>
@@ -127,28 +149,6 @@ async function initStrategyEditor() {
               </div>
               <div id="se-log-area" class="se-log-area" style="flex:1;min-height:0;"></div>
               <div id="se-ui-error" style="font-size:11px;color:#ff8a80;min-height:16px;"></div>
-            </section>
-            <div style="background:#0b0d10;border-left:1px solid #1a2028;border-right:1px solid #1a2028;"></div>
-            <section class="se-order-panel" style="border:1px solid #232a33;background:#11161c;padding:10px;min-height:0;width:100%;max-width:none;overflow:hidden;display:flex;flex-direction:column;">
-              <div id="se-order-title" class="se-order-title">当前窗口订单状态</div>
-              <div id="se-order-scope-note" style="font-size:11px;color:#888;padding:4px 2px 8px 2px;">当前无活动窗口</div>
-              <div style="flex:1;min-height:0;overflow:auto;">
-                <table class="se-order-table" style="table-layout:fixed;width:100%;">
-                  <colgroup>
-                    <col style="width:18%">
-                    <col style="width:14%">
-                    <col style="width:18%">
-                    <col style="width:16%">
-                    <col style="width:14%">
-                    <col style="width:20%">
-                  </colgroup>
-                  <thead><tr><th>类型</th><th>方向</th><th>价格</th><th>状态</th><th>数量</th><th>PnL</th></tr></thead>
-                  <tbody id="se-order-body">
-                    <tr><td colspan="6" style="color:#555;text-align:center">暂无</td></tr>
-                  </tbody>
-                </table>
-              </div>
-              <div id="se-latency" style="font-size:10px;color:#888;text-align:right;padding:4px 8px 0 8px;"></div>
             </section>
           </div>
 
@@ -1034,6 +1034,74 @@ function se_renderOrders(orders, status) {
     : `<tr><td colspan="6" style="color:#555;text-align:center">${isCurrentWindowScope ? '当前窗口暂无活跃订单' : '当前无活动窗口订单'}</td></tr>`;
 }
 
+function se_logEventLabel(event) {
+  return ({
+    BOT_STARTED: '机器人已启动',
+    BOT_STOPPED: '机器人已停止',
+    BOT_WINDOW_INITIALIZED: '窗口初始化完成',
+    BOT_DECISION: '策略决策已生成',
+    BOT_ORDER_APPLY: '已提交挂单',
+    BOT_ORDER_CANCEL: '已提交撤单',
+    BOT_FILL: '订单成交',
+    BOT_RUN_SNAPSHOT: '已记录运行快照',
+    BOT_POSTMORTEM_WRITTEN: '复盘记录已写入',
+    BOT_TICK_OK: '周期检查正常',
+    RUNNER_TICK: '执行周期更新',
+    BOT_CONTEXT_READY: '上下文就绪',
+    BOT_CONTEXT_PENDING: '上下文待就绪'
+  }[event] || null);
+}
+
+function se_logLevelLabel(level) {
+  return ({
+    info: '信息',
+    warn: '警告',
+    warning: '警告',
+    error: '错误',
+    debug: '调试'
+  }[level] || '信息');
+}
+
+function se_hasLatinWord(text) {
+  return /[A-Za-z]{2,}/.test(text || '');
+}
+
+function se_translateLogDetail(message, data) {
+  let text = typeof message === 'string' ? message.trim() : '';
+  if (!text && data && typeof data === 'object') {
+    const reason = typeof data.reason === 'string' ? data.reason.trim() : '';
+    const intents = typeof data.intents_summary === 'string' ? data.intents_summary.trim() : '';
+    if (reason) text = `原因:${reason}`;
+    else if (intents) text = `动作:${intents}`;
+  }
+  if (!text) return '—';
+  const origin = text;
+  let translated = text
+    .replace(/\bPLACE_LADDER\b/g, '挂阶梯单')
+    .replace(/\bCANCEL_OPEN\b/g, '撤销挂单')
+    .replace(/\bFLATTEN_POSITION\b/g, '平仓')
+    .replace(/\bNOOP\b/g, '无动作')
+    .replace(/\bBOTH\b/g, '双边')
+    .replace(/\bYES\b/g, 'YES')
+    .replace(/\bNO\b/g, 'NO')
+    .replace(/window initialized/gi, '窗口初始化完成')
+    .replace(/bot runner started/gi, '机器人启动')
+    .replace(/bot runner stopped/gi, '机器人停止')
+    .replace(/filled\s+(\d+)\s+orders?/gi, '成交 $1 笔订单')
+    .replace(/tick ok/gi, '周期正常')
+    .replace(/ladder_not_posted/gi, '阶梯单未挂出')
+    .replace(/pre_open_or_open_not_open_delay/gi, '开盘等待阶段')
+    .replace(/price_or_bounds_null/gi, '价格或边界未就绪')
+    .replace(/btc_price>=upper_bound/gi, 'BTC 价格触达上边界')
+    .replace(/btc_price<=lower_bound/gi, 'BTC 价格触达下边界')
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (translated === origin && se_hasLatinWord(origin)) {
+    translated = '详见原始信息';
+  }
+  return translated;
+}
+
 function se_renderLogs(logs) {
   const area = document.getElementById('se-log-area');
   if (!logs.length) {
@@ -1052,29 +1120,21 @@ function se_renderLogs(logs) {
 
   _seLastLogTs = logs[logs.length - 1].ts;
 
-  const eventLabel = (event) => ({
-    BOT_STARTED: '已启动',
-    BOT_WINDOW_INITIALIZED: '窗口初始化',
-    BOT_DECISION: '策略决策',
-    BOT_ORDER_APPLY: '挂单提交',
-    BOT_ORDER_CANCEL: '撤单',
-    BOT_FILL: '成交',
-    BOT_STOPPED: '已停止',
-    BOT_RUN_SNAPSHOT: '运行快照',
-    BOT_POSTMORTEM_WRITTEN: '复盘记录已写入'
-  }[event] || null);
-
   newLogs.forEach(log => {
     const div = document.createElement('div');
     const level = (log.level || log.type || 'info').toLowerCase();
     const event = log.event || log.type || 'LOG';
     const message = log.message || log.msg || '';
+    const data = log.data && typeof log.data === 'object' ? log.data : null;
     div.className = `se-log-entry se-log-${level}`;
     const time = new Date(log.ts).toLocaleTimeString('zh-CN', { hour12: false });
-    const mapped = eventLabel(event);
-    const mainText = mapped ? `${mapped}：${message || '—'}` : `${event} ${message}`;
-    const rawText = mapped ? `（原始:${event}）` : '';
-    div.textContent = `${time} [${level.toUpperCase()}] ${mainText} ${rawText}`.trim();
+    const mapped = se_logEventLabel(event);
+    const detail = se_translateLogDetail(message, data);
+    const mainText = mapped
+      ? `${mapped}${detail !== '—' ? `：${detail}` : ''}`
+      : `未归类日志事件：${detail === '—' ? '请查看原始信息' : detail}`;
+    const rawText = `（原始:${event}${message ? ` | 原文:${message}` : ''}）`;
+    div.textContent = `${time} [${se_logLevelLabel(level)}] ${mainText} ${rawText}`.trim();
     area.appendChild(div);
 
     if (level === 'error') {
