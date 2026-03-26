@@ -27,6 +27,14 @@
       "pass_condition": "window_state_semantics_pass=true 且 stop_reason_pass=true 且 running_window_exclusion_pass=true 且 readiness_consistency_pass=true 且 decision_gating_pass=true"
     },
     {
+      "script_name": "verify_anchor_bounds_lifecycle",
+      "entry": "scripts/verify_anchor_bounds_lifecycle.mjs",
+      "purpose": "验证 anchor 冻结语义与 bounds-ready 解耦：ATR 缺失不漂移，ATR 后到按冻结 anchor 计算 bounds，真实运行不漂移",
+      "samples": ["controlled", "real_no_debug"],
+      "output_file": "{task_id}_anchor_bounds_lifecycle.json",
+      "pass_condition": "anchor_frozen_once_pass=true 且 atr_arrive_compute_from_frozen_anchor_pass=true 且 window_init_decoupled_from_bounds_ready_pass=true 且 real_runtime_anchor_not_drifting_pass=true"
+    },
+    {
       "script_name": "verify_executor_idempotency",
       "entry": "scripts/verify_executor_idempotency.mjs",
       "purpose": "验证执行层幂等、dirty restart 历史残留不污染新 run、窗口隔离、filled_total 真值链",

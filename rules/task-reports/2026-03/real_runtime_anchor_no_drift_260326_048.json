@@ -1,0 +1,100 @@
+{
+  "task_id": "260326_048",
+  "source": "verify_anchor_bounds_lifecycle.real_runtime",
+  "summary": {
+    "total_rows": 29,
+    "atr_missing_rows_in_same_window": 29,
+    "unique_anchor_count_when_atr_missing": 1
+  },
+  "sample_rows": [
+    {
+      "seq": 2,
+      "window_id": "btc-updown-5m-1774533900",
+      "running": true,
+      "btc_price": 69785.405,
+      "atr_5m": null,
+      "anchor_btc": 69785.255,
+      "upper_bound": null,
+      "lower_bound": null,
+      "reason": "ladder_not_posted"
+    },
+    {
+      "seq": 3,
+      "window_id": "btc-updown-5m-1774533900",
+      "running": true,
+      "btc_price": 69785.405,
+      "atr_5m": null,
+      "anchor_btc": 69785.255,
+      "upper_bound": null,
+      "lower_bound": null,
+      "reason": "price_or_bounds_null"
+    },
+    {
+      "seq": 4,
+      "window_id": "btc-updown-5m-1774533900",
+      "running": true,
+      "btc_price": 69785.405,
+      "atr_5m": null,
+      "anchor_btc": 69785.255,
+      "upper_bound": null,
+      "lower_bound": null,
+      "reason": "price_or_bounds_null"
+    },
+    {
+      "seq": 5,
+      "window_id": "btc-updown-5m-1774533900",
+      "running": true,
+      "btc_price": 69766.095,
+      "atr_5m": null,
+      "anchor_btc": 69785.255,
+      "upper_bound": null,
+      "lower_bound": null,
+      "reason": "price_or_bounds_null"
+    },
+    {
+      "seq": 6,
+      "window_id": "btc-updown-5m-1774533900",
+      "running": true,
+      "btc_price": 69766.095,
+      "atr_5m": null,
+      "anchor_btc": 69785.255,
+      "upper_bound": null,
+      "lower_bound": null,
+      "reason": "price_or_bounds_null"
+    },
+    {
+      "seq": 7,
+      "window_id": "btc-updown-5m-1774533900",
+      "running": true,
+      "btc_price": 69766.095,
+      "atr_5m": null,
+      "anchor_btc": 69785.255,
+      "upper_bound": null,
+      "lower_bound": null,
+      "reason": "price_or_bounds_null"
+    },
+    {
+      "seq": 8,
+      "window_id": "btc-updown-5m-1774533900",
+      "running": true,
+      "btc_price": 69785.405,
+      "atr_5m": null,
+      "anchor_btc": 69785.255,
+      "upper_bound": null,
+      "lower_bound": null,
+      "reason": "price_or_bounds_null"
+    },
+    {
+      "seq": 9,
+      "window_id": "btc-updown-5m-1774533900",
+      "running": true,
+      "btc_price": 69785.405,
+      "atr_5m": null,
+      "anchor_btc": 69785.255,
+      "upper_bound": null,
+      "lower_bound": null,
+      "reason": "price_or_bounds_null"
+    }
+  ],
+  "pass": true
+}

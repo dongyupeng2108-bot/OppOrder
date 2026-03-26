@@ -1,0 +1,34 @@
+{
+  "task_id": "260326_048",
+  "timestamp": "2026-03-26T14:09:59.487Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "anchor_frozen_once": "PASS",
+    "atr_late_bounds_from_frozen_anchor": "PASS",
+    "real_runtime_no_anchor_drift": "PASS",
+    "verify_all_pass": "PASS"
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260326_048",
+      "status": "DONE",
+      "mode": "FIX",
+      "summary": "已修复 anchor 漂移：同窗冻结一次；ATR 缺失时保持 bounds not ready；ATR 后到基于冻结 anchor 计算 bounds。",
+      "report_file": "notify_260326_048.txt",
+      "report_sha256_short": "559cb79f",
+      "evidence": [
+        "rules/task-reports/2026-03/real_runtime_anchor_no_drift_260326_048.json",
+        "rules/task-reports/2026-03/controlled_anchor_bounds_lifecycle_260326_048.json",
+        "rules/task-reports/2026-03/verify_all_integration_260326_048.json"
+      ],
+      "metrics": {
+        "anchor_frozen_once_pass": true,
+        "atr_arrive_compute_from_frozen_anchor_pass": true,
+        "window_init_decoupled_from_bounds_ready_pass": true,
+        "real_runtime_anchor_not_drifting_pass": true,
+        "verify_all_overall_pass": true
+      }
+    }
+  }
+}

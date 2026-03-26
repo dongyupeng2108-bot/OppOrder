@@ -1,0 +1,63 @@
+RESULT_JSON
+LOG_HEAD
+[FIX] anchor freeze 与 bounds-ready 解耦：ATR 缺失不漂移，ATR 后到按冻结 anchor 产出 bounds。
+LOG_TAIL
+node scripts/verify_anchor_bounds_lifecycle.mjs --task_id=260326_048
+node scripts/verify_all_manual.mjs --task_id=260326_048
+GATE_LIGHT_EXIT=0
+INDEX
+{
+  "task_id": "260326_048",
+  "files": [
+    {
+      "name": "strategies/crypto_binary/bot_runner.mjs",
+      "size": 18900,
+      "sha256_short": "d3bf51c0"
+    },
+    {
+      "name": "scripts/verify_anchor_bounds_lifecycle.mjs",
+      "size": 11370,
+      "sha256_short": "2abe1294"
+    },
+    {
+      "name": "scripts/verify_all_manual.mjs",
+      "size": 5235,
+      "sha256_short": "d5b0f455"
+    },
+    {
+      "name": "scripts/verify_manifest.json",
+      "size": 5381,
+      "sha256_short": "0ab73816"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260326_048_anchor_bounds_lifecycle.json",
+      "size": 13619,
+      "sha256_short": "877df865"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260326_048_verify_all_manual.json",
+      "size": 3575,
+      "sha256_short": "4c5c9afc"
+    },
+    {
+      "name": "rules/task-reports/2026-03/real_runtime_anchor_no_drift_260326_048.json",
+      "size": 2455,
+      "sha256_short": "878d49e1"
+    },
+    {
+      "name": "rules/task-reports/2026-03/controlled_anchor_bounds_lifecycle_260326_048.json",
+      "size": 1098,
+      "sha256_short": "1bdc3659"
+    },
+    {
+      "name": "rules/task-reports/2026-03/verify_all_integration_260326_048.json",
+      "size": 200,
+      "sha256_short": "3e2f4ff3"
+    },
+    {
+      "name": "rules/task-reports/2026-03/notify_260326_048.txt",
+      "size": 290,
+      "sha256_short": "5a9f8d30"
+    }
+  ]
+}

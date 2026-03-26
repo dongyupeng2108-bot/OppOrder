@@ -1,0 +1,7 @@
+{
+  "task_id": "260326_048",
+  "verify_all_total_scripts": 10,
+  "verify_all_overall_pass": true,
+  "verify_all_includes_anchor_bounds_lifecycle": true,
+  "verify_anchor_bounds_lifecycle_pass": true
+}

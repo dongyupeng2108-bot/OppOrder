@@ -1,0 +1,47 @@
+{
+  "task_id": "260326_048",
+  "checks": {
+    "anchor_frozen_once_pass": true,
+    "atr_arrive_compute_from_frozen_anchor_pass": true,
+    "window_init_decoupled_from_bounds_ready_pass": true,
+    "unready_anchor_not_drifting_pass": true,
+    "unready_action_blocked_pass": true
+  },
+  "evidence": {
+    "window1": {
+      "tick1": {
+        "anchor": 100,
+        "upper": null,
+        "lower": null,
+        "window_initialized_at": "2026-03-26T14:07:23.892Z"
+      },
+      "tick2": {
+        "anchor": 100,
+        "upper": null,
+        "lower": null,
+        "window_initialized_at": "2026-03-26T14:07:23.892Z"
+      },
+      "tick3": {
+        "anchor": 100,
+        "upper": 102.4,
+        "lower": 97.6,
+        "window_initialized_at": "2026-03-26T14:07:23.892Z"
+      }
+    },
+    "window2": {
+      "tickA": {
+        "anchor": 101,
+        "upper": null,
+        "lower": null
+      },
+      "tickB": {
+        "anchor": 101,
+        "upper": null,
+        "lower": null,
+        "intents_summary": "NOOP",
+        "reason": "price_or_bounds_null"
+      }
+    }
+  },
+  "pass": true
+}
