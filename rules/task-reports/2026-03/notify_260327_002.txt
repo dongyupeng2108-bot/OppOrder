@@ -1,0 +1,12 @@
+RESULT_JSON
+rules/task-reports/2026-03/result_260327_002.json
+LOG_HEAD
+[UI] 当前窗口订单状态下方信息重组已完成：BTC价格/UPDOWN概率/波动值（顺序固定）。
+LOG_TAIL
+node --check ui/js/strategy-editor.js
+npm test
+EVIDENCE
+rules/task-reports/2026-03/dom_facts_260327_002.txt
+rules/task-reports/2026-03/result_260327_002.json
+INDEX
+rules/task-reports/2026-03/dom_facts_260327_002.txt

@@ -1,0 +1,24 @@
+{
+  "task_id": "260327_002",
+  "status": "DONE",
+  "scope_guard": "仅 BTC价格/UPDOWN概率/波动值 的文案、位置、精度与绑定",
+  "order_panel_info_order": ["BTC价格", "UPDOWN概率", "波动值"],
+  "bindings": {
+    "btc_price": "GET /bot/context -> btc_price",
+    "updown_probability": "GET /bot/context -> bid_yes/bid_no (fallback ask_yes/ask_no)",
+    "volatility": "GET /bot/context -> atr_5m"
+  },
+  "precision": {
+    "btc_price_decimal_places": 1,
+    "updown_probability_decimal_places": 3,
+    "volatility_decimal_places": 3
+  },
+  "validation": {
+    "dom_facts_file": "rules/task-reports/2026-03/dom_facts_260327_002.txt",
+    "npm_test_pass": true,
+    "api_status_smoke": {
+      "bot_context": 200,
+      "bot_status": 200
+    }
+  }
+}
