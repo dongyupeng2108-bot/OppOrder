@@ -118,6 +118,11 @@ async function initStrategyEditor() {
       <div style="flex:1;min-height:0;padding:10px;display:grid;grid-template-columns:320px 12px minmax(0,1fr);gap:0;">
         <section class="se-order-panel" style="border:1px solid #232a33;background:#11161c;padding:10px;min-height:0;width:100%;max-width:none;overflow:hidden;display:flex;flex-direction:column;">
           <div id="se-order-title" class="se-order-title">当前窗口订单状态</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;padding:4px 2px 8px 2px;">
+            <div style="color:#7f8a97;">BTC价格</div><div id="se-order-btc" style="text-align:right;color:#d6dde5;">—</div>
+            <div style="color:#7f8a97;">UPDOWN概率</div><div id="se-order-updown-prob" style="text-align:right;color:#d6dde5;">—</div>
+            <div style="color:#7f8a97;">波动值</div><div id="se-order-volatility" style="text-align:right;color:#d6dde5;">—</div>
+          </div>
           <div style="flex:1;min-height:0;overflow:auto;">
             <table class="se-order-table" style="table-layout:fixed;width:100%;">
               <colgroup>
@@ -156,7 +161,6 @@ async function initStrategyEditor() {
               <h3 style="margin:0;font-size:13px;color:#d6dde5;">本轮运行</h3>
               <div id="se-runtime-note" style="font-size:12px;color:#9aa5b2;line-height:1.7;">当前未运行；启动后将显示关键执行状态。</div>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
-                <div style="color:#7f8a97;">当前 BTC 价格</div><div id="se-runtime-btc" style="text-align:right;color:#d6dde5;">—</div>
                 <div style="color:#7f8a97;">YES 持仓</div><div id="se-runtime-yes-position" style="text-align:right;color:#d6dde5;">—</div>
                 <div style="color:#7f8a97;">NO 持仓</div><div id="se-runtime-no-position" style="text-align:right;color:#d6dde5;">—</div>
                 <div style="color:#7f8a97;">已成交总数</div><div id="se-runtime-filled-total" style="text-align:right;color:#d6dde5;">—</div>
@@ -822,15 +826,34 @@ function se_renderDecision(status, context, preview, ordersData, previewError) {
 
 function se_renderContext(context, status) {
   const running = status?.running === true;
+  const toFinite = (value) => {
+    if (value === null || value === undefined || value === '') return null;
+    const num = Number(value);
+    return Number.isFinite(num) ? num : null;
+  };
+  const formatFixed1 = (value, emptyText = '—') => {
+    const num = toFinite(value);
+    return num === null ? emptyText : num.toFixed(1);
+  };
+  const formatFixed3 = (value, emptyText = '—') => {
+    const num = toFinite(value);
+    return num === null ? emptyText : num.toFixed(3);
+  };
   se_setText('se-top-activity', running ? `窗口 ${se_formatStateValue(status?.current_window_id)}` : '当前无活动窗口');
+  const upProb = toFinite(context?.bid_yes ?? context?.ask_yes);
+  const downProb = toFinite(context?.bid_no ?? context?.ask_no);
+  const upDownText = (upProb !== null && downProb !== null)
+    ? `UP ${formatFixed3(upProb)} / DOWN ${formatFixed3(downProb)}`
+    : '—';
+  se_setText('se-order-btc', formatFixed1(context?.btc_price));
+  se_setText('se-order-updown-prob', upDownText);
+  se_setText('se-order-volatility', formatFixed3(context?.atr_5m));
   if (!running) {
     se_setText('se-runtime-note', '当前未运行；启动后将显示关键执行状态。');
-    se_setText('se-runtime-btc', '—');
     return;
   }
   const toRuntimeValue = (value, emptyText) => (value === null || value === undefined || value === '') ? emptyText : value;
   se_setText('se-runtime-note', '运行中，关键执行状态实时刷新。');
-  se_setText('se-runtime-btc', toRuntimeValue(context?.btc_price, '数据未就绪'));
 }
 
 function se_pickSummaryValue(summary, keys, fallback = null) {

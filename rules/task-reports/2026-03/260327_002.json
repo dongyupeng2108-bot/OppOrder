@@ -1,0 +1,18 @@
+{
+  "task_id": "260327_002",
+  "timestamp": "2026-03-27T01:10:00.000Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "label_changed_to_btc_price": "PASS",
+    "moved_under_order_panel": "PASS",
+    "btc_precision_one_decimal": "PASS",
+    "updown_probability_bound": "PASS",
+    "volatility_bound": "PASS",
+    "npm_test": "PASS"
+  },
+  "context": {
+    "result_file": "rules/task-reports/2026-03/result_260327_002.json",
+    "notify_file": "rules/task-reports/2026-03/notify_260327_002.txt"
+  }
+}

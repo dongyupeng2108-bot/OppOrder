@@ -1,0 +1,12 @@
+﻿TASK_ID=260327_002
+DOM_ORDER=BTC价格 / UPDOWN概率 / 波动值
+BTC价格=68902.7
+UPDOWN概率=UP 0.250 / DOWN 0.740
+波动值=2.000
+FIELD_BINDING_BTC=bot/context.btc_price
+FIELD_BINDING_UPDOWN=bot/context.bid_yes|bid_no (fallback ask_yes|ask_no)
+FIELD_BINDING_VOLATILITY=bot/context.atr_5m
+STATUS_RUNNING=True
+STATUS_WINDOW_ID=debug-fill-yes-path-v1-w1
+API_FACT_bot_context=200
+API_FACT_bot_status=200
