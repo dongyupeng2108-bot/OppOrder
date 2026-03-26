@@ -1,0 +1,16 @@
+{
+  "task_id": "260326_051",
+  "timestamp": "2026-03-26T16:10:00.000Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "root_cause_classified": "PASS",
+    "single_script_consecutive_3_pass": "PASS",
+    "verify_all_manual_overall": "PASS",
+    "npm_test": "PASS"
+  },
+  "context": {
+    "result_file": "rules/task-reports/2026-03/result_260326_051.json",
+    "notify_file": "rules/task-reports/2026-03/notify_260326_051.txt"
+  }
+}

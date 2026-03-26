@@ -1,0 +1,66 @@
+{
+  "task_id": "260326_051",
+  "root_cause_type": "A",
+  "matrix": [
+    {
+      "run_id": "260326_234221",
+      "source": "historical_failed_from_verify_all",
+      "already_running": false,
+      "fresh_start_ok": true,
+      "sample_sufficient": false,
+      "running_order_count": 0,
+      "stopped_order_count": 0,
+      "pass": false,
+      "first_break_layer": "sample insufficiency"
+    },
+    {
+      "run_id": "260326_051_n1",
+      "source": "single_script_normal_repro",
+      "already_running": false,
+      "fresh_start_ok": true,
+      "sample_sufficient": true,
+      "running_order_count": 8,
+      "stopped_order_count": 8,
+      "pass": true,
+      "first_break_layer": null
+    },
+    {
+      "run_id": "260326_051_r1",
+      "source": "single_script_stability_1",
+      "already_running": false,
+      "fresh_start_ok": true,
+      "sample_sufficient": true,
+      "running_order_count": 8,
+      "stopped_order_count": 8,
+      "pass": true,
+      "first_break_layer": null
+    },
+    {
+      "run_id": "260326_051_r2",
+      "source": "single_script_stability_2",
+      "already_running": false,
+      "fresh_start_ok": true,
+      "sample_sufficient": true,
+      "running_order_count": 8,
+      "stopped_order_count": 8,
+      "pass": true,
+      "first_break_layer": null
+    },
+    {
+      "run_id": "260326_051_r3",
+      "source": "single_script_stability_3",
+      "already_running": false,
+      "fresh_start_ok": true,
+      "sample_sufficient": true,
+      "running_order_count": 8,
+      "stopped_order_count": 8,
+      "pass": true,
+      "first_break_layer": null
+    }
+  ],
+  "stability_assertion": {
+    "consecutive_pass_required": 3,
+    "consecutive_pass_result": 3,
+    "consecutive_pass_ok": true
+  }
+}

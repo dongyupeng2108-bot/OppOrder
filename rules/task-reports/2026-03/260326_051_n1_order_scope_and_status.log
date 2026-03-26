@@ -1,0 +1,6 @@
+script_name=verify_order_scope_and_status
+task_id=260326_051_n1
+sample_name=debug_fill_yes_path_v1
+pass=true
+first_break_layer=null
+message=order scope / status 语义校验通过

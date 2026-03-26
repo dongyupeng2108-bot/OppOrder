@@ -1,0 +1,20 @@
+{
+  "task_id": "260326_051",
+  "status": "DONE",
+  "summary": "verify_order_scope_and_status 反复失败已收口；脚本前置波动被稳定化，3连跑通过，verify_all_manual 全绿。",
+  "root_cause_type": "A",
+  "root_cause_detail": "未观测到业务生命周期真实缺陷复现；失败属于脚本前置/采样波动（fresh lifecycle 证据不足 + 采样窗口粗）导致的样本不足误报。",
+  "metrics": {
+    "single_script_consecutive_pass": 3,
+    "single_script_consecutive_pass_ok": true,
+    "verify_all_manual_overall_pass": true,
+    "verify_all_total_scripts": 10,
+    "verify_all_fail_count": 0
+  },
+  "evidence": [
+    "rules/task-reports/2026-03/verify_order_scope_and_status_repro_matrix_260326_051.json",
+    "rules/task-reports/2026-03/verify_order_scope_and_status_before_after_260326_051.json",
+    "rules/task-reports/2026-03/260326_051_order_scope_and_status.json",
+    "rules/task-reports/2026-03/260326_051_verify_all_manual.json"
+  ]
+}

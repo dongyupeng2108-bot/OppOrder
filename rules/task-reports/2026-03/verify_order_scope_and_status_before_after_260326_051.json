@@ -1,0 +1,46 @@
+{
+  "task_id": "260326_051",
+  "root_cause_type": "A",
+  "root_cause_summary": "脚本前置与采样稳定性不足：历史失败在 fresh-start 表面成立时仍出现 sample insufficiency（running/stopped 订单样本全空）。本次通过强化 fresh 生命周期追踪与更细粒度采样收口波动。",
+  "before": {
+    "source_task_id": "260326_234221",
+    "pass": false,
+    "first_break_layer": "sample insufficiency",
+    "raw_excerpt": {
+      "start_ok": true,
+      "sample_sufficient": false
+    },
+    "order_scope_status_table": {
+      "running_order_count": 0,
+      "stopped_order_count": 0,
+      "open_visible": false,
+      "filled_visible": false,
+      "cancelled_visible": false
+    },
+    "evidence_file": "rules/task-reports/2026-03/260326_234221_order_scope_and_status.json"
+  },
+  "after": {
+    "source_task_id": "260326_051",
+    "pass": true,
+    "first_break_layer": null,
+    "raw_excerpt": {
+      "start_ok": true,
+      "fresh_start_ok": true,
+      "already_running_seen": false,
+      "sample_sufficient": true
+    },
+    "order_scope_status_table": {
+      "running_order_count": 8,
+      "stopped_order_count": 8,
+      "open_visible": true,
+      "filled_visible": true,
+      "cancelled_visible": true
+    },
+    "evidence_file": "rules/task-reports/2026-03/260326_051_order_scope_and_status.json"
+  },
+  "changes": [
+    "增强 ensureFreshStart 的 lifecycle trace（after_stop/start_response/fresh_probe）",
+    "将 running 采样间隔由 650ms 降到 320ms，提高 OPEN 状态可见概率",
+    "输出 fresh_start_ok/already_running_seen 与 lifecycle_trace，沉淀可复盘证据"
+  ]
+}

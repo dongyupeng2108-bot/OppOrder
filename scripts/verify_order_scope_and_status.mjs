@@ -118,6 +118,32 @@ const collectTerminalConflict = (rows) => {
     .map(([orderId, statuses]) => ({ order_id: orderId, terminal_statuses: [...statuses] }));
 };
 
+const compactStatus = (statusPayload) => {
+  const body = statusPayload?.body || {};
+  return {
+    running: body?.running === true,
+    debug_scenario: body?.debug_scenario ?? null,
+    debug_frame_index: Number(body?.debug_frame_index ?? 0),
+    current_window_id: body?.current_window_id ?? null,
+    last_window_id: body?.last_window_id ?? null,
+    phase: body?.phase ?? null
+  };
+};
+
+const compactOrders = (ordersPayload) => {
+  const body = ordersPayload?.body || {};
+  const rows = normalizeRows(ordersPayload);
+  return {
+    order_count: rows.length,
+    open_count: rows.filter((row) => row.status === 'OPEN').length,
+    filled_count: rows.filter((row) => row.status === 'FILLED').length,
+    cancelled_count: rows.filter((row) => row.status === 'CANCELLED').length,
+    hidden_other_window_count: body?.hidden_other_window_count ?? null,
+    scope: body?.window_scope?.scope ?? null,
+    display_window_id: body?.window_scope?.display_window_id ?? null
+  };
+};
+
 const waitForStopped = async (http, maxTicks = 20, waitMs = 250) => {
   for (let i = 0; i < maxTicks; i += 1) {
     const status = await http.get('/bot/status');
@@ -128,10 +154,18 @@ const waitForStopped = async (http, maxTicks = 20, waitMs = 250) => {
 };
 
 const ensureFreshStart = async (http, scenario) => {
+  const trace = [];
   for (let i = 0; i < 3; i += 1) {
     await http.post('/bot/stop', {});
-    await waitForStopped(http, 20, 250);
+    const stopped = await waitForStopped(http, 20, 250);
+    trace.push({ stage: 'after_stop', attempt: i + 1, status: compactStatus(stopped) });
     const start = await http.post('/bot/start', { tick_interval_ms: 1000, debugScenario: scenario });
+    trace.push({
+      stage: 'start_response',
+      attempt: i + 1,
+      start_status: start?.status ?? null,
+      already_running: start?.body?.already_running === true
+    });
     if (start?.body?.already_running === true) {
       await sleep(350);
       continue;
@@ -142,30 +176,40 @@ const ensureFreshStart = async (http, scenario) => {
       const running = status?.body?.running === true;
       const scenarioMatched = status?.body?.debug_scenario === scenario;
       const frameIndex = Number(status?.body?.debug_frame_index ?? 0);
+      trace.push({ stage: 'fresh_probe', attempt: i + 1, probe: j + 1, status: compactStatus(status) });
       if (running && scenarioMatched && frameIndex <= 1) {
-        return { start, status };
+        return { start, status, trace, fresh_start_ok: true };
       }
     }
   }
   const status = await http.get('/bot/status');
-  return { start: { status: 500, body: { error: 'fresh_start_failed' } }, status };
+  trace.push({ stage: 'fresh_failed_final_status', status: compactStatus(status) });
+  return { start: { status: 500, body: { error: 'fresh_start_failed' } }, status, trace, fresh_start_ok: false };
 };
 
 const captureOrderScopeAndStatus = async (http, sampleName) => {
   const scenario = normalizeScenario(sampleName);
   const boot = await ensureFreshStart(http, scenario);
   const start = boot.start;
+  const lifecycleTrace = [...(boot.trace || [])];
 
   let runningProbe = null;
   let sawOpen = false;
-  for (let i = 0; i < 26; i += 1) {
-    await sleep(650);
+  for (let i = 0; i < 52; i += 1) {
+    await sleep(320);
     const [orders, status] = await Promise.all([http.get('/bot/orders'), http.get('/bot/status')]);
     const rows = normalizeRows(orders);
     const hasOpen = rows.some((item) => item.status === 'OPEN');
     if (hasOpen) sawOpen = true;
     const currentWindowId = status?.body?.current_window_id ?? null;
     const ready = status?.body?.running === true && currentWindowId;
+    lifecycleTrace.push({
+      stage: 'running_probe',
+      probe: i + 1,
+      status: compactStatus(status),
+      orders: compactOrders(orders),
+      saw_open: sawOpen
+    });
     if (ready) {
       runningProbe = { orders, status, rows, current_window_id: currentWindowId };
       if (sawOpen) break;
@@ -180,6 +224,13 @@ const captureOrderScopeAndStatus = async (http, sampleName) => {
     const rows = normalizeRows(orders);
     const hasFilled = rows.some((item) => item.status === 'FILLED');
     const hasCancelled = rows.some((item) => item.status === 'CANCELLED');
+    lifecycleTrace.push({
+      stage: 'terminal_probe',
+      probe: i + 1,
+      orders: compactOrders(orders),
+      has_filled: hasFilled,
+      has_cancelled: hasCancelled
+    });
     if (hasFilled && hasCancelled) {
       filledAndCancelledSeen = true;
       terminalProbe = { orders, rows };
@@ -196,6 +247,11 @@ const captureOrderScopeAndStatus = async (http, sampleName) => {
     http.get('/bot/status'),
     http.get('/bot/postmortem/latest')
   ]);
+  lifecycleTrace.push({
+    stage: 'stopped_probe',
+    status: compactStatus(stoppedStatus),
+    orders: compactOrders(stoppedOrders)
+  });
   const stoppedRows = normalizeRows(stoppedOrders);
   const statusBody = stoppedStatus?.body || {};
   const targetLastWindowId = statusBody?.last_run_snapshot?.current_window_id
@@ -262,6 +318,8 @@ const captureOrderScopeAndStatus = async (http, sampleName) => {
     },
     raw_excerpt: {
       start_ok: start?.status === 200 && start?.body?.already_running !== true,
+      fresh_start_ok: boot.fresh_start_ok === true,
+      already_running_seen: Boolean((boot.trace || []).some((item) => item?.already_running === true)),
       sample_sufficient: sampleSufficient,
       running_mismatch_sample: runningMismatchRows.slice(0, 5),
       stopped_mismatch_sample: stoppedMismatchRows.slice(0, 5),
@@ -273,7 +331,8 @@ const captureOrderScopeAndStatus = async (http, sampleName) => {
       terminal_probe: terminalProbe,
       stopped_orders: stoppedOrders,
       stopped_status: stoppedStatus,
-      postmortem
+      postmortem,
+      lifecycle_trace: lifecycleTrace.slice(-90)
     }
   };
 };
