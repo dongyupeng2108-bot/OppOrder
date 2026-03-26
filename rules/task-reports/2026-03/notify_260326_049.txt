@@ -1,0 +1,14 @@
+RESULT_JSON
+rules/task-reports/2026-03/result_260326_049.json
+LOG_HEAD
+[Clean Replay] 260326_048 基于最新 main 重建为最小 clean PR；046 不在范围。
+LOG_TAIL
+node scripts/verify_anchor_bounds_lifecycle.mjs --task_id=260326_048
+node scripts/verify_all_manual.mjs --task_id=260326_048
+npm test
+EVIDENCE
+rules/task-reports/2026-03/clean_pr_diff_260326_049.json
+rules/task-reports/2026-03/260326_048_anchor_bounds_lifecycle.json
+rules/task-reports/2026-03/260326_048_verify_all_manual.json
+INDEX
+rules/task-reports/2026-03/clean_pr_diff_260326_049.json
