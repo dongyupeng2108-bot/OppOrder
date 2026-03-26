@@ -1,0 +1,11 @@
+RESULT_JSON
+rules/task-reports/2026-03/result_260327_005.json
+LOG_HEAD
+[Hotfix] 已修复 main 上“本轮运行”回退问题，恢复 260327_003 目标布局。
+LOG_TAIL
+node --check ui/js/strategy-editor.js
+npm test
+EVIDENCE
+ui/js/strategy-editor.js
+INDEX
+rules/task-reports/2026-03/result_260327_005.json
