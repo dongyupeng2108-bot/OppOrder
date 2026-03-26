@@ -1,0 +1,24 @@
+{
+  "task_id": "260327_004",
+  "status": "DONE",
+  "scope_guard": "仅近期表现摘要：胜率 + 总计PNL文案与1位小数",
+  "changes": {
+    "added_win_rate": true,
+    "renamed_total_realized_label": "总计PNL",
+    "total_pnl_precision": "1_decimal"
+  },
+  "binding": {
+    "win_rate": {
+      "source": "GET /bot/performance/summary?detail=1 -> summary.participating_postmortem_rows[].realized_gross_pnl_total",
+      "numerator": "count(realized_gross_pnl_total > 0)",
+      "denominator": "count(participating_postmortem_rows)"
+    },
+    "total_pnl": "GET /bot/performance/summary -> summary.realized_gross_pnl_total"
+  },
+  "validation": {
+    "dom_facts_file": "rules/task-reports/2026-03/dom_facts_260327_004.txt",
+    "node_check_pass": true,
+    "npm_test_pass": true,
+    "api_perf_summary_status": 200
+  }
+}

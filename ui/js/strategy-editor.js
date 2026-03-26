@@ -176,8 +176,9 @@ async function initStrategyEditor() {
             <div style="border:1px solid #232a33;background:#11161c;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:0;">
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
                 <div style="color:#7f8a97;">窗口数</div><div id="se-perf-window-count" style="text-align:right;color:#d6dde5;">—</div>
+                <div style="color:#7f8a97;">胜率</div><div id="se-perf-win-rate" style="text-align:right;color:#d6dde5;">—</div>
                 <div style="color:#7f8a97;">总成交单数</div><div id="se-perf-filled-total" style="text-align:right;color:#d6dde5;">—</div>
-                <div style="color:#7f8a97;">总已实现盈亏</div><div id="se-perf-realized-total" style="text-align:right;color:#d6dde5;">—</div>
+                <div style="color:#7f8a97;">总计PNL</div><div id="se-perf-realized-total" style="text-align:right;color:#d6dde5;">—</div>
                 <div style="color:#7f8a97;">平均每窗口盈亏</div><div id="se-perf-avg-realized" style="text-align:right;color:#d6dde5;">—</div>
               </div>
               <div id="se-perf-note" style="font-size:11px;color:#9aa0a6;min-height:16px;">—</div>
@@ -698,7 +699,7 @@ async function se_poll() {
       previewError = previewError || err.message;
     }
     try {
-      const perfRes = await fetch(`${BASE_URL}/bot/performance/summary?preset=${encodeURIComponent(_sePerformancePreset)}`);
+      const perfRes = await fetch(`${BASE_URL}/bot/performance/summary?preset=${encodeURIComponent(_sePerformancePreset)}&detail=1`);
       performanceData = await perfRes.json();
       if (!perfRes.ok || performanceData?.ok === false) throw new Error(performanceData?.error || `performance HTTP ${perfRes.status}`);
     } catch (err) {
@@ -974,10 +975,23 @@ function se_perfPresetLabel(preset) {
 
 function se_renderPerformance(perfPayload, status) {
   const summary = perfPayload?.summary && typeof perfPayload.summary === 'object' ? perfPayload.summary : null;
+  const rows = Array.isArray(summary?.participating_postmortem_rows) ? summary.participating_postmortem_rows : [];
+  const toFinite = (value) => {
+    const num = Number(value);
+    return Number.isFinite(num) ? num : null;
+  };
+  const formatFixed1 = (value) => {
+    const num = toFinite(value);
+    return num === null ? '—' : num.toFixed(1);
+  };
+  const winNumerator = rows.filter((row) => toFinite(row?.realized_gross_pnl_total) !== null && toFinite(row?.realized_gross_pnl_total) > 0).length;
+  const winDenominator = rows.length;
+  const winRateText = winDenominator > 0 ? `${((winNumerator / winDenominator) * 100).toFixed(1)}%` : '—';
   se_setText('se-perf-range', se_perfPresetLabel(summary?.preset || _sePerformancePreset));
   document.getElementById('se-perf-window-count').textContent = se_formatStateValue(summary?.window_count);
+  document.getElementById('se-perf-win-rate').textContent = winRateText;
   document.getElementById('se-perf-filled-total').textContent = se_formatStateValue(summary?.filled_total);
-  document.getElementById('se-perf-realized-total').textContent = se_formatStateValue(summary?.realized_gross_pnl_total);
+  document.getElementById('se-perf-realized-total').textContent = formatFixed1(summary?.realized_gross_pnl_total);
   document.getElementById('se-perf-avg-realized').textContent = se_formatStateValue(summary?.avg_realized_gross_pnl_per_window);
   const noteEl = document.getElementById('se-perf-note');
   if (!noteEl) return;
