@@ -1,0 +1,16 @@
+RESULT_JSON
+rules/task-reports/2026-03/result_260326_051.json
+LOG_HEAD
+[Fix] verify_order_scope_and_status 反复失败收口：区分脚本波动 vs 生命周期缺陷，结论=A（脚本前置/采样波动）。
+LOG_TAIL
+node scripts/verify_order_scope_and_status.mjs --task_id=260326_051_r1 --sample=debug_fill_yes_path_v1
+node scripts/verify_order_scope_and_status.mjs --task_id=260326_051_r2 --sample=debug_fill_yes_path_v1
+node scripts/verify_order_scope_and_status.mjs --task_id=260326_051_r3 --sample=debug_fill_yes_path_v1
+node scripts/verify_all_manual.mjs --task_id=260326_051
+npm test
+EVIDENCE
+rules/task-reports/2026-03/verify_order_scope_and_status_repro_matrix_260326_051.json
+rules/task-reports/2026-03/verify_order_scope_and_status_before_after_260326_051.json
+rules/task-reports/2026-03/260326_051_verify_all_manual.json
+INDEX
+rules/task-reports/2026-03/verify_order_scope_and_status_repro_matrix_260326_051.json
