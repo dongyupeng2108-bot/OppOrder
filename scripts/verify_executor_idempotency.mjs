@@ -10,7 +10,7 @@ const REPO_ROOT = path.resolve(__dirname, '..');
 
 const DEFAULT_PORT = 53123;
 const DEFAULT_BASE_URL = `http://localhost:${DEFAULT_PORT}`;
-const DEFAULT_TASK_ID = '260324_024';
+const DEFAULT_TASK_ID = '260324_044';
 
 const parseArgs = () => parseVerifyArgs({
   defaultTaskId: DEFAULT_TASK_ID,
@@ -106,6 +106,12 @@ const summarizeMainTicks = (ticks) => {
   };
 };
 
+const toSourceAction = (order) => {
+  if (order?.kind === 'ENTRY') return 'PLACE_BOTH_LADDERS';
+  if (order?.kind === 'EXIT') return 'FLATTEN_POSITION';
+  return 'UNKNOWN';
+};
+
 const captureMainPath = async (http) => {
   await http.post('/bot/stop', {});
   await sleep(350);
@@ -141,6 +147,103 @@ const captureMainPath = async (http) => {
     start_response: start,
     ticks,
     summary: summarizeMainTicks(ticks)
+  };
+};
+
+const captureDirtyRestart = async (http) => {
+  await http.post('/bot/stop', {});
+  await sleep(350);
+  await http.post('/bot/start', { tick_interval_ms: 1000, debugScenario: 'main_path_v1' });
+
+  let prevRun1Ids = new Set();
+  let historicalRows = [];
+  let run1PlacedTick = null;
+  for (let i = 1; i <= 14; i += 1) {
+    await sleep(700);
+    const [preview, orders, status] = await Promise.all([
+      http.get('/bot/decision-preview'),
+      http.get('/bot/orders'),
+      http.get('/bot/status')
+    ]);
+    const rows = orders?.body?.window_orders || [];
+    const ids = new Set(rows.map((item) => item.order_id).filter(Boolean));
+    const newOrders = [...ids].filter((id) => !prevRun1Ids.has(id));
+    prevRun1Ids = ids;
+    const intentsSummary = preview?.body?.intents_summary || '';
+    const isPlaceTick = /PLACE_LADDER/.test(intentsSummary);
+    if (isPlaceTick && newOrders.length > 0) {
+      run1PlacedTick = i;
+      historicalRows = rows
+        .filter((row) => newOrders.includes(row.order_id))
+        .map((row) => ({
+          order_id: row.order_id ?? null,
+          window_id: row.inferred_window_id ?? status?.body?.current_window_id ?? null,
+          created_at: row.created_at ?? null,
+          source_action: toSourceAction(row),
+          source_tick: 'historical_run1'
+        }));
+      break;
+    }
+  }
+  await http.post('/bot/stop', {});
+  await sleep(450);
+
+  await http.post('/bot/start', { tick_interval_ms: 1000, debugScenario: 'main_path_v1' });
+  let prevRun2Ids = new Set();
+  const run2Ticks = [];
+  let run2Tick2Rows = [];
+  for (let i = 1; i <= 3; i += 1) {
+    await sleep(700);
+    const [preview, orders, status] = await Promise.all([
+      http.get('/bot/decision-preview'),
+      http.get('/bot/orders'),
+      http.get('/bot/status')
+    ]);
+    const rows = orders?.body?.window_orders || [];
+    const ids = new Set(rows.map((item) => item.order_id).filter(Boolean));
+    const newOrders = [...ids].filter((id) => !prevRun2Ids.has(id));
+    prevRun2Ids = ids;
+    const intentsSummary = preview?.body?.intents_summary || '';
+    run2Ticks.push({
+      tick: i,
+      time: new Date().toISOString(),
+      window_id: status?.body?.current_window_id ?? null,
+      intents_summary: intentsSummary,
+      reason: preview?.body?.reason || null,
+      new_orders_this_tick: newOrders.length
+    });
+    if (i === 2) {
+      run2Tick2Rows = rows.map((row) => ({
+        order_id: row.order_id ?? null,
+        window_id: row.inferred_window_id ?? status?.body?.current_window_id ?? null,
+        created_at: row.created_at ?? null,
+        source_action: toSourceAction(row),
+        source_tick: 'run2_tick2'
+      }));
+    }
+  }
+  await http.post('/bot/stop', {});
+
+  const historicalIds = new Set(historicalRows.map((row) => row.order_id).filter(Boolean));
+  const run2Tick2Ids = new Set(run2Tick2Rows.map((row) => row.order_id).filter(Boolean));
+  const overlapOrderIds = [...historicalIds].filter((id) => run2Tick2Ids.has(id));
+  const tick2 = run2Ticks.find((row) => row.tick === 2) || null;
+  const dirtyRestartPass = historicalRows.length > 0
+    && tick2 != null
+    && tick2.intents_summary === 'NOOP'
+    && tick2.reason === 'pre_open_or_open_not_open_delay'
+    && tick2.new_orders_this_tick === 0
+    && overlapOrderIds.length === 0;
+  const sourceTable = [
+    ...historicalRows.map((row) => ({ ...row, counted_as_new_in_run2: false })),
+    ...run2Tick2Rows.map((row) => ({ ...row, counted_as_new_in_run2: false }))
+  ];
+  return {
+    run1_first_place_tick: run1PlacedTick,
+    run2_ticks: run2Ticks,
+    overlap_order_ids: overlapOrderIds,
+    dirty_restart_pass: dirtyRestartPass,
+    source_table: sourceTable
   };
 };
 
@@ -254,13 +357,17 @@ const main = async () => {
     const mainPath = await captureMainPath(http);
     const fillPath = await captureFillPath(http);
     const isolation = await captureWindowIsolation(http);
+    const dirtyRestart = await captureDirtyRestart(http);
 
     const pass = mainPath.summary.executor_idempotency_pass
       && isolation.window_isolation_pass
-      && fillPath.filled_total_chain_pass;
+      && fillPath.filled_total_chain_pass
+      && dirtyRestart.dirty_restart_pass;
     const firstBreakLayer = pass ? null : (!mainPath.summary.executor_idempotency_pass
       ? 'executor idempotency'
-      : (!isolation.window_isolation_pass ? 'window isolation' : 'filled_total chain'));
+      : (!dirtyRestart.dirty_restart_pass
+        ? 'dirty restart'
+        : (!isolation.window_isolation_pass ? 'window isolation' : 'filled_total chain')));
     const standard = buildStandardResult({
       scriptName: 'verify_executor_idempotency',
       taskId: args.taskId,
@@ -272,12 +379,15 @@ const main = async () => {
       summary: {
         executor_idempotency_pass: mainPath.summary.executor_idempotency_pass,
         window_isolation_pass: isolation.window_isolation_pass,
-        filled_total_chain_pass: fillPath.filled_total_chain_pass
+        filled_total_chain_pass: fillPath.filled_total_chain_pass,
+        dirty_restart_pass: dirtyRestart.dirty_restart_pass
       },
       rawExcerpt: {
         repeated_place_tick_count: mainPath.summary.repeated_place_tick_count,
         non_place_added_count: mainPath.summary.non_place_added_count,
-        unique_filled_order_id_count: fillPath.table.unique_filled_order_id_count
+        unique_filled_order_id_count: fillPath.table.unique_filled_order_id_count,
+        dirty_restart_overlap_count: dirtyRestart.overlap_order_ids.length,
+        dirty_restart_tick2_new_orders: dirtyRestart.run2_ticks.find((row) => row.tick === 2)?.new_orders_this_tick ?? null
       }
     });
     output = {
@@ -288,11 +398,13 @@ const main = async () => {
         main_path_v1: mainPath,
         fill_yes_path_v1: fillPath
       },
+      dirty_restart: dirtyRestart,
       window_isolation: isolation,
       result: {
         executor_idempotency_pass: mainPath.summary.executor_idempotency_pass,
         window_isolation_pass: isolation.window_isolation_pass,
-        filled_total_chain_pass: fillPath.filled_total_chain_pass
+        filled_total_chain_pass: fillPath.filled_total_chain_pass,
+        dirty_restart_pass: dirtyRestart.dirty_restart_pass
       }
     };
 
@@ -303,7 +415,7 @@ const main = async () => {
     console.log(`VERIFY_LOG=${logPath}`);
     console.log(JSON.stringify(output.result));
 
-    if (!output.result.executor_idempotency_pass || !output.result.window_isolation_pass || !output.result.filled_total_chain_pass) {
+    if (!output.result.executor_idempotency_pass || !output.result.window_isolation_pass || !output.result.filled_total_chain_pass || !output.result.dirty_restart_pass) {
       process.exitCode = 1;
     }
   } finally {

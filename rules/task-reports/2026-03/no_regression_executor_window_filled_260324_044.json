@@ -1,0 +1,7 @@
+{
+  "task_id": "260324_044",
+  "executor_idempotency_pass": true,
+  "window_isolation_pass": true,
+  "filled_total_chain_pass": true,
+  "dirty_restart_pass": true
+}

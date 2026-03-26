@@ -1,0 +1,7 @@
+{
+  "task_id": "260324_044",
+  "verify_all_total_scripts": 9,
+  "verify_all_overall_pass": false,
+  "verify_all_includes_executor_idempotency": true,
+  "verify_executor_idempotency_pass": true
+}
