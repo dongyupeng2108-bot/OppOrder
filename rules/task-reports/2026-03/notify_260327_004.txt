@@ -1,0 +1,12 @@
+RESULT_JSON
+rules/task-reports/2026-03/result_260327_004.json
+LOG_HEAD
+[UI] 近期表现摘要已完成胜率新增、总计PNL文案替换与1位小数显示。
+LOG_TAIL
+node --check ui/js/strategy-editor.js
+npm test
+EVIDENCE
+rules/task-reports/2026-03/dom_facts_260327_004.txt
+rules/task-reports/2026-03/result_260327_004.json
+INDEX
+rules/task-reports/2026-03/dom_facts_260327_004.txt

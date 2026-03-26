@@ -1,0 +1,11 @@
+﻿TASK_ID=260327_004
+HAS_LABEL_总计PNL=True
+HAS_LABEL_总已实现盈亏=False
+HAS_LABEL_胜率=True
+EXAMPLE_胜率=3.3%
+EXAMPLE_总计PNL=0.2
+WIN_RATE_SOURCE=/bot/performance/summary?detail=1 -> summary.participating_postmortem_rows[].realized_gross_pnl_total
+WIN_RATE_NUMERATOR=COUNT(realized_gross_pnl_total > 0)=1
+WIN_RATE_DENOMINATOR=COUNT(participating_postmortem_rows)=30
+TOTAL_PNL_SOURCE=/bot/performance/summary -> summary.realized_gross_pnl_total
+API_FACT_perf_summary=200
