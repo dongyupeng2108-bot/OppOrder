@@ -1,0 +1,24 @@
+{
+  "task_id": "260326_049",
+  "status": "DONE",
+  "mode": "CLEAN_REPLAY",
+  "summary": "已基于最新 main 重建 048 clean PR，仅保留 anchor freeze / bounds-ready 解耦修复及其必要验证改动。",
+  "replay_of": "260326_048",
+  "pr_scope_statement": {
+    "is_clean_replay": true,
+    "exclude_046": true,
+    "semantic_change_from_048": false
+  },
+  "metrics": {
+    "anchor_frozen_once_pass": true,
+    "atr_arrive_compute_from_frozen_anchor_pass": true,
+    "window_init_decoupled_from_bounds_ready_pass": true,
+    "real_runtime_anchor_not_drifting_pass": true,
+    "verify_all_overall_pass": true
+  },
+  "evidence": [
+    "rules/task-reports/2026-03/260326_048_anchor_bounds_lifecycle.json",
+    "rules/task-reports/2026-03/260326_048_verify_all_manual.json",
+    "rules/task-reports/2026-03/clean_pr_diff_260326_049.json"
+  ]
+}

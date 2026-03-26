@@ -1,0 +1,16 @@
+{
+  "task_id": "260326_049",
+  "timestamp": "2026-03-26T14:40:00.000Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "clean_replay_ready": "PASS",
+    "verify_anchor_bounds_lifecycle_pass": "PASS",
+    "verify_all_manual_pass": "PASS",
+    "npm_test_pass": "PASS"
+  },
+  "context": {
+    "result_file": "rules/task-reports/2026-03/result_260326_049.json",
+    "notify_file": "rules/task-reports/2026-03/notify_260326_049.txt"
+  }
+}

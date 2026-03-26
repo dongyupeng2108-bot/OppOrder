@@ -1,0 +1,91 @@
+{
+  "task_id": "260326_049",
+  "base": "origin/main",
+  "purpose": "260326_048 clean replay",
+  "files": [
+    {
+      "path": "strategies/crypto_binary/bot_runner.mjs",
+      "category": "代码",
+      "necessary_for_048": true,
+      "why": "核心修复：anchor freeze 与 bounds-ready 解耦（needAnchorInit/needBoundsInit）。"
+    },
+    {
+      "path": "scripts/verify_anchor_bounds_lifecycle.mjs",
+      "category": "验证",
+      "necessary_for_048": true,
+      "why": "新增版本验证脚本，固化三条语义与最小真实运行复验。"
+    },
+    {
+      "path": "scripts/verify_all_manual.mjs",
+      "category": "验证",
+      "necessary_for_048": true,
+      "why": "总入口纳入 verify_anchor_bounds_lifecycle。"
+    },
+    {
+      "path": "scripts/verify_manifest.json",
+      "category": "验证",
+      "necessary_for_048": true,
+      "why": "登记 verify_anchor_bounds_lifecycle 与 pass 条件。"
+    },
+    {
+      "path": "rules/task-reports/2026-03/260326_048_anchor_bounds_lifecycle.json",
+      "category": "证据",
+      "necessary_for_048": true,
+      "why": "048 修复语义主证据（受控+真实）。"
+    },
+    {
+      "path": "rules/task-reports/2026-03/260326_048_anchor_bounds_lifecycle.log",
+      "category": "证据",
+      "necessary_for_048": true,
+      "why": "对应脚本标准日志。"
+    },
+    {
+      "path": "rules/task-reports/2026-03/260326_048_verify_all_manual.json",
+      "category": "证据",
+      "necessary_for_048": true,
+      "why": "总入口通过证明。"
+    },
+    {
+      "path": "rules/task-reports/2026-03/260326_048_verify_all_manual.log",
+      "category": "证据",
+      "necessary_for_048": true,
+      "why": "总入口运行日志。"
+    },
+    {
+      "path": "rules/task-reports/2026-03/result_260326_049.json",
+      "category": "证据",
+      "necessary_for_048": true,
+      "why": "049 clean PR 重建结果摘要。"
+    },
+    {
+      "path": "rules/task-reports/2026-03/notify_260326_049.txt",
+      "category": "证据",
+      "necessary_for_048": true,
+      "why": "049 通知文件。"
+    },
+    {
+      "path": "rules/task-reports/2026-03/clean_pr_diff_260326_049.json",
+      "category": "证据",
+      "necessary_for_048": true,
+      "why": "最小差异清单。"
+    },
+    {
+      "path": "rules/task-reports/2026-03/260326_049.json",
+      "category": "证据",
+      "necessary_for_048": true,
+      "why": "049 任务检查聚合结果。"
+    },
+    {
+      "path": "rules/task-reports/2026-03/trae_report_snippet_260326_049.txt",
+      "category": "证据",
+      "necessary_for_048": true,
+      "why": "自动化回报片段索引。"
+    },
+    {
+      "path": "rules/LATEST.json",
+      "category": "指针",
+      "necessary_for_048": true,
+      "why": "任务指针更新到 260326_049。"
+    }
+  ]
+}

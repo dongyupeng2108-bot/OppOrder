@@ -34,6 +34,7 @@ const verifyTargets = [
   { script: 'verify_btc_source_chain.mjs', suffix: 'btc_source_chain', sample: 'real_no_debug+debug_main_path_v1' },
   { script: 'verify_context_truth.mjs', suffix: 'context_truth', sample: 'debug_main_path_v1+debug_fill_yes_path_v1' },
   { script: 'verify_window_lifecycle.mjs', suffix: 'window_lifecycle', sample: 'debug_main_path_v1+real_no_debug' },
+  { script: 'verify_anchor_bounds_lifecycle.mjs', suffix: 'anchor_bounds_lifecycle', sample: 'controlled+real_no_debug' },
   { script: 'verify_executor_idempotency.mjs', suffix: 'executor_idempotency', sample: 'debug_main_path_v1+debug_fill_yes_path_v1' },
   { script: 'verify_result_chain_consistency.mjs', suffix: 'result_chain_consistency', sample: 'debug_fill_yes_path_v1' },
   { script: 'verify_order_scope_and_status.mjs', suffix: 'order_scope_and_status', sample: 'debug_fill_yes_path_v1' },

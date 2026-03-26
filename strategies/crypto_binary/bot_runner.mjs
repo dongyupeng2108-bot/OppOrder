@@ -137,25 +137,26 @@ export function createBotRunner(options = {}) {
     const lifecycleAtr = toFiniteNumber(context.atr_5m);
     const lifecycleBtcPrice = toFiniteNumber(context.btc_price) ?? toFiniteNumber(context.strike_price);
     const atrMultiplier = toFiniteNumber(config.atr_multiplier) ?? 1.2;
-    const needWindowInit = state.current_window_id != null && (
-      state.anchor_btc == null
-      || state.upper_bound == null
-      || state.lower_bound == null
-    );
-    if (needWindowInit) {
+    const hasWindow = state.current_window_id != null;
+    const anchorReady = toFiniteNumber(state.anchor_btc) !== null;
+    const boundsPersistedReady = toFiniteNumber(state.upper_bound) !== null && toFiniteNumber(state.lower_bound) !== null;
+    const needAnchorInit = hasWindow && !anchorReady;
+    const needBoundsInit = hasWindow && anchorReady && !boundsPersistedReady && lifecycleAtr !== null;
+    if (needAnchorInit || needBoundsInit) {
+      const initAnchor = needAnchorInit ? lifecycleBtcPrice : toFiniteNumber(state.anchor_btc);
       const initPatch = options.createWindowInitPatch
         ? options.createWindowInitPatch({
             window_id: state.current_window_id,
-            btc_price: lifecycleBtcPrice,
+            btc_price: initAnchor,
             atr_5m: lifecycleAtr,
             atr_multiplier: atrMultiplier
           })
         : {
             current_window_id: state.current_window_id,
-            anchor_btc: lifecycleBtcPrice,
+            anchor_btc: initAnchor,
             atr_5m: lifecycleAtr,
-            upper_bound: lifecycleBtcPrice != null && lifecycleAtr != null ? lifecycleBtcPrice + (lifecycleAtr * atrMultiplier) : null,
-            lower_bound: lifecycleBtcPrice != null && lifecycleAtr != null ? lifecycleBtcPrice - (lifecycleAtr * atrMultiplier) : null
+            upper_bound: initAnchor != null && lifecycleAtr != null ? initAnchor + (lifecycleAtr * atrMultiplier) : null,
+            lower_bound: initAnchor != null && lifecycleAtr != null ? initAnchor - (lifecycleAtr * atrMultiplier) : null
           };
       state = patchState(initPatch);
       log({
@@ -170,7 +171,9 @@ export function createBotRunner(options = {}) {
           atr_5m: state.atr_5m ?? null,
           upper_bound: state.upper_bound ?? null,
           lower_bound: state.lower_bound ?? null,
-          atr_multiplier: atrMultiplier
+          atr_multiplier: atrMultiplier,
+          need_anchor_init: needAnchorInit,
+          need_bounds_init: needBoundsInit
         }
       });
     }
