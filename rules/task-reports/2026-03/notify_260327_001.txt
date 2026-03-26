@@ -1,0 +1,15 @@
+RESULT_JSON
+rules/task-reports/2026-03/result_260327_001.json
+LOG_HEAD
+[UI] 顶部控制区调整 + 无效提示清理已完成（仅4项范围内改动）。
+LOG_TAIL
+node --check ui/js/strategy-editor.js
+npm test
+node -e "POST /bot/test/run + /bot/start + /bot/stop + /server/restart smoke"
+EVIDENCE
+rules/task-reports/2026-03/screenshots_260327_001/before_top_controls.png
+rules/task-reports/2026-03/screenshots_260327_001/after_top_controls.png
+rules/task-reports/2026-03/screenshots_260327_001/before_order_empty.png
+rules/task-reports/2026-03/screenshots_260327_001/after_order_empty.png
+INDEX
+rules/task-reports/2026-03/result_260327_001.json
