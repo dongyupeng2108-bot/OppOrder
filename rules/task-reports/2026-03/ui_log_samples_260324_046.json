@@ -1,0 +1,76 @@
+{
+  "task_id": "260324_046",
+  "startup_group": [
+    {
+      "event": "BOT_STARTED",
+      "front_main": "机器人已启动：机器人启动",
+      "raw": "原始:BOT_STARTED | 原文:bot runner started"
+    },
+    {
+      "event": "BOT_STOPPED",
+      "front_main": "机器人已停止：机器人停止",
+      "raw": "原始:BOT_STOPPED | 原文:bot runner stopped"
+    },
+    {
+      "event": "BOT_STARTED",
+      "front_main": "机器人已启动：机器人启动",
+      "raw": "原始:BOT_STARTED | 原文:bot runner started"
+    },
+    {
+      "event": "BOT_STOPPED",
+      "front_main": "机器人已停止：机器人停止",
+      "raw": "原始:BOT_STOPPED | 原文:bot runner stopped"
+    }
+  ],
+  "window_runtime_group": [
+    {
+      "event": "RUNNER_TICK",
+      "front_main": "执行周期更新：tick 开盘等待阶段",
+      "raw": "原始:RUNNER_TICK | 原文:tick pre_open_or_open_not_open_delay"
+    },
+    {
+      "event": "BOT_TICK_OK",
+      "front_main": "周期检查正常：scheduled 周期正常",
+      "raw": "原始:BOT_TICK_OK | 原文:scheduled tick ok"
+    },
+    {
+      "event": "RUNNER_TICK",
+      "front_main": "执行周期更新：tick 阶梯单未挂出",
+      "raw": "原始:RUNNER_TICK | 原文:tick ladder_not_posted"
+    },
+    {
+      "event": "BOT_TICK_OK",
+      "front_main": "周期检查正常：scheduled 周期正常",
+      "raw": "原始:BOT_TICK_OK | 原文:scheduled tick ok"
+    }
+  ],
+  "order_fill_group": [
+    {
+      "event": "BOT_FILL",
+      "front_main": "订单成交：成交 1 笔订单",
+      "raw": "原始:BOT_FILL | 原文:filled 1 orders"
+    },
+    {
+      "event": "BOT_RUN_SNAPSHOT",
+      "front_main": "已记录运行快照：详见原始信息",
+      "raw": "原始:BOT_RUN_SNAPSHOT | 原文:MANUAL_STOP"
+    },
+    {
+      "event": "BOT_RUN_SNAPSHOT",
+      "front_main": "已记录运行快照：详见原始信息",
+      "raw": "原始:BOT_RUN_SNAPSHOT | 原文:MANUAL_STOP"
+    },
+    {
+      "event": "BOT_RUN_SNAPSHOT",
+      "front_main": "已记录运行快照：详见原始信息",
+      "raw": "原始:BOT_RUN_SNAPSHOT | 原文:MANUAL_STOP"
+    }
+  ],
+  "fallback_group": [
+    {
+      "event": "BOT_DEBUG_FRAME",
+      "front_main": "未归类日志事件：详见原始信息",
+      "raw": "原始:BOT_DEBUG_FRAME | 原文:debug frame 2/6"
+    }
+  ]
+}

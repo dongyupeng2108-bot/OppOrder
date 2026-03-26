@@ -1,0 +1,14 @@
+{
+  "task_id": "260324_046",
+  "removed_fields_still_absent": {
+    "recent_window": true,
+    "runtime_anchor": true,
+    "runtime_bounds": true,
+    "runtime_remaining": true,
+    "prev_unrealized": true,
+    "perf_unrealized_total": true,
+    "perf_cancelled_total": true,
+    "next_action_panel": true
+  },
+  "order_panel_position_restored": true
+}

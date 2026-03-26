@@ -1,0 +1,27 @@
+{
+  "task_id": "260324_046",
+  "timestamp": "2026-03-26T13:08:50.789Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "startup_samples_present": "PASS",
+    "window_runtime_samples_present": "PASS",
+    "order_fill_samples_present": "PASS",
+    "fallback_samples_present": "PASS"
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260324_046",
+      "status": "DONE",
+      "summary": "前端日志主显示完成中文收口，原始事件事实保留。",
+      "report_file": "notify_260324_046.txt",
+      "report_sha256_short": "3a85f93e",
+      "evidence": [
+        "rules/task-reports/2026-03/ui_log_samples_260324_046.json",
+        "rules/task-reports/2026-03/ui_log_mapping_260324_046.json",
+        "rules/task-reports/2026-03/ui_045_no_regress_260324_046.json",
+        "rules/task-reports/2026-03/verify_all_integration_260324_046.json"
+      ]
+    }
+  }
+}

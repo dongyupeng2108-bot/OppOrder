@@ -1,0 +1,35 @@
+{
+  "task_id": "260324_046",
+  "files": [
+    {
+      "name": "ui/js/strategy-editor.js",
+      "size": 61362,
+      "sha256_short": "2a6c462a"
+    },
+    {
+      "name": "rules/task-reports/2026-03/ui_log_samples_260324_046.json",
+      "size": 2361,
+      "sha256_short": "4cf074d3"
+    },
+    {
+      "name": "rules/task-reports/2026-03/ui_log_mapping_260324_046.json",
+      "size": 503,
+      "sha256_short": "b4926b3a"
+    },
+    {
+      "name": "rules/task-reports/2026-03/ui_045_no_regress_260324_046.json",
+      "size": 352,
+      "sha256_short": "46a221dc"
+    },
+    {
+      "name": "rules/task-reports/2026-03/verify_all_integration_260324_046.json",
+      "size": 114,
+      "sha256_short": "90f316df"
+    },
+    {
+      "name": "rules/task-reports/2026-03/notify_260324_046.txt",
+      "size": 257,
+      "sha256_short": "10543078"
+    }
+  ]
+}

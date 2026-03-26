@@ -1,0 +1,298 @@
+{
+  "script_name": "verify_order_scope_and_status",
+  "task_id": "260324_046",
+  "sample_name": "debug_fill_yes_path_v1",
+  "pass": false,
+  "message": "order scope / status 语义校验失败",
+  "first_break_layer": "sample insufficiency",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260324_046_order_scope_and_status.json",
+  "summary": {
+    "window_isolation_pass": true,
+    "order_status_semantics_pass": false,
+    "cross_window_overlap_pass": true
+  },
+  "raw_excerpt": {
+    "sample_sufficient": false,
+    "running_mismatch_sample": [],
+    "stopped_mismatch_sample": [],
+    "cross_window_overlap": [],
+    "terminal_conflicts": []
+  },
+  "generated_at": "2026-03-26T13:07:13.512Z",
+  "command": "node scripts/verify_order_scope_and_status.mjs --task_id=260324_046 --sample=debug_fill_yes_path_v1",
+  "order_scope_status_table": {
+    "running_current_window_id": "debug-fill-yes-path-v1-w1",
+    "running_order_count": 0,
+    "running_hidden_other_window_count": 0,
+    "running_overlap_order_ids": [],
+    "stopped_target_window_id": "debug-fill-yes-path-v1-w1",
+    "stopped_order_count": 0,
+    "stopped_mismatch_order_count": 0,
+    "open_visible": false,
+    "filled_visible": false,
+    "cancelled_visible": false,
+    "cross_window_overlap_count": 0,
+    "terminal_conflict_count": 0
+  },
+  "result": {
+    "window_isolation_pass": true,
+    "order_status_semantics_pass": false,
+    "cross_window_overlap_pass": true
+  },
+  "raw": {
+    "running_probe": {
+      "orders": {
+        "status": 200,
+        "body": {
+          "orders": [],
+          "window_orders": [],
+          "all_orders": [],
+          "summary": {
+            "total": 0,
+            "open_total": 0,
+            "cancelled_total": 0,
+            "filled_total": 0,
+            "open_yes": 0,
+            "open_no": 0,
+            "filled_yes": 0,
+            "filled_no": 0
+          },
+          "window_scope": {
+            "scope": "current_window",
+            "running": true,
+            "active_window_id": "debug-fill-yes-path-v1-w1",
+            "display_window_id": "debug-fill-yes-path-v1-w1",
+            "label": "当前窗口订单",
+            "ownership_rule": "运行中仅展示当前活动窗口订单"
+          },
+          "hidden_other_window_count": 0
+        }
+      },
+      "status": {
+        "status": 200,
+        "body": {
+          "mode": "paper-staging",
+          "phase": "LADDER_POSTED",
+          "running": true,
+          "debug_scenario": "fill_yes_path_v1",
+          "debug_frame_index": 5,
+          "debug_completed": false,
+          "tick_interval_ms": 1000,
+          "last_tick_at": "2026-03-26T13:06:41.025Z",
+          "last_window_id": null,
+          "current_window_id": "debug-fill-yes-path-v1-w1",
+          "window_initialized_at": "2026-03-26T13:06:36.818Z",
+          "remaining_sec": 250,
+          "anchor_btc": 100,
+          "atr_5m": 2,
+          "upper_bound": 102.4,
+          "lower_bound": 97.6,
+          "ladder_posted": true,
+          "yes_cancelled": false,
+          "no_cancelled": false,
+          "yes_order_ids": [],
+          "no_order_ids": [],
+          "last_reason": "ladder_not_posted",
+          "last_intents": [
+            {
+              "kind": "PLACE_LADDER",
+              "side": "BOTH",
+              "prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "size": 5
+            }
+          ],
+          "updated_at": "2026-03-26T13:06:41.025Z",
+          "saved_config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "last_run_snapshot": {
+            "stop_reason": "MANUAL_STOP",
+            "completed_at": "2026-03-26T13:06:34.508Z",
+            "current_window_id": "debug-fill-yes-path-v1-w1",
+            "phase": "IDLE",
+            "filled_total": 1,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 0,
+            "unrealized_gross_pnl_total": 0.14999999999999986,
+            "active_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            }
+          },
+          "active_runtime_snapshot": {
+            "config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            },
+            "phase": "LADDER_POSTED",
+            "current_window_id": "debug-fill-yes-path-v1-w1",
+            "anchor_btc": 100,
+            "upper_bound": 102.4,
+            "lower_bound": 97.6
+          }
+        }
+      },
+      "rows": [],
+      "current_window_id": "debug-fill-yes-path-v1-w1"
+    },
+    "terminal_probe": null,
+    "stopped_orders": {
+      "status": 200,
+      "body": {
+        "orders": [],
+        "window_orders": [],
+        "all_orders": [],
+        "summary": {
+          "total": 0,
+          "open_total": 0,
+          "cancelled_total": 0,
+          "filled_total": 0,
+          "open_yes": 0,
+          "open_no": 0,
+          "filled_yes": 0,
+          "filled_no": 0
+        },
+        "window_scope": {
+          "scope": "last_window",
+          "running": false,
+          "active_window_id": null,
+          "display_window_id": "debug-fill-yes-path-v1-w1",
+          "label": "上一窗口订单（停止态）",
+          "ownership_rule": "停止态展示上一窗口订单，不冒充当前活动窗口"
+        },
+        "hidden_other_window_count": 0
+      }
+    },
+    "stopped_status": {
+      "status": 200,
+      "body": {
+        "mode": "paper-staging",
+        "phase": "IDLE",
+        "running": false,
+        "debug_scenario": "fill_yes_path_v1",
+        "debug_frame_index": 6,
+        "debug_completed": true,
+        "tick_interval_ms": 1000,
+        "last_tick_at": "2026-03-26T13:06:41.870Z",
+        "last_window_id": "debug-fill-yes-path-v1-w1",
+        "current_window_id": null,
+        "window_initialized_at": null,
+        "remaining_sec": 100,
+        "anchor_btc": null,
+        "atr_5m": null,
+        "upper_bound": null,
+        "lower_bound": null,
+        "ladder_posted": false,
+        "yes_cancelled": false,
+        "no_cancelled": false,
+        "yes_order_ids": [],
+        "no_order_ids": [],
+        "last_reason": null,
+        "last_intents": [],
+        "updated_at": "2026-03-26T13:06:41.873Z",
+        "saved_config": {
+          "open_delay_sec": 10,
+          "ladder_prices": [
+            0.27,
+            0.24,
+            0.21,
+            0.18
+          ],
+          "ladder_size": 5,
+          "atr_multiple": 1.2,
+          "cancel_all_remaining_sec": 100
+        },
+        "last_run_snapshot": {
+          "stop_reason": "AUTO_COMPLETED",
+          "completed_at": "2026-03-26T13:06:41.870Z",
+          "current_window_id": "debug-fill-yes-path-v1-w1",
+          "phase": "IDLE",
+          "filled_total": 0,
+          "cancelled_total": 0,
+          "realized_gross_pnl_total": 0,
+          "unrealized_gross_pnl_total": 0,
+          "active_config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          }
+        },
+        "active_runtime_snapshot": null
+      }
+    },
+    "postmortem": {
+      "status": 200,
+      "body": {
+        "ok": true,
+        "postmortem": {
+          "id": 1247,
+          "strategy_id": "bot_console",
+          "event_id": "debug-fill-yes-path-v1-w1",
+          "window_start": "2026-03-26T13:06:41.870Z",
+          "window_end": "2026-03-26T13:06:41.870Z",
+          "created_at": "2026-03-26T13:06:41.870Z",
+          "window_id": "debug-fill-yes-path-v1-w1",
+          "stop_reason": "AUTO_COMPLETED",
+          "completed_at": "2026-03-26T13:06:41.870Z",
+          "filled_total": 0,
+          "cancelled_total": 0,
+          "realized_gross_pnl_total": 0,
+          "unrealized_gross_pnl_total": 0,
+          "active_config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "action_summary": [
+            "PLACE_LADDER",
+            "CANCEL_OPEN"
+          ]
+        }
+      }
+    }
+  }
+}

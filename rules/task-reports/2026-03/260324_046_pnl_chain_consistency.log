@@ -1,0 +1,6 @@
+script_name=verify_pnl_chain_consistency
+task_id=260324_046
+sample_name=debug_exit_yes_path_v1+debug_fill_yes_path_v1
+pass=true
+first_break_layer=null
+message=pnl chain 一致性校验通过
