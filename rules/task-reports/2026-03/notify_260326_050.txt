@@ -1,0 +1,14 @@
+RESULT_JSON
+rules/task-reports/2026-03/result_260326_050.json
+LOG_HEAD
+[Fix] verify_order_scope_and_status 失败修复：稳定 fresh-start 采样前置控制，语义断言保持不放宽。
+LOG_TAIL
+node scripts/verify_order_scope_and_status.mjs --task_id=260326_050 --sample=debug_fill_yes_path_v1
+node scripts/verify_all_manual.mjs --task_id=260326_050
+npm test
+EVIDENCE
+rules/task-reports/2026-03/verify_order_scope_and_status_before_after_260326_050.json
+rules/task-reports/2026-03/260326_050_order_scope_and_status.json
+rules/task-reports/2026-03/260326_050_verify_all_manual.json
+INDEX
+rules/task-reports/2026-03/verify_order_scope_and_status_before_after_260326_050.json

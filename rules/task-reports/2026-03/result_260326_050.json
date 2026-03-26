@@ -1,0 +1,19 @@
+{
+  "task_id": "260326_050",
+  "status": "DONE",
+  "summary": "已修复 verify_order_scope_and_status 失败并沉淀为稳定脚本前置控制，verify_all_manual 恢复全绿。",
+  "root_cause_type": "B",
+  "root_cause_detail": "脚本预期未过期，失败由采样前置控制不足触发（fresh start 未被严格保证），非业务语义回归。",
+  "metrics": {
+    "verify_order_scope_and_status_pass": true,
+    "verify_all_manual_overall_pass": true,
+    "verify_all_total_scripts": 10,
+    "verify_all_fail_count": 0
+  },
+  "evidence": [
+    "rules/task-reports/2026-03/260326_195345_order_scope_and_status.json",
+    "rules/task-reports/2026-03/260326_050_order_scope_and_status.json",
+    "rules/task-reports/2026-03/260326_050_verify_all_manual.json",
+    "rules/task-reports/2026-03/verify_order_scope_and_status_before_after_260326_050.json"
+  ]
+}

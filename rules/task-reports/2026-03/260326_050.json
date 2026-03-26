@@ -1,0 +1,15 @@
+{
+  "task_id": "260326_050",
+  "timestamp": "2026-03-26T15:10:00.000Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "single_script_fail_to_pass": "PASS",
+    "verify_all_manual_overall": "PASS",
+    "npm_test": "PASS"
+  },
+  "context": {
+    "result_file": "rules/task-reports/2026-03/result_260326_050.json",
+    "notify_file": "rules/task-reports/2026-03/notify_260326_050.txt"
+  }
+}
