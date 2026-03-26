@@ -1,0 +1,20 @@
+{
+  "task_id": "260324_045",
+  "status": "DONE",
+  "summary": "Bot Console 首页已按要求精简，日志主显示中文化，且核心能力未回退。",
+  "report_file": "notify_260324_045.txt",
+  "report_sha256_short": "9c7832d5",
+  "evidence": [
+    "rules/task-reports/2026-03/ui_state_stopped_260324_045.json",
+    "rules/task-reports/2026-03/ui_state_running_260324_045.json",
+    "rules/task-reports/2026-03/ui_state_param_expanded_260324_045.json",
+    "rules/task-reports/2026-03/ui_logs_cn_sample_260324_045.json",
+    "rules/task-reports/2026-03/ui_before_after_260324_045.json",
+    "rules/task-reports/2026-03/verify_all_integration_260324_045.json"
+  ],
+  "metrics": {
+    "dirty_ui_fields_removed": true,
+    "next_action_removed": true,
+    "log_cn_main_display": true
+  }
+}

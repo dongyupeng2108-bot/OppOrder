@@ -1,0 +1,6 @@
+script_name=verify_order_scope_and_status
+task_id=260324_045
+sample_name=debug_fill_yes_path_v1
+pass=false
+first_break_layer=sample insufficiency
+message=order scope / status 语义校验失败

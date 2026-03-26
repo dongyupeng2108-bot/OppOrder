@@ -1,0 +1,76 @@
+{
+  "task_id": "260324_045",
+  "mapping_coverage": [
+    "BOT_STARTED",
+    "BOT_WINDOW_INITIALIZED",
+    "BOT_DECISION",
+    "BOT_ORDER_APPLY",
+    "BOT_ORDER_CANCEL",
+    "BOT_FILL",
+    "BOT_STOPPED",
+    "BOT_RUN_SNAPSHOT",
+    "BOT_POSTMORTEM_WRITTEN"
+  ],
+  "samples": [
+    {
+      "event": "BOT_WINDOW_INITIALIZED",
+      "zh_main": "窗口初始化完成：window initialized",
+      "raw": "原始:BOT_WINDOW_INITIALIZED"
+    },
+    {
+      "event": "BOT_FILL",
+      "zh_main": "订单成交：filled 1 orders",
+      "raw": "原始:BOT_FILL"
+    },
+    {
+      "event": "BOT_RUN_SNAPSHOT",
+      "zh_main": "运行快照写入：MANUAL_STOP",
+      "raw": "原始:BOT_RUN_SNAPSHOT"
+    },
+    {
+      "event": "BOT_STOPPED",
+      "zh_main": "机器人已停止：bot runner stopped",
+      "raw": "原始:BOT_STOPPED"
+    },
+    {
+      "event": "BOT_STARTED",
+      "zh_main": "机器人已启动：bot runner started",
+      "raw": "原始:BOT_STARTED"
+    },
+    {
+      "event": "BOT_WINDOW_INITIALIZED",
+      "zh_main": "窗口初始化完成：window initialized",
+      "raw": "原始:BOT_WINDOW_INITIALIZED"
+    },
+    {
+      "event": "BOT_RUN_SNAPSHOT",
+      "zh_main": "运行快照写入：MANUAL_STOP",
+      "raw": "原始:BOT_RUN_SNAPSHOT"
+    },
+    {
+      "event": "BOT_STOPPED",
+      "zh_main": "机器人已停止：bot runner stopped",
+      "raw": "原始:BOT_STOPPED"
+    },
+    {
+      "event": "BOT_STARTED",
+      "zh_main": "机器人已启动：bot runner started",
+      "raw": "原始:BOT_STARTED"
+    },
+    {
+      "event": "BOT_WINDOW_INITIALIZED",
+      "zh_main": "窗口初始化完成：window initialized",
+      "raw": "原始:BOT_WINDOW_INITIALIZED"
+    },
+    {
+      "event": "BOT_RUN_SNAPSHOT",
+      "zh_main": "运行快照写入：MANUAL_STOP",
+      "raw": "原始:BOT_RUN_SNAPSHOT"
+    },
+    {
+      "event": "BOT_STOPPED",
+      "zh_main": "机器人已停止：bot runner stopped",
+      "raw": "原始:BOT_STOPPED"
+    }
+  ]
+}

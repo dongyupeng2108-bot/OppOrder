@@ -1,0 +1,53 @@
+RESULT_JSON
+LOG_HEAD
+[Bot Console UI 精简收口] 完成指定字段移除、下一步动作板块移除、日志中文主显示落地。
+LOG_TAIL
+node scripts/verify_executor_idempotency.mjs --task_id=260324_045
+node scripts/verify_all_manual.mjs --task_id=260324_045
+GATE_LIGHT_EXIT=0
+INDEX
+{
+  "task_id": "260324_045",
+  "files": [
+    {
+      "name": "ui/js/strategy-editor.js",
+      "size": 59114,
+      "sha256_short": "414f8c12"
+    },
+    {
+      "name": "rules/task-reports/2026-03/ui_state_stopped_260324_045.json",
+      "size": 178,
+      "sha256_short": "d5600c83"
+    },
+    {
+      "name": "rules/task-reports/2026-03/ui_state_running_260324_045.json",
+      "size": 703,
+      "sha256_short": "159b6639"
+    },
+    {
+      "name": "rules/task-reports/2026-03/ui_state_param_expanded_260324_045.json",
+      "size": 206,
+      "sha256_short": "5aacec1f"
+    },
+    {
+      "name": "rules/task-reports/2026-03/ui_logs_cn_sample_260324_045.json",
+      "size": 1994,
+      "sha256_short": "06daca48"
+    },
+    {
+      "name": "rules/task-reports/2026-03/ui_before_after_260324_045.json",
+      "size": 621,
+      "sha256_short": "b6983cea"
+    },
+    {
+      "name": "rules/task-reports/2026-03/verify_all_integration_260324_045.json",
+      "size": 114,
+      "sha256_short": "aa189b5e"
+    },
+    {
+      "name": "rules/task-reports/2026-03/notify_260324_045.txt",
+      "size": 293,
+      "sha256_short": "8602ea08"
+    }
+  ]
+}

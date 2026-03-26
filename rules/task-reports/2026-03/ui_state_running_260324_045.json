@@ -1,0 +1,28 @@
+{
+  "task_id": "260324_045",
+  "running": true,
+  "top_activity": "窗口 debug-main-path-v1-w1",
+  "runtime_panel": {
+    "btc_price": 69218.035,
+    "yes_position": 0,
+    "no_position": 0,
+    "filled_total": 0,
+    "realized_gross_pnl_total": 0
+  },
+  "order_panel": {
+    "scope": "current_window",
+    "display_window_id": "debug-main-path-v1-w1",
+    "order_count": 0
+  },
+  "prev_window_panel": {
+    "window_id": "debug-exit-yes-path-v1-w1",
+    "filled_total": 1,
+    "realized_gross_pnl_total": 0
+  },
+  "performance_panel": {
+    "window_count": 639,
+    "filled_total": 575,
+    "realized_gross_pnl_total": 713.3227572148481,
+    "avg_realized_gross_pnl_per_window": 1.116311044154692
+  }
+}

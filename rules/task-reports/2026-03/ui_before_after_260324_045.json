@@ -1,0 +1,25 @@
+{
+  "task_id": "260324_045",
+  "removed_fields_absent": {
+    "recent_window": true,
+    "runtime_anchor": true,
+    "runtime_bounds": true,
+    "runtime_remaining": true,
+    "prev_unrealized": true,
+    "perf_unrealized_total": true,
+    "perf_cancelled_total": true
+  },
+  "current_window_display_cleanup": {
+    "top_bar_kept": true,
+    "order_panel_window_text_removed": true,
+    "runtime_window_text_removed": true
+  },
+  "next_action_removed": {
+    "panel_title_removed": true,
+    "ids_removed": true
+  },
+  "log_cn_main_display": {
+    "event_mapping_defined": true,
+    "raw_event_weak_info_kept": true
+  }
+}
