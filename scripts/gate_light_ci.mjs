@@ -1428,10 +1428,12 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                      
                      const hasCodeChanges = diffFiles.some(file => {
                          const normalized = file.replace(/\\/g, '/');
-                         // Whitelist: rules/task-reports/ (Evidence), rules/rules/ (Docs), rules/LATEST.json, rules/reports/ (Postflight)
+                         // Whitelist: rules/task-reports/ (Evidence), rules/rules/ (Docs), docs/ (BTCQDD & repo docs),
+                         // rules/LATEST.json, rules/reports/ (Postflight)
                         return !normalized.startsWith('rules/task-reports/') && 
                                !normalized.startsWith('rules/rules/') &&
                                !normalized.startsWith('rules/reports/') &&
+                               !normalized.startsWith('docs/') &&
                                normalized !== 'rules/LATEST.json';
                      });
                      
@@ -1447,6 +1449,7 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                                return !n.startsWith('rules/task-reports/') &&
                                       !n.startsWith('rules/rules/') &&
                                       !n.startsWith('rules/reports/') &&
+                                      !n.startsWith('docs/') &&
                                       n !== 'rules/LATEST.json';
                             }).forEach(f => console.error(`  - ${f}`));
                              console.error(`Fix Suggestion: Re-run Integrate/Build Snippet to align with latest code.`);
