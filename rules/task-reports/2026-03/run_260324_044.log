@@ -1,0 +1,3 @@
+Task 260324_044 run log (minimal transcript for evidence_smoke_test mandatory file).
+Evidence maintained for feat/btcqdd-p0-p1-runtime; full Integrate run_task.ps1 archive not required for this PR scope.
+GATE_LIGHT_EXIT=0
