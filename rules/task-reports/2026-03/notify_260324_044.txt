@@ -63,11 +63,20 @@ INDEX
       "name": "rules/task-reports/2026-03/no_regression_executor_window_filled_260324_044.json",
       "size": 164,
       "sha256_short": "e7fc284e"
-    },
-    {
-      "name": "rules/task-reports/2026-03/notify_260324_044.txt",
-      "size": 332,
-      "sha256_short": "84a45f93"
     }
   ]
 }
+
+=== DOD_EVIDENCE_STDOUT ===
+TASK_ID=260324_044
+SCOPE=BTCQDD CODE+RUNTIME backlog: executor idempotency, window isolation, filled_total chain (verify_executor_idempotency).
+COMMANDS=node scripts/verify_executor_idempotency.mjs --task_id=260324_044
+ASSERTIONS=filled_total_chain_pass dirty_restart_pass executor_idempotency_pass window_isolation_pass
+GATE_LIGHT_EXIT=0
+
+=== GATE_LIGHT_VERIFY ===
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] Report Block Check: notify_260324_044.txt contains DOD_EVIDENCE_STDOUT and GATE_LIGHT_VERIFY.
+[Gate Light] Report Block Check: trae_report_snippet_260324_044.txt contains required blocks.
+[Gate Light] Header Check Passed: TraeTask_260324_044
+[Gate Light] PASS
