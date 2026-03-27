@@ -9,7 +9,29 @@
 
 ---
 
-## `GET /bot/context`
+## `GET /bot/context` — 最小契约 / API 事实块
+
+以下供脚本对账、排障与 RUNTIME 摘录使用；**仍以 `server.mjs` + 实机响应为准**。
+
+| 项 | 事实 |
+|----|------|
+| **方法 / 路径** | `GET /bot/context` |
+| **默认服务** | 与 Bot 策略 HTTP 一致，默认端口 **53123**（可用 `--port=<n>`） |
+| **成功** | **HTTP 200**，`Content-Type: application/json`，body 为**顶层扁平 JSON 对象**（**不是** `{ ok: true, data: {...} }` 包装） |
+| **失败** | **HTTP 500**（或实现中其它 5xx），body 通常为 `{ "ok": false, "error": "<message>" }`；客户端应同时检查 HTTP 状态与 body |
+| **稳定键（建议脚本依赖）** | `window_id`、`btc_price`、`anchor_btc`、`atr_5m`、`upper_bound`、`lower_bound`、`bid_yes`、`ask_yes`、`bid_no`、`ask_no`、`stale`、`updated_at` |
+| **诊断 / 扩展键** | `_btc_source_trace`（含 `price_resolution`：BTC 价选用 cache / strike / anchor；`atr_resolution`：ATR 选用；**不参与**订单语义，仅可观测性） |
+| **缓存** | 实现未强制 `Cache-Control`；客户端应视为**每次请求即时快照** |
+
+**最小 curl（事实块复现）**：
+
+```bash
+curl -sS http://localhost:53123/bot/context
+```
+
+---
+
+## `GET /bot/context` — 字段表
 
 成功时 **200**，body 为**单层对象**（非 `{ ok: true, data }`）。失败时可能为 `{ ok: false, error }`（与其它路由一致）。
 
@@ -28,7 +50,7 @@
 | `tick_size` | number \| null | |
 | `stale` | boolean | 订单簿是否陈旧，默认 true |
 | `updated_at` | string | ISO 时间 |
-| `_btc_source_trace` | object | 调试：行情源 init/feed/cache 轨迹 |
+| `_btc_source_trace` | object | 调试：行情源 init/feed/cache 轨迹；含 `price_resolution`（`kind`：`cache` \| `strike` \| `anchor` \| `none`，及原始 `used_*`）；含 `atr_resolution`（`window_atr_5m_raw`、`window_atr_raw`、`state_atr_5m_raw`、`resolved_atr_5m`） |
 
 **UI 绑定提示**（与 PROJECT_RULES 一致）：BTC 价格 ← `btc_price`；UPDOWN 概率优先 `bid_yes`/`bid_no`，可 fallback `ask_*`；波动值 ← `atr_5m`。
 
@@ -71,6 +93,7 @@
 
 | 端点 | 用途 |
 |------|------|
+| `POST /bot/runner/tick` | 单次 `runSingleTick`；body 可选 `context_override`、`state_override`（对象）；成功时 `state_after` 等为 runner 输出（**不替代**生产「仅 GET」路径；用于受控核验与 [`truth_audit_anchor_bounds_P0A.md`](truth_audit_anchor_bounds_P0A.md) §3.2 类采集） |
 | `GET /bot/orders` | 订单列表 + `window_scope` + summary |
 | `GET /bot/postmortem/latest` | `{ ok, postmortem }` |
 | `GET /bot/performance/summary` | `{ ok, summary }`，`detail=1` 含行明细 |

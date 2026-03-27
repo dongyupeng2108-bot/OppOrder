@@ -69,6 +69,24 @@ function main() {
   if (typeof ctx._btc_source_trace !== 'object' || ctx._btc_source_trace === null) {
     throw new Error('bot_context: _btc_source_trace must be object');
   }
+  const ar = ctx._btc_source_trace.atr_resolution;
+  if (typeof ar !== 'object' || ar === null) {
+    throw new Error('bot_context: _btc_source_trace.atr_resolution must be object');
+  }
+  for (const k of ['window_atr_5m_raw', 'window_atr_raw', 'state_atr_5m_raw', 'resolved_atr_5m']) {
+    if (!(k in ar)) {
+      throw new Error(`bot_context: atr_resolution missing key: ${k}`);
+    }
+  }
+  const pr = ctx._btc_source_trace.price_resolution;
+  if (typeof pr !== 'object' || pr === null) {
+    throw new Error('bot_context: _btc_source_trace.price_resolution must be object');
+  }
+  for (const k of ['kind', 'used_strike_raw', 'used_anchor_fallback_raw']) {
+    if (!(k in pr)) {
+      throw new Error(`bot_context: price_resolution missing key: ${k}`);
+    }
+  }
 
   console.log('verify_doc_contract_examples: PASS');
   console.log(`  ${path.relative(ROOT, ctxPath)}`);

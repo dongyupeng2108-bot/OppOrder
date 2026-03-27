@@ -1,0 +1,23 @@
+{
+  "ts": "2026-03-27T14:46:18.905Z",
+  "kind": "filled_total_runtime_api_reconcile",
+  "base_url": "http://localhost:53135",
+  "scenario": "fill_yes_path_v1_then_stop_then_GET",
+  "saw_filled": true,
+  "table": {
+    "window_id": "debug-fill-yes-path-v1-w1",
+    "unique_filled_order_id_count": 1,
+    "summary_filled_total": 1,
+    "last_run_filled_total": 1,
+    "postmortem_filled_total": 1,
+    "performance_target_window_filled_total": 1
+  },
+  "filled_total_chain_pass": true,
+  "http_meta": {
+    "orders_status": 200,
+    "status_status": 200,
+    "postmortem_status": 200,
+    "summary_status": 200,
+    "performance_status": 200
+  }
+}

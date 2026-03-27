@@ -1,0 +1,15 @@
+{
+  "ts": "2026-03-27T14:34:37.930Z",
+  "base_url": "http://localhost:53133",
+  "kind": "GET snapshot / filled_total reconcile",
+  "table": {
+    "window_id": "debug-main-path-v1-w1",
+    "unique_filled_order_id_count": 0,
+    "summary_filled_total": 0,
+    "last_run_filled_total": 0,
+    "postmortem_filled_total": 0,
+    "performance_target_window_filled_total": 0
+  },
+  "filled_total_chain_aligned": false,
+  "http_ok": true
+}

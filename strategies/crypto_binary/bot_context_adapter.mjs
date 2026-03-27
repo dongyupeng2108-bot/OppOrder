@@ -147,11 +147,17 @@ export function createBotContextAdapter(options = {}) {
     }
 
     let resolvedBtcPrice = asPositiveNumber(latestBtcPrice);
-    if (resolvedBtcPrice === null) {
+    let priceResolutionKind = 'none';
+    if (resolvedBtcPrice !== null) {
+      priceResolutionKind = 'cache';
+    } else {
       resolvedBtcPrice = asPositiveNumber(windowInfo?.strike_price);
-    }
-    if (resolvedBtcPrice === null && runningWindowReady) {
-      resolvedBtcPrice = asPositiveNumber(state?.anchor_btc);
+      if (resolvedBtcPrice !== null) {
+        priceResolutionKind = 'strike';
+      } else if (runningWindowReady) {
+        resolvedBtcPrice = asPositiveNumber(state?.anchor_btc);
+        if (resolvedBtcPrice !== null) priceResolutionKind = 'anchor';
+      }
     }
 
     context.window_id = windowInfo?.slug ?? null;
@@ -164,6 +170,12 @@ export function createBotContextAdapter(options = {}) {
     context.atr_5m = asFiniteNumber(windowInfo?.atr_5m ?? windowInfo?.atr ?? state.atr_5m);
     context.upper_bound = asFiniteNumber(state.upper_bound);
     context.lower_bound = asFiniteNumber(state.lower_bound);
+    const atrResolution = {
+      window_atr_5m_raw: windowInfo?.atr_5m ?? null,
+      window_atr_raw: windowInfo?.atr ?? null,
+      state_atr_5m_raw: state?.atr_5m ?? null,
+      resolved_atr_5m: context.atr_5m
+    };
     context.bid_yes = asFiniteNumber(snapshot?.bid_up);
     context.ask_yes = asFiniteNumber(snapshot?.ask_up);
     context.bid_no = asFiniteNumber(snapshot?.bid_down);
@@ -179,7 +191,13 @@ export function createBotContextAdapter(options = {}) {
       source_last_feed_at: sourceLastFeedAt,
       latest_cache_price: asPositiveNumber(latestBtcPrice),
       latest_cache_at: latestPriceAt,
-      latest_cache_source: latestPriceSource
+      latest_cache_source: latestPriceSource,
+      price_resolution: {
+        kind: priceResolutionKind,
+        used_strike_raw: windowInfo?.strike_price ?? null,
+        used_anchor_fallback_raw: runningWindowReady ? (state?.anchor_btc ?? null) : null
+      },
+      atr_resolution: atrResolution
     };
     return context;
   };
