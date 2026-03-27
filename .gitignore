@@ -1,5 +1,7 @@
 # Evidence Artifacts (Runtime) - STRICT ISOLATION
 rules/task-reports/20??-??/**
+# Gate Light: committed workspace healer snapshots (branch may omit task_id; CI reads this path)
+!rules/task-reports/20??-??/workspace_healer_*.json
 rules/reports/**
 
 # Allowed Persistent Artifacts
