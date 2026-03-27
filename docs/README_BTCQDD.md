@@ -2,7 +2,8 @@
 
 本文档是 **执行机器人（53123）** 的快速入口；治理与不变量以 [`rules/rules/`](../rules/rules/) 为准。
 
-**文档/治理铺底项与业务闭环的划界**：见 [`DELIVERY_REPORT_DOC_GOVERNANCE.md`](DELIVERY_REPORT_DOC_GOVERNANCE.md)。
+**文档/治理铺底项与业务闭环的划界**：见 [`DELIVERY_REPORT_DOC_GOVERNANCE.md`](DELIVERY_REPORT_DOC_GOVERNANCE.md)。  
+**Cursor 审核与合并（无自合并）**：见 [`CURSOR_REVIEW_MERGE.md`](CURSOR_REVIEW_MERGE.md)。
 
 ## 身份
 

@@ -29,6 +29,13 @@ globs:
 - 版本测试分流：[`docs/VERIFY_PLAYBOOK.md`](docs/VERIFY_PLAYBOOK.md)
 - Live 闸门（未来）：[`docs/LIVE_GATES.md`](docs/LIVE_GATES.md)
 - 搁置范围：[`docs/DEFERRED_SCOPE.md`](docs/DEFERRED_SCOPE.md)
+- **审核与合并（强制）**：[`docs/CURSOR_REVIEW_MERGE.md`](docs/CURSOR_REVIEW_MERGE.md)
+
+## 审核与合并（强制）
+
+- **无自行 merge 权限**：可本地修改、验证、commit、push、**创建 PR**；**合并仅由 Owner 决定**。
+- **不得**将「已提交 / 已开 PR / CI 通过」表述为「已合并」或业务闭环。
+- 回报须分三层：**本地完成 / PR 状态 / 合并状态**（默认写「未合并，等待 Owner 审核」）。详见 [`docs/CURSOR_REVIEW_MERGE.md`](docs/CURSOR_REVIEW_MERGE.md)。
 
 ## 工作方式（摘自 WORKFLOW）
 

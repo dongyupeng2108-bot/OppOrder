@@ -14,5 +14,6 @@
 | [LIVE_GATES.md](LIVE_GATES.md) | Live 闸门（未来阶段，默认不开启） |
 | [DEFERRED_SCOPE.md](DEFERRED_SCOPE.md) | 显式不排期：Radar 产品、通用平台、策略生成/回测 |
 | [DELIVERY_REPORT_DOC_GOVERNANCE.md](DELIVERY_REPORT_DOC_GOVERNANCE.md) | **交付说明**：DOC/TEST-light 铺底 vs 业务闭环划界 |
+| [CURSOR_REVIEW_MERGE.md](CURSOR_REVIEW_MERGE.md) | **Cursor**：审核与合并流程（无自合并、回报格式） |
 
 治理真源始终在 **[`rules/rules/`](../rules/rules/)**。
