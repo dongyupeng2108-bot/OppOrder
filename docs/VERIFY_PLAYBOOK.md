@@ -25,6 +25,10 @@ node scripts/verify_all_manual.mjs --task_id=<YYMMDD_NNN>
 
 **历史锚点**：`verify_order_scope_and_status` 曾定性为 **测试脚本稳定性** 为主，而非已确认的业务回归——再失败时**不要默认先改 `bot_runner` / 订单语义**。
 
+## anchor / bounds 专项回归说明
+
+- 固定说明与 Phase C 口径：[`REGRESSION_anchor_bounds.md`](REGRESSION_anchor_bounds.md)（脚本为辅助，不替代 real runtime）。
+
 ## 与 P0 主链相关的脚本（索引）
 
 | 脚本 | 侧重 |
