@@ -1,7 +1,8 @@
 # BTCQDD 模块地图（初稿）
 
 **模块定义**：边界清晰、接口可约定、可单独验证的一块能力。  
-本文档与 [`rules/rules/PROJECT_MASTER_PLAN.md`](../rules/rules/PROJECT_MASTER_PLAN.md) 的测试与优先级一致；文件路径随重构可调整，**契约与语义**以 `PROJECT_RULES` 为准。
+本文档与 [`rules/rules/PROJECT_MASTER_PLAN.md`](../rules/rules/PROJECT_MASTER_PLAN.md) 的测试与优先级一致；文件路径随重构可调整，**契约与语义**以 `PROJECT_RULES` 为准。  
+**分阶段路线与门禁**（M0–M3）：[`MODULAR_ROADMAP.md`](MODULAR_ROADMAP.md)。**进展**以 MASTER PLAN + [`BTCQDD_CODE_RUNTIME_BACKLOG_STATUS.md`](BTCQDD_CODE_RUNTIME_BACKLOG_STATUS.md) 为准。
 
 ## 总览：执行机器人五模块
 
@@ -14,6 +15,20 @@
 | **5. 版本测试** | 护栏脚本、一键回归、证据落盘 | `scripts/verify_*.mjs`、`verify_all_manual.mjs`、`server.mjs` `/bot/test/*` |
 
 **Paper / Live**：执行引擎（及输入侧部分行为）的**模式**，不是与上表并列的第六模块。
+
+---
+
+## 与主计划 §9–§10 的对应关系
+
+与 [`PROJECT_MASTER_PLAN.md`](../rules/rules/PROJECT_MASTER_PLAN.md) **§9 最近已完成里程碑**、**§10 下一步优先级** 对齐阅读，避免「模块地图」与主计划漂移。
+
+| 主计划段落 | 对应模块侧重（粗粒度） |
+|------------|------------------------|
+| **§9** 里程碑（bounds/anchor、UI 收口、`verify_order_scope_and_status` 稳定性等） | 以 **2 执行引擎**、**1 策略输入**、**5 版本测试** 为主；UI 相关条目同时涉及 **3 运行监控**。 |
+| **§10** P0 真实主链与生命周期复验 | **1 + 2**（source/context/bounds/decision 与窗口语义）。 |
+| **§10** P0 版本测试脚本稳定性 | **5**（`verify_*` 与 [`VERIFY_PLAYBOOK.md`](VERIFY_PLAYBOOK.md) 分流）。 |
+| **§10** P1 UI 小步收口 | **3**（`/bot/*` 与控制台；先核对后端真值）。 |
+| **§10** P2 增量功能/统计（后续） | 多在 **2 + 4**；启动前须满足主计划 §2 阶段判断。 |
 
 ---
 
@@ -120,6 +135,18 @@
 ### 接口思想
 
 测试依赖**稳定对外契约**；失败时先区分脚本 vs 业务（见 `PROJECT_RULES` §5）。
+
+---
+
+## 各模块对外契约要点（索引）
+
+| 模块 | 契约与真源（优先阅读） |
+|------|-------------------------|
+| **1 策略输入** | [`BOT_HTTP_CONTRACT.md`](BOT_HTTP_CONTRACT.md)（`GET /bot/context` 等字段）；[`PROJECT_RULES.md`](../rules/rules/PROJECT_RULES.md) 中 source / ready / bounds 相关节。 |
+| **2 执行引擎** | `PROJECT_RULES.md` §3、§9（订单、窗口、`filled_total`、PLACE_LADDER 等）；与 Paper/Live 分叉时在 [`LIVE_GATES.md`](LIVE_GATES.md) 查闸门说明。 |
+| **3 运行监控** | [`BOT_HTTP_CONTRACT.md`](BOT_HTTP_CONTRACT.md) 全部 `/bot/*` 最小契约；前端仅消费 API，不发明后端语义。 |
+| **4 运行结果** | `PROJECT_RULES.md` §9（PNL/统计口径）；postmortem / summary API 与 DB 字段以代码与契约为准。 |
+| **5 版本测试** | [`VERIFY_PLAYBOOK.md`](VERIFY_PLAYBOOK.md)；`scripts/verify_all_manual.mjs` 编排清单；[`PROJECT_MASTER_PLAN.md`](../rules/rules/PROJECT_MASTER_PLAN.md) §5.4 与五模块映射。 |
 
 ---
 

@@ -73,6 +73,20 @@
 - 统一输出结构（结论块、对账表、证据索引）
 - 统一失败语义（first_break_layer、失败原因、阻断点）
 
+### 5.4 Manual 包与五模块映射（索引）
+
+与 [`docs/MODULE_MAP.md`](../../docs/MODULE_MAP.md) 五模块对齐；下列脚本由 [`scripts/verify_all_manual.mjs`](../../scripts/verify_all_manual.mjs) 编排（**总入口**：`node scripts/verify_all_manual.mjs`），归属按**主要验证对象**划分。
+
+| 模块 | `verify_*.mjs`（`verify_all_manual` 清单内） | 说明 |
+|------|-----------------------------------------------|------|
+| **1 策略输入** | `verify_btc_source_chain.mjs` | 行情 / source chain |
+| **1 + 2** | `verify_context_truth.mjs`、`verify_config_effect_chain.mjs` | context 真值与配置效应链（跨输入与引擎） |
+| **2 执行引擎** | `verify_window_lifecycle.mjs`、`verify_anchor_bounds_lifecycle.mjs`、`verify_executor_idempotency.mjs`、`verify_order_scope_and_status.mjs` | 窗口 / anchor·bounds / 幂等 / 订单 scope |
+| **4 运行结果** | `verify_result_chain_consistency.mjs`、`verify_pnl_chain_consistency.mjs`、`verify_runtime_to_business_result.mjs` | 结果链、PNL、runtime→业务结果 |
+| **5 版本测试** | 上述全部 + 总入口 `verify_all_manual.mjs` | 编排、证据落盘、与 [`docs/VERIFY_PLAYBOOK.md`](../../docs/VERIFY_PLAYBOOK.md) 一致 |
+
+未列入总入口的脚本（如 `verify_doc_contract_examples.mjs`、OppRadar 侧 `verify_rank_v2_contract.mjs` 等）仍属 **5** 或文档契约类辅助，以各脚本头注释与 CI 配置为准。
+
 ## 6. 高风险约束路线图
 
 长期必须持续验证：
@@ -116,3 +130,10 @@
 - P0：版本测试脚本稳定性持续收口（先分类业务/测试，再修复）
 - P1：UI 仅做“简洁可用”范围内小步收口，不扩新功能口径
 - P2：在 P0/P1 稳定后，再评估增量功能与统计扩展
+
+## 11. 模块化工作路线（索引）
+
+- **模块划分（五模块 + 排障）**：[`docs/MODULE_MAP.md`](../../docs/MODULE_MAP.md)
+- **分阶段 M0–M3、M1 门禁（主线 backlog 最新未闭环项）**：[`docs/MODULAR_ROADMAP.md`](../../docs/MODULAR_ROADMAP.md)
+- **M2**：**默认须 Owner 明确放行**方可启动；不得以「backlog 无未闭环项」自动进入——见 `MODULAR_ROADMAP` §M2。
+- **进展**：以本文档 §9–§10 与 [`docs/BTCQDD_CODE_RUNTIME_BACKLOG_STATUS.md`](../../docs/BTCQDD_CODE_RUNTIME_BACKLOG_STATUS.md) 为准；模块化深化见 `MODULAR_ROADMAP` 中 M2。

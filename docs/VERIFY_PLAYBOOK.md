@@ -10,6 +10,7 @@ node scripts/verify_all_manual.mjs --task_id=<YYMMDD_NNN>
 
 - 产出：各子脚本 JSON 证据、汇总日志；路径见脚本内 `verifyTargets` 与 `rules/task-reports/` 约定。
 - **通过定义**：`overall_pass` 与每子项 `pass` 均为真；且 **real runtime** 相关任务仍需按规则做人工复验（护栏不替代真实修复验收）。
+- **五模块 ↔ 子脚本映射（真源）**：`verify_all_manual` 所列各 `verify_*.mjs` 与五模块的对应关系以 [`PROJECT_MASTER_PLAN.md`](../rules/rules/PROJECT_MASTER_PLAN.md) **§5.4** 为准（本文不复制该表）。模块级 HTTP/规则契约索引见 [`MODULE_MAP.md`](MODULE_MAP.md) **「各模块对外契约要点（索引）」**。
 
 ## 失败时的决策树
 

@@ -12,11 +12,11 @@
 |----|------|
 | **Task1** | **已闭环**（Owner 验收）。 |
 | **Task2** | **已闭环**（Owner 验收）。 |
-| **Task3（P1 / filled_total）** | **Owner 不认可业务闭环完成**；当前仅认可 **文档项完成 + 测试辅助完成**。已补 **运行态/API 对账事实块**（见 [`truth_audit_p1_executor_filled_total.md`](truth_audit_p1_executor_filled_total.md) §3、`collect_filled_total_runtime_reconcile.mjs`）。 |
-| **新任务** | **在 Task3 业务闭环获 Owner 认可前**：**不得开启新任务**（不另起并行任务线）。 |
+| **Task3（P1 / filled_total）** | **已闭环**（Owner 验收业务闭环）。材料见 [`truth_audit_p1_executor_filled_total.md`](truth_audit_p1_executor_filled_total.md)、`verify_executor_idempotency.mjs`、`collect_filled_total_runtime_reconcile.mjs`。 |
+| **新任务 / 并行线** | **模块化 M1 门禁**以本文档（或 Owner 指定的**唯一**主线 backlog）中 **当前最新仍未闭环项** 为准；该项未获 Owner 认定前，**不得**另起与主线冲突的并行任务线（详见 [`MODULAR_ROADMAP.md`](MODULAR_ROADMAP.md) §M1）。**M1 若动 CODE** 仅允许**最小取证/辅助**；**M2 默认须 Owner 显式放行**（同文档 §M1 / §M2 硬约束）。 |
 | **合并** | **仅 Owner**；Agent **不得自合并**。 |
 
-**Owner 确认（流程 gate）**：Task1/Task2 已收口；Task3 **业务闭环未通过**；**整 plan 全部收口**须待 Task3 业务闭环另行认定。
+**Owner 确认（流程 gate）**：Task1 / Task2 / Task3 **均已收口**；后续工作按 **主线 backlog 最新未闭环项** 滚动门禁（见 [`MODULAR_ROADMAP.md`](MODULAR_ROADMAP.md)）。
 
 ---
 
@@ -47,8 +47,8 @@
 |------|------|
 | **Task1** | **已闭环**（Owner 验收通过）。 |
 | **Task2** | **已闭环**（Owner 验收通过）。 |
-| **Task3** | **业务闭环未完成**（Owner 当前不认可）；**文档项 + 测试辅助**已认可；**运行态事实块**已补 §3。 |
-| **整 plan** | **全部完成** = 各任务经 Owner 认定；**Task3 业务闭环未通过则整 plan 不视为全部收口**。 |
+| **Task3** | **已闭环**（Owner 验收业务闭环）；文档项 + 测试辅助 + 运行态事实块见各审计稿与脚本。 |
+| **整 plan（Task1–3）** | **三线任务已收口**；后续增量以 backlog **新行** 与 **M1 滚动门禁** 为准。 |
 
 ---
 
@@ -78,8 +78,7 @@
 
 - **文档项完成**：**认可**（含 [`truth_audit_p1_executor_filled_total.md`](truth_audit_p1_executor_filled_total.md) §3 运行态/API 事实块）。  
 - **测试辅助完成**：**认可**（`verify_executor_idempotency.mjs`；`collect_filled_total_runtime_reconcile.mjs`）。  
-- **业务闭环**：**不认可**（Owner 当前裁定）；**不得**以脚本 PASS 单独冒充。  
-- **未合并，等待 Owner 审核**；**不自合并**。
+- **业务闭环**：**Owner 已认可**（与脚本/事实块一致；不得以单次 verify PASS 替代全链路 Owner 裁定历史）。  
 
 ---
 
@@ -89,6 +88,6 @@
 
 ## 后续任务回报（Agent）
 
-- **Task3**：在 **业务闭环**获 Owner 认可前 **不得开启新任务**。  
-- **不得**宣称「因 verify PASS，生产业务闭环已证」。  
+- **门禁**：新开任务线前核对 [`MODULAR_ROADMAP.md`](MODULAR_ROADMAP.md) §M1 与上表 **当前最新未闭环项**（若有）。  
+- **不得**宣称「因 verify PASS，生产业务闭环已证」（除非 Owner 已书面认定）。  
 - **不得自合并**。

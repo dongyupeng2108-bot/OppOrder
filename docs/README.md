@@ -2,11 +2,14 @@
 
 **本次批量新增/更新的记账性质**：见 **[`DELIVERY_REPORT_DOC_GOVERNANCE.md`](DELIVERY_REPORT_DOC_GOVERNANCE.md)**（文档/治理铺底，非业务闭环）。
 
+**进展锚点**：模块化与 Bot 主链文档的**进展**以 **[`rules/rules/PROJECT_MASTER_PLAN.md`](../rules/rules/PROJECT_MASTER_PLAN.md)** + **[`BTCQDD_CODE_RUNTIME_BACKLOG_STATUS.md`](BTCQDD_CODE_RUNTIME_BACKLOG_STATUS.md)** 为准（见 [`MODULAR_ROADMAP.md`](MODULAR_ROADMAP.md)）。
+
 | 文档 | 说明 |
 |------|------|
 | [README_BTCQDD.md](README_BTCQDD.md) | 本地启动、URL、最小验收、权威文档链接 |
 | [OWNER_BTCQDD_ONE_PAGER.md](OWNER_BTCQDD_ONE_PAGER.md) | Owner 边界：Bot 主面 vs 旧 strategy 承载层 |
 | [MODULE_MAP.md](MODULE_MAP.md) | 五模块 + 子模块 + 排障归因 |
+| [MODULAR_ROADMAP.md](MODULAR_ROADMAP.md) | 模块化 M0–M3；M1 门禁 + **M1 CODE 边界**；**M2 须 Owner 明确放行** |
 | [P0_WORKSTREAM.md](P0_WORKSTREAM.md) | P0：就绪链 / anchor / bounds，定位→修复→防回归 |
 | [BOT_HTTP_CONTRACT.md](BOT_HTTP_CONTRACT.md) | `GET /bot/context`、`GET /bot/status` 字段、null 语义、**`/bot/context` 最小契约/API 事实块** |
 | [BTCQDD_CODE_RUNTIME_BACKLOG_STATUS.md](BTCQDD_CODE_RUNTIME_BACKLOG_STATUS.md) | CODE+RUNTIME backlog：**情况 A/B**、Task1 与 plan **完成口径**（Owner 验收） |
