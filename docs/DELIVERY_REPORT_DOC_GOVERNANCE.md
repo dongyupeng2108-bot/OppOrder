@@ -4,6 +4,8 @@
 
 > **已完成 6 项文档/治理铺底项（DOC / TEST-light），不是 6 个业务闭环任务。**
 
+**统一记账用语**（见 [`CURSOR_EXECUTION_REPORTING.md`](CURSOR_EXECUTION_REPORTING.md) §10）：上述交付应表述为 **文档项完成** +（若有）**测试辅助完成**；**业务闭环未完成** — **禁止**用「Phase 完成 / todo completed」指代本批文档交付。
+
 请勿将下文理解为「P0 已在代码侧完成」「主链问题已修复」「业务已闭环」。
 
 ---

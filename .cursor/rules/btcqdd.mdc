@@ -42,6 +42,7 @@ globs:
 
 - 完成类型须拆开：**DOC / UI / TEST / CODE / RUNTIME**，禁止混成一句「任务完成」；**DOC 不能冒充 RUNTIME**；**TEST 不能自动冒充业务正确**。  
 - 「已完成 / 已修复 / 已闭环」须带**完成类型 + 最小事实块 + 未覆盖边界**。  
+- **记账用语**：用 **文档项完成 / 测试辅助完成 / 业务闭环未完成** 三句；**禁止**用「Phase 完成」「todo completed」指代仅文档或仅脚本（见 [`CURSOR_EXECUTION_REPORTING.md`](docs/CURSOR_EXECUTION_REPORTING.md) §10）。  
 - 固定格式与轻/重任务分流：见 [`docs/CURSOR_EXECUTION_REPORTING.md`](docs/CURSOR_EXECUTION_REPORTING.md)。
 
 ## 工作方式（摘自 WORKFLOW）

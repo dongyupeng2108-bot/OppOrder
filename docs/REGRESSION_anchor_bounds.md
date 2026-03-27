@@ -28,10 +28,13 @@ node scripts/verify_anchor_bounds_lifecycle.mjs --task_id=<YYMMDD_NNN>
 
 ---
 
-## Phase C「完成」口径（本计划）
+## 本文件交付的记账用语（勿用「Phase 完成」指代仅写文档）
 
-- 已提供**固定入口文档**与 VERIFY_PLAYBOOK 交叉引用；  
-- **不**把「仅跑通脚本」记为 RUNTIME 闭环。
+按 [`CURSOR_EXECUTION_REPORTING.md`](CURSOR_EXECUTION_REPORTING.md) §10：
+
+- **文档项完成**：本文件已存在，且 VERIFY_PLAYBOOK 已增加交叉引用。  
+- **测试辅助完成**（若已执行）：见下「附」；**不**等于业务正确或问题已消失。  
+- **业务闭环未完成**：未以 **RUNTIME** 填 Phase A 样本表、未证明线上长期无漂移；**禁止**用「Phase C 已完成」等模糊表述。
 
 ### 附：一次本地运行记录（TEST，不冒充 RUNTIME）
 

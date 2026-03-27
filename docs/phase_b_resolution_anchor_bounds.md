@@ -2,6 +2,8 @@
 
 **前置**：[`truth_audit_anchor_bounds_P0A.md`](truth_audit_anchor_bounds_P0A.md)（Phase A 单主题 Truth Audit）。
 
+**记账**：**文档项完成**（本决议稿）；**业务闭环未完成**（real runtime 样本未填、未 Owner 签收）。勿写「Phase B 已完成」若仅指本文档交付。
+
 **完成类型**：DOC（决议说明）；**无 CODE 变更**于本文件关联提交（若后续有修复须单独 PR）。
 
 ---
