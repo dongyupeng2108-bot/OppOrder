@@ -3,23 +3,23 @@
   "files": [
     {
       "name": "scripts/verify_executor_idempotency.mjs",
-      "size": 15824,
+      "size": 16255,
       "sha256_short": "41726164"
     },
     {
       "name": "scripts/verify_manifest.json",
-      "size": 4772,
-      "sha256_short": "05b99e3b"
+      "size": 5467,
+      "sha256_short": "0ab73816"
     },
     {
       "name": "scripts/verify_all_manual.mjs",
-      "size": 5112,
-      "sha256_short": "85223c12"
+      "size": 5351,
+      "sha256_short": "d5b0f455"
     },
     {
       "name": "rules/task-reports/2026-03/260324_044_executor_idempotency.json",
-      "size": 10656,
-      "sha256_short": "3faba245"
+      "size": 10611,
+      "sha256_short": "2c52ac81"
     },
     {
       "name": "rules/task-reports/2026-03/260324_044_executor_idempotency.log",
@@ -28,38 +28,58 @@
     },
     {
       "name": "rules/task-reports/2026-03/260324_044_verify_all_manual.json",
-      "size": 3242,
+      "size": 3326,
       "sha256_short": "40c93079"
     },
     {
       "name": "rules/task-reports/2026-03/260324_044_verify_all_manual.log",
-      "size": 1547,
+      "size": 1561,
       "sha256_short": "65eacf28"
     },
     {
       "name": "rules/task-reports/2026-03/dirty_restart_source_table_260324_044.json",
-      "size": 2537,
+      "size": 2616,
       "sha256_short": "a974af3c"
     },
     {
       "name": "rules/task-reports/2026-03/standalone_executor_idempotency_260324_044.json",
-      "size": 463,
+      "size": 479,
       "sha256_short": "caadda8e"
     },
     {
       "name": "rules/task-reports/2026-03/verify_all_integration_260324_044.json",
-      "size": 194,
+      "size": 200,
       "sha256_short": "21841251"
     },
     {
       "name": "rules/task-reports/2026-03/no_regression_executor_window_filled_260324_044.json",
-      "size": 164,
+      "size": 170,
       "sha256_short": "e7fc284e"
     },
     {
+      "name": "rules/task-reports/2026-03/260324_044_healthcheck_53122_root.txt",
+      "size": 25,
+      "sha256_short": "4c0468b1"
+    },
+    {
+      "name": "rules/task-reports/2026-03/260324_044_healthcheck_53122_pairs.txt",
+      "size": 30,
+      "sha256_short": "b5d4204a"
+    },
+    {
       "name": "rules/task-reports/2026-03/notify_260324_044.txt",
-      "size": 332,
-      "sha256_short": "84a45f93"
+      "size": 3263,
+      "sha256_short": "c7719456"
+    },
+    {
+      "name": "scripts/postflight_validate_envelope.mjs",
+      "size": 44573,
+      "sha256_short": "81dbeb96"
+    },
+    {
+      "name": "rules/task-reports/2026-03/manual_verification_260324_044.json",
+      "size": 214,
+      "sha256_short": "796e2203"
     }
   ]
 }

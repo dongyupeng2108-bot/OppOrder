@@ -6,6 +6,8 @@ rules/task-reports/20??-??/**
 !rules/task-reports/20??-??/*_healthcheck_53122_*.txt
 # evidence_smoke_test: manifest basename (run_*.log un-ignore after global *.log below)
 !rules/task-reports/20??-??/evidence_manifest_*.json
+# Postflight v3.9: business evidence filename pattern
+!rules/task-reports/20??-??/manual_verification_*.json
 rules/reports/**
 
 # Allowed Persistent Artifacts

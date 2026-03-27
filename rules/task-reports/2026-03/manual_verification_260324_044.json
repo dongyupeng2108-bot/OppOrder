@@ -1,0 +1,5 @@
+{
+  "task_id": "260324_044",
+  "scope": "BTCQDD executor idempotency / verify_all_manual integration",
+  "note": "Postflight v3.9 business-evidence placeholder; primary proof lives in verify JSON + notify."
+}

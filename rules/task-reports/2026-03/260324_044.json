@@ -1,12 +1,16 @@
 {
   "task_id": "260324_044",
-  "timestamp": "2026-03-26T11:41:30.667Z",
+  "timestamp": "2026-03-27T16:11:19.768Z",
   "valid": true,
   "errors": [],
   "checks": {
-    "dirty_restart_guard_added": "PASS",
-    "noop_tick_new_orders_zero": "PASS",
-    "existing_chain_not_regressed": "PASS"
+    "smoke_test": "PASS",
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
   },
   "context": {
     "resultData": {
@@ -14,7 +18,7 @@
       "status": "DONE",
       "summary": "已将“历史 run 残留污染新 run”固化到 verify_executor_idempotency 并由 verify_all_manual 统一接入。",
       "report_file": "notify_260324_044.txt",
-      "report_sha256_short": "01466118",
+      "report_sha256_short": "c7719456",
       "evidence": [
         "rules/task-reports/2026-03/dirty_restart_source_table_260324_044.json",
         "rules/task-reports/2026-03/standalone_executor_idempotency_260324_044.json",
@@ -26,6 +30,13 @@
         "non_place_added_count": 0,
         "dirty_restart_pass": true,
         "tick2_new_orders_this_tick": 0
+      },
+      "dod_evidence": {
+        "gate_light_exit": 0,
+        "healthcheck": [
+          "rules/task-reports/2026-03/260324_044_healthcheck_53122_root.txt",
+          "rules/task-reports/2026-03/260324_044_healthcheck_53122_pairs.txt"
+        ]
       }
     }
   }
