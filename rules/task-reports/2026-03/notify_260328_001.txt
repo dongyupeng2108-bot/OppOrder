@@ -1,0 +1,13 @@
+RESULT_JSON
+rules/task-reports/2026-03/result_260328_001.json
+LOG_HEAD
+[Docs] M2-2 边界说明已完成：明确 bot 正式产品面 vs 旧 strategy 实例承载层。
+LOG_TAIL
+docs-only task, no code/test/ci modification
+EVIDENCE
+docs/BOT_SURFACE_VS_STRATEGY_INSTANCE_BOUNDARY.md
+docs/README.md
+docs/MODULE_MAP.md
+docs/MODULAR_ROADMAP.md
+INDEX
+rules/task-reports/2026-03/result_260328_001.json

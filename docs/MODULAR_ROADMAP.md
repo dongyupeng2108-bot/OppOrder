@@ -36,7 +36,8 @@ M2 典型产出（放行后）：[`MODULE_MAP.md`](MODULE_MAP.md) **对外契约
 
 - **Owner 批准**：已明确批准启动 M2；具体 PR / 任务描述可作为书面记录。
 - **M2-1（已完成）**：[`VERIFY_PLAYBOOK.md`](VERIFY_PLAYBOOK.md)「总入口」已互链 [`PROJECT_MASTER_PLAN.md`](../rules/rules/PROJECT_MASTER_PLAN.md) **§5.4** 与 [`MODULE_MAP.md`](MODULE_MAP.md) **各模块对外契约要点（索引）**（未复制 §5.4 表）。
-- **M2-2 及以后**：**未启动**；需再拆下一条时再更新本列表，**不并行**铺开。
+- **M2-2（已完成）**：新增 [`BOT_SURFACE_VS_STRATEGY_INSTANCE_BOUNDARY.md`](BOT_SURFACE_VS_STRATEGY_INSTANCE_BOUNDARY.md)，明确 bot 正式产品面 vs 旧 strategy 实例承载层边界（docs-only）。
+- **M2-3 及以后**：**未启动**；需再拆下一条时再更新本列表，**不并行**铺开。
 
 ---
 
