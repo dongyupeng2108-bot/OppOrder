@@ -1,0 +1,40 @@
+{
+  "window_id": "btc-updown-5m-1773060600",
+  "last_window_id": null,
+  "slug": "btc-updown-5m-1773060600",
+  "period": "5m",
+  "remaining_sec": 120,
+  "btc_price": 98234.5,
+  "anchor_btc": 98200,
+  "atr_5m": 45.2,
+  "upper_bound": 98554.24,
+  "lower_bound": 97845.76,
+  "bid_yes": 0.52,
+  "ask_yes": 0.53,
+  "bid_no": 0.47,
+  "ask_no": 0.48,
+  "tick_size": 0.01,
+  "stale": false,
+  "updated_at": "2026-03-27T12:00:00.000Z",
+  "_btc_source_trace": {
+    "source_init_started": true,
+    "source_init_error": null,
+    "source_feed_seen": true,
+    "source_feed_count": 42,
+    "source_last_feed_at": "2026-03-27T12:00:00.000Z",
+    "latest_cache_price": 98234.5,
+    "latest_cache_at": "2026-03-27T12:00:00.000Z",
+    "latest_cache_source": "feed",
+    "price_resolution": {
+      "kind": "cache",
+      "used_strike_raw": null,
+      "used_anchor_fallback_raw": null
+    },
+    "atr_resolution": {
+      "window_atr_5m_raw": 45.2,
+      "window_atr_raw": null,
+      "state_atr_5m_raw": null,
+      "resolved_atr_5m": 45.2
+    }
+  }
+}

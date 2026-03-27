@@ -1,0 +1,17 @@
+{
+  "ts": "2026-03-27T14:35:11.077Z",
+  "base_url": "http://localhost:53133",
+  "kind": "GET snapshot / filled_total reconcile",
+  "note": "Diagnostic only. After full verify_executor_idempotency (multi-scenario), state may not match end of fill path — primary evidence is verify JSON. loose=counts match; strict=same as verify filled_total_chain_pass preconditions.",
+  "table": {
+    "window_id": "debug-main-path-v1-w1",
+    "unique_filled_order_id_count": 0,
+    "summary_filled_total": 0,
+    "last_run_filled_total": 0,
+    "postmortem_filled_total": 0,
+    "performance_target_window_filled_total": 0
+  },
+  "filled_total_chain_aligned_strict": false,
+  "filled_total_chain_aligned_loose": true,
+  "http_ok": true
+}

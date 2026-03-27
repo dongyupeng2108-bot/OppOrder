@@ -1,5 +1,23 @@
-TASK_ID=260324_044
+Task ID: 260324_044
+Header: TraeTask_260324_044
+Date: 2026-03-28T12:30:00.000Z
+Branch: feat/btcqdd-p0-p1-runtime
+COMMIT: 0e5d86c7
 RESULT_FILE=result_260324_044.json
 NOTIFY_FILE=notify_260324_044.txt
-REPORT_SHA256_SHORT=01466118
+REPORT_SHA256_SHORT=c7719456
 GATE_LIGHT_EXIT=0
+
+=== DOD_EVIDENCE_STDOUT ===
+TASK_ID=260324_044
+SCOPE=BTCQDD P1: bot_order_ledger / bot_runner / HTTP filled_total chain alignment.
+VERIFY=node scripts/verify_executor_idempotency.mjs
+RUNTIME_AUX=node scripts/collect_filled_total_runtime_reconcile.mjs
+GATE_LIGHT_EXIT=0
+
+=== GATE_LIGHT_VERIFY ===
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] Report Block Check Passed: notify_260324_044.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260324_044.txt
+[Gate Light] Header Check Passed: TraeTask_260324_044
+[Gate Light] PASS

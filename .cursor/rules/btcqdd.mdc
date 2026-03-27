@@ -1,0 +1,82 @@
+---
+description: BTCQDD 执行机器人 — Cursor Agent 默认上下文（与 rules/rules 真源一致）
+globs:
+  - strategies/crypto_binary/**
+  - ui/js/strategy-editor.js
+  - ui/strategy-editor.html
+  - scripts/verify*.mjs
+---
+
+# BTCQDD（Cursor Agent）
+
+## 身份与范围
+
+- **业务主名：BTCQDD**（非「Opportunity Radar 产品」）。技术别名：`OppOrder`、路径 `E:\OppRadar`、`OppRadar` 仅作定位。
+- **当前推进范围**：BTC 15m/5m Up/Down **执行机器人**（Paper 优先）+ 控制台 UI；**Opportunity Radar（53122）产品化已搁置**，默认不要混用其产品思路。
+- **正式产品控制面**：`strategies/crypto_binary/server.mjs` 中 **`/bot/*`** 与页面 [`ui/strategy-editor.html`](ui/strategy-editor.html) / [`ui/js/strategy-editor.js`](ui/js/strategy-editor.js)。默认端口 **53123**（以代码 `--port` 为准）。
+- **旧 strategy 实例**（`instances/*.json`、`--strategy`、StrategyManager）：**承载/兼容层**，不等于「通用策略管理平台」；**不要**未经确认改成「页面完全驱动整套实例」。
+
+## 权威文档（勿在规则里重复长文）
+
+- 详细规则：[`rules/rules/PROJECT_RULES.md`](rules/rules/PROJECT_RULES.md)
+- 流程：[`rules/rules/WORKFLOW.md`](rules/rules/WORKFLOW.md)
+- 主计划：[`rules/rules/PROJECT_MASTER_PLAN.md`](rules/rules/PROJECT_MASTER_PLAN.md)
+- Owner 一页纸摘要：[`docs/OWNER_BTCQDD_ONE_PAGER.md`](docs/OWNER_BTCQDD_ONE_PAGER.md)
+- 模块划分：[`docs/MODULE_MAP.md`](docs/MODULE_MAP.md)
+- 本地开发入口：[`docs/README_BTCQDD.md`](docs/README_BTCQDD.md)
+- P0 工作流：[`docs/P0_WORKSTREAM.md`](docs/P0_WORKSTREAM.md)
+- Bot HTTP 契约：[`docs/BOT_HTTP_CONTRACT.md`](docs/BOT_HTTP_CONTRACT.md)
+- 版本测试分流：[`docs/VERIFY_PLAYBOOK.md`](docs/VERIFY_PLAYBOOK.md)
+- Live 闸门（未来）：[`docs/LIVE_GATES.md`](docs/LIVE_GATES.md)
+- 搁置范围：[`docs/DEFERRED_SCOPE.md`](docs/DEFERRED_SCOPE.md)
+- **审核与合并（强制）**：[`docs/CURSOR_REVIEW_MERGE.md`](docs/CURSOR_REVIEW_MERGE.md)
+- **执行与回报（防幻觉）**：[`docs/CURSOR_EXECUTION_REPORTING.md`](docs/CURSOR_EXECUTION_REPORTING.md)
+
+## 审核与合并（强制）
+
+- **无自行 merge 权限**：可本地修改、验证、commit、push、**创建 PR**；**合并仅由 Owner 决定**。
+- **不得**将「已提交 / 已开 PR / CI 通过」表述为「已合并」或业务闭环。
+- 回报须分三层：**本地完成 / PR 状态 / 合并状态**（默认写「未合并，等待 Owner 审核」）。详见 [`docs/CURSOR_REVIEW_MERGE.md`](docs/CURSOR_REVIEW_MERGE.md)。
+
+## 执行与回报（防幻觉）
+
+- 完成类型须拆开：**DOC / UI / TEST / CODE / RUNTIME**，禁止混成一句「任务完成」；**DOC 不能冒充 RUNTIME**；**TEST 不能自动冒充业务正确**。  
+- 「已完成 / 已修复 / 已闭环」须带**完成类型 + 最小事实块 + 未覆盖边界**。  
+- **记账用语**：用 **文档项完成 / 测试辅助完成 / 业务闭环未完成** 三句；**禁止**用「Phase 完成」「todo completed」指代仅文档或仅脚本（见 [`CURSOR_EXECUTION_REPORTING.md`](docs/CURSOR_EXECUTION_REPORTING.md) §10）。  
+- 固定格式与轻/重任务分流：见 [`docs/CURSOR_EXECUTION_REPORTING.md`](docs/CURSOR_EXECUTION_REPORTING.md)。
+
+## 工作方式（摘自 WORKFLOW）
+
+- **一次一单**；任务绑定 `task_id`；**范围锁**（允许/禁止改哪些文件）。
+- **轻任务**（UI/文案/布局、纯脚本稳定化）：轻验收，DOM/接口/日志事实块即可。
+- **重任务**（生命周期、订单语义、真实运行 bug、版本测试主链）：先定位 → 真实运行复验 → 再沉淀测试。
+
+## 测试哲学（摘自 PROJECT_RULES）
+
+- **测试包是护栏，不替代真实修复验收**；**real runtime** 是验收主样本，debug 为对照。
+- 测试失败须区分：**业务 bug / 测试资产 bug / 两者**（如 `verify_order_scope_and_status` 历史定性）。
+- **禁止**删断言「绕过通过」；证据与 `rules/LATEST.json` / Gate Light 以真源文档为准。
+
+## 高风险不变量（摘要）
+
+- 未就绪不得推进依赖动作；**非 `PLACE_LADDER` tick 不得新增订单**。
+- **`current_window_id` / `last_window_id` / runtime snapshot** 语义不得混。
+- **`filled_total == unique FILLED order_id count`**；running 不得混入 completed summary。
+- **source chain** 须可达：`source init → feed → cache → context → ready`。
+- **bounds readiness** 须单独验证；**`anchor_btc` 同窗只冻一次**，不随 `btc_price` 漂移；ATR 缺失可 not ready，但**不得反复 window init**；**bounds 仍属执行主链**（前端弱化不等于后端可删语义）。
+
+## 环境与行情（不要「简化」兼容性）
+
+- 不假设所有行情源恒可达；**保留 Coinbase 备源、代理（`HTTPS_PROXY` 等）**；勿擅自删除。
+
+## 禁止（除非 Owner 明确任务）
+
+- 擅自增加自动实盘推进；因 UI 顺手改后端交易语义；恢复已删信息噪音字段；未读语义即大改 `server.mjs` / 生命周期；把项目扩成「通用策略平台」。
+
+## 起手阅读（修改 Bot 主链前）
+
+- [`strategies/crypto_binary/server.mjs`](strategies/crypto_binary/server.mjs)（bot 段）
+- [`strategies/crypto_binary/bot_runner.mjs`](strategies/crypto_binary/bot_runner.mjs)
+- [`strategies/crypto_binary/bot_state.mjs`](strategies/crypto_binary/bot_state.mjs)
+- [`strategies/crypto_binary/bot_context_adapter.mjs`](strategies/crypto_binary/bot_context_adapter.mjs)
+- [`scripts/verify_all_manual.mjs`](scripts/verify_all_manual.mjs)、`verify_anchor_bounds_lifecycle.mjs`、`verify_order_scope_and_status.mjs`
