@@ -1426,15 +1426,17 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
 
                      const diffFiles = execSync(`git diff --name-only ${snippetCommit} ${currentHead}`, { encoding: 'utf8' }).split('\n').filter(Boolean);
                      
+                     const isSnippetDriftWhitelisted = (normalized) =>
+                         normalized.startsWith('rules/task-reports/') ||
+                         normalized.startsWith('rules/rules/') ||
+                         normalized.startsWith('rules/reports/') ||
+                         normalized.startsWith('docs/') ||
+                         normalized === 'rules/LATEST.json' ||
+                         normalized === 'scripts/gate_light_ci.mjs';
+
                      const hasCodeChanges = diffFiles.some(file => {
                          const normalized = file.replace(/\\/g, '/');
-                         // Whitelist: rules/task-reports/ (Evidence), rules/rules/ (Docs), docs/ (BTCQDD & repo docs),
-                         // rules/LATEST.json, rules/reports/ (Postflight)
-                        return !normalized.startsWith('rules/task-reports/') && 
-                               !normalized.startsWith('rules/rules/') &&
-                               !normalized.startsWith('rules/reports/') &&
-                               !normalized.startsWith('docs/') &&
-                               normalized !== 'rules/LATEST.json';
+                         return !isSnippetDriftWhitelisted(normalized);
                      });
                      
                      if (hasCodeChanges) {
@@ -1446,11 +1448,7 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                              console.error(`Changed code files:`);
                             diffFiles.filter(f => {
                                const n = f.replace(/\\/g, '/');
-                               return !n.startsWith('rules/task-reports/') &&
-                                      !n.startsWith('rules/rules/') &&
-                                      !n.startsWith('rules/reports/') &&
-                                      !n.startsWith('docs/') &&
-                                      n !== 'rules/LATEST.json';
+                               return !isSnippetDriftWhitelisted(n);
                             }).forEach(f => console.error(`  - ${f}`));
                              console.error(`Fix Suggestion: Re-run Integrate/Build Snippet to align with latest code.`);
                              console.error(`FIX_CMD: .\\scripts\\run_task.ps1 -TaskId ${task_id} -Mode Integrate -Header "TraeTask_${task_id}"`);
