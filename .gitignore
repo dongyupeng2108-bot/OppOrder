@@ -2,6 +2,8 @@
 rules/task-reports/20??-??/**
 # Gate Light: committed workspace healer snapshots (branch may omit task_id; CI reads this path)
 !rules/task-reports/20??-??/workspace_healer_*.json
+# Gate Light: curl -i healthcheck evidence (HTTP 200 ASCII)
+!rules/task-reports/20??-??/*_healthcheck_53122_*.txt
 rules/reports/**
 
 # Allowed Persistent Artifacts
