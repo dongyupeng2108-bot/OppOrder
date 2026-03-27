@@ -15,5 +15,6 @@
 | [DEFERRED_SCOPE.md](DEFERRED_SCOPE.md) | 显式不排期：Radar 产品、通用平台、策略生成/回测 |
 | [DELIVERY_REPORT_DOC_GOVERNANCE.md](DELIVERY_REPORT_DOC_GOVERNANCE.md) | **交付说明**：DOC/TEST-light 铺底 vs 业务闭环划界 |
 | [CURSOR_REVIEW_MERGE.md](CURSOR_REVIEW_MERGE.md) | **Cursor**：审核与合并流程（无自合并、回报格式） |
+| [CURSOR_EXECUTION_REPORTING.md](CURSOR_EXECUTION_REPORTING.md) | **Cursor**：执行与回报规范（完成类型、证据、防幻觉） |
 
 治理真源始终在 **[`rules/rules/`](../rules/rules/)**。

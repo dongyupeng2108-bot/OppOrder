@@ -1,6 +1,7 @@
 # BTCQDD｜Cursor 审核与合并流程
 
-本文档约束 **Cursor Agent** 在本仓库内的权限与回报口径；与 [`rules/rules/WORKFLOW.md`](../rules/rules/WORKFLOW.md) 并行，**合并决策权**以本文为准。
+本文档约束 **Cursor Agent** 在本仓库内的权限与回报口径；与 [`rules/rules/WORKFLOW.md`](../rules/rules/WORKFLOW.md) 并行，**合并决策权**以本文为准。  
+**完成类型与证据、防模糊记账**：见 [`CURSOR_EXECUTION_REPORTING.md`](CURSOR_EXECUTION_REPORTING.md)。
 
 ---
 
