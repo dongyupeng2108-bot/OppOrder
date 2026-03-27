@@ -3,6 +3,7 @@
 **模块定义**：边界清晰、接口可约定、可单独验证的一块能力。  
 本文档与 [`rules/rules/PROJECT_MASTER_PLAN.md`](../rules/rules/PROJECT_MASTER_PLAN.md) 的测试与优先级一致；文件路径随重构可调整，**契约与语义**以 `PROJECT_RULES` 为准。  
 **分阶段路线与门禁**（M0–M3）：[`MODULAR_ROADMAP.md`](MODULAR_ROADMAP.md)。**进展**以 MASTER PLAN + [`BTCQDD_CODE_RUNTIME_BACKLOG_STATUS.md`](BTCQDD_CODE_RUNTIME_BACKLOG_STATUS.md) 为准。
+**产品面边界说明**：[`BOT_SURFACE_VS_STRATEGY_INSTANCE_BOUNDARY.md`](BOT_SURFACE_VS_STRATEGY_INSTANCE_BOUNDARY.md)（M2-2，docs-only）。
 
 ## 总览：执行机器人五模块
 

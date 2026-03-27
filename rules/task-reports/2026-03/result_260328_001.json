@@ -1,0 +1,18 @@
+{
+  "task_id": "260328_001",
+  "status": "DONE",
+  "scope_guard": "docs-only：边界说明 + 最小互链",
+  "changes": {
+    "new_doc": "docs/BOT_SURFACE_VS_STRATEGY_INSTANCE_BOUNDARY.md",
+    "linked_from": [
+      "docs/README.md",
+      "docs/MODULE_MAP.md"
+    ],
+    "roadmap_note": "docs/MODULAR_ROADMAP.md M2-2 已完成说明"
+  },
+  "validation": {
+    "code_change": false,
+    "test_change": false,
+    "ci_change": false
+  }
+}
