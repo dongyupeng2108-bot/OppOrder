@@ -1,0 +1,12 @@
+{
+  "task_id": "260328_014",
+  "is_shallow_repo": true,
+  "base": "1b5449c024a686fcdfb603728cc398dae368562c",
+  "head": "d22a6c34b7bde1e3e191bd89096b5b60c3c612e4",
+  "merge_base": "1b5449c024a686fcdfb603728cc398dae368562c",
+  "scope_files": [
+    "scripts/finalize_task_evidence.mjs"
+  ],
+  "scope_count": 1,
+  "generated_at": "2026-03-28T13:11:53.188Z"
+}
