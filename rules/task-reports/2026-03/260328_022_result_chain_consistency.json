@@ -1,0 +1,857 @@
+{
+  "script_name": "verify_result_chain_consistency",
+  "task_id": "260328_022",
+  "sample_name": "debug_fill_yes_path_v1",
+  "pass": true,
+  "message": "result chain 一致性校验通过",
+  "first_break_layer": null,
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260328_022_result_chain_consistency.json",
+  "summary": {
+    "sample_sufficient": true,
+    "filled_total_equals_unique_filled_order_count": true,
+    "last_run_equals_summary": true,
+    "postmortem_equals_summary": true,
+    "performance_equals_summary": true
+  },
+  "raw_excerpt": {
+    "window_id": "debug-fill-yes-path-v1-w1",
+    "unique_filled_order_id_count": 1,
+    "summary_filled_total": 1,
+    "performance_target_window_filled_total": 1
+  },
+  "generated_at": "2026-03-28T18:12:33.827Z",
+  "command": "node scripts/verify_result_chain_consistency.mjs --task_id=260328_022 --sample=debug_fill_yes_path_v1",
+  "result_chain_table": {
+    "window_id": "debug-fill-yes-path-v1-w1",
+    "unique_order_id_count": 8,
+    "unique_filled_order_id_count": 1,
+    "unique_cancelled_order_id_count": 0,
+    "summary_filled_total": 1,
+    "summary_cancelled_total": null,
+    "summary_cancelled_total_basis": "missing",
+    "last_run_filled_total": 1,
+    "postmortem_filled_total": 1,
+    "performance_target_window_filled_total": 1
+  },
+  "checks": {
+    "filled_total_equals_unique_filled_order_count": true,
+    "last_run_equals_summary": true,
+    "postmortem_equals_summary": true,
+    "performance_equals_summary": true
+  },
+  "sample_sufficient": true,
+  "scenario": "fill_yes_path_v1",
+  "result": {
+    "result_chain_consistency_pass": true
+  },
+  "raw": {
+    "orders": {
+      "status": 200,
+      "body": {
+        "orders": [
+          {
+            "order_id": "paper_b47ab784",
+            "kind": "ENTRY",
+            "side": "YES",
+            "price": 0.27,
+            "size": 5,
+            "status": "FILLED",
+            "fill_price": 0.27,
+            "filled_at": "2026-03-28T18:12:32.417Z",
+            "created_at": "2026-03-28T18:12:31.471Z",
+            "source": "runner_tick",
+            "inferred_window_id": "debug-fill-yes-path-v1-w1"
+          },
+          {
+            "order_id": "paper_1d356f44",
+            "kind": "ENTRY",
+            "side": "NO",
+            "price": 0.27,
+            "size": 5,
+            "status": "OPEN",
+            "fill_price": null,
+            "filled_at": null,
+            "created_at": "2026-03-28T18:12:31.471Z",
+            "source": "runner_tick",
+            "inferred_window_id": "debug-fill-yes-path-v1-w1"
+          },
+          {
+            "order_id": "paper_5123675a",
+            "kind": "ENTRY",
+            "side": "YES",
+            "price": 0.24,
+            "size": 5,
+            "status": "OPEN",
+            "fill_price": null,
+            "filled_at": null,
+            "created_at": "2026-03-28T18:12:31.471Z",
+            "source": "runner_tick",
+            "inferred_window_id": "debug-fill-yes-path-v1-w1"
+          },
+          {
+            "order_id": "paper_3464936b",
+            "kind": "ENTRY",
+            "side": "NO",
+            "price": 0.24,
+            "size": 5,
+            "status": "OPEN",
+            "fill_price": null,
+            "filled_at": null,
+            "created_at": "2026-03-28T18:12:31.471Z",
+            "source": "runner_tick",
+            "inferred_window_id": "debug-fill-yes-path-v1-w1"
+          },
+          {
+            "order_id": "paper_1204b38a",
+            "kind": "ENTRY",
+            "side": "YES",
+            "price": 0.21,
+            "size": 5,
+            "status": "OPEN",
+            "fill_price": null,
+            "filled_at": null,
+            "created_at": "2026-03-28T18:12:31.471Z",
+            "source": "runner_tick",
+            "inferred_window_id": "debug-fill-yes-path-v1-w1"
+          },
+          {
+            "order_id": "paper_1094dff7",
+            "kind": "ENTRY",
+            "side": "NO",
+            "price": 0.21,
+            "size": 5,
+            "status": "OPEN",
+            "fill_price": null,
+            "filled_at": null,
+            "created_at": "2026-03-28T18:12:31.471Z",
+            "source": "runner_tick",
+            "inferred_window_id": "debug-fill-yes-path-v1-w1"
+          },
+          {
+            "order_id": "paper_4e7255b8",
+            "kind": "ENTRY",
+            "side": "YES",
+            "price": 0.18,
+            "size": 5,
+            "status": "OPEN",
+            "fill_price": null,
+            "filled_at": null,
+            "created_at": "2026-03-28T18:12:31.471Z",
+            "source": "runner_tick",
+            "inferred_window_id": "debug-fill-yes-path-v1-w1"
+          },
+          {
+            "order_id": "paper_5aefad61",
+            "kind": "ENTRY",
+            "side": "NO",
+            "price": 0.18,
+            "size": 5,
+            "status": "OPEN",
+            "fill_price": null,
+            "filled_at": null,
+            "created_at": "2026-03-28T18:12:31.471Z",
+            "source": "runner_tick",
+            "inferred_window_id": "debug-fill-yes-path-v1-w1"
+          }
+        ],
+        "window_orders": [
+          {
+            "order_id": "paper_b47ab784",
+            "kind": "ENTRY",
+            "side": "YES",
+            "price": 0.27,
+            "size": 5,
+            "status": "FILLED",
+            "fill_price": 0.27,
+            "filled_at": "2026-03-28T18:12:32.417Z",
+            "created_at": "2026-03-28T18:12:31.471Z",
+            "source": "runner_tick",
+            "inferred_window_id": "debug-fill-yes-path-v1-w1"
+          },
+          {
+            "order_id": "paper_1d356f44",
+            "kind": "ENTRY",
+            "side": "NO",
+            "price": 0.27,
+            "size": 5,
+            "status": "OPEN",
+            "fill_price": null,
+            "filled_at": null,
+            "created_at": "2026-03-28T18:12:31.471Z",
+            "source": "runner_tick",
+            "inferred_window_id": "debug-fill-yes-path-v1-w1"
+          },
+          {
+            "order_id": "paper_5123675a",
+            "kind": "ENTRY",
+            "side": "YES",
+            "price": 0.24,
+            "size": 5,
+            "status": "OPEN",
+            "fill_price": null,
+            "filled_at": null,
+            "created_at": "2026-03-28T18:12:31.471Z",
+            "source": "runner_tick",
+            "inferred_window_id": "debug-fill-yes-path-v1-w1"
+          },
+          {
+            "order_id": "paper_3464936b",
+            "kind": "ENTRY",
+            "side": "NO",
+            "price": 0.24,
+            "size": 5,
+            "status": "OPEN",
+            "fill_price": null,
+            "filled_at": null,
+            "created_at": "2026-03-28T18:12:31.471Z",
+            "source": "runner_tick",
+            "inferred_window_id": "debug-fill-yes-path-v1-w1"
+          },
+          {
+            "order_id": "paper_1204b38a",
+            "kind": "ENTRY",
+            "side": "YES",
+            "price": 0.21,
+            "size": 5,
+            "status": "OPEN",
+            "fill_price": null,
+            "filled_at": null,
+            "created_at": "2026-03-28T18:12:31.471Z",
+            "source": "runner_tick",
+            "inferred_window_id": "debug-fill-yes-path-v1-w1"
+          },
+          {
+            "order_id": "paper_1094dff7",
+            "kind": "ENTRY",
+            "side": "NO",
+            "price": 0.21,
+            "size": 5,
+            "status": "OPEN",
+            "fill_price": null,
+            "filled_at": null,
+            "created_at": "2026-03-28T18:12:31.471Z",
+            "source": "runner_tick",
+            "inferred_window_id": "debug-fill-yes-path-v1-w1"
+          },
+          {
+            "order_id": "paper_4e7255b8",
+            "kind": "ENTRY",
+            "side": "YES",
+            "price": 0.18,
+            "size": 5,
+            "status": "OPEN",
+            "fill_price": null,
+            "filled_at": null,
+            "created_at": "2026-03-28T18:12:31.471Z",
+            "source": "runner_tick",
+            "inferred_window_id": "debug-fill-yes-path-v1-w1"
+          },
+          {
+            "order_id": "paper_5aefad61",
+            "kind": "ENTRY",
+            "side": "NO",
+            "price": 0.18,
+            "size": 5,
+            "status": "OPEN",
+            "fill_price": null,
+            "filled_at": null,
+            "created_at": "2026-03-28T18:12:31.471Z",
+            "source": "runner_tick",
+            "inferred_window_id": "debug-fill-yes-path-v1-w1"
+          }
+        ],
+        "all_orders": [
+          {
+            "order_id": "paper_b47ab784",
+            "kind": "ENTRY",
+            "side": "YES",
+            "price": 0.27,
+            "size": 5,
+            "status": "FILLED",
+            "fill_price": 0.27,
+            "filled_at": "2026-03-28T18:12:32.417Z",
+            "created_at": "2026-03-28T18:12:31.471Z",
+            "source": "runner_tick",
+            "inferred_window_id": "debug-fill-yes-path-v1-w1"
+          },
+          {
+            "order_id": "paper_1d356f44",
+            "kind": "ENTRY",
+            "side": "NO",
+            "price": 0.27,
+            "size": 5,
+            "status": "OPEN",
+            "fill_price": null,
+            "filled_at": null,
+            "created_at": "2026-03-28T18:12:31.471Z",
+            "source": "runner_tick",
+            "inferred_window_id": "debug-fill-yes-path-v1-w1"
+          },
+          {
+            "order_id": "paper_5123675a",
+            "kind": "ENTRY",
+            "side": "YES",
+            "price": 0.24,
+            "size": 5,
+            "status": "OPEN",
+            "fill_price": null,
+            "filled_at": null,
+            "created_at": "2026-03-28T18:12:31.471Z",
+            "source": "runner_tick",
+            "inferred_window_id": "debug-fill-yes-path-v1-w1"
+          },
+          {
+            "order_id": "paper_3464936b",
+            "kind": "ENTRY",
+            "side": "NO",
+            "price": 0.24,
+            "size": 5,
+            "status": "OPEN",
+            "fill_price": null,
+            "filled_at": null,
+            "created_at": "2026-03-28T18:12:31.471Z",
+            "source": "runner_tick",
+            "inferred_window_id": "debug-fill-yes-path-v1-w1"
+          },
+          {
+            "order_id": "paper_1204b38a",
+            "kind": "ENTRY",
+            "side": "YES",
+            "price": 0.21,
+            "size": 5,
+            "status": "OPEN",
+            "fill_price": null,
+            "filled_at": null,
+            "created_at": "2026-03-28T18:12:31.471Z",
+            "source": "runner_tick",
+            "inferred_window_id": "debug-fill-yes-path-v1-w1"
+          },
+          {
+            "order_id": "paper_1094dff7",
+            "kind": "ENTRY",
+            "side": "NO",
+            "price": 0.21,
+            "size": 5,
+            "status": "OPEN",
+            "fill_price": null,
+            "filled_at": null,
+            "created_at": "2026-03-28T18:12:31.471Z",
+            "source": "runner_tick",
+            "inferred_window_id": "debug-fill-yes-path-v1-w1"
+          },
+          {
+            "order_id": "paper_4e7255b8",
+            "kind": "ENTRY",
+            "side": "YES",
+            "price": 0.18,
+            "size": 5,
+            "status": "OPEN",
+            "fill_price": null,
+            "filled_at": null,
+            "created_at": "2026-03-28T18:12:31.471Z",
+            "source": "runner_tick",
+            "inferred_window_id": "debug-fill-yes-path-v1-w1"
+          },
+          {
+            "order_id": "paper_5aefad61",
+            "kind": "ENTRY",
+            "side": "NO",
+            "price": 0.18,
+            "size": 5,
+            "status": "OPEN",
+            "fill_price": null,
+            "filled_at": null,
+            "created_at": "2026-03-28T18:12:31.471Z",
+            "source": "runner_tick",
+            "inferred_window_id": "debug-fill-yes-path-v1-w1"
+          }
+        ],
+        "summary": {
+          "total": 8,
+          "open_total": 7,
+          "cancelled_total": 0,
+          "filled_total": 1,
+          "open_yes": 3,
+          "open_no": 4,
+          "filled_yes": 1,
+          "filled_no": 0
+        },
+        "window_scope": {
+          "scope": "last_window",
+          "running": false,
+          "active_window_id": null,
+          "display_window_id": "debug-fill-yes-path-v1-w1",
+          "label": "上一窗口订单（停止态）",
+          "ownership_rule": "停止态展示上一窗口订单，不冒充当前活动窗口"
+        },
+        "hidden_other_window_count": 0
+      }
+    },
+    "status": {
+      "status": 200,
+      "body": {
+        "mode": "paper-staging",
+        "phase": "IDLE",
+        "running": false,
+        "debug_scenario": "fill_yes_path_v1",
+        "debug_frame_index": 4,
+        "debug_completed": false,
+        "tick_interval_ms": 1000,
+        "last_tick_at": "2026-03-28T18:12:32.419Z",
+        "last_window_id": "debug-fill-yes-path-v1-w1",
+        "current_window_id": null,
+        "window_initialized_at": null,
+        "remaining_sec": 280,
+        "anchor_btc": null,
+        "atr_5m": null,
+        "upper_bound": null,
+        "lower_bound": null,
+        "ladder_posted": true,
+        "yes_cancelled": false,
+        "no_cancelled": false,
+        "yes_order_ids": [
+          "paper_5123675a",
+          "paper_1204b38a",
+          "paper_4e7255b8"
+        ],
+        "no_order_ids": [
+          "paper_1d356f44",
+          "paper_3464936b",
+          "paper_1094dff7",
+          "paper_5aefad61"
+        ],
+        "last_reason": null,
+        "last_intents": [],
+        "updated_at": "2026-03-28T18:12:33.000Z",
+        "saved_config": {
+          "open_delay_sec": 10,
+          "ladder_prices": [
+            0.27,
+            0.24,
+            0.21,
+            0.18
+          ],
+          "ladder_size": 5,
+          "atr_multiple": 1.2,
+          "cancel_all_remaining_sec": 100
+        },
+        "last_run_snapshot": {
+          "stop_reason": "MANUAL_STOP",
+          "completed_at": "2026-03-28T18:12:33.000Z",
+          "current_window_id": "debug-fill-yes-path-v1-w1",
+          "phase": "IDLE",
+          "filled_total": 1,
+          "cancelled_total": 0,
+          "realized_gross_pnl_total": 0,
+          "unrealized_gross_pnl_total": 0.14999999999999986,
+          "active_config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          }
+        },
+        "active_runtime_snapshot": null
+      }
+    },
+    "postmortem": {
+      "status": 200,
+      "body": {
+        "ok": true,
+        "postmortem": {
+          "id": 1648,
+          "strategy_id": "bot_console",
+          "event_id": "debug-fill-yes-path-v1-w1",
+          "window_start": "2026-03-28T18:12:33.000Z",
+          "window_end": "2026-03-28T18:12:33.000Z",
+          "created_at": "2026-03-28T18:12:33.000Z",
+          "window_id": "debug-fill-yes-path-v1-w1",
+          "stop_reason": "MANUAL_STOP",
+          "completed_at": "2026-03-28T18:12:33.000Z",
+          "filled_total": 1,
+          "cancelled_total": 0,
+          "realized_gross_pnl_total": 0,
+          "unrealized_gross_pnl_total": 0.14999999999999986,
+          "active_config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "action_summary": [
+            "PLACE_LADDER"
+          ]
+        }
+      }
+    },
+    "summary": {
+      "status": 200,
+      "body": {
+        "yes_entry_filled_count": 1,
+        "yes_exit_filled_count": 0,
+        "yes_position_size": 5,
+        "yes_avg_fill_price": 0.27,
+        "yes_realized_gross_pnl": 0,
+        "yes_unrealized_gross_pnl": 0.14999999999999986,
+        "no_entry_filled_count": 0,
+        "no_exit_filled_count": 0,
+        "no_position_size": 0,
+        "no_avg_fill_price": null,
+        "no_realized_gross_pnl": 0,
+        "no_unrealized_gross_pnl": 0,
+        "filled_total": 1,
+        "realized_gross_pnl_total": 0,
+        "unrealized_gross_pnl_total": 0.14999999999999986,
+        "updated_at": "2026-03-28T18:12:33.812Z"
+      }
+    },
+    "performance": {
+      "status": 200,
+      "body": {
+        "ok": true,
+        "summary": {
+          "preset": "today",
+          "window_count": 25,
+          "filled_total": 4,
+          "cancelled_total": 0,
+          "realized_gross_pnl_total": 0,
+          "unrealized_gross_pnl_total": 2.9999999999999996,
+          "avg_realized_gross_pnl_per_window": 0,
+          "avg_unrealized_gross_pnl_per_window": 0.11999999999999998,
+          "running_window_excluded": true,
+          "sample_postmortem_rows": [
+            {
+              "id": 1648,
+              "window_id": "debug-fill-yes-path-v1-w1",
+              "completed_at": "2026-03-28T18:12:33.000Z",
+              "filled_total": 1,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0.14999999999999986
+            },
+            {
+              "id": 1647,
+              "window_id": "debug-main-path-v1-w1",
+              "completed_at": "2026-03-28T18:12:27.858Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 1646,
+              "window_id": "debug-main-path-v1-w1",
+              "completed_at": "2026-03-28T18:12:25.277Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 1645,
+              "window_id": "debug-fill-yes-path-v1-w1",
+              "completed_at": "2026-03-28T18:12:21.314Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 1644,
+              "window_id": "debug-main-path-v1-w1",
+              "completed_at": "2026-03-28T18:12:19.638Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 1643,
+              "window_id": "debug-fill-yes-path-v1-w1",
+              "completed_at": "2026-03-28T18:12:17.183Z",
+              "filled_total": 1,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0.14999999999999986
+            },
+            {
+              "id": 1642,
+              "window_id": "debug-main-path-v1-w1",
+              "completed_at": "2026-03-28T18:12:08.133Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 1641,
+              "window_id": "btc-updown-5m-1774721400",
+              "completed_at": "2026-03-28T18:12:01.538Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 1640,
+              "window_id": "debug-main-path-v1-w1",
+              "completed_at": "2026-03-28T18:11:39.960Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 1639,
+              "window_id": "debug-main-path-v1-w1",
+              "completed_at": "2026-03-28T18:11:33.032Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            }
+          ],
+          "participating_postmortem_rows": [
+            {
+              "id": 1648,
+              "window_id": "debug-fill-yes-path-v1-w1",
+              "completed_at": "2026-03-28T18:12:33.000Z",
+              "filled_total": 1,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0.14999999999999986
+            },
+            {
+              "id": 1647,
+              "window_id": "debug-main-path-v1-w1",
+              "completed_at": "2026-03-28T18:12:27.858Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 1646,
+              "window_id": "debug-main-path-v1-w1",
+              "completed_at": "2026-03-28T18:12:25.277Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 1645,
+              "window_id": "debug-fill-yes-path-v1-w1",
+              "completed_at": "2026-03-28T18:12:21.314Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 1644,
+              "window_id": "debug-main-path-v1-w1",
+              "completed_at": "2026-03-28T18:12:19.638Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 1643,
+              "window_id": "debug-fill-yes-path-v1-w1",
+              "completed_at": "2026-03-28T18:12:17.183Z",
+              "filled_total": 1,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0.14999999999999986
+            },
+            {
+              "id": 1642,
+              "window_id": "debug-main-path-v1-w1",
+              "completed_at": "2026-03-28T18:12:08.133Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 1641,
+              "window_id": "btc-updown-5m-1774721400",
+              "completed_at": "2026-03-28T18:12:01.538Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 1640,
+              "window_id": "debug-main-path-v1-w1",
+              "completed_at": "2026-03-28T18:11:39.960Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 1639,
+              "window_id": "debug-main-path-v1-w1",
+              "completed_at": "2026-03-28T18:11:33.032Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 1638,
+              "window_id": "btc-updown-5m-1774721400",
+              "completed_at": "2026-03-28T18:11:31.124Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 1637,
+              "window_id": "debug-main-path-v1-w1",
+              "completed_at": "2026-03-28T18:11:27.597Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 1636,
+              "window_id": "debug-main-path-v1-w1",
+              "completed_at": "2026-03-28T18:11:23.871Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 1635,
+              "window_id": "debug-main-path-v1-w1",
+              "completed_at": "2026-03-28T18:11:21.660Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 1634,
+              "window_id": "btc-updown-5m-1774721400",
+              "completed_at": "2026-03-28T18:11:19.466Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 1633,
+              "window_id": "btc-updown-5m-1774721400",
+              "completed_at": "2026-03-28T18:10:58.751Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 1632,
+              "window_id": null,
+              "completed_at": "2026-03-28T18:10:38.921Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 1631,
+              "window_id": "btc-updown-5m-1774721100",
+              "completed_at": "2026-03-28T18:09:51.399Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 1630,
+              "window_id": "btc-updown-5m-1774721100",
+              "completed_at": "2026-03-28T18:09:23.163Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 1629,
+              "window_id": "btc-updown-5m-1774721100",
+              "completed_at": "2026-03-28T18:08:34.025Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 1628,
+              "window_id": "btc-updown-5m-1774721100",
+              "completed_at": "2026-03-28T18:08:02.202Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 1627,
+              "window_id": "btc-updown-5m-1774721100",
+              "completed_at": "2026-03-28T18:07:43.270Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 1626,
+              "window_id": "btc-updown-5m-1774721100",
+              "completed_at": "2026-03-28T18:06:00.251Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 1625,
+              "window_id": "btc-updown-5m-1774721100",
+              "completed_at": "2026-03-28T18:05:18.133Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 1624,
+              "window_id": "btc-updown-5m-1774721100",
+              "completed_at": "2026-03-28T18:05:01.949Z",
+              "filled_total": 2,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 2.6999999999999997
+            }
+          ]
+        }
+      }
+    }
+  }
+}
