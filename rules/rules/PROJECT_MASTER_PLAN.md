@@ -135,5 +135,26 @@
 
 - **模块划分（五模块 + 排障）**：[`docs/MODULE_MAP.md`](../../docs/MODULE_MAP.md)
 - **分阶段 M0–M3、M1 门禁（主线 backlog 最新未闭环项）**：[`docs/MODULAR_ROADMAP.md`](../../docs/MODULAR_ROADMAP.md)
-- **M2**：**默认须 Owner 明确放行**方可启动；不得以「backlog 无未闭环项」自动进入——见 `MODULAR_ROADMAP` §M2。
-- **进展**：以本文档 §9–§10 与 [`docs/BTCQDD_CODE_RUNTIME_BACKLOG_STATUS.md`](../../docs/BTCQDD_CODE_RUNTIME_BACKLOG_STATUS.md) 为准；模块化深化见 `MODULAR_ROADMAP` 中 M2。
+- **M 系列状态**：M0–M2 已完成，M3 已取消（不进入当前阶段计划）。
+- **C 系列状态**：C1-1 ~ C1-4 已完成（总口径、薄契约、绑定图、变更门槛均已落地）。
+- **当前模块化边界**：到 M2 + C1 为止，不继续推进 M3 物理拆分。
+- **进展**：以本文档 §12 与 [`docs/BTCQDD_CODE_RUNTIME_BACKLOG_STATUS.md`](../../docs/BTCQDD_CODE_RUNTIME_BACKLOG_STATUS.md) 为准。
+
+## 12. 当前项目状态总览（执行真源）
+
+### 12.1 已闭环项
+
+- 模块化 M 系列：M0、M1、M2 全部完成。
+- 语义治理 C 系列：C1-1、C1-2、C1-3、C1-4 全部完成。
+- 高风险口径治理资产已形成：总口径、五模块薄契约、绑定图、变更门槛。
+
+### 12.2 默认下一步顺序
+
+1. 三大文档同步与执行规则切换
+2. 真钱前 UI/BUG 收口
+3. 极小额真钱链路验证
+
+### 12.3 冻结项
+
+- M3 物理目录 / 包级拆分：当前冻结并取消，不作为当前阶段任务入口。
+- 未经 Owner 新批准，不重启“结构性大拆分”任务。
