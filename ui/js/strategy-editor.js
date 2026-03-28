@@ -137,11 +137,8 @@ async function initStrategyEditor() {
 
   container.innerHTML = `
     <div class="se-layout" style="height:100%;display:flex;flex-direction:column;background:#0b0d10;color:#d6dde5;position:relative;">
-      <div style="height:62px;border-bottom:1px solid #232a33;background:#0d131a;padding:0 12px;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr auto auto auto auto auto;gap:10px;align-items:center;">
+      <div style="height:62px;border-bottom:1px solid #232a33;background:#0d131a;padding:0 12px;display:grid;grid-template-columns:1fr auto auto auto auto auto;gap:10px;align-items:center;">
         <div style="font-size:18px;letter-spacing:.3px;">BTCQDD 执行机器人</div>
-        <div style="border-left:1px solid #1c222b;padding-left:10px;font-size:12px;color:#9aa5b2;line-height:1.5;"><b style="color:#d6dde5;">运行状态</b><span id="se-top-running">已停止</span></div>
-        <div style="border-left:1px solid #1c222b;padding-left:10px;font-size:12px;color:#9aa5b2;line-height:1.5;"><b style="color:#d6dde5;">当前</b><span id="se-top-activity">当前无活动窗口</span></div>
-        <div style="border-left:1px solid #1c222b;padding-left:10px;font-size:12px;color:#9aa5b2;line-height:1.5;"><b style="color:#d6dde5;">上次结束</b><span id="se-top-last-stop">暂无</span></div>
         <button id="se-btn-param-toggle" onclick="se_toggleParamsPanel()" style="height:34px;width:34px;border:1px solid #2f3946;background:#18202a;color:#d6dde5;border-radius:4px;cursor:pointer;">⚙</button>
         <button id="se-btn-module-info" onclick="se_openModuleInfo()" style="height:34px;border:1px solid #35506b;background:#1a2a3a;color:#c8e6ff;border-radius:4px;padding:0 10px;cursor:pointer;">模块说明</button>
         <button id="se-btn-test" onclick="se_runVersionTest()" style="height:34px;border:1px solid #35506b;background:#1a2a3a;color:#c8e6ff;border-radius:4px;padding:0 10px;cursor:pointer;">版本测试</button>
@@ -153,9 +150,9 @@ async function initStrategyEditor() {
         <section class="se-order-panel" style="border:1px solid #232a33;background:#11161c;padding:10px;min-height:0;width:100%;max-width:none;overflow:hidden;display:flex;flex-direction:column;">
           <div id="se-order-title" class="se-order-title">当前窗口订单状态</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;padding:4px 2px 8px 2px;">
-            <div style="color:#7f8a97;">BTC价格</div><div id="se-order-btc" style="text-align:right;color:#d6dde5;">—</div>
-            <div style="color:#7f8a97;">UPDOWN概率</div><div id="se-order-updown-prob" style="text-align:right;color:#d6dde5;">—</div>
-            <div style="color:#7f8a97;">波动值</div><div id="se-order-volatility" style="text-align:right;color:#d6dde5;">—</div>
+            <div style="color:#7f8a97;">BTC价格</div><div id="se-order-btc" style="text-align:left;color:#d6dde5;">—</div>
+            <div style="color:#7f8a97;">UPDOWN概率</div><div id="se-order-updown-prob" style="text-align:left;color:#d6dde5;">—</div>
+            <div style="color:#7f8a97;">波动值</div><div id="se-order-volatility" style="text-align:left;color:#d6dde5;">—</div>
           </div>
           <div style="flex:1;min-height:0;overflow:auto;">
             <table class="se-order-table" style="table-layout:fixed;width:100%;">
@@ -177,11 +174,13 @@ async function initStrategyEditor() {
         </section>
         <div style="background:#0b0d10;border-left:1px solid #1a2028;border-right:1px solid #1a2028;"></div>
         <div style="min-height:0;display:grid;grid-template-rows:minmax(260px,1fr) 208px;gap:10px;">
-          <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;min-height:0;">
+          <div style="display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,0.5fr);gap:10px;min-height:0;">
             <section style="border:1px solid #232a33;background:#11161c;padding:10px;display:flex;flex-direction:column;min-height:0;gap:8px;">
               <div style="display:flex;justify-content:space-between;align-items:center;">
-                <h3 style="margin:0;font-size:13px;color:#d6dde5;">实时日志（中文主显示）</h3>
+                <h3 style="margin:0;font-size:13px;color:#d6dde5;">实时日志</h3>
                 <div style="display:flex;align-items:center;gap:8px;">
+                  <span style="font-size:11px;color:#7f8a97;">当前窗口</span>
+                  <span id="se-log-current-window" style="font-size:11px;color:#d6dde5;font-family:monospace;">—</span>
                   <span id="se-countdown" style="font-size:11px;color:#aaa;font-family:monospace;">--:--</span>
                 </div>
               </div>
@@ -889,7 +888,6 @@ function se_renderContext(context, status) {
     const num = toFinite(value);
     return num === null ? emptyText : num.toFixed(3);
   };
-  se_setText('se-top-activity', running ? `窗口 ${se_formatStateValue(status?.current_window_id)}` : '当前无活动窗口');
   const upProb = toFinite(context?.bid_yes ?? context?.ask_yes);
   const downProb = toFinite(context?.bid_no ?? context?.ask_no);
   const upDownText = (upProb !== null && downProb !== null)
@@ -951,8 +949,7 @@ function se_renderOverview(status, summary, ordersData, postmortemPayload) {
   const stopReasonText = stopReasonRaw === 'AUTO_COMPLETED'
     ? '自动完成'
     : (stopReasonRaw === 'MANUAL_STOP' ? '手动停止' : (stopReasonRaw || '暂无'));
-  se_setText('se-top-running', status?.running === true ? '运行中' : '已停止');
-  se_setText('se-top-last-stop', stopReasonText);
+  se_setText('se-log-current-window', postmortem?.window_id || lastRun?.current_window_id);
   const paramSummary = savedConfig
     ? `开盘等待 ${se_formatStateValue(savedConfig.open_delay_sec)} 秒 · 波动 ${se_formatStateValue(savedConfig.atr_multiple)} · 全撤 ${se_formatStateValue(savedConfig.cancel_all_remaining_sec)} 秒`
     : '参数尚未加载';
