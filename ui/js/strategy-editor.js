@@ -125,9 +125,27 @@ async function restartServer() {
   }
 }
 
-const BOT_CONFIG_FIELDS = ['open_delay_sec', 'ladder_prices', 'ladder_size', 'atr_multiple', 'cancel_all_remaining_sec'];
+const BOT_CONFIG_FIELDS = [
+  'open_delay_sec',
+  'ladder_prices',
+  'ladder_size',
+  'atr_multiple',
+  'cancel_all_remaining_sec',
+  'up_ladder',
+  'down_ladder',
+  'up_cancel',
+  'down_cancel'
+];
+const SE_DEFAULT_OPEN_DELAY_SEC = 10;
+const SE_DEFAULT_ATR_MULTIPLE = 1.2;
+const SE_DEFAULT_CANCEL_ALL_REMAINING_SEC = 100;
+const SE_DEFAULT_LADDER_SIZE = 5;
+const SE_DEFAULT_LADDER_PRICES = [0.27, 0.24, 0.21, 0.18];
+const SE_DEFAULT_LADDER_ROWS = SE_DEFAULT_LADDER_PRICES.map((price) => ({ price, size: SE_DEFAULT_LADDER_SIZE, tp_price: price }));
 let _seConfigCurrent = null;
 let _seConfigDefaults = null;
+let _seParamActiveTab = 'up';
+let _seParamDraft = null;
 
 // 初始化
 async function initStrategyEditor() {
@@ -226,29 +244,35 @@ async function initStrategyEditor() {
         </div>
       </div>
       <aside id="se-param-collapse" style="display:none;position:absolute;top:62px;left:10px;width:320px;max-height:calc(100% - 74px);border:1px solid #1c222b;background:#0d1218;padding:10px;overflow:auto;z-index:20;">
-        <h3 style="margin:0 0 8px 0;font-size:13px;color:#d6dde5;">参数设置</h3>
-        <div id="se-param-summary" style="font-size:12px;color:#9aa5b2;line-height:1.6;margin-bottom:6px;">读取中...</div>
+        <h3 style="margin:0 0 8px 0;font-size:13px;color:#d6dde5;">策略参数</h3>
         <div id="se-snapshot-note" style="font-size:11px;color:#7f8a97;line-height:1.5;margin-bottom:8px;">saved/active runtime snapshot 读取中...</div>
         <div id="se-params-form" style="color:#ddd; display: flex; flex-direction: column; gap: 12px;">
           <div>
-            <label style="display:block; margin-bottom:5px; font-weight:bold;">开盘等待</label>
+            <label style="display:block; margin-bottom:5px; font-weight:bold;">开盘等待秒数</label>
             <input type="number" id="param_open_delay_sec" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
           </div>
-          <div>
-            <label style="display:block; margin-bottom:5px; font-weight:bold;">全撤提前量</label>
-            <input type="number" id="param_cancel_all_remaining_sec" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
+          <div style="display:flex;gap:6px;">
+            <button id="se-param-tab-up" onclick="se_switchParamTab('up')" style="flex:1;background:#1d3a28;color:#c8ffd8;border:1px solid #2f6a47;border-radius:4px;padding:6px;cursor:pointer;">UP挂单</button>
+            <button id="se-param-tab-down" onclick="se_switchParamTab('down')" style="flex:1;background:#1a2330;color:#c8e6ff;border:1px solid #35506b;border-radius:4px;padding:6px;cursor:pointer;">DOWN挂单</button>
           </div>
-          <div>
-            <label style="display:block; margin-bottom:5px; font-weight:bold;">波动乘数</label>
-            <input type="number" step="0.01" id="param_atr_multiple" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
+          <div style="border:1px solid #232a33;background:#11161c;padding:8px;border-radius:4px;display:flex;flex-direction:column;gap:8px;">
+            <div id="se-ladder-title" style="font-weight:bold;color:#d6dde5;">UP挂单档位</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:6px;font-size:11px;color:#8fa1b3;">
+              <div>挂单价</div><div>数量</div><div>止盈价</div><div></div>
+            </div>
+            <div id="se-ladder-rows" style="display:flex;flex-direction:column;gap:6px;"></div>
+            <button onclick="se_addLadderRow()" style="align-self:flex-start;background:#1f1f1f;color:#ddd;border:1px solid #555;border-radius:4px;padding:4px 8px;cursor:pointer;">新增档位</button>
           </div>
-          <div>
-            <label style="display:block; margin-bottom:5px; font-weight:bold;">单档数量</label>
-            <input type="number" id="param_ladder_size" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
-          </div>
-          <div>
-            <label style="display:block; margin-bottom:5px; font-weight:bold;">挂单价格梯队（逗号分隔）</label>
-            <input type="text" id="param_ladder_prices" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
+          <div style="border:1px solid #232a33;background:#11161c;padding:8px;border-radius:4px;display:flex;flex-direction:column;gap:8px;">
+            <div id="se-cancel-title" style="font-weight:bold;color:#d6dde5;">UP撤单条件</div>
+            <div>
+              <label style="display:block; margin-bottom:5px;">结束前若干秒全撤</label>
+              <input type="number" id="param_direction_before_end_sec" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
+            </div>
+            <div>
+              <label style="display:block; margin-bottom:5px;">公式触发撤单</label>
+              <input type="text" id="param_direction_formula" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
+            </div>
           </div>
           <div style="display:flex;gap:8px;">
             <button class="se-btn" onclick="se_restoreDefaultParams()" style="background:#444;color:#eee;border:1px solid #555;padding:4px 8px;border-radius:4px;cursor:pointer;">恢复默认</button>
@@ -348,28 +372,193 @@ async function se_loadParams() {
     }
     _seConfigCurrent = se_pickBotConfig(data.current);
     _seConfigDefaults = se_pickBotConfig(data.defaults);
+    _seParamActiveTab = 'up';
     se_renderParams(_seConfigCurrent);
     se_setParamFeedback('参数已加载', '#8bc34a');
   } catch (e) {
     _seConfigDefaults = {
-      open_delay_sec: 10,
-      ladder_prices: [0.27, 0.24, 0.21, 0.18],
-      ladder_size: 5,
-      atr_multiple: 1.2,
-      cancel_all_remaining_sec: 100
+      open_delay_sec: SE_DEFAULT_OPEN_DELAY_SEC,
+      ladder_prices: [...SE_DEFAULT_LADDER_PRICES],
+      ladder_size: SE_DEFAULT_LADDER_SIZE,
+      atr_multiple: SE_DEFAULT_ATR_MULTIPLE,
+      cancel_all_remaining_sec: SE_DEFAULT_CANCEL_ALL_REMAINING_SEC,
+      up_ladder: SE_DEFAULT_LADDER_ROWS.map((item) => ({ ...item })),
+      down_ladder: SE_DEFAULT_LADDER_ROWS.map((item) => ({ ...item })),
+      up_cancel: { before_end_sec: SE_DEFAULT_CANCEL_ALL_REMAINING_SEC, formula: '' },
+      down_cancel: { before_end_sec: SE_DEFAULT_CANCEL_ALL_REMAINING_SEC, formula: '' }
     };
-    _seConfigCurrent = { ..._seConfigDefaults, ladder_prices: [..._seConfigDefaults.ladder_prices] };
+    _seConfigCurrent = {
+      ..._seConfigDefaults,
+      ladder_prices: [..._seConfigDefaults.ladder_prices],
+      up_ladder: _seConfigDefaults.up_ladder.map((item) => ({ ...item })),
+      down_ladder: _seConfigDefaults.down_ladder.map((item) => ({ ...item })),
+      up_cancel: { ..._seConfigDefaults.up_cancel },
+      down_cancel: { ..._seConfigDefaults.down_cancel }
+    };
+    _seParamActiveTab = 'up';
     se_renderParams(_seConfigCurrent);
     se_setParamFeedback(`读取参数失败: ${e.message}`, '#ff8a80');
   }
 }
 
+function se_cloneLadderRows(rows = []) {
+  return rows.map((item) => ({
+    price: Number(item.price),
+    size: Number(item.size),
+    tp_price: Number(item.tp_price)
+  }));
+}
+
+function se_normalizeLadderRows(rows = [], fallbackRows = SE_DEFAULT_LADDER_ROWS) {
+  const source = Array.isArray(rows) && rows.length > 0 ? rows : fallbackRows;
+  const normalized = source.map((item) => {
+    const price = Number(item?.price);
+    const size = Number(item?.size);
+    const tpPriceRaw = item?.tp_price;
+    const tpPrice = tpPriceRaw === undefined || tpPriceRaw === null || tpPriceRaw === '' ? price : Number(tpPriceRaw);
+    if (!Number.isFinite(price) || !Number.isFinite(size) || !Number.isFinite(tpPrice)) return null;
+    return { price, size, tp_price: tpPrice };
+  }).filter(Boolean);
+  return normalized.length > 0 ? normalized : se_cloneLadderRows(fallbackRows);
+}
+
+function se_normalizeCancelConfig(value = {}, fallbackBeforeEndSec = SE_DEFAULT_CANCEL_ALL_REMAINING_SEC) {
+  const beforeEndSec = Number.isInteger(Number(value?.before_end_sec))
+    ? Number(value.before_end_sec)
+    : fallbackBeforeEndSec;
+  const formula = typeof value?.formula === 'string' ? value.formula : '';
+  return {
+    before_end_sec: beforeEndSec,
+    formula
+  };
+}
+
+function se_setTabButtonState() {
+  const upBtn = document.getElementById('se-param-tab-up');
+  const downBtn = document.getElementById('se-param-tab-down');
+  if (upBtn) {
+    const active = _seParamActiveTab === 'up';
+    upBtn.style.background = active ? '#1d3a28' : '#1a2330';
+    upBtn.style.color = active ? '#c8ffd8' : '#aab8c8';
+    upBtn.style.borderColor = active ? '#2f6a47' : '#35506b';
+  }
+  if (downBtn) {
+    const active = _seParamActiveTab === 'down';
+    downBtn.style.background = active ? '#3a2a1d' : '#1a2330';
+    downBtn.style.color = active ? '#ffd7b5' : '#aab8c8';
+    downBtn.style.borderColor = active ? '#6c4e2a' : '#35506b';
+  }
+}
+
+function se_syncActiveTabFromForm() {
+  if (!_seParamDraft) return;
+  const rows = [];
+  let index = 0;
+  while (true) {
+    const priceEl = document.getElementById(`param_${_seParamActiveTab}_price_${index}`);
+    const sizeEl = document.getElementById(`param_${_seParamActiveTab}_size_${index}`);
+    const tpEl = document.getElementById(`param_${_seParamActiveTab}_tp_${index}`);
+    if (!priceEl || !sizeEl || !tpEl) break;
+    rows.push({
+      price: Number(priceEl.value),
+      size: Number(sizeEl.value),
+      tp_price: Number(tpEl.value)
+    });
+    index += 1;
+  }
+  if (rows.length > 0) _seParamDraft[`${_seParamActiveTab}_ladder`] = rows;
+  const beforeEndEl = document.getElementById('param_direction_before_end_sec');
+  const formulaEl = document.getElementById('param_direction_formula');
+  if (beforeEndEl && formulaEl) {
+    _seParamDraft[`${_seParamActiveTab}_cancel`] = {
+      before_end_sec: Number(beforeEndEl.value),
+      formula: String(formulaEl.value || '')
+    };
+  }
+}
+
+function se_renderActiveTabPanel() {
+  if (!_seParamDraft) return;
+  se_setTabButtonState();
+  const directionLabel = _seParamActiveTab === 'up' ? 'UP' : 'DOWN';
+  const rowsContainer = document.getElementById('se-ladder-rows');
+  const title = document.getElementById('se-ladder-title');
+  const cancelTitle = document.getElementById('se-cancel-title');
+  if (title) title.textContent = `${directionLabel}挂单档位`;
+  if (cancelTitle) cancelTitle.textContent = `${directionLabel}撤单条件`;
+  if (rowsContainer) {
+    const ladderRows = _seParamDraft[`${_seParamActiveTab}_ladder`] || [];
+    rowsContainer.innerHTML = ladderRows.map((_, index) => `
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:6px;">
+        <input type="number" step="0.001" id="param_${_seParamActiveTab}_price_${index}" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
+        <input type="number" step="0.001" id="param_${_seParamActiveTab}_size_${index}" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
+        <input type="number" step="0.001" id="param_${_seParamActiveTab}_tp_${index}" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
+        <button onclick="se_removeLadderRow(${index})" style="background:#3a1f1f;color:#ffb3b3;border:1px solid #6a2f2f;border-radius:4px;padding:0 8px;cursor:pointer;">删</button>
+      </div>
+    `).join('');
+    ladderRows.forEach((row, index) => {
+      const priceEl = document.getElementById(`param_${_seParamActiveTab}_price_${index}`);
+      const sizeEl = document.getElementById(`param_${_seParamActiveTab}_size_${index}`);
+      const tpEl = document.getElementById(`param_${_seParamActiveTab}_tp_${index}`);
+      if (priceEl) priceEl.value = row.price;
+      if (sizeEl) sizeEl.value = row.size;
+      if (tpEl) tpEl.value = row.tp_price;
+    });
+  }
+  const cancelConfig = _seParamDraft[`${_seParamActiveTab}_cancel`] || { before_end_sec: 0, formula: '' };
+  const beforeEndEl = document.getElementById('param_direction_before_end_sec');
+  const formulaEl = document.getElementById('param_direction_formula');
+  if (beforeEndEl) beforeEndEl.value = cancelConfig.before_end_sec;
+  if (formulaEl) formulaEl.value = cancelConfig.formula;
+}
+
+function se_switchParamTab(tab) {
+  if (tab !== 'up' && tab !== 'down') return;
+  if (!_seParamDraft) return;
+  se_syncActiveTabFromForm();
+  _seParamActiveTab = tab;
+  se_renderActiveTabPanel();
+}
+
+function se_addLadderRow() {
+  if (!_seParamDraft) return;
+  se_syncActiveTabFromForm();
+  const key = `${_seParamActiveTab}_ladder`;
+  const rows = _seParamDraft[key] || [];
+  const last = rows[rows.length - 1] || { price: 0.2, size: 1, tp_price: 0.2 };
+  rows.push({ price: Number(last.price), size: Number(last.size), tp_price: Number(last.tp_price) });
+  _seParamDraft[key] = rows;
+  se_renderActiveTabPanel();
+}
+
+function se_removeLadderRow(index) {
+  if (!_seParamDraft) return;
+  se_syncActiveTabFromForm();
+  const key = `${_seParamActiveTab}_ladder`;
+  const rows = _seParamDraft[key] || [];
+  if (rows.length <= 1) {
+    se_setParamFeedback('每个方向至少保留 1 档', '#ffb74d');
+    return;
+  }
+  rows.splice(index, 1);
+  _seParamDraft[key] = rows;
+  se_renderActiveTabPanel();
+}
+
 function se_renderParams(params) {
+  _seParamDraft = {
+    open_delay_sec: Number(params.open_delay_sec),
+    ladder_prices: Array.isArray(params.ladder_prices) ? params.ladder_prices.map((item) => Number(item)) : [...SE_DEFAULT_LADDER_PRICES],
+    ladder_size: Number(params.ladder_size),
+    atr_multiple: Number(params.atr_multiple),
+    cancel_all_remaining_sec: Number(params.cancel_all_remaining_sec),
+    up_ladder: se_normalizeLadderRows(params.up_ladder),
+    down_ladder: se_normalizeLadderRows(params.down_ladder),
+    up_cancel: se_normalizeCancelConfig(params.up_cancel, Number(params.cancel_all_remaining_sec)),
+    down_cancel: se_normalizeCancelConfig(params.down_cancel, Number(params.cancel_all_remaining_sec))
+  };
   document.getElementById('param_open_delay_sec').value = params.open_delay_sec;
-  document.getElementById('param_cancel_all_remaining_sec').value = params.cancel_all_remaining_sec;
-  document.getElementById('param_atr_multiple').value = params.atr_multiple;
-  document.getElementById('param_ladder_size').value = params.ladder_size;
-  document.getElementById('param_ladder_prices').value = Array.isArray(params.ladder_prices) ? params.ladder_prices.join(',') : '';
+  se_renderActiveTabPanel();
 }
 
 function se_toggleParamsPanel(forceOpen = null) {
@@ -416,34 +605,62 @@ async function se_saveParams() {
 function se_pickBotConfig(input = {}) {
   const picked = {};
   for (const key of BOT_CONFIG_FIELDS) picked[key] = input[key];
+  const ladderPrices = Array.isArray(picked.ladder_prices) ? picked.ladder_prices.map((item) => Number(item)) : [...SE_DEFAULT_LADDER_PRICES];
+  const ladderSize = Number(picked.ladder_size ?? SE_DEFAULT_LADDER_SIZE);
+  const fallbackRows = ladderPrices.map((price) => ({ price, size: ladderSize, tp_price: price }));
+  const cancelFallback = Number(picked.cancel_all_remaining_sec ?? SE_DEFAULT_CANCEL_ALL_REMAINING_SEC);
   return {
-    open_delay_sec: Number(picked.open_delay_sec ?? 0),
-    ladder_prices: Array.isArray(picked.ladder_prices) ? picked.ladder_prices.map((item) => Number(item)) : [],
-    ladder_size: Number(picked.ladder_size ?? 1),
-    atr_multiple: Number(picked.atr_multiple ?? 1.2),
-    cancel_all_remaining_sec: Number(picked.cancel_all_remaining_sec ?? 100)
+    open_delay_sec: Number(picked.open_delay_sec ?? SE_DEFAULT_OPEN_DELAY_SEC),
+    ladder_prices: ladderPrices,
+    ladder_size: ladderSize,
+    atr_multiple: Number(picked.atr_multiple ?? SE_DEFAULT_ATR_MULTIPLE),
+    cancel_all_remaining_sec: cancelFallback,
+    up_ladder: se_normalizeLadderRows(picked.up_ladder, fallbackRows),
+    down_ladder: se_normalizeLadderRows(picked.down_ladder, fallbackRows),
+    up_cancel: se_normalizeCancelConfig(picked.up_cancel, cancelFallback),
+    down_cancel: se_normalizeCancelConfig(picked.down_cancel, cancelFallback)
   };
 }
 
 function se_readParamsFromForm() {
+  se_syncActiveTabFromForm();
+  const openDelaySec = Number(document.getElementById('param_open_delay_sec').value);
+  const current = _seParamDraft || _seConfigCurrent || se_pickBotConfig({});
   return {
-    open_delay_sec: Number(document.getElementById('param_open_delay_sec').value),
-    ladder_prices: String(document.getElementById('param_ladder_prices').value || '')
-      .split(',')
-      .map((item) => Number(item.trim()))
-      .filter((item) => Number.isFinite(item)),
-    ladder_size: Number(document.getElementById('param_ladder_size').value),
-    atr_multiple: Number(document.getElementById('param_atr_multiple').value),
-    cancel_all_remaining_sec: Number(document.getElementById('param_cancel_all_remaining_sec').value)
+    open_delay_sec: openDelaySec,
+    ladder_prices: Array.isArray(current.ladder_prices) ? current.ladder_prices.map((item) => Number(item)) : [...SE_DEFAULT_LADDER_PRICES],
+    ladder_size: Number(current.ladder_size),
+    atr_multiple: Number(current.atr_multiple),
+    cancel_all_remaining_sec: Number(current.cancel_all_remaining_sec),
+    up_ladder: se_cloneLadderRows(current.up_ladder || []),
+    down_ladder: se_cloneLadderRows(current.down_ladder || []),
+    up_cancel: {
+      before_end_sec: Number(current.up_cancel?.before_end_sec),
+      formula: String(current.up_cancel?.formula || '')
+    },
+    down_cancel: {
+      before_end_sec: Number(current.down_cancel?.before_end_sec),
+      formula: String(current.down_cancel?.formula || '')
+    }
   };
 }
 
 function se_validateParams(params) {
   if (!Number.isInteger(params.open_delay_sec) || params.open_delay_sec < 0) return 'open_delay_sec 必须为非负整数';
+  if (!Array.isArray(params.up_ladder) || params.up_ladder.length < 1) return 'up_ladder 至少保留 1 档';
+  if (!Array.isArray(params.down_ladder) || params.down_ladder.length < 1) return 'down_ladder 至少保留 1 档';
+  const invalidUp = params.up_ladder.some((item) => !Number.isFinite(item.price) || item.price <= 0 || item.price >= 1 || !Number.isFinite(item.size) || item.size <= 0 || !Number.isFinite(item.tp_price) || item.tp_price <= 0 || item.tp_price >= 1);
+  if (invalidUp) return 'up_ladder 每档需满足 0 < price,tp_price < 1 且 size > 0';
+  const invalidDown = params.down_ladder.some((item) => !Number.isFinite(item.price) || item.price <= 0 || item.price >= 1 || !Number.isFinite(item.size) || item.size <= 0 || !Number.isFinite(item.tp_price) || item.tp_price <= 0 || item.tp_price >= 1);
+  if (invalidDown) return 'down_ladder 每档需满足 0 < price,tp_price < 1 且 size > 0';
+  if (!Number.isInteger(params.up_cancel.before_end_sec) || params.up_cancel.before_end_sec < 0) return 'up_cancel.before_end_sec 必须为非负整数';
+  if (!Number.isInteger(params.down_cancel.before_end_sec) || params.down_cancel.before_end_sec < 0) return 'down_cancel.before_end_sec 必须为非负整数';
+  if (params.up_cancel.formula.length > 240) return 'up_cancel.formula 长度不能超过 240';
+  if (params.down_cancel.formula.length > 240) return 'down_cancel.formula 长度不能超过 240';
   if (!Number.isInteger(params.cancel_all_remaining_sec) || params.cancel_all_remaining_sec < 0) return 'cancel_all_remaining_sec 必须为非负整数';
   if (!Number.isInteger(params.ladder_size) || params.ladder_size <= 0) return 'ladder_size 必须为正整数';
   if (!Number.isFinite(params.atr_multiple) || params.atr_multiple <= 0) return 'atr_multiple 必须为正数';
-  if (!Array.isArray(params.ladder_prices) || params.ladder_prices.length !== 4) return 'ladder_prices 必须为 4 个数值';
+  if (!Array.isArray(params.ladder_prices) || params.ladder_prices.length < 1) return 'ladder_prices 至少保留 1 个数值';
   if (params.ladder_prices.some((item) => !Number.isFinite(item) || item <= 0 || item >= 1)) return 'ladder_prices 每项必须满足 0 < p < 1';
   return null;
 }
