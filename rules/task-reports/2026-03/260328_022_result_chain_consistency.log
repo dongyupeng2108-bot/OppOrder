@@ -1,0 +1,6 @@
+script_name=verify_result_chain_consistency
+task_id=260328_022
+sample_name=debug_fill_yes_path_v1
+pass=true
+first_break_layer=null
+message=result chain 一致性校验通过

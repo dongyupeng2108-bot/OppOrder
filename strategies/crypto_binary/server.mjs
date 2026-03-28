@@ -74,27 +74,44 @@ const BOT_TEST_STATE_IDLE = 'idle';
 const BOT_TEST_STATE_RUNNING = 'running';
 const BOT_TEST_STATE_PASSED = 'passed';
 const BOT_TEST_STATE_FAILED = 'failed';
+const toLadderRows = (prices, size) => prices.map((price) => ({ price, size }));
 const BOT_CONFIG_DEFAULTS = {
   open_delay_sec: 10,
   ladder_prices: [...BOT_STRATEGY_CONTRACT.defaults.ladder_prices],
   ladder_size: BOT_STRATEGY_CONTRACT.defaults.ladder_size,
   atr_multiple: 1.2,
-  cancel_all_remaining_sec: 100
+  cancel_all_remaining_sec: 100,
+  up_ladder: toLadderRows(BOT_STRATEGY_CONTRACT.defaults.ladder_prices, BOT_STRATEGY_CONTRACT.defaults.ladder_size),
+  down_ladder: toLadderRows(BOT_STRATEGY_CONTRACT.defaults.ladder_prices, BOT_STRATEGY_CONTRACT.defaults.ladder_size),
+  up_cancel: { before_end_sec: 100, formula: '' },
+  down_cancel: { before_end_sec: 100, formula: '' }
 };
 const BOT_CONFIG_INTERNAL_DEFAULTS = {
   open_delay_sec: BOT_CONFIG_DEFAULTS.open_delay_sec,
   ladder_prices: [...BOT_CONFIG_DEFAULTS.ladder_prices],
   ladder_size: BOT_CONFIG_DEFAULTS.ladder_size,
   atr_multiplier: BOT_CONFIG_DEFAULTS.atr_multiple,
-  cancel_all_remaining_sec: BOT_CONFIG_DEFAULTS.cancel_all_remaining_sec
+  cancel_all_remaining_sec: BOT_CONFIG_DEFAULTS.cancel_all_remaining_sec,
+  up_ladder: BOT_CONFIG_DEFAULTS.up_ladder.map((item) => ({ ...item })),
+  down_ladder: BOT_CONFIG_DEFAULTS.down_ladder.map((item) => ({ ...item })),
+  up_cancel: { ...BOT_CONFIG_DEFAULTS.up_cancel },
+  down_cancel: { ...BOT_CONFIG_DEFAULTS.down_cancel }
 };
 let botConfigCurrent = {
   ...BOT_CONFIG_DEFAULTS,
-  ladder_prices: [...BOT_CONFIG_DEFAULTS.ladder_prices]
+  ladder_prices: [...BOT_CONFIG_DEFAULTS.ladder_prices],
+  up_ladder: BOT_CONFIG_DEFAULTS.up_ladder.map((item) => ({ ...item })),
+  down_ladder: BOT_CONFIG_DEFAULTS.down_ladder.map((item) => ({ ...item })),
+  up_cancel: { ...BOT_CONFIG_DEFAULTS.up_cancel },
+  down_cancel: { ...BOT_CONFIG_DEFAULTS.down_cancel }
 };
 const botRunnerConfig = {
   ...BOT_CONFIG_INTERNAL_DEFAULTS,
-  ladder_prices: [...BOT_CONFIG_INTERNAL_DEFAULTS.ladder_prices]
+  ladder_prices: [...BOT_CONFIG_INTERNAL_DEFAULTS.ladder_prices],
+  up_ladder: BOT_CONFIG_INTERNAL_DEFAULTS.up_ladder.map((item) => ({ ...item })),
+  down_ladder: BOT_CONFIG_INTERNAL_DEFAULTS.down_ladder.map((item) => ({ ...item })),
+  up_cancel: { ...BOT_CONFIG_INTERNAL_DEFAULTS.up_cancel },
+  down_cancel: { ...BOT_CONFIG_INTERNAL_DEFAULTS.down_cancel }
 };
 let botActiveRuntimeConfig = null;
 let botLastRunSnapshot = null;
@@ -233,19 +250,32 @@ const launchBotTestRun = ({ taskId, simulateFail = false }) => {
   });
   return { ok: true, started: true, already_running: false, status: getBotTestStatusSnapshot() };
 };
+const cloneLadderRows = (rows = []) => rows.map((item) => ({ price: Number(item.price), size: Number(item.size) }));
+const cloneCancelConfig = (value = {}) => ({
+  before_end_sec: Number(value.before_end_sec),
+  formula: typeof value.formula === 'string' ? value.formula : ''
+});
 const cloneBotConfig = (value) => ({
   open_delay_sec: Number(value.open_delay_sec),
   ladder_prices: [...value.ladder_prices],
   ladder_size: Number(value.ladder_size),
   atr_multiple: Number(value.atr_multiple),
-  cancel_all_remaining_sec: Number(value.cancel_all_remaining_sec)
+  cancel_all_remaining_sec: Number(value.cancel_all_remaining_sec),
+  up_ladder: cloneLadderRows(value.up_ladder),
+  down_ladder: cloneLadderRows(value.down_ladder),
+  up_cancel: cloneCancelConfig(value.up_cancel),
+  down_cancel: cloneCancelConfig(value.down_cancel)
 });
 const toInternalRunnerConfig = (value) => ({
   open_delay_sec: Number(value.open_delay_sec),
   ladder_prices: [...value.ladder_prices],
   ladder_size: Number(value.ladder_size),
   atr_multiplier: Number(value.atr_multiple),
-  cancel_all_remaining_sec: Number(value.cancel_all_remaining_sec)
+  cancel_all_remaining_sec: Number(value.cancel_all_remaining_sec),
+  up_ladder: cloneLadderRows(value.up_ladder),
+  down_ladder: cloneLadderRows(value.down_ladder),
+  up_cancel: cloneCancelConfig(value.up_cancel),
+  down_cancel: cloneCancelConfig(value.down_cancel)
 });
 const setBotConfigCurrent = (nextConfig) => {
   botConfigCurrent = cloneBotConfig(nextConfig);
@@ -256,6 +286,10 @@ const setBotConfigCurrent = (nextConfig) => {
     botRunnerConfig.ladder_size = internal.ladder_size;
     botRunnerConfig.atr_multiplier = internal.atr_multiplier;
     botRunnerConfig.cancel_all_remaining_sec = internal.cancel_all_remaining_sec;
+    botRunnerConfig.up_ladder = cloneLadderRows(internal.up_ladder);
+    botRunnerConfig.down_ladder = cloneLadderRows(internal.down_ladder);
+    botRunnerConfig.up_cancel = cloneCancelConfig(internal.up_cancel);
+    botRunnerConfig.down_cancel = cloneCancelConfig(internal.down_cancel);
   }
 };
 const getBotConfigSnapshot = () => cloneBotConfig(botConfigCurrent);
@@ -268,6 +302,10 @@ const syncRunnerConfigFromSavedConfig = () => {
   botRunnerConfig.ladder_size = internal.ladder_size;
   botRunnerConfig.atr_multiplier = internal.atr_multiplier;
   botRunnerConfig.cancel_all_remaining_sec = internal.cancel_all_remaining_sec;
+  botRunnerConfig.up_ladder = cloneLadderRows(internal.up_ladder);
+  botRunnerConfig.down_ladder = cloneLadderRows(internal.down_ladder);
+  botRunnerConfig.up_cancel = cloneCancelConfig(internal.up_cancel);
+  botRunnerConfig.down_cancel = cloneCancelConfig(internal.down_cancel);
 };
 const toFiniteOrNull = (value) => {
   const num = Number(value);
@@ -679,27 +717,71 @@ const finalizeBotRunSnapshot = (stopReason) => {
 const isNonNegativeInteger = (value) => Number.isInteger(value) && value >= 0;
 const isPositiveInteger = (value) => Number.isInteger(value) && value > 0;
 const isPositiveNumber = (value) => Number.isFinite(value) && value > 0;
+const asFiniteNumber = (value) => {
+  const num = Number(value);
+  return Number.isFinite(num) ? num : null;
+};
 const normalizeLadderPrices = (value) => {
-  if (!Array.isArray(value) || value.length !== 4) return null;
+  if (!Array.isArray(value) || value.length < 1) return null;
   const nums = value.map((item) => Number(item));
   if (nums.some((item) => !Number.isFinite(item) || item <= 0 || item >= 1)) return null;
   return nums;
 };
+const normalizeLadderRowsPayload = (value) => {
+  if (!Array.isArray(value) || value.length === 0) return null;
+  const normalized = value.map((item) => {
+    const price = asFiniteNumber(item?.price);
+    const size = asFiniteNumber(item?.size);
+    if (price === null || price <= 0 || price >= 1) return null;
+    if (size === null || size <= 0) return null;
+    return { price, size };
+  }).filter(Boolean);
+  return normalized.length > 0 ? normalized : null;
+};
+const normalizeCancelPayload = (value) => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  const beforeEndSec = Number(value.before_end_sec);
+  const formula = typeof value.formula === 'string' ? value.formula : '';
+  if (!isNonNegativeInteger(beforeEndSec)) return null;
+  if (formula.length > 240) return null;
+  return { before_end_sec: beforeEndSec, formula };
+};
 const validateBotConfigPayload = (payload) => {
   if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return { ok: false, error: 'invalid payload' };
   const keys = Object.keys(payload);
-  const allowedKeys = ['open_delay_sec', 'ladder_prices', 'ladder_size', 'atr_multiple', 'cancel_all_remaining_sec'];
+  const allowedKeys = [
+    'open_delay_sec',
+    'ladder_prices',
+    'ladder_size',
+    'atr_multiple',
+    'cancel_all_remaining_sec',
+    'up_ladder',
+    'down_ladder',
+    'up_cancel',
+    'down_cancel'
+  ];
   if (keys.some((key) => !allowedKeys.includes(key))) return { ok: false, error: 'unknown config field' };
   const openDelaySec = Number(payload.open_delay_sec);
   const ladderSize = Number(payload.ladder_size);
   const atrMultiple = Number(payload.atr_multiple);
   const cancelAllRemainingSec = Number(payload.cancel_all_remaining_sec);
   const ladderPrices = normalizeLadderPrices(payload.ladder_prices);
+  const upLadder = normalizeLadderRowsPayload(payload.up_ladder);
+  const downLadder = normalizeLadderRowsPayload(payload.down_ladder);
+  const upCancel = normalizeCancelPayload(payload.up_cancel);
+  const downCancel = normalizeCancelPayload(payload.down_cancel);
   if (!isNonNegativeInteger(openDelaySec)) return { ok: false, error: 'open_delay_sec must be non-negative integer' };
   if (!isPositiveInteger(ladderSize)) return { ok: false, error: 'ladder_size must be positive integer' };
   if (!isPositiveNumber(atrMultiple)) return { ok: false, error: 'atr_multiple must be positive number' };
   if (!isNonNegativeInteger(cancelAllRemainingSec)) return { ok: false, error: 'cancel_all_remaining_sec must be non-negative integer' };
-  if (!ladderPrices) return { ok: false, error: 'ladder_prices must be an array of 4 numbers between 0 and 1' };
+  if (!ladderPrices) return { ok: false, error: 'ladder_prices must be an array of numbers between 0 and 1' };
+  const legacyLadder = ladderPrices.map((price) => ({ price, size: ladderSize }));
+  const resolvedUpLadder = upLadder || legacyLadder;
+  const resolvedDownLadder = downLadder || legacyLadder;
+  const resolvedUpCancel = upCancel || { before_end_sec: cancelAllRemainingSec, formula: '' };
+  const resolvedDownCancel = downCancel || { before_end_sec: cancelAllRemainingSec, formula: '' };
+  if (!resolvedUpLadder || !resolvedDownLadder) return { ok: false, error: 'invalid up_ladder/down_ladder' };
+  if (!resolvedUpCancel || !resolvedDownCancel) return { ok: false, error: 'invalid up_cancel/down_cancel' };
   return {
     ok: true,
     value: {
@@ -707,7 +789,11 @@ const validateBotConfigPayload = (payload) => {
       ladder_prices: ladderPrices,
       ladder_size: ladderSize,
       atr_multiple: atrMultiple,
-      cancel_all_remaining_sec: cancelAllRemainingSec
+      cancel_all_remaining_sec: cancelAllRemainingSec,
+      up_ladder: resolvedUpLadder,
+      down_ladder: resolvedDownLadder,
+      up_cancel: resolvedUpCancel,
+      down_cancel: resolvedDownCancel
     }
   };
 };

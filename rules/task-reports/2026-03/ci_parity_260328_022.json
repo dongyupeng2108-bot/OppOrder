@@ -1,0 +1,17 @@
+{
+  "task_id": "260328_022",
+  "is_shallow_repo": true,
+  "base": "29701a688d2e80f9e2a6b72cfb1cc79c96464a55",
+  "head": "8ff3d77050584236113b6c2280623cc5615fde96",
+  "merge_base": "29701a688d2e80f9e2a6b72cfb1cc79c96464a55",
+  "scope_files": [
+    "strategies/crypto_binary/bot_executor_paper.mjs",
+    "strategies/crypto_binary/bot_order_ledger.mjs",
+    "strategies/crypto_binary/bot_runner.mjs",
+    "strategies/crypto_binary/bot_strategy.mjs",
+    "strategies/crypto_binary/bot_strategy_contract.mjs",
+    "strategies/crypto_binary/server.mjs"
+  ],
+  "scope_count": 6,
+  "generated_at": "2026-03-28T18:16:16.295Z"
+}

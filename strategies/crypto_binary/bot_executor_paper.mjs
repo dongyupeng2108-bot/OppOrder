@@ -3,6 +3,8 @@ import { mapIntentToPaperAction } from './bot_strategy_contract.mjs';
 
 const ALLOWED_ACTIONS = new Set([
   'PLACE_BOTH_LADDERS',
+  'PLACE_YES_LADDER',
+  'PLACE_NO_LADDER',
   'CANCEL_NO_OPEN',
   'CANCEL_YES_OPEN',
   'CANCEL_ALL_OPEN',
@@ -20,6 +22,7 @@ export function createBotExecutorPaper(options = {}) {
       throw new Error(`unsupported action: ${action}`);
     }
     return ledger.applyAction(action, {
+      ladder: params.ladder,
       prices: params.prices ?? BOT_LEDGER_DEFAULTS.prices,
       size: params.size ?? BOT_LEDGER_DEFAULTS.size,
       price: params.price,

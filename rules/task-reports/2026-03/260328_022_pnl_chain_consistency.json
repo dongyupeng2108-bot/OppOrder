@@ -1,0 +1,1789 @@
+{
+  "script_name": "verify_pnl_chain_consistency",
+  "task_id": "260328_022",
+  "sample_name": "debug_exit_yes_path_v1+debug_fill_yes_path_v1",
+  "pass": true,
+  "message": "pnl chain 一致性校验通过",
+  "first_break_layer": null,
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260328_022_pnl_chain_consistency.json",
+  "summary": {
+    "realized_pnl_chain_pass": true,
+    "unrealized_pnl_chain_pass": true,
+    "pnl_chain_consistency_pass": true
+  },
+  "raw_excerpt": {
+    "target_window_id": "debug-exit-yes-path-v1-w1",
+    "realized_summary": 0.17499999999999988,
+    "realized_postmortem": 0.17499999999999988,
+    "unrealized_summary": 0,
+    "unrealized_postmortem_basis": "postmortem.unrealized_gross_pnl_total",
+    "unrealized_performance_basis": "performance_target_window.unrealized_gross_pnl_total"
+  },
+  "generated_at": "2026-03-28T18:13:27.192Z",
+  "command": "node scripts/verify_pnl_chain_consistency.mjs --task_id=260328_022 --sample=debug_exit_yes_path_v1+debug_fill_yes_path_v1",
+  "realized_reconciliation_table": {
+    "sample": "debug_exit_yes_path_v1",
+    "window_id": "debug-exit-yes-path-v1-w1",
+    "summary_realized_gross_pnl_total": 0.17499999999999988,
+    "last_run_snapshot_realized_gross_pnl_total": 0.17499999999999988,
+    "postmortem_realized_gross_pnl_total": 0.17499999999999988,
+    "performance_target_window_realized_gross_pnl_total": 0.17499999999999988
+  },
+  "unrealized_reconciliation_table": {
+    "sample": "debug_exit_yes_path_v1",
+    "window_id": "debug-exit-yes-path-v1-w1",
+    "summary_unrealized_gross_pnl_total": 0,
+    "summary_basis": "summary.unrealized_gross_pnl_total",
+    "last_run_snapshot_unrealized_gross_pnl_total": 0,
+    "last_run_snapshot_basis": "last_run_snapshot.unrealized_gross_pnl_total",
+    "postmortem_unrealized_gross_pnl_total": 0,
+    "postmortem_basis": "postmortem.unrealized_gross_pnl_total",
+    "performance_target_window_unrealized_gross_pnl_total": 0,
+    "performance_target_window_basis": "performance_target_window.unrealized_gross_pnl_total"
+  },
+  "hand_calc": {
+    "realized": {
+      "available": true,
+      "side": "YES",
+      "entry_price": 0.27,
+      "exit_price": 0.305,
+      "size": 5,
+      "formula": "(exit-entry)*size",
+      "manual_realized_pnl": 0.17499999999999988,
+      "summary_realized_gross_pnl_total": 0.17499999999999988,
+      "delta_vs_summary": 0
+    },
+    "unrealized": {
+      "position_size": 5,
+      "avg_entry_price": 0.27,
+      "current_mark_price": null,
+      "reported_unrealized_total": 0.1999999999999999
+    }
+  },
+  "result": {
+    "realized_pnl_chain_pass": true,
+    "unrealized_pnl_chain_pass": true,
+    "pnl_chain_consistency_pass": true
+  },
+  "sample_evaluations": [
+    {
+      "sample_name": "debug_exit_yes_path_v1",
+      "scenario": "exit_yes_path_v1",
+      "target_window_id": "debug-exit-yes-path-v1-w1",
+      "realized_chain_pass": true,
+      "unrealized_chain_pass": true,
+      "unrealized_all_supported": true,
+      "realized_summary": 0.17499999999999988,
+      "unrealized_summary": 0
+    },
+    {
+      "sample_name": "debug_fill_yes_path_v1",
+      "scenario": "fill_yes_path_v1",
+      "target_window_id": "debug-fill-yes-path-v1-w1",
+      "realized_chain_pass": true,
+      "unrealized_chain_pass": true,
+      "unrealized_all_supported": true,
+      "realized_summary": 0,
+      "unrealized_summary": 0.1999999999999999
+    }
+  ],
+  "raw": [
+    {
+      "sample_name": "debug_exit_yes_path_v1",
+      "scenario": "exit_yes_path_v1",
+      "raw": {
+        "orders": {
+          "status": 200,
+          "body": {
+            "orders": [
+              {
+                "order_id": "paper_2291bbeb",
+                "kind": "EXIT",
+                "side": "YES",
+                "price": 0.305,
+                "size": 5,
+                "status": "FILLED",
+                "fill_price": 0.305,
+                "filled_at": "2026-03-28T18:13:17.965Z",
+                "created_at": "2026-03-28T18:13:17.965Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_fe36dab9",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.27,
+                "size": 5,
+                "status": "FILLED",
+                "fill_price": 0.27,
+                "filled_at": "2026-03-28T18:13:15.939Z",
+                "created_at": "2026-03-28T18:13:14.991Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_ab749da3",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.27,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:14.991Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_02bee86a",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.24,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:14.991Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_75ebeb9a",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.24,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:14.991Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_884d6fee",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.21,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:14.991Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_40ec8d28",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.21,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:14.991Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_83a963e1",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.18,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:14.991Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_210756e6",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.18,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:14.991Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              }
+            ],
+            "window_orders": [
+              {
+                "order_id": "paper_2291bbeb",
+                "kind": "EXIT",
+                "side": "YES",
+                "price": 0.305,
+                "size": 5,
+                "status": "FILLED",
+                "fill_price": 0.305,
+                "filled_at": "2026-03-28T18:13:17.965Z",
+                "created_at": "2026-03-28T18:13:17.965Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_fe36dab9",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.27,
+                "size": 5,
+                "status": "FILLED",
+                "fill_price": 0.27,
+                "filled_at": "2026-03-28T18:13:15.939Z",
+                "created_at": "2026-03-28T18:13:14.991Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_ab749da3",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.27,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:14.991Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_02bee86a",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.24,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:14.991Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_75ebeb9a",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.24,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:14.991Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_884d6fee",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.21,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:14.991Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_40ec8d28",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.21,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:14.991Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_83a963e1",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.18,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:14.991Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_210756e6",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.18,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:14.991Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              }
+            ],
+            "all_orders": [
+              {
+                "order_id": "paper_fe36dab9",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.27,
+                "size": 5,
+                "status": "FILLED",
+                "fill_price": 0.27,
+                "filled_at": "2026-03-28T18:13:15.939Z",
+                "created_at": "2026-03-28T18:13:14.991Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_ab749da3",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.27,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:14.991Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_02bee86a",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.24,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:14.991Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_75ebeb9a",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.24,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:14.991Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_884d6fee",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.21,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:14.991Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_40ec8d28",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.21,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:14.991Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_83a963e1",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.18,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:14.991Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_210756e6",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.18,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:14.991Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_2291bbeb",
+                "kind": "EXIT",
+                "side": "YES",
+                "price": 0.305,
+                "size": 5,
+                "status": "FILLED",
+                "fill_price": 0.305,
+                "filled_at": "2026-03-28T18:13:17.965Z",
+                "created_at": "2026-03-28T18:13:17.965Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              }
+            ],
+            "summary": {
+              "total": 9,
+              "open_total": 0,
+              "cancelled_total": 7,
+              "filled_total": 2,
+              "open_yes": 0,
+              "open_no": 0,
+              "filled_yes": 2,
+              "filled_no": 0
+            },
+            "window_scope": {
+              "scope": "last_window",
+              "running": false,
+              "active_window_id": null,
+              "display_window_id": "debug-exit-yes-path-v1-w1",
+              "label": "上一窗口订单（停止态）",
+              "ownership_rule": "停止态展示上一窗口订单，不冒充当前活动窗口"
+            },
+            "hidden_other_window_count": 0
+          }
+        },
+        "status": {
+          "status": 200,
+          "body": {
+            "mode": "paper-staging",
+            "phase": "IDLE",
+            "running": false,
+            "debug_scenario": "exit_yes_path_v1",
+            "debug_frame_index": 7,
+            "debug_completed": true,
+            "tick_interval_ms": 1000,
+            "last_tick_at": "2026-03-28T18:13:19.030Z",
+            "last_window_id": "debug-exit-yes-path-v1-w1",
+            "current_window_id": null,
+            "window_initialized_at": null,
+            "remaining_sec": 100,
+            "anchor_btc": null,
+            "atr_5m": null,
+            "upper_bound": null,
+            "lower_bound": null,
+            "ladder_posted": false,
+            "yes_cancelled": false,
+            "no_cancelled": false,
+            "yes_order_ids": [],
+            "no_order_ids": [],
+            "last_reason": null,
+            "last_intents": [],
+            "updated_at": "2026-03-28T18:13:19.033Z",
+            "saved_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            },
+            "last_run_snapshot": {
+              "stop_reason": "AUTO_COMPLETED",
+              "completed_at": "2026-03-28T18:13:19.030Z",
+              "current_window_id": "debug-exit-yes-path-v1-w1",
+              "phase": "IDLE",
+              "filled_total": 2,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0.17499999999999988,
+              "unrealized_gross_pnl_total": 0,
+              "active_config": {
+                "open_delay_sec": 10,
+                "ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "ladder_size": 5,
+                "atr_multiple": 1.2,
+                "cancel_all_remaining_sec": 100
+              }
+            },
+            "active_runtime_snapshot": null
+          }
+        },
+        "postmortem": {
+          "status": 200,
+          "body": {
+            "ok": true,
+            "postmortem": {
+              "id": 1650,
+              "strategy_id": "bot_console",
+              "event_id": "debug-exit-yes-path-v1-w1",
+              "window_start": "2026-03-28T18:13:19.030Z",
+              "window_end": "2026-03-28T18:13:19.030Z",
+              "created_at": "2026-03-28T18:13:19.030Z",
+              "window_id": "debug-exit-yes-path-v1-w1",
+              "stop_reason": "AUTO_COMPLETED",
+              "completed_at": "2026-03-28T18:13:19.030Z",
+              "filled_total": 2,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0.17499999999999988,
+              "unrealized_gross_pnl_total": 0,
+              "active_config": {
+                "open_delay_sec": 10,
+                "ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "ladder_size": 5,
+                "atr_multiple": 1.2,
+                "cancel_all_remaining_sec": 100
+              },
+              "action_summary": [
+                "PLACE_LADDER",
+                "CANCEL_OPEN",
+                "FLATTEN_POSITION"
+              ]
+            }
+          }
+        },
+        "summary": {
+          "status": 200,
+          "body": {
+            "yes_entry_filled_count": 1,
+            "yes_exit_filled_count": 1,
+            "yes_position_size": 0,
+            "yes_avg_fill_price": null,
+            "yes_realized_gross_pnl": 0.17499999999999988,
+            "yes_unrealized_gross_pnl": 0,
+            "no_entry_filled_count": 0,
+            "no_exit_filled_count": 0,
+            "no_position_size": 0,
+            "no_avg_fill_price": null,
+            "no_realized_gross_pnl": 0,
+            "no_unrealized_gross_pnl": 0,
+            "filled_total": 2,
+            "realized_gross_pnl_total": 0.17499999999999988,
+            "unrealized_gross_pnl_total": 0,
+            "updated_at": "2026-03-28T18:13:19.663Z"
+          }
+        },
+        "performance": {
+          "status": 200,
+          "body": {
+            "ok": true,
+            "summary": {
+              "preset": "today",
+              "window_count": 27,
+              "filled_total": 6,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0.17499999999999988,
+              "unrealized_gross_pnl_total": 2.9999999999999996,
+              "avg_realized_gross_pnl_per_window": 0.006481481481481477,
+              "avg_unrealized_gross_pnl_per_window": 0.11111111111111109,
+              "running_window_excluded": true,
+              "sample_postmortem_rows": [
+                {
+                  "id": 1650,
+                  "window_id": "debug-exit-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T18:13:19.030Z",
+                  "filled_total": 2,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0.17499999999999988,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1649,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T18:12:40.072Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1648,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T18:12:33.000Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1647,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T18:12:27.858Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1646,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T18:12:25.277Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1645,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T18:12:21.314Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1644,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T18:12:19.638Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1643,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T18:12:17.183Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1642,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T18:12:08.133Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1641,
+                  "window_id": "btc-updown-5m-1774721400",
+                  "completed_at": "2026-03-28T18:12:01.538Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                }
+              ],
+              "participating_postmortem_rows": [
+                {
+                  "id": 1650,
+                  "window_id": "debug-exit-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T18:13:19.030Z",
+                  "filled_total": 2,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0.17499999999999988,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1649,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T18:12:40.072Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1648,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T18:12:33.000Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1647,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T18:12:27.858Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1646,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T18:12:25.277Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1645,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T18:12:21.314Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1644,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T18:12:19.638Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1643,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T18:12:17.183Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1642,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T18:12:08.133Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1641,
+                  "window_id": "btc-updown-5m-1774721400",
+                  "completed_at": "2026-03-28T18:12:01.538Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1640,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T18:11:39.960Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1639,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T18:11:33.032Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1638,
+                  "window_id": "btc-updown-5m-1774721400",
+                  "completed_at": "2026-03-28T18:11:31.124Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1637,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T18:11:27.597Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1636,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T18:11:23.871Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1635,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T18:11:21.660Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1634,
+                  "window_id": "btc-updown-5m-1774721400",
+                  "completed_at": "2026-03-28T18:11:19.466Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1633,
+                  "window_id": "btc-updown-5m-1774721400",
+                  "completed_at": "2026-03-28T18:10:58.751Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1632,
+                  "window_id": null,
+                  "completed_at": "2026-03-28T18:10:38.921Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1631,
+                  "window_id": "btc-updown-5m-1774721100",
+                  "completed_at": "2026-03-28T18:09:51.399Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1630,
+                  "window_id": "btc-updown-5m-1774721100",
+                  "completed_at": "2026-03-28T18:09:23.163Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1629,
+                  "window_id": "btc-updown-5m-1774721100",
+                  "completed_at": "2026-03-28T18:08:34.025Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1628,
+                  "window_id": "btc-updown-5m-1774721100",
+                  "completed_at": "2026-03-28T18:08:02.202Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1627,
+                  "window_id": "btc-updown-5m-1774721100",
+                  "completed_at": "2026-03-28T18:07:43.270Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1626,
+                  "window_id": "btc-updown-5m-1774721100",
+                  "completed_at": "2026-03-28T18:06:00.251Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1625,
+                  "window_id": "btc-updown-5m-1774721100",
+                  "completed_at": "2026-03-28T18:05:18.133Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1624,
+                  "window_id": "btc-updown-5m-1774721100",
+                  "completed_at": "2026-03-28T18:05:01.949Z",
+                  "filled_total": 2,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 2.6999999999999997
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "sample_name": "debug_fill_yes_path_v1",
+      "scenario": "fill_yes_path_v1",
+      "raw": {
+        "orders": {
+          "status": 200,
+          "body": {
+            "orders": [
+              {
+                "order_id": "paper_fa3a53e1",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.27,
+                "size": 5,
+                "status": "FILLED",
+                "fill_price": 0.27,
+                "filled_at": "2026-03-28T18:13:24.109Z",
+                "created_at": "2026-03-28T18:13:23.188Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_1a24b943",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.27,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:23.188Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_dbf3510d",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.24,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:23.188Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_66452d60",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.24,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:23.188Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_7db6ebbd",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.21,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:23.188Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_85163185",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.21,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:23.188Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_677eba6b",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.18,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:23.188Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_b222be14",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.18,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:23.188Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              }
+            ],
+            "window_orders": [
+              {
+                "order_id": "paper_fa3a53e1",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.27,
+                "size": 5,
+                "status": "FILLED",
+                "fill_price": 0.27,
+                "filled_at": "2026-03-28T18:13:24.109Z",
+                "created_at": "2026-03-28T18:13:23.188Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_1a24b943",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.27,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:23.188Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_dbf3510d",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.24,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:23.188Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_66452d60",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.24,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:23.188Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_7db6ebbd",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.21,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:23.188Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_85163185",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.21,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:23.188Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_677eba6b",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.18,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:23.188Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_b222be14",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.18,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:23.188Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              }
+            ],
+            "all_orders": [
+              {
+                "order_id": "paper_fa3a53e1",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.27,
+                "size": 5,
+                "status": "FILLED",
+                "fill_price": 0.27,
+                "filled_at": "2026-03-28T18:13:24.109Z",
+                "created_at": "2026-03-28T18:13:23.188Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_1a24b943",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.27,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:23.188Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_dbf3510d",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.24,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:23.188Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_66452d60",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.24,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:23.188Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_7db6ebbd",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.21,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:23.188Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_85163185",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.21,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:23.188Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_677eba6b",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.18,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:23.188Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_b222be14",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.18,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T18:13:23.188Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              }
+            ],
+            "summary": {
+              "total": 8,
+              "open_total": 0,
+              "cancelled_total": 7,
+              "filled_total": 1,
+              "open_yes": 0,
+              "open_no": 0,
+              "filled_yes": 1,
+              "filled_no": 0
+            },
+            "window_scope": {
+              "scope": "last_window",
+              "running": false,
+              "active_window_id": null,
+              "display_window_id": "debug-fill-yes-path-v1-w1",
+              "label": "上一窗口订单（停止态）",
+              "ownership_rule": "停止态展示上一窗口订单，不冒充当前活动窗口"
+            },
+            "hidden_other_window_count": 0
+          }
+        },
+        "status": {
+          "status": 200,
+          "body": {
+            "mode": "paper-staging",
+            "phase": "IDLE",
+            "running": false,
+            "debug_scenario": "fill_yes_path_v1",
+            "debug_frame_index": 6,
+            "debug_completed": true,
+            "tick_interval_ms": 1000,
+            "last_tick_at": "2026-03-28T18:13:26.134Z",
+            "last_window_id": "debug-fill-yes-path-v1-w1",
+            "current_window_id": null,
+            "window_initialized_at": null,
+            "remaining_sec": 100,
+            "anchor_btc": null,
+            "atr_5m": null,
+            "upper_bound": null,
+            "lower_bound": null,
+            "ladder_posted": false,
+            "yes_cancelled": false,
+            "no_cancelled": false,
+            "yes_order_ids": [],
+            "no_order_ids": [],
+            "last_reason": null,
+            "last_intents": [],
+            "updated_at": "2026-03-28T18:13:26.137Z",
+            "saved_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            },
+            "last_run_snapshot": {
+              "stop_reason": "AUTO_COMPLETED",
+              "completed_at": "2026-03-28T18:13:26.136Z",
+              "current_window_id": "debug-fill-yes-path-v1-w1",
+              "phase": "IDLE",
+              "filled_total": 1,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0.1999999999999999,
+              "active_config": {
+                "open_delay_sec": 10,
+                "ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "ladder_size": 5,
+                "atr_multiple": 1.2,
+                "cancel_all_remaining_sec": 100
+              }
+            },
+            "active_runtime_snapshot": null
+          }
+        },
+        "postmortem": {
+          "status": 200,
+          "body": {
+            "ok": true,
+            "postmortem": {
+              "id": 1651,
+              "strategy_id": "bot_console",
+              "event_id": "debug-fill-yes-path-v1-w1",
+              "window_start": "2026-03-28T18:13:26.136Z",
+              "window_end": "2026-03-28T18:13:26.136Z",
+              "created_at": "2026-03-28T18:13:26.136Z",
+              "window_id": "debug-fill-yes-path-v1-w1",
+              "stop_reason": "AUTO_COMPLETED",
+              "completed_at": "2026-03-28T18:13:26.136Z",
+              "filled_total": 1,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0.1999999999999999,
+              "active_config": {
+                "open_delay_sec": 10,
+                "ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "ladder_size": 5,
+                "atr_multiple": 1.2,
+                "cancel_all_remaining_sec": 100
+              },
+              "action_summary": [
+                "PLACE_LADDER",
+                "CANCEL_OPEN"
+              ]
+            }
+          }
+        },
+        "summary": {
+          "status": 200,
+          "body": {
+            "yes_entry_filled_count": 1,
+            "yes_exit_filled_count": 0,
+            "yes_position_size": 5,
+            "yes_avg_fill_price": 0.27,
+            "yes_realized_gross_pnl": 0,
+            "yes_unrealized_gross_pnl": 0.1999999999999999,
+            "no_entry_filled_count": 0,
+            "no_exit_filled_count": 0,
+            "no_position_size": 0,
+            "no_avg_fill_price": null,
+            "no_realized_gross_pnl": 0,
+            "no_unrealized_gross_pnl": 0,
+            "filled_total": 1,
+            "realized_gross_pnl_total": 0,
+            "unrealized_gross_pnl_total": 0.1999999999999999,
+            "updated_at": "2026-03-28T18:13:27.179Z"
+          }
+        },
+        "performance": {
+          "status": 200,
+          "body": {
+            "ok": true,
+            "summary": {
+              "preset": "today",
+              "window_count": 28,
+              "filled_total": 7,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0.17499999999999988,
+              "unrealized_gross_pnl_total": 3.1999999999999993,
+              "avg_realized_gross_pnl_per_window": 0.006249999999999996,
+              "avg_unrealized_gross_pnl_per_window": 0.11428571428571425,
+              "running_window_excluded": true,
+              "sample_postmortem_rows": [
+                {
+                  "id": 1651,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T18:13:26.136Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.1999999999999999
+                },
+                {
+                  "id": 1650,
+                  "window_id": "debug-exit-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T18:13:19.030Z",
+                  "filled_total": 2,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0.17499999999999988,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1649,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T18:12:40.072Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1648,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T18:12:33.000Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1647,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T18:12:27.858Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1646,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T18:12:25.277Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1645,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T18:12:21.314Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1644,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T18:12:19.638Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1643,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T18:12:17.183Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1642,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T18:12:08.133Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                }
+              ],
+              "participating_postmortem_rows": [
+                {
+                  "id": 1651,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T18:13:26.136Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.1999999999999999
+                },
+                {
+                  "id": 1650,
+                  "window_id": "debug-exit-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T18:13:19.030Z",
+                  "filled_total": 2,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0.17499999999999988,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1649,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T18:12:40.072Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1648,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T18:12:33.000Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1647,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T18:12:27.858Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1646,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T18:12:25.277Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1645,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T18:12:21.314Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1644,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T18:12:19.638Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1643,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T18:12:17.183Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1642,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T18:12:08.133Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1641,
+                  "window_id": "btc-updown-5m-1774721400",
+                  "completed_at": "2026-03-28T18:12:01.538Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1640,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T18:11:39.960Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1639,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T18:11:33.032Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1638,
+                  "window_id": "btc-updown-5m-1774721400",
+                  "completed_at": "2026-03-28T18:11:31.124Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1637,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T18:11:27.597Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1636,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T18:11:23.871Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1635,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T18:11:21.660Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1634,
+                  "window_id": "btc-updown-5m-1774721400",
+                  "completed_at": "2026-03-28T18:11:19.466Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1633,
+                  "window_id": "btc-updown-5m-1774721400",
+                  "completed_at": "2026-03-28T18:10:58.751Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1632,
+                  "window_id": null,
+                  "completed_at": "2026-03-28T18:10:38.921Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1631,
+                  "window_id": "btc-updown-5m-1774721100",
+                  "completed_at": "2026-03-28T18:09:51.399Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1630,
+                  "window_id": "btc-updown-5m-1774721100",
+                  "completed_at": "2026-03-28T18:09:23.163Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1629,
+                  "window_id": "btc-updown-5m-1774721100",
+                  "completed_at": "2026-03-28T18:08:34.025Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1628,
+                  "window_id": "btc-updown-5m-1774721100",
+                  "completed_at": "2026-03-28T18:08:02.202Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1627,
+                  "window_id": "btc-updown-5m-1774721100",
+                  "completed_at": "2026-03-28T18:07:43.270Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1626,
+                  "window_id": "btc-updown-5m-1774721100",
+                  "completed_at": "2026-03-28T18:06:00.251Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1625,
+                  "window_id": "btc-updown-5m-1774721100",
+                  "completed_at": "2026-03-28T18:05:18.133Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1624,
+                  "window_id": "btc-updown-5m-1774721100",
+                  "completed_at": "2026-03-28T18:05:01.949Z",
+                  "filled_total": 2,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 2.6999999999999997
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ]
+}
