@@ -75,11 +75,39 @@ const taskIdFromBranch = () => {
   return match ? match[0] : '';
 };
 
-const taskId = getArg('task_id') || taskIdFromBranch();
+const latestPath = path.join('rules', 'LATEST.json');
+const readLatestTaskId = () => {
+  if (!fs.existsSync(latestPath)) return '';
+  try {
+    const json = JSON.parse(fs.readFileSync(latestPath, 'utf8'));
+    return typeof json?.task_id === 'string' ? json.task_id : '';
+  } catch {
+    return '';
+  }
+};
+
+const explicitTaskId = getArg('task_id');
+const branchTaskId = taskIdFromBranch();
+const taskId = explicitTaskId || branchTaskId;
 if (!taskId) {
+  const currentLatest = readLatestTaskId() || '(unknown)';
   console.error('[FAIL] TASK_ID: 无法从参数或分支名解析 task_id');
+  console.error(`[FAIL] LATEST_TASK_ID_CURRENT=${currentLatest}`);
+  console.error('[FAIL] TARGET_TASK_ID=(unresolved)');
+  console.error('[FAIL] ACTION: 明确传入 --task_id，再执行自动对齐');
   console.error('FIX: node scripts/finalize_task_evidence.mjs --task_id 260328_002');
   process.exit(1);
+}
+if (!/^\d{6}_\d{3}[A-Za-z]?$/.test(taskId)) {
+  const currentLatest = readLatestTaskId() || '(unknown)';
+  console.error(`[FAIL] TASK_ID: 非法格式 => ${taskId}`);
+  console.error(`[FAIL] LATEST_TASK_ID_CURRENT=${currentLatest}`);
+  console.error(`[FAIL] TARGET_TASK_ID=${taskId}`);
+  console.error('[FAIL] ACTION: 使用合法 task_id（如 260328_010）重新执行');
+  process.exit(1);
+}
+if (!explicitTaskId && branchTaskId) {
+  console.log(`[TASK_ID] source=branch value=${branchTaskId}`);
 }
 
 const noStage = getArg('no_stage') === '1' || getArg('no_stage') === 'true';
@@ -88,7 +116,6 @@ const pruneNoise = !(getArg('prune_noise') === '0' || getArg('prune_noise') === 
 const yyyy = `20${taskId.slice(0, 2)}`;
 const mm = taskId.slice(2, 4);
 const evidenceDir = getArg('result_dir') || path.join('rules', 'task-reports', `${yyyy}-${mm}`);
-const latestPath = path.join('rules', 'LATEST.json');
 const notifyPath = path.join(evidenceDir, `notify_${taskId}.txt`);
 const resultPath = path.join(evidenceDir, `result_${taskId}.json`);
 const reportPath = path.join(evidenceDir, `${taskId}.json`);
@@ -254,9 +281,29 @@ const runAsync = async () => {
   });
 
   await step('对齐 LATEST.json', () => {
+    let currentLatestId = '';
+    let currentLatestTs = '';
+    if (fs.existsSync(latestPath)) {
+      try {
+        const current = JSON.parse(fs.readFileSync(latestPath, 'utf8'));
+        currentLatestId = typeof current?.task_id === 'string' ? current.task_id : '';
+        currentLatestTs = typeof current?.timestamp === 'string' ? current.timestamp : '';
+      } catch (error) {
+        console.warn(`[LATEST_SYNC] WARN: 读取 LATEST.json 失败，将按目标 task_id 重建。reason=${error.message}`);
+      }
+    }
+    const beforeId = currentLatestId || '(empty)';
+    const beforeTs = currentLatestTs || '(empty)';
+    const action = currentLatestId === taskId ? 'KEEP_TIMESTAMP_REFRESH' : 'AUTO_SYNC_TO_TARGET_TASK_ID';
+    console.log(`[LATEST_SYNC] CURRENT_TASK_ID=${beforeId}`);
+    console.log(`[LATEST_SYNC] CURRENT_TIMESTAMP=${beforeTs}`);
+    console.log(`[LATEST_SYNC] TARGET_TASK_ID=${taskId}`);
+    console.log(`[LATEST_SYNC] ACTION=${action}`);
     const ts = new Date().toISOString().slice(0, 19).replace('T', ' ');
     const latest = { task_id: taskId, timestamp: ts };
     fs.writeFileSync(latestPath, `${JSON.stringify(latest, null, 4)}\n`, 'utf8');
+    console.log(`[LATEST_SYNC] UPDATED_TASK_ID=${taskId}`);
+    console.log(`[LATEST_SYNC] UPDATED_TIMESTAMP=${ts}`);
   });
 
   await step('生成 CI parity 证据', () => {
