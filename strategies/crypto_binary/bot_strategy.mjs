@@ -145,8 +145,14 @@ export function decideBotAction(inputOrContext = {}, maybeState = {}) {
   const downBeforeEndHit = remainingSec !== null && remainingSec <= downCancel.before_end_sec;
   const upFormulaHit = evaluateCancelFormula(upCancel.formula, formulaVars);
   const downFormulaHit = evaluateCancelFormula(downCancel.formula, formulaVars);
-  const wantCancelUp = hasOpenUpOrders && !state?.yes_cancelled && (upBeforeEndHit || upFormulaHit);
-  const wantCancelDown = hasOpenDownOrders && !state?.no_cancelled && (downBeforeEndHit || downFormulaHit);
+  const canTriggerUpFormula = state?.up_formula_cancelled !== true;
+  const canTriggerDownFormula = state?.down_formula_cancelled !== true;
+  const wantCancelUpFormula = hasOpenUpOrders && canTriggerUpFormula && upFormulaHit;
+  const wantCancelDownFormula = hasOpenDownOrders && canTriggerDownFormula && downFormulaHit;
+  const wantCancelUpBeforeEnd = hasOpenUpOrders && !state?.yes_cancelled && upBeforeEndHit;
+  const wantCancelDownBeforeEnd = hasOpenDownOrders && !state?.no_cancelled && downBeforeEndHit;
+  const wantCancelUp = wantCancelUpFormula || wantCancelUpBeforeEnd;
+  const wantCancelDown = wantCancelDownFormula || wantCancelDownBeforeEnd;
   const flattenYesNow = context?.exit_yes_now === true;
   const flattenNoNow = context?.exit_no_now === true;
   const flattenYesPrice = toNumberOrNull(context?.exit_yes_price);
@@ -171,7 +177,9 @@ export function decideBotAction(inputOrContext = {}, maybeState = {}) {
     trigger_up_before_end: upBeforeEndHit,
     trigger_down_before_end: downBeforeEndHit,
     trigger_up_formula: upFormulaHit,
-    trigger_down_formula: downFormulaHit
+    trigger_down_formula: downFormulaHit,
+    can_trigger_up_formula: canTriggerUpFormula,
+    can_trigger_down_formula: canTriggerDownFormula
   };
 
   if (flattenYesNow) {
@@ -201,28 +209,37 @@ export function decideBotAction(inputOrContext = {}, maybeState = {}) {
   }
 
   if (wantCancelUp && wantCancelDown) {
+    const patchBoth = { yes_cancelled: true, no_cancelled: true };
+    if (wantCancelUpFormula) patchBoth.up_formula_cancelled = true;
+    if (wantCancelDownFormula) patchBoth.down_formula_cancelled = true;
     return normalizeStrategyOutput({
       intents: [createCancelOpenIntent('ALL')],
       reason: 'directional_cancel_both_triggered',
-      patches: { yes_cancelled: true, no_cancelled: true },
+      patches: patchBoth,
       diagnostics: diagnosticsBase
     });
   }
 
   if (wantCancelUp) {
+    const upByFormula = wantCancelUpFormula;
     return normalizeStrategyOutput({
       intents: [createCancelOpenIntent('YES')],
-      reason: upFormulaHit ? 'up_cancel_formula' : 'up_cancel_before_end',
-      patches: { yes_cancelled: true },
+      reason: upByFormula ? 'up_cancel_formula' : 'up_cancel_before_end',
+      patches: upByFormula
+        ? { yes_cancelled: true, up_formula_cancelled: true }
+        : { yes_cancelled: true },
       diagnostics: diagnosticsBase
     });
   }
 
   if (wantCancelDown) {
+    const downByFormula = wantCancelDownFormula;
     return normalizeStrategyOutput({
       intents: [createCancelOpenIntent('NO')],
-      reason: downFormulaHit ? 'down_cancel_formula' : 'down_cancel_before_end',
-      patches: { no_cancelled: true },
+      reason: downByFormula ? 'down_cancel_formula' : 'down_cancel_before_end',
+      patches: downByFormula
+        ? { no_cancelled: true, down_formula_cancelled: true }
+        : { no_cancelled: true },
       diagnostics: diagnosticsBase
     });
   }
