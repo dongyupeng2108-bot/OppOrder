@@ -743,7 +743,7 @@ async function se_poll() {
     let previewData = null;
     let postmortemData = null;
     let performanceData = null;
-    let pmTodayData = null;
+    let accountData = null;
     let previewError = null;
     try {
       const contextRes = await fetch(`${BASE_URL}/bot/context`);
@@ -778,16 +778,16 @@ async function se_poll() {
       previewError = previewError || err.message;
     }
     try {
-      const pmTodayRes = await fetch(`${BASE_URL}/bot/performance/summary?preset=today&detail=0`);
-      pmTodayData = await pmTodayRes.json();
-      if (!pmTodayRes.ok || pmTodayData?.ok === false) throw new Error(pmTodayData?.error || `pm today HTTP ${pmTodayRes.status}`);
+      const accountRes = await fetch(`${BASE_URL}/bot/account`);
+      accountData = await accountRes.json();
+      if (!accountRes.ok || accountData?.ok === false) throw new Error(accountData?.error || `account HTTP ${accountRes.status}`);
     } catch (err) {
-      pmTodayData = null;
+      accountData = null;
     }
     se_renderContext(contextData, status);
     se_renderOverview(status, summaryData, ordersData, postmortemData);
     se_renderPerformance(performanceData, status);
-    se_renderPmAccountInfo(status, pmTodayData);
+    se_renderPmAccountInfo(accountData?.account || null);
     se_renderDecision(status, contextData, previewData, ordersData, previewError);
     se_renderLogs(Array.isArray(logsData) ? logsData : (logsData.logs || []));
     se_renderOrders(ordersData, status);
@@ -846,7 +846,7 @@ function se_setText(id, value) {
   if (el) el.textContent = se_formatStateValue(value);
 }
 
-function se_renderPmAccountInfo(status, pmTodayPayload) {
+function se_renderPmAccountInfo(account) {
   const pickNumber = (...values) => {
     for (const value of values) {
       const num = Number(value);
@@ -861,20 +861,14 @@ function se_renderPmAccountInfo(status, pmTodayPayload) {
     return null;
   };
   const accountName = pickString(
-    status?.saved_config?.pm_account_name,
-    status?.saved_config?.account_name,
-    status?.active_runtime_snapshot?.config?.pm_account_name,
-    status?.active_runtime_snapshot?.config?.account_name
+    account?.pm_account_name
   );
   const balanceUsd = pickNumber(
-    status?.saved_config?.pm_balance_usd,
-    status?.saved_config?.balance_usd,
-    status?.active_runtime_snapshot?.config?.pm_balance_usd,
-    status?.active_runtime_snapshot?.config?.balance_usd
+    account?.pm_balance_usd
   );
-  const todayPnl = pickNumber(pmTodayPayload?.summary?.realized_gross_pnl_total);
+  const todayChange = pickNumber(account?.pm_balance_change_today_usd);
   const balanceText = balanceUsd == null ? '--' : balanceUsd.toFixed(2);
-  const todayText = todayPnl == null ? '--' : `${todayPnl >= 0 ? '+' : ''}${todayPnl.toFixed(2)}`;
+  const todayText = todayChange == null ? '--' : `${todayChange >= 0 ? '+' : ''}${todayChange.toFixed(2)}`;
   const accountEl = document.getElementById('se-pm-account-name');
   const balanceEl = document.getElementById('se-pm-account-balance');
   if (accountEl) accountEl.textContent = `PM账号名：${accountName || '--'}`;

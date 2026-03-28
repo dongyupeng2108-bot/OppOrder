@@ -1,0 +1,36 @@
+=== TRAE_REPORT_SNIPPET ===
+
+Header: TraeTask_260328_015
+BRANCH: 260328_015
+COMMIT: 7bcd93dc
+
+=== GIT_SCOPE_DIFF ===
+M	strategies/crypto_binary/server.mjs
+M	ui/js/strategy-editor.js
+
+=== DOD_EVIDENCE_STDOUT ===
+Missing Blocks:
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260328_015_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260328_015_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+
+=== CI_PARITY_PREVIEW ===
+Base: 5205430
+Head: 7bcd93d
+MergeBase: 5205430
+Source: JSON (Evidence-as-Code)
+Scope: 2 files
+Files (Top 3):
+  - strategies/crypto_binary/server.mjs
+  - ui/js/strategy-editor.js
+
+=========================
+
+=== GATE_LIGHT_PREVIEW ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260328_015
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] Verifying task_id: 260328_015
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] FAILED: Report Block Check for notify_260328_015.txt
+GATE_LIGHT_EXIT=1
