@@ -7,6 +7,7 @@ import { createServer } from 'http';
 import { execSync, spawn } from 'child_process';
 import { readFileSync, readdirSync, existsSync, mkdirSync, writeFileSync, unlinkSync, createReadStream, statSync } from 'fs';
 import { resolve, dirname, extname } from 'path';
+import crypto from 'crypto';
 import { fileURLToPath } from 'url';
 import { WebSocketServer } from 'ws';
 import {
@@ -65,6 +66,8 @@ const BOT_PERF_PRESET_TODAY = 'today';
 const BOT_PERF_PRESET_LAST_7D = 'last_7d';
 const BOT_PERF_PRESET_LAST_30_WINDOWS = 'last_30_windows';
 const BOT_TEST_REPO_ROOT = resolve(__dirname, '..', '..');
+const BOT_ACCOUNT_CACHE_PATH = resolve(BOT_TEST_REPO_ROOT, 'data', 'crypto_binary', 'pm_account_cache.json');
+const BOT_SECRETS_PATH_CONFIG = resolve(BOT_TEST_REPO_ROOT, 'config', 'secrets_path.json');
 const BOT_TEST_RUNNER_DIR = resolve(BOT_TEST_REPO_ROOT, 'data', 'crypto_binary', 'test_runner');
 const BOT_TEST_REPORTS_ROOT = resolve(BOT_TEST_REPO_ROOT, 'rules', 'task-reports');
 const BOT_TEST_STATE_IDLE = 'idle';
@@ -99,6 +102,8 @@ let botPendingStopReason = null;
 let botRuntimeWasRunning = false;
 let botRunActionSummary = [];
 let botLastTickResult = null;
+let botAccountSnapshotCache = null;
+let botAccountSnapshotCachedAt = 0;
 let botTestRunnerState = {
   state: BOT_TEST_STATE_IDLE,
   task_id: null,
@@ -267,6 +272,127 @@ const syncRunnerConfigFromSavedConfig = () => {
 const toFiniteOrNull = (value) => {
   const num = Number(value);
   return Number.isFinite(num) ? num : null;
+};
+const readJsonSafe = (filePath) => {
+  try {
+    if (!existsSync(filePath)) return null;
+    return JSON.parse(readFileSync(filePath, 'utf8'));
+  } catch {
+    return null;
+  }
+};
+const readTextSafe = (filePath) => {
+  try {
+    if (!existsSync(filePath)) return null;
+    const value = String(readFileSync(filePath, 'utf8') || '').trim();
+    return value.length > 0 ? value : null;
+  } catch {
+    return null;
+  }
+};
+const resolveSecretsDir = () => {
+  const cfg = readJsonSafe(BOT_SECRETS_PATH_CONFIG);
+  const raw = typeof cfg?.secrets_dir === 'string' ? cfg.secrets_dir : null;
+  if (!raw) return null;
+  const userProfile = process.env.USERPROFILE || process.env.HOME || '';
+  return raw.replace('${USERPROFILE}', userProfile);
+};
+const readPmCredentialsSnapshot = () => {
+  const secretsDir = resolveSecretsDir();
+  if (!secretsDir) return { accountAlias: null };
+  const apiKey = readTextSafe(resolve(secretsDir, 'polymarket_api_key.txt'));
+  if (!apiKey) return { accountAlias: null };
+  const fp = crypto.createHash('sha256').update(apiKey).digest('hex').slice(0, 8).toUpperCase();
+  return { accountAlias: `PM-${fp}` };
+};
+const pickNestedNumber = (payload, keys) => {
+  if (!payload || typeof payload !== 'object') return null;
+  const stack = [payload];
+  while (stack.length > 0) {
+    const current = stack.pop();
+    if (!current || typeof current !== 'object') continue;
+    for (const key of keys) {
+      const value = current[key];
+      const num = toFiniteOrNull(value);
+      if (num !== null) return num;
+    }
+    for (const value of Object.values(current)) {
+      if (value && typeof value === 'object') stack.push(value);
+    }
+  }
+  return null;
+};
+const pickNestedString = (payload, keys) => {
+  if (!payload || typeof payload !== 'object') return null;
+  const stack = [payload];
+  while (stack.length > 0) {
+    const current = stack.pop();
+    if (!current || typeof current !== 'object') continue;
+    for (const key of keys) {
+      const value = current[key];
+      if (typeof value === 'string' && value.trim().length > 0) return value.trim();
+    }
+    for (const value of Object.values(current)) {
+      if (value && typeof value === 'object') stack.push(value);
+    }
+  }
+  return null;
+};
+const fetchSignerJson = async (pathname) => {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 1200);
+  try {
+    const res = await undiciFetch(`http://127.0.0.1:53199${pathname}`, { signal: controller.signal });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
+};
+const getBotAccountSnapshot = async () => {
+  const now = Date.now();
+  if (botAccountSnapshotCache && (now - botAccountSnapshotCachedAt) < 15_000) {
+    return botAccountSnapshotCache;
+  }
+  const cachedFile = readJsonSafe(BOT_ACCOUNT_CACHE_PATH);
+  const signerAccount = await fetchSignerJson('/account');
+  const signerBalance = await fetchSignerJson('/balance');
+  const signerWallet = await fetchSignerJson('/wallet');
+  const signerPayload = signerAccount || signerBalance || signerWallet;
+  const nameFromSigner = pickNestedString(signerPayload, ['pm_account_name', 'account_name', 'name', 'display_name', 'address', 'wallet_address']);
+  const balanceFromSigner = pickNestedNumber(signerPayload, ['pm_balance_usd', 'balance_usd', 'balance', 'currentBalance', 'usdc_balance', 'buyingPower', 'available_balance']);
+  const updatedAtFromSigner = pickNestedString(signerPayload, ['pm_balance_updated_at', 'updated_at', 'lastUpdated', 'timestamp']);
+  const creds = readPmCredentialsSnapshot();
+  const accountName = nameFromSigner || cachedFile?.pm_account_name || creds.accountAlias || null;
+  const balance = balanceFromSigner ?? toFiniteOrNull(cachedFile?.pm_balance_usd);
+  const updatedAt = updatedAtFromSigner || cachedFile?.pm_balance_updated_at || null;
+  const snapshot = {
+    pm_account_name: accountName,
+    pm_balance_usd: balance,
+    pm_balance_updated_at: updatedAt,
+    pm_balance_change_today_usd: null,
+    today_change_source: null,
+    source: {
+      account_name: nameFromSigner ? 'signer' : (creds.accountAlias ? 'secrets_api_key_fingerprint' : null),
+      balance: balanceFromSigner !== null ? 'signer' : (balance !== null ? 'cache' : null),
+      today_change: null
+    }
+  };
+  if (accountName || balance !== null || updatedAt) {
+    try {
+      writeFileSync(BOT_ACCOUNT_CACHE_PATH, `${JSON.stringify({
+        pm_account_name: accountName,
+        pm_balance_usd: balance,
+        pm_balance_updated_at: updatedAt,
+        cached_at: new Date().toISOString()
+      }, null, 2)}\n`, 'utf8');
+    } catch {}
+  }
+  botAccountSnapshotCache = snapshot;
+  botAccountSnapshotCachedAt = now;
+  return snapshot;
 };
 const normalizeBotActionType = (message) => {
   const text = String(message || '');
@@ -1906,6 +2032,19 @@ const server = createServer(async (req, res) => {
               lower_bound: state.lower_bound ?? null
             }
           : null
+      });
+    } catch (err) {
+      sendJson(res, { ok: false, error: err.message }, 500);
+    }
+    return;
+  }
+
+  if (req.method === 'GET' && req.url === '/bot/account') {
+    try {
+      const account = await getBotAccountSnapshot();
+      sendJson(res, {
+        ok: true,
+        account
       });
     } catch (err) {
       sendJson(res, { ok: false, error: err.message }, 500);
