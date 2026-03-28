@@ -1,0 +1,12 @@
+RESULT_JSON
+rules/task-reports/2026-03/result_260328_005.json
+LOG_HEAD
+[Docs] C1-1 已完成：BTCQDD 6 条核心口径总表已收敛为统一真源入口。
+LOG_TAIL
+docs-only task, no code/test/ci modification
+EVIDENCE
+docs/BTCQDD_CORE_SEMANTICS.md
+docs/README.md
+docs/MODULE_MAP.md
+INDEX
+rules/task-reports/2026-03/result_260328_005.json
