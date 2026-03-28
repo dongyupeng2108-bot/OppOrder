@@ -42,7 +42,7 @@ const isBoundsReady = (state = {}, context = {}) => (
 
 const hasBoundsDependentIntent = (intents = []) => intents.some((intent) => (
   intent?.kind === 'CANCEL_OPEN'
-  && (String(intent?.side || 'ALL').toUpperCase() === 'YES' || String(intent?.side || 'ALL').toUpperCase() === 'NO')
+  && intent?.requires_bounds === true
 ));
 
 const toDecisionPreview = (decision, context, state) => ({

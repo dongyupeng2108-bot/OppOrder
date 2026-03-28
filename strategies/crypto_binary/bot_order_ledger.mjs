@@ -2,6 +2,7 @@ import { randomUUID } from 'crypto';
 
 const DEFAULT_PRICES = [0.27, 0.24, 0.21, 0.18];
 const DEFAULT_SIZE = 5;
+const DEFAULT_LADDER = DEFAULT_PRICES.map((price) => ({ price, size: DEFAULT_SIZE }));
 
 const cloneOrder = (order) => ({ ...order });
 
@@ -81,6 +82,31 @@ export function createBotOrderLedger() {
       created.push(createOrder({ side: 'YES', price, size, source }));
       created.push(createOrder({ side: 'NO', price, size, source }));
     }
+    orders = [...orders, ...created];
+    return created.length;
+  };
+  const normalizeLadder = (options = {}) => {
+    if (Array.isArray(options.ladder) && options.ladder.length > 0) {
+      const normalized = options.ladder.map((item) => {
+        const price = Number(item?.price);
+        const unitSize = Number(item?.size);
+        if (!Number.isFinite(price) || price <= 0 || price >= 1) return null;
+        if (!Number.isFinite(unitSize) || unitSize <= 0) return null;
+        return { price, size: unitSize };
+      }).filter(Boolean);
+      if (normalized.length > 0) return normalized;
+    }
+    const prices = Array.isArray(options.prices) && options.prices.length ? options.prices : DEFAULT_PRICES;
+    const size = Number.isFinite(options.size) ? options.size : DEFAULT_SIZE;
+    return prices.map((price) => ({ price, size }));
+  };
+  const placeSideLadder = (side, ladder, source) => {
+    const created = ladder.map((item) => createOrder({
+      side,
+      price: item.price,
+      size: item.size,
+      source
+    }));
     orders = [...orders, ...created];
     return created.length;
   };
@@ -196,9 +222,14 @@ export function createBotOrderLedger() {
   const applyAction = (action, options = {}) => {
     const prices = Array.isArray(options.prices) && options.prices.length ? options.prices : DEFAULT_PRICES;
     const size = Number.isFinite(options.size) ? options.size : DEFAULT_SIZE;
+    const ladder = normalizeLadder({ ladder: options.ladder, prices, size }) || DEFAULT_LADDER;
     const source = options.source || 'manual';
     let changed = 0;
-    if (action === 'PLACE_BOTH_LADDERS') changed = placeBothLadders(prices, size, source);
+    if (action === 'PLACE_BOTH_LADDERS') {
+      changed = placeSideLadder('YES', ladder, source) + placeSideLadder('NO', ladder, source);
+    }
+    if (action === 'PLACE_YES_LADDER') changed = placeSideLadder('YES', ladder, source);
+    if (action === 'PLACE_NO_LADDER') changed = placeSideLadder('NO', ladder, source);
     if (action === 'CANCEL_NO_OPEN') changed = cancelOpenBySide('NO');
     if (action === 'CANCEL_YES_OPEN') changed = cancelOpenBySide('YES');
     if (action === 'CANCEL_ALL_OPEN') changed = cancelOpenBySide('ALL');
