@@ -1,0 +1,13 @@
+RESULT_JSON
+rules/task-reports/2026-03/result_260328_004.json
+LOG_HEAD
+[Docs] M2-4 已完成：运行结果模块 PNL/结果字段薄契约（单窗口 vs 阶段汇总）已落文档。
+LOG_TAIL
+docs-only task, no code/test/ci modification
+EVIDENCE
+docs/RESULTS_PNL_CONTRACT.md
+docs/README.md
+docs/MODULE_MAP.md
+docs/MODULAR_ROADMAP.md
+INDEX
+rules/task-reports/2026-03/result_260328_004.json

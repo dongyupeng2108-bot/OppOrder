@@ -1,0 +1,30 @@
+{
+  "task_id": "260328_004",
+  "status": "DONE",
+  "scope_guard": "docs-only：运行结果模块 PNL/结果字段薄契约 + 最小互链",
+  "changes": {
+    "new_doc": "docs/RESULTS_PNL_CONTRACT.md",
+    "linked_from": [
+      "docs/README.md",
+      "docs/MODULE_MAP.md"
+    ],
+    "roadmap_note": "docs/MODULAR_ROADMAP.md M2-4 已完成说明"
+  },
+  "coverage": {
+    "objects": [
+      "postmortem",
+      "last_run_snapshot",
+      "performance_summary"
+    ],
+    "boundaries": [
+      "上一窗口结果PNL=单窗口",
+      "总计PNL=阶段汇总",
+      "PNL分区禁止混用"
+    ]
+  },
+  "validation": {
+    "code_change": false,
+    "test_change": false,
+    "ci_change": false
+  }
+}
