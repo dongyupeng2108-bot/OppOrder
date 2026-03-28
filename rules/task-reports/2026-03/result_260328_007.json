@@ -1,0 +1,30 @@
+{
+  "task_id": "260328_007",
+  "status": "DONE",
+  "scope_guard": "docs-only：C1-3 主链口径绑定图 + 最小互链",
+  "changes": {
+    "new_doc": "docs/SEMANTICS_BINDING_MAP.md",
+    "linked_from": [
+      "docs/README.md",
+      "docs/MODULE_MAP.md",
+      "docs/BTCQDD_CORE_SEMANTICS.md"
+    ],
+    "three_core_docs_modified": false
+  },
+  "coverage": {
+    "semantic_count": 6,
+    "required_columns": [
+      "口径名",
+      "代码锚点",
+      "主要 API / 对外面",
+      "主要 UI 消费点",
+      "verify / runtime 证据入口",
+      "是否触发整链验收"
+    ]
+  },
+  "validation": {
+    "code_change": false,
+    "test_change": false,
+    "ci_change": false
+  }
+}
