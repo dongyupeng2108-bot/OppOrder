@@ -6,6 +6,7 @@
 
 | 文档 | 说明 |
 |------|------|
+| [SEMANTICS_CHANGE_POLICY.md](SEMANTICS_CHANGE_POLICY.md) | C1-4：高风险口径变更门槛（同步项与整链验收规则） |
 | [SEMANTICS_BINDING_MAP.md](SEMANTICS_BINDING_MAP.md) | C1-3：6 条主链口径的代码/API/UI/verify/runtime 绑定图 |
 | [CONTRACT_input.md](CONTRACT_input.md) | C1-2：策略与运行输入模块薄契约（输入/输出/拥有权/禁止项） |
 | [CONTRACT_engine.md](CONTRACT_engine.md) | C1-2：执行引擎模块薄契约（生命周期/gate/decision/ledger/幂等） |

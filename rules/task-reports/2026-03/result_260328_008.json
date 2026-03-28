@@ -1,0 +1,31 @@
+{
+  "task_id": "260328_008",
+  "status": "DONE",
+  "scope_guard": "docs-only：C1-4 高风险口径变更门槛说明 + 最小互链",
+  "changes": {
+    "new_doc": "docs/SEMANTICS_CHANGE_POLICY.md",
+    "linked_from": [
+      "docs/README.md",
+      "docs/MODULE_MAP.md",
+      "docs/BTCQDD_CORE_SEMANTICS.md"
+    ],
+    "three_core_docs_modified": false
+  },
+  "coverage": {
+    "high_risk_objects": [
+      "anchor_btc",
+      "bounds/bounds_ready",
+      "ATR 缺失行为",
+      "current/active/last",
+      "filled_total",
+      "PNL 分区口径",
+      "order scope/status",
+      "readiness/runtime 语义"
+    ]
+  },
+  "validation": {
+    "code_change": false,
+    "test_change": false,
+    "ci_change": false
+  }
+}

@@ -9,6 +9,7 @@
 **核心口径总表**：[`BTCQDD_CORE_SEMANTICS.md`](BTCQDD_CORE_SEMANTICS.md)（C1-1，docs-only）。
 **五模块薄契约**：[`CONTRACT_input.md`](CONTRACT_input.md) / [`CONTRACT_engine.md`](CONTRACT_engine.md) / [`CONTRACT_monitoring.md`](CONTRACT_monitoring.md) / [`CONTRACT_results.md`](CONTRACT_results.md) / [`CONTRACT_verify.md`](CONTRACT_verify.md)（C1-2，docs-only）。
 **口径绑定图**：[`SEMANTICS_BINDING_MAP.md`](SEMANTICS_BINDING_MAP.md)（C1-3，docs-only）。
+**变更门槛说明**：[`SEMANTICS_CHANGE_POLICY.md`](SEMANTICS_CHANGE_POLICY.md)（C1-4，docs-only）。
 
 ## 总览：执行机器人五模块
 

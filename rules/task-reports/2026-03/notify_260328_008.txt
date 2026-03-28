@@ -1,0 +1,13 @@
+RESULT_JSON
+rules/task-reports/2026-03/result_260328_008.json
+LOG_HEAD
+[Docs] C1-4 已完成：高风险口径变更门槛说明已落地（不改三大文档）。
+LOG_TAIL
+docs-only task, no code/test/ci modification
+EVIDENCE
+docs/SEMANTICS_CHANGE_POLICY.md
+docs/BTCQDD_CORE_SEMANTICS.md
+docs/README.md
+docs/MODULE_MAP.md
+INDEX
+rules/task-reports/2026-03/result_260328_008.json

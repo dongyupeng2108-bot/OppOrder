@@ -5,6 +5,7 @@
 - 本文档是当前执行机器人主链 6 条高风险口径的统一真源入口，用于后续 C1-2 / C1-3 / C1-4 对齐。
 - 本文档只收口径定义与边界，不替代代码、API 契约、verify 资产与 runtime 证据。
 - 口径绑定索引见 [`SEMANTICS_BINDING_MAP.md`](SEMANTICS_BINDING_MAP.md)。
+- 变更门槛说明见 [`SEMANTICS_CHANGE_POLICY.md`](SEMANTICS_CHANGE_POLICY.md)。
 
 ## 使用规则
 

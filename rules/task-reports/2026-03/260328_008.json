@@ -1,0 +1,19 @@
+{
+  "task_id": "260328_008",
+  "timestamp": "2026-03-28T11:35:00.000Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "policy_doc_added": "PASS",
+    "high_risk_vs_normal_defined": "PASS",
+    "required_sync_items_defined": "PASS",
+    "readme_link_added": "PASS",
+    "module_map_link_added": "PASS",
+    "core_semantics_link_added": "PASS",
+    "docs_only_scope_kept": "PASS"
+  },
+  "context": {
+    "result_file": "rules/task-reports/2026-03/result_260328_008.json",
+    "notify_file": "rules/task-reports/2026-03/notify_260328_008.txt"
+  }
+}
