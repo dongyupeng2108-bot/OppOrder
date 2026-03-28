@@ -93,6 +93,8 @@ let _seTestStatus = { state: 'idle' };
 let _seTestLastResultFile = null;
 let _seTestFailModalShownRunId = null;
 let _seTestLogTail = [];
+let _seTestUserTriggered = false;
+let _seTestRecoveredRunning = false;
 const BASE_URL = ''; // 相对路径
 
 async function restartServer() {
@@ -556,6 +558,8 @@ function se_makeTestTaskId() {
 async function se_runVersionTest() {
   if (_seTestRunPending || _seTestStatus?.state === 'running') return;
   _seTestRunPending = true;
+  _seTestUserTriggered = true;
+  _seTestRecoveredRunning = false;
   se_updateTestButton();
   try {
     const taskId = se_makeTestTaskId();
@@ -566,9 +570,11 @@ async function se_runVersionTest() {
     });
     const data = await res.json();
     if (!res.ok && data?.already_running !== true) {
+      _seTestUserTriggered = false;
       throw new Error(data?.error || `HTTP ${res.status}`);
     }
     if (data?.already_running === true) {
+      _seTestUserTriggered = false;
       se_appendLog('SYSTEM', '版本测试重复启动被阻止');
       alert('版本测试已在运行中，请等待完成后再试。');
       return;
@@ -576,6 +582,7 @@ async function se_runVersionTest() {
     se_appendLog('SYSTEM', `版本测试已启动 task_id=${taskId}`);
     await se_pollTestRunner();
   } catch (err) {
+    _seTestUserTriggered = false;
     se_appendLog('ERROR', `版本测试启动失败: ${err.message}`);
     alert(`版本测试启动失败: ${err.message}`);
   } finally {
@@ -701,12 +708,15 @@ async function se_pollTestRunner() {
     const statusData = await statusRes.json();
     const status = statusData && typeof statusData === 'object' ? statusData : { state: 'idle' };
     _seTestStatus = status;
+    if (status.state === 'running') _seTestRecoveredRunning = true;
     se_updateTestButton();
     const logsRes = await fetch(`${BASE_URL}/bot/test/logs?limit=120`);
     const logsData = await logsRes.json();
     _seTestLogTail = Array.isArray(logsData?.lines) ? logsData.lines.slice(-80) : [];
     const terminal = status.state === 'passed' || status.state === 'failed';
     if (!terminal) return;
+    const allowModal = _seTestUserTriggered || _seTestRecoveredRunning;
+    if (!allowModal) return;
     if (status.result_file && status.result_file !== _seTestLastResultFile) {
       _seTestLastResultFile = status.result_file;
       const resultRes = await fetch(`${BASE_URL}/bot/test/result`);
@@ -714,6 +724,8 @@ async function se_pollTestRunner() {
       if (resultRes.ok && resultData?.ok !== false) {
         se_showTestResultModal(resultData);
       }
+      _seTestUserTriggered = false;
+      _seTestRecoveredRunning = false;
       return;
     }
     if (!status.result_file) return;
@@ -722,6 +734,8 @@ async function se_pollTestRunner() {
     if (resultRes.ok && resultData?.ok !== false) {
       se_showTestResultModal(resultData);
     }
+    _seTestUserTriggered = false;
+    _seTestRecoveredRunning = false;
   } catch (err) {
     se_appendLog('ERROR', `测试接口异常: ${err.message}`);
   }
