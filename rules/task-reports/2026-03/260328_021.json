@@ -1,0 +1,32 @@
+{
+  "task_id": "260328_021",
+  "timestamp": "2026-03-28T17:07:05.028Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "smoke_test": "PASS",
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260328_021",
+      "status": "DONE",
+      "mode": "LOCAL",
+      "dod_evidence": {
+        "healthcheck": [
+          "260328_021_healthcheck_53122_root.txt",
+          "260328_021_healthcheck_53122_pairs.txt"
+        ],
+        "gate_light_exit": 0
+      },
+      "summary": "Automation Pack V1 Validation for Task 260328_021",
+      "report_file": "notify_260328_021.txt",
+      "report_sha256_short": "06d39bdf"
+    }
+  }
+}
