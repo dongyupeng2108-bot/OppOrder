@@ -1,0 +1,39 @@
+=== TRAE_REPORT_SNIPPET ===
+
+Header: TraeTask_260328_009
+BRANCH: 260328_009
+COMMIT: 565a2b02
+
+=== GIT_SCOPE_DIFF ===
+M	rules/LATEST.json
+M	rules/rules/PROJECT_MASTER_PLAN.md
+M	rules/rules/PROJECT_RULES.md
+M	rules/rules/WORKFLOW.md
+
+=== DOD_EVIDENCE_STDOUT ===
+Missing Blocks:
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260328_009_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260328_009_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+
+=== CI_PARITY_PREVIEW ===
+Base: 6a309d9
+Head: 565a2b0
+MergeBase: 6a309d9
+Source: JSON (Evidence-as-Code)
+Scope: 4 files
+Files (Top 3):
+  - rules/LATEST.json
+  - rules/rules/PROJECT_MASTER_PLAN.md
+  - rules/rules/PROJECT_RULES.md
+  ... (truncated)
+=========================
+
+=== GATE_LIGHT_PREVIEW ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260328_009
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] Verifying task_id: 260328_009
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] FAILED: Report Block Check for notify_260328_009.txt
+GATE_LIGHT_EXIT=1

@@ -1,0 +1,32 @@
+{
+  "after": {
+    "sample_paths": [],
+    "untracked_count": 0,
+    "tracked_changed_count": 0
+  },
+  "before": {
+    "sample_paths": [
+      "BTCQDD/",
+      "data/crypto_binary/logs/bot_2026-03-25.jsonl",
+      "data/crypto_binary/logs/bot_2026-03-26.jsonl",
+      "data/crypto_binary/logs/bot_2026-03-27.jsonl",
+      "data/crypto_binary/logs/bot_2026-03-28.jsonl"
+    ],
+    "untracked_count": 334,
+    "tracked_changed_count": 0
+  },
+  "result": "PASS",
+  "repo_root": "E:/OppRadar",
+  "reason": null,
+  "mode": "EnforceClean",
+  "head_commit": "565a2b02ece4791d9912acd3f0d5b35cba9a3186",
+  "branch": "260328_009",
+  "cleaned_paths": [
+    "rules/task-reports",
+    "rules/reports",
+    "data/opps_ledger",
+    "rules/task-reports/locks",
+    "rules/task-reports/runs"
+  ],
+  "note": "LOCAL_BOUNDARY_CI_CLEAN_ASSUMPTION"
+}
