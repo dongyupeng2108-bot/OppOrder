@@ -1,0 +1,56 @@
+{
+  "task_id": "260328_002",
+  "status": "DONE",
+  "scope_guard": "CI提效工具链，仅脚本/文档/任务证据；不改业务逻辑、不改Gate标准",
+  "changes": {
+    "new_script": "scripts/finalize_task_evidence.mjs",
+    "npm_entry": "npm run finalize:evidence",
+    "usage_doc": "docs/README_BTCQDD.md",
+    "reused_existing_chain": [
+      "scripts/gate_light_ci.mjs",
+      "scripts/ci_parity_probe.mjs",
+      "scripts/error_digest.mjs",
+      "scripts/extract_gate_light_preview.mjs",
+      "scripts/build_trae_report_snippet.mjs",
+      "scripts/assemble_evidence.mjs"
+    ]
+  },
+  "covered_failures": [
+    "LATEST.json 与 task_id 不一致",
+    "evidence_manifest_<task>.json 缺失",
+    "workspace_healer_<task>.json 缺失/脏状态",
+    "snippet commit 与 HEAD 不一致（通过重建 snippet 收口）",
+    ".gitignore 导致证据未跟踪（自动 git add -f + 跟踪检查）",
+    "healthcheck 证据缺失（统一生成 root/pairs）"
+  ],
+  "demo": {
+    "fail_then_pass": true,
+    "fail_logs": [
+      "rules/task-reports/2026-03/demo_fail_latest_260328_002.log",
+      "rules/task-reports/2026-03/demo_fail_manifest_260328_002.log"
+    ],
+    "pass_logs": [
+      "rules/task-reports/2026-03/demo_pass_finalize_260328_002.log",
+      "rules/task-reports/2026-03/demo_pass_gate_260328_002.log"
+    ]
+  },
+  "validation": {
+    "finalize_exit_code": 0,
+    "gate_light_exit_code": 0,
+    "local_boundary": "本地命令复用现有脚本链；GitHub Runner 环境差异（系统/权限/网络）仍可能导致少量不可镜像差异",
+    "npm_test_pass": false,
+    "npm_test_note": "schema_contract.test.mjs 在无目标服务环境下 fetch failed，属环境前置条件未满足"
+  },
+  "dod_evidence": {
+    "healthcheck": [
+      "260328_002_healthcheck_53122_root.txt",
+      "260328_002_healthcheck_53122_pairs.txt"
+    ],
+    "gate_light_exit": 0
+  },
+  "manifest_file": "evidence_manifest_260328_002.json",
+  "summary": "Automation Pack V1 Validation for Task 260328_002",
+  "report_file": "notify_260328_002.txt",
+  "report_sha256_short": "074028f4",
+  "mode": "Integrate"
+}

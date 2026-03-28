@@ -41,6 +41,13 @@ node strategies/crypto_binary/server.mjs
 5. 证据优先：**DOM 文本 / 接口 JSON / 日志 / 测试结果**，非截图中心。
 6. 契约示例与最小结构校验：`npm run verify:doc-contracts`（不启动服务）。
 
+## 本地一键收尾（CI 提效第一阶段）
+
+- 命令：`npm run finalize:evidence -- --task_id 260328_002`
+- 作用：复用现有 `gate_light_ci.mjs` 证据链，统一完成 LATEST 对齐、workspace_healer/healthcheck/evidence_manifest/snippet 相关收尾，并在本地做最终 Gate Light 验证。
+- 输出：逐项 `PASS/FAIL` + 最小修复提示；若关键证据因 `.gitignore` 未跟踪，会给出 `git add -f` 级别提示并可自动补跟踪。
+- 本地边界：该命令不放松 Gate 标准，但仍可能受本机环境与 GitHub Runner 差异影响。
+
 ## 权威文档索引
 
 | 文档 | 路径 |
