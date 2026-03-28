@@ -1,0 +1,2995 @@
+{
+  "script_name": "verify_pnl_chain_consistency",
+  "task_id": "260328_019",
+  "sample_name": "debug_exit_yes_path_v1+debug_fill_yes_path_v1",
+  "pass": true,
+  "message": "pnl chain 一致性校验通过",
+  "first_break_layer": null,
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260328_019_pnl_chain_consistency.json",
+  "summary": {
+    "realized_pnl_chain_pass": true,
+    "unrealized_pnl_chain_pass": true,
+    "pnl_chain_consistency_pass": true
+  },
+  "raw_excerpt": {
+    "target_window_id": "debug-exit-yes-path-v1-w1",
+    "realized_summary": 0.17499999999999988,
+    "realized_postmortem": 0.17499999999999988,
+    "unrealized_summary": 0,
+    "unrealized_postmortem_basis": "postmortem.unrealized_gross_pnl_total",
+    "unrealized_performance_basis": "performance_target_window.unrealized_gross_pnl_total"
+  },
+  "generated_at": "2026-03-28T15:17:02.664Z",
+  "command": "node scripts/verify_pnl_chain_consistency.mjs --task_id=260328_019 --sample=debug_exit_yes_path_v1+debug_fill_yes_path_v1",
+  "realized_reconciliation_table": {
+    "sample": "debug_exit_yes_path_v1",
+    "window_id": "debug-exit-yes-path-v1-w1",
+    "summary_realized_gross_pnl_total": 0.17499999999999988,
+    "last_run_snapshot_realized_gross_pnl_total": 0.17499999999999988,
+    "postmortem_realized_gross_pnl_total": 0.17499999999999988,
+    "performance_target_window_realized_gross_pnl_total": 0.17499999999999988
+  },
+  "unrealized_reconciliation_table": {
+    "sample": "debug_exit_yes_path_v1",
+    "window_id": "debug-exit-yes-path-v1-w1",
+    "summary_unrealized_gross_pnl_total": 0,
+    "summary_basis": "summary.unrealized_gross_pnl_total",
+    "last_run_snapshot_unrealized_gross_pnl_total": 0,
+    "last_run_snapshot_basis": "last_run_snapshot.unrealized_gross_pnl_total",
+    "postmortem_unrealized_gross_pnl_total": 0,
+    "postmortem_basis": "postmortem.unrealized_gross_pnl_total",
+    "performance_target_window_unrealized_gross_pnl_total": 0,
+    "performance_target_window_basis": "performance_target_window.unrealized_gross_pnl_total"
+  },
+  "hand_calc": {
+    "realized": {
+      "available": true,
+      "side": "YES",
+      "entry_price": 0.27,
+      "exit_price": 0.305,
+      "size": 5,
+      "formula": "(exit-entry)*size",
+      "manual_realized_pnl": 0.17499999999999988,
+      "summary_realized_gross_pnl_total": 0.17499999999999988,
+      "delta_vs_summary": 0
+    },
+    "unrealized": {
+      "position_size": 5,
+      "avg_entry_price": 0.27,
+      "current_mark_price": null,
+      "reported_unrealized_total": 0.1999999999999999
+    }
+  },
+  "result": {
+    "realized_pnl_chain_pass": true,
+    "unrealized_pnl_chain_pass": true,
+    "pnl_chain_consistency_pass": true
+  },
+  "sample_evaluations": [
+    {
+      "sample_name": "debug_exit_yes_path_v1",
+      "scenario": "exit_yes_path_v1",
+      "target_window_id": "debug-exit-yes-path-v1-w1",
+      "realized_chain_pass": true,
+      "unrealized_chain_pass": true,
+      "unrealized_all_supported": true,
+      "realized_summary": 0.17499999999999988,
+      "unrealized_summary": 0
+    },
+    {
+      "sample_name": "debug_fill_yes_path_v1",
+      "scenario": "fill_yes_path_v1",
+      "target_window_id": "debug-fill-yes-path-v1-w1",
+      "realized_chain_pass": true,
+      "unrealized_chain_pass": true,
+      "unrealized_all_supported": true,
+      "realized_summary": 0,
+      "unrealized_summary": 0.1999999999999999
+    }
+  ],
+  "raw": [
+    {
+      "sample_name": "debug_exit_yes_path_v1",
+      "scenario": "exit_yes_path_v1",
+      "raw": {
+        "orders": {
+          "status": 200,
+          "body": {
+            "orders": [
+              {
+                "order_id": "paper_a8d861eb",
+                "kind": "EXIT",
+                "side": "YES",
+                "price": 0.305,
+                "size": 5,
+                "status": "FILLED",
+                "fill_price": 0.305,
+                "filled_at": "2026-03-28T15:16:53.392Z",
+                "created_at": "2026-03-28T15:16:53.392Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_6a2d7040",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.27,
+                "size": 5,
+                "status": "FILLED",
+                "fill_price": 0.27,
+                "filled_at": "2026-03-28T15:16:51.379Z",
+                "created_at": "2026-03-28T15:16:50.480Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_fc8157c7",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.27,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:50.480Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_448ba318",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.24,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:50.480Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_1440f31a",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.24,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:50.480Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_8442d209",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.21,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:50.480Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_2e5d3b14",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.21,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:50.480Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_90fd9d70",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.18,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:50.480Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_8cbe7066",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.18,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:50.480Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              }
+            ],
+            "window_orders": [
+              {
+                "order_id": "paper_a8d861eb",
+                "kind": "EXIT",
+                "side": "YES",
+                "price": 0.305,
+                "size": 5,
+                "status": "FILLED",
+                "fill_price": 0.305,
+                "filled_at": "2026-03-28T15:16:53.392Z",
+                "created_at": "2026-03-28T15:16:53.392Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_6a2d7040",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.27,
+                "size": 5,
+                "status": "FILLED",
+                "fill_price": 0.27,
+                "filled_at": "2026-03-28T15:16:51.379Z",
+                "created_at": "2026-03-28T15:16:50.480Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_fc8157c7",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.27,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:50.480Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_448ba318",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.24,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:50.480Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_1440f31a",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.24,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:50.480Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_8442d209",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.21,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:50.480Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_2e5d3b14",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.21,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:50.480Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_90fd9d70",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.18,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:50.480Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_8cbe7066",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.18,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:50.480Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              }
+            ],
+            "all_orders": [
+              {
+                "order_id": "paper_6a2d7040",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.27,
+                "size": 5,
+                "status": "FILLED",
+                "fill_price": 0.27,
+                "filled_at": "2026-03-28T15:16:51.379Z",
+                "created_at": "2026-03-28T15:16:50.480Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_fc8157c7",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.27,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:50.480Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_448ba318",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.24,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:50.480Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_1440f31a",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.24,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:50.480Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_8442d209",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.21,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:50.480Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_2e5d3b14",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.21,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:50.480Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_90fd9d70",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.18,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:50.480Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_8cbe7066",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.18,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:50.480Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_a8d861eb",
+                "kind": "EXIT",
+                "side": "YES",
+                "price": 0.305,
+                "size": 5,
+                "status": "FILLED",
+                "fill_price": 0.305,
+                "filled_at": "2026-03-28T15:16:53.392Z",
+                "created_at": "2026-03-28T15:16:53.392Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-exit-yes-path-v1-w1"
+              }
+            ],
+            "summary": {
+              "total": 9,
+              "open_total": 0,
+              "cancelled_total": 7,
+              "filled_total": 2,
+              "open_yes": 0,
+              "open_no": 0,
+              "filled_yes": 2,
+              "filled_no": 0
+            },
+            "window_scope": {
+              "scope": "last_window",
+              "running": false,
+              "active_window_id": null,
+              "display_window_id": "debug-exit-yes-path-v1-w1",
+              "label": "上一窗口订单（停止态）",
+              "ownership_rule": "停止态展示上一窗口订单，不冒充当前活动窗口"
+            },
+            "hidden_other_window_count": 0
+          }
+        },
+        "status": {
+          "status": 200,
+          "body": {
+            "mode": "paper-staging",
+            "phase": "IDLE",
+            "running": false,
+            "debug_scenario": "exit_yes_path_v1",
+            "debug_frame_index": 7,
+            "debug_completed": true,
+            "tick_interval_ms": 1000,
+            "last_tick_at": "2026-03-28T15:16:54.488Z",
+            "last_window_id": "debug-exit-yes-path-v1-w1",
+            "current_window_id": null,
+            "window_initialized_at": null,
+            "remaining_sec": 100,
+            "anchor_btc": null,
+            "atr_5m": null,
+            "upper_bound": null,
+            "lower_bound": null,
+            "ladder_posted": false,
+            "yes_cancelled": false,
+            "no_cancelled": false,
+            "yes_order_ids": [],
+            "no_order_ids": [],
+            "last_reason": null,
+            "last_intents": [],
+            "updated_at": "2026-03-28T15:16:54.491Z",
+            "saved_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            },
+            "last_run_snapshot": {
+              "stop_reason": "AUTO_COMPLETED",
+              "completed_at": "2026-03-28T15:16:54.489Z",
+              "current_window_id": "debug-exit-yes-path-v1-w1",
+              "phase": "IDLE",
+              "filled_total": 2,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0.17499999999999988,
+              "unrealized_gross_pnl_total": 0,
+              "active_config": {
+                "open_delay_sec": 10,
+                "ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "ladder_size": 5,
+                "atr_multiple": 1.2,
+                "cancel_all_remaining_sec": 100
+              }
+            },
+            "active_runtime_snapshot": null
+          }
+        },
+        "postmortem": {
+          "status": 200,
+          "body": {
+            "ok": true,
+            "postmortem": {
+              "id": 1588,
+              "strategy_id": "bot_console",
+              "event_id": "debug-exit-yes-path-v1-w1",
+              "window_start": "2026-03-28T15:16:54.489Z",
+              "window_end": "2026-03-28T15:16:54.489Z",
+              "created_at": "2026-03-28T15:16:54.489Z",
+              "window_id": "debug-exit-yes-path-v1-w1",
+              "stop_reason": "AUTO_COMPLETED",
+              "completed_at": "2026-03-28T15:16:54.489Z",
+              "filled_total": 2,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0.17499999999999988,
+              "unrealized_gross_pnl_total": 0,
+              "active_config": {
+                "open_delay_sec": 10,
+                "ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "ladder_size": 5,
+                "atr_multiple": 1.2,
+                "cancel_all_remaining_sec": 100
+              },
+              "action_summary": [
+                "PLACE_LADDER",
+                "CANCEL_OPEN",
+                "FLATTEN_POSITION"
+              ]
+            }
+          }
+        },
+        "summary": {
+          "status": 200,
+          "body": {
+            "yes_entry_filled_count": 1,
+            "yes_exit_filled_count": 1,
+            "yes_position_size": 0,
+            "yes_avg_fill_price": null,
+            "yes_realized_gross_pnl": 0.17499999999999988,
+            "yes_unrealized_gross_pnl": 0,
+            "no_entry_filled_count": 0,
+            "no_exit_filled_count": 0,
+            "no_position_size": 0,
+            "no_avg_fill_price": null,
+            "no_realized_gross_pnl": 0,
+            "no_unrealized_gross_pnl": 0,
+            "filled_total": 2,
+            "realized_gross_pnl_total": 0.17499999999999988,
+            "unrealized_gross_pnl_total": 0,
+            "updated_at": "2026-03-28T15:16:55.135Z"
+          }
+        },
+        "performance": {
+          "status": 200,
+          "body": {
+            "ok": true,
+            "summary": {
+              "preset": "today",
+              "window_count": 94,
+              "filled_total": 40,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0.6999999999999995,
+              "unrealized_gross_pnl_total": 5.959999999999993,
+              "avg_realized_gross_pnl_per_window": 0.007446808510638293,
+              "avg_unrealized_gross_pnl_per_window": 0.06340425531914887,
+              "running_window_excluded": true,
+              "sample_postmortem_rows": [
+                {
+                  "id": 1588,
+                  "window_id": "debug-exit-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:16:54.489Z",
+                  "filled_total": 2,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0.17499999999999988,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1587,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:16:15.488Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1586,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:16:08.496Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1585,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:16:03.392Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1584,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:16:00.796Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1583,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:15:56.892Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1582,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:15:55.215Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1581,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:15:52.762Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1580,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:15:43.684Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1579,
+                  "window_id": "btc-updown-5m-1774710900",
+                  "completed_at": "2026-03-28T15:15:37.156Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                }
+              ],
+              "participating_postmortem_rows": [
+                {
+                  "id": 1588,
+                  "window_id": "debug-exit-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:16:54.489Z",
+                  "filled_total": 2,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0.17499999999999988,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1587,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:16:15.488Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1586,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:16:08.496Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1585,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:16:03.392Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1584,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:16:00.796Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1583,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:15:56.892Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1582,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:15:55.215Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1581,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:15:52.762Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1580,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:15:43.684Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1579,
+                  "window_id": "btc-updown-5m-1774710900",
+                  "completed_at": "2026-03-28T15:15:37.156Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1578,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:15:15.505Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1577,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:15:08.607Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1576,
+                  "window_id": "btc-updown-5m-1774710900",
+                  "completed_at": "2026-03-28T15:15:06.665Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1575,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:15:03.076Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1574,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:14:59.297Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1573,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:14:57.058Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1572,
+                  "window_id": "btc-updown-5m-1774710600",
+                  "completed_at": "2026-03-28T15:14:54.900Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1571,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:14:52.634Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.1999999999999999
+                },
+                {
+                  "id": 1570,
+                  "window_id": "debug-exit-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:12:12.212Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1569,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:11:22.066Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1568,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:11:14.593Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1567,
+                  "window_id": "btc-updown-5m-1774710600",
+                  "completed_at": "2026-03-28T15:11:09.396Z",
+                  "filled_total": 2,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": -0.18000000000000016
+                },
+                {
+                  "id": 1566,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:11:07.470Z",
+                  "filled_total": 4,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 1.079999999999999
+                },
+                {
+                  "id": 1565,
+                  "window_id": null,
+                  "completed_at": "2026-03-28T15:11:02.483Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1564,
+                  "window_id": null,
+                  "completed_at": "2026-03-28T15:11:01.766Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1563,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:11:00.276Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.1999999999999999
+                },
+                {
+                  "id": 1562,
+                  "window_id": "debug-exit-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:10:53.150Z",
+                  "filled_total": 2,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0.17499999999999988,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1561,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:10:14.077Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1560,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:10:07.099Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1559,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:10:01.988Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1558,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:09:59.394Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1557,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:09:55.274Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1556,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:09:53.592Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1555,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:09:51.143Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1554,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:09:41.979Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1553,
+                  "window_id": "btc-updown-5m-1774710300",
+                  "completed_at": "2026-03-28T15:09:35.445Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1552,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:09:14.073Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1551,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:09:07.158Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1550,
+                  "window_id": "btc-updown-5m-1774710300",
+                  "completed_at": "2026-03-28T15:09:05.190Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1549,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:09:01.603Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1548,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:08:57.824Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1547,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:08:55.567Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1546,
+                  "window_id": "btc-updown-5m-1774710300",
+                  "completed_at": "2026-03-28T15:08:53.292Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1545,
+                  "window_id": "debug-exit-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:04:19.583Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1544,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:03:29.353Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1543,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:03:21.871Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1542,
+                  "window_id": "btc-updown-5m-1774710000",
+                  "completed_at": "2026-03-28T15:03:16.902Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1541,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:03:14.968Z",
+                  "filled_total": 4,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 1.079999999999999
+                },
+                {
+                  "id": 1540,
+                  "window_id": null,
+                  "completed_at": "2026-03-28T15:03:09.986Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1539,
+                  "window_id": null,
+                  "completed_at": "2026-03-28T15:03:09.268Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1538,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:03:07.786Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.1999999999999999
+                },
+                {
+                  "id": 1537,
+                  "window_id": "debug-exit-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:03:00.728Z",
+                  "filled_total": 2,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0.17499999999999988,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1536,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:02:21.455Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1535,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:02:14.468Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1534,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:02:09.368Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1533,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:02:06.682Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1532,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:02:02.734Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1531,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:02:01.045Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1530,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:01:58.582Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1529,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:01:49.468Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1528,
+                  "window_id": "btc-updown-5m-1774710000",
+                  "completed_at": "2026-03-28T15:01:42.948Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1527,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:01:21.259Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1526,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:01:14.335Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1525,
+                  "window_id": "btc-updown-5m-1774710000",
+                  "completed_at": "2026-03-28T15:01:12.415Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1524,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:01:08.855Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1523,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:01:05.063Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1522,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:01:02.948Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1521,
+                  "window_id": "btc-updown-5m-1774710000",
+                  "completed_at": "2026-03-28T15:01:00.793Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1520,
+                  "window_id": "btc-updown-5m-1774710000",
+                  "completed_at": "2026-03-28T15:00:56.899Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1519,
+                  "window_id": "debug-exit-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T11:24:51.003Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1518,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T11:23:59.826Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1517,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T11:23:52.181Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1516,
+                  "window_id": "btc-updown-5m-1774696800",
+                  "completed_at": "2026-03-28T11:23:46.942Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1515,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T11:23:45.018Z",
+                  "filled_total": 4,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 1.079999999999999
+                },
+                {
+                  "id": 1514,
+                  "window_id": null,
+                  "completed_at": "2026-03-28T11:23:40.035Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1513,
+                  "window_id": null,
+                  "completed_at": "2026-03-28T11:23:39.314Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1512,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T11:23:37.789Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.1999999999999999
+                },
+                {
+                  "id": 1511,
+                  "window_id": "debug-exit-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T11:23:30.611Z",
+                  "filled_total": 2,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0.17499999999999988,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1510,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T11:22:51.619Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1509,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T11:22:44.634Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1508,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T11:22:39.543Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1507,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T11:22:36.941Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1506,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T11:22:32.838Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1505,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T11:22:31.150Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1504,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T11:22:28.717Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1503,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T11:22:19.515Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1502,
+                  "window_id": "btc-updown-5m-1774696800",
+                  "completed_at": "2026-03-28T11:22:12.988Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1501,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T11:21:50.965Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1500,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T11:21:43.839Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1499,
+                  "window_id": "btc-updown-5m-1774696800",
+                  "completed_at": "2026-03-28T11:21:41.833Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1498,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T11:21:38.338Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1497,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T11:21:34.599Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1496,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T11:21:32.450Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1495,
+                  "window_id": "btc-updown-5m-1774696800",
+                  "completed_at": "2026-03-28T11:21:30.308Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "sample_name": "debug_fill_yes_path_v1",
+      "scenario": "fill_yes_path_v1",
+      "raw": {
+        "orders": {
+          "status": 200,
+          "body": {
+            "orders": [
+              {
+                "order_id": "paper_4f14bfbc",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.27,
+                "size": 5,
+                "status": "FILLED",
+                "fill_price": 0.27,
+                "filled_at": "2026-03-28T15:16:59.588Z",
+                "created_at": "2026-03-28T15:16:58.666Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_126c5768",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.27,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:58.666Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_79421a4e",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.24,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:58.666Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_bd39de1f",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.24,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:58.666Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_984269a0",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.21,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:58.666Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_dc964873",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.21,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:58.666Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_b66a1c2b",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.18,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:58.666Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_2c41f5e9",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.18,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:58.666Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              }
+            ],
+            "window_orders": [
+              {
+                "order_id": "paper_4f14bfbc",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.27,
+                "size": 5,
+                "status": "FILLED",
+                "fill_price": 0.27,
+                "filled_at": "2026-03-28T15:16:59.588Z",
+                "created_at": "2026-03-28T15:16:58.666Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_126c5768",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.27,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:58.666Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_79421a4e",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.24,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:58.666Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_bd39de1f",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.24,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:58.666Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_984269a0",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.21,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:58.666Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_dc964873",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.21,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:58.666Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_b66a1c2b",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.18,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:58.666Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_2c41f5e9",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.18,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:58.666Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              }
+            ],
+            "all_orders": [
+              {
+                "order_id": "paper_4f14bfbc",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.27,
+                "size": 5,
+                "status": "FILLED",
+                "fill_price": 0.27,
+                "filled_at": "2026-03-28T15:16:59.588Z",
+                "created_at": "2026-03-28T15:16:58.666Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_126c5768",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.27,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:58.666Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_79421a4e",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.24,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:58.666Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_bd39de1f",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.24,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:58.666Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_984269a0",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.21,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:58.666Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_dc964873",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.21,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:58.666Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_b66a1c2b",
+                "kind": "ENTRY",
+                "side": "YES",
+                "price": 0.18,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:58.666Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              },
+              {
+                "order_id": "paper_2c41f5e9",
+                "kind": "ENTRY",
+                "side": "NO",
+                "price": 0.18,
+                "size": 5,
+                "status": "CANCELLED",
+                "fill_price": null,
+                "filled_at": null,
+                "created_at": "2026-03-28T15:16:58.666Z",
+                "source": "runner_tick",
+                "inferred_window_id": "debug-fill-yes-path-v1-w1"
+              }
+            ],
+            "summary": {
+              "total": 8,
+              "open_total": 0,
+              "cancelled_total": 7,
+              "filled_total": 1,
+              "open_yes": 0,
+              "open_no": 0,
+              "filled_yes": 1,
+              "filled_no": 0
+            },
+            "window_scope": {
+              "scope": "last_window",
+              "running": false,
+              "active_window_id": null,
+              "display_window_id": "debug-fill-yes-path-v1-w1",
+              "label": "上一窗口订单（停止态）",
+              "ownership_rule": "停止态展示上一窗口订单，不冒充当前活动窗口"
+            },
+            "hidden_other_window_count": 0
+          }
+        },
+        "status": {
+          "status": 200,
+          "body": {
+            "mode": "paper-staging",
+            "phase": "IDLE",
+            "running": false,
+            "debug_scenario": "fill_yes_path_v1",
+            "debug_frame_index": 6,
+            "debug_completed": true,
+            "tick_interval_ms": 1000,
+            "last_tick_at": "2026-03-28T15:17:01.595Z",
+            "last_window_id": "debug-fill-yes-path-v1-w1",
+            "current_window_id": null,
+            "window_initialized_at": null,
+            "remaining_sec": 100,
+            "anchor_btc": null,
+            "atr_5m": null,
+            "upper_bound": null,
+            "lower_bound": null,
+            "ladder_posted": false,
+            "yes_cancelled": false,
+            "no_cancelled": false,
+            "yes_order_ids": [],
+            "no_order_ids": [],
+            "last_reason": null,
+            "last_intents": [],
+            "updated_at": "2026-03-28T15:17:01.596Z",
+            "saved_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            },
+            "last_run_snapshot": {
+              "stop_reason": "AUTO_COMPLETED",
+              "completed_at": "2026-03-28T15:17:01.595Z",
+              "current_window_id": "debug-fill-yes-path-v1-w1",
+              "phase": "IDLE",
+              "filled_total": 1,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0.1999999999999999,
+              "active_config": {
+                "open_delay_sec": 10,
+                "ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "ladder_size": 5,
+                "atr_multiple": 1.2,
+                "cancel_all_remaining_sec": 100
+              }
+            },
+            "active_runtime_snapshot": null
+          }
+        },
+        "postmortem": {
+          "status": 200,
+          "body": {
+            "ok": true,
+            "postmortem": {
+              "id": 1589,
+              "strategy_id": "bot_console",
+              "event_id": "debug-fill-yes-path-v1-w1",
+              "window_start": "2026-03-28T15:17:01.595Z",
+              "window_end": "2026-03-28T15:17:01.595Z",
+              "created_at": "2026-03-28T15:17:01.595Z",
+              "window_id": "debug-fill-yes-path-v1-w1",
+              "stop_reason": "AUTO_COMPLETED",
+              "completed_at": "2026-03-28T15:17:01.595Z",
+              "filled_total": 1,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0.1999999999999999,
+              "active_config": {
+                "open_delay_sec": 10,
+                "ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "ladder_size": 5,
+                "atr_multiple": 1.2,
+                "cancel_all_remaining_sec": 100
+              },
+              "action_summary": [
+                "PLACE_LADDER",
+                "CANCEL_OPEN"
+              ]
+            }
+          }
+        },
+        "summary": {
+          "status": 200,
+          "body": {
+            "yes_entry_filled_count": 1,
+            "yes_exit_filled_count": 0,
+            "yes_position_size": 5,
+            "yes_avg_fill_price": 0.27,
+            "yes_realized_gross_pnl": 0,
+            "yes_unrealized_gross_pnl": 0.1999999999999999,
+            "no_entry_filled_count": 0,
+            "no_exit_filled_count": 0,
+            "no_position_size": 0,
+            "no_avg_fill_price": null,
+            "no_realized_gross_pnl": 0,
+            "no_unrealized_gross_pnl": 0,
+            "filled_total": 1,
+            "realized_gross_pnl_total": 0,
+            "unrealized_gross_pnl_total": 0.1999999999999999,
+            "updated_at": "2026-03-28T15:17:02.660Z"
+          }
+        },
+        "performance": {
+          "status": 200,
+          "body": {
+            "ok": true,
+            "summary": {
+              "preset": "today",
+              "window_count": 95,
+              "filled_total": 41,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0.6999999999999995,
+              "unrealized_gross_pnl_total": 6.159999999999993,
+              "avg_realized_gross_pnl_per_window": 0.007368421052631574,
+              "avg_unrealized_gross_pnl_per_window": 0.06484210526315783,
+              "running_window_excluded": true,
+              "sample_postmortem_rows": [
+                {
+                  "id": 1589,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:17:01.595Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.1999999999999999
+                },
+                {
+                  "id": 1588,
+                  "window_id": "debug-exit-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:16:54.489Z",
+                  "filled_total": 2,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0.17499999999999988,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1587,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:16:15.488Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1586,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:16:08.496Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1585,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:16:03.392Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1584,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:16:00.796Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1583,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:15:56.892Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1582,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:15:55.215Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1581,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:15:52.762Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1580,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:15:43.684Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                }
+              ],
+              "participating_postmortem_rows": [
+                {
+                  "id": 1589,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:17:01.595Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.1999999999999999
+                },
+                {
+                  "id": 1588,
+                  "window_id": "debug-exit-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:16:54.489Z",
+                  "filled_total": 2,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0.17499999999999988,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1587,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:16:15.488Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1586,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:16:08.496Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1585,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:16:03.392Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1584,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:16:00.796Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1583,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:15:56.892Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1582,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:15:55.215Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1581,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:15:52.762Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1580,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:15:43.684Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1579,
+                  "window_id": "btc-updown-5m-1774710900",
+                  "completed_at": "2026-03-28T15:15:37.156Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1578,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:15:15.505Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1577,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:15:08.607Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1576,
+                  "window_id": "btc-updown-5m-1774710900",
+                  "completed_at": "2026-03-28T15:15:06.665Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1575,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:15:03.076Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1574,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:14:59.297Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1573,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:14:57.058Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1572,
+                  "window_id": "btc-updown-5m-1774710600",
+                  "completed_at": "2026-03-28T15:14:54.900Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1571,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:14:52.634Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.1999999999999999
+                },
+                {
+                  "id": 1570,
+                  "window_id": "debug-exit-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:12:12.212Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1569,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:11:22.066Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1568,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:11:14.593Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1567,
+                  "window_id": "btc-updown-5m-1774710600",
+                  "completed_at": "2026-03-28T15:11:09.396Z",
+                  "filled_total": 2,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": -0.18000000000000016
+                },
+                {
+                  "id": 1566,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:11:07.470Z",
+                  "filled_total": 4,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 1.079999999999999
+                },
+                {
+                  "id": 1565,
+                  "window_id": null,
+                  "completed_at": "2026-03-28T15:11:02.483Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1564,
+                  "window_id": null,
+                  "completed_at": "2026-03-28T15:11:01.766Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1563,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:11:00.276Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.1999999999999999
+                },
+                {
+                  "id": 1562,
+                  "window_id": "debug-exit-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:10:53.150Z",
+                  "filled_total": 2,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0.17499999999999988,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1561,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:10:14.077Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1560,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:10:07.099Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1559,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:10:01.988Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1558,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:09:59.394Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1557,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:09:55.274Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1556,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:09:53.592Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1555,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:09:51.143Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1554,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:09:41.979Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1553,
+                  "window_id": "btc-updown-5m-1774710300",
+                  "completed_at": "2026-03-28T15:09:35.445Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1552,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:09:14.073Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1551,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:09:07.158Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1550,
+                  "window_id": "btc-updown-5m-1774710300",
+                  "completed_at": "2026-03-28T15:09:05.190Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1549,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:09:01.603Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1548,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:08:57.824Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1547,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:08:55.567Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1546,
+                  "window_id": "btc-updown-5m-1774710300",
+                  "completed_at": "2026-03-28T15:08:53.292Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1545,
+                  "window_id": "debug-exit-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:04:19.583Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1544,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:03:29.353Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1543,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:03:21.871Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1542,
+                  "window_id": "btc-updown-5m-1774710000",
+                  "completed_at": "2026-03-28T15:03:16.902Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1541,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:03:14.968Z",
+                  "filled_total": 4,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 1.079999999999999
+                },
+                {
+                  "id": 1540,
+                  "window_id": null,
+                  "completed_at": "2026-03-28T15:03:09.986Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1539,
+                  "window_id": null,
+                  "completed_at": "2026-03-28T15:03:09.268Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1538,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:03:07.786Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.1999999999999999
+                },
+                {
+                  "id": 1537,
+                  "window_id": "debug-exit-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:03:00.728Z",
+                  "filled_total": 2,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0.17499999999999988,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1536,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:02:21.455Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1535,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:02:14.468Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1534,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:02:09.368Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1533,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:02:06.682Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1532,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:02:02.734Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1531,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:02:01.045Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1530,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T15:01:58.582Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1529,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:01:49.468Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1528,
+                  "window_id": "btc-updown-5m-1774710000",
+                  "completed_at": "2026-03-28T15:01:42.948Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1527,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:01:21.259Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1526,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:01:14.335Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1525,
+                  "window_id": "btc-updown-5m-1774710000",
+                  "completed_at": "2026-03-28T15:01:12.415Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1524,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:01:08.855Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1523,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:01:05.063Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1522,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T15:01:02.948Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1521,
+                  "window_id": "btc-updown-5m-1774710000",
+                  "completed_at": "2026-03-28T15:01:00.793Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1520,
+                  "window_id": "btc-updown-5m-1774710000",
+                  "completed_at": "2026-03-28T15:00:56.899Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1519,
+                  "window_id": "debug-exit-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T11:24:51.003Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1518,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T11:23:59.826Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1517,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T11:23:52.181Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1516,
+                  "window_id": "btc-updown-5m-1774696800",
+                  "completed_at": "2026-03-28T11:23:46.942Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1515,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T11:23:45.018Z",
+                  "filled_total": 4,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 1.079999999999999
+                },
+                {
+                  "id": 1514,
+                  "window_id": null,
+                  "completed_at": "2026-03-28T11:23:40.035Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1513,
+                  "window_id": null,
+                  "completed_at": "2026-03-28T11:23:39.314Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1512,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T11:23:37.789Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.1999999999999999
+                },
+                {
+                  "id": 1511,
+                  "window_id": "debug-exit-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T11:23:30.611Z",
+                  "filled_total": 2,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0.17499999999999988,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1510,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T11:22:51.619Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1509,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T11:22:44.634Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1508,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T11:22:39.543Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1507,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T11:22:36.941Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1506,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T11:22:32.838Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1505,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T11:22:31.150Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1504,
+                  "window_id": "debug-fill-yes-path-v1-w1",
+                  "completed_at": "2026-03-28T11:22:28.717Z",
+                  "filled_total": 1,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0.14999999999999986
+                },
+                {
+                  "id": 1503,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T11:22:19.515Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1502,
+                  "window_id": "btc-updown-5m-1774696800",
+                  "completed_at": "2026-03-28T11:22:12.988Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1501,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T11:21:50.965Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1500,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T11:21:43.839Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1499,
+                  "window_id": "btc-updown-5m-1774696800",
+                  "completed_at": "2026-03-28T11:21:41.833Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1498,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T11:21:38.338Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1497,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T11:21:34.599Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1496,
+                  "window_id": "debug-main-path-v1-w1",
+                  "completed_at": "2026-03-28T11:21:32.450Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                },
+                {
+                  "id": 1495,
+                  "window_id": "btc-updown-5m-1774696800",
+                  "completed_at": "2026-03-28T11:21:30.308Z",
+                  "filled_total": 0,
+                  "cancelled_total": 0,
+                  "realized_gross_pnl_total": 0,
+                  "unrealized_gross_pnl_total": 0
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ]
+}
