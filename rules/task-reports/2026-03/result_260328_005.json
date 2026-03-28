@@ -1,0 +1,29 @@
+{
+  "task_id": "260328_005",
+  "status": "DONE",
+  "scope_guard": "docs-only：C1-1 核心口径总表 + 最小互链",
+  "changes": {
+    "new_doc": "docs/BTCQDD_CORE_SEMANTICS.md",
+    "linked_from": [
+      "docs/README.md",
+      "docs/MODULE_MAP.md"
+    ],
+    "three_core_docs_modified": false
+  },
+  "coverage": {
+    "semantic_count": 6,
+    "semantics": [
+      "anchor_btc",
+      "upper_bound/lower_bound/bounds_ready",
+      "ATR 缺失行为",
+      "current/active/last",
+      "filled_total",
+      "PNL 分区口径"
+    ]
+  },
+  "validation": {
+    "code_change": false,
+    "test_change": false,
+    "ci_change": false
+  }
+}

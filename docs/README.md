@@ -6,6 +6,7 @@
 
 | 文档 | 说明 |
 |------|------|
+| [BTCQDD_CORE_SEMANTICS.md](BTCQDD_CORE_SEMANTICS.md) | C1-1：执行机器人 6 条主链核心口径总表（总口径真源入口） |
 | [RESULTS_PNL_CONTRACT.md](RESULTS_PNL_CONTRACT.md) | M2-4：运行结果模块 PNL/结果字段薄契约（单窗口 vs 阶段汇总） |
 | [BOT_TRUTH_CHAIN.md](BOT_TRUTH_CHAIN.md) | M2-3：bot 主链唯一真值链（输入→执行→`/bot/*`→UI/verify/runtime 验收） |
 | [BOT_SURFACE_VS_STRATEGY_INSTANCE_BOUNDARY.md](BOT_SURFACE_VS_STRATEGY_INSTANCE_BOUNDARY.md) | M2-2：bot 正式产品面 vs 旧 strategy 实例承载层边界说明（docs-only） |
