@@ -1,0 +1,12 @@
+{
+  "task_id": "260328_025",
+  "is_shallow_repo": true,
+  "base": "2984fbbf8370fe163a653b62d2f2234db08057f6",
+  "head": "077c0fe8a1e773810da922e56dad1506eb4e4dfd",
+  "merge_base": "2984fbbf8370fe163a653b62d2f2234db08057f6",
+  "scope_files": [
+    "rules/task-reports/2026-03/truth_audit_260328_025.md"
+  ],
+  "scope_count": 1,
+  "generated_at": "2026-03-28T19:28:59.190Z"
+}
