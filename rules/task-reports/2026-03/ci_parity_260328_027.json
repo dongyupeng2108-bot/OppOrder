@@ -1,0 +1,13 @@
+{
+  "task_id": "260328_027",
+  "is_shallow_repo": true,
+  "base": "c6377e3efa86f369b1887772a5704f1d1a1bd72e",
+  "head": "114d90a1245c1f86b0b539b15a3a86598d17a29a",
+  "merge_base": "c6377e3efa86f369b1887772a5704f1d1a1bd72e",
+  "scope_files": [
+    "strategies/crypto_binary/bot_state.mjs",
+    "strategies/crypto_binary/bot_strategy.mjs"
+  ],
+  "scope_count": 2,
+  "generated_at": "2026-03-28T20:06:55.116Z"
+}
