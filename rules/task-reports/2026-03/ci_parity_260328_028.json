@@ -1,0 +1,13 @@
+{
+  "task_id": "260328_028",
+  "is_shallow_repo": true,
+  "base": "b7267bc1d90de80da671afbd200430fb0f621e3a",
+  "head": "60dd957bfdd23595a0b1f7f9dd1c2491fba8d1c7",
+  "merge_base": "b7267bc1d90de80da671afbd200430fb0f621e3a",
+  "scope_files": [
+    "scripts/verify_all_manual.mjs",
+    "scripts/verify_strategy_runtime_regression_guard.mjs"
+  ],
+  "scope_count": 2,
+  "generated_at": "2026-03-28T20:37:24.286Z"
+}
