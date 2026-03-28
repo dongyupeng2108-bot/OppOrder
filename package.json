@@ -8,7 +8,8 @@
   "scripts": {
     "test": "node tests/behavior/run_tests.mjs",
     "test:promptfoo": "node tests/test_promptfoo_replay.mjs",
-    "verify:doc-contracts": "node scripts/verify_doc_contract_examples.mjs"
+    "verify:doc-contracts": "node scripts/verify_doc_contract_examples.mjs",
+    "finalize:evidence": "node scripts/finalize_task_evidence.mjs"
   },
   "devDependencies": {
     "promptfoo": "^0.120.25"
