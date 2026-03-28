@@ -1,0 +1,12 @@
+{
+  "task_id": "260328_018",
+  "is_shallow_repo": true,
+  "base": "11f6af534f019e971c09d41de9add48703405547",
+  "head": "4c2c573502cf1ce38181d233cf2f1dff7373ed30",
+  "merge_base": "11f6af534f019e971c09d41de9add48703405547",
+  "scope_files": [
+    "strategies/crypto_binary/server.mjs"
+  ],
+  "scope_count": 1,
+  "generated_at": "2026-03-28T14:29:33.132Z"
+}

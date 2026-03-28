@@ -3,7 +3,7 @@ import fs from 'fs';
 // 端口 53123（默认），支持 --strategy=<id> 和 --port=<n> 参数
 // 提供：GET / 健康检查，POST /config/reload 热更新
 
-import { createServer } from 'http';
+import { createServer, request as httpRequest } from 'http';
 import { execSync, spawn } from 'child_process';
 import { readFileSync, readdirSync, existsSync, mkdirSync, writeFileSync, unlinkSync, createReadStream, statSync } from 'fs';
 import { resolve, dirname, extname } from 'path';
@@ -339,17 +339,39 @@ const pickNestedString = (payload, keys) => {
   return null;
 };
 const fetchSignerJson = async (pathname) => {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 1200);
-  try {
-    const res = await undiciFetch(`http://127.0.0.1:53199${pathname}`, { signal: controller.signal });
-    if (!res.ok) return null;
-    return await res.json();
-  } catch {
-    return null;
-  } finally {
-    clearTimeout(timer);
-  }
+  return await new Promise((resolveResult) => {
+    const req = httpRequest({
+      hostname: '127.0.0.1',
+      port: 53199,
+      path: pathname,
+      method: 'GET',
+      timeout: 1200
+    }, (res) => {
+      const status = Number(res.statusCode || 0);
+      const chunks = [];
+      res.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
+      res.on('end', () => {
+        const raw = Buffer.concat(chunks).toString('utf8');
+        if (status < 200 || status >= 300) {
+          resolveResult({ ok: false, path: pathname, status, payload: null });
+          return;
+        }
+        try {
+          resolveResult({ ok: true, path: pathname, status, payload: JSON.parse(raw) });
+        } catch {
+          resolveResult({ ok: false, path: pathname, status, payload: null });
+        }
+      });
+    });
+    req.on('timeout', () => {
+      req.destroy();
+      resolveResult({ ok: false, path: pathname, status: null, payload: null });
+    });
+    req.on('error', () => {
+      resolveResult({ ok: false, path: pathname, status: null, payload: null });
+    });
+    req.end();
+  });
 };
 const getBotAccountSnapshot = async () => {
   const now = Date.now();
@@ -357,10 +379,12 @@ const getBotAccountSnapshot = async () => {
     return botAccountSnapshotCache;
   }
   const cachedFile = readJsonSafe(BOT_ACCOUNT_CACHE_PATH);
+  const signerHealth = await fetchSignerJson('/health');
   const signerAccount = await fetchSignerJson('/account');
   const signerBalance = await fetchSignerJson('/balance');
   const signerWallet = await fetchSignerJson('/wallet');
-  const signerPayload = signerAccount || signerBalance || signerWallet;
+  const signerReadResults = [signerAccount, signerBalance, signerWallet];
+  const signerPayload = signerReadResults.find((item) => item?.ok && item?.payload && typeof item.payload === 'object')?.payload || null;
   const nameFromSigner = pickNestedString(signerPayload, ['pm_account_name', 'account_name', 'name', 'display_name', 'address', 'wallet_address']);
   const balanceFromSigner = pickNestedNumber(signerPayload, ['pm_balance_usd', 'balance_usd', 'balance', 'currentBalance', 'usdc_balance', 'buyingPower', 'available_balance']);
   const updatedAtFromSigner = pickNestedString(signerPayload, ['pm_balance_updated_at', 'updated_at', 'lastUpdated', 'timestamp']);
@@ -368,6 +392,16 @@ const getBotAccountSnapshot = async () => {
   const accountName = nameFromSigner || cachedFile?.pm_account_name || creds.accountAlias || null;
   const balance = balanceFromSigner ?? toFiniteOrNull(cachedFile?.pm_balance_usd);
   const updatedAt = updatedAtFromSigner || cachedFile?.pm_balance_updated_at || null;
+  const signerHealthy = signerHealth?.ok && String(signerHealth?.payload?.status || '').toLowerCase() === 'ok';
+  const hasReadOk = signerReadResults.some((item) => item?.ok);
+  const allRead404 = signerReadResults.every((item) => item && item.ok === false && item.status === 404);
+  let accountReadStatus = 'OK';
+  if (balanceFromSigner === null) {
+    if (!signerHealthy) accountReadStatus = 'SIGNER_UNAVAILABLE';
+    else if (allRead404) accountReadStatus = 'SIGNER_BALANCE_UNSUPPORTED';
+    else if (hasReadOk) accountReadStatus = 'EMPTY_BALANCE_RESPONSE';
+    else accountReadStatus = 'ACCOUNT_READ_FAILED';
+  }
   const snapshot = {
     pm_account_name: accountName,
     pm_balance_usd: balance,
@@ -378,7 +412,12 @@ const getBotAccountSnapshot = async () => {
       account_name: nameFromSigner ? 'signer' : (creds.accountAlias ? 'secrets_api_key_fingerprint' : null),
       balance: balanceFromSigner !== null ? 'signer' : (balance !== null ? 'cache' : null),
       today_change: null
-    }
+    },
+    account_read_status: accountReadStatus,
+    account_read_trace: [
+      { path: signerHealth?.path || '/health', status: signerHealth?.status ?? null, ok: Boolean(signerHealth?.ok) },
+      ...signerReadResults.map((item) => ({ path: item.path, status: item.status ?? null, ok: Boolean(item.ok) }))
+    ]
   };
   if (accountName || balance !== null || updatedAt) {
     try {
