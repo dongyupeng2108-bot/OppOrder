@@ -6,6 +6,11 @@
 
 | 文档 | 说明 |
 |------|------|
+| [CONTRACT_input.md](CONTRACT_input.md) | C1-2：策略与运行输入模块薄契约（输入/输出/拥有权/禁止项） |
+| [CONTRACT_engine.md](CONTRACT_engine.md) | C1-2：执行引擎模块薄契约（生命周期/gate/decision/ledger/幂等） |
+| [CONTRACT_monitoring.md](CONTRACT_monitoring.md) | C1-2：实时监控模块薄契约（暴露与展示，不反向定义执行语义） |
+| [CONTRACT_results.md](CONTRACT_results.md) | C1-2：运行结果模块薄契约（postmortem/snapshot/performance） |
+| [CONTRACT_verify.md](CONTRACT_verify.md) | C1-2：版本测试/保障模块薄契约（横切验证层） |
 | [BTCQDD_CORE_SEMANTICS.md](BTCQDD_CORE_SEMANTICS.md) | C1-1：执行机器人 6 条主链核心口径总表（总口径真源入口） |
 | [RESULTS_PNL_CONTRACT.md](RESULTS_PNL_CONTRACT.md) | M2-4：运行结果模块 PNL/结果字段薄契约（单窗口 vs 阶段汇总） |
 | [BOT_TRUTH_CHAIN.md](BOT_TRUTH_CHAIN.md) | M2-3：bot 主链唯一真值链（输入→执行→`/bot/*`→UI/verify/runtime 验收） |

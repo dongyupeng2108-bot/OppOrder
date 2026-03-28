@@ -1,0 +1,24 @@
+{
+  "task_id": "260328_006",
+  "status": "DONE",
+  "scope_guard": "docs-only：C1-2 五模块薄契约 + 最小互链",
+  "changes": {
+    "new_docs": [
+      "docs/CONTRACT_input.md",
+      "docs/CONTRACT_engine.md",
+      "docs/CONTRACT_monitoring.md",
+      "docs/CONTRACT_results.md",
+      "docs/CONTRACT_verify.md"
+    ],
+    "linked_from": [
+      "docs/README.md",
+      "docs/MODULE_MAP.md"
+    ],
+    "three_core_docs_modified": false
+  },
+  "validation": {
+    "code_change": false,
+    "test_change": false,
+    "ci_change": false
+  }
+}

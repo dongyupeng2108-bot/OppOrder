@@ -7,6 +7,7 @@
 **主链真值链说明**：[`BOT_TRUTH_CHAIN.md`](BOT_TRUTH_CHAIN.md)（M2-3，docs-only）。
 **结果薄契约说明**：[`RESULTS_PNL_CONTRACT.md`](RESULTS_PNL_CONTRACT.md)（M2-4，docs-only）。
 **核心口径总表**：[`BTCQDD_CORE_SEMANTICS.md`](BTCQDD_CORE_SEMANTICS.md)（C1-1，docs-only）。
+**五模块薄契约**：[`CONTRACT_input.md`](CONTRACT_input.md) / [`CONTRACT_engine.md`](CONTRACT_engine.md) / [`CONTRACT_monitoring.md`](CONTRACT_monitoring.md) / [`CONTRACT_results.md`](CONTRACT_results.md) / [`CONTRACT_verify.md`](CONTRACT_verify.md)（C1-2，docs-only）。
 
 ## 总览：执行机器人五模块
 
