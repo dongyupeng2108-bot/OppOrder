@@ -1,0 +1,12 @@
+{
+  "task_id": "260328_024",
+  "is_shallow_repo": true,
+  "base": "dd0610e1b03530a98992159437f6b15e22d2ab4c",
+  "head": "4b27c2567a59e7813357bf77e7c3db5082a90b5c",
+  "merge_base": "dd0610e1b03530a98992159437f6b15e22d2ab4c",
+  "scope_files": [
+    "ui/js/strategy-editor.js"
+  ],
+  "scope_count": 1,
+  "generated_at": "2026-03-28T19:10:47.687Z"
+}
