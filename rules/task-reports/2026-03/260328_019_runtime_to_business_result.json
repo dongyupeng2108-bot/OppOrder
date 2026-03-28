@@ -1,0 +1,2315 @@
+{
+  "script_name": "verify_runtime_to_business_result",
+  "task_id": "260328_019",
+  "sample_name": "debug_fill_yes_path_v1+debug_main_path_v1+debug_exit_yes_path_v1",
+  "pass": true,
+  "message": "runtime -> business result 整链校验通过",
+  "first_break_layer": null,
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260328_019_runtime_to_business_result.json",
+  "summary": {
+    "runtime_start_pass": true,
+    "window_ready_pass": true,
+    "action_emitted_pass": true,
+    "orders_materialized_pass": true,
+    "business_result_pass": true,
+    "runtime_to_business_result_pass": true
+  },
+  "raw_excerpt": {
+    "selected_sample": "debug_fill_yes_path_v1",
+    "result_materialized_basis": "filled_total>0",
+    "first_break_layer": null,
+    "conclusion": "系统能从 running 走到有效业务结果"
+  },
+  "generated_at": "2026-03-28T15:18:13.622Z",
+  "command": "node scripts/verify_runtime_to_business_result.mjs --task_id=260328_019 --sample=debug_fill_yes_path_v1+debug_main_path_v1+debug_exit_yes_path_v1",
+  "conclusion": "系统能从 running 走到有效业务结果",
+  "runtime_business_stage_table": [
+    {
+      "seq": 1,
+      "ts": "2026-03-28T15:17:12.079Z",
+      "running": true,
+      "current_window_id": "btc-updown-5m-1774710900",
+      "phase": "wait_window_id_not_ready",
+      "btc_price": 67026.43,
+      "intents_summary": "NOOP",
+      "orders_open": 0,
+      "orders_filled": 0,
+      "filled_total": 0,
+      "realized_gross_pnl_total": 0,
+      "stage_reached": "context_ready"
+    },
+    {
+      "seq": 2,
+      "ts": "2026-03-28T15:17:12.695Z",
+      "running": true,
+      "current_window_id": "debug-fill-yes-path-v1-w1",
+      "phase": "pre_open_or_open_not_open_delay",
+      "btc_price": 67026.43,
+      "intents_summary": "NOOP",
+      "orders_open": 0,
+      "orders_filled": 0,
+      "filled_total": 0,
+      "realized_gross_pnl_total": 0,
+      "stage_reached": "context_ready"
+    },
+    {
+      "seq": 3,
+      "ts": "2026-03-28T15:17:13.298Z",
+      "running": true,
+      "current_window_id": "debug-fill-yes-path-v1-w1",
+      "phase": "pre_open_or_open_not_open_delay",
+      "btc_price": 67026.43,
+      "intents_summary": "NOOP",
+      "orders_open": 0,
+      "orders_filled": 0,
+      "filled_total": 0,
+      "realized_gross_pnl_total": 0,
+      "stage_reached": "context_ready"
+    },
+    {
+      "seq": 4,
+      "ts": "2026-03-28T15:17:13.915Z",
+      "running": true,
+      "current_window_id": "debug-fill-yes-path-v1-w1",
+      "phase": "pre_open_or_open_not_open_delay",
+      "btc_price": 67026.43,
+      "intents_summary": "NOOP",
+      "orders_open": 0,
+      "orders_filled": 0,
+      "filled_total": 0,
+      "realized_gross_pnl_total": 0,
+      "stage_reached": "context_ready"
+    },
+    {
+      "seq": 5,
+      "ts": "2026-03-28T15:17:14.532Z",
+      "running": true,
+      "current_window_id": "debug-fill-yes-path-v1-w1",
+      "phase": "ladder_not_posted",
+      "btc_price": 67026.43,
+      "intents_summary": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
+      "orders_open": 0,
+      "orders_filled": 0,
+      "filled_total": 0,
+      "realized_gross_pnl_total": 0,
+      "stage_reached": "orders_created"
+    },
+    {
+      "seq": 6,
+      "ts": "2026-03-28T15:17:15.138Z",
+      "running": true,
+      "current_window_id": "debug-fill-yes-path-v1-w1",
+      "phase": "ladder_not_posted",
+      "btc_price": 67026.43,
+      "intents_summary": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
+      "orders_open": 0,
+      "orders_filled": 0,
+      "filled_total": 0,
+      "realized_gross_pnl_total": 0,
+      "stage_reached": "orders_created"
+    },
+    {
+      "seq": 7,
+      "ts": "2026-03-28T15:17:15.745Z",
+      "running": true,
+      "current_window_id": "debug-fill-yes-path-v1-w1",
+      "phase": "within_bounds_or_no_trigger",
+      "btc_price": 67026.43,
+      "intents_summary": "NOOP",
+      "orders_open": 0,
+      "orders_filled": 0,
+      "filled_total": 1,
+      "realized_gross_pnl_total": 0,
+      "stage_reached": "result_materialized"
+    }
+  ],
+  "result_materialized_basis": "filled_total>0",
+  "result": {
+    "runtime_start_pass": true,
+    "window_ready_pass": true,
+    "action_emitted_pass": true,
+    "orders_materialized_pass": true,
+    "business_result_pass": true,
+    "runtime_to_business_result_pass": true
+  },
+  "sample_evaluations": [
+    {
+      "sample_name": "debug_fill_yes_path_v1",
+      "scenario": "fill_yes_path_v1",
+      "stage_hits": {
+        "running_started": true,
+        "current_window_present": true,
+        "context_ready": true,
+        "valid_action_seen": true,
+        "orders_created": true,
+        "result_materialized": true
+      },
+      "stage_first_seq": {
+        "running_started": 1,
+        "current_window_present": 1,
+        "context_ready": 1,
+        "valid_action_seen": 5,
+        "orders_created": 5,
+        "result_materialized": 7
+      },
+      "result_materialized_basis": "filled_total>0",
+      "summary": {
+        "runtime_start_pass": true,
+        "window_ready_pass": true,
+        "action_emitted_pass": true,
+        "orders_materialized_pass": true,
+        "business_result_pass": true,
+        "runtime_to_business_result_pass": true
+      },
+      "first_break_layer": null
+    },
+    {
+      "sample_name": "debug_main_path_v1",
+      "scenario": "main_path_v1",
+      "stage_hits": {
+        "running_started": true,
+        "current_window_present": true,
+        "context_ready": true,
+        "valid_action_seen": true,
+        "orders_created": true,
+        "result_materialized": false
+      },
+      "stage_first_seq": {
+        "running_started": 1,
+        "current_window_present": 1,
+        "context_ready": 1,
+        "valid_action_seen": 5,
+        "orders_created": 5,
+        "result_materialized": null
+      },
+      "result_materialized_basis": null,
+      "summary": {
+        "runtime_start_pass": true,
+        "window_ready_pass": true,
+        "action_emitted_pass": true,
+        "orders_materialized_pass": true,
+        "business_result_pass": false,
+        "runtime_to_business_result_pass": false
+      },
+      "first_break_layer": "result_materialized"
+    },
+    {
+      "sample_name": "debug_exit_yes_path_v1",
+      "scenario": "exit_yes_path_v1",
+      "stage_hits": {
+        "running_started": true,
+        "current_window_present": true,
+        "context_ready": true,
+        "valid_action_seen": true,
+        "orders_created": true,
+        "result_materialized": true
+      },
+      "stage_first_seq": {
+        "running_started": 1,
+        "current_window_present": 1,
+        "context_ready": 1,
+        "valid_action_seen": 6,
+        "orders_created": 6,
+        "result_materialized": 7
+      },
+      "result_materialized_basis": "filled_total>0",
+      "summary": {
+        "runtime_start_pass": true,
+        "window_ready_pass": true,
+        "action_emitted_pass": true,
+        "orders_materialized_pass": true,
+        "business_result_pass": true,
+        "runtime_to_business_result_pass": true
+      },
+      "first_break_layer": null
+    }
+  ],
+  "raw": [
+    {
+      "sample_name": "debug_fill_yes_path_v1",
+      "scenario": "fill_yes_path_v1",
+      "raw": {
+        "final_runtime_snapshot": {
+          "status": {
+            "status": 200,
+            "body": {
+              "mode": "paper-staging",
+              "phase": "IDLE",
+              "running": true,
+              "debug_scenario": "fill_yes_path_v1",
+              "debug_frame_index": 4,
+              "debug_completed": false,
+              "tick_interval_ms": 1000,
+              "last_tick_at": "2026-03-28T15:17:15.395Z",
+              "last_window_id": null,
+              "current_window_id": "debug-fill-yes-path-v1-w1",
+              "window_initialized_at": "2026-03-28T15:17:12.366Z",
+              "remaining_sec": 280,
+              "anchor_btc": 100,
+              "atr_5m": 2,
+              "upper_bound": 102.4,
+              "lower_bound": 97.6,
+              "ladder_posted": true,
+              "yes_cancelled": false,
+              "no_cancelled": false,
+              "yes_order_ids": [
+                "paper_b2dc03fc",
+                "paper_bab5f0a5",
+                "paper_890f5581"
+              ],
+              "no_order_ids": [
+                "paper_95e6d362",
+                "paper_2f01f1b5",
+                "paper_7a004a31",
+                "paper_644f7ef5"
+              ],
+              "last_reason": "within_bounds_or_no_trigger",
+              "last_intents": [
+                {
+                  "kind": "NOOP"
+                }
+              ],
+              "updated_at": "2026-03-28T15:17:15.395Z",
+              "saved_config": {
+                "open_delay_sec": 10,
+                "ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "ladder_size": 5,
+                "atr_multiple": 1.2,
+                "cancel_all_remaining_sec": 100
+              },
+              "last_run_snapshot": {
+                "stop_reason": "MANUAL_STOP",
+                "completed_at": "2026-03-28T15:17:10.728Z",
+                "current_window_id": "btc-updown-5m-1774710900",
+                "phase": "LADDER_POSTED",
+                "filled_total": 4,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0,
+                "unrealized_gross_pnl_total": -0.36,
+                "active_config": {
+                  "open_delay_sec": 12,
+                  "ladder_prices": [
+                    0.36,
+                    0.33,
+                    0.3,
+                    0.27
+                  ],
+                  "ladder_size": 9,
+                  "atr_multiple": 1.7,
+                  "cancel_all_remaining_sec": 80
+                }
+              },
+              "active_runtime_snapshot": {
+                "config": {
+                  "open_delay_sec": 10,
+                  "ladder_prices": [
+                    0.27,
+                    0.24,
+                    0.21,
+                    0.18
+                  ],
+                  "ladder_size": 5,
+                  "atr_multiple": 1.2,
+                  "cancel_all_remaining_sec": 100
+                },
+                "phase": "IDLE",
+                "current_window_id": "debug-fill-yes-path-v1-w1",
+                "anchor_btc": 100,
+                "upper_bound": 102.4,
+                "lower_bound": 97.6
+              }
+            }
+          },
+          "context": {
+            "status": 200,
+            "body": {
+              "window_id": "btc-updown-5m-1774710900",
+              "last_window_id": null,
+              "slug": "btc-updown-5m-1774710900",
+              "period": "5m",
+              "remaining_sec": 164,
+              "btc_price": 67026.43,
+              "anchor_btc": 100,
+              "atr_5m": 2,
+              "upper_bound": 102.4,
+              "lower_bound": 97.6,
+              "bid_yes": 0.98,
+              "ask_yes": 0.99,
+              "bid_no": 0.01,
+              "ask_no": 0.02,
+              "tick_size": 0.001,
+              "stale": false,
+              "updated_at": "2026-03-28T15:17:14.449Z",
+              "_btc_source_trace": {
+                "source_init_started": true,
+                "source_init_error": null,
+                "source_feed_seen": true,
+                "source_feed_count": 497,
+                "source_last_feed_at": "2026-03-28T15:17:13.962Z",
+                "latest_cache_price": 67026.43,
+                "latest_cache_at": "2026-03-28T15:17:13.962Z",
+                "latest_cache_source": "rest_binance",
+                "price_resolution": {
+                  "kind": "cache",
+                  "used_strike_raw": null,
+                  "used_anchor_fallback_raw": 100
+                },
+                "atr_resolution": {
+                  "window_atr_5m_raw": null,
+                  "window_atr_raw": null,
+                  "state_atr_5m_raw": 2,
+                  "resolved_atr_5m": 2
+                }
+              }
+            }
+          },
+          "decision": {
+            "status": 200,
+            "body": {
+              "intents": [
+                {
+                  "kind": "NOOP"
+                }
+              ],
+              "intents_summary": "NOOP",
+              "reason": "within_bounds_or_no_trigger",
+              "patches": {},
+              "diagnostics": {
+                "remaining_sec": 280,
+                "open_elapsed_sec": 20,
+                "ladder_posted": true,
+                "btc_price": 101,
+                "upper_bound": 102.4,
+                "lower_bound": 97.6,
+                "bounds_ready": true,
+                "config_open_delay_sec": 10,
+                "config_cancel_all_remaining_sec": 100,
+                "config_ladder_size": 5,
+                "config_ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ]
+              },
+              "config": {
+                "open_delay_sec": 10,
+                "ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "ladder_size": 5,
+                "atr_multiple": 1.2,
+                "cancel_all_remaining_sec": 100
+              },
+              "context_snapshot": {
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "last_window_id": null,
+                "slug": "debug-fill-yes-path-v1-w1",
+                "period": "5m",
+                "remaining_sec": 280,
+                "btc_price": 101,
+                "anchor_btc": 100,
+                "atr_5m": 2,
+                "upper_bound": 102.4,
+                "lower_bound": 97.6,
+                "bid_yes": 0.3,
+                "ask_yes": 0.27,
+                "bid_no": 0.7,
+                "ask_no": null,
+                "tick_size": 0.001,
+                "stale": false,
+                "updated_at": "2026-03-28T15:17:14.449Z",
+                "_btc_source_trace": {
+                  "source_init_started": true,
+                  "source_init_error": null,
+                  "source_feed_seen": true,
+                  "source_feed_count": 497,
+                  "source_last_feed_at": "2026-03-28T15:17:13.962Z",
+                  "latest_cache_price": 67026.43,
+                  "latest_cache_at": "2026-03-28T15:17:13.962Z",
+                  "latest_cache_source": "rest_binance",
+                  "price_resolution": {
+                    "kind": "cache",
+                    "used_strike_raw": null,
+                    "used_anchor_fallback_raw": 100
+                  },
+                  "atr_resolution": {
+                    "window_atr_5m_raw": null,
+                    "window_atr_raw": null,
+                    "state_atr_5m_raw": 2,
+                    "resolved_atr_5m": 2
+                  }
+                }
+              },
+              "state_snapshot": {
+                "ladder_posted": true
+              },
+              "fixture": null
+            }
+          },
+          "orders": {
+            "status": 200,
+            "body": {
+              "orders": [
+                {
+                  "order_id": "paper_9d32e731",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.27,
+                  "size": 5,
+                  "status": "FILLED",
+                  "fill_price": 0.27,
+                  "filled_at": "2026-03-28T15:17:15.394Z",
+                  "created_at": "2026-03-28T15:17:14.382Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_95e6d362",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.27,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:14.382Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_b2dc03fc",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.24,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:14.382Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_2f01f1b5",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.24,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:14.382Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_bab5f0a5",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.21,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:14.382Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_7a004a31",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.21,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:14.382Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_890f5581",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.18,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:14.382Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_644f7ef5",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.18,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:14.382Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                }
+              ],
+              "window_orders": [
+                {
+                  "order_id": "paper_9d32e731",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.27,
+                  "size": 5,
+                  "status": "FILLED",
+                  "fill_price": 0.27,
+                  "filled_at": "2026-03-28T15:17:15.394Z",
+                  "created_at": "2026-03-28T15:17:14.382Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_95e6d362",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.27,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:14.382Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_b2dc03fc",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.24,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:14.382Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_2f01f1b5",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.24,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:14.382Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_bab5f0a5",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.21,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:14.382Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_7a004a31",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.21,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:14.382Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_890f5581",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.18,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:14.382Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_644f7ef5",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.18,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:14.382Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                }
+              ],
+              "all_orders": [
+                {
+                  "order_id": "paper_9d32e731",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.27,
+                  "size": 5,
+                  "status": "FILLED",
+                  "fill_price": 0.27,
+                  "filled_at": "2026-03-28T15:17:15.394Z",
+                  "created_at": "2026-03-28T15:17:14.382Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_95e6d362",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.27,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:14.382Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_b2dc03fc",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.24,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:14.382Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_2f01f1b5",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.24,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:14.382Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_bab5f0a5",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.21,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:14.382Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_7a004a31",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.21,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:14.382Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_890f5581",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.18,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:14.382Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_644f7ef5",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.18,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:14.382Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                }
+              ],
+              "summary": {
+                "total": 8,
+                "open_total": 7,
+                "cancelled_total": 0,
+                "filled_total": 1,
+                "open_yes": 3,
+                "open_no": 4,
+                "filled_yes": 1,
+                "filled_no": 0
+              },
+              "window_scope": {
+                "scope": "current_window",
+                "running": true,
+                "active_window_id": "debug-fill-yes-path-v1-w1",
+                "display_window_id": "debug-fill-yes-path-v1-w1",
+                "label": "当前窗口订单",
+                "ownership_rule": "运行中仅展示当前活动窗口订单"
+              },
+              "hidden_other_window_count": 0
+            }
+          },
+          "summary": {
+            "status": 200,
+            "body": {
+              "yes_entry_filled_count": 1,
+              "yes_exit_filled_count": 0,
+              "yes_position_size": 5,
+              "yes_avg_fill_price": 0.27,
+              "yes_realized_gross_pnl": 0,
+              "yes_unrealized_gross_pnl": 0.14999999999999986,
+              "no_entry_filled_count": 0,
+              "no_exit_filled_count": 0,
+              "no_position_size": 0,
+              "no_avg_fill_price": null,
+              "no_realized_gross_pnl": 0,
+              "no_unrealized_gross_pnl": 0,
+              "filled_total": 1,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0.14999999999999986,
+              "updated_at": "2026-03-28T15:17:15.745Z"
+            }
+          }
+        },
+        "stopped_status": {
+          "status": 200,
+          "body": {
+            "mode": "paper-staging",
+            "phase": "IDLE",
+            "running": false,
+            "debug_scenario": "fill_yes_path_v1",
+            "debug_frame_index": 4,
+            "debug_completed": false,
+            "tick_interval_ms": 1000,
+            "last_tick_at": "2026-03-28T15:17:15.395Z",
+            "last_window_id": "debug-fill-yes-path-v1-w1",
+            "current_window_id": null,
+            "window_initialized_at": null,
+            "remaining_sec": 280,
+            "anchor_btc": null,
+            "atr_5m": null,
+            "upper_bound": null,
+            "lower_bound": null,
+            "ladder_posted": true,
+            "yes_cancelled": false,
+            "no_cancelled": false,
+            "yes_order_ids": [
+              "paper_b2dc03fc",
+              "paper_bab5f0a5",
+              "paper_890f5581"
+            ],
+            "no_order_ids": [
+              "paper_95e6d362",
+              "paper_2f01f1b5",
+              "paper_7a004a31",
+              "paper_644f7ef5"
+            ],
+            "last_reason": null,
+            "last_intents": [],
+            "updated_at": "2026-03-28T15:17:15.746Z",
+            "saved_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            },
+            "last_run_snapshot": {
+              "stop_reason": "MANUAL_STOP",
+              "completed_at": "2026-03-28T15:17:15.746Z",
+              "current_window_id": "debug-fill-yes-path-v1-w1",
+              "phase": "IDLE",
+              "filled_total": 1,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0.14999999999999986,
+              "active_config": {
+                "open_delay_sec": 10,
+                "ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "ladder_size": 5,
+                "atr_multiple": 1.2,
+                "cancel_all_remaining_sec": 100
+              }
+            },
+            "active_runtime_snapshot": null
+          }
+        },
+        "latest_postmortem": {
+          "status": 200,
+          "body": {
+            "ok": true,
+            "postmortem": {
+              "id": 1594,
+              "strategy_id": "bot_console",
+              "event_id": "debug-fill-yes-path-v1-w1",
+              "window_start": "2026-03-28T15:17:15.746Z",
+              "window_end": "2026-03-28T15:17:15.746Z",
+              "created_at": "2026-03-28T15:17:15.746Z",
+              "window_id": "debug-fill-yes-path-v1-w1",
+              "stop_reason": "MANUAL_STOP",
+              "completed_at": "2026-03-28T15:17:15.746Z",
+              "filled_total": 1,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0.14999999999999986,
+              "active_config": {
+                "open_delay_sec": 10,
+                "ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "ladder_size": 5,
+                "atr_multiple": 1.2,
+                "cancel_all_remaining_sec": 100
+              },
+              "action_summary": [
+                "PLACE_LADDER"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "sample_name": "debug_main_path_v1",
+      "scenario": "main_path_v1",
+      "raw": {
+        "final_runtime_snapshot": {
+          "status": {
+            "status": 200,
+            "body": {
+              "mode": "paper-staging",
+              "phase": "IDLE",
+              "running": false,
+              "debug_scenario": "main_path_v1",
+              "debug_frame_index": 6,
+              "debug_completed": true,
+              "tick_interval_ms": 1000,
+              "last_tick_at": "2026-03-28T15:17:23.290Z",
+              "last_window_id": "debug-main-path-v1-w1",
+              "current_window_id": null,
+              "window_initialized_at": null,
+              "remaining_sec": 100,
+              "anchor_btc": null,
+              "atr_5m": null,
+              "upper_bound": null,
+              "lower_bound": null,
+              "ladder_posted": false,
+              "yes_cancelled": false,
+              "no_cancelled": false,
+              "yes_order_ids": [],
+              "no_order_ids": [],
+              "last_reason": null,
+              "last_intents": [],
+              "updated_at": "2026-03-28T15:17:23.292Z",
+              "saved_config": {
+                "open_delay_sec": 10,
+                "ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "ladder_size": 5,
+                "atr_multiple": 1.2,
+                "cancel_all_remaining_sec": 100
+              },
+              "last_run_snapshot": {
+                "stop_reason": "AUTO_COMPLETED",
+                "completed_at": "2026-03-28T15:17:23.291Z",
+                "current_window_id": "debug-main-path-v1-w1",
+                "phase": "IDLE",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0,
+                "unrealized_gross_pnl_total": 0,
+                "active_config": {
+                  "open_delay_sec": 10,
+                  "ladder_prices": [
+                    0.27,
+                    0.24,
+                    0.21,
+                    0.18
+                  ],
+                  "ladder_size": 5,
+                  "atr_multiple": 1.2,
+                  "cancel_all_remaining_sec": 100
+                }
+              },
+              "active_runtime_snapshot": null
+            }
+          },
+          "context": {
+            "status": 200,
+            "body": {
+              "window_id": "btc-updown-5m-1774710900",
+              "last_window_id": "debug-main-path-v1-w1",
+              "slug": "btc-updown-5m-1774710900",
+              "period": "5m",
+              "remaining_sec": 113,
+              "btc_price": 67041.23,
+              "anchor_btc": null,
+              "atr_5m": null,
+              "upper_bound": null,
+              "lower_bound": null,
+              "bid_yes": 0.99,
+              "ask_yes": 1,
+              "bid_no": 0,
+              "ask_no": 0.01,
+              "tick_size": 0.001,
+              "stale": false,
+              "updated_at": "2026-03-28T15:18:06.584Z",
+              "_btc_source_trace": {
+                "source_init_started": true,
+                "source_init_error": null,
+                "source_feed_seen": true,
+                "source_feed_count": 523,
+                "source_last_feed_at": "2026-03-28T15:18:06.162Z",
+                "latest_cache_price": 67041.23,
+                "latest_cache_at": "2026-03-28T15:18:06.162Z",
+                "latest_cache_source": "rest_binance",
+                "price_resolution": {
+                  "kind": "cache",
+                  "used_strike_raw": null,
+                  "used_anchor_fallback_raw": null
+                },
+                "atr_resolution": {
+                  "window_atr_5m_raw": null,
+                  "window_atr_raw": null,
+                  "state_atr_5m_raw": null,
+                  "resolved_atr_5m": null
+                }
+              }
+            }
+          },
+          "decision": {
+            "status": 200,
+            "body": {
+              "intents": [
+                {
+                  "kind": "PLACE_LADDER",
+                  "side": "BOTH",
+                  "prices": [
+                    0.27,
+                    0.24,
+                    0.21,
+                    0.18
+                  ],
+                  "size": 5
+                }
+              ],
+              "intents_summary": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
+              "reason": "ladder_not_posted",
+              "patches": {
+                "ladder_posted": true
+              },
+              "diagnostics": {
+                "remaining_sec": 113,
+                "open_elapsed_sec": 187,
+                "ladder_posted": false,
+                "btc_price": 67041.23,
+                "upper_bound": null,
+                "lower_bound": null,
+                "bounds_ready": false,
+                "config_open_delay_sec": 10,
+                "config_cancel_all_remaining_sec": 100,
+                "config_ladder_size": 5,
+                "config_ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ]
+              },
+              "config": {
+                "open_delay_sec": 10,
+                "ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "ladder_size": 5,
+                "atr_multiple": 1.2,
+                "cancel_all_remaining_sec": 100
+              },
+              "context_snapshot": {
+                "window_id": "btc-updown-5m-1774710900",
+                "last_window_id": "debug-main-path-v1-w1",
+                "slug": "btc-updown-5m-1774710900",
+                "period": "5m",
+                "remaining_sec": 113,
+                "btc_price": 67041.23,
+                "anchor_btc": null,
+                "atr_5m": null,
+                "upper_bound": null,
+                "lower_bound": null,
+                "bid_yes": 0.99,
+                "ask_yes": 1,
+                "bid_no": 0,
+                "ask_no": 0.01,
+                "tick_size": 0.001,
+                "stale": false,
+                "updated_at": "2026-03-28T15:18:06.584Z",
+                "_btc_source_trace": {
+                  "source_init_started": true,
+                  "source_init_error": null,
+                  "source_feed_seen": true,
+                  "source_feed_count": 523,
+                  "source_last_feed_at": "2026-03-28T15:18:06.162Z",
+                  "latest_cache_price": 67041.23,
+                  "latest_cache_at": "2026-03-28T15:18:06.162Z",
+                  "latest_cache_source": "rest_binance",
+                  "price_resolution": {
+                    "kind": "cache",
+                    "used_strike_raw": null,
+                    "used_anchor_fallback_raw": null
+                  },
+                  "atr_resolution": {
+                    "window_atr_5m_raw": null,
+                    "window_atr_raw": null,
+                    "state_atr_5m_raw": null,
+                    "resolved_atr_5m": null
+                  }
+                }
+              },
+              "state_snapshot": {
+                "ladder_posted": false
+              },
+              "fixture": null
+            }
+          },
+          "orders": {
+            "status": 200,
+            "body": {
+              "orders": [
+                {
+                  "order_id": "paper_13bbec7b",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.27,
+                  "size": 5,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:20.181Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_836c8d9c",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.27,
+                  "size": 5,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:20.181Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_795a8166",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.24,
+                  "size": 5,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:20.181Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_c7b9ad3d",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.24,
+                  "size": 5,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:20.181Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_fcb43791",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.21,
+                  "size": 5,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:20.181Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_50aaa54e",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.21,
+                  "size": 5,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:20.181Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_34d55cb8",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.18,
+                  "size": 5,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:20.181Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_5d03f5a6",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.18,
+                  "size": 5,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:20.181Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                }
+              ],
+              "window_orders": [
+                {
+                  "order_id": "paper_13bbec7b",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.27,
+                  "size": 5,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:20.181Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_836c8d9c",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.27,
+                  "size": 5,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:20.181Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_795a8166",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.24,
+                  "size": 5,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:20.181Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_c7b9ad3d",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.24,
+                  "size": 5,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:20.181Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_fcb43791",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.21,
+                  "size": 5,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:20.181Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_50aaa54e",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.21,
+                  "size": 5,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:20.181Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_34d55cb8",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.18,
+                  "size": 5,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:20.181Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_5d03f5a6",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.18,
+                  "size": 5,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:20.181Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                }
+              ],
+              "all_orders": [
+                {
+                  "order_id": "paper_13bbec7b",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.27,
+                  "size": 5,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:20.181Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_836c8d9c",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.27,
+                  "size": 5,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:20.181Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_795a8166",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.24,
+                  "size": 5,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:20.181Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_c7b9ad3d",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.24,
+                  "size": 5,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:20.181Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_fcb43791",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.21,
+                  "size": 5,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:20.181Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_50aaa54e",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.21,
+                  "size": 5,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:20.181Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_34d55cb8",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.18,
+                  "size": 5,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:20.181Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_5d03f5a6",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.18,
+                  "size": 5,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:17:20.181Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                }
+              ],
+              "summary": {
+                "total": 8,
+                "open_total": 0,
+                "cancelled_total": 8,
+                "filled_total": 0,
+                "open_yes": 0,
+                "open_no": 0,
+                "filled_yes": 0,
+                "filled_no": 0
+              },
+              "window_scope": {
+                "scope": "last_window",
+                "running": false,
+                "active_window_id": null,
+                "display_window_id": "debug-main-path-v1-w1",
+                "label": "上一窗口订单（停止态）",
+                "ownership_rule": "停止态展示上一窗口订单，不冒充当前活动窗口"
+              },
+              "hidden_other_window_count": 0
+            }
+          },
+          "summary": {
+            "status": 200,
+            "body": {
+              "yes_entry_filled_count": 0,
+              "yes_exit_filled_count": 0,
+              "yes_position_size": 0,
+              "yes_avg_fill_price": null,
+              "yes_realized_gross_pnl": 0,
+              "yes_unrealized_gross_pnl": 0,
+              "no_entry_filled_count": 0,
+              "no_exit_filled_count": 0,
+              "no_position_size": 0,
+              "no_avg_fill_price": null,
+              "no_realized_gross_pnl": 0,
+              "no_unrealized_gross_pnl": 0,
+              "filled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0,
+              "updated_at": "2026-03-28T15:18:06.886Z"
+            }
+          }
+        },
+        "stopped_status": {
+          "status": 200,
+          "body": {
+            "mode": "paper-staging",
+            "phase": "IDLE",
+            "running": false,
+            "debug_scenario": "main_path_v1",
+            "debug_frame_index": 6,
+            "debug_completed": true,
+            "tick_interval_ms": 1000,
+            "last_tick_at": "2026-03-28T15:17:23.290Z",
+            "last_window_id": "debug-main-path-v1-w1",
+            "current_window_id": null,
+            "window_initialized_at": null,
+            "remaining_sec": 100,
+            "anchor_btc": null,
+            "atr_5m": null,
+            "upper_bound": null,
+            "lower_bound": null,
+            "ladder_posted": false,
+            "yes_cancelled": false,
+            "no_cancelled": false,
+            "yes_order_ids": [],
+            "no_order_ids": [],
+            "last_reason": null,
+            "last_intents": [],
+            "updated_at": "2026-03-28T15:17:23.292Z",
+            "saved_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            },
+            "last_run_snapshot": {
+              "stop_reason": "AUTO_COMPLETED",
+              "completed_at": "2026-03-28T15:17:23.291Z",
+              "current_window_id": "debug-main-path-v1-w1",
+              "phase": "IDLE",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0,
+              "active_config": {
+                "open_delay_sec": 10,
+                "ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "ladder_size": 5,
+                "atr_multiple": 1.2,
+                "cancel_all_remaining_sec": 100
+              }
+            },
+            "active_runtime_snapshot": null
+          }
+        },
+        "latest_postmortem": {
+          "status": 200,
+          "body": {
+            "ok": true,
+            "postmortem": {
+              "id": 1595,
+              "strategy_id": "bot_console",
+              "event_id": "debug-main-path-v1-w1",
+              "window_start": "2026-03-28T15:17:23.291Z",
+              "window_end": "2026-03-28T15:17:23.291Z",
+              "created_at": "2026-03-28T15:17:23.291Z",
+              "window_id": "debug-main-path-v1-w1",
+              "stop_reason": "AUTO_COMPLETED",
+              "completed_at": "2026-03-28T15:17:23.291Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0,
+              "active_config": {
+                "open_delay_sec": 10,
+                "ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "ladder_size": 5,
+                "atr_multiple": 1.2,
+                "cancel_all_remaining_sec": 100
+              },
+              "action_summary": [
+                "PLACE_LADDER",
+                "CANCEL_OPEN"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "sample_name": "debug_exit_yes_path_v1",
+      "scenario": "exit_yes_path_v1",
+      "raw": {
+        "final_runtime_snapshot": {
+          "status": {
+            "status": 200,
+            "body": {
+              "mode": "paper-staging",
+              "phase": "IDLE",
+              "running": true,
+              "debug_scenario": "exit_yes_path_v1",
+              "debug_frame_index": 4,
+              "debug_completed": false,
+              "tick_interval_ms": 1000,
+              "last_tick_at": "2026-03-28T15:18:12.428Z",
+              "last_window_id": null,
+              "current_window_id": "debug-exit-yes-path-v1-w1",
+              "window_initialized_at": "2026-03-28T15:18:09.399Z",
+              "remaining_sec": 280,
+              "anchor_btc": 100,
+              "atr_5m": 2,
+              "upper_bound": 102.4,
+              "lower_bound": 97.6,
+              "ladder_posted": true,
+              "yes_cancelled": false,
+              "no_cancelled": false,
+              "yes_order_ids": [
+                "paper_7891b7cd",
+                "paper_5687f45b",
+                "paper_c2526b07"
+              ],
+              "no_order_ids": [
+                "paper_99509070",
+                "paper_9e8c8867",
+                "paper_d0856416",
+                "paper_1740e51a"
+              ],
+              "last_reason": "within_bounds_or_no_trigger",
+              "last_intents": [
+                {
+                  "kind": "NOOP"
+                }
+              ],
+              "updated_at": "2026-03-28T15:18:12.428Z",
+              "saved_config": {
+                "open_delay_sec": 10,
+                "ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "ladder_size": 5,
+                "atr_multiple": 1.2,
+                "cancel_all_remaining_sec": 100
+              },
+              "last_run_snapshot": {
+                "stop_reason": "AUTO_COMPLETED",
+                "completed_at": "2026-03-28T15:17:23.291Z",
+                "current_window_id": "debug-main-path-v1-w1",
+                "phase": "IDLE",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0,
+                "unrealized_gross_pnl_total": 0,
+                "active_config": {
+                  "open_delay_sec": 10,
+                  "ladder_prices": [
+                    0.27,
+                    0.24,
+                    0.21,
+                    0.18
+                  ],
+                  "ladder_size": 5,
+                  "atr_multiple": 1.2,
+                  "cancel_all_remaining_sec": 100
+                }
+              },
+              "active_runtime_snapshot": {
+                "config": {
+                  "open_delay_sec": 10,
+                  "ladder_prices": [
+                    0.27,
+                    0.24,
+                    0.21,
+                    0.18
+                  ],
+                  "ladder_size": 5,
+                  "atr_multiple": 1.2,
+                  "cancel_all_remaining_sec": 100
+                },
+                "phase": "IDLE",
+                "current_window_id": "debug-exit-yes-path-v1-w1",
+                "anchor_btc": 100,
+                "upper_bound": 102.4,
+                "lower_bound": 97.6
+              }
+            }
+          },
+          "context": {
+            "status": 200,
+            "body": {
+              "window_id": "btc-updown-5m-1774710900",
+              "last_window_id": null,
+              "slug": "btc-updown-5m-1774710900",
+              "period": "5m",
+              "remaining_sec": 107,
+              "btc_price": 67040.2,
+              "anchor_btc": 100,
+              "atr_5m": 2,
+              "upper_bound": 102.4,
+              "lower_bound": 97.6,
+              "bid_yes": 0.99,
+              "ask_yes": 1,
+              "bid_no": 0,
+              "ask_no": 0.01,
+              "tick_size": 0.001,
+              "stale": false,
+              "updated_at": "2026-03-28T15:18:12.589Z",
+              "_btc_source_trace": {
+                "source_init_started": true,
+                "source_init_error": null,
+                "source_feed_seen": true,
+                "source_feed_count": 526,
+                "source_last_feed_at": "2026-03-28T15:18:12.189Z",
+                "latest_cache_price": 67040.2,
+                "latest_cache_at": "2026-03-28T15:18:12.189Z",
+                "latest_cache_source": "rest_binance",
+                "price_resolution": {
+                  "kind": "cache",
+                  "used_strike_raw": null,
+                  "used_anchor_fallback_raw": 100
+                },
+                "atr_resolution": {
+                  "window_atr_5m_raw": null,
+                  "window_atr_raw": null,
+                  "state_atr_5m_raw": 2,
+                  "resolved_atr_5m": 2
+                }
+              }
+            }
+          },
+          "decision": {
+            "status": 200,
+            "body": {
+              "intents": [
+                {
+                  "kind": "NOOP"
+                }
+              ],
+              "intents_summary": "NOOP",
+              "reason": "within_bounds_or_no_trigger",
+              "patches": {},
+              "diagnostics": {
+                "remaining_sec": 280,
+                "open_elapsed_sec": 20,
+                "ladder_posted": true,
+                "btc_price": 101,
+                "upper_bound": 102.4,
+                "lower_bound": 97.6,
+                "bounds_ready": true,
+                "config_open_delay_sec": 10,
+                "config_cancel_all_remaining_sec": 100,
+                "config_ladder_size": 5,
+                "config_ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ]
+              },
+              "config": {
+                "open_delay_sec": 10,
+                "ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "ladder_size": 5,
+                "atr_multiple": 1.2,
+                "cancel_all_remaining_sec": 100
+              },
+              "context_snapshot": {
+                "window_id": "debug-exit-yes-path-v1-w1",
+                "last_window_id": null,
+                "slug": "debug-exit-yes-path-v1-w1",
+                "period": "5m",
+                "remaining_sec": 280,
+                "btc_price": 101,
+                "anchor_btc": 100,
+                "atr_5m": 2,
+                "upper_bound": 102.4,
+                "lower_bound": 97.6,
+                "bid_yes": 0.3,
+                "ask_yes": 0.27,
+                "bid_no": 0.7,
+                "ask_no": null,
+                "tick_size": 0.001,
+                "stale": false,
+                "updated_at": "2026-03-28T15:18:10.592Z",
+                "_btc_source_trace": {
+                  "source_init_started": true,
+                  "source_init_error": null,
+                  "source_feed_seen": true,
+                  "source_feed_count": 526,
+                  "source_last_feed_at": "2026-03-28T15:18:12.189Z",
+                  "latest_cache_price": 67040.2,
+                  "latest_cache_at": "2026-03-28T15:18:12.189Z",
+                  "latest_cache_source": "rest_binance",
+                  "price_resolution": {
+                    "kind": "cache",
+                    "used_strike_raw": null,
+                    "used_anchor_fallback_raw": 100
+                  },
+                  "atr_resolution": {
+                    "window_atr_5m_raw": null,
+                    "window_atr_raw": null,
+                    "state_atr_5m_raw": 2,
+                    "resolved_atr_5m": 2
+                  }
+                }
+              },
+              "state_snapshot": {
+                "ladder_posted": true
+              },
+              "fixture": null
+            }
+          },
+          "orders": {
+            "status": 200,
+            "body": {
+              "orders": [
+                {
+                  "order_id": "paper_68bc8732",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.27,
+                  "size": 5,
+                  "status": "FILLED",
+                  "fill_price": 0.27,
+                  "filled_at": "2026-03-28T15:18:12.427Z",
+                  "created_at": "2026-03-28T15:18:11.498Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_99509070",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.27,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:18:11.498Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_7891b7cd",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.24,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:18:11.498Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_9e8c8867",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.24,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:18:11.498Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_5687f45b",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.21,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:18:11.498Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_d0856416",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.21,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:18:11.498Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_c2526b07",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.18,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:18:11.498Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_1740e51a",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.18,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:18:11.498Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                }
+              ],
+              "window_orders": [
+                {
+                  "order_id": "paper_68bc8732",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.27,
+                  "size": 5,
+                  "status": "FILLED",
+                  "fill_price": 0.27,
+                  "filled_at": "2026-03-28T15:18:12.427Z",
+                  "created_at": "2026-03-28T15:18:11.498Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_99509070",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.27,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:18:11.498Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_7891b7cd",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.24,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:18:11.498Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_9e8c8867",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.24,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:18:11.498Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_5687f45b",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.21,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:18:11.498Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_d0856416",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.21,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:18:11.498Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_c2526b07",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.18,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:18:11.498Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_1740e51a",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.18,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:18:11.498Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                }
+              ],
+              "all_orders": [
+                {
+                  "order_id": "paper_68bc8732",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.27,
+                  "size": 5,
+                  "status": "FILLED",
+                  "fill_price": 0.27,
+                  "filled_at": "2026-03-28T15:18:12.427Z",
+                  "created_at": "2026-03-28T15:18:11.498Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_99509070",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.27,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:18:11.498Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_7891b7cd",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.24,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:18:11.498Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_9e8c8867",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.24,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:18:11.498Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_5687f45b",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.21,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:18:11.498Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_d0856416",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.21,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:18:11.498Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_c2526b07",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.18,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:18:11.498Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_1740e51a",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.18,
+                  "size": 5,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-28T15:18:11.498Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                }
+              ],
+              "summary": {
+                "total": 8,
+                "open_total": 7,
+                "cancelled_total": 0,
+                "filled_total": 1,
+                "open_yes": 3,
+                "open_no": 4,
+                "filled_yes": 1,
+                "filled_no": 0
+              },
+              "window_scope": {
+                "scope": "current_window",
+                "running": true,
+                "active_window_id": "debug-exit-yes-path-v1-w1",
+                "display_window_id": "debug-exit-yes-path-v1-w1",
+                "label": "当前窗口订单",
+                "ownership_rule": "运行中仅展示当前活动窗口订单"
+              },
+              "hidden_other_window_count": 0
+            }
+          },
+          "summary": {
+            "status": 200,
+            "body": {
+              "yes_entry_filled_count": 1,
+              "yes_exit_filled_count": 0,
+              "yes_position_size": 5,
+              "yes_avg_fill_price": 0.27,
+              "yes_realized_gross_pnl": 0,
+              "yes_unrealized_gross_pnl": 0.14999999999999986,
+              "no_entry_filled_count": 0,
+              "no_exit_filled_count": 0,
+              "no_position_size": 0,
+              "no_avg_fill_price": null,
+              "no_realized_gross_pnl": 0,
+              "no_unrealized_gross_pnl": 0,
+              "filled_total": 1,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0.14999999999999986,
+              "updated_at": "2026-03-28T15:18:12.703Z"
+            }
+          }
+        },
+        "stopped_status": {
+          "status": 200,
+          "body": {
+            "mode": "paper-staging",
+            "phase": "IDLE",
+            "running": false,
+            "debug_scenario": "exit_yes_path_v1",
+            "debug_frame_index": 4,
+            "debug_completed": false,
+            "tick_interval_ms": 1000,
+            "last_tick_at": "2026-03-28T15:18:12.428Z",
+            "last_window_id": "debug-exit-yes-path-v1-w1",
+            "current_window_id": null,
+            "window_initialized_at": null,
+            "remaining_sec": 280,
+            "anchor_btc": null,
+            "atr_5m": null,
+            "upper_bound": null,
+            "lower_bound": null,
+            "ladder_posted": true,
+            "yes_cancelled": false,
+            "no_cancelled": false,
+            "yes_order_ids": [
+              "paper_7891b7cd",
+              "paper_5687f45b",
+              "paper_c2526b07"
+            ],
+            "no_order_ids": [
+              "paper_99509070",
+              "paper_9e8c8867",
+              "paper_d0856416",
+              "paper_1740e51a"
+            ],
+            "last_reason": null,
+            "last_intents": [],
+            "updated_at": "2026-03-28T15:18:12.705Z",
+            "saved_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100
+            },
+            "last_run_snapshot": {
+              "stop_reason": "MANUAL_STOP",
+              "completed_at": "2026-03-28T15:18:12.704Z",
+              "current_window_id": "debug-exit-yes-path-v1-w1",
+              "phase": "IDLE",
+              "filled_total": 1,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0.14999999999999986,
+              "active_config": {
+                "open_delay_sec": 10,
+                "ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "ladder_size": 5,
+                "atr_multiple": 1.2,
+                "cancel_all_remaining_sec": 100
+              }
+            },
+            "active_runtime_snapshot": null
+          }
+        },
+        "latest_postmortem": {
+          "status": 200,
+          "body": {
+            "ok": true,
+            "postmortem": {
+              "id": 1596,
+              "strategy_id": "bot_console",
+              "event_id": "debug-exit-yes-path-v1-w1",
+              "window_start": "2026-03-28T15:18:12.704Z",
+              "window_end": "2026-03-28T15:18:12.704Z",
+              "created_at": "2026-03-28T15:18:12.704Z",
+              "window_id": "debug-exit-yes-path-v1-w1",
+              "stop_reason": "MANUAL_STOP",
+              "completed_at": "2026-03-28T15:18:12.704Z",
+              "filled_total": 1,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0.14999999999999986,
+              "active_config": {
+                "open_delay_sec": 10,
+                "ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "ladder_size": 5,
+                "atr_multiple": 1.2,
+                "cancel_all_remaining_sec": 100
+              },
+              "action_summary": [
+                "PLACE_LADDER"
+              ]
+            }
+          }
+        }
+      }
+    }
+  ]
+}

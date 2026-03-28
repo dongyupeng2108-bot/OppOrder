@@ -1,0 +1,328 @@
+{
+  "script_name": "verify_executor_idempotency",
+  "task_id": "260328_019",
+  "sample_name": "debug_main_path_v1+debug_fill_yes_path_v1",
+  "pass": true,
+  "message": "executor idempotency 校验通过",
+  "first_break_layer": null,
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260328_019_executor_idempotency.json",
+  "summary": {
+    "executor_idempotency_pass": true,
+    "window_isolation_pass": true,
+    "filled_total_chain_pass": true,
+    "dirty_restart_pass": true
+  },
+  "raw_excerpt": {
+    "repeated_place_tick_count": 0,
+    "non_place_added_count": 0,
+    "unique_filled_order_id_count": 1,
+    "dirty_restart_overlap_count": 0,
+    "dirty_restart_tick2_new_orders": 0
+  },
+  "generated_at": "2026-03-28T15:16:03.393Z",
+  "command": "node scripts/verify_executor_idempotency.mjs --task_id=260328_019",
+  "scenarios": {
+    "main_path_v1": {
+      "start_response": {
+        "status": 200,
+        "body": {
+          "ok": true,
+          "already_running": false,
+          "running": true,
+          "tick_interval_ms": 1000,
+          "last_tick_at": "2026-03-28T15:15:36.772Z",
+          "config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100
+          },
+          "debugScenario": "main_path_v1",
+          "debug_frame_index": 0,
+          "debug_completed": false
+        }
+      },
+      "ticks": [
+        {
+          "tick": 1,
+          "time": "2026-03-28T15:15:38.347Z",
+          "window_id": null,
+          "intents_summary": "NOOP",
+          "reason": "wait_window_id_not_ready",
+          "open_orders_count": 0,
+          "new_orders_this_tick": 0,
+          "place_ladder_this_tick": false
+        },
+        {
+          "tick": 2,
+          "time": "2026-03-28T15:15:39.057Z",
+          "window_id": "debug-main-path-v1-w1",
+          "intents_summary": "NOOP",
+          "reason": "pre_open_or_open_not_open_delay",
+          "open_orders_count": 0,
+          "new_orders_this_tick": 0,
+          "place_ladder_this_tick": false
+        },
+        {
+          "tick": 3,
+          "time": "2026-03-28T15:15:39.770Z",
+          "window_id": "debug-main-path-v1-w1",
+          "intents_summary": "NOOP",
+          "reason": "pre_open_or_open_not_open_delay",
+          "open_orders_count": 0,
+          "new_orders_this_tick": 0,
+          "place_ladder_this_tick": false
+        },
+        {
+          "tick": 4,
+          "time": "2026-03-28T15:15:40.486Z",
+          "window_id": "debug-main-path-v1-w1",
+          "intents_summary": "NOOP",
+          "reason": "pre_open_or_open_not_open_delay",
+          "open_orders_count": 0,
+          "new_orders_this_tick": 0,
+          "place_ladder_this_tick": false
+        },
+        {
+          "tick": 5,
+          "time": "2026-03-28T15:15:41.196Z",
+          "window_id": "debug-main-path-v1-w1",
+          "intents_summary": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
+          "reason": "ladder_not_posted",
+          "open_orders_count": 8,
+          "new_orders_this_tick": 8,
+          "place_ladder_this_tick": true
+        },
+        {
+          "tick": 6,
+          "time": "2026-03-28T15:15:41.902Z",
+          "window_id": "debug-main-path-v1-w1",
+          "intents_summary": "CANCEL_OPEN(NO)",
+          "reason": "btc_price>=upper_bound",
+          "open_orders_count": 4,
+          "new_orders_this_tick": 0,
+          "place_ladder_this_tick": false
+        },
+        {
+          "tick": 7,
+          "time": "2026-03-28T15:15:42.615Z",
+          "window_id": "debug-main-path-v1-w1",
+          "intents_summary": "CANCEL_OPEN(NO)",
+          "reason": "btc_price>=upper_bound",
+          "open_orders_count": 4,
+          "new_orders_this_tick": 0,
+          "place_ladder_this_tick": false
+        },
+        {
+          "tick": 8,
+          "time": "2026-03-28T15:15:43.329Z",
+          "window_id": "debug-main-path-v1-w1",
+          "intents_summary": "CANCEL_OPEN(YES)",
+          "reason": "btc_price<=lower_bound",
+          "open_orders_count": 0,
+          "new_orders_this_tick": 0,
+          "place_ladder_this_tick": false
+        },
+        {
+          "tick": 9,
+          "time": "2026-03-28T15:15:44.040Z",
+          "window_id": null,
+          "intents_summary": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
+          "reason": "ladder_not_posted",
+          "open_orders_count": 0,
+          "new_orders_this_tick": 0,
+          "place_ladder_this_tick": true
+        },
+        {
+          "tick": 10,
+          "time": "2026-03-28T15:15:44.852Z",
+          "window_id": null,
+          "intents_summary": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
+          "reason": "ladder_not_posted",
+          "open_orders_count": 0,
+          "new_orders_this_tick": 0,
+          "place_ladder_this_tick": true
+        },
+        {
+          "tick": 11,
+          "time": "2026-03-28T15:15:45.563Z",
+          "window_id": null,
+          "intents_summary": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
+          "reason": "ladder_not_posted",
+          "open_orders_count": 0,
+          "new_orders_this_tick": 0,
+          "place_ladder_this_tick": true
+        },
+        {
+          "tick": 12,
+          "time": "2026-03-28T15:15:46.277Z",
+          "window_id": null,
+          "intents_summary": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
+          "reason": "ladder_not_posted",
+          "open_orders_count": 0,
+          "new_orders_this_tick": 0,
+          "place_ladder_this_tick": true
+        },
+        {
+          "tick": 13,
+          "time": "2026-03-28T15:15:47.071Z",
+          "window_id": null,
+          "intents_summary": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
+          "reason": "ladder_not_posted",
+          "open_orders_count": 0,
+          "new_orders_this_tick": 0,
+          "place_ladder_this_tick": true
+        },
+        {
+          "tick": 14,
+          "time": "2026-03-28T15:15:47.778Z",
+          "window_id": null,
+          "intents_summary": "PLACE_LADDER(BOTH|0.27,0.24,0.21,0.18|size=5)",
+          "reason": "ladder_not_posted",
+          "open_orders_count": 0,
+          "new_orders_this_tick": 0,
+          "place_ladder_this_tick": true
+        }
+      ],
+      "summary": {
+        "repeated_place_tick_count": 0,
+        "repeated_place_ticks": [],
+        "non_place_added_count": 0,
+        "non_place_added_ticks": [],
+        "executor_idempotency_pass": true
+      }
+    },
+    "fill_yes_path_v1": {
+      "saw_filled": true,
+      "table": {
+        "window_id": "debug-fill-yes-path-v1-w1",
+        "total_orders": 8,
+        "unique_order_id_count": 8,
+        "unique_filled_order_id_count": 1,
+        "unique_cancelled_order_id_count": 0,
+        "summary_filled_total": 1,
+        "last_run_filled_total": 1,
+        "postmortem_filled_total": 1,
+        "performance_target_window_filled_total": 1
+      },
+      "filled_total_chain_pass": true
+    }
+  },
+  "dirty_restart": {
+    "run1_first_place_tick": 5,
+    "run2_ticks": [
+      {
+        "tick": 1,
+        "time": "2026-03-28T15:16:01.963Z",
+        "window_id": null,
+        "intents_summary": "NOOP",
+        "reason": "wait_window_id_not_ready",
+        "new_orders_this_tick": 0
+      },
+      {
+        "tick": 2,
+        "time": "2026-03-28T15:16:02.677Z",
+        "window_id": "debug-main-path-v1-w1",
+        "intents_summary": "NOOP",
+        "reason": "pre_open_or_open_not_open_delay",
+        "new_orders_this_tick": 0
+      },
+      {
+        "tick": 3,
+        "time": "2026-03-28T15:16:03.391Z",
+        "window_id": "debug-main-path-v1-w1",
+        "intents_summary": "NOOP",
+        "reason": "pre_open_or_open_not_open_delay",
+        "new_orders_this_tick": 0
+      }
+    ],
+    "overlap_order_ids": [],
+    "dirty_restart_pass": true,
+    "source_table": [
+      {
+        "order_id": "paper_f3224667",
+        "window_id": "debug-main-path-v1-w1",
+        "created_at": "2026-03-28T15:16:00.353Z",
+        "source_action": "PLACE_BOTH_LADDERS",
+        "source_tick": "historical_run1",
+        "counted_as_new_in_run2": false
+      },
+      {
+        "order_id": "paper_21030d35",
+        "window_id": "debug-main-path-v1-w1",
+        "created_at": "2026-03-28T15:16:00.353Z",
+        "source_action": "PLACE_BOTH_LADDERS",
+        "source_tick": "historical_run1",
+        "counted_as_new_in_run2": false
+      },
+      {
+        "order_id": "paper_5c8c7d93",
+        "window_id": "debug-main-path-v1-w1",
+        "created_at": "2026-03-28T15:16:00.353Z",
+        "source_action": "PLACE_BOTH_LADDERS",
+        "source_tick": "historical_run1",
+        "counted_as_new_in_run2": false
+      },
+      {
+        "order_id": "paper_8859dc8f",
+        "window_id": "debug-main-path-v1-w1",
+        "created_at": "2026-03-28T15:16:00.353Z",
+        "source_action": "PLACE_BOTH_LADDERS",
+        "source_tick": "historical_run1",
+        "counted_as_new_in_run2": false
+      },
+      {
+        "order_id": "paper_edb4915c",
+        "window_id": "debug-main-path-v1-w1",
+        "created_at": "2026-03-28T15:16:00.353Z",
+        "source_action": "PLACE_BOTH_LADDERS",
+        "source_tick": "historical_run1",
+        "counted_as_new_in_run2": false
+      },
+      {
+        "order_id": "paper_8c240292",
+        "window_id": "debug-main-path-v1-w1",
+        "created_at": "2026-03-28T15:16:00.353Z",
+        "source_action": "PLACE_BOTH_LADDERS",
+        "source_tick": "historical_run1",
+        "counted_as_new_in_run2": false
+      },
+      {
+        "order_id": "paper_8f147c89",
+        "window_id": "debug-main-path-v1-w1",
+        "created_at": "2026-03-28T15:16:00.353Z",
+        "source_action": "PLACE_BOTH_LADDERS",
+        "source_tick": "historical_run1",
+        "counted_as_new_in_run2": false
+      },
+      {
+        "order_id": "paper_e651ed08",
+        "window_id": "debug-main-path-v1-w1",
+        "created_at": "2026-03-28T15:16:00.353Z",
+        "source_action": "PLACE_BOTH_LADDERS",
+        "source_tick": "historical_run1",
+        "counted_as_new_in_run2": false
+      }
+    ]
+  },
+  "window_isolation": {
+    "round1_window_id": "debug-main-path-v1-w1",
+    "round2_window_id": "debug-fill-yes-path-v1-w1",
+    "hidden_other_window_count": 0,
+    "overlap_order_ids": [],
+    "scope": "current_window",
+    "window_isolation_pass": true
+  },
+  "result": {
+    "executor_idempotency_pass": true,
+    "window_isolation_pass": true,
+    "filled_total_chain_pass": true,
+    "dirty_restart_pass": true
+  }
+}
