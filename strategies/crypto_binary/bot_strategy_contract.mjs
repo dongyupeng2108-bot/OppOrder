@@ -1,6 +1,6 @@
 const DEFAULT_LADDER_PRICES = [0.27, 0.24, 0.21, 0.18];
 const DEFAULT_LADDER_SIZE = 5;
-const DEFAULT_LADDER = DEFAULT_LADDER_PRICES.map((price) => ({ price, size: DEFAULT_LADDER_SIZE }));
+const DEFAULT_LADDER = DEFAULT_LADDER_PRICES.map((price) => ({ price, size: DEFAULT_LADDER_SIZE, tp_price: price }));
 
 const INTENT_KINDS = {
   NOOP: 'NOOP',
@@ -45,16 +45,21 @@ const normalizeLadderItems = (ladder) => {
   const normalized = ladder.map((item) => {
     const price = toNumberOrNull(item?.price);
     const size = toNumberOrNull(item?.size);
+    const tpPriceRaw = item?.tp_price;
+    const tpPrice = tpPriceRaw === null || tpPriceRaw === undefined || tpPriceRaw === ''
+      ? price
+      : toNumberOrNull(tpPriceRaw);
     if (price === null || price <= 0 || price >= 1) return null;
     if (size === null || size <= 0) return null;
-    return { price, size };
+    if (tpPrice === null || tpPrice <= 0 || tpPrice >= 1) return null;
+    return { price, size, tp_price: tpPrice };
   }).filter(Boolean);
   return normalized.length > 0 ? normalized : null;
 };
 const pricesAndSizeToLadder = (prices, size) => {
   const normalizedPrices = normalizeLadderPrices(prices);
   const normalizedSize = normalizeLadderSize(size);
-  return normalizedPrices.map((price) => ({ price, size: normalizedSize }));
+  return normalizedPrices.map((price) => ({ price, size: normalizedSize, tp_price: price }));
 };
 
 export function normalizeStrategyInput(input = {}) {
@@ -118,7 +123,7 @@ export function summarizeIntents(intents = []) {
     if (intent.kind === INTENT_KINDS.PLACE_LADDER) {
       const side = intent.side || 'BOTH';
       const ladderText = Array.isArray(intent.ladder)
-        ? intent.ladder.map((item) => `${item.price}:${item.size}`).join(',')
+        ? intent.ladder.map((item) => `${item.price}:${item.size}:${item.tp_price}`).join(',')
         : '';
       return `PLACE_LADDER(${side}|${ladderText})`;
     }

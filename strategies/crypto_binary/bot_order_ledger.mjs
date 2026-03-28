@@ -2,16 +2,19 @@ import { randomUUID } from 'crypto';
 
 const DEFAULT_PRICES = [0.27, 0.24, 0.21, 0.18];
 const DEFAULT_SIZE = 5;
-const DEFAULT_LADDER = DEFAULT_PRICES.map((price) => ({ price, size: DEFAULT_SIZE }));
+const DEFAULT_LADDER = DEFAULT_PRICES.map((price) => ({ price, size: DEFAULT_SIZE, tp_price: price }));
 
 const cloneOrder = (order) => ({ ...order });
 
-const createOrder = ({ side, price, size, source }) => ({
+const createOrder = ({ side, price, size, source, kind = 'ENTRY', tp_price = null, ladder_key = null, parent_order_id = null }) => ({
   order_id: `paper_${randomUUID().slice(0, 8)}`,
-  kind: 'ENTRY',
+  kind,
   side,
   price,
   size,
+  tp_price,
+  ladder_key,
+  parent_order_id,
   status: 'OPEN',
   fill_price: null,
   filled_at: null,
@@ -56,8 +59,8 @@ export function createBotOrderLedger() {
     };
   };
 
-  const getFilledEntryOrders = (side) => orders.filter((order) => order.status === 'FILLED' && order.side === side && order.kind !== 'EXIT');
-  const getFilledExitOrders = (side) => orders.filter((order) => order.status === 'FILLED' && order.side === side && order.kind === 'EXIT');
+  const getFilledEntryOrders = (side) => orders.filter((order) => order.status === 'FILLED' && order.side === side && order.kind === 'ENTRY');
+  const getFilledExitOrders = (side) => orders.filter((order) => order.status === 'FILLED' && order.side === side && (order.kind === 'EXIT' || order.kind === 'TAKE_PROFIT'));
   const getNetPositionSize = (side) => {
     const entrySize = getFilledEntryOrders(side).reduce((sum, order) => sum + (Number.isFinite(order.size) ? order.size : 0), 0);
     const exitSize = getFilledExitOrders(side).reduce((sum, order) => sum + (Number.isFinite(order.size) ? order.size : 0), 0);
@@ -90,21 +93,26 @@ export function createBotOrderLedger() {
       const normalized = options.ladder.map((item) => {
         const price = Number(item?.price);
         const unitSize = Number(item?.size);
+        const tpPriceRaw = item?.tp_price;
+        const tpPrice = tpPriceRaw === null || tpPriceRaw === undefined || tpPriceRaw === '' ? price : Number(tpPriceRaw);
         if (!Number.isFinite(price) || price <= 0 || price >= 1) return null;
         if (!Number.isFinite(unitSize) || unitSize <= 0) return null;
-        return { price, size: unitSize };
+        if (!Number.isFinite(tpPrice) || tpPrice <= 0 || tpPrice >= 1) return null;
+        return { price, size: unitSize, tp_price: tpPrice };
       }).filter(Boolean);
       if (normalized.length > 0) return normalized;
     }
     const prices = Array.isArray(options.prices) && options.prices.length ? options.prices : DEFAULT_PRICES;
     const size = Number.isFinite(options.size) ? options.size : DEFAULT_SIZE;
-    return prices.map((price) => ({ price, size }));
+    return prices.map((price) => ({ price, size, tp_price: price }));
   };
   const placeSideLadder = (side, ladder, source) => {
-    const created = ladder.map((item) => createOrder({
+    const created = ladder.map((item, index) => createOrder({
       side,
       price: item.price,
       size: item.size,
+      tp_price: item.tp_price,
+      ladder_key: `${side}:${index}`,
       source
     }));
     orders = [...orders, ...created];
@@ -114,24 +122,64 @@ export function createBotOrderLedger() {
   const applyFills = (context = {}) => {
     const askYes = Number.isFinite(context?.ask_yes) ? context.ask_yes : null;
     const askNo = Number.isFinite(context?.ask_no) ? context.ask_no : null;
+    const bidYes = Number.isFinite(context?.bid_yes) ? context.bid_yes : null;
+    const bidNo = Number.isFinite(context?.bid_no) ? context.bid_no : null;
     const filledOrders = [];
+    const tpOrdersToCreate = [];
     const filledAt = new Date().toISOString();
     orders = orders.map((order) => {
       if (order.status !== 'OPEN' || order.kind === 'EXIT') return order;
-      if (order.side === 'YES' && askYes != null && order.price >= askYes) {
+      if (order.kind === 'ENTRY' && order.side === 'YES' && askYes != null && order.price >= askYes) {
         const nextOrder = { ...order, status: 'FILLED', fill_price: askYes, filled_at: filledAt };
+        filledOrders.push(cloneOrder(nextOrder));
+        if (Number.isFinite(order.tp_price)) {
+          tpOrdersToCreate.push(createOrder({
+            side: 'YES',
+            kind: 'TAKE_PROFIT',
+            price: order.tp_price,
+            size: order.size,
+            tp_price: order.tp_price,
+            source: `${order.source || 'runner_tick'}:tp`,
+            ladder_key: order.ladder_key,
+            parent_order_id: order.order_id
+          }));
+        }
+        return nextOrder;
+      }
+      if (order.kind === 'ENTRY' && order.side === 'NO' && askNo != null && order.price >= askNo) {
+        const nextOrder = { ...order, status: 'FILLED', fill_price: askNo, filled_at: filledAt };
+        filledOrders.push(cloneOrder(nextOrder));
+        if (Number.isFinite(order.tp_price)) {
+          tpOrdersToCreate.push(createOrder({
+            side: 'NO',
+            kind: 'TAKE_PROFIT',
+            price: order.tp_price,
+            size: order.size,
+            tp_price: order.tp_price,
+            source: `${order.source || 'runner_tick'}:tp`,
+            ladder_key: order.ladder_key,
+            parent_order_id: order.order_id
+          }));
+        }
+        return nextOrder;
+      }
+      if (order.kind === 'TAKE_PROFIT' && order.side === 'YES' && bidYes != null && bidYes >= order.price) {
+        const nextOrder = { ...order, status: 'FILLED', fill_price: order.price, filled_at: filledAt };
         filledOrders.push(cloneOrder(nextOrder));
         return nextOrder;
       }
-      if (order.side === 'NO' && askNo != null && order.price >= askNo) {
-        const nextOrder = { ...order, status: 'FILLED', fill_price: askNo, filled_at: filledAt };
+      if (order.kind === 'TAKE_PROFIT' && order.side === 'NO' && bidNo != null && bidNo >= order.price) {
+        const nextOrder = { ...order, status: 'FILLED', fill_price: order.price, filled_at: filledAt };
         filledOrders.push(cloneOrder(nextOrder));
         return nextOrder;
       }
       return order;
     });
+    if (tpOrdersToCreate.length > 0) {
+      orders = [...orders, ...tpOrdersToCreate];
+    }
     return {
-      changed: filledOrders.length,
+      changed: filledOrders.length + tpOrdersToCreate.length,
       filled_orders: filledOrders,
       summary: getSummary(),
       orders: getOrders()

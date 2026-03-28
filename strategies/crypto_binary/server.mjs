@@ -74,7 +74,7 @@ const BOT_TEST_STATE_IDLE = 'idle';
 const BOT_TEST_STATE_RUNNING = 'running';
 const BOT_TEST_STATE_PASSED = 'passed';
 const BOT_TEST_STATE_FAILED = 'failed';
-const toLadderRows = (prices, size) => prices.map((price) => ({ price, size }));
+const toLadderRows = (prices, size) => prices.map((price) => ({ price, size, tp_price: price }));
 const BOT_CONFIG_DEFAULTS = {
   open_delay_sec: 10,
   ladder_prices: [...BOT_STRATEGY_CONTRACT.defaults.ladder_prices],
@@ -250,7 +250,11 @@ const launchBotTestRun = ({ taskId, simulateFail = false }) => {
   });
   return { ok: true, started: true, already_running: false, status: getBotTestStatusSnapshot() };
 };
-const cloneLadderRows = (rows = []) => rows.map((item) => ({ price: Number(item.price), size: Number(item.size) }));
+const cloneLadderRows = (rows = []) => rows.map((item) => ({
+  price: Number(item.price),
+  size: Number(item.size),
+  tp_price: Number(item.tp_price)
+}));
 const cloneCancelConfig = (value = {}) => ({
   before_end_sec: Number(value.before_end_sec),
   formula: typeof value.formula === 'string' ? value.formula : ''
@@ -732,9 +736,14 @@ const normalizeLadderRowsPayload = (value) => {
   const normalized = value.map((item) => {
     const price = asFiniteNumber(item?.price);
     const size = asFiniteNumber(item?.size);
+    const tpPriceRaw = item?.tp_price;
+    const tpPrice = tpPriceRaw === null || tpPriceRaw === undefined || tpPriceRaw === ''
+      ? price
+      : asFiniteNumber(tpPriceRaw);
     if (price === null || price <= 0 || price >= 1) return null;
     if (size === null || size <= 0) return null;
-    return { price, size };
+    if (tpPrice === null || tpPrice <= 0 || tpPrice >= 1) return null;
+    return { price, size, tp_price: tpPrice };
   }).filter(Boolean);
   return normalized.length > 0 ? normalized : null;
 };
@@ -775,7 +784,7 @@ const validateBotConfigPayload = (payload) => {
   if (!isPositiveNumber(atrMultiple)) return { ok: false, error: 'atr_multiple must be positive number' };
   if (!isNonNegativeInteger(cancelAllRemainingSec)) return { ok: false, error: 'cancel_all_remaining_sec must be non-negative integer' };
   if (!ladderPrices) return { ok: false, error: 'ladder_prices must be an array of numbers between 0 and 1' };
-  const legacyLadder = ladderPrices.map((price) => ({ price, size: ladderSize }));
+  const legacyLadder = ladderPrices.map((price) => ({ price, size: ladderSize, tp_price: price }));
   const resolvedUpLadder = upLadder || legacyLadder;
   const resolvedDownLadder = downLadder || legacyLadder;
   const resolvedUpCancel = upCancel || { before_end_sec: cancelAllRemainingSec, formula: '' };
