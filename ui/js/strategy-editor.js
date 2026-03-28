@@ -188,6 +188,10 @@ async function initStrategyEditor() {
               <div id="se-ui-error" style="font-size:11px;color:#ff8a80;min-height:16px;"></div>
             </section>
             <section style="border:1px solid #232a33;background:#11161c;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:0;">
+              <div id="se-pm-account-card" style="border:1px solid #253140;background:#0f141a;border-radius:6px;padding:8px 10px;display:flex;flex-direction:column;gap:4px;">
+                <div id="se-pm-account-name" style="font-size:12px;color:#b7c4d3;">PM账号名：--</div>
+                <div id="se-pm-account-balance" style="font-size:12px;color:#d6dde5;">余额：--美元（今日--）</div>
+              </div>
               <h3 style="margin:0;font-size:13px;color:#d6dde5;">上一窗口结果</h3>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
                 <div style="color:#7f8a97;">已成交总数</div><div id="se-prev-filled-total" style="text-align:right;color:#d6dde5;">—</div>
@@ -739,6 +743,7 @@ async function se_poll() {
     let previewData = null;
     let postmortemData = null;
     let performanceData = null;
+    let pmTodayData = null;
     let previewError = null;
     try {
       const contextRes = await fetch(`${BASE_URL}/bot/context`);
@@ -772,9 +777,17 @@ async function se_poll() {
       performanceData = null;
       previewError = previewError || err.message;
     }
+    try {
+      const pmTodayRes = await fetch(`${BASE_URL}/bot/performance/summary?preset=today&detail=0`);
+      pmTodayData = await pmTodayRes.json();
+      if (!pmTodayRes.ok || pmTodayData?.ok === false) throw new Error(pmTodayData?.error || `pm today HTTP ${pmTodayRes.status}`);
+    } catch (err) {
+      pmTodayData = null;
+    }
     se_renderContext(contextData, status);
     se_renderOverview(status, summaryData, ordersData, postmortemData);
     se_renderPerformance(performanceData, status);
+    se_renderPmAccountInfo(status, pmTodayData);
     se_renderDecision(status, contextData, previewData, ordersData, previewError);
     se_renderLogs(Array.isArray(logsData) ? logsData : (logsData.logs || []));
     se_renderOrders(ordersData, status);
@@ -831,6 +844,41 @@ async function se_applyPaperAction(action) {
 function se_setText(id, value) {
   const el = document.getElementById(id);
   if (el) el.textContent = se_formatStateValue(value);
+}
+
+function se_renderPmAccountInfo(status, pmTodayPayload) {
+  const pickNumber = (...values) => {
+    for (const value of values) {
+      const num = Number(value);
+      if (Number.isFinite(num)) return num;
+    }
+    return null;
+  };
+  const pickString = (...values) => {
+    for (const value of values) {
+      if (typeof value === 'string' && value.trim().length > 0) return value.trim();
+    }
+    return null;
+  };
+  const accountName = pickString(
+    status?.saved_config?.pm_account_name,
+    status?.saved_config?.account_name,
+    status?.active_runtime_snapshot?.config?.pm_account_name,
+    status?.active_runtime_snapshot?.config?.account_name
+  );
+  const balanceUsd = pickNumber(
+    status?.saved_config?.pm_balance_usd,
+    status?.saved_config?.balance_usd,
+    status?.active_runtime_snapshot?.config?.pm_balance_usd,
+    status?.active_runtime_snapshot?.config?.balance_usd
+  );
+  const todayPnl = pickNumber(pmTodayPayload?.summary?.realized_gross_pnl_total);
+  const balanceText = balanceUsd == null ? '--' : balanceUsd.toFixed(2);
+  const todayText = todayPnl == null ? '--' : `${todayPnl >= 0 ? '+' : ''}${todayPnl.toFixed(2)}`;
+  const accountEl = document.getElementById('se-pm-account-name');
+  const balanceEl = document.getElementById('se-pm-account-balance');
+  if (accountEl) accountEl.textContent = `PM账号名：${accountName || '--'}`;
+  if (balanceEl) balanceEl.textContent = `余额：${balanceText}美元（今日${todayText}）`;
 }
 
 function se_renderDecision(status, context, preview, ordersData, previewError) {
