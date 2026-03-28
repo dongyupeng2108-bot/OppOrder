@@ -343,13 +343,45 @@ const fetchSignerJson = async (pathname) => {
   const timer = setTimeout(() => controller.abort(), 1200);
   try {
     const res = await undiciFetch(`http://127.0.0.1:53199${pathname}`, { signal: controller.signal });
-    if (!res.ok) return null;
-    return await res.json();
-  } catch {
-    return null;
+    if (!res.ok) {
+      return {
+        ok: false,
+        pathname,
+        status: res.status,
+        error: `HTTP_${res.status}`
+      };
+    }
+    const json = await res.json();
+    return {
+      ok: true,
+      pathname,
+      status: res.status,
+      payload: json
+    };
+  } catch (error) {
+    const message = String(error?.message || '');
+    const unavailable = message.includes('ECONNREFUSED') || message.includes('fetch failed') || message.includes('aborted');
+    return {
+      ok: false,
+      pathname,
+      status: null,
+      error: unavailable ? 'SIGNER_UNAVAILABLE' : 'ACCOUNT_READ_FAILED',
+      detail: message
+    };
   } finally {
     clearTimeout(timer);
   }
+};
+const normalizeAccountReadStatus = (probeResults, options = {}) => {
+  const { balanceFromSigner = false, balanceFromCache = false } = options;
+  if (balanceFromSigner) return 'OK';
+  const hasSignerUnavailable = probeResults.some((item) => item.error === 'SIGNER_UNAVAILABLE');
+  if (hasSignerUnavailable) return balanceFromCache ? 'SIGNER_UNAVAILABLE' : 'SIGNER_UNAVAILABLE';
+  const hasSuccess = probeResults.some((item) => item.ok);
+  if (hasSuccess) return balanceFromCache ? 'ACCOUNT_READ_FAILED' : 'EMPTY_BALANCE_RESPONSE';
+  const hasNotFound = probeResults.every((item) => item.status === 404 || item.status === 405 || item.status === 501);
+  if (hasNotFound) return 'ACCOUNT_READ_UNSUPPORTED';
+  return 'ACCOUNT_READ_FAILED';
 };
 const getBotAccountSnapshot = async () => {
   const now = Date.now();
@@ -357,16 +389,21 @@ const getBotAccountSnapshot = async () => {
     return botAccountSnapshotCache;
   }
   const cachedFile = readJsonSafe(BOT_ACCOUNT_CACHE_PATH);
-  const signerAccount = await fetchSignerJson('/account');
-  const signerBalance = await fetchSignerJson('/balance');
-  const signerWallet = await fetchSignerJson('/wallet');
-  const signerPayload = signerAccount || signerBalance || signerWallet;
+  const probePaths = ['/account', '/balance', '/wallet', '/pm/account', '/pm/balance', '/clob/account', '/clob/balance'];
+  const probeResults = [];
+  for (const pathname of probePaths) {
+    const result = await fetchSignerJson(pathname);
+    probeResults.push(result);
+    if (result.error === 'SIGNER_UNAVAILABLE') break;
+  }
+  const signerPayload = probeResults.find((item) => item.ok && item.payload && typeof item.payload === 'object')?.payload || null;
   const nameFromSigner = pickNestedString(signerPayload, ['pm_account_name', 'account_name', 'name', 'display_name', 'address', 'wallet_address']);
   const balanceFromSigner = pickNestedNumber(signerPayload, ['pm_balance_usd', 'balance_usd', 'balance', 'currentBalance', 'usdc_balance', 'buyingPower', 'available_balance']);
   const updatedAtFromSigner = pickNestedString(signerPayload, ['pm_balance_updated_at', 'updated_at', 'lastUpdated', 'timestamp']);
   const creds = readPmCredentialsSnapshot();
   const accountName = nameFromSigner || cachedFile?.pm_account_name || creds.accountAlias || null;
-  const balance = balanceFromSigner ?? toFiniteOrNull(cachedFile?.pm_balance_usd);
+  const balanceFromCache = toFiniteOrNull(cachedFile?.pm_balance_usd);
+  const balance = balanceFromSigner ?? balanceFromCache;
   const updatedAt = updatedAtFromSigner || cachedFile?.pm_balance_updated_at || null;
   const snapshot = {
     pm_account_name: accountName,
@@ -378,7 +415,17 @@ const getBotAccountSnapshot = async () => {
       account_name: nameFromSigner ? 'signer' : (creds.accountAlias ? 'secrets_api_key_fingerprint' : null),
       balance: balanceFromSigner !== null ? 'signer' : (balance !== null ? 'cache' : null),
       today_change: null
-    }
+    },
+    account_read_status: normalizeAccountReadStatus(probeResults, {
+      balanceFromSigner: balanceFromSigner !== null,
+      balanceFromCache: balanceFromSigner === null && balanceFromCache !== null
+    }),
+    account_read_trace: probeResults.map((item) => ({
+      path: item.pathname,
+      ok: item.ok,
+      status: item.status ?? null,
+      error: item.error ?? null
+    }))
   };
   if (accountName || balance !== null || updatedAt) {
     try {
