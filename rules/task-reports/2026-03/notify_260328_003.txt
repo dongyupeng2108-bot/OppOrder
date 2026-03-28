@@ -1,0 +1,13 @@
+RESULT_JSON
+rules/task-reports/2026-03/result_260328_003.json
+LOG_HEAD
+[Docs] M2-3 已完成：bot 主链唯一真值链（输入->执行->/bot/*->UI/verify/runtime）已落文档。
+LOG_TAIL
+docs-only task, no code/test/ci modification
+EVIDENCE
+docs/BOT_TRUTH_CHAIN.md
+docs/README.md
+docs/MODULE_MAP.md
+docs/MODULAR_ROADMAP.md
+INDEX
+rules/task-reports/2026-03/result_260328_003.json
