@@ -1,0 +1,13 @@
+RESULT_JSON
+rules/task-reports/2026-03/result_260328_007.json
+LOG_HEAD
+[Docs] C1-3 已完成：6 条主链口径绑定图已落地（代码/API/UI/verify/runtime）。
+LOG_TAIL
+docs-only task, no code/test/ci modification
+EVIDENCE
+docs/SEMANTICS_BINDING_MAP.md
+docs/BTCQDD_CORE_SEMANTICS.md
+docs/README.md
+docs/MODULE_MAP.md
+INDEX
+rules/task-reports/2026-03/result_260328_007.json

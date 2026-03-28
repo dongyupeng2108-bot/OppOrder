@@ -1,0 +1,18 @@
+{
+  "task_id": "260328_007",
+  "timestamp": "2026-03-28T11:20:00.000Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "binding_map_doc_added": "PASS",
+    "semantic_bindings_6_completed": "PASS",
+    "binding_columns_complete": "PASS",
+    "readme_link_added": "PASS",
+    "module_map_link_added": "PASS",
+    "docs_only_scope_kept": "PASS"
+  },
+  "context": {
+    "result_file": "rules/task-reports/2026-03/result_260328_007.json",
+    "notify_file": "rules/task-reports/2026-03/notify_260328_007.txt"
+  }
+}
