@@ -46,6 +46,39 @@ const SE_GUIDE_TEXT = `========================================
    - 窗口切换时自动触发结算，详情请关注实时日志区。
 `;
 
+const SE_MODULE_INFO = [
+  {
+    name: '策略与运行输入',
+    duty: '统一采集并装配行情、窗口、ATR、订单簿等输入上下文。',
+    input: '行情源数据、窗口发现结果、ATR 与订单簿采样、运行配置。',
+    output: 'BotContext 输入对象与 readiness 前置字段。'
+  },
+  {
+    name: '执行引擎',
+    duty: '负责生命周期、gate、decision、ledger、幂等核心语义与执行推进。',
+    input: '输入模块上下文、运行配置、历史执行状态。',
+    output: '决策结果、订单执行真值、/bot/status 与 /bot/orders 关键状态。'
+  },
+  {
+    name: '实时监控',
+    duty: '负责对外暴露与展示运行事实，不反向定义执行语义。',
+    input: '执行引擎与结果模块输出、日志与状态快照。',
+    output: '/bot/context、/bot/status、/bot/orders 与控制台展示。'
+  },
+  {
+    name: '运行结果',
+    duty: '负责 postmortem、last_run_snapshot、performance_summary 结果表达。',
+    input: '执行结束态、订单成交结果、窗口结算数据、聚合统计输入。',
+    output: '/bot/postmortem/latest、/bot/performance/summary 与结果快照字段。'
+  },
+  {
+    name: '版本测试/保障',
+    duty: '作为横切保障层，验证业务链路并输出可审计证据。',
+    input: '业务接口返回、运行日志、样本数据、任务证据上下文。',
+    output: 'verify 结论、verify_all_manual 汇总与任务证据文件。'
+  }
+];
+
 // 状态管理
 let _se_running = false;
 let _se_period = '5m';
@@ -104,12 +137,13 @@ async function initStrategyEditor() {
 
   container.innerHTML = `
     <div class="se-layout" style="height:100%;display:flex;flex-direction:column;background:#0b0d10;color:#d6dde5;position:relative;">
-      <div style="height:62px;border-bottom:1px solid #232a33;background:#0d131a;padding:0 12px;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr auto auto auto auto;gap:10px;align-items:center;">
+      <div style="height:62px;border-bottom:1px solid #232a33;background:#0d131a;padding:0 12px;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr auto auto auto auto auto;gap:10px;align-items:center;">
         <div style="font-size:18px;letter-spacing:.3px;">BTCQDD 执行机器人</div>
         <div style="border-left:1px solid #1c222b;padding-left:10px;font-size:12px;color:#9aa5b2;line-height:1.5;"><b style="color:#d6dde5;">运行状态</b><span id="se-top-running">已停止</span></div>
         <div style="border-left:1px solid #1c222b;padding-left:10px;font-size:12px;color:#9aa5b2;line-height:1.5;"><b style="color:#d6dde5;">当前</b><span id="se-top-activity">当前无活动窗口</span></div>
         <div style="border-left:1px solid #1c222b;padding-left:10px;font-size:12px;color:#9aa5b2;line-height:1.5;"><b style="color:#d6dde5;">上次结束</b><span id="se-top-last-stop">暂无</span></div>
         <button id="se-btn-param-toggle" onclick="se_toggleParamsPanel()" style="height:34px;width:34px;border:1px solid #2f3946;background:#18202a;color:#d6dde5;border-radius:4px;cursor:pointer;">⚙</button>
+        <button id="se-btn-module-info" onclick="se_openModuleInfo()" style="height:34px;border:1px solid #35506b;background:#1a2a3a;color:#c8e6ff;border-radius:4px;padding:0 10px;cursor:pointer;">模块说明</button>
         <button id="se-btn-test" onclick="se_runVersionTest()" style="height:34px;border:1px solid #35506b;background:#1a2a3a;color:#c8e6ff;border-radius:4px;padding:0 10px;cursor:pointer;">版本测试</button>
         <button id="se-btn-restart" onclick="restartServer()" style="height:34px;border:1px solid #35506b;background:#1a2a3a;color:#c8e6ff;border-radius:4px;padding:0 10px;cursor:pointer;">重启服务</button>
         <button id="se-btn-run-toggle" class="se-btn-deploy" onclick="se_toggleBotRun()">启动</button>
@@ -266,6 +300,15 @@ async function initStrategyEditor() {
         </div>
       </div>
     </div>
+    <div id="se-module-info-overlay" class="se-overlay" onclick="se_closeModuleInfo()" style="display:none">
+      <div class="se-modal" onclick="event.stopPropagation()">
+        <div id="se-module-info-title" class="se-modal-title">模块说明</div>
+        <div id="se-module-info-content" class="se-guide-pre" style="white-space:normal;line-height:1.5;display:flex;flex-direction:column;gap:8px;"></div>
+        <div class="se-modal-actions">
+          <button class="se-btn-close" onclick="se_closeModuleInfo()">关闭</button>
+        </div>
+      </div>
+    </div>
   `;
 
   // 加载并渲染 Bot 参数
@@ -281,6 +324,7 @@ async function initStrategyEditor() {
   if (!saved) saved = localStorage.getItem('se_code');
   document.getElementById('se-editor').value = saved || SE_DEFAULT_CODE;
   document.getElementById('se-guide-text').textContent = SE_GUIDE_TEXT;
+  se_renderModuleInfo();
   se_setPerformancePreset('today', false);
   se_updateRunningUI(false);
   se_updateTestButton();
@@ -587,6 +631,29 @@ function se_showTestResultModal(resultPayload) {
 
 function se_closeTestResultModal() {
   const overlay = document.getElementById('se-test-result-overlay');
+  if (overlay) overlay.style.display = 'none';
+}
+
+function se_renderModuleInfo() {
+  const container = document.getElementById('se-module-info-content');
+  if (!container) return;
+  container.innerHTML = SE_MODULE_INFO.map((item) => `
+    <section style="border:1px solid #2a3440;border-radius:6px;padding:8px;background:#10161d;">
+      <div style="font-size:13px;color:#d6dde5;font-weight:600;margin-bottom:4px;">${item.name}</div>
+      <div style="font-size:12px;color:#a9b5c2;">职责：${item.duty}</div>
+      <div style="font-size:12px;color:#a9b5c2;">主要输入：${item.input}</div>
+      <div style="font-size:12px;color:#a9b5c2;">主要输出/对外面：${item.output}</div>
+    </section>
+  `).join('');
+}
+
+function se_openModuleInfo() {
+  const overlay = document.getElementById('se-module-info-overlay');
+  if (overlay) overlay.style.display = 'flex';
+}
+
+function se_closeModuleInfo() {
+  const overlay = document.getElementById('se-module-info-overlay');
   if (overlay) overlay.style.display = 'none';
 }
 
