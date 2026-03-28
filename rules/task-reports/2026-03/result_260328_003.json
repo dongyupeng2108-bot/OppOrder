@@ -1,0 +1,34 @@
+{
+  "task_id": "260328_003",
+  "status": "DONE",
+  "scope_guard": "docs-only：M2-3 真值链说明 + 最小互链",
+  "changes": {
+    "new_doc": "docs/BOT_TRUTH_CHAIN.md",
+    "linked_from": [
+      "docs/README.md",
+      "docs/MODULE_MAP.md"
+    ],
+    "roadmap_note": "docs/MODULAR_ROADMAP.md M2-3 已完成说明"
+  },
+  "coverage": {
+    "truth_chain_segments": [
+      "主链起点",
+      "主链中段",
+      "主链对外面",
+      "主链验收面"
+    ],
+    "high_risk_terms": [
+      "anchor_btc",
+      "bounds/bounds_ready",
+      "ATR 缺失行为",
+      "current/active/last",
+      "filled_total",
+      "PNL 分区口径"
+    ]
+  },
+  "validation": {
+    "code_change": false,
+    "test_change": false,
+    "ci_change": false
+  }
+}

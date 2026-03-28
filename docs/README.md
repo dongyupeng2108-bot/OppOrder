@@ -6,6 +6,7 @@
 
 | 文档 | 说明 |
 |------|------|
+| [BOT_TRUTH_CHAIN.md](BOT_TRUTH_CHAIN.md) | M2-3：bot 主链唯一真值链（输入→执行→`/bot/*`→UI/verify/runtime 验收） |
 | [BOT_SURFACE_VS_STRATEGY_INSTANCE_BOUNDARY.md](BOT_SURFACE_VS_STRATEGY_INSTANCE_BOUNDARY.md) | M2-2：bot 正式产品面 vs 旧 strategy 实例承载层边界说明（docs-only） |
 | [README_BTCQDD.md](README_BTCQDD.md) | 本地启动、URL、最小验收、权威文档链接 |
 | [OWNER_BTCQDD_ONE_PAGER.md](OWNER_BTCQDD_ONE_PAGER.md) | Owner 边界：Bot 主面 vs 旧 strategy 承载层 |
