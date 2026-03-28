@@ -1,0 +1,6 @@
+script_name=verify_anchor_bounds_lifecycle
+task_id=260328_028
+sample_name=controlled+real_no_debug
+pass=true
+first_break_layer=null
+message=anchor freeze 与 bounds-ready 解耦通过

@@ -1,0 +1,6 @@
+script_name=verify_strategy_runtime_regression_guard
+task_id=260328_028
+sample_name=real_runtime_regression_guard_v1
+pass=true
+first_break_layer=null
+message=strategy/runtime regression guard 通过
