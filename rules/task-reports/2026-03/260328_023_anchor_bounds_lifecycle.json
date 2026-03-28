@@ -1,0 +1,497 @@
+{
+  "script_name": "verify_anchor_bounds_lifecycle",
+  "task_id": "260328_023",
+  "sample_name": "controlled+real_no_debug",
+  "pass": true,
+  "message": "anchor freeze 与 bounds-ready 解耦通过",
+  "first_break_layer": null,
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260328_023_anchor_bounds_lifecycle.json",
+  "summary": {
+    "anchor_frozen_once_pass": true,
+    "atr_arrive_compute_from_frozen_anchor_pass": true,
+    "window_init_decoupled_from_bounds_ready_pass": true,
+    "unready_anchor_not_drifting_pass": true,
+    "unready_action_blocked_pass": true,
+    "real_runtime_anchor_not_drifting_pass": true
+  },
+  "raw_excerpt": {
+    "real_runtime_atr_missing_rows": 29,
+    "real_runtime_unique_anchor_count": 1
+  },
+  "generated_at": "2026-03-28T18:49:02.702Z",
+  "command": "node scripts/verify_anchor_bounds_lifecycle.mjs --task_id=260328_023",
+  "controlled": {
+    "pass": true,
+    "atr_multiple": 1.2,
+    "checks": {
+      "anchor_frozen_once_pass": true,
+      "atr_arrive_compute_from_frozen_anchor_pass": true,
+      "window_init_decoupled_from_bounds_ready_pass": true,
+      "unready_anchor_not_drifting_pass": true,
+      "unready_action_blocked_pass": true
+    },
+    "evidence": {
+      "window1": {
+        "tick1": {
+          "anchor": 100,
+          "upper": null,
+          "lower": null,
+          "window_initialized_at": "2026-03-28T18:48:42.367Z"
+        },
+        "tick2": {
+          "anchor": 100,
+          "upper": null,
+          "lower": null,
+          "window_initialized_at": "2026-03-28T18:48:42.367Z"
+        },
+        "tick3": {
+          "anchor": 100,
+          "upper": 102.4,
+          "lower": 97.6,
+          "window_initialized_at": "2026-03-28T18:48:42.367Z"
+        }
+      },
+      "window2": {
+        "tickA": {
+          "anchor": 101,
+          "upper": null,
+          "lower": null
+        },
+        "tickB": {
+          "anchor": 101,
+          "upper": null,
+          "lower": null,
+          "intents_summary": "NOOP",
+          "reason": "price_or_bounds_null"
+        }
+      }
+    }
+  },
+  "real_runtime": {
+    "pass": true,
+    "summary": {
+      "total_rows": 29,
+      "atr_missing_rows_in_same_window": 29,
+      "unique_anchor_count_when_atr_missing": 1
+    },
+    "sample_rows": [
+      {
+        "seq": 2,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66904.7,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 3,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66904.7,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 4,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66904.7,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 5,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66904.7,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 6,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66904.71,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 7,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66904.71,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 8,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66904.71,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 9,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66904.7,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      }
+    ],
+    "all_rows": [
+      {
+        "seq": 2,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66904.7,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 3,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66904.7,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 4,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66904.7,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 5,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66904.7,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 6,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66904.71,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 7,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66904.71,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 8,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66904.71,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 9,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66904.7,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 10,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66904.7,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 11,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66904.71,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 12,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66904.71,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 13,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66904.71,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 14,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66904.71,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 15,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66904.71,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 16,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66904.71,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 17,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66904.71,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 18,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66904.71,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 19,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66904.71,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 20,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66904.71,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 21,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66904.7,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 22,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66904.7,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 23,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66904.7,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 24,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66911.92,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 25,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66911.92,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 26,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66911.92,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 27,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66911.91,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 28,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66911.91,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 29,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66911.91,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      },
+      {
+        "seq": 30,
+        "window_id": "btc-updown-5m-1774723500",
+        "running": true,
+        "btc_price": 66911.92,
+        "atr_5m": null,
+        "anchor_btc": 66904.7,
+        "upper_bound": null,
+        "lower_bound": null,
+        "reason": "remaining_sec<=cancel_all_remaining_sec"
+      }
+    ]
+  },
+  "result": {
+    "anchor_frozen_once_pass": true,
+    "atr_arrive_compute_from_frozen_anchor_pass": true,
+    "window_init_decoupled_from_bounds_ready_pass": true,
+    "unready_anchor_not_drifting_pass": true,
+    "unready_action_blocked_pass": true,
+    "real_runtime_anchor_not_drifting_pass": true
+  }
+}
