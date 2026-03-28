@@ -349,8 +349,8 @@ const runAsync = async () => {
     });
     const branch = run('git branch --show-current', { capture: true }).trim();
     const sha = run('git rev-parse HEAD', { capture: true }).trim();
-    const msg = run('git log -1 --pretty=%B', { capture: true }).trim().replace(/"/g, '\\"');
-    fs.writeFileSync(gitMetaPath, `{"commit":"${sha}","message":"${msg}","branch":"${branch}"}\n`, 'utf8');
+    const msg = run('git log -1 --pretty=%B', { capture: true }).trim();
+    fs.writeFileSync(gitMetaPath, `${JSON.stringify({ commit: sha, message: msg, branch })}\n`, 'utf8');
     fs.copyFileSync(previewLogPath, runLogPath);
     fs.copyFileSync(notifyPath, dodPath);
     if (!fs.existsSync(attestationPath)) {
