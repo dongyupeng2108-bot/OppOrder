@@ -38,7 +38,8 @@ M2 典型产出（放行后）：[`MODULE_MAP.md`](MODULE_MAP.md) **对外契约
 - **M2-1（已完成）**：[`VERIFY_PLAYBOOK.md`](VERIFY_PLAYBOOK.md)「总入口」已互链 [`PROJECT_MASTER_PLAN.md`](../rules/rules/PROJECT_MASTER_PLAN.md) **§5.4** 与 [`MODULE_MAP.md`](MODULE_MAP.md) **各模块对外契约要点（索引）**（未复制 §5.4 表）。
 - **M2-2（已完成）**：新增 [`BOT_SURFACE_VS_STRATEGY_INSTANCE_BOUNDARY.md`](BOT_SURFACE_VS_STRATEGY_INSTANCE_BOUNDARY.md)，明确 bot 正式产品面 vs 旧 strategy 实例承载层边界（docs-only）。
 - **M2-3（已完成）**：新增 [`BOT_TRUTH_CHAIN.md`](BOT_TRUTH_CHAIN.md)，明确 bot 主链唯一真值链（输入/执行/API/UI·verify·runtime 验收绑定，docs-only）。
-- **M2-4 及以后**：**未启动**；需再拆下一条时再更新本列表，**不并行**铺开。
+- **M2-4（已完成）**：新增 [`RESULTS_PNL_CONTRACT.md`](RESULTS_PNL_CONTRACT.md)，明确运行结果模块 PNL/结果字段薄契约与单窗口/阶段汇总边界（docs-only）。
+- **M2-5 及以后**：**未启动**；需再拆下一条时再更新本列表，**不并行**铺开。
 
 ---
 
