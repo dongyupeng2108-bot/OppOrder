@@ -148,9 +148,11 @@ const resolveBotTestReportMonth = (taskId) => {
   if (m) return `20${m[1]}-${m[2]}`;
   return new Date().toISOString().slice(0, 7);
 };
-const resolveBotTestResultPath = (taskId) => {
+const resolveBotTestResultPath = (taskId, moduleKey, runId) => {
   const month = resolveBotTestReportMonth(taskId);
-  return resolve(BOT_TEST_REPORTS_ROOT, month, `${taskId}_verify_all_manual.json`);
+  const safeModule = String(moduleKey || 'allchain').replace(/[^\w-]/g, '_');
+  const safeRun = String(runId || '0').replace(/[^\w-]/g, '_');
+  return resolve(BOT_TEST_REPORTS_ROOT, month, `${taskId}_${safeModule}_${safeRun}_verify_all_manual.json`);
 };
 const appendBotTestRunnerLog = (text) => {
   if (!botTestRunnerState.log_file) return;
@@ -193,7 +195,7 @@ const launchBotTestRun = ({ taskId, simulateFail = false, moduleKey = 'allchain'
   const startedAt = new Date().toISOString();
   const runId = `${Date.now()}`;
   const logFile = resolve(BOT_TEST_RUNNER_DIR, `${taskId}_${runId}.log`);
-  const resultFile = resolveBotTestResultPath(taskId);
+  const resultFile = resolveBotTestResultPath(taskId, normalizedModuleKey, runId);
   writeFileSync(logFile, '');
   botTestRunnerState = {
     ...botTestRunnerState,
@@ -217,7 +219,7 @@ const launchBotTestRun = ({ taskId, simulateFail = false, moduleKey = 'allchain'
     env.VERIFY_ALL_FORCE_FAIL = '1';
     appendBotTestRunnerLog(`[${startedAt}] simulate_fail=true\n`);
   }
-  const child = spawn(process.execPath, ['scripts/verify_all_manual.mjs', `--task_id=${taskId}`, `--module=${normalizedModuleKey}`], {
+  const child = spawn(process.execPath, ['scripts/verify_all_manual.mjs', `--task_id=${taskId}`, `--module=${normalizedModuleKey}`, `--output=${resultFile}`], {
     cwd: BOT_TEST_REPO_ROOT,
     env,
     stdio: ['ignore', 'pipe', 'pipe']
@@ -2285,6 +2287,21 @@ const server = createServer(async (req, res) => {
 
   if (req.method === 'GET' && req.url.startsWith('/bot/test/result')) {
     try {
+      const parsed = new URL(req.url, 'http://localhost');
+      const runId = String(parsed.searchParams.get('run_id') || '').trim();
+      const moduleKey = String(parsed.searchParams.get('module_key') || '').trim();
+      if (runId && runId !== String(botTestRunnerState.run_id || '')) {
+        sendJson(res, { ok: false, error: 'stale run_id', state: botTestRunnerState.state, run_id: botTestRunnerState.run_id }, 409);
+        return;
+      }
+      if (moduleKey && moduleKey !== String(botTestRunnerState.module_key || '')) {
+        sendJson(res, { ok: false, error: 'stale module_key', state: botTestRunnerState.state, module_key: botTestRunnerState.module_key }, 409);
+        return;
+      }
+      if (botTestRunnerState.state === BOT_TEST_STATE_RUNNING) {
+        sendJson(res, { ok: false, error: 'result not ready', state: botTestRunnerState.state, run_id: botTestRunnerState.run_id }, 409);
+        return;
+      }
       const resultFile = botTestRunnerState.result_file;
       if (!resultFile || !existsSync(resultFile)) {
         sendJson(res, { ok: false, error: 'result not ready', state: botTestRunnerState.state }, 404);
@@ -2295,6 +2312,9 @@ const server = createServer(async (req, res) => {
         ok: true,
         state: botTestRunnerState.state,
         overall_pass: botTestRunnerState.overall_pass,
+        run_id: botTestRunnerState.run_id,
+        module_key: botTestRunnerState.module_key,
+        module_label: botTestRunnerState.module_label,
         result_file: resultFile,
         result
       });

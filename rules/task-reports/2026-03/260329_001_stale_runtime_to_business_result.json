@@ -1,0 +1,3877 @@
+{
+  "script_name": "verify_runtime_to_business_result",
+  "task_id": "260329_001_stale",
+  "sample_name": "debug_fill_yes_path_v1+debug_main_path_v1+debug_exit_yes_path_v1",
+  "pass": true,
+  "message": "runtime -> business result 整链校验通过",
+  "first_break_layer": null,
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260329_001_stale_runtime_to_business_result.json",
+  "summary": {
+    "runtime_start_pass": true,
+    "window_ready_pass": true,
+    "action_emitted_pass": true,
+    "orders_materialized_pass": true,
+    "business_result_pass": true,
+    "runtime_to_business_result_pass": true
+  },
+  "raw_excerpt": {
+    "selected_sample": "debug_fill_yes_path_v1",
+    "result_materialized_basis": "filled_total>0",
+    "first_break_layer": null,
+    "conclusion": "系统能从 running 走到有效业务结果"
+  },
+  "generated_at": "2026-03-29T14:15:13.781Z",
+  "command": "node scripts/verify_runtime_to_business_result.mjs --task_id=260329_001_stale --sample=debug_fill_yes_path_v1+debug_main_path_v1+debug_exit_yes_path_v1",
+  "conclusion": "系统能从 running 走到有效业务结果",
+  "runtime_business_stage_table": [
+    {
+      "seq": 1,
+      "ts": "2026-03-29T14:14:11.659Z",
+      "running": true,
+      "current_window_id": "btc-updown-5m-1774793400",
+      "phase": "wait_window_id_not_ready",
+      "btc_price": 66701.14,
+      "intents_summary": "NOOP",
+      "orders_open": 0,
+      "orders_filled": 0,
+      "filled_total": 0,
+      "realized_gross_pnl_total": 0,
+      "stage_reached": "context_ready"
+    },
+    {
+      "seq": 2,
+      "ts": "2026-03-29T14:14:12.329Z",
+      "running": true,
+      "current_window_id": "debug-fill-yes-path-v1-w1",
+      "phase": "pre_open_or_open_not_open_delay",
+      "btc_price": 66702.49,
+      "intents_summary": "NOOP",
+      "orders_open": 0,
+      "orders_filled": 0,
+      "filled_total": 0,
+      "realized_gross_pnl_total": 0,
+      "stage_reached": "context_ready"
+    },
+    {
+      "seq": 3,
+      "ts": "2026-03-29T14:14:12.931Z",
+      "running": true,
+      "current_window_id": "debug-fill-yes-path-v1-w1",
+      "phase": "pre_open_or_open_not_open_delay",
+      "btc_price": 66702.49,
+      "intents_summary": "NOOP",
+      "orders_open": 0,
+      "orders_filled": 0,
+      "filled_total": 0,
+      "realized_gross_pnl_total": 0,
+      "stage_reached": "context_ready"
+    },
+    {
+      "seq": 4,
+      "ts": "2026-03-29T14:14:13.545Z",
+      "running": true,
+      "current_window_id": "debug-fill-yes-path-v1-w1",
+      "phase": "pre_open_or_open_not_open_delay",
+      "btc_price": 66702.49,
+      "intents_summary": "NOOP",
+      "orders_open": 0,
+      "orders_filled": 0,
+      "filled_total": 0,
+      "realized_gross_pnl_total": 0,
+      "stage_reached": "context_ready"
+    },
+    {
+      "seq": 5,
+      "ts": "2026-03-29T14:14:14.161Z",
+      "running": true,
+      "current_window_id": "debug-fill-yes-path-v1-w1",
+      "phase": "ladder_not_posted",
+      "btc_price": 66702.49,
+      "intents_summary": "PLACE_LADDER(YES|0.27:5:0.27,0.24:5:0.24,0.21:5:0.21,0.18:5:0.18) + PLACE_LADDER(NO|0.27:5:0.27,0.24:5:0.24,0.21:5:0.21,0.18:5:0.18)",
+      "orders_open": 0,
+      "orders_filled": 0,
+      "filled_total": 0,
+      "realized_gross_pnl_total": 0,
+      "stage_reached": "orders_created"
+    },
+    {
+      "seq": 6,
+      "ts": "2026-03-29T14:14:14.834Z",
+      "running": true,
+      "current_window_id": "debug-fill-yes-path-v1-w1",
+      "phase": "ladder_not_posted",
+      "btc_price": 66702.49,
+      "intents_summary": "PLACE_LADDER(YES|0.27:5:0.27,0.24:5:0.24,0.21:5:0.21,0.18:5:0.18) + PLACE_LADDER(NO|0.27:5:0.27,0.24:5:0.24,0.21:5:0.21,0.18:5:0.18)",
+      "orders_open": 0,
+      "orders_filled": 0,
+      "filled_total": 0,
+      "realized_gross_pnl_total": 0,
+      "stage_reached": "orders_created"
+    },
+    {
+      "seq": 7,
+      "ts": "2026-03-29T14:14:15.437Z",
+      "running": true,
+      "current_window_id": "debug-fill-yes-path-v1-w1",
+      "phase": "within_bounds_or_no_trigger",
+      "btc_price": 66702.49,
+      "intents_summary": "NOOP",
+      "orders_open": 0,
+      "orders_filled": 0,
+      "filled_total": 1,
+      "realized_gross_pnl_total": 0,
+      "stage_reached": "result_materialized"
+    }
+  ],
+  "result_materialized_basis": "filled_total>0",
+  "result": {
+    "runtime_start_pass": true,
+    "window_ready_pass": true,
+    "action_emitted_pass": true,
+    "orders_materialized_pass": true,
+    "business_result_pass": true,
+    "runtime_to_business_result_pass": true
+  },
+  "sample_evaluations": [
+    {
+      "sample_name": "debug_fill_yes_path_v1",
+      "scenario": "fill_yes_path_v1",
+      "stage_hits": {
+        "running_started": true,
+        "current_window_present": true,
+        "context_ready": true,
+        "valid_action_seen": true,
+        "orders_created": true,
+        "result_materialized": true
+      },
+      "stage_first_seq": {
+        "running_started": 1,
+        "current_window_present": 1,
+        "context_ready": 1,
+        "valid_action_seen": 5,
+        "orders_created": 5,
+        "result_materialized": 7
+      },
+      "result_materialized_basis": "filled_total>0",
+      "summary": {
+        "runtime_start_pass": true,
+        "window_ready_pass": true,
+        "action_emitted_pass": true,
+        "orders_materialized_pass": true,
+        "business_result_pass": true,
+        "runtime_to_business_result_pass": true
+      },
+      "first_break_layer": null
+    },
+    {
+      "sample_name": "debug_main_path_v1",
+      "scenario": "main_path_v1",
+      "stage_hits": {
+        "running_started": true,
+        "current_window_present": true,
+        "context_ready": true,
+        "valid_action_seen": true,
+        "orders_created": true,
+        "result_materialized": false
+      },
+      "stage_first_seq": {
+        "running_started": 1,
+        "current_window_present": 1,
+        "context_ready": 1,
+        "valid_action_seen": 5,
+        "orders_created": 5,
+        "result_materialized": null
+      },
+      "result_materialized_basis": null,
+      "summary": {
+        "runtime_start_pass": true,
+        "window_ready_pass": true,
+        "action_emitted_pass": true,
+        "orders_materialized_pass": true,
+        "business_result_pass": false,
+        "runtime_to_business_result_pass": false
+      },
+      "first_break_layer": "result_materialized"
+    },
+    {
+      "sample_name": "debug_exit_yes_path_v1",
+      "scenario": "exit_yes_path_v1",
+      "stage_hits": {
+        "running_started": true,
+        "current_window_present": true,
+        "context_ready": true,
+        "valid_action_seen": true,
+        "orders_created": true,
+        "result_materialized": true
+      },
+      "stage_first_seq": {
+        "running_started": 1,
+        "current_window_present": 1,
+        "context_ready": 1,
+        "valid_action_seen": 5,
+        "orders_created": 5,
+        "result_materialized": 7
+      },
+      "result_materialized_basis": "filled_total>0",
+      "summary": {
+        "runtime_start_pass": true,
+        "window_ready_pass": true,
+        "action_emitted_pass": true,
+        "orders_materialized_pass": true,
+        "business_result_pass": true,
+        "runtime_to_business_result_pass": true
+      },
+      "first_break_layer": null
+    }
+  ],
+  "raw": [
+    {
+      "sample_name": "debug_fill_yes_path_v1",
+      "scenario": "fill_yes_path_v1",
+      "raw": {
+        "final_runtime_snapshot": {
+          "status": {
+            "status": 200,
+            "body": {
+              "mode": "paper-staging",
+              "phase": "IDLE",
+              "running": true,
+              "debug_scenario": "fill_yes_path_v1",
+              "debug_frame_index": 4,
+              "debug_completed": false,
+              "tick_interval_ms": 1000,
+              "last_tick_at": "2026-03-29T14:14:15.084Z",
+              "last_window_id": null,
+              "current_window_id": "debug-fill-yes-path-v1-w1",
+              "window_initialized_at": "2026-03-29T14:14:12.054Z",
+              "remaining_sec": 280,
+              "anchor_btc": 100,
+              "atr_5m": 2,
+              "upper_bound": 102.4,
+              "lower_bound": 97.6,
+              "ladder_posted": true,
+              "yes_cancelled": false,
+              "no_cancelled": false,
+              "up_formula_cancelled": false,
+              "down_formula_cancelled": false,
+              "yes_order_ids": [
+                "paper_268c6721",
+                "paper_976d7af1",
+                "paper_83e55099",
+                "paper_55876da4"
+              ],
+              "no_order_ids": [
+                "paper_314e6f59",
+                "paper_7d4604ad",
+                "paper_a673b5f3",
+                "paper_a4549222"
+              ],
+              "last_reason": "within_bounds_or_no_trigger",
+              "last_intents": [
+                {
+                  "kind": "NOOP"
+                }
+              ],
+              "updated_at": "2026-03-29T14:14:15.084Z",
+              "saved_config": {
+                "open_delay_sec": 10,
+                "ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "ladder_size": 5,
+                "atr_multiple": 1.2,
+                "cancel_all_remaining_sec": 100,
+                "up_ladder": [
+                  {
+                    "price": 0.27,
+                    "size": 5,
+                    "tp_price": 0.27
+                  },
+                  {
+                    "price": 0.24,
+                    "size": 5,
+                    "tp_price": 0.24
+                  },
+                  {
+                    "price": 0.21,
+                    "size": 5,
+                    "tp_price": 0.21
+                  },
+                  {
+                    "price": 0.18,
+                    "size": 5,
+                    "tp_price": 0.18
+                  }
+                ],
+                "down_ladder": [
+                  {
+                    "price": 0.27,
+                    "size": 5,
+                    "tp_price": 0.27
+                  },
+                  {
+                    "price": 0.24,
+                    "size": 5,
+                    "tp_price": 0.24
+                  },
+                  {
+                    "price": 0.21,
+                    "size": 5,
+                    "tp_price": 0.21
+                  },
+                  {
+                    "price": 0.18,
+                    "size": 5,
+                    "tp_price": 0.18
+                  }
+                ],
+                "up_cancel": {
+                  "before_end_sec": 100,
+                  "formula": ""
+                },
+                "down_cancel": {
+                  "before_end_sec": 100,
+                  "formula": ""
+                }
+              },
+              "last_run_snapshot": {
+                "stop_reason": "MANUAL_STOP",
+                "completed_at": "2026-03-29T14:14:10.417Z",
+                "current_window_id": "btc-updown-5m-1774793400",
+                "phase": "IDLE",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0,
+                "unrealized_gross_pnl_total": 0,
+                "active_config": {
+                  "open_delay_sec": 12,
+                  "ladder_prices": [
+                    0.36,
+                    0.33,
+                    0.3,
+                    0.27
+                  ],
+                  "ladder_size": 9,
+                  "atr_multiple": 1.7,
+                  "cancel_all_remaining_sec": 80,
+                  "up_ladder": [
+                    {
+                      "price": 0.36,
+                      "size": 9,
+                      "tp_price": 0.36
+                    },
+                    {
+                      "price": 0.33,
+                      "size": 9,
+                      "tp_price": 0.33
+                    },
+                    {
+                      "price": 0.3,
+                      "size": 9,
+                      "tp_price": 0.3
+                    },
+                    {
+                      "price": 0.27,
+                      "size": 9,
+                      "tp_price": 0.27
+                    }
+                  ],
+                  "down_ladder": [
+                    {
+                      "price": 0.36,
+                      "size": 9,
+                      "tp_price": 0.36
+                    },
+                    {
+                      "price": 0.33,
+                      "size": 9,
+                      "tp_price": 0.33
+                    },
+                    {
+                      "price": 0.3,
+                      "size": 9,
+                      "tp_price": 0.3
+                    },
+                    {
+                      "price": 0.27,
+                      "size": 9,
+                      "tp_price": 0.27
+                    }
+                  ],
+                  "up_cancel": {
+                    "before_end_sec": 80,
+                    "formula": ""
+                  },
+                  "down_cancel": {
+                    "before_end_sec": 80,
+                    "formula": ""
+                  }
+                }
+              },
+              "active_runtime_snapshot": {
+                "config": {
+                  "open_delay_sec": 10,
+                  "ladder_prices": [
+                    0.27,
+                    0.24,
+                    0.21,
+                    0.18
+                  ],
+                  "ladder_size": 5,
+                  "atr_multiple": 1.2,
+                  "cancel_all_remaining_sec": 100,
+                  "up_ladder": [
+                    {
+                      "price": 0.27,
+                      "size": 5,
+                      "tp_price": 0.27
+                    },
+                    {
+                      "price": 0.24,
+                      "size": 5,
+                      "tp_price": 0.24
+                    },
+                    {
+                      "price": 0.21,
+                      "size": 5,
+                      "tp_price": 0.21
+                    },
+                    {
+                      "price": 0.18,
+                      "size": 5,
+                      "tp_price": 0.18
+                    }
+                  ],
+                  "down_ladder": [
+                    {
+                      "price": 0.27,
+                      "size": 5,
+                      "tp_price": 0.27
+                    },
+                    {
+                      "price": 0.24,
+                      "size": 5,
+                      "tp_price": 0.24
+                    },
+                    {
+                      "price": 0.21,
+                      "size": 5,
+                      "tp_price": 0.21
+                    },
+                    {
+                      "price": 0.18,
+                      "size": 5,
+                      "tp_price": 0.18
+                    }
+                  ],
+                  "up_cancel": {
+                    "before_end_sec": 100,
+                    "formula": ""
+                  },
+                  "down_cancel": {
+                    "before_end_sec": 100,
+                    "formula": ""
+                  }
+                },
+                "phase": "IDLE",
+                "current_window_id": "debug-fill-yes-path-v1-w1",
+                "anchor_btc": 100,
+                "upper_bound": 102.4,
+                "lower_bound": 97.6
+              }
+            }
+          },
+          "context": {
+            "status": 200,
+            "body": {
+              "window_id": "btc-updown-5m-1774793400",
+              "last_window_id": null,
+              "slug": "btc-updown-5m-1774793400",
+              "period": "5m",
+              "remaining_sec": 44,
+              "btc_price": 66702.49,
+              "anchor_btc": 100,
+              "atr_5m": 2,
+              "upper_bound": 102.4,
+              "lower_bound": 97.6,
+              "bid_yes": 0.992,
+              "ask_yes": 1,
+              "bid_no": 0,
+              "ask_no": 0.008,
+              "tick_size": 0.001,
+              "stale": false,
+              "updated_at": "2026-03-29T14:14:13.941Z",
+              "_btc_source_trace": {
+                "source_init_started": true,
+                "source_init_error": null,
+                "source_feed_seen": true,
+                "source_feed_count": 11375,
+                "source_last_feed_at": "2026-03-29T14:14:13.617Z",
+                "latest_cache_price": 66702.49,
+                "latest_cache_at": "2026-03-29T14:14:13.617Z",
+                "latest_cache_source": "rest_binance",
+                "price_resolution": {
+                  "kind": "cache",
+                  "used_strike_raw": null,
+                  "used_anchor_fallback_raw": 100
+                },
+                "atr_resolution": {
+                  "window_atr_5m_raw": null,
+                  "window_atr_raw": null,
+                  "state_atr_5m_raw": 2,
+                  "resolved_atr_5m": 2
+                }
+              }
+            }
+          },
+          "decision": {
+            "status": 200,
+            "body": {
+              "intents": [
+                {
+                  "kind": "NOOP"
+                }
+              ],
+              "intents_summary": "NOOP",
+              "reason": "within_bounds_or_no_trigger",
+              "patches": {},
+              "diagnostics": {
+                "remaining_sec": 280,
+                "open_elapsed_sec": 20,
+                "ladder_posted": true,
+                "btc_price": 101,
+                "upper_bound": 102.4,
+                "lower_bound": 97.6,
+                "bounds_ready": true,
+                "config_open_delay_sec": 10,
+                "config_cancel_all_remaining_sec": 100,
+                "config_ladder_size": 5,
+                "config_ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "config_up_ladder": [
+                  {
+                    "price": 0.27,
+                    "size": 5,
+                    "tp_price": 0.27
+                  },
+                  {
+                    "price": 0.24,
+                    "size": 5,
+                    "tp_price": 0.24
+                  },
+                  {
+                    "price": 0.21,
+                    "size": 5,
+                    "tp_price": 0.21
+                  },
+                  {
+                    "price": 0.18,
+                    "size": 5,
+                    "tp_price": 0.18
+                  }
+                ],
+                "config_down_ladder": [
+                  {
+                    "price": 0.27,
+                    "size": 5,
+                    "tp_price": 0.27
+                  },
+                  {
+                    "price": 0.24,
+                    "size": 5,
+                    "tp_price": 0.24
+                  },
+                  {
+                    "price": 0.21,
+                    "size": 5,
+                    "tp_price": 0.21
+                  },
+                  {
+                    "price": 0.18,
+                    "size": 5,
+                    "tp_price": 0.18
+                  }
+                ],
+                "config_up_cancel": {
+                  "before_end_sec": 100,
+                  "formula": ""
+                },
+                "config_down_cancel": {
+                  "before_end_sec": 100,
+                  "formula": ""
+                },
+                "formula_vars": {
+                  "secs_left": 280,
+                  "spread": 0,
+                  "volatility_ratio": 0.019801980198019802,
+                  "has_open_up_orders": true,
+                  "has_open_down_orders": true,
+                  "btc_price": 101,
+                  "upper_bound": 102.4,
+                  "lower_bound": 97.6
+                },
+                "trigger_up_before_end": false,
+                "trigger_down_before_end": false,
+                "trigger_up_formula": false,
+                "trigger_down_formula": false,
+                "can_trigger_up_formula": true,
+                "can_trigger_down_formula": true
+              },
+              "config": {
+                "open_delay_sec": 10,
+                "ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "ladder_size": 5,
+                "atr_multiple": 1.2,
+                "cancel_all_remaining_sec": 100,
+                "up_ladder": [
+                  {
+                    "price": 0.27,
+                    "size": 5,
+                    "tp_price": 0.27
+                  },
+                  {
+                    "price": 0.24,
+                    "size": 5,
+                    "tp_price": 0.24
+                  },
+                  {
+                    "price": 0.21,
+                    "size": 5,
+                    "tp_price": 0.21
+                  },
+                  {
+                    "price": 0.18,
+                    "size": 5,
+                    "tp_price": 0.18
+                  }
+                ],
+                "down_ladder": [
+                  {
+                    "price": 0.27,
+                    "size": 5,
+                    "tp_price": 0.27
+                  },
+                  {
+                    "price": 0.24,
+                    "size": 5,
+                    "tp_price": 0.24
+                  },
+                  {
+                    "price": 0.21,
+                    "size": 5,
+                    "tp_price": 0.21
+                  },
+                  {
+                    "price": 0.18,
+                    "size": 5,
+                    "tp_price": 0.18
+                  }
+                ],
+                "up_cancel": {
+                  "before_end_sec": 100,
+                  "formula": ""
+                },
+                "down_cancel": {
+                  "before_end_sec": 100,
+                  "formula": ""
+                }
+              },
+              "context_snapshot": {
+                "window_id": "debug-fill-yes-path-v1-w1",
+                "last_window_id": null,
+                "slug": "debug-fill-yes-path-v1-w1",
+                "period": "5m",
+                "remaining_sec": 280,
+                "btc_price": 101,
+                "anchor_btc": 100,
+                "atr_5m": 2,
+                "upper_bound": 102.4,
+                "lower_bound": 97.6,
+                "bid_yes": 0.3,
+                "ask_yes": 0.27,
+                "bid_no": 0.7,
+                "ask_no": null,
+                "tick_size": 0.001,
+                "stale": false,
+                "updated_at": "2026-03-29T14:14:13.941Z",
+                "_btc_source_trace": {
+                  "source_init_started": true,
+                  "source_init_error": null,
+                  "source_feed_seen": true,
+                  "source_feed_count": 11375,
+                  "source_last_feed_at": "2026-03-29T14:14:13.617Z",
+                  "latest_cache_price": 66702.49,
+                  "latest_cache_at": "2026-03-29T14:14:13.617Z",
+                  "latest_cache_source": "rest_binance",
+                  "price_resolution": {
+                    "kind": "cache",
+                    "used_strike_raw": null,
+                    "used_anchor_fallback_raw": 100
+                  },
+                  "atr_resolution": {
+                    "window_atr_5m_raw": null,
+                    "window_atr_raw": null,
+                    "state_atr_5m_raw": 2,
+                    "resolved_atr_5m": 2
+                  }
+                }
+              },
+              "state_snapshot": {
+                "ladder_posted": true
+              },
+              "fixture": null
+            }
+          },
+          "orders": {
+            "status": 200,
+            "body": {
+              "orders": [
+                {
+                  "order_id": "paper_55876da4",
+                  "kind": "TAKE_PROFIT",
+                  "side": "YES",
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 0.27,
+                  "ladder_key": "YES:0",
+                  "parent_order_id": "paper_7a00fc36",
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:15.083Z",
+                  "source": "runner_tick:tp",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_83e55099",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.18,
+                  "size": 5,
+                  "tp_price": 0.18,
+                  "ladder_key": "YES:3",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:14.082Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_314e6f59",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 0.27,
+                  "ladder_key": "NO:0",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:14.082Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_7d4604ad",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.24,
+                  "size": 5,
+                  "tp_price": 0.24,
+                  "ladder_key": "NO:1",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:14.082Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_a673b5f3",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.21,
+                  "size": 5,
+                  "tp_price": 0.21,
+                  "ladder_key": "NO:2",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:14.082Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_a4549222",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.18,
+                  "size": 5,
+                  "tp_price": 0.18,
+                  "ladder_key": "NO:3",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:14.082Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_7a00fc36",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 0.27,
+                  "ladder_key": "YES:0",
+                  "parent_order_id": null,
+                  "status": "FILLED",
+                  "fill_price": 0.27,
+                  "filled_at": "2026-03-29T14:14:15.083Z",
+                  "created_at": "2026-03-29T14:14:14.081Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_268c6721",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.24,
+                  "size": 5,
+                  "tp_price": 0.24,
+                  "ladder_key": "YES:1",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:14.081Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_976d7af1",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.21,
+                  "size": 5,
+                  "tp_price": 0.21,
+                  "ladder_key": "YES:2",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:14.081Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                }
+              ],
+              "window_orders": [
+                {
+                  "order_id": "paper_55876da4",
+                  "kind": "TAKE_PROFIT",
+                  "side": "YES",
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 0.27,
+                  "ladder_key": "YES:0",
+                  "parent_order_id": "paper_7a00fc36",
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:15.083Z",
+                  "source": "runner_tick:tp",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_83e55099",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.18,
+                  "size": 5,
+                  "tp_price": 0.18,
+                  "ladder_key": "YES:3",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:14.082Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_314e6f59",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 0.27,
+                  "ladder_key": "NO:0",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:14.082Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_7d4604ad",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.24,
+                  "size": 5,
+                  "tp_price": 0.24,
+                  "ladder_key": "NO:1",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:14.082Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_a673b5f3",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.21,
+                  "size": 5,
+                  "tp_price": 0.21,
+                  "ladder_key": "NO:2",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:14.082Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_a4549222",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.18,
+                  "size": 5,
+                  "tp_price": 0.18,
+                  "ladder_key": "NO:3",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:14.082Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_7a00fc36",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 0.27,
+                  "ladder_key": "YES:0",
+                  "parent_order_id": null,
+                  "status": "FILLED",
+                  "fill_price": 0.27,
+                  "filled_at": "2026-03-29T14:14:15.083Z",
+                  "created_at": "2026-03-29T14:14:14.081Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_268c6721",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.24,
+                  "size": 5,
+                  "tp_price": 0.24,
+                  "ladder_key": "YES:1",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:14.081Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_976d7af1",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.21,
+                  "size": 5,
+                  "tp_price": 0.21,
+                  "ladder_key": "YES:2",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:14.081Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                }
+              ],
+              "all_orders": [
+                {
+                  "order_id": "paper_7a00fc36",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 0.27,
+                  "ladder_key": "YES:0",
+                  "parent_order_id": null,
+                  "status": "FILLED",
+                  "fill_price": 0.27,
+                  "filled_at": "2026-03-29T14:14:15.083Z",
+                  "created_at": "2026-03-29T14:14:14.081Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_268c6721",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.24,
+                  "size": 5,
+                  "tp_price": 0.24,
+                  "ladder_key": "YES:1",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:14.081Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_976d7af1",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.21,
+                  "size": 5,
+                  "tp_price": 0.21,
+                  "ladder_key": "YES:2",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:14.081Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_83e55099",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.18,
+                  "size": 5,
+                  "tp_price": 0.18,
+                  "ladder_key": "YES:3",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:14.082Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_314e6f59",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 0.27,
+                  "ladder_key": "NO:0",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:14.082Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_7d4604ad",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.24,
+                  "size": 5,
+                  "tp_price": 0.24,
+                  "ladder_key": "NO:1",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:14.082Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_a673b5f3",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.21,
+                  "size": 5,
+                  "tp_price": 0.21,
+                  "ladder_key": "NO:2",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:14.082Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_a4549222",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.18,
+                  "size": 5,
+                  "tp_price": 0.18,
+                  "ladder_key": "NO:3",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:14.082Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_55876da4",
+                  "kind": "TAKE_PROFIT",
+                  "side": "YES",
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 0.27,
+                  "ladder_key": "YES:0",
+                  "parent_order_id": "paper_7a00fc36",
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:15.083Z",
+                  "source": "runner_tick:tp",
+                  "inferred_window_id": "debug-fill-yes-path-v1-w1"
+                }
+              ],
+              "summary": {
+                "total": 9,
+                "open_total": 8,
+                "cancelled_total": 0,
+                "filled_total": 1,
+                "open_yes": 4,
+                "open_no": 4,
+                "filled_yes": 1,
+                "filled_no": 0
+              },
+              "window_scope": {
+                "scope": "current_window",
+                "running": true,
+                "active_window_id": "debug-fill-yes-path-v1-w1",
+                "display_window_id": "debug-fill-yes-path-v1-w1",
+                "label": "当前窗口订单",
+                "ownership_rule": "运行中仅展示当前活动窗口订单"
+              },
+              "hidden_other_window_count": 0
+            }
+          },
+          "summary": {
+            "status": 200,
+            "body": {
+              "yes_entry_filled_count": 1,
+              "yes_exit_filled_count": 0,
+              "yes_position_size": 5,
+              "yes_avg_fill_price": 0.27,
+              "yes_realized_gross_pnl": 0,
+              "yes_unrealized_gross_pnl": 0.14999999999999986,
+              "no_entry_filled_count": 0,
+              "no_exit_filled_count": 0,
+              "no_position_size": 0,
+              "no_avg_fill_price": null,
+              "no_realized_gross_pnl": 0,
+              "no_unrealized_gross_pnl": 0,
+              "filled_total": 1,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0.14999999999999986,
+              "updated_at": "2026-03-29T14:14:15.437Z"
+            }
+          }
+        },
+        "stopped_status": {
+          "status": 200,
+          "body": {
+            "mode": "paper-staging",
+            "phase": "IDLE",
+            "running": false,
+            "debug_scenario": "fill_yes_path_v1",
+            "debug_frame_index": 4,
+            "debug_completed": false,
+            "tick_interval_ms": 1000,
+            "last_tick_at": "2026-03-29T14:14:15.084Z",
+            "last_window_id": "debug-fill-yes-path-v1-w1",
+            "current_window_id": null,
+            "window_initialized_at": null,
+            "remaining_sec": 280,
+            "anchor_btc": null,
+            "atr_5m": null,
+            "upper_bound": null,
+            "lower_bound": null,
+            "ladder_posted": true,
+            "yes_cancelled": false,
+            "no_cancelled": false,
+            "up_formula_cancelled": false,
+            "down_formula_cancelled": false,
+            "yes_order_ids": [
+              "paper_268c6721",
+              "paper_976d7af1",
+              "paper_83e55099",
+              "paper_55876da4"
+            ],
+            "no_order_ids": [
+              "paper_314e6f59",
+              "paper_7d4604ad",
+              "paper_a673b5f3",
+              "paper_a4549222"
+            ],
+            "last_reason": null,
+            "last_intents": [],
+            "updated_at": "2026-03-29T14:14:15.439Z",
+            "saved_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100,
+              "up_ladder": [
+                {
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 0.27
+                },
+                {
+                  "price": 0.24,
+                  "size": 5,
+                  "tp_price": 0.24
+                },
+                {
+                  "price": 0.21,
+                  "size": 5,
+                  "tp_price": 0.21
+                },
+                {
+                  "price": 0.18,
+                  "size": 5,
+                  "tp_price": 0.18
+                }
+              ],
+              "down_ladder": [
+                {
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 0.27
+                },
+                {
+                  "price": 0.24,
+                  "size": 5,
+                  "tp_price": 0.24
+                },
+                {
+                  "price": 0.21,
+                  "size": 5,
+                  "tp_price": 0.21
+                },
+                {
+                  "price": 0.18,
+                  "size": 5,
+                  "tp_price": 0.18
+                }
+              ],
+              "up_cancel": {
+                "before_end_sec": 100,
+                "formula": ""
+              },
+              "down_cancel": {
+                "before_end_sec": 100,
+                "formula": ""
+              }
+            },
+            "last_run_snapshot": {
+              "stop_reason": "MANUAL_STOP",
+              "completed_at": "2026-03-29T14:14:15.438Z",
+              "current_window_id": "debug-fill-yes-path-v1-w1",
+              "phase": "IDLE",
+              "filled_total": 1,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0.14999999999999986,
+              "active_config": {
+                "open_delay_sec": 10,
+                "ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "ladder_size": 5,
+                "atr_multiple": 1.2,
+                "cancel_all_remaining_sec": 100,
+                "up_ladder": [
+                  {
+                    "price": 0.27,
+                    "size": 5,
+                    "tp_price": 0.27
+                  },
+                  {
+                    "price": 0.24,
+                    "size": 5,
+                    "tp_price": 0.24
+                  },
+                  {
+                    "price": 0.21,
+                    "size": 5,
+                    "tp_price": 0.21
+                  },
+                  {
+                    "price": 0.18,
+                    "size": 5,
+                    "tp_price": 0.18
+                  }
+                ],
+                "down_ladder": [
+                  {
+                    "price": 0.27,
+                    "size": 5,
+                    "tp_price": 0.27
+                  },
+                  {
+                    "price": 0.24,
+                    "size": 5,
+                    "tp_price": 0.24
+                  },
+                  {
+                    "price": 0.21,
+                    "size": 5,
+                    "tp_price": 0.21
+                  },
+                  {
+                    "price": 0.18,
+                    "size": 5,
+                    "tp_price": 0.18
+                  }
+                ],
+                "up_cancel": {
+                  "before_end_sec": 100,
+                  "formula": ""
+                },
+                "down_cancel": {
+                  "before_end_sec": 100,
+                  "formula": ""
+                }
+              }
+            },
+            "active_runtime_snapshot": null
+          }
+        },
+        "latest_postmortem": {
+          "status": 200,
+          "body": {
+            "ok": true,
+            "postmortem": {
+              "id": 2392,
+              "strategy_id": "bot_console",
+              "event_id": "debug-fill-yes-path-v1-w1",
+              "window_start": "2026-03-29T14:14:15.438Z",
+              "window_end": "2026-03-29T14:14:15.438Z",
+              "created_at": "2026-03-29T14:14:15.438Z",
+              "window_id": "debug-fill-yes-path-v1-w1",
+              "stop_reason": "MANUAL_STOP",
+              "completed_at": "2026-03-29T14:14:15.438Z",
+              "filled_total": 1,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0.14999999999999986,
+              "active_config": {
+                "open_delay_sec": 10,
+                "ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "ladder_size": 5,
+                "atr_multiple": 1.2,
+                "cancel_all_remaining_sec": 100,
+                "up_ladder": [
+                  {
+                    "price": 0.27,
+                    "size": 5,
+                    "tp_price": 0.27
+                  },
+                  {
+                    "price": 0.24,
+                    "size": 5,
+                    "tp_price": 0.24
+                  },
+                  {
+                    "price": 0.21,
+                    "size": 5,
+                    "tp_price": 0.21
+                  },
+                  {
+                    "price": 0.18,
+                    "size": 5,
+                    "tp_price": 0.18
+                  }
+                ],
+                "down_ladder": [
+                  {
+                    "price": 0.27,
+                    "size": 5,
+                    "tp_price": 0.27
+                  },
+                  {
+                    "price": 0.24,
+                    "size": 5,
+                    "tp_price": 0.24
+                  },
+                  {
+                    "price": 0.21,
+                    "size": 5,
+                    "tp_price": 0.21
+                  },
+                  {
+                    "price": 0.18,
+                    "size": 5,
+                    "tp_price": 0.18
+                  }
+                ],
+                "up_cancel": {
+                  "before_end_sec": 100,
+                  "formula": ""
+                },
+                "down_cancel": {
+                  "before_end_sec": 100,
+                  "formula": ""
+                }
+              },
+              "action_summary": [
+                "PLACE_LADDER"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "sample_name": "debug_main_path_v1",
+      "scenario": "main_path_v1",
+      "raw": {
+        "final_runtime_snapshot": {
+          "status": {
+            "status": 200,
+            "body": {
+              "mode": "paper-staging",
+              "phase": "IDLE",
+              "running": false,
+              "debug_scenario": "main_path_v1",
+              "debug_frame_index": 6,
+              "debug_completed": true,
+              "tick_interval_ms": 1000,
+              "last_tick_at": "2026-03-29T14:14:22.920Z",
+              "last_window_id": "debug-main-path-v1-w1",
+              "current_window_id": null,
+              "window_initialized_at": null,
+              "remaining_sec": 100,
+              "anchor_btc": null,
+              "atr_5m": null,
+              "upper_bound": null,
+              "lower_bound": null,
+              "ladder_posted": false,
+              "yes_cancelled": true,
+              "no_cancelled": true,
+              "up_formula_cancelled": false,
+              "down_formula_cancelled": false,
+              "yes_order_ids": [],
+              "no_order_ids": [],
+              "last_reason": null,
+              "last_intents": [],
+              "updated_at": "2026-03-29T14:14:22.921Z",
+              "saved_config": {
+                "open_delay_sec": 10,
+                "ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "ladder_size": 5,
+                "atr_multiple": 1.2,
+                "cancel_all_remaining_sec": 100,
+                "up_ladder": [
+                  {
+                    "price": 0.27,
+                    "size": 5,
+                    "tp_price": 0.27
+                  },
+                  {
+                    "price": 0.24,
+                    "size": 5,
+                    "tp_price": 0.24
+                  },
+                  {
+                    "price": 0.21,
+                    "size": 5,
+                    "tp_price": 0.21
+                  },
+                  {
+                    "price": 0.18,
+                    "size": 5,
+                    "tp_price": 0.18
+                  }
+                ],
+                "down_ladder": [
+                  {
+                    "price": 0.27,
+                    "size": 5,
+                    "tp_price": 0.27
+                  },
+                  {
+                    "price": 0.24,
+                    "size": 5,
+                    "tp_price": 0.24
+                  },
+                  {
+                    "price": 0.21,
+                    "size": 5,
+                    "tp_price": 0.21
+                  },
+                  {
+                    "price": 0.18,
+                    "size": 5,
+                    "tp_price": 0.18
+                  }
+                ],
+                "up_cancel": {
+                  "before_end_sec": 100,
+                  "formula": ""
+                },
+                "down_cancel": {
+                  "before_end_sec": 100,
+                  "formula": ""
+                }
+              },
+              "last_run_snapshot": {
+                "stop_reason": "AUTO_COMPLETED",
+                "completed_at": "2026-03-29T14:14:22.920Z",
+                "current_window_id": "debug-main-path-v1-w1",
+                "phase": "IDLE",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0,
+                "unrealized_gross_pnl_total": 0,
+                "active_config": {
+                  "open_delay_sec": 10,
+                  "ladder_prices": [
+                    0.27,
+                    0.24,
+                    0.21,
+                    0.18
+                  ],
+                  "ladder_size": 5,
+                  "atr_multiple": 1.2,
+                  "cancel_all_remaining_sec": 100,
+                  "up_ladder": [
+                    {
+                      "price": 0.27,
+                      "size": 5,
+                      "tp_price": 0.27
+                    },
+                    {
+                      "price": 0.24,
+                      "size": 5,
+                      "tp_price": 0.24
+                    },
+                    {
+                      "price": 0.21,
+                      "size": 5,
+                      "tp_price": 0.21
+                    },
+                    {
+                      "price": 0.18,
+                      "size": 5,
+                      "tp_price": 0.18
+                    }
+                  ],
+                  "down_ladder": [
+                    {
+                      "price": 0.27,
+                      "size": 5,
+                      "tp_price": 0.27
+                    },
+                    {
+                      "price": 0.24,
+                      "size": 5,
+                      "tp_price": 0.24
+                    },
+                    {
+                      "price": 0.21,
+                      "size": 5,
+                      "tp_price": 0.21
+                    },
+                    {
+                      "price": 0.18,
+                      "size": 5,
+                      "tp_price": 0.18
+                    }
+                  ],
+                  "up_cancel": {
+                    "before_end_sec": 100,
+                    "formula": ""
+                  },
+                  "down_cancel": {
+                    "before_end_sec": 100,
+                    "formula": ""
+                  }
+                }
+              },
+              "active_runtime_snapshot": null
+            }
+          },
+          "context": {
+            "status": 200,
+            "body": {
+              "window_id": "btc-updown-5m-1774793700",
+              "last_window_id": "debug-main-path-v1-w1",
+              "slug": "btc-updown-5m-1774793700",
+              "period": "5m",
+              "remaining_sec": 292,
+              "btc_price": 66672.93,
+              "anchor_btc": null,
+              "atr_5m": null,
+              "upper_bound": null,
+              "lower_bound": null,
+              "bid_yes": 0.5,
+              "ask_yes": 0.51,
+              "bid_no": 0.49,
+              "ask_no": 0.5,
+              "tick_size": 0.01,
+              "stale": false,
+              "updated_at": "2026-03-29T14:15:06.245Z",
+              "_btc_source_trace": {
+                "source_init_started": true,
+                "source_init_error": null,
+                "source_feed_seen": true,
+                "source_feed_count": 11401,
+                "source_last_feed_at": "2026-03-29T14:15:05.856Z",
+                "latest_cache_price": 66672.93,
+                "latest_cache_at": "2026-03-29T14:15:05.856Z",
+                "latest_cache_source": "rest_binance",
+                "price_resolution": {
+                  "kind": "cache",
+                  "used_strike_raw": null,
+                  "used_anchor_fallback_raw": null
+                },
+                "atr_resolution": {
+                  "window_atr_5m_raw": null,
+                  "window_atr_raw": null,
+                  "state_atr_5m_raw": null,
+                  "resolved_atr_5m": null
+                }
+              }
+            }
+          },
+          "decision": {
+            "status": 200,
+            "body": {
+              "intents": [
+                {
+                  "kind": "NOOP"
+                }
+              ],
+              "intents_summary": "NOOP",
+              "reason": "pre_open_or_open_not_open_delay",
+              "patches": {},
+              "diagnostics": {
+                "remaining_sec": 292,
+                "open_elapsed_sec": 8,
+                "ladder_posted": false,
+                "btc_price": 66672.93,
+                "upper_bound": null,
+                "lower_bound": null,
+                "bounds_ready": false,
+                "config_open_delay_sec": 10,
+                "config_cancel_all_remaining_sec": 100,
+                "config_ladder_size": 5,
+                "config_ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "config_up_ladder": [
+                  {
+                    "price": 0.27,
+                    "size": 5,
+                    "tp_price": 0.27
+                  },
+                  {
+                    "price": 0.24,
+                    "size": 5,
+                    "tp_price": 0.24
+                  },
+                  {
+                    "price": 0.21,
+                    "size": 5,
+                    "tp_price": 0.21
+                  },
+                  {
+                    "price": 0.18,
+                    "size": 5,
+                    "tp_price": 0.18
+                  }
+                ],
+                "config_down_ladder": [
+                  {
+                    "price": 0.27,
+                    "size": 5,
+                    "tp_price": 0.27
+                  },
+                  {
+                    "price": 0.24,
+                    "size": 5,
+                    "tp_price": 0.24
+                  },
+                  {
+                    "price": 0.21,
+                    "size": 5,
+                    "tp_price": 0.21
+                  },
+                  {
+                    "price": 0.18,
+                    "size": 5,
+                    "tp_price": 0.18
+                  }
+                ],
+                "config_up_cancel": {
+                  "before_end_sec": 100,
+                  "formula": ""
+                },
+                "config_down_cancel": {
+                  "before_end_sec": 100,
+                  "formula": ""
+                },
+                "formula_vars": {
+                  "secs_left": 292,
+                  "spread": 0.010000000000000009,
+                  "volatility_ratio": -1,
+                  "has_open_up_orders": false,
+                  "has_open_down_orders": false,
+                  "btc_price": 66672.93,
+                  "upper_bound": -1,
+                  "lower_bound": -1
+                },
+                "trigger_up_before_end": false,
+                "trigger_down_before_end": false,
+                "trigger_up_formula": false,
+                "trigger_down_formula": false,
+                "can_trigger_up_formula": true,
+                "can_trigger_down_formula": true
+              },
+              "config": {
+                "open_delay_sec": 10,
+                "ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "ladder_size": 5,
+                "atr_multiple": 1.2,
+                "cancel_all_remaining_sec": 100,
+                "up_ladder": [
+                  {
+                    "price": 0.27,
+                    "size": 5,
+                    "tp_price": 0.27
+                  },
+                  {
+                    "price": 0.24,
+                    "size": 5,
+                    "tp_price": 0.24
+                  },
+                  {
+                    "price": 0.21,
+                    "size": 5,
+                    "tp_price": 0.21
+                  },
+                  {
+                    "price": 0.18,
+                    "size": 5,
+                    "tp_price": 0.18
+                  }
+                ],
+                "down_ladder": [
+                  {
+                    "price": 0.27,
+                    "size": 5,
+                    "tp_price": 0.27
+                  },
+                  {
+                    "price": 0.24,
+                    "size": 5,
+                    "tp_price": 0.24
+                  },
+                  {
+                    "price": 0.21,
+                    "size": 5,
+                    "tp_price": 0.21
+                  },
+                  {
+                    "price": 0.18,
+                    "size": 5,
+                    "tp_price": 0.18
+                  }
+                ],
+                "up_cancel": {
+                  "before_end_sec": 100,
+                  "formula": ""
+                },
+                "down_cancel": {
+                  "before_end_sec": 100,
+                  "formula": ""
+                }
+              },
+              "context_snapshot": {
+                "window_id": "btc-updown-5m-1774793700",
+                "last_window_id": "debug-main-path-v1-w1",
+                "slug": "btc-updown-5m-1774793700",
+                "period": "5m",
+                "remaining_sec": 292,
+                "btc_price": 66672.93,
+                "anchor_btc": null,
+                "atr_5m": null,
+                "upper_bound": null,
+                "lower_bound": null,
+                "bid_yes": 0.5,
+                "ask_yes": 0.51,
+                "bid_no": 0.49,
+                "ask_no": 0.5,
+                "tick_size": 0.01,
+                "stale": false,
+                "updated_at": "2026-03-29T14:15:06.245Z",
+                "_btc_source_trace": {
+                  "source_init_started": true,
+                  "source_init_error": null,
+                  "source_feed_seen": true,
+                  "source_feed_count": 11401,
+                  "source_last_feed_at": "2026-03-29T14:15:05.856Z",
+                  "latest_cache_price": 66672.93,
+                  "latest_cache_at": "2026-03-29T14:15:05.856Z",
+                  "latest_cache_source": "rest_binance",
+                  "price_resolution": {
+                    "kind": "cache",
+                    "used_strike_raw": null,
+                    "used_anchor_fallback_raw": null
+                  },
+                  "atr_resolution": {
+                    "window_atr_5m_raw": null,
+                    "window_atr_raw": null,
+                    "state_atr_5m_raw": null,
+                    "resolved_atr_5m": null
+                  }
+                }
+              },
+              "state_snapshot": {
+                "ladder_posted": false
+              },
+              "fixture": null
+            }
+          },
+          "orders": {
+            "status": 200,
+            "body": {
+              "orders": [
+                {
+                  "order_id": "paper_ef859a8d",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 0.27,
+                  "ladder_key": "YES:0",
+                  "parent_order_id": null,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:19.962Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_ddd69d9c",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.24,
+                  "size": 5,
+                  "tp_price": 0.24,
+                  "ladder_key": "YES:1",
+                  "parent_order_id": null,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:19.962Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_ca202513",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.21,
+                  "size": 5,
+                  "tp_price": 0.21,
+                  "ladder_key": "YES:2",
+                  "parent_order_id": null,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:19.962Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_68e01c09",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.18,
+                  "size": 5,
+                  "tp_price": 0.18,
+                  "ladder_key": "YES:3",
+                  "parent_order_id": null,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:19.962Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_a977df7b",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 0.27,
+                  "ladder_key": "NO:0",
+                  "parent_order_id": null,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:19.962Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_edaefe60",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.24,
+                  "size": 5,
+                  "tp_price": 0.24,
+                  "ladder_key": "NO:1",
+                  "parent_order_id": null,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:19.962Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_1b1943d8",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.21,
+                  "size": 5,
+                  "tp_price": 0.21,
+                  "ladder_key": "NO:2",
+                  "parent_order_id": null,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:19.962Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_5ba8ba2f",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.18,
+                  "size": 5,
+                  "tp_price": 0.18,
+                  "ladder_key": "NO:3",
+                  "parent_order_id": null,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:19.962Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                }
+              ],
+              "window_orders": [
+                {
+                  "order_id": "paper_ef859a8d",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 0.27,
+                  "ladder_key": "YES:0",
+                  "parent_order_id": null,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:19.962Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_ddd69d9c",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.24,
+                  "size": 5,
+                  "tp_price": 0.24,
+                  "ladder_key": "YES:1",
+                  "parent_order_id": null,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:19.962Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_ca202513",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.21,
+                  "size": 5,
+                  "tp_price": 0.21,
+                  "ladder_key": "YES:2",
+                  "parent_order_id": null,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:19.962Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_68e01c09",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.18,
+                  "size": 5,
+                  "tp_price": 0.18,
+                  "ladder_key": "YES:3",
+                  "parent_order_id": null,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:19.962Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_a977df7b",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 0.27,
+                  "ladder_key": "NO:0",
+                  "parent_order_id": null,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:19.962Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_edaefe60",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.24,
+                  "size": 5,
+                  "tp_price": 0.24,
+                  "ladder_key": "NO:1",
+                  "parent_order_id": null,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:19.962Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_1b1943d8",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.21,
+                  "size": 5,
+                  "tp_price": 0.21,
+                  "ladder_key": "NO:2",
+                  "parent_order_id": null,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:19.962Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_5ba8ba2f",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.18,
+                  "size": 5,
+                  "tp_price": 0.18,
+                  "ladder_key": "NO:3",
+                  "parent_order_id": null,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:19.962Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                }
+              ],
+              "all_orders": [
+                {
+                  "order_id": "paper_ef859a8d",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 0.27,
+                  "ladder_key": "YES:0",
+                  "parent_order_id": null,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:19.962Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_ddd69d9c",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.24,
+                  "size": 5,
+                  "tp_price": 0.24,
+                  "ladder_key": "YES:1",
+                  "parent_order_id": null,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:19.962Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_ca202513",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.21,
+                  "size": 5,
+                  "tp_price": 0.21,
+                  "ladder_key": "YES:2",
+                  "parent_order_id": null,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:19.962Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_68e01c09",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.18,
+                  "size": 5,
+                  "tp_price": 0.18,
+                  "ladder_key": "YES:3",
+                  "parent_order_id": null,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:19.962Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_a977df7b",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 0.27,
+                  "ladder_key": "NO:0",
+                  "parent_order_id": null,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:19.962Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_edaefe60",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.24,
+                  "size": 5,
+                  "tp_price": 0.24,
+                  "ladder_key": "NO:1",
+                  "parent_order_id": null,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:19.962Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_1b1943d8",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.21,
+                  "size": 5,
+                  "tp_price": 0.21,
+                  "ladder_key": "NO:2",
+                  "parent_order_id": null,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:19.962Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_5ba8ba2f",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.18,
+                  "size": 5,
+                  "tp_price": 0.18,
+                  "ladder_key": "NO:3",
+                  "parent_order_id": null,
+                  "status": "CANCELLED",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:14:19.962Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-main-path-v1-w1"
+                }
+              ],
+              "summary": {
+                "total": 8,
+                "open_total": 0,
+                "cancelled_total": 8,
+                "filled_total": 0,
+                "open_yes": 0,
+                "open_no": 0,
+                "filled_yes": 0,
+                "filled_no": 0
+              },
+              "window_scope": {
+                "scope": "last_window",
+                "running": false,
+                "active_window_id": null,
+                "display_window_id": "debug-main-path-v1-w1",
+                "label": "上一窗口订单（停止态）",
+                "ownership_rule": "停止态展示上一窗口订单，不冒充当前活动窗口"
+              },
+              "hidden_other_window_count": 0
+            }
+          },
+          "summary": {
+            "status": 200,
+            "body": {
+              "yes_entry_filled_count": 0,
+              "yes_exit_filled_count": 0,
+              "yes_position_size": 0,
+              "yes_avg_fill_price": null,
+              "yes_realized_gross_pnl": 0,
+              "yes_unrealized_gross_pnl": 0,
+              "no_entry_filled_count": 0,
+              "no_exit_filled_count": 0,
+              "no_position_size": 0,
+              "no_avg_fill_price": null,
+              "no_realized_gross_pnl": 0,
+              "no_unrealized_gross_pnl": 0,
+              "filled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0,
+              "updated_at": "2026-03-29T14:15:07.043Z"
+            }
+          }
+        },
+        "stopped_status": {
+          "status": 200,
+          "body": {
+            "mode": "paper-staging",
+            "phase": "IDLE",
+            "running": false,
+            "debug_scenario": "main_path_v1",
+            "debug_frame_index": 6,
+            "debug_completed": true,
+            "tick_interval_ms": 1000,
+            "last_tick_at": "2026-03-29T14:14:22.920Z",
+            "last_window_id": "debug-main-path-v1-w1",
+            "current_window_id": null,
+            "window_initialized_at": null,
+            "remaining_sec": 100,
+            "anchor_btc": null,
+            "atr_5m": null,
+            "upper_bound": null,
+            "lower_bound": null,
+            "ladder_posted": false,
+            "yes_cancelled": true,
+            "no_cancelled": true,
+            "up_formula_cancelled": false,
+            "down_formula_cancelled": false,
+            "yes_order_ids": [],
+            "no_order_ids": [],
+            "last_reason": null,
+            "last_intents": [],
+            "updated_at": "2026-03-29T14:14:22.921Z",
+            "saved_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100,
+              "up_ladder": [
+                {
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 0.27
+                },
+                {
+                  "price": 0.24,
+                  "size": 5,
+                  "tp_price": 0.24
+                },
+                {
+                  "price": 0.21,
+                  "size": 5,
+                  "tp_price": 0.21
+                },
+                {
+                  "price": 0.18,
+                  "size": 5,
+                  "tp_price": 0.18
+                }
+              ],
+              "down_ladder": [
+                {
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 0.27
+                },
+                {
+                  "price": 0.24,
+                  "size": 5,
+                  "tp_price": 0.24
+                },
+                {
+                  "price": 0.21,
+                  "size": 5,
+                  "tp_price": 0.21
+                },
+                {
+                  "price": 0.18,
+                  "size": 5,
+                  "tp_price": 0.18
+                }
+              ],
+              "up_cancel": {
+                "before_end_sec": 100,
+                "formula": ""
+              },
+              "down_cancel": {
+                "before_end_sec": 100,
+                "formula": ""
+              }
+            },
+            "last_run_snapshot": {
+              "stop_reason": "AUTO_COMPLETED",
+              "completed_at": "2026-03-29T14:14:22.920Z",
+              "current_window_id": "debug-main-path-v1-w1",
+              "phase": "IDLE",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0,
+              "active_config": {
+                "open_delay_sec": 10,
+                "ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "ladder_size": 5,
+                "atr_multiple": 1.2,
+                "cancel_all_remaining_sec": 100,
+                "up_ladder": [
+                  {
+                    "price": 0.27,
+                    "size": 5,
+                    "tp_price": 0.27
+                  },
+                  {
+                    "price": 0.24,
+                    "size": 5,
+                    "tp_price": 0.24
+                  },
+                  {
+                    "price": 0.21,
+                    "size": 5,
+                    "tp_price": 0.21
+                  },
+                  {
+                    "price": 0.18,
+                    "size": 5,
+                    "tp_price": 0.18
+                  }
+                ],
+                "down_ladder": [
+                  {
+                    "price": 0.27,
+                    "size": 5,
+                    "tp_price": 0.27
+                  },
+                  {
+                    "price": 0.24,
+                    "size": 5,
+                    "tp_price": 0.24
+                  },
+                  {
+                    "price": 0.21,
+                    "size": 5,
+                    "tp_price": 0.21
+                  },
+                  {
+                    "price": 0.18,
+                    "size": 5,
+                    "tp_price": 0.18
+                  }
+                ],
+                "up_cancel": {
+                  "before_end_sec": 100,
+                  "formula": ""
+                },
+                "down_cancel": {
+                  "before_end_sec": 100,
+                  "formula": ""
+                }
+              }
+            },
+            "active_runtime_snapshot": null
+          }
+        },
+        "latest_postmortem": {
+          "status": 200,
+          "body": {
+            "ok": true,
+            "postmortem": {
+              "id": 2393,
+              "strategy_id": "bot_console",
+              "event_id": "debug-main-path-v1-w1",
+              "window_start": "2026-03-29T14:14:22.920Z",
+              "window_end": "2026-03-29T14:14:22.920Z",
+              "created_at": "2026-03-29T14:14:22.920Z",
+              "window_id": "debug-main-path-v1-w1",
+              "stop_reason": "AUTO_COMPLETED",
+              "completed_at": "2026-03-29T14:14:22.920Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0,
+              "active_config": {
+                "open_delay_sec": 10,
+                "ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "ladder_size": 5,
+                "atr_multiple": 1.2,
+                "cancel_all_remaining_sec": 100,
+                "up_ladder": [
+                  {
+                    "price": 0.27,
+                    "size": 5,
+                    "tp_price": 0.27
+                  },
+                  {
+                    "price": 0.24,
+                    "size": 5,
+                    "tp_price": 0.24
+                  },
+                  {
+                    "price": 0.21,
+                    "size": 5,
+                    "tp_price": 0.21
+                  },
+                  {
+                    "price": 0.18,
+                    "size": 5,
+                    "tp_price": 0.18
+                  }
+                ],
+                "down_ladder": [
+                  {
+                    "price": 0.27,
+                    "size": 5,
+                    "tp_price": 0.27
+                  },
+                  {
+                    "price": 0.24,
+                    "size": 5,
+                    "tp_price": 0.24
+                  },
+                  {
+                    "price": 0.21,
+                    "size": 5,
+                    "tp_price": 0.21
+                  },
+                  {
+                    "price": 0.18,
+                    "size": 5,
+                    "tp_price": 0.18
+                  }
+                ],
+                "up_cancel": {
+                  "before_end_sec": 100,
+                  "formula": ""
+                },
+                "down_cancel": {
+                  "before_end_sec": 100,
+                  "formula": ""
+                }
+              },
+              "action_summary": [
+                "PLACE_LADDER",
+                "CANCEL_OPEN"
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "sample_name": "debug_exit_yes_path_v1",
+      "scenario": "exit_yes_path_v1",
+      "raw": {
+        "final_runtime_snapshot": {
+          "status": {
+            "status": 200,
+            "body": {
+              "mode": "paper-staging",
+              "phase": "IDLE",
+              "running": true,
+              "debug_scenario": "exit_yes_path_v1",
+              "debug_frame_index": 4,
+              "debug_completed": false,
+              "tick_interval_ms": 1000,
+              "last_tick_at": "2026-03-29T14:15:12.566Z",
+              "last_window_id": null,
+              "current_window_id": "debug-exit-yes-path-v1-w1",
+              "window_initialized_at": "2026-03-29T14:15:09.533Z",
+              "remaining_sec": 280,
+              "anchor_btc": 100,
+              "atr_5m": 2,
+              "upper_bound": 102.4,
+              "lower_bound": 97.6,
+              "ladder_posted": true,
+              "yes_cancelled": false,
+              "no_cancelled": false,
+              "up_formula_cancelled": false,
+              "down_formula_cancelled": false,
+              "yes_order_ids": [
+                "paper_5e4ffb89",
+                "paper_27d7118d",
+                "paper_a5784bc9",
+                "paper_caec166d"
+              ],
+              "no_order_ids": [
+                "paper_a063bf29",
+                "paper_a5fa2fe8",
+                "paper_6adaa01b",
+                "paper_41101f81"
+              ],
+              "last_reason": "within_bounds_or_no_trigger",
+              "last_intents": [
+                {
+                  "kind": "NOOP"
+                }
+              ],
+              "updated_at": "2026-03-29T14:15:12.566Z",
+              "saved_config": {
+                "open_delay_sec": 10,
+                "ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "ladder_size": 5,
+                "atr_multiple": 1.2,
+                "cancel_all_remaining_sec": 100,
+                "up_ladder": [
+                  {
+                    "price": 0.27,
+                    "size": 5,
+                    "tp_price": 0.27
+                  },
+                  {
+                    "price": 0.24,
+                    "size": 5,
+                    "tp_price": 0.24
+                  },
+                  {
+                    "price": 0.21,
+                    "size": 5,
+                    "tp_price": 0.21
+                  },
+                  {
+                    "price": 0.18,
+                    "size": 5,
+                    "tp_price": 0.18
+                  }
+                ],
+                "down_ladder": [
+                  {
+                    "price": 0.27,
+                    "size": 5,
+                    "tp_price": 0.27
+                  },
+                  {
+                    "price": 0.24,
+                    "size": 5,
+                    "tp_price": 0.24
+                  },
+                  {
+                    "price": 0.21,
+                    "size": 5,
+                    "tp_price": 0.21
+                  },
+                  {
+                    "price": 0.18,
+                    "size": 5,
+                    "tp_price": 0.18
+                  }
+                ],
+                "up_cancel": {
+                  "before_end_sec": 100,
+                  "formula": ""
+                },
+                "down_cancel": {
+                  "before_end_sec": 100,
+                  "formula": ""
+                }
+              },
+              "last_run_snapshot": {
+                "stop_reason": "AUTO_COMPLETED",
+                "completed_at": "2026-03-29T14:14:22.920Z",
+                "current_window_id": "debug-main-path-v1-w1",
+                "phase": "IDLE",
+                "filled_total": 0,
+                "cancelled_total": 0,
+                "realized_gross_pnl_total": 0,
+                "unrealized_gross_pnl_total": 0,
+                "active_config": {
+                  "open_delay_sec": 10,
+                  "ladder_prices": [
+                    0.27,
+                    0.24,
+                    0.21,
+                    0.18
+                  ],
+                  "ladder_size": 5,
+                  "atr_multiple": 1.2,
+                  "cancel_all_remaining_sec": 100,
+                  "up_ladder": [
+                    {
+                      "price": 0.27,
+                      "size": 5,
+                      "tp_price": 0.27
+                    },
+                    {
+                      "price": 0.24,
+                      "size": 5,
+                      "tp_price": 0.24
+                    },
+                    {
+                      "price": 0.21,
+                      "size": 5,
+                      "tp_price": 0.21
+                    },
+                    {
+                      "price": 0.18,
+                      "size": 5,
+                      "tp_price": 0.18
+                    }
+                  ],
+                  "down_ladder": [
+                    {
+                      "price": 0.27,
+                      "size": 5,
+                      "tp_price": 0.27
+                    },
+                    {
+                      "price": 0.24,
+                      "size": 5,
+                      "tp_price": 0.24
+                    },
+                    {
+                      "price": 0.21,
+                      "size": 5,
+                      "tp_price": 0.21
+                    },
+                    {
+                      "price": 0.18,
+                      "size": 5,
+                      "tp_price": 0.18
+                    }
+                  ],
+                  "up_cancel": {
+                    "before_end_sec": 100,
+                    "formula": ""
+                  },
+                  "down_cancel": {
+                    "before_end_sec": 100,
+                    "formula": ""
+                  }
+                }
+              },
+              "active_runtime_snapshot": {
+                "config": {
+                  "open_delay_sec": 10,
+                  "ladder_prices": [
+                    0.27,
+                    0.24,
+                    0.21,
+                    0.18
+                  ],
+                  "ladder_size": 5,
+                  "atr_multiple": 1.2,
+                  "cancel_all_remaining_sec": 100,
+                  "up_ladder": [
+                    {
+                      "price": 0.27,
+                      "size": 5,
+                      "tp_price": 0.27
+                    },
+                    {
+                      "price": 0.24,
+                      "size": 5,
+                      "tp_price": 0.24
+                    },
+                    {
+                      "price": 0.21,
+                      "size": 5,
+                      "tp_price": 0.21
+                    },
+                    {
+                      "price": 0.18,
+                      "size": 5,
+                      "tp_price": 0.18
+                    }
+                  ],
+                  "down_ladder": [
+                    {
+                      "price": 0.27,
+                      "size": 5,
+                      "tp_price": 0.27
+                    },
+                    {
+                      "price": 0.24,
+                      "size": 5,
+                      "tp_price": 0.24
+                    },
+                    {
+                      "price": 0.21,
+                      "size": 5,
+                      "tp_price": 0.21
+                    },
+                    {
+                      "price": 0.18,
+                      "size": 5,
+                      "tp_price": 0.18
+                    }
+                  ],
+                  "up_cancel": {
+                    "before_end_sec": 100,
+                    "formula": ""
+                  },
+                  "down_cancel": {
+                    "before_end_sec": 100,
+                    "formula": ""
+                  }
+                },
+                "phase": "IDLE",
+                "current_window_id": "debug-exit-yes-path-v1-w1",
+                "anchor_btc": 100,
+                "upper_bound": 102.4,
+                "lower_bound": 97.6
+              }
+            }
+          },
+          "context": {
+            "status": 200,
+            "body": {
+              "window_id": "btc-updown-5m-1774793700",
+              "last_window_id": null,
+              "slug": "btc-updown-5m-1774793700",
+              "period": "5m",
+              "remaining_sec": 287,
+              "btc_price": 66674.47,
+              "anchor_btc": 100,
+              "atr_5m": 2,
+              "upper_bound": 102.4,
+              "lower_bound": 97.6,
+              "bid_yes": 0.52,
+              "ask_yes": 0.55,
+              "bid_no": 0.45,
+              "ask_no": 0.48,
+              "tick_size": 0.01,
+              "stale": false,
+              "updated_at": "2026-03-29T14:15:12.292Z",
+              "_btc_source_trace": {
+                "source_init_started": true,
+                "source_init_error": null,
+                "source_feed_seen": true,
+                "source_feed_count": 11404,
+                "source_last_feed_at": "2026-03-29T14:15:11.880Z",
+                "latest_cache_price": 66674.47,
+                "latest_cache_at": "2026-03-29T14:15:11.880Z",
+                "latest_cache_source": "rest_binance",
+                "price_resolution": {
+                  "kind": "cache",
+                  "used_strike_raw": null,
+                  "used_anchor_fallback_raw": 100
+                },
+                "atr_resolution": {
+                  "window_atr_5m_raw": null,
+                  "window_atr_raw": null,
+                  "state_atr_5m_raw": 2,
+                  "resolved_atr_5m": 2
+                }
+              }
+            }
+          },
+          "decision": {
+            "status": 200,
+            "body": {
+              "intents": [
+                {
+                  "kind": "NOOP"
+                }
+              ],
+              "intents_summary": "NOOP",
+              "reason": "within_bounds_or_no_trigger",
+              "patches": {},
+              "diagnostics": {
+                "remaining_sec": 280,
+                "open_elapsed_sec": 20,
+                "ladder_posted": true,
+                "btc_price": 101,
+                "upper_bound": 102.4,
+                "lower_bound": 97.6,
+                "bounds_ready": true,
+                "config_open_delay_sec": 10,
+                "config_cancel_all_remaining_sec": 100,
+                "config_ladder_size": 5,
+                "config_ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "config_up_ladder": [
+                  {
+                    "price": 0.27,
+                    "size": 5,
+                    "tp_price": 0.27
+                  },
+                  {
+                    "price": 0.24,
+                    "size": 5,
+                    "tp_price": 0.24
+                  },
+                  {
+                    "price": 0.21,
+                    "size": 5,
+                    "tp_price": 0.21
+                  },
+                  {
+                    "price": 0.18,
+                    "size": 5,
+                    "tp_price": 0.18
+                  }
+                ],
+                "config_down_ladder": [
+                  {
+                    "price": 0.27,
+                    "size": 5,
+                    "tp_price": 0.27
+                  },
+                  {
+                    "price": 0.24,
+                    "size": 5,
+                    "tp_price": 0.24
+                  },
+                  {
+                    "price": 0.21,
+                    "size": 5,
+                    "tp_price": 0.21
+                  },
+                  {
+                    "price": 0.18,
+                    "size": 5,
+                    "tp_price": 0.18
+                  }
+                ],
+                "config_up_cancel": {
+                  "before_end_sec": 100,
+                  "formula": ""
+                },
+                "config_down_cancel": {
+                  "before_end_sec": 100,
+                  "formula": ""
+                },
+                "formula_vars": {
+                  "secs_left": 280,
+                  "spread": 0,
+                  "volatility_ratio": 0.019801980198019802,
+                  "has_open_up_orders": true,
+                  "has_open_down_orders": true,
+                  "btc_price": 101,
+                  "upper_bound": 102.4,
+                  "lower_bound": 97.6
+                },
+                "trigger_up_before_end": false,
+                "trigger_down_before_end": false,
+                "trigger_up_formula": false,
+                "trigger_down_formula": false,
+                "can_trigger_up_formula": true,
+                "can_trigger_down_formula": true
+              },
+              "config": {
+                "open_delay_sec": 10,
+                "ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "ladder_size": 5,
+                "atr_multiple": 1.2,
+                "cancel_all_remaining_sec": 100,
+                "up_ladder": [
+                  {
+                    "price": 0.27,
+                    "size": 5,
+                    "tp_price": 0.27
+                  },
+                  {
+                    "price": 0.24,
+                    "size": 5,
+                    "tp_price": 0.24
+                  },
+                  {
+                    "price": 0.21,
+                    "size": 5,
+                    "tp_price": 0.21
+                  },
+                  {
+                    "price": 0.18,
+                    "size": 5,
+                    "tp_price": 0.18
+                  }
+                ],
+                "down_ladder": [
+                  {
+                    "price": 0.27,
+                    "size": 5,
+                    "tp_price": 0.27
+                  },
+                  {
+                    "price": 0.24,
+                    "size": 5,
+                    "tp_price": 0.24
+                  },
+                  {
+                    "price": 0.21,
+                    "size": 5,
+                    "tp_price": 0.21
+                  },
+                  {
+                    "price": 0.18,
+                    "size": 5,
+                    "tp_price": 0.18
+                  }
+                ],
+                "up_cancel": {
+                  "before_end_sec": 100,
+                  "formula": ""
+                },
+                "down_cancel": {
+                  "before_end_sec": 100,
+                  "formula": ""
+                }
+              },
+              "context_snapshot": {
+                "window_id": "debug-exit-yes-path-v1-w1",
+                "last_window_id": null,
+                "slug": "debug-exit-yes-path-v1-w1",
+                "period": "5m",
+                "remaining_sec": 280,
+                "btc_price": 101,
+                "anchor_btc": 100,
+                "atr_5m": 2,
+                "upper_bound": 102.4,
+                "lower_bound": 97.6,
+                "bid_yes": 0.3,
+                "ask_yes": 0.27,
+                "bid_no": 0.7,
+                "ask_no": null,
+                "tick_size": 0.01,
+                "stale": false,
+                "updated_at": "2026-03-29T14:15:12.292Z",
+                "_btc_source_trace": {
+                  "source_init_started": true,
+                  "source_init_error": null,
+                  "source_feed_seen": true,
+                  "source_feed_count": 11404,
+                  "source_last_feed_at": "2026-03-29T14:15:11.880Z",
+                  "latest_cache_price": 66674.47,
+                  "latest_cache_at": "2026-03-29T14:15:11.880Z",
+                  "latest_cache_source": "rest_binance",
+                  "price_resolution": {
+                    "kind": "cache",
+                    "used_strike_raw": null,
+                    "used_anchor_fallback_raw": 100
+                  },
+                  "atr_resolution": {
+                    "window_atr_5m_raw": null,
+                    "window_atr_raw": null,
+                    "state_atr_5m_raw": 2,
+                    "resolved_atr_5m": 2
+                  }
+                }
+              },
+              "state_snapshot": {
+                "ladder_posted": true
+              },
+              "fixture": null
+            }
+          },
+          "orders": {
+            "status": 200,
+            "body": {
+              "orders": [
+                {
+                  "order_id": "paper_caec166d",
+                  "kind": "TAKE_PROFIT",
+                  "side": "YES",
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 0.27,
+                  "ladder_key": "YES:0",
+                  "parent_order_id": "paper_d32e8eba",
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:15:12.565Z",
+                  "source": "runner_tick:tp",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_d32e8eba",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 0.27,
+                  "ladder_key": "YES:0",
+                  "parent_order_id": null,
+                  "status": "FILLED",
+                  "fill_price": 0.27,
+                  "filled_at": "2026-03-29T14:15:12.565Z",
+                  "created_at": "2026-03-29T14:15:11.625Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_5e4ffb89",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.24,
+                  "size": 5,
+                  "tp_price": 0.24,
+                  "ladder_key": "YES:1",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:15:11.625Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_27d7118d",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.21,
+                  "size": 5,
+                  "tp_price": 0.21,
+                  "ladder_key": "YES:2",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:15:11.625Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_a5784bc9",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.18,
+                  "size": 5,
+                  "tp_price": 0.18,
+                  "ladder_key": "YES:3",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:15:11.625Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_a063bf29",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 0.27,
+                  "ladder_key": "NO:0",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:15:11.625Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_a5fa2fe8",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.24,
+                  "size": 5,
+                  "tp_price": 0.24,
+                  "ladder_key": "NO:1",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:15:11.625Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_6adaa01b",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.21,
+                  "size": 5,
+                  "tp_price": 0.21,
+                  "ladder_key": "NO:2",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:15:11.625Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_41101f81",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.18,
+                  "size": 5,
+                  "tp_price": 0.18,
+                  "ladder_key": "NO:3",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:15:11.625Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                }
+              ],
+              "window_orders": [
+                {
+                  "order_id": "paper_caec166d",
+                  "kind": "TAKE_PROFIT",
+                  "side": "YES",
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 0.27,
+                  "ladder_key": "YES:0",
+                  "parent_order_id": "paper_d32e8eba",
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:15:12.565Z",
+                  "source": "runner_tick:tp",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_d32e8eba",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 0.27,
+                  "ladder_key": "YES:0",
+                  "parent_order_id": null,
+                  "status": "FILLED",
+                  "fill_price": 0.27,
+                  "filled_at": "2026-03-29T14:15:12.565Z",
+                  "created_at": "2026-03-29T14:15:11.625Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_5e4ffb89",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.24,
+                  "size": 5,
+                  "tp_price": 0.24,
+                  "ladder_key": "YES:1",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:15:11.625Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_27d7118d",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.21,
+                  "size": 5,
+                  "tp_price": 0.21,
+                  "ladder_key": "YES:2",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:15:11.625Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_a5784bc9",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.18,
+                  "size": 5,
+                  "tp_price": 0.18,
+                  "ladder_key": "YES:3",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:15:11.625Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_a063bf29",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 0.27,
+                  "ladder_key": "NO:0",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:15:11.625Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_a5fa2fe8",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.24,
+                  "size": 5,
+                  "tp_price": 0.24,
+                  "ladder_key": "NO:1",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:15:11.625Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_6adaa01b",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.21,
+                  "size": 5,
+                  "tp_price": 0.21,
+                  "ladder_key": "NO:2",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:15:11.625Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_41101f81",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.18,
+                  "size": 5,
+                  "tp_price": 0.18,
+                  "ladder_key": "NO:3",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:15:11.625Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                }
+              ],
+              "all_orders": [
+                {
+                  "order_id": "paper_d32e8eba",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 0.27,
+                  "ladder_key": "YES:0",
+                  "parent_order_id": null,
+                  "status": "FILLED",
+                  "fill_price": 0.27,
+                  "filled_at": "2026-03-29T14:15:12.565Z",
+                  "created_at": "2026-03-29T14:15:11.625Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_5e4ffb89",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.24,
+                  "size": 5,
+                  "tp_price": 0.24,
+                  "ladder_key": "YES:1",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:15:11.625Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_27d7118d",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.21,
+                  "size": 5,
+                  "tp_price": 0.21,
+                  "ladder_key": "YES:2",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:15:11.625Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_a5784bc9",
+                  "kind": "ENTRY",
+                  "side": "YES",
+                  "price": 0.18,
+                  "size": 5,
+                  "tp_price": 0.18,
+                  "ladder_key": "YES:3",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:15:11.625Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_a063bf29",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 0.27,
+                  "ladder_key": "NO:0",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:15:11.625Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_a5fa2fe8",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.24,
+                  "size": 5,
+                  "tp_price": 0.24,
+                  "ladder_key": "NO:1",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:15:11.625Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_6adaa01b",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.21,
+                  "size": 5,
+                  "tp_price": 0.21,
+                  "ladder_key": "NO:2",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:15:11.625Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_41101f81",
+                  "kind": "ENTRY",
+                  "side": "NO",
+                  "price": 0.18,
+                  "size": 5,
+                  "tp_price": 0.18,
+                  "ladder_key": "NO:3",
+                  "parent_order_id": null,
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:15:11.625Z",
+                  "source": "runner_tick",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                },
+                {
+                  "order_id": "paper_caec166d",
+                  "kind": "TAKE_PROFIT",
+                  "side": "YES",
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 0.27,
+                  "ladder_key": "YES:0",
+                  "parent_order_id": "paper_d32e8eba",
+                  "status": "OPEN",
+                  "fill_price": null,
+                  "filled_at": null,
+                  "created_at": "2026-03-29T14:15:12.565Z",
+                  "source": "runner_tick:tp",
+                  "inferred_window_id": "debug-exit-yes-path-v1-w1"
+                }
+              ],
+              "summary": {
+                "total": 9,
+                "open_total": 8,
+                "cancelled_total": 0,
+                "filled_total": 1,
+                "open_yes": 4,
+                "open_no": 4,
+                "filled_yes": 1,
+                "filled_no": 0
+              },
+              "window_scope": {
+                "scope": "current_window",
+                "running": true,
+                "active_window_id": "debug-exit-yes-path-v1-w1",
+                "display_window_id": "debug-exit-yes-path-v1-w1",
+                "label": "当前窗口订单",
+                "ownership_rule": "运行中仅展示当前活动窗口订单"
+              },
+              "hidden_other_window_count": 0
+            }
+          },
+          "summary": {
+            "status": 200,
+            "body": {
+              "yes_entry_filled_count": 1,
+              "yes_exit_filled_count": 0,
+              "yes_position_size": 5,
+              "yes_avg_fill_price": 0.27,
+              "yes_realized_gross_pnl": 0,
+              "yes_unrealized_gross_pnl": 0.14999999999999986,
+              "no_entry_filled_count": 0,
+              "no_exit_filled_count": 0,
+              "no_position_size": 0,
+              "no_avg_fill_price": null,
+              "no_realized_gross_pnl": 0,
+              "no_unrealized_gross_pnl": 0,
+              "filled_total": 1,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0.14999999999999986,
+              "updated_at": "2026-03-29T14:15:12.872Z"
+            }
+          }
+        },
+        "stopped_status": {
+          "status": 200,
+          "body": {
+            "mode": "paper-staging",
+            "phase": "IDLE",
+            "running": false,
+            "debug_scenario": "exit_yes_path_v1",
+            "debug_frame_index": 4,
+            "debug_completed": false,
+            "tick_interval_ms": 1000,
+            "last_tick_at": "2026-03-29T14:15:12.566Z",
+            "last_window_id": "debug-exit-yes-path-v1-w1",
+            "current_window_id": null,
+            "window_initialized_at": null,
+            "remaining_sec": 280,
+            "anchor_btc": null,
+            "atr_5m": null,
+            "upper_bound": null,
+            "lower_bound": null,
+            "ladder_posted": true,
+            "yes_cancelled": false,
+            "no_cancelled": false,
+            "up_formula_cancelled": false,
+            "down_formula_cancelled": false,
+            "yes_order_ids": [
+              "paper_5e4ffb89",
+              "paper_27d7118d",
+              "paper_a5784bc9",
+              "paper_caec166d"
+            ],
+            "no_order_ids": [
+              "paper_a063bf29",
+              "paper_a5fa2fe8",
+              "paper_6adaa01b",
+              "paper_41101f81"
+            ],
+            "last_reason": null,
+            "last_intents": [],
+            "updated_at": "2026-03-29T14:15:12.876Z",
+            "saved_config": {
+              "open_delay_sec": 10,
+              "ladder_prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "ladder_size": 5,
+              "atr_multiple": 1.2,
+              "cancel_all_remaining_sec": 100,
+              "up_ladder": [
+                {
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 0.27
+                },
+                {
+                  "price": 0.24,
+                  "size": 5,
+                  "tp_price": 0.24
+                },
+                {
+                  "price": 0.21,
+                  "size": 5,
+                  "tp_price": 0.21
+                },
+                {
+                  "price": 0.18,
+                  "size": 5,
+                  "tp_price": 0.18
+                }
+              ],
+              "down_ladder": [
+                {
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 0.27
+                },
+                {
+                  "price": 0.24,
+                  "size": 5,
+                  "tp_price": 0.24
+                },
+                {
+                  "price": 0.21,
+                  "size": 5,
+                  "tp_price": 0.21
+                },
+                {
+                  "price": 0.18,
+                  "size": 5,
+                  "tp_price": 0.18
+                }
+              ],
+              "up_cancel": {
+                "before_end_sec": 100,
+                "formula": ""
+              },
+              "down_cancel": {
+                "before_end_sec": 100,
+                "formula": ""
+              }
+            },
+            "last_run_snapshot": {
+              "stop_reason": "MANUAL_STOP",
+              "completed_at": "2026-03-29T14:15:12.875Z",
+              "current_window_id": "debug-exit-yes-path-v1-w1",
+              "phase": "IDLE",
+              "filled_total": 1,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0.14999999999999986,
+              "active_config": {
+                "open_delay_sec": 10,
+                "ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "ladder_size": 5,
+                "atr_multiple": 1.2,
+                "cancel_all_remaining_sec": 100,
+                "up_ladder": [
+                  {
+                    "price": 0.27,
+                    "size": 5,
+                    "tp_price": 0.27
+                  },
+                  {
+                    "price": 0.24,
+                    "size": 5,
+                    "tp_price": 0.24
+                  },
+                  {
+                    "price": 0.21,
+                    "size": 5,
+                    "tp_price": 0.21
+                  },
+                  {
+                    "price": 0.18,
+                    "size": 5,
+                    "tp_price": 0.18
+                  }
+                ],
+                "down_ladder": [
+                  {
+                    "price": 0.27,
+                    "size": 5,
+                    "tp_price": 0.27
+                  },
+                  {
+                    "price": 0.24,
+                    "size": 5,
+                    "tp_price": 0.24
+                  },
+                  {
+                    "price": 0.21,
+                    "size": 5,
+                    "tp_price": 0.21
+                  },
+                  {
+                    "price": 0.18,
+                    "size": 5,
+                    "tp_price": 0.18
+                  }
+                ],
+                "up_cancel": {
+                  "before_end_sec": 100,
+                  "formula": ""
+                },
+                "down_cancel": {
+                  "before_end_sec": 100,
+                  "formula": ""
+                }
+              }
+            },
+            "active_runtime_snapshot": null
+          }
+        },
+        "latest_postmortem": {
+          "status": 200,
+          "body": {
+            "ok": true,
+            "postmortem": {
+              "id": 2394,
+              "strategy_id": "bot_console",
+              "event_id": "debug-exit-yes-path-v1-w1",
+              "window_start": "2026-03-29T14:15:12.875Z",
+              "window_end": "2026-03-29T14:15:12.875Z",
+              "created_at": "2026-03-29T14:15:12.875Z",
+              "window_id": "debug-exit-yes-path-v1-w1",
+              "stop_reason": "MANUAL_STOP",
+              "completed_at": "2026-03-29T14:15:12.875Z",
+              "filled_total": 1,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0.14999999999999986,
+              "active_config": {
+                "open_delay_sec": 10,
+                "ladder_prices": [
+                  0.27,
+                  0.24,
+                  0.21,
+                  0.18
+                ],
+                "ladder_size": 5,
+                "atr_multiple": 1.2,
+                "cancel_all_remaining_sec": 100,
+                "up_ladder": [
+                  {
+                    "price": 0.27,
+                    "size": 5,
+                    "tp_price": 0.27
+                  },
+                  {
+                    "price": 0.24,
+                    "size": 5,
+                    "tp_price": 0.24
+                  },
+                  {
+                    "price": 0.21,
+                    "size": 5,
+                    "tp_price": 0.21
+                  },
+                  {
+                    "price": 0.18,
+                    "size": 5,
+                    "tp_price": 0.18
+                  }
+                ],
+                "down_ladder": [
+                  {
+                    "price": 0.27,
+                    "size": 5,
+                    "tp_price": 0.27
+                  },
+                  {
+                    "price": 0.24,
+                    "size": 5,
+                    "tp_price": 0.24
+                  },
+                  {
+                    "price": 0.21,
+                    "size": 5,
+                    "tp_price": 0.21
+                  },
+                  {
+                    "price": 0.18,
+                    "size": 5,
+                    "tp_price": 0.18
+                  }
+                ],
+                "up_cancel": {
+                  "before_end_sec": 100,
+                  "formula": ""
+                },
+                "down_cancel": {
+                  "before_end_sec": 100,
+                  "formula": ""
+                }
+              },
+              "action_summary": [
+                "PLACE_LADDER"
+              ]
+            }
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+script_name=verify_window_lifecycle
+task_id=260329_001_stale
+sample_name=debug_main_path_v1+real_no_debug
+pass=true
+first_break_layer=null
+message=window lifecycle 校验通过

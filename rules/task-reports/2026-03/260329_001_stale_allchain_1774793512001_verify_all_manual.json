@@ -1,0 +1,102 @@
+{
+  "script_name": "verify_all_manual",
+  "task_id": "260329_001_stale",
+  "module_key": "allchain",
+  "total_scripts": 11,
+  "pass_count": 10,
+  "fail_count": 1,
+  "overall_pass": false,
+  "results": [
+    {
+      "script_name": "verify_btc_source_chain",
+      "pass": true,
+      "message": "BTC source 链路通过",
+      "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260329_001_stale_btc_source_chain.json",
+      "exit_code": 0,
+      "sample_name": "real_no_debug+debug_main_path_v1"
+    },
+    {
+      "script_name": "verify_context_truth",
+      "pass": true,
+      "message": "context truth 校验通过",
+      "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260329_001_stale_context_truth.json",
+      "exit_code": 0,
+      "sample_name": "debug_main_path_v1+debug_fill_yes_path_v1"
+    },
+    {
+      "script_name": "verify_window_lifecycle",
+      "pass": true,
+      "message": "window lifecycle 校验通过",
+      "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260329_001_stale_window_lifecycle.json",
+      "exit_code": 0,
+      "sample_name": "debug_main_path_v1+real_no_debug"
+    },
+    {
+      "script_name": "verify_anchor_bounds_lifecycle",
+      "pass": true,
+      "message": "anchor freeze 与 bounds-ready 解耦通过",
+      "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260329_001_stale_anchor_bounds_lifecycle.json",
+      "exit_code": 0,
+      "sample_name": "controlled+real_no_debug"
+    },
+    {
+      "script_name": "verify_executor_idempotency",
+      "pass": true,
+      "message": "executor idempotency 校验通过",
+      "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260329_001_stale_executor_idempotency.json",
+      "exit_code": 0,
+      "sample_name": "debug_main_path_v1+debug_fill_yes_path_v1"
+    },
+    {
+      "script_name": "verify_result_chain_consistency",
+      "pass": true,
+      "message": "result chain 一致性校验通过",
+      "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260329_001_stale_result_chain_consistency.json",
+      "exit_code": 0,
+      "sample_name": "debug_fill_yes_path_v1"
+    },
+    {
+      "script_name": "verify_order_scope_and_status",
+      "pass": true,
+      "message": "order scope / status 语义校验通过",
+      "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260329_001_stale_order_scope_and_status.json",
+      "exit_code": 0,
+      "sample_name": "debug_fill_yes_path_v1"
+    },
+    {
+      "script_name": "verify_pnl_chain_consistency",
+      "pass": false,
+      "message": "pnl chain 一致性校验失败",
+      "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260329_001_stale_pnl_chain_consistency.json",
+      "exit_code": 1,
+      "sample_name": "debug_exit_yes_path_v1+debug_fill_yes_path_v1"
+    },
+    {
+      "script_name": "verify_config_effect_chain",
+      "pass": true,
+      "message": "config effect chain 校验通过",
+      "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260329_001_stale_config_effect_chain.json",
+      "exit_code": 0,
+      "sample_name": "debug_main_path_v1+debug_fill_yes_path_v1+real_no_debug"
+    },
+    {
+      "script_name": "verify_runtime_to_business_result",
+      "pass": true,
+      "message": "runtime -> business result 整链校验通过",
+      "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260329_001_stale_runtime_to_business_result.json",
+      "exit_code": 0,
+      "sample_name": "debug_fill_yes_path_v1+debug_main_path_v1+debug_exit_yes_path_v1"
+    },
+    {
+      "script_name": "verify_strategy_runtime_regression_guard",
+      "pass": true,
+      "message": "strategy/runtime regression guard 通过",
+      "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260329_001_stale_strategy_runtime_regression_guard.json",
+      "exit_code": 0,
+      "sample_name": "real_runtime_regression_guard_v1"
+    }
+  ],
+  "simulated_failure": false,
+  "raw_pass_count": 10,
+  "generated_at": "2026-03-29T14:15:38.707Z"
+}

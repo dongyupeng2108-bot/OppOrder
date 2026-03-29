@@ -1,0 +1,6 @@
+script_name=verify_pnl_chain_consistency
+task_id=260329_001_all
+sample_name=debug_exit_yes_path_v1+debug_fill_yes_path_v1
+pass=false
+first_break_layer=sample insufficiency realized
+message=pnl chain 一致性校验失败
