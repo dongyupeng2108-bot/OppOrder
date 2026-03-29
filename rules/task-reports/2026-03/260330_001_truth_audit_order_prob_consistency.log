@@ -1,0 +1,6 @@
+script_name=truth_audit_order_prob_consistency_260330_001
+task_id=260330_001
+sample_name=owner_screenshot_consistency_v1
+pass=true
+first_break_layer=null
+message=订单状态与概率显示一致性修复通过
