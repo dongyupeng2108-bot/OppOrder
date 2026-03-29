@@ -91,6 +91,7 @@ let _sePerformancePreset = 'today';
 let _seTestRunPending = false;
 let _seTestStatus = { state: 'idle' };
 let _seTestLastResultFile = null;
+let _seTestLastRunId = null;
 let _seTestFailModalShownRunId = null;
 let _seTestLogTail = [];
 let _seTestUserTriggered = false;
@@ -837,6 +838,8 @@ async function se_runVersionTestByModule(moduleKey = 'allchain') {
   _seTestRunPending = true;
   _seTestUserTriggered = true;
   _seTestRecoveredRunning = false;
+  _seTestLastRunId = null;
+  _seTestLastResultFile = null;
   se_updateTestButton();
   se_renderTestPanel();
   try {
@@ -1002,9 +1005,14 @@ async function se_pollTestRunner() {
     if (!terminal) return;
     const allowModal = _seTestUserTriggered || _seTestRecoveredRunning;
     if (!allowModal) return;
-    if (status.result_file && status.result_file !== _seTestLastResultFile) {
+    const resultQuery = new URLSearchParams();
+    if (status?.run_id) resultQuery.set('run_id', status.run_id);
+    if (status?.module_key) resultQuery.set('module_key', status.module_key);
+    const resultUrl = `${BASE_URL}/bot/test/result${resultQuery.toString() ? `?${resultQuery.toString()}` : ''}`;
+    if ((status.run_id && status.run_id !== _seTestLastRunId) || (status.result_file && status.result_file !== _seTestLastResultFile)) {
       _seTestLastResultFile = status.result_file;
-      const resultRes = await fetch(`${BASE_URL}/bot/test/result`);
+      _seTestLastRunId = status.run_id || null;
+      const resultRes = await fetch(resultUrl);
       const resultData = await resultRes.json();
       if (resultRes.ok && resultData?.ok !== false) {
         se_showTestResultModal(resultData);
@@ -1014,7 +1022,7 @@ async function se_pollTestRunner() {
       return;
     }
     if (!status.result_file) return;
-    const resultRes = await fetch(`${BASE_URL}/bot/test/result`);
+    const resultRes = await fetch(resultUrl);
     const resultData = await resultRes.json();
     if (resultRes.ok && resultData?.ok !== false) {
       se_showTestResultModal(resultData);
