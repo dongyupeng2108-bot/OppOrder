@@ -261,7 +261,9 @@ const main = async () => {
     await http2.post('/bot/config', cfgB);
     await http2.post('/bot/start', { tick_interval_ms: 1000, debugScenario: 'fill_yes_path_v1' });
     const bPre = await waitForFilledWithTp(http2, 120000);
-    const bRowsPre = Array.isArray(bPre?.ordersResp?.body?.orders) ? bPre.ordersResp.body.orders : [];
+    const bRowsPre = Array.isArray(bPre?.ordersResp?.body?.all_orders)
+      ? bPre.ordersResp.body.all_orders
+      : (Array.isArray(bPre?.ordersResp?.body?.orders) ? bPre.ordersResp.body.orders : []);
     const bSummaryPre = bPre?.ordersResp?.body?.summary || {};
     const bTpFp = bPre?.linkedTp ? tpFingerprint(bPre.linkedTp) : null;
     const bTpCountPre = bTpFp ? countTpFingerprint(bRowsPre, bTpFp) : 0;
@@ -276,7 +278,9 @@ const main = async () => {
     await sleep(3000);
     const bOrdersPost = await http3.get('/bot/orders');
     await http3.post('/bot/stop', {});
-    const bRowsPost = Array.isArray(bOrdersPost?.body?.orders) ? bOrdersPost.body.orders : [];
+    const bRowsPost = Array.isArray(bOrdersPost?.body?.all_orders)
+      ? bOrdersPost.body.all_orders
+      : (Array.isArray(bOrdersPost?.body?.orders) ? bOrdersPost.body.orders : []);
     const bSummaryPost = bOrdersPost?.body?.summary || {};
     const bTpCountPost = bTpFp ? countTpFingerprint(bRowsPost, bTpFp) : 0;
     const bCase = {
@@ -314,15 +318,18 @@ const main = async () => {
     let failZombieAfterStop = 0;
     const totalRounds = 20;
     for (let i = 0; i < totalRounds; i += 1) {
-      await http3.post('/bot/start', { tick_interval_ms: 800 });
+      const beforeStartStatus = await http3.get('/bot/status');
+      const beforeStartTick = beforeStartStatus?.body?.last_tick_at || null;
+      await http3.post('/bot/start', { tick_interval_ms: 1000 });
       let startOk = false;
       let beforeStopTick = null;
       for (let t = 0; t < 10; t += 1) {
         await sleep(250);
         const s = await http3.get('/bot/status');
-        if (s?.body?.running === true && s?.body?.last_tick_at) {
+        const tickNow = s?.body?.last_tick_at || null;
+        if (s?.body?.running === true && tickNow && tickNow !== beforeStartTick) {
           startOk = true;
-          beforeStopTick = s.body.last_tick_at;
+          beforeStopTick = tickNow;
           break;
         }
       }

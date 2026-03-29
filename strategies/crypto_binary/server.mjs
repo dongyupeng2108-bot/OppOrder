@@ -5,7 +5,7 @@ import fs from 'fs';
 
 import { createServer, request as httpRequest } from 'http';
 import { execSync, spawn } from 'child_process';
-import { readFileSync, readdirSync, existsSync, mkdirSync, writeFileSync, unlinkSync, createReadStream, statSync } from 'fs';
+import { readFileSync, readdirSync, existsSync, mkdirSync, writeFileSync, unlinkSync, renameSync, createReadStream, statSync } from 'fs';
 import { resolve, dirname, extname } from 'path';
 import crypto from 'crypto';
 import { fileURLToPath } from 'url';
@@ -67,6 +67,7 @@ const BOT_PERF_PRESET_LAST_7D = 'last_7d';
 const BOT_PERF_PRESET_LAST_30_WINDOWS = 'last_30_windows';
 const BOT_TEST_REPO_ROOT = resolve(__dirname, '..', '..');
 const BOT_ACCOUNT_CACHE_PATH = resolve(BOT_TEST_REPO_ROOT, 'data', 'crypto_binary', 'pm_account_cache.json');
+const BOT_RUNTIME_RECOVERY_PATH = resolve(BOT_TEST_REPO_ROOT, 'data', 'crypto_binary', `bot_runtime_recovery_${PORT}.json`);
 const BOT_SECRETS_PATH_CONFIG = resolve(BOT_TEST_REPO_ROOT, 'config', 'secrets_path.json');
 const BOT_TEST_RUNNER_DIR = resolve(BOT_TEST_REPO_ROOT, 'data', 'crypto_binary', 'test_runner');
 const BOT_TEST_REPORTS_ROOT = resolve(BOT_TEST_REPO_ROOT, 'rules', 'task-reports');
@@ -119,6 +120,7 @@ let botPendingStopReason = null;
 let botRuntimeWasRunning = false;
 let botRunActionSummary = [];
 let botLastTickResult = null;
+let botRecoveryHydrated = false;
 let botAccountSnapshotCache = null;
 let botAccountSnapshotCachedAt = 0;
 let botTestRunnerState = {
@@ -281,7 +283,8 @@ const toInternalRunnerConfig = (value) => ({
   up_cancel: cloneCancelConfig(value.up_cancel),
   down_cancel: cloneCancelConfig(value.down_cancel)
 });
-const setBotConfigCurrent = (nextConfig) => {
+const setBotConfigCurrent = (nextConfig, options = {}) => {
+  const shouldPersist = options.persist !== false;
   botConfigCurrent = cloneBotConfig(nextConfig);
   if (botState.getState().running !== true) {
     const internal = toInternalRunnerConfig(botConfigCurrent);
@@ -294,6 +297,9 @@ const setBotConfigCurrent = (nextConfig) => {
     botRunnerConfig.down_ladder = cloneLadderRows(internal.down_ladder);
     botRunnerConfig.up_cancel = cloneCancelConfig(internal.up_cancel);
     botRunnerConfig.down_cancel = cloneCancelConfig(internal.down_cancel);
+  }
+  if (shouldPersist) {
+    persistBotRecoverySnapshot();
   }
 };
 const getBotConfigSnapshot = () => cloneBotConfig(botConfigCurrent);
@@ -806,6 +812,35 @@ const validateBotConfigPayload = (payload) => {
     }
   };
 };
+const coerceRecoveredBotConfig = (payload) => {
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return cloneBotConfig(BOT_CONFIG_DEFAULTS);
+  const openDelaySec = Number(payload.open_delay_sec);
+  const ladderPrices = normalizeLadderPrices(payload.ladder_prices) || [...BOT_CONFIG_DEFAULTS.ladder_prices];
+  const ladderSizeRaw = Number(payload.ladder_size);
+  const atrMultipleRaw = Number(payload.atr_multiple);
+  const cancelAllRemainingSecRaw = Number(payload.cancel_all_remaining_sec);
+  const ladderSize = isPositiveInteger(ladderSizeRaw) ? ladderSizeRaw : BOT_CONFIG_DEFAULTS.ladder_size;
+  const atrMultiple = isPositiveNumber(atrMultipleRaw) ? atrMultipleRaw : BOT_CONFIG_DEFAULTS.atr_multiple;
+  const cancelAllRemainingSec = isNonNegativeInteger(cancelAllRemainingSecRaw)
+    ? cancelAllRemainingSecRaw
+    : BOT_CONFIG_DEFAULTS.cancel_all_remaining_sec;
+  const legacyLadder = ladderPrices.map((price) => ({ price, size: ladderSize, tp_price: price }));
+  const upLadder = normalizeLadderRowsPayload(payload.up_ladder) || legacyLadder;
+  const downLadder = normalizeLadderRowsPayload(payload.down_ladder) || legacyLadder;
+  const upCancel = normalizeCancelPayload(payload.up_cancel) || { before_end_sec: cancelAllRemainingSec, formula: '' };
+  const downCancel = normalizeCancelPayload(payload.down_cancel) || { before_end_sec: cancelAllRemainingSec, formula: '' };
+  return {
+    open_delay_sec: isNonNegativeInteger(openDelaySec) ? openDelaySec : BOT_CONFIG_DEFAULTS.open_delay_sec,
+    ladder_prices: ladderPrices,
+    ladder_size: ladderSize,
+    atr_multiple: atrMultiple,
+    cancel_all_remaining_sec: cancelAllRemainingSec,
+    up_ladder: upLadder,
+    down_ladder: downLadder,
+    up_cancel: upCancel,
+    down_cancel: downCancel
+  };
+};
 const BOT_DEBUG_SCENARIO_MAIN_PATH_V1 = 'main_path_v1';
 const BOT_DEBUG_SCENARIO_FILL_YES_PATH_V1 = 'fill_yes_path_v1';
 const BOT_DEBUG_SCENARIO_EXIT_YES_PATH_V1 = 'exit_yes_path_v1';
@@ -846,7 +881,13 @@ const createExitNoPathV1Frames = () => ([
 ]);
 const botLogger = createBotLogger({ maxEntries: 400 });
 const botState = createBotStateStore({ mode: BOT_MODE });
-const botLedger = createBotOrderLedger();
+const botLedger = createBotOrderLedger({
+  onChange: () => {
+    if (botRecoveryHydrated) {
+      persistBotRecoverySnapshot();
+    }
+  }
+});
 const botExecutorPaper = createBotExecutorPaper({ ledger: botLedger });
 const botDebugRuntime = {
   name: null,
@@ -968,7 +1009,7 @@ const botRunner = createBotRunner({
       const stopReason = botPendingStopReason || 'AUTO_COMPLETED';
       finalizeBotRunSnapshot(stopReason);
       botPendingStopReason = null;
-      botActiveRuntimeConfig = null;
+      botActiveRuntimeConfig = cloneBotConfig(getBotConfigSnapshot());
       botLastTickResult = null;
       botState.patchState({
         current_window_id: null,
@@ -984,6 +1025,9 @@ const botRunner = createBotRunner({
       });
     }
     botRuntimeWasRunning = isRunning;
+    if (botRecoveryHydrated) {
+      persistBotRecoverySnapshot();
+    }
   },
   onTickResult: (result) => {
     botLastTickResult = result ? {
@@ -993,6 +1037,9 @@ const botRunner = createBotRunner({
       state_after: result.state_after || null,
       order_summary: result.order_summary || null
     } : null;
+    if (botRecoveryHydrated) {
+      persistBotRecoverySnapshot();
+    }
   },
   log: (entry) => {
     if (entry?.event === 'BOT_INTENTS') {
@@ -1042,6 +1089,108 @@ function syncBotStateFromLedger() {
     no_order_ids: openNo,
     ladder_posted: openYes.length > 0 || openNo.length > 0
   });
+}
+
+function persistBotRecoverySnapshot() {
+  try {
+    const payload = {
+      saved_config: getBotConfigSnapshot(),
+      active_runtime_config: getBotActiveRuntimeConfig(),
+      state: botState.getState(),
+      orders: botExecutorPaper.getOrders(),
+      last_run_snapshot: getBotLastRunSnapshot(),
+      saved_at: new Date().toISOString()
+    };
+    mkdirSync(dirname(BOT_RUNTIME_RECOVERY_PATH), { recursive: true });
+    const tempPath = `${BOT_RUNTIME_RECOVERY_PATH}.tmp`;
+    writeFileSync(tempPath, JSON.stringify(payload, null, 2), 'utf8');
+    if (existsSync(BOT_RUNTIME_RECOVERY_PATH)) {
+      unlinkSync(BOT_RUNTIME_RECOVERY_PATH);
+    }
+    renameSync(tempPath, BOT_RUNTIME_RECOVERY_PATH);
+  } catch (err) {
+    botLogger.log({
+      level: 'error',
+      source: 'server',
+      event: 'BOT_RECOVERY_PERSIST_FAILED',
+      message: err.message,
+      mode: BOT_MODE,
+      window_id: null
+    });
+  }
+}
+function restoreBotRecoverySnapshot() {
+  const snapshot = readJsonSafe(BOT_RUNTIME_RECOVERY_PATH);
+  if (!snapshot || typeof snapshot !== 'object') return false;
+  try {
+    botLogger.log({
+      level: 'info',
+      source: 'server',
+      event: 'BOT_RECOVERY_RESTORE_INPUT',
+      message: 'recovery snapshot input loaded',
+      mode: BOT_MODE,
+      window_id: null,
+      data: {
+        path: BOT_RUNTIME_RECOVERY_PATH,
+        saved_open_delay_sec: snapshot?.saved_config?.open_delay_sec ?? null
+      }
+    });
+    const savedCfgRaw = snapshot.saved_config;
+    const recoveredConfig = coerceRecoveredBotConfig(savedCfgRaw);
+    setBotConfigCurrent(recoveredConfig, { persist: false });
+    if (Array.isArray(snapshot.orders)) {
+      botLedger.restore(snapshot.orders);
+      syncBotStateFromLedger();
+    }
+    if (snapshot.last_run_snapshot && typeof snapshot.last_run_snapshot === 'object') {
+      botLastRunSnapshot = snapshot.last_run_snapshot;
+    }
+    const recoveredState = snapshot.state && typeof snapshot.state === 'object' ? snapshot.state : null;
+    if (recoveredState) {
+      botState.patchState({
+        ...recoveredState,
+        running: false,
+        debug_scenario: null,
+        debug_frame_index: 0,
+        debug_completed: false,
+        phase: recoveredState.phase || 'IDLE'
+      });
+    }
+    const runtimeCfg = snapshot.active_runtime_config && typeof snapshot.active_runtime_config === 'object'
+      ? snapshot.active_runtime_config
+      : savedCfgRaw;
+    botActiveRuntimeConfig = cloneBotConfig(coerceRecoveredBotConfig(runtimeCfg));
+    botRuntimeWasRunning = false;
+    persistBotRecoverySnapshot();
+    botLogger.log({
+      level: 'info',
+      source: 'server',
+      event: 'BOT_RECOVERY_RESTORED',
+      message: 'recovery snapshot restored',
+      mode: BOT_MODE,
+      window_id: null,
+      data: {
+        saved_open_delay_sec: getBotConfigSnapshot()?.open_delay_sec ?? null,
+        active_open_delay_sec: getBotActiveRuntimeConfig()?.open_delay_sec ?? null
+      }
+    });
+    return true;
+  } catch (err) {
+    botLogger.log({
+      level: 'error',
+      source: 'server',
+      event: 'BOT_RECOVERY_RESTORE_FAILED',
+      message: err.message,
+      mode: BOT_MODE,
+      window_id: null
+    });
+    return false;
+  }
+}
+function ensureBotRecoveryHydrated() {
+  if (botRecoveryHydrated) return;
+  restoreBotRecoverySnapshot();
+  botRecoveryHydrated = true;
 }
 
 const toEpochMs = (value) => {
@@ -2132,6 +2281,7 @@ const server = createServer(async (req, res) => {
   }
 
   if (req.method === 'GET' && req.url.startsWith('/bot/logs')) {
+    ensureBotRecoveryHydrated();
     try {
       const parsed = new URL(req.url, 'http://localhost');
       const limitText = parsed.searchParams.get('limit');
@@ -2148,24 +2298,25 @@ const server = createServer(async (req, res) => {
   }
 
   if (req.method === 'GET' && req.url === '/bot/status') {
+    ensureBotRecoveryHydrated();
     try {
       const state = botState.getState();
       const currentWindowId = state.running === true ? (state.current_window_id ?? null) : null;
+      const activeConfigSnapshot = getBotActiveRuntimeConfig() || getBotConfigSnapshot();
       sendJson(res, {
         ...state,
         current_window_id: currentWindowId,
         saved_config: getBotConfigSnapshot(),
         last_run_snapshot: getBotLastRunSnapshot(),
-        active_runtime_snapshot: state.running === true
-          ? {
-              config: getBotActiveRuntimeConfig(),
-              phase: state.phase ?? null,
-              current_window_id: currentWindowId,
-              anchor_btc: state.anchor_btc ?? null,
-              upper_bound: state.upper_bound ?? null,
-              lower_bound: state.lower_bound ?? null
-            }
-          : null
+        active_runtime_snapshot: {
+          config: activeConfigSnapshot,
+          phase: state.phase ?? null,
+          current_window_id: currentWindowId,
+          anchor_btc: state.anchor_btc ?? null,
+          upper_bound: state.upper_bound ?? null,
+          lower_bound: state.lower_bound ?? null,
+          running: state.running === true
+        }
       });
     } catch (err) {
       sendJson(res, { ok: false, error: err.message }, 500);
@@ -2174,6 +2325,7 @@ const server = createServer(async (req, res) => {
   }
 
   if (req.method === 'GET' && req.url === '/bot/account') {
+    ensureBotRecoveryHydrated();
     try {
       const account = await getBotAccountSnapshot();
       sendJson(res, {
@@ -2187,6 +2339,7 @@ const server = createServer(async (req, res) => {
   }
 
   if (req.method === 'GET' && req.url === '/bot/postmortem/latest') {
+    ensureBotRecoveryHydrated();
     try {
       const latest = await queryLatestBotPostmortem();
       sendJson(res, {
@@ -2200,6 +2353,7 @@ const server = createServer(async (req, res) => {
   }
 
   if (req.method === 'GET' && req.url.startsWith('/bot/performance/summary')) {
+    ensureBotRecoveryHydrated();
     try {
       const parsed = new URL(req.url, 'http://localhost');
       const presetRaw = parsed.searchParams.get('preset');
@@ -2216,6 +2370,7 @@ const server = createServer(async (req, res) => {
   }
 
   if (req.method === 'GET' && req.url === '/bot/context') {
+    ensureBotRecoveryHydrated();
     try {
       const context = await botContextAdapter.getContext();
       sendJson(res, context);
@@ -2226,6 +2381,7 @@ const server = createServer(async (req, res) => {
   }
 
   if (req.method === 'GET' && req.url === '/bot/orders') {
+    ensureBotRecoveryHydrated();
     try {
       const state = botState.getState();
       const { allOrders } = buildBotOrdersWithWindowIds();
@@ -2281,6 +2437,7 @@ const server = createServer(async (req, res) => {
         if (Array.isArray(intents)) {
           const result = botExecutorPaper.applyIntents(intents, { source: 'manual' });
           syncBotStateFromLedger();
+          persistBotRecoverySnapshot();
           sendJson(res, {
             ok: true,
             mode: result.mode,
@@ -2298,6 +2455,7 @@ const server = createServer(async (req, res) => {
         }
         const result = botExecutorPaper.applyAction(action, { source: 'manual' });
         syncBotStateFromLedger();
+        persistBotRecoverySnapshot();
         sendJson(res, {
           ok: true,
           mode: 'ACTION',
@@ -2311,6 +2469,10 @@ const server = createServer(async (req, res) => {
       }
     });
     return;
+  }
+
+  if (req.url.startsWith('/bot/')) {
+    ensureBotRecoveryHydrated();
   }
 
   if (req.method === 'POST' && req.url === '/bot/runner/tick') {
@@ -2334,6 +2496,7 @@ const server = createServer(async (req, res) => {
           state_override: stateOverride
         });
         botState.patchState({ last_tick_at: new Date().toISOString() });
+        persistBotRecoverySnapshot();
         sendJson(res, { ok: true, ...result });
       } catch (err) {
         sendJson(res, { ok: false, error: err.message }, 500);
@@ -2405,7 +2568,6 @@ const server = createServer(async (req, res) => {
         } else {
           clearBotDebugScenario();
         }
-        botExecutorPaper.reset();
         botLastTickResult = null;
         syncRunnerConfigFromSavedConfig();
         botPendingStopReason = null;
@@ -2427,8 +2589,10 @@ const server = createServer(async (req, res) => {
           no_order_ids: [],
           phase: 'IDLE'
         });
+        syncBotStateFromLedger();
         botActiveRuntimeConfig = cloneBotConfig(configSnapshot);
         const result = botRunner.start(tickIntervalMs);
+        persistBotRecoverySnapshot();
         botLogger.log({
           level: 'info',
           source: 'server',
@@ -2462,6 +2626,7 @@ const server = createServer(async (req, res) => {
       if (result?.already_stopped) {
         botPendingStopReason = null;
       }
+      persistBotRecoverySnapshot();
       sendJson(res, { ok: true, ...result });
     } catch (err) {
       sendJson(res, { ok: false, error: err.message }, 500);

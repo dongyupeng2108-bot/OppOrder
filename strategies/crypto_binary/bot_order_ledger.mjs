@@ -38,8 +38,49 @@ const createExitFill = ({ side, price, size, source }) => {
   };
 };
 
-export function createBotOrderLedger() {
+export function createBotOrderLedger(options = {}) {
+  const onChange = typeof options.onChange === 'function' ? options.onChange : null;
   let orders = [];
+  const emitChange = () => {
+    if (!onChange) return;
+    try {
+      onChange({ summary: getSummary(), orders: getOrders() });
+    } catch {}
+  };
+  const normalizeOrderSnapshot = (row) => {
+    if (!row || typeof row !== 'object') return null;
+    const side = row.side === 'NO' ? 'NO' : (row.side === 'YES' ? 'YES' : null);
+    const kindRaw = typeof row.kind === 'string' ? row.kind : 'ENTRY';
+    const kind = kindRaw === 'ENTRY' || kindRaw === 'TAKE_PROFIT' || kindRaw === 'EXIT' ? kindRaw : 'ENTRY';
+    const price = Number(row.price);
+    const size = Number(row.size);
+    const statusRaw = typeof row.status === 'string' ? row.status : 'OPEN';
+    const status = statusRaw === 'OPEN' || statusRaw === 'CANCELLED' || statusRaw === 'FILLED' ? statusRaw : 'OPEN';
+    if (!side) return null;
+    if (!Number.isFinite(price)) return null;
+    if (!Number.isFinite(size) || size <= 0) return null;
+    const tpRaw = row.tp_price;
+    const tp = tpRaw === null || tpRaw === undefined || tpRaw === '' ? null : Number(tpRaw);
+    const fillPriceRaw = row.fill_price;
+    const fillPrice = fillPriceRaw === null || fillPriceRaw === undefined || fillPriceRaw === '' ? null : Number(fillPriceRaw);
+    const createdAt = typeof row.created_at === 'string' && row.created_at.length > 0 ? row.created_at : new Date().toISOString();
+    const filledAt = typeof row.filled_at === 'string' && row.filled_at.length > 0 ? row.filled_at : null;
+    return {
+      order_id: typeof row.order_id === 'string' && row.order_id.length > 0 ? row.order_id : `paper_${randomUUID().slice(0, 8)}`,
+      kind,
+      side,
+      price,
+      size,
+      tp_price: Number.isFinite(tp) ? tp : null,
+      ladder_key: typeof row.ladder_key === 'string' && row.ladder_key.length > 0 ? row.ladder_key : null,
+      parent_order_id: typeof row.parent_order_id === 'string' && row.parent_order_id.length > 0 ? row.parent_order_id : null,
+      status,
+      fill_price: Number.isFinite(fillPrice) ? fillPrice : null,
+      filled_at: filledAt,
+      created_at: createdAt,
+      source: typeof row.source === 'string' && row.source.length > 0 ? row.source : 'snapshot'
+    };
+  };
 
   const getOrders = () => orders.map(cloneOrder);
 
@@ -178,6 +219,9 @@ export function createBotOrderLedger() {
     if (tpOrdersToCreate.length > 0) {
       orders = [...orders, ...tpOrdersToCreate];
     }
+    if (filledOrders.length > 0 || tpOrdersToCreate.length > 0) {
+      emitChange();
+    }
     return {
       changed: filledOrders.length + tpOrdersToCreate.length,
       filled_orders: filledOrders,
@@ -301,6 +345,9 @@ export function createBotOrderLedger() {
         }
       }
     }
+    if (changed > 0) {
+      emitChange();
+    }
     return {
       action,
       changed,
@@ -311,10 +358,27 @@ export function createBotOrderLedger() {
 
   const reset = () => {
     orders = [];
+    emitChange();
     return { summary: getSummary(), orders: getOrders() };
   };
 
-  return { getOrders, getSummary, getPaperSummary, applyAction, applyFills, reset };
+  const restore = (snapshotOrders = []) => {
+    const list = Array.isArray(snapshotOrders) ? snapshotOrders : [];
+    const restored = [];
+    const seen = new Set();
+    for (const row of list) {
+      const normalized = normalizeOrderSnapshot(row);
+      if (!normalized) continue;
+      if (seen.has(normalized.order_id)) continue;
+      seen.add(normalized.order_id);
+      restored.push(normalized);
+    }
+    orders = restored;
+    emitChange();
+    return { restored: restored.length, summary: getSummary(), orders: getOrders() };
+  };
+
+  return { getOrders, getSummary, getPaperSummary, applyAction, applyFills, reset, restore };
 }
 
 export const BOT_LEDGER_DEFAULTS = { prices: DEFAULT_PRICES, size: DEFAULT_SIZE };
