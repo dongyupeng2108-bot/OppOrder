@@ -22,7 +22,8 @@ const parseArgs = () => {
   const month = new Date().toISOString().slice(0, 7);
   const output = args.output || path.join(REPO_ROOT, 'rules', 'task-reports', month, `${taskId}_verify_all_manual.json`);
   const simulateFail = args.simulate_fail === 'true' || process.env.VERIFY_ALL_FORCE_FAIL === '1';
-  return { taskId, output, simulateFail };
+  const moduleKey = String(args.module || 'allchain').trim().toLowerCase();
+  return { taskId, output, simulateFail, moduleKey };
 };
 
 const ensureDir = (filePath) => {
@@ -30,7 +31,7 @@ const ensureDir = (filePath) => {
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 };
 
-const verifyTargets = [
+const VERIFY_TARGET_ALLCHAIN = [
   { script: 'verify_btc_source_chain.mjs', suffix: 'btc_source_chain', sample: 'real_no_debug+debug_main_path_v1' },
   { script: 'verify_context_truth.mjs', suffix: 'context_truth', sample: 'debug_main_path_v1+debug_fill_yes_path_v1' },
   { script: 'verify_window_lifecycle.mjs', suffix: 'window_lifecycle', sample: 'debug_main_path_v1+real_no_debug' },
@@ -43,6 +44,32 @@ const verifyTargets = [
   { script: 'verify_runtime_to_business_result.mjs', suffix: 'runtime_to_business_result', sample: 'debug_fill_yes_path_v1+debug_main_path_v1+debug_exit_yes_path_v1' },
   { script: 'verify_strategy_runtime_regression_guard.mjs', suffix: 'strategy_runtime_regression_guard', sample: 'real_runtime_regression_guard_v1' }
 ];
+const VERIFY_TARGETS_BY_MODULE = {
+  module1: [
+    { script: 'verify_module1_strategy_input.mjs', suffix: 'module1_strategy_input', sample: 'module1_strategy_input_suite_v1' }
+  ],
+  module2: [
+    { script: 'verify_window_lifecycle.mjs', suffix: 'window_lifecycle', sample: 'debug_main_path_v1+real_no_debug' },
+    { script: 'verify_anchor_bounds_lifecycle.mjs', suffix: 'anchor_bounds_lifecycle', sample: 'controlled+real_no_debug' },
+    { script: 'verify_executor_idempotency.mjs', suffix: 'executor_idempotency', sample: 'debug_main_path_v1+debug_fill_yes_path_v1' },
+    { script: 'verify_order_scope_and_status.mjs', suffix: 'order_scope_and_status', sample: 'debug_fill_yes_path_v1' }
+  ],
+  module3: [
+    { script: 'verify_context_truth.mjs', suffix: 'context_truth', sample: 'debug_main_path_v1+debug_fill_yes_path_v1' },
+    { script: 'verify_btc_source_chain.mjs', suffix: 'btc_source_chain', sample: 'real_no_debug+debug_main_path_v1' },
+    { script: 'verify_config_effect_chain.mjs', suffix: 'config_effect_chain', sample: 'debug_main_path_v1+debug_fill_yes_path_v1+real_no_debug' }
+  ],
+  module4: [
+    { script: 'verify_result_chain_consistency.mjs', suffix: 'result_chain_consistency', sample: 'debug_fill_yes_path_v1' },
+    { script: 'verify_pnl_chain_consistency.mjs', suffix: 'pnl_chain_consistency', sample: 'debug_exit_yes_path_v1+debug_fill_yes_path_v1' },
+    { script: 'verify_runtime_to_business_result.mjs', suffix: 'runtime_to_business_result', sample: 'debug_fill_yes_path_v1+debug_main_path_v1+debug_exit_yes_path_v1' }
+  ],
+  module5: [
+    { script: 'verify_strategy_runtime_regression_guard.mjs', suffix: 'strategy_runtime_regression_guard', sample: 'real_runtime_regression_guard_v1' },
+    { script: 'verify_config_effect_chain.mjs', suffix: 'config_effect_chain', sample: 'debug_main_path_v1+debug_fill_yes_path_v1+real_no_debug' }
+  ],
+  allchain: VERIFY_TARGET_ALLCHAIN
+};
 
 const runVerify = ({ script, sample, suffix }, taskId, reportsDir) => {
   const commandArgs = [`scripts/${script}`, `--task_id=${taskId}`, `--sample=${sample}`];
@@ -78,6 +105,11 @@ const writeLog = (logPath, payload) => {
 
 const main = () => {
   const args = parseArgs();
+  const verifyTargets = VERIFY_TARGETS_BY_MODULE[args.moduleKey];
+  if (!verifyTargets) {
+    const known = Object.keys(VERIFY_TARGETS_BY_MODULE).join(', ');
+    throw new Error(`unsupported module=${args.moduleKey}; allowed=${known}`);
+  }
   ensureDir(args.output);
   const reportsDir = path.dirname(args.output);
   const results = verifyTargets.map((target) => runVerify(target, args.taskId, reportsDir));
@@ -96,6 +128,7 @@ const main = () => {
   const output = {
     script_name: 'verify_all_manual',
     task_id: args.taskId,
+    module_key: args.moduleKey,
     total_scripts: resultsFinal.length,
     pass_count: passCount,
     fail_count: resultsFinal.length - passCount,

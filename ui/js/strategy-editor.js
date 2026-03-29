@@ -95,6 +95,15 @@ let _seTestFailModalShownRunId = null;
 let _seTestLogTail = [];
 let _seTestUserTriggered = false;
 let _seTestRecoveredRunning = false;
+let _seTestSelectedModuleKey = 'allchain';
+const SE_TEST_MODULES = [
+  { key: 'module1', label: '模块1 策略与输入', hint: '高价值策略输入与运行语义回归集合' },
+  { key: 'module2', label: '模块2 执行引擎', hint: '窗口生命周期、幂等、订单范围与执行引擎语义' },
+  { key: 'module3', label: '模块3 实时监控', hint: 'context/status 与输入监控链路一致性' },
+  { key: 'module4', label: '模块4 运行结果', hint: '结果链、PNL 与 runtime→业务结果一致性' },
+  { key: 'module5', label: '模块5 版本测试/保障', hint: '版本保障关键脚本集（不跑全链）' },
+  { key: 'allchain', label: '全链测试', hint: 'verify_all_manual 总入口（现有全链）' }
+];
 const BASE_URL = ''; // 相对路径
 
 async function restartServer() {
@@ -161,7 +170,7 @@ async function initStrategyEditor() {
         <div style="font-size:18px;letter-spacing:.3px;">BTCQDD 执行机器人</div>
         <button id="se-btn-param-toggle" onclick="se_toggleParamsPanel()" style="height:34px;width:34px;border:1px solid #2f3946;background:#18202a;color:#d6dde5;border-radius:4px;cursor:pointer;">⚙</button>
         <button id="se-btn-module-info" onclick="se_openModuleInfo()" style="height:34px;border:1px solid #35506b;background:#1a2a3a;color:#c8e6ff;border-radius:4px;padding:0 10px;cursor:pointer;">模块说明</button>
-        <button id="se-btn-test" onclick="se_runVersionTest()" style="height:34px;border:1px solid #35506b;background:#1a2a3a;color:#c8e6ff;border-radius:4px;padding:0 10px;cursor:pointer;">版本测试</button>
+        <button id="se-btn-test" onclick="se_openTestPanel()" style="height:34px;border:1px solid #35506b;background:#1a2a3a;color:#c8e6ff;border-radius:4px;padding:0 10px;cursor:pointer;">版本测试入口</button>
         <button id="se-btn-restart" onclick="restartServer()" style="height:34px;border:1px solid #35506b;background:#1a2a3a;color:#c8e6ff;border-radius:4px;padding:0 10px;cursor:pointer;">重启服务</button>
         <button id="se-btn-run-toggle" class="se-btn-deploy" onclick="se_toggleBotRun()">启动</button>
       </div>
@@ -329,6 +338,15 @@ async function initStrategyEditor() {
         </div>
       </div>
     </div>
+    <div id="se-test-panel-overlay" class="se-overlay" onclick="se_closeTestPanel()" style="display:none">
+      <div class="se-modal" onclick="event.stopPropagation()">
+        <div class="se-modal-title">模块化测试入口</div>
+        <div id="se-test-panel-content" class="se-guide-pre" style="white-space:normal;line-height:1.5;display:flex;flex-direction:column;gap:10px;"></div>
+        <div class="se-modal-actions">
+          <button class="se-btn-close" onclick="se_closeTestPanel()">关闭</button>
+        </div>
+      </div>
+    </div>
     <div id="se-module-info-overlay" class="se-overlay" onclick="se_closeModuleInfo()" style="display:none">
       <div class="se-modal" onclick="event.stopPropagation()">
         <div id="se-module-info-title" class="se-modal-title">模块说明</div>
@@ -354,6 +372,7 @@ async function initStrategyEditor() {
   document.getElementById('se-editor').value = saved || SE_DEFAULT_CODE;
   document.getElementById('se-guide-text').textContent = SE_GUIDE_TEXT;
   se_renderModuleInfo();
+  se_renderTestPanel();
   se_setPerformancePreset('today', false);
   se_updateRunningUI(false);
   se_updateTestButton();
@@ -757,8 +776,48 @@ function se_updateTestButton() {
   const btn = document.getElementById('se-btn-test');
   if (!btn) return;
   const running = _seTestStatus?.state === 'running';
-  btn.disabled = _seTestRunPending || running;
-  btn.textContent = running ? '测试中...' : (_seTestRunPending ? '启动中...' : '版本测试');
+  btn.disabled = false;
+  const label = _seTestStatus?.module_label || '版本测试';
+  btn.textContent = running ? `${label} 测试中...` : (_seTestRunPending ? '启动中...' : '版本测试入口');
+}
+
+function se_renderTestPanel() {
+  const container = document.getElementById('se-test-panel-content');
+  if (!container) return;
+  const running = _seTestStatus?.state === 'running';
+  const statusLabel = running
+    ? `运行中：${_seTestStatus?.module_label || '未知模块'}`
+    : `当前状态：${se_formatStateValue(_seTestStatus?.state || 'idle')}`;
+  const rows = SE_TEST_MODULES.map((item) => {
+    const active = item.key === _seTestSelectedModuleKey;
+    const style = active
+      ? 'border:1px solid #3f6fa1;background:#1b2b3a;color:#d7ecff;'
+      : 'border:1px solid #3a4553;background:#121923;color:#c8d3de;';
+    return `
+      <button
+        id="se-test-module-${item.key}"
+        onclick="se_runVersionTestByModule('${item.key}')"
+        style="text-align:left;padding:8px 10px;border-radius:6px;cursor:pointer;${style}"
+      >${item.label}</button>
+      <div style="font-size:11px;color:#8ea0b3;margin:-4px 0 6px 2px;">${item.hint}</div>
+    `;
+  }).join('');
+  container.innerHTML = `
+    <div style="font-size:12px;color:#9fb2c4;">${statusLabel}</div>
+    <div style="display:flex;flex-direction:column;gap:2px;">${rows}</div>
+  `;
+}
+
+function se_openTestPanel() {
+  const overlay = document.getElementById('se-test-panel-overlay');
+  if (!overlay) return;
+  se_renderTestPanel();
+  overlay.style.display = 'flex';
+}
+
+function se_closeTestPanel() {
+  const overlay = document.getElementById('se-test-panel-overlay');
+  if (overlay) overlay.style.display = 'none';
 }
 
 function se_makeTestTaskId() {
@@ -772,18 +831,20 @@ function se_makeTestTaskId() {
   return `${yy}${mm}${dd}_${hh}${mi}${ss}`;
 }
 
-async function se_runVersionTest() {
+async function se_runVersionTestByModule(moduleKey = 'allchain') {
   if (_seTestRunPending || _seTestStatus?.state === 'running') return;
+  _seTestSelectedModuleKey = moduleKey;
   _seTestRunPending = true;
   _seTestUserTriggered = true;
   _seTestRecoveredRunning = false;
   se_updateTestButton();
+  se_renderTestPanel();
   try {
     const taskId = se_makeTestTaskId();
     const res = await fetch(`${BASE_URL}/bot/test/run`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ task_id: taskId })
+      body: JSON.stringify({ task_id: taskId, module_key: moduleKey })
     });
     const data = await res.json();
     if (!res.ok && data?.already_running !== true) {
@@ -796,15 +857,17 @@ async function se_runVersionTest() {
       alert('版本测试已在运行中，请等待完成后再试。');
       return;
     }
-    se_appendLog('SYSTEM', `版本测试已启动 task_id=${taskId}`);
+    const moduleLabel = data?.status?.module_label || SE_TEST_MODULES.find((item) => item.key === moduleKey)?.label || moduleKey;
+    se_appendLog('SYSTEM', `模块测试已启动 module=${moduleLabel} task_id=${taskId}`);
     await se_pollTestRunner();
   } catch (err) {
     _seTestUserTriggered = false;
-    se_appendLog('ERROR', `版本测试启动失败: ${err.message}`);
-    alert(`版本测试启动失败: ${err.message}`);
+    se_appendLog('ERROR', `模块测试启动失败: ${err.message}`);
+    alert(`模块测试启动失败: ${err.message}`);
   } finally {
     _seTestRunPending = false;
     se_updateTestButton();
+    se_renderTestPanel();
   }
 }
 
@@ -821,6 +884,7 @@ function se_showTestResultModal(resultPayload) {
   const content = document.getElementById('se-test-result-content');
   if (!overlay || !title || !content) return;
   const summary = [
+    `module=${se_formatStateValue(_seTestStatus?.module_label || result?.module_key || _seTestSelectedModuleKey)}`,
     `total=${se_formatStateValue(result.total_scripts)}`,
     `pass=${se_formatStateValue(result.pass_count)}`,
     `fail=${se_formatStateValue(result.fail_count)}`,
@@ -828,7 +892,7 @@ function se_showTestResultModal(resultPayload) {
   ].join(' | ');
   const logTail = _seTestLogTail.slice(-20).join('\n');
   if (result.overall_pass === true) {
-    title.textContent = '版本测试通过';
+    title.textContent = '模块测试通过';
     content.textContent = [
       summary,
       '',
@@ -841,7 +905,7 @@ function se_showTestResultModal(resultPayload) {
       const message = item?.message || '无 message';
       return `${idx + 1}. ${name}\n   ${message}`;
     }).join('\n');
-    title.textContent = '版本测试失败';
+    title.textContent = '模块测试失败';
     content.textContent = [
       summary,
       '',
@@ -925,8 +989,12 @@ async function se_pollTestRunner() {
     const statusData = await statusRes.json();
     const status = statusData && typeof statusData === 'object' ? statusData : { state: 'idle' };
     _seTestStatus = status;
+    if (typeof status?.module_key === 'string' && status.module_key) {
+      _seTestSelectedModuleKey = status.module_key;
+    }
     if (status.state === 'running') _seTestRecoveredRunning = true;
     se_updateTestButton();
+    se_renderTestPanel();
     const logsRes = await fetch(`${BASE_URL}/bot/test/logs?limit=120`);
     const logsData = await logsRes.json();
     _seTestLogTail = Array.isArray(logsData?.lines) ? logsData.lines.slice(-80) : [];
