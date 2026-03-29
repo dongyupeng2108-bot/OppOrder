@@ -1,0 +1,12 @@
+{
+  "task_id": "260328_030",
+  "is_shallow_repo": true,
+  "base": "f1b5e8a477de95377628bdde780c54e9cfa37dc4",
+  "head": "4f1fbfe7a5df847cef6fdf2acc4d14dc0c431c6a",
+  "merge_base": "f1b5e8a477de95377628bdde780c54e9cfa37dc4",
+  "scope_files": [
+    "scripts/truth_audit_window_boundary_reset_260328_030.mjs"
+  ],
+  "scope_count": 1,
+  "generated_at": "2026-03-29T08:01:18.892Z"
+}
