@@ -1,0 +1,6 @@
+script_name=truth_audit_recovery_persistence_260328_031
+task_id=260328_031
+sample_name=real_runtime_restart+controlled_fill
+pass=false
+first_break_layer=A 重启恢复语义层
+message=恢复能力与持久化一致性审计失败

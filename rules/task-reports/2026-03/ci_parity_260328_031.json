@@ -1,0 +1,12 @@
+{
+  "task_id": "260328_031",
+  "is_shallow_repo": true,
+  "base": "3c3e0ea062d20549c6df33b8b5efb9a42296105a",
+  "head": "1791785f0fd03f639104358e3958447f6ec82105",
+  "merge_base": "3c3e0ea062d20549c6df33b8b5efb9a42296105a",
+  "scope_files": [
+    "scripts/truth_audit_recovery_persistence_260328_031.mjs"
+  ],
+  "scope_count": 1,
+  "generated_at": "2026-03-29T08:21:14.093Z"
+}
