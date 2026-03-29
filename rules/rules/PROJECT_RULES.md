@@ -25,6 +25,7 @@
 - 最小修复：修复任务仅改目标链路，禁止顺手扩范围
 - 停止即回报：命中熔断立即停，先回报再切下一步
 - 流程强度匹配风险：高风险任务走重验收链，低风险任务走轻模板，避免流程吞噬主要开发时间
+- 分层口径锁定：仅使用“轻任务 / 重任务”，禁止新增 T1/T2/T3 等分级名词
 
 ## 3. 高风险不变量
 
@@ -43,6 +44,13 @@
 - 若 real 与 debug 分叉，结论必须解释分叉层，不得“用 debug 代替 real”
 - 当前阶段原则：暂停新功能扩展，优先修真实运行 bug + 稳定版本测试 + 保持 UI 简洁可用
 - 开发优先级：先稳，再扩；先真实运行主链，再扩功能
+
+## 4.1 最小验证硬规则（非纯测试任务）
+
+- 任何非纯测试任务，执行者必须做与任务直接相关的最小验证
+- 修复任务至少包含 1 组 Fail -> Pass
+- 若涉及运行语义，必须包含 1 组 real runtime 样本
+- 不得只交代码改动，不交验证事实
 
 ## 5. 测试体系规则
 
@@ -95,6 +103,35 @@
 - Gate Light / CI 作为合并前硬门禁
 - 禁止通过删减校验项“绕过通过”
 - 仅引用文件名/路径不算主证据，关键事实必须进入回报正文最小事实块
+- 完整 Integrate 前，必须先过本地 Fast Gate（语法 / LATEST / scope / 必要证据存在性）
+- 重任务中途禁止反复 Integrate：
+  - Dev阶段只做实现 + 本地验证 + 目标链最小样本
+  - Integrate阶段只在提审前最后一次运行 finalize + gate
+- 重任务默认最小提交集：
+  - 结论块、唯一 first_break_layer、Fail -> Pass 主证据、1组 real runtime 连续样本、至少 2 条不回退项、notify/result、必要 manifest/index、改 server 时 healthcheck
+- 轻任务默认最小提交集：
+  - 相关文件语法检查、修前 1 条 / 修后 1 条最小事实块、finalize/gate 通过结果
+
+## 7.1 轻任务 / 重任务 mandatory 收口
+
+- 轻任务 mandatory：
+  - 相关文件语法检查
+  - 最小事实块（修前 1 条、修后 1 条）
+  - `finalize_task_evidence`
+  - `gate_light_ci`
+- 重任务 mandatory：
+  - 唯一 first_break_layer
+  - 1组 Fail -> Pass 主证据
+  - 1组 real runtime 连续样本
+  - 至少 2 条不回退项
+  - 改 server 时附 `GET /` 与 `GET /pairs`
+  - 提审前最后一次性跑 `finalize_task_evidence + gate_light_ci`
+
+## 7.2 生效时点（260329_006）
+
+- 本 Workflow Upgrade Task 合并后，下一条新任务起立即执行
+- 不设观察期
+- 已在执行中的任务不做半途切换
 
 ## 8. 变更边界
 
