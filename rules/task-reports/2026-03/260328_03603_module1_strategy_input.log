@@ -1,0 +1,7 @@
+task_id=260328_03603
+overall_pass=true
+module=module1
+verify_strategy_runtime_regression_guard|pass=true|sample=real_runtime_regression_guard_v1|evidence=E:\OppRadar\rules\task-reports\2026-03\260328_03603_strategy_runtime_regression_guard.json
+truth_audit_recovery_persistence|pass=true|sample=fail_to_pass_recovery_fix|evidence=E:\OppRadar\rules\task-reports\2026-03\260328_03603_truth_audit_recovery_persistence.json
+truth_audit_formula_engine_fix|pass=true|sample=dangerous_expr_fix+isolation+runtime_perf|evidence=E:\OppRadar\rules\task-reports\2026-03\260328_03603_truth_audit_formula_engine_fix.json
+truth_audit_observability_consistency|pass=true|sample=reason_intents_summary_evidence_consistency_v1|evidence=E:\OppRadar\rules\task-reports\2026-03\260328_03603_truth_audit_observability_consistency.json

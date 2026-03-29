@@ -1,0 +1,6 @@
+script_name=truth_audit_formula_engine_fix_260328_034
+task_id=260328_03603
+sample_name=dangerous_expr_fix+isolation+runtime_perf
+pass=true
+first_break_layer=null
+message=公式边界修复验收通过

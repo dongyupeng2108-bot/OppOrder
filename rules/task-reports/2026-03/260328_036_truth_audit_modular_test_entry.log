@@ -1,0 +1,6 @@
+script_name=truth_audit_modular_test_entry_260328_036
+task_id=260328_036
+sample_name=ui_panel_module_mapping_and_execution_v1
+pass=true
+first_break_layer=null
+message=模块化测试入口审计通过

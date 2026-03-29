@@ -126,6 +126,8 @@ let botAccountSnapshotCachedAt = 0;
 let botTestRunnerState = {
   state: BOT_TEST_STATE_IDLE,
   task_id: null,
+  module_key: 'allchain',
+  module_label: '全链测试',
   run_id: null,
   started_at: null,
   finished_at: null,
@@ -159,6 +161,8 @@ const appendBotTestRunnerLog = (text) => {
 const getBotTestStatusSnapshot = () => ({
   state: botTestRunnerState.state,
   task_id: botTestRunnerState.task_id,
+  module_key: botTestRunnerState.module_key,
+  module_label: botTestRunnerState.module_label,
   started_at: botTestRunnerState.started_at,
   finished_at: botTestRunnerState.finished_at,
   overall_pass: botTestRunnerState.overall_pass,
@@ -168,9 +172,22 @@ const getBotTestStatusSnapshot = () => ({
   run_id: botTestRunnerState.run_id,
   last_error: botTestRunnerState.last_error
 });
-const launchBotTestRun = ({ taskId, simulateFail = false }) => {
+const BOT_TEST_MODULE_LABELS = {
+  module1: '模块1 策略与输入',
+  module2: '模块2 执行引擎',
+  module3: '模块3 实时监控',
+  module4: '模块4 运行结果',
+  module5: '模块5 版本测试/保障',
+  allchain: '全链测试'
+};
+const launchBotTestRun = ({ taskId, simulateFail = false, moduleKey = 'allchain' }) => {
   if (botTestRunnerState.state === BOT_TEST_STATE_RUNNING) {
     return { ok: true, started: false, already_running: true, status: getBotTestStatusSnapshot() };
+  }
+  const normalizedModuleKey = String(moduleKey || 'allchain').toLowerCase();
+  const moduleLabel = BOT_TEST_MODULE_LABELS[normalizedModuleKey];
+  if (!moduleLabel) {
+    return { ok: false, started: false, already_running: false, error: `unsupported module_key=${normalizedModuleKey}` };
   }
   ensureBotTestRunnerDir();
   const startedAt = new Date().toISOString();
@@ -182,6 +199,8 @@ const launchBotTestRun = ({ taskId, simulateFail = false }) => {
     ...botTestRunnerState,
     state: BOT_TEST_STATE_RUNNING,
     task_id: taskId,
+    module_key: normalizedModuleKey,
+    module_label: moduleLabel,
     run_id: runId,
     started_at: startedAt,
     finished_at: null,
@@ -192,13 +211,13 @@ const launchBotTestRun = ({ taskId, simulateFail = false }) => {
     last_error: null,
     child: null
   };
-  appendBotTestRunnerLog(`[${startedAt}] start task_id=${taskId}\n`);
+  appendBotTestRunnerLog(`[${startedAt}] start task_id=${taskId} module_key=${normalizedModuleKey}\n`);
   const env = { ...process.env };
   if (simulateFail) {
     env.VERIFY_ALL_FORCE_FAIL = '1';
     appendBotTestRunnerLog(`[${startedAt}] simulate_fail=true\n`);
   }
-  const child = spawn(process.execPath, ['scripts/verify_all_manual.mjs', `--task_id=${taskId}`], {
+  const child = spawn(process.execPath, ['scripts/verify_all_manual.mjs', `--task_id=${taskId}`, `--module=${normalizedModuleKey}`], {
     cwd: BOT_TEST_REPO_ROOT,
     env,
     stdio: ['ignore', 'pipe', 'pipe']
@@ -246,7 +265,7 @@ const launchBotTestRun = ({ taskId, simulateFail = false }) => {
       finished_at: finishedAt,
       overall_pass: overallPass,
       current_step: 'finished',
-      last_error: overallPass ? null : `verify_all_manual exit code ${code ?? 1}`,
+      last_error: overallPass ? null : `verify_all_manual(${normalizedModuleKey}) exit code ${code ?? 1}`,
       child: null
     };
   });
@@ -2218,7 +2237,12 @@ const server = createServer(async (req, res) => {
         const taskIdRaw = String(payload?.task_id || '').trim();
         const taskId = taskIdRaw || `${new Date().toISOString().slice(2, 10).replace(/-/g, '')}_900`;
         const simulateFail = payload?.simulate_fail === true;
-        const started = launchBotTestRun({ taskId, simulateFail });
+        const moduleKey = String(payload?.module_key || 'allchain').trim().toLowerCase();
+        const started = launchBotTestRun({ taskId, simulateFail, moduleKey });
+        if (started.ok === false) {
+          sendJson(res, started, 400);
+          return;
+        }
         sendJson(res, started, started.started ? 200 : 409);
       } catch (err) {
         sendJson(res, { ok: false, error: err.message }, 500);

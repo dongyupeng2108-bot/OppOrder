@@ -1,0 +1,16 @@
+task_id=260328_03602
+overall_pass=false
+total=11
+pass_count=10
+fail_count=1
+verify_btc_source_chain|pass=true|message=BTC source 链路通过|evidence=E:\OppRadar\rules\task-reports\2026-03\260328_03602_btc_source_chain.json
+verify_context_truth|pass=true|message=context truth 校验通过|evidence=E:\OppRadar\rules\task-reports\2026-03\260328_03602_context_truth.json
+verify_window_lifecycle|pass=true|message=window lifecycle 校验通过|evidence=E:\OppRadar\rules\task-reports\2026-03\260328_03602_window_lifecycle.json
+verify_anchor_bounds_lifecycle|pass=true|message=anchor freeze 与 bounds-ready 解耦通过|evidence=E:\OppRadar\rules\task-reports\2026-03\260328_03602_anchor_bounds_lifecycle.json
+verify_executor_idempotency|pass=true|message=executor idempotency 校验通过|evidence=E:\OppRadar\rules\task-reports\2026-03\260328_03602_executor_idempotency.json
+verify_result_chain_consistency|pass=true|message=result chain 一致性校验通过|evidence=E:\OppRadar\rules\task-reports\2026-03\260328_03602_result_chain_consistency.json
+verify_order_scope_and_status|pass=true|message=order scope / status 语义校验通过|evidence=E:\OppRadar\rules\task-reports\2026-03\260328_03602_order_scope_and_status.json
+verify_pnl_chain_consistency|pass=false|message=pnl chain 一致性校验失败|evidence=E:\OppRadar\rules\task-reports\2026-03\260328_03602_pnl_chain_consistency.json
+verify_config_effect_chain|pass=true|message=config effect chain 校验通过|evidence=E:\OppRadar\rules\task-reports\2026-03\260328_03602_config_effect_chain.json
+verify_runtime_to_business_result|pass=true|message=runtime -> business result 整链校验通过|evidence=E:\OppRadar\rules\task-reports\2026-03\260328_03602_runtime_to_business_result.json
+verify_strategy_runtime_regression_guard|pass=true|message=strategy/runtime regression guard 通过|evidence=E:\OppRadar\rules\task-reports\2026-03\260328_03602_strategy_runtime_regression_guard.json
