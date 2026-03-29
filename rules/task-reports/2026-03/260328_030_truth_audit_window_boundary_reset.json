@@ -1,0 +1,339 @@
+{
+  "script_name": "truth_audit_window_boundary_reset_260328_030",
+  "task_id": "260328_030",
+  "sample_name": "controlled_window_switch+real_runtime_boundary",
+  "pass": true,
+  "message": "窗口边界与状态重置审计通过",
+  "first_break_layer": null,
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260328_030_truth_audit_window_boundary_reset.json",
+  "summary": {
+    "conclusion": "A：窗口边界与状态重置可靠",
+    "total_checks": 4,
+    "pass_checks": 4,
+    "fail_checks": 0,
+    "checks": {
+      "030-A_formula_debounce_reset_after_window_change": true,
+      "030-B_old_window_order_state_no_pollution": true,
+      "030-C_boundary_critical_seconds_no_double_action": true,
+      "030-D_old_cancel_state_not_pollute_new_window_first_decision": true
+    }
+  },
+  "raw_excerpt": {
+    "health_root": 200,
+    "health_pairs": 404,
+    "case030A_formula_hits": [
+      "up_cancel_formula",
+      "within_bounds_or_no_trigger",
+      "up_cancel_formula"
+    ],
+    "case030C_armed_remaining_sec": 2,
+    "case030C_switched": true,
+    "case030C_dual_tick_window_action": false
+  },
+  "generated_at": "2026-03-29T08:00:04.233Z",
+  "command": "node scripts/truth_audit_window_boundary_reset_260328_030.mjs --task_id=260328_030 --sample=controlled_window_switch+real_runtime_boundary",
+  "conclusion_block": {
+    "verdict": "A：窗口边界与状态重置可靠",
+    "first_break_layer": null
+  },
+  "key_counters": {
+    "total_checks": 4,
+    "pass_checks": 4,
+    "fail_checks": 0
+  },
+  "evidence_index": {
+    "healthcheck": {
+      "root": 200,
+      "pairs": 404
+    },
+    "case_030A": {
+      "ticks": [
+        {
+          "label": "A1_place",
+          "reason": "ladder_not_posted",
+          "intents_summary": "PLACE_LADDER(YES|0.31:2:0.35,0.29:1:0.33) + PLACE_LADDER(NO|0.02:3:0.03,0.015:1:0.025)",
+          "state_before": {
+            "current_window_id": "audit-wA",
+            "last_window_id": null,
+            "yes_cancelled": false,
+            "no_cancelled": false,
+            "up_formula_cancelled": false,
+            "down_formula_cancelled": false,
+            "yes_order_ids_len": 0,
+            "no_order_ids_len": 0
+          },
+          "state_after": {
+            "current_window_id": "audit-wA",
+            "last_window_id": null,
+            "yes_cancelled": false,
+            "no_cancelled": false,
+            "up_formula_cancelled": false,
+            "down_formula_cancelled": false,
+            "yes_order_ids_len": 2,
+            "no_order_ids_len": 2
+          },
+          "order_summary": {
+            "open_total": 4,
+            "open_yes": 2,
+            "open_no": 2,
+            "cancelled_total": 0
+          }
+        },
+        {
+          "label": "A2_formula_cancel",
+          "reason": "up_cancel_formula",
+          "intents_summary": "CANCEL_OPEN(YES)",
+          "state_before": {
+            "current_window_id": "audit-wA",
+            "last_window_id": null,
+            "yes_cancelled": false,
+            "no_cancelled": false,
+            "up_formula_cancelled": false,
+            "down_formula_cancelled": false,
+            "yes_order_ids_len": 2,
+            "no_order_ids_len": 2
+          },
+          "state_after": {
+            "current_window_id": "audit-wA",
+            "last_window_id": null,
+            "yes_cancelled": true,
+            "no_cancelled": false,
+            "up_formula_cancelled": true,
+            "down_formula_cancelled": false,
+            "yes_order_ids_len": 0,
+            "no_order_ids_len": 2
+          },
+          "order_summary": {
+            "open_total": 2,
+            "open_yes": 0,
+            "open_no": 2,
+            "cancelled_total": 2
+          }
+        },
+        {
+          "label": "A3_same_window_no_retrigger",
+          "reason": "within_bounds_or_no_trigger",
+          "intents_summary": "NOOP",
+          "state_before": {
+            "current_window_id": "audit-wA",
+            "last_window_id": null,
+            "yes_cancelled": true,
+            "no_cancelled": false,
+            "up_formula_cancelled": true,
+            "down_formula_cancelled": false,
+            "yes_order_ids_len": 0,
+            "no_order_ids_len": 2
+          },
+          "state_after": {
+            "current_window_id": "audit-wA",
+            "last_window_id": null,
+            "yes_cancelled": true,
+            "no_cancelled": false,
+            "up_formula_cancelled": true,
+            "down_formula_cancelled": false,
+            "yes_order_ids_len": 0,
+            "no_order_ids_len": 2
+          },
+          "order_summary": {
+            "open_total": 2,
+            "open_yes": 0,
+            "open_no": 2,
+            "cancelled_total": 2
+          }
+        },
+        {
+          "label": "B1_new_window_first_decision",
+          "reason": "ladder_not_posted",
+          "intents_summary": "PLACE_LADDER(YES|0.31:2:0.35,0.29:1:0.33) + PLACE_LADDER(NO|0.02:3:0.03,0.015:1:0.025)",
+          "state_before": {
+            "current_window_id": "audit-wB",
+            "last_window_id": "audit-wA",
+            "yes_cancelled": false,
+            "no_cancelled": false,
+            "up_formula_cancelled": false,
+            "down_formula_cancelled": false,
+            "yes_order_ids_len": 0,
+            "no_order_ids_len": 0
+          },
+          "state_after": {
+            "current_window_id": "audit-wB",
+            "last_window_id": "audit-wA",
+            "yes_cancelled": false,
+            "no_cancelled": false,
+            "up_formula_cancelled": false,
+            "down_formula_cancelled": false,
+            "yes_order_ids_len": 2,
+            "no_order_ids_len": 2
+          },
+          "order_summary": {
+            "open_total": 6,
+            "open_yes": 2,
+            "open_no": 4,
+            "cancelled_total": 2
+          }
+        },
+        {
+          "label": "B2_new_window_formula_cancel",
+          "reason": "up_cancel_formula",
+          "intents_summary": "CANCEL_OPEN(YES)",
+          "state_before": {
+            "current_window_id": "audit-wB",
+            "last_window_id": "audit-wA",
+            "yes_cancelled": false,
+            "no_cancelled": false,
+            "up_formula_cancelled": false,
+            "down_formula_cancelled": false,
+            "yes_order_ids_len": 2,
+            "no_order_ids_len": 2
+          },
+          "state_after": {
+            "current_window_id": "audit-wB",
+            "last_window_id": "audit-wA",
+            "yes_cancelled": true,
+            "no_cancelled": false,
+            "up_formula_cancelled": true,
+            "down_formula_cancelled": false,
+            "yes_order_ids_len": 0,
+            "no_order_ids_len": 2
+          },
+          "order_summary": {
+            "open_total": 4,
+            "open_yes": 0,
+            "open_no": 4,
+            "cancelled_total": 4
+          }
+        }
+      ],
+      "pass": true
+    },
+    "case_030B": {
+      "windowA_residual_open_no_len": 2,
+      "windowB_state_before_no_order_ids_len": 0,
+      "windowB_first_reason": "ladder_not_posted",
+      "pass": true
+    },
+    "case_030C": {
+      "old_window_id": "btc-updown-5m-1774770900",
+      "new_window_id": "btc-updown-5m-1774771200",
+      "armed_remaining_sec": 2,
+      "switched": true,
+      "dual_tick_window_action": false,
+      "runtime_boundary_sample": [
+        {
+          "i": 532,
+          "sampled_at": "2026-03-29T07:59:53.190Z",
+          "last_tick_at": "2026-03-29T07:59:52.872Z",
+          "current_window_id": "btc-updown-5m-1774770900",
+          "remaining_sec": 7,
+          "last_reason": "price_or_bounds_null"
+        },
+        {
+          "i": 534,
+          "sampled_at": "2026-03-29T07:59:54.110Z",
+          "last_tick_at": "2026-03-29T07:59:53.936Z",
+          "current_window_id": "btc-updown-5m-1774770900",
+          "remaining_sec": 6,
+          "last_reason": "price_or_bounds_null"
+        },
+        {
+          "i": 536,
+          "sampled_at": "2026-03-29T07:59:55.038Z",
+          "last_tick_at": "2026-03-29T07:59:54.892Z",
+          "current_window_id": "btc-updown-5m-1774770900",
+          "remaining_sec": 5,
+          "last_reason": "price_or_bounds_null"
+        },
+        {
+          "i": 539,
+          "sampled_at": "2026-03-29T07:59:56.410Z",
+          "last_tick_at": "2026-03-29T07:59:55.954Z",
+          "current_window_id": "btc-updown-5m-1774770900",
+          "remaining_sec": 4,
+          "last_reason": "price_or_bounds_null"
+        },
+        {
+          "i": 541,
+          "sampled_at": "2026-03-29T07:59:57.329Z",
+          "last_tick_at": "2026-03-29T07:59:56.896Z",
+          "current_window_id": "btc-updown-5m-1774770900",
+          "remaining_sec": 3,
+          "last_reason": "price_or_bounds_null"
+        },
+        {
+          "i": 543,
+          "sampled_at": "2026-03-29T07:59:58.256Z",
+          "last_tick_at": "2026-03-29T07:59:57.973Z",
+          "current_window_id": "btc-updown-5m-1774770900",
+          "remaining_sec": 2,
+          "last_reason": "price_or_bounds_null"
+        },
+        {
+          "i": 545,
+          "sampled_at": "2026-03-29T07:59:59.173Z",
+          "last_tick_at": "2026-03-29T07:59:58.911Z",
+          "current_window_id": "btc-updown-5m-1774770900",
+          "remaining_sec": 1,
+          "last_reason": "price_or_bounds_null"
+        },
+        {
+          "i": 547,
+          "sampled_at": "2026-03-29T08:00:00.090Z",
+          "last_tick_at": "2026-03-29T07:59:59.972Z",
+          "current_window_id": "btc-updown-5m-1774770900",
+          "remaining_sec": 0,
+          "last_reason": "down_cancel_before_end"
+        },
+        {
+          "i": 549,
+          "sampled_at": "2026-03-29T08:00:00.996Z",
+          "last_tick_at": "2026-03-29T08:00:00.915Z",
+          "current_window_id": "btc-updown-5m-1774770900",
+          "remaining_sec": 0,
+          "last_reason": "remaining_sec<=cancel_all_remaining_sec"
+        },
+        {
+          "i": 552,
+          "sampled_at": "2026-03-29T08:00:02.374Z",
+          "last_tick_at": "2026-03-29T08:00:01.979Z",
+          "current_window_id": "btc-updown-5m-1774771200",
+          "remaining_sec": 298,
+          "last_reason": "ladder_not_posted"
+        },
+        {
+          "i": 554,
+          "sampled_at": "2026-03-29T08:00:03.295Z",
+          "last_tick_at": "2026-03-29T08:00:02.930Z",
+          "current_window_id": "btc-updown-5m-1774771200",
+          "remaining_sec": 297,
+          "last_reason": "up_cancel_formula"
+        },
+        {
+          "i": 556,
+          "sampled_at": "2026-03-29T08:00:04.226Z",
+          "last_tick_at": "2026-03-29T08:00:04.010Z",
+          "current_window_id": "btc-updown-5m-1774771200",
+          "remaining_sec": 295,
+          "last_reason": "price_or_bounds_null"
+        }
+      ],
+      "pass": true
+    },
+    "case_030D": {
+      "windowA_after_formula_state": {
+        "yes_cancelled": true,
+        "up_formula_cancelled": true
+      },
+      "windowB_first_state_before": {
+        "yes_cancelled": false,
+        "up_formula_cancelled": false
+      },
+      "pass": true
+    }
+  },
+  "result": {
+    "030-A_formula_debounce_reset_after_window_change": true,
+    "030-B_old_window_order_state_no_pollution": true,
+    "030-C_boundary_critical_seconds_no_double_action": true,
+    "030-D_old_cancel_state_not_pollute_new_window_first_decision": true
+  }
+}
