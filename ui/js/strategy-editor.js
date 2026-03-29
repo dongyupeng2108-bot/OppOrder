@@ -194,7 +194,7 @@ async function initStrategyEditor() {
                 <col style="width:14%">
                 <col style="width:20%">
               </colgroup>
-              <thead><tr><th>类型</th><th>方向</th><th>价格</th><th>状态</th><th>数量</th><th>PnL</th></tr></thead>
+              <thead><tr><th>类型</th><th>方向</th><th>价格</th><th>状态</th><th>数量</th><th>平仓价</th></tr></thead>
               <tbody id="se-order-body">
                 <tr><td colspan="6" style="color:#555;text-align:center">暂无</td></tr>
               </tbody>
@@ -545,8 +545,8 @@ function se_addLadderRow() {
   se_syncActiveTabFromForm();
   const key = `${_seParamActiveTab}_ladder`;
   const rows = _seParamDraft[key] || [];
-  const last = rows[rows.length - 1] || { price: 0.2, size: 1, tp_price: 0.2 };
-  rows.push({ price: Number(last.price), size: Number(last.size), tp_price: Number(last.tp_price) });
+  const last = rows[rows.length - 1] || { price: 0.2, size: 1, tp_price: 1 };
+  rows.push({ price: Number(last.price), size: Number(last.size), tp_price: 1 });
   _seParamDraft[key] = rows;
   se_renderActiveTabPanel();
 }
@@ -1496,8 +1496,10 @@ function se_renderOrders(orders, status) {
     const priceCell = `${orderPriceText}<div style="font-size:11px;color:#aaa;">fill:${fillPriceText}</div>`;
     const typeLabel = o.kind === 'EXIT' ? '平仓' : (o.kind === 'ENTRY' ? '挂单' : se_formatStateValue(o.kind));
     const statusLabel = o.status === 'FILLED' ? '成交' : (o.status === 'CANCELLED' ? '撤单' : (o.status === 'OPEN' ? '挂单' : se_formatStateValue(o.status)));
-    const pnlCell = o.pnl != null ? o.pnl : '—';
-    return `<tr><td>${typeLabel}</td><td>${se_formatStateValue(o.side)}</td><td>${priceCell}</td><td style="color:${statusColor}">${statusLabel}</td><td>${se_formatStateValue(o.size)}</td><td>${se_formatStateValue(pnlCell)}</td></tr>`;
+    const tpPriceText = typeof o.tp_price === 'number' ? o.tp_price.toFixed(3) : '--';
+    const closePriceText = typeof o.fill_price === 'number' ? o.fill_price.toFixed(3) : tpPriceText;
+    const closeCell = `${closePriceText}<div style="font-size:11px;color:#aaa;">tp:${tpPriceText}</div>`;
+    return `<tr><td>${typeLabel}</td><td>${se_formatStateValue(o.side)}</td><td>${priceCell}</td><td style="color:${statusColor}">${statusLabel}</td><td>${se_formatStateValue(o.size)}</td><td>${closeCell}</td></tr>`;
   });
   tbody.innerHTML = rows.length
     ? rows.join('')
