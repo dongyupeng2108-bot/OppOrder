@@ -1,0 +1,6 @@
+script_name=truth_audit_config_activation_atomicity_260328_029
+task_id=260328_029
+sample_name=real_runtime+debug_controlled
+pass=true
+first_break_layer=null
+message=配置生效语义与保存原子性审计通过
