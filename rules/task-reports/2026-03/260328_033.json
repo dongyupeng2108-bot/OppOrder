@@ -1,13 +1,32 @@
 {
   "task_id": "260328_033",
-  "timestamp": "2026-03-29T10:06:36.985Z",
+  "timestamp": "2026-03-29T10:06:57.425Z",
   "valid": true,
   "errors": [],
   "checks": {
-    "local_finalize": "PASS"
+    "smoke_test": "PASS",
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
   },
   "context": {
-    "result_file": "rules/task-reports/2026-03/result_260328_033.json",
-    "notify_file": "rules/task-reports/2026-03/notify_260328_033.txt"
+    "resultData": {
+      "task_id": "260328_033",
+      "status": "DONE",
+      "mode": "LOCAL",
+      "dod_evidence": {
+        "healthcheck": [
+          "260328_033_healthcheck_53122_root.txt",
+          "260328_033_healthcheck_53122_pairs.txt"
+        ],
+        "gate_light_exit": 0
+      },
+      "summary": "Automation Pack V1 Validation for Task 260328_033",
+      "report_file": "notify_260328_033.txt",
+      "report_sha256_short": "d49afb0f"
+    }
   }
 }
