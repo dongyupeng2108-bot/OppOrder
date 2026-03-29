@@ -88,18 +88,216 @@ const computeFormulaVars = ({ context, state, prices }) => {
     lower_bound: prices.lowerBound ?? -1
   };
 };
+const FORMULA_ALLOWED_IDENTIFIERS = [
+  'secs_left',
+  'spread',
+  'volatility_ratio',
+  'has_open_up_orders',
+  'has_open_down_orders',
+  'btc_price',
+  'upper_bound',
+  'lower_bound'
+];
+const FORMULA_ALLOWED_IDENTIFIER_SET = new Set(FORMULA_ALLOWED_IDENTIFIERS);
+const FORMULA_MAX_LENGTH = 240;
+const createFormulaEvalResult = ({ hit, ok, code, message }) => ({
+  hit: hit === true,
+  ok: ok === true,
+  code: code || 'EVAL_ERROR',
+  message: typeof message === 'string' ? message : null,
+  allowed_identifiers: [...FORMULA_ALLOWED_IDENTIFIERS]
+});
+const parseFormulaError = (code, message) => {
+  const err = new Error(message || code);
+  err.code = code;
+  return err;
+};
+const tokenizeFormula = (text) => {
+  const tokens = [];
+  let i = 0;
+  while (i < text.length) {
+    const ch = text[i];
+    if (/\s/.test(ch)) {
+      i += 1;
+      continue;
+    }
+    if (/[0-9]/.test(ch) || (ch === '.' && /[0-9]/.test(text[i + 1] || ''))) {
+      let j = i + 1;
+      while (j < text.length && /[0-9.]/.test(text[j])) j += 1;
+      const raw = text.slice(i, j);
+      if (!/^\d+(\.\d+)?$|^\.\d+$/.test(raw)) {
+        throw parseFormulaError('INVALID_NUMBER', `invalid number: ${raw}`);
+      }
+      tokens.push({ kind: 'number', value: Number(raw) });
+      i = j;
+      continue;
+    }
+    if (/[A-Za-z_]/.test(ch)) {
+      let j = i + 1;
+      while (j < text.length && /[A-Za-z0-9_]/.test(text[j])) j += 1;
+      const name = text.slice(i, j);
+      tokens.push({ kind: 'identifier', value: name });
+      i = j;
+      continue;
+    }
+    const op3 = text.slice(i, i + 3);
+    if (op3 === '===' || op3 === '!==') {
+      tokens.push({ kind: 'operator', value: op3 });
+      i += 3;
+      continue;
+    }
+    const op2 = text.slice(i, i + 2);
+    if (['&&', '||', '>=', '<=', '==', '!='].includes(op2)) {
+      tokens.push({ kind: 'operator', value: op2 });
+      i += 2;
+      continue;
+    }
+    if (['(', ')', '+', '-', '*', '/', '%', '!', '<', '>'].includes(ch)) {
+      tokens.push({ kind: 'operator', value: ch });
+      i += 1;
+      continue;
+    }
+    throw parseFormulaError('INVALID_CHARACTER', `invalid character: ${ch}`);
+  }
+  return tokens;
+};
+const evaluateFormulaTokens = (tokens, vars) => {
+  let idx = 0;
+  const peek = () => tokens[idx] || null;
+  const consume = () => {
+    const token = tokens[idx] || null;
+    idx += 1;
+    return token;
+  };
+  const matchOperator = (...ops) => {
+    const token = peek();
+    if (!token || token.kind !== 'operator' || !ops.includes(token.value)) return null;
+    return consume();
+  };
+  const readPrimary = () => {
+    const token = peek();
+    if (!token) throw parseFormulaError('SYNTAX_ERROR', 'unexpected end of formula');
+    if (token.kind === 'number') {
+      consume();
+      return token.value;
+    }
+    if (token.kind === 'identifier') {
+      consume();
+      if (token.value === 'true') return true;
+      if (token.value === 'false') return false;
+      if (!FORMULA_ALLOWED_IDENTIFIER_SET.has(token.value)) {
+        throw parseFormulaError('IDENTIFIER_NOT_ALLOWED', `identifier not allowed: ${token.value}`);
+      }
+      return vars[token.value];
+    }
+    if (matchOperator('(')) {
+      const value = readOr();
+      if (!matchOperator(')')) throw parseFormulaError('SYNTAX_ERROR', 'missing closing parenthesis');
+      return value;
+    }
+    throw parseFormulaError('SYNTAX_ERROR', `unexpected token: ${token.value}`);
+  };
+  const readUnary = () => {
+    const op = matchOperator('!', '+', '-');
+    if (!op) return readPrimary();
+    const value = readUnary();
+    if (op.value === '!') return !value;
+    if (op.value === '+') return +value;
+    return -value;
+  };
+  const readMul = () => {
+    let value = readUnary();
+    while (true) {
+      const op = matchOperator('*', '/', '%');
+      if (!op) break;
+      const right = readUnary();
+      if (op.value === '*') value = value * right;
+      else if (op.value === '/') value = value / right;
+      else value = value % right;
+    }
+    return value;
+  };
+  const readAdd = () => {
+    let value = readMul();
+    while (true) {
+      const op = matchOperator('+', '-');
+      if (!op) break;
+      const right = readMul();
+      if (op.value === '+') value = value + right;
+      else value = value - right;
+    }
+    return value;
+  };
+  const readCompare = () => {
+    let value = readAdd();
+    while (true) {
+      const op = matchOperator('<', '>', '<=', '>=');
+      if (!op) break;
+      const right = readAdd();
+      if (op.value === '<') value = value < right;
+      else if (op.value === '>') value = value > right;
+      else if (op.value === '<=') value = value <= right;
+      else value = value >= right;
+    }
+    return value;
+  };
+  const readEquality = () => {
+    let value = readCompare();
+    while (true) {
+      const op = matchOperator('==', '!=', '===', '!==');
+      if (!op) break;
+      const right = readCompare();
+      if (op.value === '==') value = value == right;
+      else if (op.value === '!=') value = value != right;
+      else if (op.value === '===') value = value === right;
+      else value = value !== right;
+    }
+    return value;
+  };
+  const readAnd = () => {
+    let value = readEquality();
+    while (matchOperator('&&')) {
+      const right = readEquality();
+      value = Boolean(value && right);
+    }
+    return value;
+  };
+  const readOr = () => {
+    let value = readAnd();
+    while (matchOperator('||')) {
+      const right = readAnd();
+      value = Boolean(value || right);
+    }
+    return value;
+  };
+  const output = readOr();
+  if (idx < tokens.length) {
+    throw parseFormulaError('SYNTAX_ERROR', `unexpected token: ${tokens[idx].value}`);
+  }
+  return output;
+};
 const evaluateCancelFormula = (formula, vars) => {
-  if (typeof formula !== 'string') return false;
+  if (typeof formula !== 'string') {
+    return createFormulaEvalResult({ hit: false, ok: false, code: 'FORMULA_NOT_STRING', message: 'formula is not a string' });
+  }
   const text = formula.trim();
-  if (!text) return false;
-  if (text.length > 240) return false;
-  if (!/^[\w\s()+\-*/%<>=!&|.:]+$/.test(text)) return false;
-  const keys = Object.keys(vars);
-  const values = keys.map((key) => vars[key]);
+  if (!text) {
+    return createFormulaEvalResult({ hit: false, ok: false, code: 'FORMULA_EMPTY', message: 'formula is empty' });
+  }
+  if (text.length > FORMULA_MAX_LENGTH) {
+    return createFormulaEvalResult({ hit: false, ok: false, code: 'FORMULA_TOO_LONG', message: `formula length > ${FORMULA_MAX_LENGTH}` });
+  }
   try {
-    return Boolean(Function(...keys, `'use strict'; return (${text});`)(...values));
-  } catch {
-    return false;
+    const tokens = tokenizeFormula(text);
+    const value = evaluateFormulaTokens(tokens, vars);
+    return createFormulaEvalResult({ hit: Boolean(value), ok: true, code: 'OK', message: null });
+  } catch (err) {
+    return createFormulaEvalResult({
+      hit: false,
+      ok: false,
+      code: err?.code || 'EVAL_ERROR',
+      message: err?.message || 'formula evaluation failed'
+    });
   }
 };
 
@@ -139,12 +337,14 @@ export function decideBotAction(inputOrContext = {}, maybeState = {}) {
   const upCancel = parseCancelConfig(config?.up_cancel, cancelAllRemainingSec);
   const downCancel = parseCancelConfig(config?.down_cancel, cancelAllRemainingSec);
   const formulaVars = computeFormulaVars({ context, state, prices });
+  const upFormulaEval = evaluateCancelFormula(upCancel.formula, formulaVars);
+  const downFormulaEval = evaluateCancelFormula(downCancel.formula, formulaVars);
   const hasOpenUpOrders = formulaVars.has_open_up_orders;
   const hasOpenDownOrders = formulaVars.has_open_down_orders;
   const upBeforeEndHit = remainingSec !== null && remainingSec <= upCancel.before_end_sec;
   const downBeforeEndHit = remainingSec !== null && remainingSec <= downCancel.before_end_sec;
-  const upFormulaHit = evaluateCancelFormula(upCancel.formula, formulaVars);
-  const downFormulaHit = evaluateCancelFormula(downCancel.formula, formulaVars);
+  const upFormulaHit = upFormulaEval.hit === true;
+  const downFormulaHit = downFormulaEval.hit === true;
   const canTriggerUpFormula = state?.up_formula_cancelled !== true;
   const canTriggerDownFormula = state?.down_formula_cancelled !== true;
   const wantCancelUpFormula = hasOpenUpOrders && canTriggerUpFormula && upFormulaHit;
@@ -173,7 +373,10 @@ export function decideBotAction(inputOrContext = {}, maybeState = {}) {
     config_down_ladder: downLadder,
     config_up_cancel: upCancel,
     config_down_cancel: downCancel,
+    formula_allowed_identifiers: [...FORMULA_ALLOWED_IDENTIFIERS],
     formula_vars: formulaVars,
+    up_formula_eval: upFormulaEval,
+    down_formula_eval: downFormulaEval,
     trigger_up_before_end: upBeforeEndHit,
     trigger_down_before_end: downBeforeEndHit,
     trigger_up_formula: upFormulaHit,
