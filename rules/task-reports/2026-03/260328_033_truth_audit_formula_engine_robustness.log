@@ -1,0 +1,6 @@
+script_name=truth_audit_formula_engine_robustness_260328_033
+task_id=260328_033
+sample_name=syntax+undefined+dangerous+isolation+runtime_perf
+pass=false
+first_break_layer=C 变量白名单与危险表达式边界层
+message=公式引擎健壮性审计失败
