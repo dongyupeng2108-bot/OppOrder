@@ -1153,6 +1153,48 @@ function se_setText(id, value) {
   if (el) el.textContent = se_formatStateValue(value);
 }
 
+function se_formatWindowDisplayName(windowId) {
+  const raw = windowId == null ? '' : String(windowId).trim();
+  if (!raw) return 'N/A (null)';
+  const match = raw.match(/-(\d+)m-(\d{10})$/);
+  if (!match) return raw;
+  const minutes = Number(match[1]);
+  const startSec = Number(match[2]);
+  if (!Number.isFinite(minutes) || !Number.isFinite(startSec) || minutes <= 0) return raw;
+  const start = new Date(startSec * 1000);
+  const end = new Date((startSec + minutes * 60) * 1000);
+  if (!Number.isFinite(start.getTime()) || !Number.isFinite(end.getTime())) return raw;
+  const tz = 'America/New_York';
+  const dateText = new Intl.DateTimeFormat('en-US', {
+    timeZone: tz,
+    month: 'long',
+    day: 'numeric'
+  }).format(start);
+  const timeParts = (date) => {
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone: tz,
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    }).formatToParts(date);
+    const obj = {};
+    for (const p of parts) obj[p.type] = p.value;
+    return {
+      hour: obj.hour || '',
+      minute: obj.minute || '00',
+      dayPeriod: String(obj.dayPeriod || '').toUpperCase()
+    };
+  };
+  const startParts = timeParts(start);
+  const endParts = timeParts(end);
+  const endClock = endParts.minute === '00' ? endParts.hour : `${endParts.hour}:${endParts.minute}`;
+  const startClock = `${startParts.hour}:${startParts.minute}`;
+  const range = startParts.dayPeriod === endParts.dayPeriod
+    ? `${startClock}-${endClock}${endParts.dayPeriod}`
+    : `${startClock}${startParts.dayPeriod}-${endClock}${endParts.dayPeriod}`;
+  return `${dateText}, ${range} ET`;
+}
+
 function se_renderPmAccountInfo(account) {
   const pickNumber = (...values) => {
     for (const value of values) {
@@ -1298,7 +1340,7 @@ function se_renderOverview(status, summary, ordersData, postmortemPayload) {
   const stopReasonText = stopReasonRaw === 'AUTO_COMPLETED'
     ? '自动完成'
     : (stopReasonRaw === 'MANUAL_STOP' ? '手动停止' : (stopReasonRaw || '暂无'));
-  se_setText('se-log-current-window', postmortem?.window_id || lastRun?.current_window_id);
+  se_setText('se-log-current-window', se_formatWindowDisplayName(postmortem?.window_id || lastRun?.current_window_id));
   const paramSummary = savedConfig
     ? `开盘等待 ${se_formatStateValue(savedConfig.open_delay_sec)} 秒 · 波动 ${se_formatStateValue(savedConfig.atr_multiple)} · 全撤 ${se_formatStateValue(savedConfig.cancel_all_remaining_sec)} 秒`
     : '参数尚未加载';
