@@ -1,0 +1,14 @@
+{
+  "task_id": "260329_005",
+  "is_shallow_repo": true,
+  "base": "f13ab301bfd6b8b2362e7d850a5b43c9c05742d2",
+  "head": "211a6d4b1a6a908686f5fbc3a056e7a95e3bc207",
+  "merge_base": "f13ab301bfd6b8b2362e7d850a5b43c9c05742d2",
+  "scope_files": [
+    "scripts/truth_audit_tp1_save_and_close_price_table_260329_005.mjs",
+    "strategies/crypto_binary/server.mjs",
+    "ui/js/strategy-editor.js"
+  ],
+  "scope_count": 3,
+  "generated_at": "2026-03-29T17:40:13.238Z"
+}
