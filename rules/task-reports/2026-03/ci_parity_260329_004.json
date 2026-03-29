@@ -1,0 +1,13 @@
+{
+  "task_id": "260329_004",
+  "is_shallow_repo": true,
+  "base": "b2ffd72eec3694da45b70c92b4623565ccc4e4f7",
+  "head": "454292e09f85bef5f8e4aa0f26fc67d0f4939f4f",
+  "merge_base": "b2ffd72eec3694da45b70c92b4623565ccc4e4f7",
+  "scope_files": [
+    "scripts/truth_audit_start_wait_next_window_260329_004.mjs",
+    "strategies/crypto_binary/bot_runner.mjs"
+  ],
+  "scope_count": 2,
+  "generated_at": "2026-03-29T17:17:00.823Z"
+}
