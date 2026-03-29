@@ -1,0 +1,6 @@
+script_name=truth_audit_recovery_persistence_260328_031
+task_id=260328_032
+sample_name=fail_to_pass_recovery_fix
+pass=true
+first_break_layer=null
+message=恢复能力与持久化一致性审计通过
