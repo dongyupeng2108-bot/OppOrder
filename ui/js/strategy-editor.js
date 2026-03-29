@@ -1091,7 +1091,7 @@ async function se_poll() {
     } catch (err) {
       accountData = null;
     }
-    se_renderContext(contextData, status);
+    se_renderContext(contextData, status, ordersData);
     se_renderOverview(status, summaryData, ordersData, postmortemData);
     se_renderPerformance(performanceData, status);
     se_renderPmAccountInfo(accountData?.account || null);
@@ -1264,7 +1264,7 @@ function se_renderDecision(status, context, preview, ordersData, previewError) {
   if (!isRunning) return;
 }
 
-function se_renderContext(context, status) {
+function se_renderContext(context, status, orders) {
   const running = status?.running === true;
   const toFinite = (value) => {
     if (value === null || value === undefined || value === '') return null;
@@ -1279,14 +1279,17 @@ function se_renderContext(context, status) {
     const num = toFinite(value);
     return num === null ? emptyText : num.toFixed(3);
   };
-  const upProb = toFinite(context?.bid_yes ?? context?.ask_yes);
-  const downProb = toFinite(context?.bid_no ?? context?.ask_no);
+  const scopedContext = orders?.context_snapshot && typeof orders.context_snapshot === 'object'
+    ? orders.context_snapshot
+    : context;
+  const upProb = toFinite(scopedContext?.bid_yes ?? scopedContext?.ask_yes);
+  const downProb = toFinite(scopedContext?.bid_no ?? scopedContext?.ask_no);
   const upDownText = (upProb !== null && downProb !== null)
     ? `UP ${formatFixed3(upProb)} / DOWN ${formatFixed3(downProb)}`
     : '—';
-  se_setText('se-order-btc', formatFixed1(context?.btc_price));
+  se_setText('se-order-btc', formatFixed1(scopedContext?.btc_price));
   se_setText('se-order-updown-prob', upDownText);
-  se_setText('se-order-volatility', formatFixed3(context?.atr_5m));
+  se_setText('se-order-volatility', formatFixed3(scopedContext?.atr_5m));
   if (!running) {
     se_setText('se-runtime-note', '当前未运行；启动后将显示关键执行状态。');
     return;

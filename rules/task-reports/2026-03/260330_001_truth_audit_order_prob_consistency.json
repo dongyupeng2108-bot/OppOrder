@@ -1,0 +1,716 @@
+{
+  "script_name": "truth_audit_order_prob_consistency_260330_001",
+  "task_id": "260330_001",
+  "sample_name": "owner_screenshot_consistency_v1",
+  "pass": true,
+  "message": "订单状态与概率显示一致性修复通过",
+  "first_break_layer": null,
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_001_truth_audit_order_prob_consistency.json",
+  "summary": {
+    "conclusion": "A：当前窗口订单状态与UP/DOWN概率显示口径已收口",
+    "total_checks": 6,
+    "pass_checks": 6,
+    "fail_checks": 0,
+    "checks": {
+      "001-A_pre_fix_prob_head_uses_live_context_not_order_snapshot": true,
+      "001-B_pre_fix_owner_scene_can_show_snapshot_mismatch_risk": true,
+      "001-C_post_fix_same_tick_prob_and_order_status_are_consistent": true,
+      "001-D_post_fix_min_regression_script_for_owner_scene_passed": true,
+      "001-E_non_regression_260329_004_wait_next_window": true,
+      "001-F_non_regression_260329_007_260329_008_kept": true
+    }
+  },
+  "raw_excerpt": {
+    "unique_first_break_layer": "4. 概率显示快照层",
+    "pre_fix_old_ui_updown": "UP 0.970 / DOWN 0.020",
+    "post_fix_new_ui_updown": "UP 0.400 / DOWN 0.900",
+    "owner_rows": [
+      {
+        "order_id": "paper_7bff5931",
+        "kind": "ENTRY",
+        "side": "YES",
+        "status": "OPEN",
+        "price": 0.4,
+        "fill_price": null,
+        "tp_price": 0.85,
+        "parent_order_id": null,
+        "resolved_window_id": "w-owner"
+      },
+      {
+        "order_id": "paper_cef053ae",
+        "kind": "ENTRY",
+        "side": "NO",
+        "status": "FILLED",
+        "price": 0.4,
+        "fill_price": 0.3,
+        "tp_price": 0.9,
+        "parent_order_id": null,
+        "resolved_window_id": "w-owner"
+      },
+      {
+        "order_id": "paper_a77169b5",
+        "kind": "TAKE_PROFIT",
+        "side": "NO",
+        "status": "OPEN",
+        "price": 0.9,
+        "fill_price": null,
+        "tp_price": 0.9,
+        "parent_order_id": "paper_cef053ae",
+        "resolved_window_id": "w-owner"
+      }
+    ],
+    "owner_snapshot": {
+      "window_id": "w-owner",
+      "last_window_id": null,
+      "slug": "btc-updown-5m-1774825500",
+      "period": "5m",
+      "remaining_sec": 245,
+      "btc_price": 65385.2,
+      "anchor_btc": 65000,
+      "atr_5m": 90,
+      "upper_bound": 70000,
+      "lower_bound": 60000,
+      "bid_yes": 0.97,
+      "ask_yes": 0.97,
+      "bid_no": 0.02,
+      "ask_no": 0.3,
+      "tick_size": 0.01,
+      "stale": false,
+      "updated_at": "2026-03-29T23:08:06.016Z",
+      "_btc_source_trace": {
+        "source_init_started": true,
+        "source_init_error": null,
+        "source_feed_seen": true,
+        "source_feed_count": 1,
+        "source_last_feed_at": "2026-03-29T23:08:06.016Z",
+        "latest_cache_price": 65986.27,
+        "latest_cache_at": "2026-03-29T23:08:06.016Z",
+        "latest_cache_source": "rest_binance",
+        "price_resolution": {
+          "kind": "cache",
+          "used_strike_raw": null,
+          "used_anchor_fallback_raw": null
+        },
+        "atr_resolution": {
+          "window_atr_5m_raw": null,
+          "window_atr_raw": null,
+          "state_atr_5m_raw": 90,
+          "resolved_atr_5m": 90
+        }
+      }
+    },
+    "runtime_stages": [
+      {
+        "stage": "after_place",
+        "rows": [
+          {
+            "order_id": "paper_2743636c",
+            "kind": "ENTRY",
+            "side": "YES",
+            "status": "OPEN",
+            "price": 0.4,
+            "fill_price": null,
+            "tp_price": 0.85,
+            "parent_order_id": null,
+            "resolved_window_id": "w-rt"
+          },
+          {
+            "order_id": "paper_646ff8df",
+            "kind": "ENTRY",
+            "side": "NO",
+            "status": "OPEN",
+            "price": 0.4,
+            "fill_price": null,
+            "tp_price": 0.9,
+            "parent_order_id": null,
+            "resolved_window_id": "w-rt"
+          }
+        ],
+        "snapshot": {
+          "window_id": "w-rt",
+          "last_window_id": "btc-updown-5m-1774825500",
+          "slug": "btc-updown-5m-1774825500",
+          "period": "5m",
+          "remaining_sec": 250,
+          "btc_price": 65385.2,
+          "anchor_btc": null,
+          "atr_5m": 90,
+          "upper_bound": 70000,
+          "lower_bound": 60000,
+          "bid_yes": 0.95,
+          "ask_yes": 0.99,
+          "bid_no": 0.01,
+          "ask_no": 0.99,
+          "tick_size": 0.01,
+          "stale": false,
+          "updated_at": "2026-03-29T23:08:08.342Z",
+          "_btc_source_trace": {
+            "source_init_started": true,
+            "source_init_error": null,
+            "source_feed_seen": true,
+            "source_feed_count": 2,
+            "source_last_feed_at": "2026-03-29T23:08:07.836Z",
+            "latest_cache_price": 65992.63,
+            "latest_cache_at": "2026-03-29T23:08:07.836Z",
+            "latest_cache_source": "rest_binance",
+            "price_resolution": {
+              "kind": "cache",
+              "used_strike_raw": null,
+              "used_anchor_fallback_raw": null
+            },
+            "atr_resolution": {
+              "window_atr_5m_raw": null,
+              "window_atr_raw": null,
+              "state_atr_5m_raw": null,
+              "resolved_atr_5m": null
+            }
+          }
+        }
+      },
+      {
+        "stage": "after_fill",
+        "rows": [
+          {
+            "order_id": "paper_2743636c",
+            "kind": "ENTRY",
+            "side": "YES",
+            "status": "OPEN",
+            "price": 0.4,
+            "fill_price": null,
+            "tp_price": 0.85,
+            "parent_order_id": null,
+            "resolved_window_id": "w-rt"
+          },
+          {
+            "order_id": "paper_646ff8df",
+            "kind": "ENTRY",
+            "side": "NO",
+            "status": "FILLED",
+            "price": 0.4,
+            "fill_price": 0.3,
+            "tp_price": 0.9,
+            "parent_order_id": null,
+            "resolved_window_id": "w-rt"
+          },
+          {
+            "order_id": "paper_eaa43644",
+            "kind": "TAKE_PROFIT",
+            "side": "NO",
+            "status": "OPEN",
+            "price": 0.9,
+            "fill_price": null,
+            "tp_price": 0.9,
+            "parent_order_id": "paper_646ff8df",
+            "resolved_window_id": "w-rt"
+          }
+        ],
+        "snapshot": {
+          "window_id": "w-rt",
+          "last_window_id": "btc-updown-5m-1774825500",
+          "slug": "btc-updown-5m-1774825500",
+          "period": "5m",
+          "remaining_sec": 245,
+          "btc_price": 65385.2,
+          "anchor_btc": 65000,
+          "atr_5m": 90,
+          "upper_bound": 70000,
+          "lower_bound": 60000,
+          "bid_yes": 0.97,
+          "ask_yes": 0.97,
+          "bid_no": 0.02,
+          "ask_no": 0.3,
+          "tick_size": 0.01,
+          "stale": false,
+          "updated_at": "2026-03-29T23:08:08.342Z",
+          "_btc_source_trace": {
+            "source_init_started": true,
+            "source_init_error": null,
+            "source_feed_seen": true,
+            "source_feed_count": 2,
+            "source_last_feed_at": "2026-03-29T23:08:07.836Z",
+            "latest_cache_price": 65992.63,
+            "latest_cache_at": "2026-03-29T23:08:07.836Z",
+            "latest_cache_source": "rest_binance",
+            "price_resolution": {
+              "kind": "cache",
+              "used_strike_raw": null,
+              "used_anchor_fallback_raw": null
+            },
+            "atr_resolution": {
+              "window_atr_5m_raw": null,
+              "window_atr_raw": null,
+              "state_atr_5m_raw": 90,
+              "resolved_atr_5m": 90
+            }
+          }
+        }
+      },
+      {
+        "stage": "after_stable",
+        "rows": [
+          {
+            "order_id": "paper_2743636c",
+            "kind": "ENTRY",
+            "side": "YES",
+            "status": "OPEN",
+            "price": 0.4,
+            "fill_price": null,
+            "tp_price": 0.85,
+            "parent_order_id": null,
+            "resolved_window_id": "w-rt"
+          },
+          {
+            "order_id": "paper_646ff8df",
+            "kind": "ENTRY",
+            "side": "NO",
+            "status": "FILLED",
+            "price": 0.4,
+            "fill_price": 0.3,
+            "tp_price": 0.9,
+            "parent_order_id": null,
+            "resolved_window_id": "w-rt"
+          },
+          {
+            "order_id": "paper_eaa43644",
+            "kind": "TAKE_PROFIT",
+            "side": "NO",
+            "status": "OPEN",
+            "price": 0.9,
+            "fill_price": null,
+            "tp_price": 0.9,
+            "parent_order_id": "paper_646ff8df",
+            "resolved_window_id": "w-rt"
+          }
+        ],
+        "snapshot": {
+          "window_id": "w-rt",
+          "last_window_id": "btc-updown-5m-1774825500",
+          "slug": "btc-updown-5m-1774825500",
+          "period": "5m",
+          "remaining_sec": 240,
+          "btc_price": 65385.2,
+          "anchor_btc": 65000,
+          "atr_5m": 90,
+          "upper_bound": 70000,
+          "lower_bound": 60000,
+          "bid_yes": 0.97,
+          "ask_yes": 0.97,
+          "bid_no": 0.02,
+          "ask_no": 0.3,
+          "tick_size": 0.01,
+          "stale": false,
+          "updated_at": "2026-03-29T23:08:08.342Z",
+          "_btc_source_trace": {
+            "source_init_started": true,
+            "source_init_error": null,
+            "source_feed_seen": true,
+            "source_feed_count": 2,
+            "source_last_feed_at": "2026-03-29T23:08:07.836Z",
+            "latest_cache_price": 65992.63,
+            "latest_cache_at": "2026-03-29T23:08:07.836Z",
+            "latest_cache_source": "rest_binance",
+            "price_resolution": {
+              "kind": "cache",
+              "used_strike_raw": null,
+              "used_anchor_fallback_raw": null
+            },
+            "atr_resolution": {
+              "window_atr_5m_raw": null,
+              "window_atr_raw": null,
+              "state_atr_5m_raw": 90,
+              "resolved_atr_5m": 90
+            }
+          }
+        }
+      }
+    ]
+  },
+  "generated_at": "2026-03-29T23:08:08.705Z",
+  "command": "node scripts/truth_audit_order_prob_consistency_260330_001.mjs --task_id=260330_001 --sample=owner_screenshot_consistency_v1",
+  "conclusion_block": {
+    "verdict": "A：当前窗口订单状态与UP/DOWN概率显示口径已收口",
+    "first_break_layer": null
+  },
+  "key_counters": {
+    "total_checks": 6,
+    "pass_checks": 6,
+    "fail_checks": 0
+  },
+  "evidence_index": {
+    "pre_fix_fact": {
+      "unique_first_break_layer": "4. 概率显示快照层",
+      "old_ui_context_only": true,
+      "old_server_orders_no_context_snapshot": true,
+      "old_ui_updown_text": "UP 0.970 / DOWN 0.020"
+    },
+    "owner_scene_fact": {
+      "rows": [
+        {
+          "order_id": "paper_7bff5931",
+          "kind": "ENTRY",
+          "side": "YES",
+          "status": "OPEN",
+          "price": 0.4,
+          "fill_price": null,
+          "tp_price": 0.85,
+          "parent_order_id": null,
+          "resolved_window_id": "w-owner"
+        },
+        {
+          "order_id": "paper_cef053ae",
+          "kind": "ENTRY",
+          "side": "NO",
+          "status": "FILLED",
+          "price": 0.4,
+          "fill_price": 0.3,
+          "tp_price": 0.9,
+          "parent_order_id": null,
+          "resolved_window_id": "w-owner"
+        },
+        {
+          "order_id": "paper_a77169b5",
+          "kind": "TAKE_PROFIT",
+          "side": "NO",
+          "status": "OPEN",
+          "price": 0.9,
+          "fill_price": null,
+          "tp_price": 0.9,
+          "parent_order_id": "paper_cef053ae",
+          "resolved_window_id": "w-owner"
+        }
+      ],
+      "orders_context_snapshot": {
+        "window_id": "w-owner",
+        "last_window_id": null,
+        "slug": "btc-updown-5m-1774825500",
+        "period": "5m",
+        "remaining_sec": 245,
+        "btc_price": 65385.2,
+        "anchor_btc": 65000,
+        "atr_5m": 90,
+        "upper_bound": 70000,
+        "lower_bound": 60000,
+        "bid_yes": 0.97,
+        "ask_yes": 0.97,
+        "bid_no": 0.02,
+        "ask_no": 0.3,
+        "tick_size": 0.01,
+        "stale": false,
+        "updated_at": "2026-03-29T23:08:06.016Z",
+        "_btc_source_trace": {
+          "source_init_started": true,
+          "source_init_error": null,
+          "source_feed_seen": true,
+          "source_feed_count": 1,
+          "source_last_feed_at": "2026-03-29T23:08:06.016Z",
+          "latest_cache_price": 65986.27,
+          "latest_cache_at": "2026-03-29T23:08:06.016Z",
+          "latest_cache_source": "rest_binance",
+          "price_resolution": {
+            "kind": "cache",
+            "used_strike_raw": null,
+            "used_anchor_fallback_raw": null
+          },
+          "atr_resolution": {
+            "window_atr_5m_raw": null,
+            "window_atr_raw": null,
+            "state_atr_5m_raw": 90,
+            "resolved_atr_5m": 90
+          }
+        }
+      },
+      "live_context": {
+        "window_id": "btc-updown-5m-1774825500",
+        "last_window_id": null,
+        "slug": "btc-updown-5m-1774825500",
+        "period": "5m",
+        "remaining_sec": 113,
+        "btc_price": 65986.27,
+        "anchor_btc": 65000,
+        "atr_5m": 90,
+        "upper_bound": 70000,
+        "lower_bound": 60000,
+        "bid_yes": null,
+        "ask_yes": null,
+        "bid_no": null,
+        "ask_no": null,
+        "tick_size": 0.01,
+        "stale": false,
+        "updated_at": "2026-03-29T23:08:06.016Z",
+        "_btc_source_trace": {
+          "source_init_started": true,
+          "source_init_error": null,
+          "source_feed_seen": true,
+          "source_feed_count": 1,
+          "source_last_feed_at": "2026-03-29T23:08:06.016Z",
+          "latest_cache_price": 65986.27,
+          "latest_cache_at": "2026-03-29T23:08:06.016Z",
+          "latest_cache_source": "rest_binance",
+          "price_resolution": {
+            "kind": "cache",
+            "used_strike_raw": null,
+            "used_anchor_fallback_raw": null
+          },
+          "atr_resolution": {
+            "window_atr_5m_raw": null,
+            "window_atr_raw": null,
+            "state_atr_5m_raw": 90,
+            "resolved_atr_5m": 90
+          }
+        }
+      },
+      "window_scope": {
+        "scope": "none",
+        "running": false,
+        "active_window_id": "w-owner",
+        "display_window_id": null,
+        "label": "当前无可展示窗口订单",
+        "ownership_rule": "无当前活动窗口且无可展示上一窗口订单"
+      }
+    },
+    "real_runtime_fact": {
+      "wait_next_window_reason_seen": true,
+      "stages": [
+        {
+          "stage": "after_place",
+          "rows": [
+            {
+              "order_id": "paper_2743636c",
+              "kind": "ENTRY",
+              "side": "YES",
+              "status": "OPEN",
+              "price": 0.4,
+              "fill_price": null,
+              "tp_price": 0.85,
+              "parent_order_id": null,
+              "resolved_window_id": "w-rt"
+            },
+            {
+              "order_id": "paper_646ff8df",
+              "kind": "ENTRY",
+              "side": "NO",
+              "status": "OPEN",
+              "price": 0.4,
+              "fill_price": null,
+              "tp_price": 0.9,
+              "parent_order_id": null,
+              "resolved_window_id": "w-rt"
+            }
+          ],
+          "snapshot": {
+            "window_id": "w-rt",
+            "last_window_id": "btc-updown-5m-1774825500",
+            "slug": "btc-updown-5m-1774825500",
+            "period": "5m",
+            "remaining_sec": 250,
+            "btc_price": 65385.2,
+            "anchor_btc": null,
+            "atr_5m": 90,
+            "upper_bound": 70000,
+            "lower_bound": 60000,
+            "bid_yes": 0.95,
+            "ask_yes": 0.99,
+            "bid_no": 0.01,
+            "ask_no": 0.99,
+            "tick_size": 0.01,
+            "stale": false,
+            "updated_at": "2026-03-29T23:08:08.342Z",
+            "_btc_source_trace": {
+              "source_init_started": true,
+              "source_init_error": null,
+              "source_feed_seen": true,
+              "source_feed_count": 2,
+              "source_last_feed_at": "2026-03-29T23:08:07.836Z",
+              "latest_cache_price": 65992.63,
+              "latest_cache_at": "2026-03-29T23:08:07.836Z",
+              "latest_cache_source": "rest_binance",
+              "price_resolution": {
+                "kind": "cache",
+                "used_strike_raw": null,
+                "used_anchor_fallback_raw": null
+              },
+              "atr_resolution": {
+                "window_atr_5m_raw": null,
+                "window_atr_raw": null,
+                "state_atr_5m_raw": null,
+                "resolved_atr_5m": null
+              }
+            }
+          }
+        },
+        {
+          "stage": "after_fill",
+          "rows": [
+            {
+              "order_id": "paper_2743636c",
+              "kind": "ENTRY",
+              "side": "YES",
+              "status": "OPEN",
+              "price": 0.4,
+              "fill_price": null,
+              "tp_price": 0.85,
+              "parent_order_id": null,
+              "resolved_window_id": "w-rt"
+            },
+            {
+              "order_id": "paper_646ff8df",
+              "kind": "ENTRY",
+              "side": "NO",
+              "status": "FILLED",
+              "price": 0.4,
+              "fill_price": 0.3,
+              "tp_price": 0.9,
+              "parent_order_id": null,
+              "resolved_window_id": "w-rt"
+            },
+            {
+              "order_id": "paper_eaa43644",
+              "kind": "TAKE_PROFIT",
+              "side": "NO",
+              "status": "OPEN",
+              "price": 0.9,
+              "fill_price": null,
+              "tp_price": 0.9,
+              "parent_order_id": "paper_646ff8df",
+              "resolved_window_id": "w-rt"
+            }
+          ],
+          "snapshot": {
+            "window_id": "w-rt",
+            "last_window_id": "btc-updown-5m-1774825500",
+            "slug": "btc-updown-5m-1774825500",
+            "period": "5m",
+            "remaining_sec": 245,
+            "btc_price": 65385.2,
+            "anchor_btc": 65000,
+            "atr_5m": 90,
+            "upper_bound": 70000,
+            "lower_bound": 60000,
+            "bid_yes": 0.97,
+            "ask_yes": 0.97,
+            "bid_no": 0.02,
+            "ask_no": 0.3,
+            "tick_size": 0.01,
+            "stale": false,
+            "updated_at": "2026-03-29T23:08:08.342Z",
+            "_btc_source_trace": {
+              "source_init_started": true,
+              "source_init_error": null,
+              "source_feed_seen": true,
+              "source_feed_count": 2,
+              "source_last_feed_at": "2026-03-29T23:08:07.836Z",
+              "latest_cache_price": 65992.63,
+              "latest_cache_at": "2026-03-29T23:08:07.836Z",
+              "latest_cache_source": "rest_binance",
+              "price_resolution": {
+                "kind": "cache",
+                "used_strike_raw": null,
+                "used_anchor_fallback_raw": null
+              },
+              "atr_resolution": {
+                "window_atr_5m_raw": null,
+                "window_atr_raw": null,
+                "state_atr_5m_raw": 90,
+                "resolved_atr_5m": 90
+              }
+            }
+          }
+        },
+        {
+          "stage": "after_stable",
+          "rows": [
+            {
+              "order_id": "paper_2743636c",
+              "kind": "ENTRY",
+              "side": "YES",
+              "status": "OPEN",
+              "price": 0.4,
+              "fill_price": null,
+              "tp_price": 0.85,
+              "parent_order_id": null,
+              "resolved_window_id": "w-rt"
+            },
+            {
+              "order_id": "paper_646ff8df",
+              "kind": "ENTRY",
+              "side": "NO",
+              "status": "FILLED",
+              "price": 0.4,
+              "fill_price": 0.3,
+              "tp_price": 0.9,
+              "parent_order_id": null,
+              "resolved_window_id": "w-rt"
+            },
+            {
+              "order_id": "paper_eaa43644",
+              "kind": "TAKE_PROFIT",
+              "side": "NO",
+              "status": "OPEN",
+              "price": 0.9,
+              "fill_price": null,
+              "tp_price": 0.9,
+              "parent_order_id": "paper_646ff8df",
+              "resolved_window_id": "w-rt"
+            }
+          ],
+          "snapshot": {
+            "window_id": "w-rt",
+            "last_window_id": "btc-updown-5m-1774825500",
+            "slug": "btc-updown-5m-1774825500",
+            "period": "5m",
+            "remaining_sec": 240,
+            "btc_price": 65385.2,
+            "anchor_btc": 65000,
+            "atr_5m": 90,
+            "upper_bound": 70000,
+            "lower_bound": 60000,
+            "bid_yes": 0.97,
+            "ask_yes": 0.97,
+            "bid_no": 0.02,
+            "ask_no": 0.3,
+            "tick_size": 0.01,
+            "stale": false,
+            "updated_at": "2026-03-29T23:08:08.342Z",
+            "_btc_source_trace": {
+              "source_init_started": true,
+              "source_init_error": null,
+              "source_feed_seen": true,
+              "source_feed_count": 2,
+              "source_last_feed_at": "2026-03-29T23:08:07.836Z",
+              "latest_cache_price": 65992.63,
+              "latest_cache_at": "2026-03-29T23:08:07.836Z",
+              "latest_cache_source": "rest_binance",
+              "price_resolution": {
+                "kind": "cache",
+                "used_strike_raw": null,
+                "used_anchor_fallback_raw": null
+              },
+              "atr_resolution": {
+                "window_atr_5m_raw": null,
+                "window_atr_raw": null,
+                "state_atr_5m_raw": 90,
+                "resolved_atr_5m": 90
+              }
+            }
+          }
+        }
+      ]
+    },
+    "ui_render_compare_fact": {
+      "pre_fix_old_ui_updown": "UP 0.970 / DOWN 0.020",
+      "post_fix_new_ui_updown": "UP 0.400 / DOWN 0.900"
+    },
+    "healthcheck": {
+      "root": 200,
+      "pairs": 404
+    }
+  },
+  "result": {
+    "001-A_pre_fix_prob_head_uses_live_context_not_order_snapshot": true,
+    "001-B_pre_fix_owner_scene_can_show_snapshot_mismatch_risk": true,
+    "001-C_post_fix_same_tick_prob_and_order_status_are_consistent": true,
+    "001-D_post_fix_min_regression_script_for_owner_scene_passed": true,
+    "001-E_non_regression_260329_004_wait_next_window": true,
+    "001-F_non_regression_260329_007_260329_008_kept": true
+  }
+}
