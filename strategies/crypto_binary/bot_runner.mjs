@@ -85,6 +85,8 @@ export function createBotRunner(options = {}) {
   let timerRef = null;
   let tickInProgress = false;
   const executedPlaceIntentByWindow = new Map();
+  let startupWindowGateMode = 'inactive';
+  let startupWindowGateId = null;
 
   const getRuntimeState = () => ({
     running,
@@ -104,6 +106,41 @@ export function createBotRunner(options = {}) {
     state = mergeOverride(state, params.state_override);
 
     const lifecycleWindowId = context.window_id ?? null;
+    if (startupWindowGateMode === 'pending') {
+      if (lifecycleWindowId === null) {
+        startupWindowGateMode = 'open';
+      } else {
+        startupWindowGateMode = 'wait_next_window';
+        startupWindowGateId = lifecycleWindowId;
+        log({
+          level: 'info',
+          source: 'bot_runner',
+          event: 'BOT_STARTUP_WAIT_NEXT_WINDOW',
+          message: `startup observed active window ${lifecycleWindowId}, waiting next window`,
+          mode: state.mode ?? null,
+          window_id: lifecycleWindowId,
+          data: { startup_window_id: lifecycleWindowId }
+        });
+      }
+    }
+    if (
+      startupWindowGateMode === 'wait_next_window'
+      && lifecycleWindowId !== null
+      && lifecycleWindowId !== startupWindowGateId
+    ) {
+      const releasedFrom = startupWindowGateId;
+      startupWindowGateMode = 'open';
+      startupWindowGateId = null;
+      log({
+        level: 'info',
+        source: 'bot_runner',
+        event: 'BOT_STARTUP_WAIT_RELEASED',
+        message: `startup wait released on new window ${lifecycleWindowId}`,
+        mode: state.mode ?? null,
+        window_id: lifecycleWindowId,
+        data: { startup_window_id: releasedFrom, active_window_id: lifecycleWindowId }
+      });
+    }
     const prevWindowId = state.current_window_id ?? null;
     if (lifecycleWindowId !== prevWindowId) {
       const resetPatch = options.createWindowResetPatch
@@ -199,12 +236,15 @@ export function createBotRunner(options = {}) {
     const gateByBtcNotReady = currentWindowPresent && hasActionIntent && !btcReady;
     const gateByWindowNotInitialized = currentWindowPresent && hasActionIntent && !state.window_initialized_at;
     const gateByBoundsNotReady = currentWindowPresent && boundsDependentIntent && !boundsReady;
-    const shouldGate = gateByBtcNotReady || gateByWindowNotInitialized || gateByBoundsNotReady;
-    const gatedReason = gateByBtcNotReady
+    const gateByStartupWait = startupWindowGateMode === 'wait_next_window';
+    const shouldGate = gateByStartupWait || gateByBtcNotReady || gateByWindowNotInitialized || gateByBoundsNotReady;
+    const gatedReason = gateByStartupWait
+      ? 'wait_next_window_after_start'
+      : (gateByBtcNotReady
       ? 'gate_context_not_ready_btc_price'
       : (gateByWindowNotInitialized
         ? 'gate_context_not_ready_window_init'
-        : (gateByBoundsNotReady ? 'gate_context_not_ready_bounds' : null));
+        : (gateByBoundsNotReady ? 'gate_context_not_ready_bounds' : null)));
     const decision = shouldGate
       ? {
           intents: [{ kind: 'NOOP' }],
@@ -217,7 +257,9 @@ export function createBotRunner(options = {}) {
             gate_current_window_present: currentWindowPresent,
             gate_btc_ready: btcReady,
             gate_bounds_ready: boundsReady,
-            gate_window_initialized: Boolean(state.window_initialized_at)
+            gate_window_initialized: Boolean(state.window_initialized_at),
+            gate_startup_wait_active: gateByStartupWait,
+            gate_startup_window_id: startupWindowGateId
           }
         }
       : decisionRaw;
@@ -323,6 +365,7 @@ export function createBotRunner(options = {}) {
         mode: state.mode ?? null,
         window_id: contextForDecision.window_id ?? null,
         data: {
+          startup_wait_active: gateByStartupWait,
           btc_ready: btcReady,
           bounds_ready: boundsReady,
           window_initialized: Boolean(state.window_initialized_at)
@@ -424,6 +467,8 @@ export function createBotRunner(options = {}) {
     }
     tickIntervalMs = tickMs;
     running = true;
+    startupWindowGateMode = 'pending';
+    startupWindowGateId = null;
     publishRuntime();
     log({
       level: 'info',
@@ -448,6 +493,8 @@ export function createBotRunner(options = {}) {
       return { already_stopped: true, ...getRuntimeState() };
     }
     running = false;
+    startupWindowGateMode = 'inactive';
+    startupWindowGateId = null;
     if (timerRef) {
       clearInterval(timerRef);
       timerRef = null;
