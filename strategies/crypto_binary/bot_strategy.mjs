@@ -61,9 +61,11 @@ const normalizeLadderRows = (rows, fallbackPrices, fallbackSize) => {
 const parseCancelConfig = (value, fallbackBeforeEndSec) => {
   const beforeEndSec = toNonNegativeIntegerOrNull(value?.before_end_sec);
   const formula = typeof value?.formula === 'string' ? value.formula.trim() : '';
+  const beforeEndSource = beforeEndSec === null ? 'global_fallback' : 'explicit';
   return {
     before_end_sec: beforeEndSec ?? fallbackBeforeEndSec,
-    formula
+    formula,
+    before_end_source: beforeEndSource
   };
 };
 const computeFormulaVars = ({ context, state, prices }) => {
@@ -353,6 +355,22 @@ export function decideBotAction(inputOrContext = {}, maybeState = {}) {
   const wantCancelDownBeforeEnd = hasOpenDownOrders && !state?.no_cancelled && downBeforeEndHit;
   const wantCancelUp = wantCancelUpFormula || wantCancelUpBeforeEnd;
   const wantCancelDown = wantCancelDownFormula || wantCancelDownBeforeEnd;
+  const upGlobalCompat = upCancel.before_end_source === 'global_fallback'
+    || (upCancel.before_end_sec === cancelAllRemainingSec && upCancel.formula.length === 0);
+  const downGlobalCompat = downCancel.before_end_source === 'global_fallback'
+    || (downCancel.before_end_sec === cancelAllRemainingSec && downCancel.formula.length === 0);
+  const wantCancelUpByGlobal = remainingSec !== null
+    && remainingSec <= cancelAllRemainingSec
+    && hasOpenUpOrders
+    && !state?.yes_cancelled
+    && upGlobalCompat
+    && !wantCancelUp;
+  const wantCancelDownByGlobal = remainingSec !== null
+    && remainingSec <= cancelAllRemainingSec
+    && hasOpenDownOrders
+    && !state?.no_cancelled
+    && downGlobalCompat
+    && !wantCancelDown;
   const flattenYesNow = context?.exit_yes_now === true;
   const flattenNoNow = context?.exit_no_now === true;
   const flattenYesPrice = toNumberOrNull(context?.exit_yes_price);
@@ -382,7 +400,11 @@ export function decideBotAction(inputOrContext = {}, maybeState = {}) {
     trigger_up_formula: upFormulaHit,
     trigger_down_formula: downFormulaHit,
     can_trigger_up_formula: canTriggerUpFormula,
-    can_trigger_down_formula: canTriggerDownFormula
+    can_trigger_down_formula: canTriggerDownFormula,
+    up_global_compat: upGlobalCompat,
+    down_global_compat: downGlobalCompat,
+    trigger_up_global_compat: wantCancelUpByGlobal,
+    trigger_down_global_compat: wantCancelDownByGlobal
   };
 
   if (flattenYesNow) {
@@ -447,11 +469,27 @@ export function decideBotAction(inputOrContext = {}, maybeState = {}) {
     });
   }
 
-  if (remainingSec !== null && remainingSec <= cancelAllRemainingSec) {
+  if (wantCancelUpByGlobal && wantCancelDownByGlobal) {
     return normalizeStrategyOutput({
       intents: [createCancelOpenIntent('ALL')],
       reason: 'remaining_sec<=cancel_all_remaining_sec',
       patches: {},
+      diagnostics: diagnosticsBase
+    });
+  }
+  if (wantCancelUpByGlobal) {
+    return normalizeStrategyOutput({
+      intents: [createCancelOpenIntent('YES')],
+      reason: 'up_cancel_global_compat',
+      patches: { yes_cancelled: true },
+      diagnostics: diagnosticsBase
+    });
+  }
+  if (wantCancelDownByGlobal) {
+    return normalizeStrategyOutput({
+      intents: [createCancelOpenIntent('NO')],
+      reason: 'down_cancel_global_compat',
+      patches: { no_cancelled: true },
       diagnostics: diagnosticsBase
     });
   }
