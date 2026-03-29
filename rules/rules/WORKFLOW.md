@@ -51,6 +51,9 @@
   - 适用范围：真实运行 bug、生命周期、状态机、订单语义、影响模拟 vs 实盘一致性逻辑、版本测试主链修复
   - 验收要求：定位 -> 真实运行复验 -> 测试脚本沉淀
   - 证据强度：必须有可复核证据链与 Fail -> Pass
+- 分级口径锁定：
+  - 仅允许使用“轻任务 / 重任务”两层
+  - 禁止引入 T1/T2/T3 等新增分级名词
 
 ### 1.5 记账与执行规则切换（当前生效）
 
@@ -66,6 +69,18 @@
 - Dev阶段：实现与本地验证，可改业务代码
 - Integrate阶段：证据汇总、LATEST 对齐、PR 与 CI 收口
 - Integrate 期间禁止临时扩 scope 改业务目标
+- 重任务中途禁止反复 Integrate：
+  - Dev阶段只做实现 + 本地验证 + 目标链最小样本
+  - Integrate阶段只在提审前最后一次运行收尾链
+  - 收尾链固定为：
+    - `node scripts/finalize_task_evidence.mjs --task_id <task_id>`
+    - `node scripts/gate_light_ci.mjs --task_id <task_id> --result_dir rules/task-reports/<YYYY-MM>`
+
+### 1.6 即刻生效规则（260329_006）
+
+- 本次 Workflow Upgrade Task 合并后，从下一条新任务起立即执行新规则
+- 不设观察期
+- 已在执行中的任务不做半途切换
 
 ## 2. 范围锁与变更纪律
 
@@ -125,9 +140,39 @@
 
 ### 3.6 提交前固定动作（Integrate 前）
 
+- 完整 gate 前必须先过 Fast Gate（本地）：
+  - 相关文件语法
+  - `rules/LATEST.json`
+  - scope/range lock
+  - 必要证据文件存在性
+- Fast Gate 通过后，才进入完整 Integrate。
 - 先运行：`node scripts/finalize_task_evidence.mjs --task_id <task_id>`
 - 再运行：`node scripts/gate_light_ci.mjs --task_id <task_id> --result_dir rules/task-reports/<YYYY-MM>`
 - 若第二步未通过，不得进入 PR 收口结论。
+
+### 3.7 最小验证硬规则（非纯测试任务）
+
+- 任何非纯测试任务，执行者必须做与任务直接相关的最小验证
+- 修复任务至少包含 1 组 Fail -> Pass
+- 若涉及运行语义，必须包含 1 组 real runtime 样本
+- 不得只交代码改动，不交验证事实
+
+### 3.8 证据最小提交集（默认进 PR）
+
+- 允许生成完整 evidence，但默认进 PR 采用最小必需集
+- 重任务默认最小提交集至少包括：
+  - 结论块
+  - 唯一 first_break_layer
+  - Fail -> Pass 主证据
+  - 1组 real runtime 连续样本
+  - 至少 2 条不回退项
+  - notify/result
+  - 必要 manifest/index
+  - 改 server 时 healthcheck（`GET /` 与 `GET /pairs`）
+- 轻任务默认最小提交集至少包括：
+  - 相关文件语法检查结果
+  - 修前 1 条 / 修后 1 条最小事实块
+  - finalize 与 gate 通过结果
 
 ## 4. 高风险约束执行规则
 
