@@ -1,0 +1,12 @@
+{
+  "task_id": "260328_029",
+  "is_shallow_repo": true,
+  "base": "d0a5bb891946049e0710934e361665857ddaab31",
+  "head": "61a92504d19430716ca8b700657289b7b585877e",
+  "merge_base": "d0a5bb891946049e0710934e361665857ddaab31",
+  "scope_files": [
+    "scripts/truth_audit_config_activation_atomicity_260328_029.mjs"
+  ],
+  "scope_count": 1,
+  "generated_at": "2026-03-29T07:46:05.889Z"
+}
