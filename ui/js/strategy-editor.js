@@ -1483,10 +1483,12 @@ function se_renderOrders(orders, status) {
     ? [...orders.window_orders]
     : (Array.isArray(orders?.orders) ? [...orders.orders] : []);
   const scopedList = isCurrentWindowScope
-    ? list.filter((item) => item?.inferred_window_id == null || item.inferred_window_id === scope?.display_window_id)
+    ? list.filter((item) => {
+      const rowWindowId = item?.resolved_window_id ?? item?.inferred_window_id ?? null;
+      return rowWindowId == null || rowWindowId === scope?.display_window_id;
+    })
     : [];
-  const activeList = scopedList.filter((item) => item?.status === 'OPEN');
-  const finalList = activeList.length ? activeList : scopedList;
+  const finalList = scopedList;
   finalList.sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)));
   const topList = finalList.slice(0, 200);
   const rows = topList.map((o) => {
@@ -1497,8 +1499,14 @@ function se_renderOrders(orders, status) {
     const typeLabel = o.kind === 'EXIT' ? '平仓' : (o.kind === 'ENTRY' ? '挂单' : se_formatStateValue(o.kind));
     const statusLabel = o.status === 'FILLED' ? '成交' : (o.status === 'CANCELLED' ? '撤单' : (o.status === 'OPEN' ? '挂单' : se_formatStateValue(o.status)));
     const tpPriceText = typeof o.tp_price === 'number' ? o.tp_price.toFixed(3) : '--';
-    const closePriceText = typeof o.fill_price === 'number' ? o.fill_price.toFixed(3) : tpPriceText;
-    const closeCell = `${closePriceText}<div style="font-size:11px;color:#aaa;">tp:${tpPriceText}</div>`;
+    const tpIsSettle = typeof o.tp_price === 'number' && Number(o.tp_price) === 1;
+    const closePriceText = tpIsSettle
+      ? '等待结算'
+      : (typeof o.tp_price === 'number'
+        ? o.tp_price.toFixed(3)
+        : (typeof o.fill_price === 'number' ? o.fill_price.toFixed(3) : '--'));
+    const closeSubText = tpIsSettle ? 'tp:1.000' : `tp:${tpPriceText}`;
+    const closeCell = `${closePriceText}<div style="font-size:11px;color:#aaa;">${closeSubText}</div>`;
     return `<tr><td>${typeLabel}</td><td>${se_formatStateValue(o.side)}</td><td>${priceCell}</td><td style="color:${statusColor}">${statusLabel}</td><td>${se_formatStateValue(o.size)}</td><td>${closeCell}</td></tr>`;
   });
   tbody.innerHTML = rows.length

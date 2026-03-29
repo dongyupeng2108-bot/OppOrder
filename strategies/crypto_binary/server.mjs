@@ -1273,7 +1273,10 @@ const buildBotOrdersWithWindowIds = () => {
   const allOrders = Array.isArray(allOrdersRaw)
     ? allOrdersRaw.map((order) => ({
         ...order,
-        inferred_window_id: inferWindowIdForOrder(order, ranges)
+        inferred_window_id: inferWindowIdForOrder(order, ranges),
+        resolved_window_id: (typeof order?.window_id === 'string' && order.window_id.length > 0)
+          ? order.window_id
+          : inferWindowIdForOrder(order, ranges)
       }))
     : [];
   return { allOrders };
@@ -1292,7 +1295,7 @@ const selectWindowOrdersForDisplay = (allOrders = [], options = {}) => {
   const windowInitializedAt = options?.windowInitializedAt ?? null;
   let windowOrders = [];
   if (displayWindowId) {
-    windowOrders = allOrders.filter((order) => order.inferred_window_id === displayWindowId);
+    windowOrders = allOrders.filter((order) => order.resolved_window_id === displayWindowId);
   }
   if (displayWindowId && windowOrders.length === 0 && windowInitializedAt) {
     const initTs = toEpochMs(windowInitializedAt);
@@ -1301,19 +1304,17 @@ const selectWindowOrdersForDisplay = (allOrders = [], options = {}) => {
         const createdTs = toEpochMs(order.created_at);
         return createdTs != null
           && createdTs >= initTs
-          && (order.inferred_window_id == null || order.inferred_window_id === displayWindowId);
+          && (order.resolved_window_id == null || order.resolved_window_id === displayWindowId);
       });
     }
   }
   if (displayWindowId) {
     windowOrders = windowOrders.filter((order) => (
-      order.inferred_window_id == null || order.inferred_window_id === displayWindowId
+      order.resolved_window_id == null || order.resolved_window_id === displayWindowId
     ));
   }
   const hiddenOtherWindowCount = displayWindowId
-    ? windowOrders.filter((order) => (
-        order.inferred_window_id != null && order.inferred_window_id !== displayWindowId
-      )).length
+    ? Math.max(0, allOrders.length - windowOrders.length)
     : 0;
   windowOrders.sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)));
   const scope = running ? 'current_window' : (displayWindowId ? 'last_window' : 'none');
@@ -1333,7 +1334,7 @@ const getScopedFilledTotalForState = (state = {}, preferredWindowId = null) => {
   const scope = resolveBotWindowScope(state);
   const displayWindowId = preferredWindowId || scope.displayWindowId;
   if (!displayWindowId) return 0;
-  const strictWindowOrders = allOrders.filter((order) => order.inferred_window_id === displayWindowId);
+  const strictWindowOrders = allOrders.filter((order) => order.resolved_window_id === displayWindowId);
   return countUniqueFilledOrderIds(strictWindowOrders);
 };
 const getBotPaperSummaryScoped = (context = null) => {
