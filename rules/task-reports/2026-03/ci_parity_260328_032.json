@@ -1,0 +1,15 @@
+{
+  "task_id": "260328_032",
+  "is_shallow_repo": true,
+  "base": "4e05f8c20707ee1b6ddec22acb26725779659244",
+  "head": "4ace8b6ad99f27345adb73d977de95ca5e8c93e3",
+  "merge_base": "4e05f8c20707ee1b6ddec22acb26725779659244",
+  "scope_files": [
+    "scripts/truth_audit_recovery_persistence_260328_031.mjs",
+    "strategies/crypto_binary/bot_order_ledger.mjs",
+    "strategies/crypto_binary/bot_runner.mjs",
+    "strategies/crypto_binary/server.mjs"
+  ],
+  "scope_count": 4,
+  "generated_at": "2026-03-29T09:41:30.813Z"
+}

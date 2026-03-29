@@ -437,6 +437,9 @@ export function createBotRunner(options = {}) {
     timerRef = setInterval(() => {
       runScheduledTick();
     }, tickIntervalMs);
+    setTimeout(() => {
+      runScheduledTick();
+    }, 0);
     return { already_running: false, ...getRuntimeState() };
   };
 
