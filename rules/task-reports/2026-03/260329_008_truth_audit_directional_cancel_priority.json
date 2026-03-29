@@ -1,0 +1,898 @@
+{
+  "script_name": "truth_audit_directional_cancel_priority_260329_008",
+  "task_id": "260329_008",
+  "sample_name": "directional_cancel_priority_v1",
+  "pass": true,
+  "message": "分方向 before_end_sec 撤单优先级验收通过",
+  "first_break_layer": null,
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260329_008_truth_audit_directional_cancel_priority.json",
+  "summary": {
+    "conclusion": "A：分方向撤单优先级已收口（NO=60, YES=120）",
+    "total_checks": 6,
+    "pass_checks": 6,
+    "fail_checks": 0,
+    "checks": {
+      "008-A_pre_fix_no_side_not_cancelled_at_60_but_global_100_path": true,
+      "008-B_pre_fix_reason_falls_to_global_cancel_path": true,
+      "008-C_post_fix_runtime_no60_yes120_directional_cancel": true,
+      "008-D_post_fix_reason_intent_separates_up_down_cancel": true,
+      "008-E_non_regression_260329_004_wait_next_window": true,
+      "008-F_non_regression_260329_007_window_scope_clean": true
+    }
+  },
+  "raw_excerpt": {
+    "unique_first_break_layer": "2. 旧全局 cancel_all_remaining_sec 优先级层",
+    "old_reason_at_100": "remaining_sec<=cancel_all_remaining_sec",
+    "old_reason_at_60": "down_cancel_before_end",
+    "new_reason_at_100": "within_bounds_or_no_trigger",
+    "new_reason_at_60": "down_cancel_before_end",
+    "runtime_timeline": [
+      {
+        "stage": "after_place_250",
+        "remaining_sec": 250,
+        "reason": "ladder_not_posted",
+        "open_yes": 2,
+        "open_no": 2
+      },
+      {
+        "stage": "after_cancel_120",
+        "remaining_sec": 120,
+        "reason": "up_cancel_before_end",
+        "open_yes": 0,
+        "open_no": 2
+      },
+      {
+        "stage": "after_global_100_boundary",
+        "remaining_sec": 100,
+        "reason": "within_bounds_or_no_trigger",
+        "open_yes": 0,
+        "open_no": 2
+      },
+      {
+        "stage": "after_cancel_60",
+        "remaining_sec": 60,
+        "reason": "down_cancel_before_end",
+        "open_yes": 0,
+        "open_no": 0
+      }
+    ]
+  },
+  "generated_at": "2026-03-29T20:04:42.873Z",
+  "command": "node scripts/truth_audit_directional_cancel_priority_260329_008.mjs --task_id=260329_008 --sample=directional_cancel_priority_v1",
+  "conclusion_block": {
+    "verdict": "A：分方向撤单优先级已收口（NO=60, YES=120）",
+    "first_break_layer": null
+  },
+  "key_counters": {
+    "total_checks": 6,
+    "pass_checks": 6,
+    "fail_checks": 0
+  },
+  "evidence_index": {
+    "pre_fix_old_strategy_fact": {
+      "at_100": {
+        "intents": [
+          {
+            "kind": "CANCEL_OPEN",
+            "side": "ALL",
+            "requires_bounds": false
+          }
+        ],
+        "reason": "remaining_sec<=cancel_all_remaining_sec",
+        "patches": {},
+        "diagnostics": {
+          "remaining_sec": 100,
+          "open_elapsed_sec": 200,
+          "ladder_posted": true,
+          "btc_price": 65000,
+          "upper_bound": 70000,
+          "lower_bound": 60000,
+          "bounds_ready": true,
+          "config_open_delay_sec": 10,
+          "config_cancel_all_remaining_sec": 100,
+          "config_ladder_size": 1,
+          "config_ladder_prices": [
+            0.1,
+            0.2
+          ],
+          "config_up_ladder": [
+            {
+              "price": 0.1,
+              "size": 1,
+              "tp_price": 1
+            },
+            {
+              "price": 0.2,
+              "size": 2,
+              "tp_price": 1
+            }
+          ],
+          "config_down_ladder": [
+            {
+              "price": 0.1,
+              "size": 11,
+              "tp_price": 1
+            },
+            {
+              "price": 0.2,
+              "size": 22,
+              "tp_price": 1
+            }
+          ],
+          "config_up_cancel": {
+            "before_end_sec": 120,
+            "formula": ""
+          },
+          "config_down_cancel": {
+            "before_end_sec": 60,
+            "formula": ""
+          },
+          "formula_allowed_identifiers": [
+            "secs_left",
+            "spread",
+            "volatility_ratio",
+            "has_open_up_orders",
+            "has_open_down_orders",
+            "btc_price",
+            "upper_bound",
+            "lower_bound"
+          ],
+          "formula_vars": {
+            "secs_left": 100,
+            "spread": 0.01,
+            "volatility_ratio": 0.0013846153846153845,
+            "has_open_up_orders": false,
+            "has_open_down_orders": true,
+            "btc_price": 65000,
+            "upper_bound": 70000,
+            "lower_bound": 60000
+          },
+          "up_formula_eval": {
+            "hit": false,
+            "ok": false,
+            "code": "FORMULA_EMPTY",
+            "message": "formula is empty",
+            "allowed_identifiers": [
+              "secs_left",
+              "spread",
+              "volatility_ratio",
+              "has_open_up_orders",
+              "has_open_down_orders",
+              "btc_price",
+              "upper_bound",
+              "lower_bound"
+            ]
+          },
+          "down_formula_eval": {
+            "hit": false,
+            "ok": false,
+            "code": "FORMULA_EMPTY",
+            "message": "formula is empty",
+            "allowed_identifiers": [
+              "secs_left",
+              "spread",
+              "volatility_ratio",
+              "has_open_up_orders",
+              "has_open_down_orders",
+              "btc_price",
+              "upper_bound",
+              "lower_bound"
+            ]
+          },
+          "trigger_up_before_end": true,
+          "trigger_down_before_end": false,
+          "trigger_up_formula": false,
+          "trigger_down_formula": false,
+          "can_trigger_up_formula": true,
+          "can_trigger_down_formula": true
+        }
+      },
+      "at_60": {
+        "intents": [
+          {
+            "kind": "CANCEL_OPEN",
+            "side": "NO",
+            "requires_bounds": false
+          }
+        ],
+        "reason": "down_cancel_before_end",
+        "patches": {
+          "no_cancelled": true
+        },
+        "diagnostics": {
+          "remaining_sec": 60,
+          "open_elapsed_sec": 240,
+          "ladder_posted": true,
+          "btc_price": 65000,
+          "upper_bound": 70000,
+          "lower_bound": 60000,
+          "bounds_ready": true,
+          "config_open_delay_sec": 10,
+          "config_cancel_all_remaining_sec": 100,
+          "config_ladder_size": 1,
+          "config_ladder_prices": [
+            0.1,
+            0.2
+          ],
+          "config_up_ladder": [
+            {
+              "price": 0.1,
+              "size": 1,
+              "tp_price": 1
+            },
+            {
+              "price": 0.2,
+              "size": 2,
+              "tp_price": 1
+            }
+          ],
+          "config_down_ladder": [
+            {
+              "price": 0.1,
+              "size": 11,
+              "tp_price": 1
+            },
+            {
+              "price": 0.2,
+              "size": 22,
+              "tp_price": 1
+            }
+          ],
+          "config_up_cancel": {
+            "before_end_sec": 120,
+            "formula": ""
+          },
+          "config_down_cancel": {
+            "before_end_sec": 60,
+            "formula": ""
+          },
+          "formula_allowed_identifiers": [
+            "secs_left",
+            "spread",
+            "volatility_ratio",
+            "has_open_up_orders",
+            "has_open_down_orders",
+            "btc_price",
+            "upper_bound",
+            "lower_bound"
+          ],
+          "formula_vars": {
+            "secs_left": 60,
+            "spread": 0.01,
+            "volatility_ratio": 0.0013846153846153845,
+            "has_open_up_orders": false,
+            "has_open_down_orders": true,
+            "btc_price": 65000,
+            "upper_bound": 70000,
+            "lower_bound": 60000
+          },
+          "up_formula_eval": {
+            "hit": false,
+            "ok": false,
+            "code": "FORMULA_EMPTY",
+            "message": "formula is empty",
+            "allowed_identifiers": [
+              "secs_left",
+              "spread",
+              "volatility_ratio",
+              "has_open_up_orders",
+              "has_open_down_orders",
+              "btc_price",
+              "upper_bound",
+              "lower_bound"
+            ]
+          },
+          "down_formula_eval": {
+            "hit": false,
+            "ok": false,
+            "code": "FORMULA_EMPTY",
+            "message": "formula is empty",
+            "allowed_identifiers": [
+              "secs_left",
+              "spread",
+              "volatility_ratio",
+              "has_open_up_orders",
+              "has_open_down_orders",
+              "btc_price",
+              "upper_bound",
+              "lower_bound"
+            ]
+          },
+          "trigger_up_before_end": true,
+          "trigger_down_before_end": true,
+          "trigger_up_formula": false,
+          "trigger_down_formula": false,
+          "can_trigger_up_formula": true,
+          "can_trigger_down_formula": true
+        }
+      }
+    },
+    "post_fix_strategy_fact": {
+      "at_100": {
+        "intents": [
+          {
+            "kind": "NOOP"
+          }
+        ],
+        "reason": "within_bounds_or_no_trigger",
+        "patches": {},
+        "diagnostics": {
+          "remaining_sec": 100,
+          "open_elapsed_sec": 200,
+          "ladder_posted": true,
+          "btc_price": 65000,
+          "upper_bound": 70000,
+          "lower_bound": 60000,
+          "bounds_ready": true,
+          "config_open_delay_sec": 10,
+          "config_cancel_all_remaining_sec": 100,
+          "config_ladder_size": 1,
+          "config_ladder_prices": [
+            0.1,
+            0.2
+          ],
+          "config_up_ladder": [
+            {
+              "price": 0.1,
+              "size": 1,
+              "tp_price": 1
+            },
+            {
+              "price": 0.2,
+              "size": 2,
+              "tp_price": 1
+            }
+          ],
+          "config_down_ladder": [
+            {
+              "price": 0.1,
+              "size": 11,
+              "tp_price": 1
+            },
+            {
+              "price": 0.2,
+              "size": 22,
+              "tp_price": 1
+            }
+          ],
+          "config_up_cancel": {
+            "before_end_sec": 120,
+            "formula": "",
+            "before_end_source": "explicit"
+          },
+          "config_down_cancel": {
+            "before_end_sec": 60,
+            "formula": "",
+            "before_end_source": "explicit"
+          },
+          "formula_allowed_identifiers": [
+            "secs_left",
+            "spread",
+            "volatility_ratio",
+            "has_open_up_orders",
+            "has_open_down_orders",
+            "btc_price",
+            "upper_bound",
+            "lower_bound"
+          ],
+          "formula_vars": {
+            "secs_left": 100,
+            "spread": 0.01,
+            "volatility_ratio": 0.0013846153846153845,
+            "has_open_up_orders": false,
+            "has_open_down_orders": true,
+            "btc_price": 65000,
+            "upper_bound": 70000,
+            "lower_bound": 60000
+          },
+          "up_formula_eval": {
+            "hit": false,
+            "ok": false,
+            "code": "FORMULA_EMPTY",
+            "message": "formula is empty",
+            "allowed_identifiers": [
+              "secs_left",
+              "spread",
+              "volatility_ratio",
+              "has_open_up_orders",
+              "has_open_down_orders",
+              "btc_price",
+              "upper_bound",
+              "lower_bound"
+            ]
+          },
+          "down_formula_eval": {
+            "hit": false,
+            "ok": false,
+            "code": "FORMULA_EMPTY",
+            "message": "formula is empty",
+            "allowed_identifiers": [
+              "secs_left",
+              "spread",
+              "volatility_ratio",
+              "has_open_up_orders",
+              "has_open_down_orders",
+              "btc_price",
+              "upper_bound",
+              "lower_bound"
+            ]
+          },
+          "trigger_up_before_end": true,
+          "trigger_down_before_end": false,
+          "trigger_up_formula": false,
+          "trigger_down_formula": false,
+          "can_trigger_up_formula": true,
+          "can_trigger_down_formula": true,
+          "up_global_compat": false,
+          "down_global_compat": false,
+          "trigger_up_global_compat": false,
+          "trigger_down_global_compat": false
+        }
+      },
+      "at_60": {
+        "intents": [
+          {
+            "kind": "CANCEL_OPEN",
+            "side": "NO",
+            "requires_bounds": false
+          }
+        ],
+        "reason": "down_cancel_before_end",
+        "patches": {
+          "no_cancelled": true
+        },
+        "diagnostics": {
+          "remaining_sec": 60,
+          "open_elapsed_sec": 240,
+          "ladder_posted": true,
+          "btc_price": 65000,
+          "upper_bound": 70000,
+          "lower_bound": 60000,
+          "bounds_ready": true,
+          "config_open_delay_sec": 10,
+          "config_cancel_all_remaining_sec": 100,
+          "config_ladder_size": 1,
+          "config_ladder_prices": [
+            0.1,
+            0.2
+          ],
+          "config_up_ladder": [
+            {
+              "price": 0.1,
+              "size": 1,
+              "tp_price": 1
+            },
+            {
+              "price": 0.2,
+              "size": 2,
+              "tp_price": 1
+            }
+          ],
+          "config_down_ladder": [
+            {
+              "price": 0.1,
+              "size": 11,
+              "tp_price": 1
+            },
+            {
+              "price": 0.2,
+              "size": 22,
+              "tp_price": 1
+            }
+          ],
+          "config_up_cancel": {
+            "before_end_sec": 120,
+            "formula": "",
+            "before_end_source": "explicit"
+          },
+          "config_down_cancel": {
+            "before_end_sec": 60,
+            "formula": "",
+            "before_end_source": "explicit"
+          },
+          "formula_allowed_identifiers": [
+            "secs_left",
+            "spread",
+            "volatility_ratio",
+            "has_open_up_orders",
+            "has_open_down_orders",
+            "btc_price",
+            "upper_bound",
+            "lower_bound"
+          ],
+          "formula_vars": {
+            "secs_left": 60,
+            "spread": 0.01,
+            "volatility_ratio": 0.0013846153846153845,
+            "has_open_up_orders": false,
+            "has_open_down_orders": true,
+            "btc_price": 65000,
+            "upper_bound": 70000,
+            "lower_bound": 60000
+          },
+          "up_formula_eval": {
+            "hit": false,
+            "ok": false,
+            "code": "FORMULA_EMPTY",
+            "message": "formula is empty",
+            "allowed_identifiers": [
+              "secs_left",
+              "spread",
+              "volatility_ratio",
+              "has_open_up_orders",
+              "has_open_down_orders",
+              "btc_price",
+              "upper_bound",
+              "lower_bound"
+            ]
+          },
+          "down_formula_eval": {
+            "hit": false,
+            "ok": false,
+            "code": "FORMULA_EMPTY",
+            "message": "formula is empty",
+            "allowed_identifiers": [
+              "secs_left",
+              "spread",
+              "volatility_ratio",
+              "has_open_up_orders",
+              "has_open_down_orders",
+              "btc_price",
+              "upper_bound",
+              "lower_bound"
+            ]
+          },
+          "trigger_up_before_end": true,
+          "trigger_down_before_end": true,
+          "trigger_up_formula": false,
+          "trigger_down_formula": false,
+          "can_trigger_up_formula": true,
+          "can_trigger_down_formula": true,
+          "up_global_compat": false,
+          "down_global_compat": false,
+          "trigger_up_global_compat": false,
+          "trigger_down_global_compat": false
+        }
+      }
+    },
+    "real_runtime_fact": {
+      "health_root": 200,
+      "health_pairs": 404,
+      "wait_next_window_reason_seen": true,
+      "timeline": [
+        {
+          "stage": "after_place_250",
+          "remaining_sec": 250,
+          "reason": "ladder_not_posted",
+          "open_yes": 2,
+          "open_no": 2
+        },
+        {
+          "stage": "after_cancel_120",
+          "remaining_sec": 120,
+          "reason": "up_cancel_before_end",
+          "open_yes": 0,
+          "open_no": 2
+        },
+        {
+          "stage": "after_global_100_boundary",
+          "remaining_sec": 100,
+          "reason": "within_bounds_or_no_trigger",
+          "open_yes": 0,
+          "open_no": 2
+        },
+        {
+          "stage": "after_cancel_60",
+          "remaining_sec": 60,
+          "reason": "down_cancel_before_end",
+          "open_yes": 0,
+          "open_no": 0
+        }
+      ],
+      "rows_after_place": [
+        {
+          "order_id": "paper_8559a315",
+          "kind": "ENTRY",
+          "side": "YES",
+          "status": "FILLED",
+          "price": 0.1,
+          "tp_price": 1,
+          "resolved_window_id": "w-cancel"
+        },
+        {
+          "order_id": "paper_9b95950a",
+          "kind": "ENTRY",
+          "side": "YES",
+          "status": "FILLED",
+          "price": 0.2,
+          "tp_price": 1,
+          "resolved_window_id": "w-cancel"
+        },
+        {
+          "order_id": "paper_76350a98",
+          "kind": "ENTRY",
+          "side": "NO",
+          "status": "FILLED",
+          "price": 0.1,
+          "tp_price": 1,
+          "resolved_window_id": "w-cancel"
+        },
+        {
+          "order_id": "paper_ef0fedc8",
+          "kind": "ENTRY",
+          "side": "NO",
+          "status": "FILLED",
+          "price": 0.2,
+          "tp_price": 1,
+          "resolved_window_id": "w-cancel"
+        },
+        {
+          "order_id": "paper_cfd0e03a",
+          "kind": "ENTRY",
+          "side": "YES",
+          "status": "OPEN",
+          "price": 0.1,
+          "tp_price": 1,
+          "resolved_window_id": "w-cancel"
+        },
+        {
+          "order_id": "paper_6e792b77",
+          "kind": "ENTRY",
+          "side": "YES",
+          "status": "OPEN",
+          "price": 0.2,
+          "tp_price": 1,
+          "resolved_window_id": "w-cancel"
+        },
+        {
+          "order_id": "paper_10bb6fd4",
+          "kind": "ENTRY",
+          "side": "NO",
+          "status": "OPEN",
+          "price": 0.1,
+          "tp_price": 1,
+          "resolved_window_id": "w-cancel"
+        },
+        {
+          "order_id": "paper_d7a6185e",
+          "kind": "ENTRY",
+          "side": "NO",
+          "status": "OPEN",
+          "price": 0.2,
+          "tp_price": 1,
+          "resolved_window_id": "w-cancel"
+        }
+      ],
+      "rows_after_120": [
+        {
+          "order_id": "paper_8559a315",
+          "kind": "ENTRY",
+          "side": "YES",
+          "status": "FILLED",
+          "price": 0.1,
+          "tp_price": 1,
+          "resolved_window_id": "w-cancel"
+        },
+        {
+          "order_id": "paper_9b95950a",
+          "kind": "ENTRY",
+          "side": "YES",
+          "status": "FILLED",
+          "price": 0.2,
+          "tp_price": 1,
+          "resolved_window_id": "w-cancel"
+        },
+        {
+          "order_id": "paper_76350a98",
+          "kind": "ENTRY",
+          "side": "NO",
+          "status": "FILLED",
+          "price": 0.1,
+          "tp_price": 1,
+          "resolved_window_id": "w-cancel"
+        },
+        {
+          "order_id": "paper_ef0fedc8",
+          "kind": "ENTRY",
+          "side": "NO",
+          "status": "FILLED",
+          "price": 0.2,
+          "tp_price": 1,
+          "resolved_window_id": "w-cancel"
+        },
+        {
+          "order_id": "paper_cfd0e03a",
+          "kind": "ENTRY",
+          "side": "YES",
+          "status": "CANCELLED",
+          "price": 0.1,
+          "tp_price": 1,
+          "resolved_window_id": "w-cancel"
+        },
+        {
+          "order_id": "paper_6e792b77",
+          "kind": "ENTRY",
+          "side": "YES",
+          "status": "CANCELLED",
+          "price": 0.2,
+          "tp_price": 1,
+          "resolved_window_id": "w-cancel"
+        },
+        {
+          "order_id": "paper_10bb6fd4",
+          "kind": "ENTRY",
+          "side": "NO",
+          "status": "OPEN",
+          "price": 0.1,
+          "tp_price": 1,
+          "resolved_window_id": "w-cancel"
+        },
+        {
+          "order_id": "paper_d7a6185e",
+          "kind": "ENTRY",
+          "side": "NO",
+          "status": "OPEN",
+          "price": 0.2,
+          "tp_price": 1,
+          "resolved_window_id": "w-cancel"
+        }
+      ],
+      "rows_after_100": [
+        {
+          "order_id": "paper_8559a315",
+          "kind": "ENTRY",
+          "side": "YES",
+          "status": "FILLED",
+          "price": 0.1,
+          "tp_price": 1,
+          "resolved_window_id": "w-cancel"
+        },
+        {
+          "order_id": "paper_9b95950a",
+          "kind": "ENTRY",
+          "side": "YES",
+          "status": "FILLED",
+          "price": 0.2,
+          "tp_price": 1,
+          "resolved_window_id": "w-cancel"
+        },
+        {
+          "order_id": "paper_76350a98",
+          "kind": "ENTRY",
+          "side": "NO",
+          "status": "FILLED",
+          "price": 0.1,
+          "tp_price": 1,
+          "resolved_window_id": "w-cancel"
+        },
+        {
+          "order_id": "paper_ef0fedc8",
+          "kind": "ENTRY",
+          "side": "NO",
+          "status": "FILLED",
+          "price": 0.2,
+          "tp_price": 1,
+          "resolved_window_id": "w-cancel"
+        },
+        {
+          "order_id": "paper_cfd0e03a",
+          "kind": "ENTRY",
+          "side": "YES",
+          "status": "CANCELLED",
+          "price": 0.1,
+          "tp_price": 1,
+          "resolved_window_id": "w-cancel"
+        },
+        {
+          "order_id": "paper_6e792b77",
+          "kind": "ENTRY",
+          "side": "YES",
+          "status": "CANCELLED",
+          "price": 0.2,
+          "tp_price": 1,
+          "resolved_window_id": "w-cancel"
+        },
+        {
+          "order_id": "paper_10bb6fd4",
+          "kind": "ENTRY",
+          "side": "NO",
+          "status": "OPEN",
+          "price": 0.1,
+          "tp_price": 1,
+          "resolved_window_id": "w-cancel"
+        },
+        {
+          "order_id": "paper_d7a6185e",
+          "kind": "ENTRY",
+          "side": "NO",
+          "status": "OPEN",
+          "price": 0.2,
+          "tp_price": 1,
+          "resolved_window_id": "w-cancel"
+        }
+      ],
+      "rows_after_60": [
+        {
+          "order_id": "paper_8559a315",
+          "kind": "ENTRY",
+          "side": "YES",
+          "status": "FILLED",
+          "price": 0.1,
+          "tp_price": 1,
+          "resolved_window_id": "w-cancel"
+        },
+        {
+          "order_id": "paper_9b95950a",
+          "kind": "ENTRY",
+          "side": "YES",
+          "status": "FILLED",
+          "price": 0.2,
+          "tp_price": 1,
+          "resolved_window_id": "w-cancel"
+        },
+        {
+          "order_id": "paper_76350a98",
+          "kind": "ENTRY",
+          "side": "NO",
+          "status": "FILLED",
+          "price": 0.1,
+          "tp_price": 1,
+          "resolved_window_id": "w-cancel"
+        },
+        {
+          "order_id": "paper_ef0fedc8",
+          "kind": "ENTRY",
+          "side": "NO",
+          "status": "FILLED",
+          "price": 0.2,
+          "tp_price": 1,
+          "resolved_window_id": "w-cancel"
+        },
+        {
+          "order_id": "paper_cfd0e03a",
+          "kind": "ENTRY",
+          "side": "YES",
+          "status": "CANCELLED",
+          "price": 0.1,
+          "tp_price": 1,
+          "resolved_window_id": "w-cancel"
+        },
+        {
+          "order_id": "paper_6e792b77",
+          "kind": "ENTRY",
+          "side": "YES",
+          "status": "CANCELLED",
+          "price": 0.2,
+          "tp_price": 1,
+          "resolved_window_id": "w-cancel"
+        },
+        {
+          "order_id": "paper_10bb6fd4",
+          "kind": "ENTRY",
+          "side": "NO",
+          "status": "CANCELLED",
+          "price": 0.1,
+          "tp_price": 1,
+          "resolved_window_id": "w-cancel"
+        },
+        {
+          "order_id": "paper_d7a6185e",
+          "kind": "ENTRY",
+          "side": "NO",
+          "status": "CANCELLED",
+          "price": 0.2,
+          "tp_price": 1,
+          "resolved_window_id": "w-cancel"
+        }
+      ]
+    }
+  },
+  "result": {
+    "008-A_pre_fix_no_side_not_cancelled_at_60_but_global_100_path": true,
+    "008-B_pre_fix_reason_falls_to_global_cancel_path": true,
+    "008-C_post_fix_runtime_no60_yes120_directional_cancel": true,
+    "008-D_post_fix_reason_intent_separates_up_down_cancel": true,
+    "008-E_non_regression_260329_004_wait_next_window": true,
+    "008-F_non_regression_260329_007_window_scope_clean": true
+  }
+}
