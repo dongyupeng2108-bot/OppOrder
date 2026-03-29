@@ -1,0 +1,22 @@
+{
+  "script_name": "verify_all_manual",
+  "task_id": "260329_001_m1",
+  "module_key": "module1",
+  "total_scripts": 1,
+  "pass_count": 1,
+  "fail_count": 0,
+  "overall_pass": true,
+  "results": [
+    {
+      "script_name": "verify_module1_strategy_input",
+      "pass": true,
+      "message": "PASS",
+      "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260329_001_m1_module1_strategy_input.json",
+      "exit_code": 0,
+      "sample_name": "module1_strategy_input_suite_v1"
+    }
+  ],
+  "simulated_failure": false,
+  "raw_pass_count": 1,
+  "generated_at": "2026-03-29T14:07:09.562Z"
+}

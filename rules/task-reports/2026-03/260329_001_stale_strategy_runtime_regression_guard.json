@@ -1,0 +1,429 @@
+{
+  "script_name": "verify_strategy_runtime_regression_guard",
+  "task_id": "260329_001_stale",
+  "sample_name": "real_runtime_regression_guard_v1",
+  "pass": true,
+  "message": "strategy/runtime regression guard 通过",
+  "first_break_layer": null,
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260329_001_stale_strategy_runtime_regression_guard.json",
+  "summary": {
+    "conclusion": "A: regression guard pass (8/8 checks)",
+    "total_checks": 8,
+    "pass_checks": 8,
+    "fail_checks": 0,
+    "checks": {
+      "contract_save_read_consistency": true,
+      "independent_yes_no_ladder_placement": true,
+      "tp_binding_by_ladder_parent": true,
+      "directional_cancel_isolation": true,
+      "cancel_before_place_priority": true,
+      "non_place_tick_no_new_orders": true,
+      "single_formula_cancel_per_direction_per_window": true,
+      "no_same_side_same_price_duplicate_open": true
+    }
+  },
+  "raw_excerpt": {
+    "up_cancel_hits_unique_tick": 1,
+    "down_cancel_hits_unique_tick": 1,
+    "up_non_place_add_events": 0,
+    "down_non_place_add_events": 0,
+    "up_duplicate_max": 0,
+    "down_duplicate_max": 0,
+    "up_cancel_tick_no_new_orders": true,
+    "down_cancel_tick_no_new_orders": true
+  },
+  "generated_at": "2026-03-29T14:16:04.780Z",
+  "command": "node scripts/verify_strategy_runtime_regression_guard.mjs --task_id=260329_001_stale --sample=real_runtime_regression_guard_v1",
+  "conclusion_block": {
+    "verdict": "A: regression guard pass (8/8 checks)",
+    "first_break_layer": null
+  },
+  "key_counters": {
+    "up_cancel_hits_unique_tick": 1,
+    "down_cancel_hits_unique_tick": 1,
+    "up_non_place_add_events": [],
+    "down_non_place_add_events": [],
+    "up_duplicate_max": 0,
+    "down_duplicate_max": 0,
+    "up_cancel_tick_no_new_orders": true,
+    "down_cancel_tick_no_new_orders": true
+  },
+  "evidence_index": {
+    "contract_save_read": {
+      "save_response_status": 200,
+      "config_current": {
+        "open_delay_sec": 0,
+        "ladder_prices": [
+          0.27,
+          0.24,
+          0.21,
+          0.18
+        ],
+        "ladder_size": 5,
+        "atr_multiple": 1.2,
+        "cancel_all_remaining_sec": 0,
+        "up_ladder": [
+          {
+            "price": 0.31,
+            "size": 2,
+            "tp_price": 0.35
+          },
+          {
+            "price": 0.29,
+            "size": 1,
+            "tp_price": 0.33
+          }
+        ],
+        "down_ladder": [
+          {
+            "price": 0.02,
+            "size": 3,
+            "tp_price": 0.03
+          },
+          {
+            "price": 0.015,
+            "size": 1,
+            "tp_price": 0.025
+          }
+        ],
+        "up_cancel": {
+          "before_end_sec": 60,
+          "formula": "false"
+        },
+        "down_cancel": {
+          "before_end_sec": 70,
+          "formula": "false"
+        }
+      }
+    },
+    "decision_preview_split": {
+      "reason": "ladder_not_posted",
+      "intents": [
+        {
+          "kind": "PLACE_LADDER",
+          "side": "YES",
+          "ladder": [
+            {
+              "price": 0.31,
+              "size": 2,
+              "tp_price": 0.35
+            },
+            {
+              "price": 0.29,
+              "size": 1,
+              "tp_price": 0.33
+            }
+          ],
+          "prices": [
+            0.31,
+            0.29
+          ],
+          "size": 2
+        },
+        {
+          "kind": "PLACE_LADDER",
+          "side": "NO",
+          "ladder": [
+            {
+              "price": 0.02,
+              "size": 3,
+              "tp_price": 0.03
+            },
+            {
+              "price": 0.015,
+              "size": 1,
+              "tp_price": 0.025
+            }
+          ],
+          "prices": [
+            0.02,
+            0.015
+          ],
+          "size": 3
+        }
+      ]
+    },
+    "runtime_independent_ladder": {
+      "done": true,
+      "summary": {
+        "total": 259,
+        "open_total": 4,
+        "cancelled_total": 180,
+        "filled_total": 75,
+        "open_yes": 2,
+        "open_no": 2,
+        "filled_yes": 75,
+        "filled_no": 0
+      },
+      "open_orders": [
+        {
+          "order_id": "paper_f583bca3",
+          "kind": "ENTRY",
+          "side": "NO",
+          "price": 0.02,
+          "size": 3,
+          "tp_price": 0.03,
+          "ladder_key": "NO:0",
+          "parent_order_id": null,
+          "status": "OPEN",
+          "fill_price": null,
+          "filled_at": null,
+          "created_at": "2026-03-29T14:15:40.684Z",
+          "source": "runner_tick",
+          "inferred_window_id": "debug-main-path-v1-w1"
+        },
+        {
+          "order_id": "paper_b3c27d34",
+          "kind": "ENTRY",
+          "side": "NO",
+          "price": 0.015,
+          "size": 1,
+          "tp_price": 0.025,
+          "ladder_key": "NO:1",
+          "parent_order_id": null,
+          "status": "OPEN",
+          "fill_price": null,
+          "filled_at": null,
+          "created_at": "2026-03-29T14:15:40.684Z",
+          "source": "runner_tick",
+          "inferred_window_id": "debug-main-path-v1-w1"
+        },
+        {
+          "order_id": "paper_2c8faec8",
+          "kind": "ENTRY",
+          "side": "YES",
+          "price": 0.31,
+          "size": 2,
+          "tp_price": 0.35,
+          "ladder_key": "YES:0",
+          "parent_order_id": null,
+          "status": "OPEN",
+          "fill_price": null,
+          "filled_at": null,
+          "created_at": "2026-03-29T14:15:40.682Z",
+          "source": "runner_tick",
+          "inferred_window_id": "debug-main-path-v1-w1"
+        },
+        {
+          "order_id": "paper_fed97448",
+          "kind": "ENTRY",
+          "side": "YES",
+          "price": 0.29,
+          "size": 1,
+          "tp_price": 0.33,
+          "ladder_key": "YES:1",
+          "parent_order_id": null,
+          "status": "OPEN",
+          "fill_price": null,
+          "filled_at": null,
+          "created_at": "2026-03-29T14:15:40.682Z",
+          "source": "runner_tick",
+          "inferred_window_id": "debug-main-path-v1-w1"
+        }
+      ]
+    },
+    "runtime_tp_binding": {
+      "done": true,
+      "filled_entry": {
+        "order_id": "paper_1f47c2a5",
+        "kind": "ENTRY",
+        "side": "YES",
+        "price": 0.99,
+        "size": 2,
+        "tp_price": 0.97,
+        "ladder_key": "YES:0",
+        "parent_order_id": null,
+        "status": "FILLED",
+        "fill_price": 0.27,
+        "filled_at": "2026-03-29T14:15:43.747Z",
+        "created_at": "2026-03-29T14:15:40.722Z",
+        "source": "runner_tick",
+        "inferred_window_id": "debug-fill-yes-path-v1-w1"
+      },
+      "linked_tp": {
+        "order_id": "paper_ec8b47db",
+        "kind": "TAKE_PROFIT",
+        "side": "YES",
+        "price": 0.97,
+        "size": 2,
+        "tp_price": 0.97,
+        "ladder_key": "YES:0",
+        "parent_order_id": "paper_1f47c2a5",
+        "status": "OPEN",
+        "fill_price": null,
+        "filled_at": null,
+        "created_at": "2026-03-29T14:15:43.747Z",
+        "source": "runner_tick:tp",
+        "inferred_window_id": "debug-fill-yes-path-v1-w1"
+      },
+      "summary": {
+        "total": 264,
+        "open_total": 6,
+        "cancelled_total": 180,
+        "filled_total": 78,
+        "open_yes": 3,
+        "open_no": 3,
+        "filled_yes": 78,
+        "filled_no": 0
+      }
+    },
+    "runtime_up_cancel_trace_unique": [
+      {
+        "i": 0,
+        "last_tick_at": "2026-03-29T14:15:44.331Z",
+        "reason": "ladder_not_posted",
+        "total": 268,
+        "open_total": 8,
+        "open_yes": 3,
+        "open_no": 5,
+        "cancelled_total": 180,
+        "duplicate_count": 0,
+        "duplicate_keys": []
+      },
+      {
+        "i": 2,
+        "last_tick_at": "2026-03-29T14:15:45.405Z",
+        "reason": "up_cancel_formula",
+        "total": 268,
+        "open_total": 5,
+        "open_yes": 0,
+        "open_no": 5,
+        "cancelled_total": 183,
+        "duplicate_count": 0,
+        "duplicate_keys": []
+      },
+      {
+        "i": 5,
+        "last_tick_at": "2026-03-29T14:15:46.347Z",
+        "reason": "within_bounds_or_no_trigger",
+        "total": 268,
+        "open_total": 5,
+        "open_yes": 0,
+        "open_no": 5,
+        "cancelled_total": 183,
+        "duplicate_count": 0,
+        "duplicate_keys": []
+      },
+      {
+        "i": 8,
+        "last_tick_at": "2026-03-29T14:15:47.431Z",
+        "reason": "btc_price>=upper_bound",
+        "total": 268,
+        "open_total": 0,
+        "open_yes": 0,
+        "open_no": 0,
+        "cancelled_total": 188,
+        "duplicate_count": 0,
+        "duplicate_keys": []
+      },
+      {
+        "i": 10,
+        "last_tick_at": "2026-03-29T14:15:48.374Z",
+        "reason": "ladder_not_posted",
+        "total": 268,
+        "open_total": 0,
+        "open_yes": 0,
+        "open_no": 0,
+        "cancelled_total": 188,
+        "duplicate_count": 0,
+        "duplicate_keys": []
+      },
+      {
+        "i": 13,
+        "last_tick_at": "2026-03-29T14:15:49.436Z",
+        "reason": null,
+        "total": 268,
+        "open_total": 0,
+        "open_yes": 0,
+        "open_no": 0,
+        "cancelled_total": 188,
+        "duplicate_count": 0,
+        "duplicate_keys": []
+      }
+    ],
+    "runtime_down_cancel_trace_unique": [
+      {
+        "i": 0,
+        "last_tick_at": "2026-03-29T14:15:54.750Z",
+        "reason": "ladder_not_posted",
+        "total": 272,
+        "open_total": 4,
+        "open_yes": 2,
+        "open_no": 2,
+        "cancelled_total": 188,
+        "duplicate_count": 0,
+        "duplicate_keys": []
+      },
+      {
+        "i": 2,
+        "last_tick_at": "2026-03-29T14:15:55.694Z",
+        "reason": "down_cancel_formula",
+        "total": 272,
+        "open_total": 2,
+        "open_yes": 2,
+        "open_no": 0,
+        "cancelled_total": 190,
+        "duplicate_count": 0,
+        "duplicate_keys": []
+      },
+      {
+        "i": 5,
+        "last_tick_at": "2026-03-29T14:15:56.753Z",
+        "reason": "within_bounds_or_no_trigger",
+        "total": 272,
+        "open_total": 2,
+        "open_yes": 2,
+        "open_no": 0,
+        "cancelled_total": 190,
+        "duplicate_count": 0,
+        "duplicate_keys": []
+      },
+      {
+        "i": 7,
+        "last_tick_at": "2026-03-29T14:15:57.691Z",
+        "reason": "btc_price>=upper_bound_already_cancelled",
+        "total": 272,
+        "open_total": 2,
+        "open_yes": 2,
+        "open_no": 0,
+        "cancelled_total": 190,
+        "duplicate_count": 0,
+        "duplicate_keys": []
+      },
+      {
+        "i": 10,
+        "last_tick_at": "2026-03-29T14:15:58.756Z",
+        "reason": "btc_price<=lower_bound",
+        "total": 272,
+        "open_total": 0,
+        "open_yes": 0,
+        "open_no": 0,
+        "cancelled_total": 192,
+        "duplicate_count": 0,
+        "duplicate_keys": []
+      },
+      {
+        "i": 12,
+        "last_tick_at": "2026-03-29T14:15:59.705Z",
+        "reason": null,
+        "total": 272,
+        "open_total": 0,
+        "open_yes": 0,
+        "open_no": 0,
+        "cancelled_total": 192,
+        "duplicate_count": 0,
+        "duplicate_keys": []
+      }
+    ]
+  },
+  "result": {
+    "contract_save_read_consistency": true,
+    "independent_yes_no_ladder_placement": true,
+    "tp_binding_by_ladder_parent": true,
+    "directional_cancel_isolation": true,
+    "cancel_before_place_priority": true,
+    "non_place_tick_no_new_orders": true,
+    "single_formula_cancel_per_direction_per_window": true,
+    "no_same_side_same_price_duplicate_open": true
+  }
+}

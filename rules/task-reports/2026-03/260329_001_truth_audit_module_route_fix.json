@@ -1,0 +1,97 @@
+{
+  "script_name": "truth_audit_module_route_fix_260329_001",
+  "task_id": "260329_001",
+  "sample_name": "module_route_and_result_backfill_fix_v1",
+  "pass": true,
+  "message": "模块路由与结果回填修复通过",
+  "first_break_layer": null,
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260329_001_truth_audit_module_route_fix.json",
+  "summary": {
+    "conclusion": "A：入口路由与结果回填已修复且不串线",
+    "total_checks": 5,
+    "pass_checks": 5,
+    "fail_checks": 0,
+    "checks": {
+      "001-A_classification_is_C": true,
+      "001-B_stale_result_guard_active": true,
+      "001-C_module1_only_execution_and_display": true,
+      "001-D_allchain_only_execution_and_display": true,
+      "001-E_sequential_runs_not_cross_wired": true
+    }
+  },
+  "raw_excerpt": {
+    "classification": "C：结果展示读取旧结果/错结果",
+    "stale_result_guard_http": 409,
+    "module1_result_module_key": "module1",
+    "allchain_result_module_key": "allchain"
+  },
+  "generated_at": "2026-03-29T14:23:47.938Z",
+  "command": "node scripts/truth_audit_module_route_fix_260329_001.mjs --task_id=260329_001 --sample=module_route_and_result_backfill_fix_v1",
+  "conclusion_block": {
+    "verdict": "A：入口路由与结果回填已修复且不串线",
+    "first_break_layer": null
+  },
+  "key_counters": {
+    "total_checks": 5,
+    "pass_checks": 5,
+    "fail_checks": 0
+  },
+  "evidence_index": {
+    "pre_fix_repro_fact": {
+      "request_module_key": "module1",
+      "backend_status_module_key": "module1",
+      "result_module_key": "allchain",
+      "result_total_scripts": 11,
+      "reproduce_cmd": "node -e <260328_03602 reuse task_id immediate /bot/test/result>",
+      "classify": "C：结果展示读取旧结果/错结果"
+    },
+    "stale_guard_fact": {
+      "stale_seed_http": 200,
+      "stale_seed_module_key": "allchain",
+      "start_http": 200,
+      "status_state": "running",
+      "status_module_key": "module1",
+      "result_http": 409,
+      "result_error": "result not ready"
+    },
+    "module1_fact": {
+      "start_http": 200,
+      "request_module_key": "module1",
+      "backend_module_key": "module1",
+      "terminal_state": "passed",
+      "result_http": 200,
+      "result_module_key": "module1",
+      "result_total_scripts": 1,
+      "result_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260329_001_m1_module1_1774793870866_verify_all_manual.json"
+    },
+    "allchain_fact": {
+      "start_http": 200,
+      "request_module_key": "allchain",
+      "backend_module_key": "allchain",
+      "terminal_state": "failed",
+      "result_http": 200,
+      "result_module_key": "allchain",
+      "result_total_scripts": 11,
+      "result_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260329_001_all_allchain_1774794001681_verify_all_manual.json"
+    },
+    "sequential_fact": {
+      "step1_module_key": "module1",
+      "step2_module_key": "allchain",
+      "step1_run_id": "1774793870866",
+      "step2_run_id": "1774794001681",
+      "step1_result_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260329_001_m1_module1_1774793870866_verify_all_manual.json",
+      "step2_result_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260329_001_all_allchain_1774794001681_verify_all_manual.json"
+    },
+    "healthcheck": {
+      "root": 200,
+      "pairs": 404
+    }
+  },
+  "result": {
+    "001-A_classification_is_C": true,
+    "001-B_stale_result_guard_active": true,
+    "001-C_module1_only_execution_and_display": true,
+    "001-D_allchain_only_execution_and_display": true,
+    "001-E_sequential_runs_not_cross_wired": true
+  }
+}

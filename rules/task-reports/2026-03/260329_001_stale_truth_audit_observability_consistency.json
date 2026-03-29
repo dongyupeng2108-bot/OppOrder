@@ -1,0 +1,351 @@
+{
+  "script_name": "truth_audit_observability_consistency_260328_035",
+  "task_id": "260329_001_stale",
+  "sample_name": "reason_intents_summary_evidence_consistency_v1",
+  "pass": true,
+  "message": "观测与证据一致性审计通过",
+  "first_break_layer": null,
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260329_001_stale_truth_audit_observability_consistency.json",
+  "summary": {
+    "conclusion": "A：观测与证据一致",
+    "total_checks": 4,
+    "pass_checks": 4,
+    "fail_checks": 0,
+    "checks": {
+      "035-A_reason_action_continuous_ticks": true,
+      "035-B_place_cancel_noop_triad_consistency": true,
+      "035-C_summary_orders_reconcile": true,
+      "035-D_evidence_structure_complete": true
+    }
+  },
+  "raw_excerpt": {
+    "health_root": 200,
+    "health_pairs": 404,
+    "runtime_unique_ticks": 7,
+    "runtime_reason_preview_mismatch": 0,
+    "runtime_reason_action_mismatch": 0,
+    "has_cancel_tick": true,
+    "has_place_tick": true,
+    "has_noop_tick": true,
+    "reconcile_pass": true
+  },
+  "generated_at": "2026-03-29T14:17:49.751Z",
+  "command": "node scripts/truth_audit_observability_consistency_260328_035.mjs --task_id=260329_001_stale --sample=reason_intents_summary_evidence_consistency_v1",
+  "conclusion_block": {
+    "verdict": "A：观测与证据一致",
+    "first_break_layer": null
+  },
+  "key_counters": {
+    "total_checks": 4,
+    "pass_checks": 4,
+    "fail_checks": 0
+  },
+  "evidence_index": {
+    "healthcheck": {
+      "root": 200,
+      "pairs": 404
+    },
+    "case_035A": {
+      "unique_tick_count": 7,
+      "sample": [
+        {
+          "i": 0,
+          "last_tick_at": null,
+          "last_reason": null,
+          "preview_reason": "wait_runner_tick_result",
+          "intents": [
+            {
+              "kind": "NOOP"
+            }
+          ],
+          "summary": {
+            "total": 143,
+            "open_yes": 3,
+            "open_no": 0,
+            "cancelled_total": 87,
+            "filled_total": 53
+          },
+          "action_by_delta": "INIT",
+          "intents_kinds": [
+            "NOOP"
+          ]
+        },
+        {
+          "i": 1,
+          "last_tick_at": "2026-03-29T14:17:26.540Z",
+          "last_reason": "ladder_not_posted",
+          "preview_reason": "ladder_not_posted",
+          "intents": [
+            {
+              "kind": "PLACE_LADDER",
+              "side": "YES",
+              "ladder": [
+                {
+                  "price": 0.31,
+                  "size": 2,
+                  "tp_price": 0.35
+                },
+                {
+                  "price": 0.29,
+                  "size": 1,
+                  "tp_price": 0.33
+                }
+              ],
+              "prices": [
+                0.31,
+                0.29
+              ],
+              "size": 2
+            },
+            {
+              "kind": "PLACE_LADDER",
+              "side": "NO",
+              "ladder": [
+                {
+                  "price": 0.02,
+                  "size": 3,
+                  "tp_price": 0.03
+                },
+                {
+                  "price": 0.015,
+                  "size": 1,
+                  "tp_price": 0.025
+                }
+              ],
+              "prices": [
+                0.02,
+                0.015
+              ],
+              "size": 3
+            }
+          ],
+          "summary": {
+            "total": 147,
+            "open_yes": 3,
+            "open_no": 2,
+            "cancelled_total": 87,
+            "filled_total": 55
+          },
+          "action_by_delta": "PLACE",
+          "intents_kinds": [
+            "PLACE_LADDER",
+            "PLACE_LADDER"
+          ]
+        },
+        {
+          "i": 2,
+          "last_tick_at": "2026-03-29T14:17:26.929Z",
+          "last_reason": "within_bounds_or_no_trigger",
+          "preview_reason": "within_bounds_or_no_trigger",
+          "intents": [
+            {
+              "kind": "NOOP"
+            }
+          ],
+          "summary": {
+            "total": 147,
+            "open_yes": 3,
+            "open_no": 2,
+            "cancelled_total": 87,
+            "filled_total": 55
+          },
+          "action_by_delta": "NO_CHANGE",
+          "intents_kinds": [
+            "NOOP"
+          ]
+        },
+        {
+          "i": 4,
+          "last_tick_at": "2026-03-29T14:17:27.996Z",
+          "last_reason": "within_bounds_or_no_trigger",
+          "preview_reason": "within_bounds_or_no_trigger",
+          "intents": [
+            {
+              "kind": "NOOP"
+            }
+          ],
+          "summary": {
+            "total": 147,
+            "open_yes": 3,
+            "open_no": 2,
+            "cancelled_total": 87,
+            "filled_total": 55
+          },
+          "action_by_delta": "NO_CHANGE",
+          "intents_kinds": [
+            "NOOP"
+          ]
+        },
+        {
+          "i": 7,
+          "last_tick_at": "2026-03-29T14:17:28.934Z",
+          "last_reason": "btc_price>=upper_bound",
+          "preview_reason": "btc_price>=upper_bound",
+          "intents": [
+            {
+              "kind": "CANCEL_OPEN",
+              "side": "NO",
+              "requires_bounds": true
+            }
+          ],
+          "summary": {
+            "total": 147,
+            "open_yes": 3,
+            "open_no": 0,
+            "cancelled_total": 89,
+            "filled_total": 55
+          },
+          "action_by_delta": "CANCEL_OR_CLOSE",
+          "intents_kinds": [
+            "CANCEL_OPEN"
+          ]
+        },
+        {
+          "i": 10,
+          "last_tick_at": "2026-03-29T14:17:30.012Z",
+          "last_reason": "btc_price<=lower_bound",
+          "preview_reason": "btc_price<=lower_bound",
+          "intents": [
+            {
+              "kind": "CANCEL_OPEN",
+              "side": "YES",
+              "requires_bounds": true
+            }
+          ],
+          "summary": {
+            "total": 147,
+            "open_yes": 0,
+            "open_no": 0,
+            "cancelled_total": 92,
+            "filled_total": 55
+          },
+          "action_by_delta": "CANCEL_OR_CLOSE",
+          "intents_kinds": [
+            "CANCEL_OPEN"
+          ]
+        },
+        {
+          "i": 13,
+          "last_tick_at": "2026-03-29T14:17:30.958Z",
+          "last_reason": null,
+          "preview_reason": "price_or_bounds_null",
+          "intents": [
+            {
+              "kind": "NOOP"
+            }
+          ],
+          "summary": {
+            "total": 147,
+            "open_yes": 0,
+            "open_no": 0,
+            "cancelled_total": 92,
+            "filled_total": 55
+          },
+          "action_by_delta": "NO_CHANGE",
+          "intents_kinds": [
+            "NOOP"
+          ]
+        }
+      ],
+      "mismatch_reason_vs_preview_count": 0,
+      "mismatch_reason_vs_action_count": 0,
+      "has_cancel_tick": true,
+      "has_place_tick": true,
+      "has_noop_tick": true,
+      "pass": true
+    },
+    "case_035B": {
+      "triad": {
+        "noop_reason": "within_bounds_or_no_trigger",
+        "noop_intents": [
+          {
+            "kind": "NOOP"
+          }
+        ],
+        "place_reason": "ladder_not_posted",
+        "place_intents": [
+          {
+            "kind": "PLACE_LADDER",
+            "side": "YES",
+            "ladder": [
+              {
+                "price": 0.31,
+                "size": 2,
+                "tp_price": 0.35
+              },
+              {
+                "price": 0.29,
+                "size": 1,
+                "tp_price": 0.33
+              }
+            ],
+            "prices": [
+              0.31,
+              0.29
+            ],
+            "size": 2
+          },
+          {
+            "kind": "PLACE_LADDER",
+            "side": "NO",
+            "ladder": [
+              {
+                "price": 0.02,
+                "size": 3,
+                "tp_price": 0.03
+              },
+              {
+                "price": 0.015,
+                "size": 1,
+                "tp_price": 0.025
+              }
+            ],
+            "prices": [
+              0.02,
+              0.015
+            ],
+            "size": 3
+          }
+        ],
+        "cancel_reason": "btc_price>=upper_bound",
+        "cancel_intents": [
+          {
+            "kind": "CANCEL_OPEN",
+            "side": "NO",
+            "requires_bounds": true
+          }
+        ]
+      },
+      "pass": true
+    },
+    "case_035C": {
+      "summary": {
+        "total": 156,
+        "open_yes": 3,
+        "open_no": 0,
+        "filled_total": 58,
+        "cancelled_total": 95
+      },
+      "aggregated_from_orders": {
+        "total": 156,
+        "open_yes": 3,
+        "open_no": 0,
+        "filled_total": 58,
+        "cancelled_total": 95
+      },
+      "pass": true
+    },
+    "case_035D": {
+      "has_conclusion_block": true,
+      "has_key_counters": true,
+      "has_first_break_layer": true,
+      "has_evidence_index": true
+    }
+  },
+  "result": {
+    "035-A_reason_action_continuous_ticks": true,
+    "035-B_place_cancel_noop_triad_consistency": true,
+    "035-C_summary_orders_reconcile": true,
+    "035-D_evidence_structure_complete": true
+  }
+}
