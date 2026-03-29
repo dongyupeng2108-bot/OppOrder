@@ -151,7 +151,7 @@ const SE_DEFAULT_ATR_MULTIPLE = 1.2;
 const SE_DEFAULT_CANCEL_ALL_REMAINING_SEC = 100;
 const SE_DEFAULT_LADDER_SIZE = 5;
 const SE_DEFAULT_LADDER_PRICES = [0.27, 0.24, 0.21, 0.18];
-const SE_DEFAULT_LADDER_ROWS = SE_DEFAULT_LADDER_PRICES.map((price) => ({ price, size: SE_DEFAULT_LADDER_SIZE, tp_price: price }));
+const SE_DEFAULT_LADDER_ROWS = SE_DEFAULT_LADDER_PRICES.map((price) => ({ price, size: SE_DEFAULT_LADDER_SIZE, tp_price: 1 }));
 let _seConfigCurrent = null;
 let _seConfigDefaults = null;
 let _seParamActiveTab = 'up';
@@ -435,7 +435,7 @@ function se_normalizeLadderRows(rows = [], fallbackRows = SE_DEFAULT_LADDER_ROWS
     const price = Number(item?.price);
     const size = Number(item?.size);
     const tpPriceRaw = item?.tp_price;
-    const tpPrice = tpPriceRaw === undefined || tpPriceRaw === null || tpPriceRaw === '' ? price : Number(tpPriceRaw);
+    const tpPrice = tpPriceRaw === undefined || tpPriceRaw === null || tpPriceRaw === '' ? 1 : Number(tpPriceRaw);
     if (!Number.isFinite(price) || !Number.isFinite(size) || !Number.isFinite(tpPrice)) return null;
     return { price, size, tp_price: tpPrice };
   }).filter(Boolean);
@@ -627,7 +627,7 @@ function se_pickBotConfig(input = {}) {
   for (const key of BOT_CONFIG_FIELDS) picked[key] = input[key];
   const ladderPrices = Array.isArray(picked.ladder_prices) ? picked.ladder_prices.map((item) => Number(item)) : [...SE_DEFAULT_LADDER_PRICES];
   const ladderSize = Number(picked.ladder_size ?? SE_DEFAULT_LADDER_SIZE);
-  const fallbackRows = ladderPrices.map((price) => ({ price, size: ladderSize, tp_price: price }));
+  const fallbackRows = ladderPrices.map((price) => ({ price, size: ladderSize, tp_price: 1 }));
   const cancelFallback = Number(picked.cancel_all_remaining_sec ?? SE_DEFAULT_CANCEL_ALL_REMAINING_SEC);
   return {
     open_delay_sec: Number(picked.open_delay_sec ?? SE_DEFAULT_OPEN_DELAY_SEC),
@@ -669,10 +669,10 @@ function se_validateParams(params) {
   if (!Number.isInteger(params.open_delay_sec) || params.open_delay_sec < 0) return 'open_delay_sec 必须为非负整数';
   if (!Array.isArray(params.up_ladder) || params.up_ladder.length < 1) return 'up_ladder 至少保留 1 档';
   if (!Array.isArray(params.down_ladder) || params.down_ladder.length < 1) return 'down_ladder 至少保留 1 档';
-  const invalidUp = params.up_ladder.some((item) => !Number.isFinite(item.price) || item.price <= 0 || item.price >= 1 || !Number.isFinite(item.size) || item.size <= 0 || !Number.isFinite(item.tp_price) || item.tp_price <= 0 || item.tp_price >= 1);
-  if (invalidUp) return 'up_ladder 每档需满足 0 < price,tp_price < 1 且 size > 0';
-  const invalidDown = params.down_ladder.some((item) => !Number.isFinite(item.price) || item.price <= 0 || item.price >= 1 || !Number.isFinite(item.size) || item.size <= 0 || !Number.isFinite(item.tp_price) || item.tp_price <= 0 || item.tp_price >= 1);
-  if (invalidDown) return 'down_ladder 每档需满足 0 < price,tp_price < 1 且 size > 0';
+  const invalidUp = params.up_ladder.some((item) => !Number.isFinite(item.price) || item.price <= 0 || item.price >= 1 || !Number.isFinite(item.size) || item.size <= 0 || !Number.isFinite(item.tp_price) || item.tp_price <= 0 || item.tp_price > 1);
+  if (invalidUp) return 'up_ladder 每档需满足 0 < price < 1、0 < tp_price <= 1 且 size > 0';
+  const invalidDown = params.down_ladder.some((item) => !Number.isFinite(item.price) || item.price <= 0 || item.price >= 1 || !Number.isFinite(item.size) || item.size <= 0 || !Number.isFinite(item.tp_price) || item.tp_price <= 0 || item.tp_price > 1);
+  if (invalidDown) return 'down_ladder 每档需满足 0 < price < 1、0 < tp_price <= 1 且 size > 0';
   if (!Number.isInteger(params.up_cancel.before_end_sec) || params.up_cancel.before_end_sec < 0) return 'up_cancel.before_end_sec 必须为非负整数';
   if (!Number.isInteger(params.down_cancel.before_end_sec) || params.down_cancel.before_end_sec < 0) return 'down_cancel.before_end_sec 必须为非负整数';
   if (params.up_cancel.formula.length > 240) return 'up_cancel.formula 长度不能超过 240';

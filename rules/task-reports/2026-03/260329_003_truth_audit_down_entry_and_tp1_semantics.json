@@ -1,0 +1,443 @@
+{
+  "script_name": "truth_audit_down_entry_and_tp1_semantics_260329_003",
+  "task_id": "260329_003",
+  "sample_name": "down_entry_fix_and_tp1_semantics_v1",
+  "pass": true,
+  "message": "DOWN挂单与tp=1修复验收通过",
+  "first_break_layer": null,
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260329_003_truth_audit_down_entry_and_tp1_semantics.json",
+  "summary": {
+    "conclusion": "A：DOWN挂单与tp=1语义均已收口",
+    "total_checks": 6,
+    "pass_checks": 6,
+    "fail_checks": 0,
+    "checks": {
+      "003-A_fail_layer_identified_input_save": true,
+      "003-B_tp1_save_and_default_accept": true,
+      "003-C_up_down_entry_both_posted": true,
+      "003-D_tp1_no_take_profit_prehang": true,
+      "003-E_tplt1_still_generates_tp": true,
+      "003-F_real_runtime_continuity": true
+    }
+  },
+  "raw_excerpt": {
+    "first_break_layer": "输入保存层",
+    "health_root": 200,
+    "health_pairs": 404,
+    "open_yes_after_fix": 2,
+    "open_no_after_fix": 3,
+    "tp1_linked_tp": null,
+    "tplt1_linked_tp": {
+      "order_id": "paper_d5053f88",
+      "kind": "TAKE_PROFIT",
+      "side": "YES",
+      "price": 0.97,
+      "size": 2,
+      "tp_price": 0.97,
+      "ladder_key": "YES:0",
+      "parent_order_id": "paper_143804dc",
+      "status": "OPEN",
+      "fill_price": null,
+      "filled_at": null,
+      "created_at": "2026-03-29T15:49:10.497Z",
+      "source": "runner_tick:tp",
+      "inferred_window_id": "debug-main-path-v1-w1"
+    },
+    "runtime_unique_ticks": 19,
+    "runtime_max_gap_ms": 1128
+  },
+  "generated_at": "2026-03-29T15:49:28.962Z",
+  "command": "node scripts/truth_audit_down_entry_and_tp1_semantics_260329_003.mjs --task_id=260329_003 --sample=down_entry_fix_and_tp1_semantics_v1",
+  "conclusion_block": {
+    "verdict": "A：DOWN挂单与tp=1语义均已收口",
+    "first_break_layer": null
+  },
+  "key_counters": {
+    "total_checks": 6,
+    "pass_checks": 6,
+    "fail_checks": 0
+  },
+  "evidence_index": {
+    "pre_fix_fact": {
+      "unique_first_break_layer": "输入保存层",
+      "ui_tp_lt1_only": true,
+      "server_tp_lt1_only": true,
+      "ledger_tp_lt1_only": true
+    },
+    "post_fix_both_entry": {
+      "done": true,
+      "status": {
+        "mode": "paper-staging",
+        "phase": "LADDER_POSTED",
+        "running": true,
+        "debug_scenario": "main_path_v1",
+        "debug_frame_index": 1,
+        "debug_completed": false,
+        "tick_interval_ms": 1000,
+        "last_tick_at": "2026-03-29T15:49:10.096Z",
+        "last_window_id": null,
+        "current_window_id": "debug-main-path-v1-w1",
+        "window_initialized_at": "2026-03-29T15:49:10.082Z",
+        "remaining_sec": 299,
+        "anchor_btc": 100,
+        "atr_5m": 2,
+        "upper_bound": 102.4,
+        "lower_bound": 97.6,
+        "ladder_posted": true,
+        "yes_cancelled": false,
+        "no_cancelled": false,
+        "up_formula_cancelled": false,
+        "down_formula_cancelled": false,
+        "yes_order_ids": [
+          "paper_d0951552"
+        ],
+        "no_order_ids": [
+          "paper_0ab063be"
+        ],
+        "last_reason": "ladder_not_posted",
+        "last_intents": [
+          {
+            "kind": "PLACE_LADDER",
+            "side": "YES",
+            "ladder": [
+              {
+                "price": 0.31,
+                "size": 2,
+                "tp_price": 1
+              }
+            ],
+            "prices": [
+              0.31
+            ],
+            "size": 2
+          },
+          {
+            "kind": "PLACE_LADDER",
+            "side": "NO",
+            "ladder": [
+              {
+                "price": 0.02,
+                "size": 3,
+                "tp_price": 1
+              }
+            ],
+            "prices": [
+              0.02
+            ],
+            "size": 3
+          }
+        ],
+        "updated_at": "2026-03-29T15:49:10.096Z",
+        "saved_config": {
+          "open_delay_sec": 0,
+          "ladder_prices": [
+            0.27,
+            0.24
+          ],
+          "ladder_size": 5,
+          "atr_multiple": 1.2,
+          "cancel_all_remaining_sec": 0,
+          "up_ladder": [
+            {
+              "price": 0.31,
+              "size": 2,
+              "tp_price": 1
+            }
+          ],
+          "down_ladder": [
+            {
+              "price": 0.02,
+              "size": 3,
+              "tp_price": 1
+            }
+          ],
+          "up_cancel": {
+            "before_end_sec": 0,
+            "formula": "false"
+          },
+          "down_cancel": {
+            "before_end_sec": 0,
+            "formula": "false"
+          }
+        },
+        "last_run_snapshot": {
+          "stop_reason": "MANUAL_STOP",
+          "completed_at": "2026-03-29T15:48:27.230Z",
+          "current_window_id": "btc-updown-5m-1774799100",
+          "phase": "IDLE",
+          "filled_total": 1,
+          "cancelled_total": 0,
+          "realized_gross_pnl_total": 0,
+          "unrealized_gross_pnl_total": -0.4600000000000003,
+          "active_config": {
+            "open_delay_sec": 0,
+            "ladder_prices": [
+              0.27,
+              0.24
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 0,
+            "up_ladder": [
+              {
+                "price": 0.31,
+                "size": 2,
+                "tp_price": 1
+              }
+            ],
+            "down_ladder": [
+              {
+                "price": 0.02,
+                "size": 3,
+                "tp_price": 1
+              }
+            ],
+            "up_cancel": {
+              "before_end_sec": 0,
+              "formula": "false"
+            },
+            "down_cancel": {
+              "before_end_sec": 0,
+              "formula": "false"
+            }
+          }
+        },
+        "active_runtime_snapshot": {
+          "config": {
+            "open_delay_sec": 0,
+            "ladder_prices": [
+              0.27,
+              0.24
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 0,
+            "up_ladder": [
+              {
+                "price": 0.31,
+                "size": 2,
+                "tp_price": 1
+              }
+            ],
+            "down_ladder": [
+              {
+                "price": 0.02,
+                "size": 3,
+                "tp_price": 1
+              }
+            ],
+            "up_cancel": {
+              "before_end_sec": 0,
+              "formula": "false"
+            },
+            "down_cancel": {
+              "before_end_sec": 0,
+              "formula": "false"
+            }
+          },
+          "phase": "LADDER_POSTED",
+          "current_window_id": "debug-main-path-v1-w1",
+          "anchor_btc": 100,
+          "upper_bound": 102.4,
+          "lower_bound": 97.6,
+          "running": true
+        }
+      },
+      "summary": {
+        "total": 20,
+        "open_total": 5,
+        "cancelled_total": 9,
+        "filled_total": 6,
+        "open_yes": 2,
+        "open_no": 3,
+        "filled_yes": 6,
+        "filled_no": 0
+      },
+      "window_open_sides": [
+        "NO",
+        "YES"
+      ],
+      "window_open_rows": [
+        {
+          "side": "NO",
+          "kind": "ENTRY",
+          "price": 0.02,
+          "tp_price": 1
+        },
+        {
+          "side": "YES",
+          "kind": "ENTRY",
+          "price": 0.31,
+          "tp_price": 1
+        }
+      ]
+    },
+    "post_fix_tp1_semantics": {
+      "tick_status": 200,
+      "tick_preview_reason": "ladder_not_posted",
+      "filled_entry": {
+        "order_id": "paper_18720e10",
+        "kind": "ENTRY",
+        "side": "YES",
+        "price": 0.99,
+        "size": 2,
+        "tp_price": 1,
+        "ladder_key": "YES:0",
+        "parent_order_id": null,
+        "status": "FILLED",
+        "fill_price": 0.27,
+        "filled_at": "2026-03-29T15:49:10.461Z",
+        "created_at": "2026-03-29T15:49:10.457Z",
+        "source": "runner_tick",
+        "inferred_window_id": "debug-main-path-v1-w1"
+      },
+      "linked_tp": null,
+      "summary": {
+        "total": 22,
+        "open_total": 1,
+        "cancelled_total": 14,
+        "filled_total": 7,
+        "open_yes": 0,
+        "open_no": 1,
+        "filled_yes": 7,
+        "filled_no": 0
+      }
+    },
+    "post_fix_tplt1_semantics": {
+      "tick_status": 200,
+      "tick_preview_reason": "ladder_not_posted",
+      "filled_entry": {
+        "order_id": "paper_143804dc",
+        "kind": "ENTRY",
+        "side": "YES",
+        "price": 0.99,
+        "size": 2,
+        "tp_price": 0.97,
+        "ladder_key": "YES:0",
+        "parent_order_id": null,
+        "status": "FILLED",
+        "fill_price": 0.27,
+        "filled_at": "2026-03-29T15:49:10.497Z",
+        "created_at": "2026-03-29T15:49:10.494Z",
+        "source": "runner_tick",
+        "inferred_window_id": "debug-main-path-v1-w1"
+      },
+      "linked_tp": {
+        "order_id": "paper_d5053f88",
+        "kind": "TAKE_PROFIT",
+        "side": "YES",
+        "price": 0.97,
+        "size": 2,
+        "tp_price": 0.97,
+        "ladder_key": "YES:0",
+        "parent_order_id": "paper_143804dc",
+        "status": "OPEN",
+        "fill_price": null,
+        "filled_at": null,
+        "created_at": "2026-03-29T15:49:10.497Z",
+        "source": "runner_tick:tp",
+        "inferred_window_id": "debug-main-path-v1-w1"
+      },
+      "summary": {
+        "total": 25,
+        "open_total": 2,
+        "cancelled_total": 15,
+        "filled_total": 8,
+        "open_yes": 1,
+        "open_no": 1,
+        "filled_yes": 8,
+        "filled_no": 0
+      }
+    },
+    "post_fix_runtime": {
+      "runtime_sample": [
+        {
+          "i": 0,
+          "running": true,
+          "last_tick_at": "2026-03-29T15:49:10.525Z",
+          "last_reason": "ladder_not_posted"
+        },
+        {
+          "i": 1,
+          "running": true,
+          "last_tick_at": "2026-03-29T15:49:10.525Z",
+          "last_reason": "ladder_not_posted"
+        },
+        {
+          "i": 2,
+          "running": true,
+          "last_tick_at": "2026-03-29T15:49:11.529Z",
+          "last_reason": "price_or_bounds_null"
+        },
+        {
+          "i": 3,
+          "running": true,
+          "last_tick_at": "2026-03-29T15:49:11.529Z",
+          "last_reason": "price_or_bounds_null"
+        },
+        {
+          "i": 4,
+          "running": true,
+          "last_tick_at": "2026-03-29T15:49:12.599Z",
+          "last_reason": "price_or_bounds_null"
+        },
+        {
+          "i": 5,
+          "running": true,
+          "last_tick_at": "2026-03-29T15:49:12.599Z",
+          "last_reason": "price_or_bounds_null"
+        },
+        {
+          "i": 6,
+          "running": true,
+          "last_tick_at": "2026-03-29T15:49:13.537Z",
+          "last_reason": "price_or_bounds_null"
+        },
+        {
+          "i": 7,
+          "running": true,
+          "last_tick_at": "2026-03-29T15:49:13.537Z",
+          "last_reason": "price_or_bounds_null"
+        },
+        {
+          "i": 8,
+          "running": true,
+          "last_tick_at": "2026-03-29T15:49:14.646Z",
+          "last_reason": "price_or_bounds_null"
+        },
+        {
+          "i": 9,
+          "running": true,
+          "last_tick_at": "2026-03-29T15:49:14.646Z",
+          "last_reason": "price_or_bounds_null"
+        },
+        {
+          "i": 10,
+          "running": true,
+          "last_tick_at": "2026-03-29T15:49:15.537Z",
+          "last_reason": "price_or_bounds_null"
+        },
+        {
+          "i": 11,
+          "running": true,
+          "last_tick_at": "2026-03-29T15:49:15.537Z",
+          "last_reason": "price_or_bounds_null"
+        }
+      ],
+      "unique_ticks": 19,
+      "max_gap_ms": 1128
+    },
+    "healthcheck": {
+      "root": 200,
+      "pairs": 404
+    }
+  },
+  "result": {
+    "003-A_fail_layer_identified_input_save": true,
+    "003-B_tp1_save_and_default_accept": true,
+    "003-C_up_down_entry_both_posted": true,
+    "003-D_tp1_no_take_profit_prehang": true,
+    "003-E_tplt1_still_generates_tp": true,
+    "003-F_real_runtime_continuity": true
+  }
+}

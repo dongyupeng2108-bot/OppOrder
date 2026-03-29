@@ -1,0 +1,14 @@
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260329_003
+PR_TASK_ID_DETECTED=260329_003
+TARGET_TASK_ID=260329_003
+LATEST_TASK_ID=260329_003
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] Verifying task_id: 260329_003
+[Gate Light] Running Automation Pack V1 Hard Guards...
+
+[Gate Light] FAILED: Report Block Check for notify_260329_003.txt
+  Missing Blocks: === DOD_EVIDENCE_STDOUT ===
+  Missing Blocks: === GATE_LIGHT_PREVIEW === OR === GATE_LIGHT_VERIFY ===
+  ACTION: Use 'assemble_evidence.mjs' to regenerate reports.
+GATE_LIGHT_EXIT=1

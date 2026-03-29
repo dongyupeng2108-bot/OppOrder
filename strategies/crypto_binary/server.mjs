@@ -75,7 +75,7 @@ const BOT_TEST_STATE_IDLE = 'idle';
 const BOT_TEST_STATE_RUNNING = 'running';
 const BOT_TEST_STATE_PASSED = 'passed';
 const BOT_TEST_STATE_FAILED = 'failed';
-const toLadderRows = (prices, size) => prices.map((price) => ({ price, size, tp_price: price }));
+const toLadderRows = (prices, size) => prices.map((price) => ({ price, size, tp_price: 1 }));
 const BOT_CONFIG_DEFAULTS = {
   open_delay_sec: 10,
   ladder_prices: [...BOT_STRATEGY_CONTRACT.defaults.ladder_prices],
@@ -765,11 +765,11 @@ const normalizeLadderRowsPayload = (value) => {
     const size = asFiniteNumber(item?.size);
     const tpPriceRaw = item?.tp_price;
     const tpPrice = tpPriceRaw === null || tpPriceRaw === undefined || tpPriceRaw === ''
-      ? price
+      ? 1
       : asFiniteNumber(tpPriceRaw);
     if (price === null || price <= 0 || price >= 1) return null;
     if (size === null || size <= 0) return null;
-    if (tpPrice === null || tpPrice <= 0 || tpPrice >= 1) return null;
+    if (tpPrice === null || tpPrice <= 0 || tpPrice > 1) return null;
     return { price, size, tp_price: tpPrice };
   }).filter(Boolean);
   return normalized.length > 0 ? normalized : null;
@@ -811,7 +811,7 @@ const validateBotConfigPayload = (payload) => {
   if (!isPositiveNumber(atrMultiple)) return { ok: false, error: 'atr_multiple must be positive number' };
   if (!isNonNegativeInteger(cancelAllRemainingSec)) return { ok: false, error: 'cancel_all_remaining_sec must be non-negative integer' };
   if (!ladderPrices) return { ok: false, error: 'ladder_prices must be an array of numbers between 0 and 1' };
-  const legacyLadder = ladderPrices.map((price) => ({ price, size: ladderSize, tp_price: price }));
+  const legacyLadder = ladderPrices.map((price) => ({ price, size: ladderSize, tp_price: 1 }));
   const resolvedUpLadder = upLadder || legacyLadder;
   const resolvedDownLadder = downLadder || legacyLadder;
   const resolvedUpCancel = upCancel || { before_end_sec: cancelAllRemainingSec, formula: '' };
@@ -845,7 +845,7 @@ const coerceRecoveredBotConfig = (payload) => {
   const cancelAllRemainingSec = isNonNegativeInteger(cancelAllRemainingSecRaw)
     ? cancelAllRemainingSecRaw
     : BOT_CONFIG_DEFAULTS.cancel_all_remaining_sec;
-  const legacyLadder = ladderPrices.map((price) => ({ price, size: ladderSize, tp_price: price }));
+  const legacyLadder = ladderPrices.map((price) => ({ price, size: ladderSize, tp_price: 1 }));
   const upLadder = normalizeLadderRowsPayload(payload.up_ladder) || legacyLadder;
   const downLadder = normalizeLadderRowsPayload(payload.down_ladder) || legacyLadder;
   const upCancel = normalizeCancelPayload(payload.up_cancel) || { before_end_sec: cancelAllRemainingSec, formula: '' };

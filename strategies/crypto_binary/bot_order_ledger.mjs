@@ -2,7 +2,7 @@ import { randomUUID } from 'crypto';
 
 const DEFAULT_PRICES = [0.27, 0.24, 0.21, 0.18];
 const DEFAULT_SIZE = 5;
-const DEFAULT_LADDER = DEFAULT_PRICES.map((price) => ({ price, size: DEFAULT_SIZE, tp_price: price }));
+const DEFAULT_LADDER = DEFAULT_PRICES.map((price) => ({ price, size: DEFAULT_SIZE, tp_price: 1 }));
 
 const cloneOrder = (order) => ({ ...order });
 
@@ -135,17 +135,17 @@ export function createBotOrderLedger(options = {}) {
         const price = Number(item?.price);
         const unitSize = Number(item?.size);
         const tpPriceRaw = item?.tp_price;
-        const tpPrice = tpPriceRaw === null || tpPriceRaw === undefined || tpPriceRaw === '' ? price : Number(tpPriceRaw);
+        const tpPrice = tpPriceRaw === null || tpPriceRaw === undefined || tpPriceRaw === '' ? 1 : Number(tpPriceRaw);
         if (!Number.isFinite(price) || price <= 0 || price >= 1) return null;
         if (!Number.isFinite(unitSize) || unitSize <= 0) return null;
-        if (!Number.isFinite(tpPrice) || tpPrice <= 0 || tpPrice >= 1) return null;
+        if (!Number.isFinite(tpPrice) || tpPrice <= 0 || tpPrice > 1) return null;
         return { price, size: unitSize, tp_price: tpPrice };
       }).filter(Boolean);
       if (normalized.length > 0) return normalized;
     }
     const prices = Array.isArray(options.prices) && options.prices.length ? options.prices : DEFAULT_PRICES;
     const size = Number.isFinite(options.size) ? options.size : DEFAULT_SIZE;
-    return prices.map((price) => ({ price, size, tp_price: price }));
+    return prices.map((price) => ({ price, size, tp_price: 1 }));
   };
   const placeSideLadder = (side, ladder, source) => {
     const created = ladder.map((item, index) => createOrder({
@@ -173,7 +173,7 @@ export function createBotOrderLedger(options = {}) {
       if (order.kind === 'ENTRY' && order.side === 'YES' && askYes != null && order.price >= askYes) {
         const nextOrder = { ...order, status: 'FILLED', fill_price: askYes, filled_at: filledAt };
         filledOrders.push(cloneOrder(nextOrder));
-        if (Number.isFinite(order.tp_price)) {
+        if (Number.isFinite(order.tp_price) && order.tp_price < 1) {
           tpOrdersToCreate.push(createOrder({
             side: 'YES',
             kind: 'TAKE_PROFIT',
@@ -190,7 +190,7 @@ export function createBotOrderLedger(options = {}) {
       if (order.kind === 'ENTRY' && order.side === 'NO' && askNo != null && order.price >= askNo) {
         const nextOrder = { ...order, status: 'FILLED', fill_price: askNo, filled_at: filledAt };
         filledOrders.push(cloneOrder(nextOrder));
-        if (Number.isFinite(order.tp_price)) {
+        if (Number.isFinite(order.tp_price) && order.tp_price < 1) {
           tpOrdersToCreate.push(createOrder({
             side: 'NO',
             kind: 'TAKE_PROFIT',
