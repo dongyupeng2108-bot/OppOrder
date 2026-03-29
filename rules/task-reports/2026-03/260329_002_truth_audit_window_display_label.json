@@ -1,0 +1,63 @@
+{
+  "script_name": "truth_audit_window_display_label_260329_002",
+  "task_id": "260329_002",
+  "sample_name": "pm_window_display_name_with_debug_fallback_v1",
+  "pass": true,
+  "message": "窗口展示口径修复通过",
+  "first_break_layer": null,
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260329_002_truth_audit_window_display_label.json",
+  "summary": {
+    "conclusion": "A：当前窗口展示已切换为PM标签优先并保留debug回退",
+    "total_checks": 4,
+    "pass_checks": 4,
+    "fail_checks": 0,
+    "checks": {
+      "002-A_prefix_line_was_raw_window_id": true,
+      "002-B_real_pm_window_formats_to_et_label": true,
+      "002-C_debug_window_keeps_raw_name": true,
+      "002-D_current_window_ui_uses_display_name": true
+    }
+  },
+  "raw_excerpt": {
+    "pre_fix_raw_line": "se_setText('se-log-current-window', postmortem?.window_id || lastRun?.current_window_id);",
+    "real_window_id": "btc-updown-5m-1774796100",
+    "real_window_label": "March 29, 10:55-11AM ET",
+    "debug_window_id": "debug-fill-yes-path-v1-w1",
+    "debug_window_label": "debug-fill-yes-path-v1-w1"
+  },
+  "generated_at": "2026-03-29T15:06:26.331Z",
+  "command": "node scripts/truth_audit_window_display_label_260329_002.mjs --task_id=260329_002 --sample=pm_window_display_name_with_debug_fallback_v1",
+  "conclusion_block": {
+    "verdict": "A：当前窗口展示已切换为PM标签优先并保留debug回退",
+    "first_break_layer": null
+  },
+  "key_counters": {
+    "total_checks": 4,
+    "pass_checks": 4,
+    "fail_checks": 0
+  },
+  "evidence_index": {
+    "pre_fix_fact": {
+      "git_show_ok": true,
+      "raw_assignment_present": true,
+      "raw_assignment_line": "se_setText('se-log-current-window', postmortem?.window_id || lastRun?.current_window_id);"
+    },
+    "post_fix_fact": {
+      "display_assignment": "se_setText('se-log-current-window', se_formatWindowDisplayName(postmortem?.window_id || lastRun?.current_window_id));",
+      "display_assignment_present": true,
+      "formatter_source_present": true
+    },
+    "samples": {
+      "real_window_id": "btc-updown-5m-1774796100",
+      "real_window_label": "March 29, 10:55-11AM ET",
+      "debug_window_id": "debug-fill-yes-path-v1-w1",
+      "debug_window_label": "debug-fill-yes-path-v1-w1"
+    }
+  },
+  "result": {
+    "002-A_prefix_line_was_raw_window_id": true,
+    "002-B_real_pm_window_formats_to_et_label": true,
+    "002-C_debug_window_keeps_raw_name": true,
+    "002-D_current_window_ui_uses_display_name": true
+  }
+}
