@@ -1,0 +1,16 @@
+{
+  "task_id": "260328_036",
+  "is_shallow_repo": true,
+  "base": "bee457d85e55ad63b55aeb38480ce0ecafd15aa3",
+  "head": "c0516a7f316e0cb4f0d91e761c08fe4a01685fd0",
+  "merge_base": "bee457d85e55ad63b55aeb38480ce0ecafd15aa3",
+  "scope_files": [
+    "scripts/truth_audit_modular_test_entry_260328_036.mjs",
+    "scripts/verify_all_manual.mjs",
+    "scripts/verify_module1_strategy_input.mjs",
+    "strategies/crypto_binary/server.mjs",
+    "ui/js/strategy-editor.js"
+  ],
+  "scope_count": 5,
+  "generated_at": "2026-03-29T13:31:12.011Z"
+}

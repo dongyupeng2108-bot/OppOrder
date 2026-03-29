@@ -1,0 +1,6 @@
+script_name=truth_audit_observability_consistency_260328_035
+task_id=260328_03601
+sample_name=reason_intents_summary_evidence_consistency_v1
+pass=true
+first_break_layer=null
+message=观测与证据一致性审计通过

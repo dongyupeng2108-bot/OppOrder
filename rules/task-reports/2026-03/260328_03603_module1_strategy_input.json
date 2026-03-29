@@ -1,0 +1,61 @@
+{
+  "script_name": "verify_module1_strategy_input",
+  "task_id": "260328_03603",
+  "module_key": "module1",
+  "pass": true,
+  "total_scripts": 4,
+  "pass_count": 4,
+  "fail_count": 0,
+  "overall_pass": true,
+  "coverage_checklist": [
+    "新契约保存/读取与生效语义",
+    "预览/runtime 一致性",
+    "UP/DOWN 独立梯队",
+    "逐档 tp_price 绑定",
+    "方向撤单隔离",
+    "撤单优先级 / 非 PLACE_LADDER 禁新增 / 防抖 / 去重（关键项）",
+    "窗口边界与状态重置",
+    "恢复能力与持久化一致性",
+    "公式白名单与危险表达式边界",
+    "观测与证据一致性"
+  ],
+  "results": [
+    {
+      "script_name": "verify_strategy_runtime_regression_guard",
+      "entry": "scripts/verify_strategy_runtime_regression_guard.mjs",
+      "sample_name": "real_runtime_regression_guard_v1",
+      "pass": true,
+      "exit_code": 0,
+      "message": "strategy/runtime regression guard 通过",
+      "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260328_03603_strategy_runtime_regression_guard.json"
+    },
+    {
+      "script_name": "truth_audit_recovery_persistence",
+      "entry": "scripts/truth_audit_recovery_persistence_260328_031.mjs",
+      "sample_name": "fail_to_pass_recovery_fix",
+      "pass": true,
+      "exit_code": 0,
+      "message": "恢复能力与持久化一致性审计通过",
+      "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260328_03603_truth_audit_recovery_persistence.json"
+    },
+    {
+      "script_name": "truth_audit_formula_engine_fix",
+      "entry": "scripts/truth_audit_formula_engine_fix_260328_034.mjs",
+      "sample_name": "dangerous_expr_fix+isolation+runtime_perf",
+      "pass": true,
+      "exit_code": 0,
+      "message": "公式边界修复验收通过",
+      "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260328_03603_truth_audit_formula_engine_fix.json"
+    },
+    {
+      "script_name": "truth_audit_observability_consistency",
+      "entry": "scripts/truth_audit_observability_consistency_260328_035.mjs",
+      "sample_name": "reason_intents_summary_evidence_consistency_v1",
+      "pass": true,
+      "exit_code": 0,
+      "message": "观测与证据一致性审计通过",
+      "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260328_03603_truth_audit_observability_consistency.json"
+    }
+  ],
+  "generated_at": "2026-03-29T13:28:17.947Z"
+}

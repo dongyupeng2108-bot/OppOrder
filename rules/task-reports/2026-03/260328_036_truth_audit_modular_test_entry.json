@@ -1,0 +1,125 @@
+{
+  "script_name": "truth_audit_modular_test_entry_260328_036",
+  "task_id": "260328_036",
+  "sample_name": "ui_panel_module_mapping_and_execution_v1",
+  "pass": true,
+  "message": "模块化测试入口审计通过",
+  "first_break_layer": null,
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260328_036_truth_audit_modular_test_entry.json",
+  "summary": {
+    "conclusion": "A：模块化测试入口与编排一致",
+    "total_checks": 6,
+    "pass_checks": 6,
+    "fail_checks": 0,
+    "checks": {
+      "036-A_test_panel_dom_has_6_buttons": true,
+      "036-B_module_button_mapping_complete": true,
+      "036-C_module1_oneclick_checklist_present": true,
+      "036-D_module1_button_execution_result": true,
+      "036-E_allchain_entry_still_available": true,
+      "036-F_no_business_chain_files_changed": true
+    }
+  },
+  "raw_excerpt": {
+    "module1_check_count": 10,
+    "module1_run_pass": true,
+    "allchain_run_pass": true,
+    "endpoint_module1_pass": true
+  },
+  "generated_at": "2026-03-29T13:29:36.897Z",
+  "command": "node scripts/truth_audit_modular_test_entry_260328_036.mjs --task_id=260328_036 --sample=ui_panel_module_mapping_and_execution_v1",
+  "conclusion_block": {
+    "verdict": "A：模块化测试入口与编排一致",
+    "first_break_layer": null
+  },
+  "key_counters": {
+    "total_checks": 6,
+    "pass_checks": 6,
+    "fail_checks": 0
+  },
+  "evidence_index": {
+    "case_036A_dom": {
+      "has_overlay": true,
+      "buttons_exist": [
+        {
+          "label": "模块1 策略与输入",
+          "exists": true
+        },
+        {
+          "label": "模块2 执行引擎",
+          "exists": true
+        },
+        {
+          "label": "模块3 实时监控",
+          "exists": true
+        },
+        {
+          "label": "模块4 运行结果",
+          "exists": true
+        },
+        {
+          "label": "模块5 版本测试/保障",
+          "exists": true
+        },
+        {
+          "label": "全链测试",
+          "exists": true
+        }
+      ]
+    },
+    "case_036B_mapping": {
+      "has_module_const": true,
+      "has_module_run_call": true,
+      "verify_all_supports_module": true,
+      "verify_all_module1_maps_wrapper": true
+    },
+    "case_036C_module1_checklist": {
+      "checklist": [
+        "新契约保存/读取与生效语义",
+        "预览/runtime 一致性",
+        "UP/DOWN 独立梯队",
+        "逐档 tp_price 绑定",
+        "方向撤单隔离",
+        "撤单优先级 / 非 PLACE_LADDER 禁新增 / 防抖 / 去重（关键项）",
+        "窗口边界与状态重置",
+        "恢复能力与持久化一致性",
+        "公式白名单与危险表达式边界",
+        "观测与证据一致性"
+      ],
+      "module1_evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260328_03601_module1_strategy_input.json",
+      "module1_overall_pass": true
+    },
+    "case_036D_module1_button_run": {
+      "health_root": 200,
+      "health_pairs": 404,
+      "start_status": 200,
+      "started": true,
+      "status_terminal": "passed",
+      "module_key": "module1",
+      "module_label": "模块1 策略与输入",
+      "endpoint_result_overall_pass": true,
+      "endpoint_result_module_key": "module1"
+    },
+    "case_036E_allchain": {
+      "allchain_evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260328_03602_verify_all_manual.json",
+      "run_exit_code": 0,
+      "overall_pass": false,
+      "module_key": "allchain"
+    },
+    "no_business_chain_change_scope": [
+      "bot_strategy*.mjs 未改",
+      "bot_runner.mjs 未改",
+      "bot_order_ledger.mjs 未改",
+      "signer/余额链 未改",
+      "PNL/today 未改"
+    ]
+  },
+  "result": {
+    "036-A_test_panel_dom_has_6_buttons": true,
+    "036-B_module_button_mapping_complete": true,
+    "036-C_module1_oneclick_checklist_present": true,
+    "036-D_module1_button_execution_result": true,
+    "036-E_allchain_entry_still_available": true,
+    "036-F_no_business_chain_files_changed": true
+  }
+}
