@@ -5,8 +5,13 @@ const DEFAULT_SIZE = 5;
 const DEFAULT_LADDER = DEFAULT_PRICES.map((price) => ({ price, size: DEFAULT_SIZE, tp_price: 1 }));
 
 const cloneOrder = (order) => ({ ...order });
+const extractWindowIdFromSource = (source) => {
+  if (typeof source !== 'string' || source.length === 0) return null;
+  const matched = source.match(/\|window=([a-zA-Z0-9._:-]+)/);
+  return matched && matched[1] && matched[1] !== 'null' ? matched[1] : null;
+};
 
-const createOrder = ({ side, price, size, source, kind = 'ENTRY', tp_price = null, ladder_key = null, parent_order_id = null }) => ({
+const createOrder = ({ side, price, size, source, kind = 'ENTRY', tp_price = null, ladder_key = null, parent_order_id = null, window_id = null }) => ({
   order_id: `paper_${randomUUID().slice(0, 8)}`,
   kind,
   side,
@@ -15,6 +20,7 @@ const createOrder = ({ side, price, size, source, kind = 'ENTRY', tp_price = nul
   tp_price,
   ladder_key,
   parent_order_id,
+  window_id,
   status: 'OPEN',
   fill_price: null,
   filled_at: null,
@@ -22,7 +28,7 @@ const createOrder = ({ side, price, size, source, kind = 'ENTRY', tp_price = nul
   source
 });
 
-const createExitFill = ({ side, price, size, source }) => {
+const createExitFill = ({ side, price, size, source, window_id = null }) => {
   const ts = new Date().toISOString();
   return {
     order_id: `paper_${randomUUID().slice(0, 8)}`,
@@ -30,6 +36,7 @@ const createExitFill = ({ side, price, size, source }) => {
     side,
     price,
     size,
+    window_id,
     status: 'FILLED',
     fill_price: price,
     filled_at: ts,
@@ -74,6 +81,7 @@ export function createBotOrderLedger(options = {}) {
       tp_price: Number.isFinite(tp) ? tp : null,
       ladder_key: typeof row.ladder_key === 'string' && row.ladder_key.length > 0 ? row.ladder_key : null,
       parent_order_id: typeof row.parent_order_id === 'string' && row.parent_order_id.length > 0 ? row.parent_order_id : null,
+      window_id: typeof row.window_id === 'string' && row.window_id.length > 0 ? row.window_id : null,
       status,
       fill_price: Number.isFinite(fillPrice) ? fillPrice : null,
       filled_at: filledAt,
@@ -147,13 +155,14 @@ export function createBotOrderLedger(options = {}) {
     const size = Number.isFinite(options.size) ? options.size : DEFAULT_SIZE;
     return prices.map((price) => ({ price, size, tp_price: 1 }));
   };
-  const placeSideLadder = (side, ladder, source) => {
+  const placeSideLadder = (side, ladder, source, windowId = null) => {
     const created = ladder.map((item, index) => createOrder({
       side,
       price: item.price,
       size: item.size,
       tp_price: item.tp_price,
       ladder_key: `${side}:${index}`,
+      window_id: windowId,
       source
     }));
     orders = [...orders, ...created];
@@ -180,6 +189,7 @@ export function createBotOrderLedger(options = {}) {
             price: order.tp_price,
             size: order.size,
             tp_price: order.tp_price,
+            window_id: order.window_id ?? null,
             source: `${order.source || 'runner_tick'}:tp`,
             ladder_key: order.ladder_key,
             parent_order_id: order.order_id
@@ -197,6 +207,7 @@ export function createBotOrderLedger(options = {}) {
             price: order.tp_price,
             size: order.size,
             tp_price: order.tp_price,
+            window_id: order.window_id ?? null,
             source: `${order.source || 'runner_tick'}:tp`,
             ladder_key: order.ladder_key,
             parent_order_id: order.order_id
@@ -316,12 +327,15 @@ export function createBotOrderLedger(options = {}) {
     const size = Number.isFinite(options.size) ? options.size : DEFAULT_SIZE;
     const ladder = normalizeLadder({ ladder: options.ladder, prices, size }) || DEFAULT_LADDER;
     const source = options.source || 'manual';
+    const windowId = typeof options.window_id === 'string' && options.window_id.length > 0
+      ? options.window_id
+      : extractWindowIdFromSource(source);
     let changed = 0;
     if (action === 'PLACE_BOTH_LADDERS') {
-      changed = placeSideLadder('YES', ladder, source) + placeSideLadder('NO', ladder, source);
+      changed = placeSideLadder('YES', ladder, source, windowId) + placeSideLadder('NO', ladder, source, windowId);
     }
-    if (action === 'PLACE_YES_LADDER') changed = placeSideLadder('YES', ladder, source);
-    if (action === 'PLACE_NO_LADDER') changed = placeSideLadder('NO', ladder, source);
+    if (action === 'PLACE_YES_LADDER') changed = placeSideLadder('YES', ladder, source, windowId);
+    if (action === 'PLACE_NO_LADDER') changed = placeSideLadder('NO', ladder, source, windowId);
     if (action === 'CANCEL_NO_OPEN') changed = cancelOpenBySide('NO');
     if (action === 'CANCEL_YES_OPEN') changed = cancelOpenBySide('YES');
     if (action === 'CANCEL_ALL_OPEN') changed = cancelOpenBySide('ALL');
@@ -330,7 +344,7 @@ export function createBotOrderLedger(options = {}) {
       if (positionSize > 0) {
         const exitPrice = Number.isFinite(options.price) ? options.price : Number.isFinite(options.bid_yes) ? options.bid_yes : Number.isFinite(options.mark_price) ? options.mark_price : null;
         if (exitPrice != null) {
-          orders = [...orders, createExitFill({ side: 'YES', price: exitPrice, size: positionSize, source })];
+          orders = [...orders, createExitFill({ side: 'YES', price: exitPrice, size: positionSize, source, window_id: windowId })];
           changed = 1;
         }
       }
@@ -340,7 +354,7 @@ export function createBotOrderLedger(options = {}) {
       if (positionSize > 0) {
         const exitPrice = Number.isFinite(options.price) ? options.price : Number.isFinite(options.bid_no) ? options.bid_no : Number.isFinite(options.mark_price_no) ? options.mark_price_no : null;
         if (exitPrice != null) {
-          orders = [...orders, createExitFill({ side: 'NO', price: exitPrice, size: positionSize, source })];
+          orders = [...orders, createExitFill({ side: 'NO', price: exitPrice, size: positionSize, source, window_id: windowId })];
           changed = 1;
         }
       }

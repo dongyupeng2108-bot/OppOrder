@@ -273,7 +273,10 @@ export function createBotRunner(options = {}) {
       ? decision.intents.filter((intent) => intent?.kind !== 'PLACE_LADDER')
       : decision.intents;
 
-    const intentResult = applyIntents(intentsForExecution, { source: 'runner_tick' });
+    const executionWindowId = state.current_window_id ?? contextForDecision.window_id ?? 'null';
+    const intentResult = applyIntents(intentsForExecution, {
+      source: `runner_tick|window=${executionWindowId}`
+    });
     if (hasPlaceLadder && !alreadyExecutedSamePlace && Number(intentResult?.changed) > 0) {
       executedPlaceIntentByWindow.set(windowKey, placeSignature);
     }
