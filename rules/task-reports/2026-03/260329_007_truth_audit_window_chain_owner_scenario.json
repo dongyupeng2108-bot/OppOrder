@@ -1,0 +1,1662 @@
+{
+  "script_name": "truth_audit_window_chain_owner_scenario_260329_007",
+  "task_id": "260329_007",
+  "sample_name": "owner_manual_window_chain_v1",
+  "pass": true,
+  "message": "owner 场景组合链路修复通过",
+  "first_break_layer": null,
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260329_007_truth_audit_window_chain_owner_scenario.json",
+  "summary": {
+    "conclusion": "A：组合链路已收口（新窗口挂单/当前窗口状态/tp=1展示）",
+    "total_checks": 7,
+    "pass_checks": 7,
+    "fail_checks": 0,
+    "checks": {
+      "007-A_pre_fix_current_window_missing_side_or_only_up": true,
+      "007-B_pre_fix_window_state_mixed_old_take_profit": true,
+      "007-C_post_fix_new_window_has_4_entries_and_no_tp": true,
+      "007-D_post_fix_next_window_switches_and_shows_only_new_window": true,
+      "007-E_real_runtime_sample_complete": true,
+      "007-F_non_regression_wait_next_window_after_start": true,
+      "007-G_non_regression_tp1_no_take_profit_rows": true
+    }
+  },
+  "raw_excerpt": {
+    "unique_first_break_layer": "2. 窗口订单归档/过滤层",
+    "pre_fix_only_up": true,
+    "pre_fix_old_tp_mixed": true,
+    "post_fix_four_entries": true,
+    "post_fix_no_tp": true,
+    "runtime_complete": true,
+    "runtime_initial_window": "btc-updown-5m-1774810800",
+    "runtime_switched_window": "btc-updown-5m-1774811100",
+    "runtime_next_window": "btc-updown-5m-1774811400"
+  },
+  "generated_at": "2026-03-29T19:10:01.954Z",
+  "command": "node scripts/truth_audit_window_chain_owner_scenario_260329_007.mjs --task_id=260329_007 --sample=owner_manual_window_chain_v1",
+  "conclusion_block": {
+    "verdict": "A：组合链路已收口（新窗口挂单/当前窗口状态/tp=1展示）",
+    "first_break_layer": null
+  },
+  "key_counters": {
+    "total_checks": 7,
+    "pass_checks": 7,
+    "fail_checks": 0
+  },
+  "evidence_index": {
+    "pre_fix_fact": {
+      "unique_first_break_layer": "2. 窗口订单归档/过滤层",
+      "old_ui_open_first_filter_present": true,
+      "old_server_no_resolved_window_id": true,
+      "old_ledger_no_window_id_field": true,
+      "pre_fix_missing_side_simulated": true,
+      "pre_fix_mixed_tp_simulated": true
+    },
+    "post_fix_fact": {
+      "scope_after_place": {
+        "scope": "none",
+        "running": false,
+        "active_window_id": "w-new",
+        "display_window_id": null,
+        "label": "当前无可展示窗口订单",
+        "ownership_rule": "无当前活动窗口且无可展示上一窗口订单"
+      },
+      "scope_after_fill": {
+        "scope": "none",
+        "running": false,
+        "active_window_id": "w-new",
+        "display_window_id": null,
+        "label": "当前无可展示窗口订单",
+        "ownership_rule": "无当前活动窗口且无可展示上一窗口订单"
+      },
+      "scope_after_next_window": {
+        "scope": "none",
+        "running": false,
+        "active_window_id": "w-next",
+        "display_window_id": null,
+        "label": "当前无可展示窗口订单",
+        "ownership_rule": "无当前活动窗口且无可展示上一窗口订单"
+      },
+      "rows_after_place": [
+        {
+          "kind": "ENTRY",
+          "side": "YES",
+          "status": "OPEN",
+          "price": 0.1,
+          "tp_price": 1,
+          "resolved_window_id": "w-new"
+        },
+        {
+          "kind": "ENTRY",
+          "side": "YES",
+          "status": "OPEN",
+          "price": 0.2,
+          "tp_price": 1,
+          "resolved_window_id": "w-new"
+        },
+        {
+          "kind": "ENTRY",
+          "side": "NO",
+          "status": "FILLED",
+          "price": 0.9,
+          "tp_price": 1,
+          "resolved_window_id": "w-new"
+        },
+        {
+          "kind": "ENTRY",
+          "side": "NO",
+          "status": "OPEN",
+          "price": 0.8,
+          "tp_price": 1,
+          "resolved_window_id": "w-new"
+        },
+        {
+          "kind": "ENTRY",
+          "side": "YES",
+          "status": "OPEN",
+          "price": 0.1,
+          "tp_price": 1,
+          "resolved_window_id": "w-new"
+        },
+        {
+          "kind": "ENTRY",
+          "side": "YES",
+          "status": "OPEN",
+          "price": 0.2,
+          "tp_price": 1,
+          "resolved_window_id": "w-new"
+        },
+        {
+          "kind": "ENTRY",
+          "side": "NO",
+          "status": "OPEN",
+          "price": 0.9,
+          "tp_price": 1,
+          "resolved_window_id": "w-new"
+        },
+        {
+          "kind": "ENTRY",
+          "side": "NO",
+          "status": "OPEN",
+          "price": 0.8,
+          "tp_price": 1,
+          "resolved_window_id": "w-new"
+        }
+      ],
+      "rows_after_fill": [
+        {
+          "kind": "ENTRY",
+          "side": "YES",
+          "status": "OPEN",
+          "price": 0.1,
+          "tp_price": 1,
+          "parent_order_id": null,
+          "resolved_window_id": "w-new"
+        },
+        {
+          "kind": "ENTRY",
+          "side": "YES",
+          "status": "OPEN",
+          "price": 0.2,
+          "tp_price": 1,
+          "parent_order_id": null,
+          "resolved_window_id": "w-new"
+        },
+        {
+          "kind": "ENTRY",
+          "side": "NO",
+          "status": "FILLED",
+          "price": 0.9,
+          "tp_price": 1,
+          "parent_order_id": null,
+          "resolved_window_id": "w-new"
+        },
+        {
+          "kind": "ENTRY",
+          "side": "NO",
+          "status": "OPEN",
+          "price": 0.8,
+          "tp_price": 1,
+          "parent_order_id": null,
+          "resolved_window_id": "w-new"
+        },
+        {
+          "kind": "ENTRY",
+          "side": "YES",
+          "status": "OPEN",
+          "price": 0.1,
+          "tp_price": 1,
+          "parent_order_id": null,
+          "resolved_window_id": "w-new"
+        },
+        {
+          "kind": "ENTRY",
+          "side": "YES",
+          "status": "OPEN",
+          "price": 0.2,
+          "tp_price": 1,
+          "parent_order_id": null,
+          "resolved_window_id": "w-new"
+        },
+        {
+          "kind": "ENTRY",
+          "side": "NO",
+          "status": "FILLED",
+          "price": 0.9,
+          "tp_price": 1,
+          "parent_order_id": null,
+          "resolved_window_id": "w-new"
+        },
+        {
+          "kind": "ENTRY",
+          "side": "NO",
+          "status": "OPEN",
+          "price": 0.8,
+          "tp_price": 1,
+          "parent_order_id": null,
+          "resolved_window_id": "w-new"
+        }
+      ],
+      "rows_after_next_window": [
+        {
+          "kind": "ENTRY",
+          "side": "YES",
+          "status": "OPEN",
+          "price": 0.1,
+          "tp_price": 1,
+          "parent_order_id": null,
+          "resolved_window_id": "w-next"
+        },
+        {
+          "kind": "ENTRY",
+          "side": "YES",
+          "status": "OPEN",
+          "price": 0.2,
+          "tp_price": 1,
+          "parent_order_id": null,
+          "resolved_window_id": "w-next"
+        },
+        {
+          "kind": "ENTRY",
+          "side": "NO",
+          "status": "FILLED",
+          "price": 0.9,
+          "tp_price": 1,
+          "parent_order_id": null,
+          "resolved_window_id": "w-next"
+        },
+        {
+          "kind": "ENTRY",
+          "side": "NO",
+          "status": "OPEN",
+          "price": 0.8,
+          "tp_price": 1,
+          "parent_order_id": null,
+          "resolved_window_id": "w-next"
+        },
+        {
+          "kind": "ENTRY",
+          "side": "YES",
+          "status": "OPEN",
+          "price": 0.1,
+          "tp_price": 1,
+          "parent_order_id": null,
+          "resolved_window_id": "w-next"
+        },
+        {
+          "kind": "ENTRY",
+          "side": "YES",
+          "status": "OPEN",
+          "price": 0.2,
+          "tp_price": 1,
+          "parent_order_id": null,
+          "resolved_window_id": "w-next"
+        },
+        {
+          "kind": "ENTRY",
+          "side": "NO",
+          "status": "OPEN",
+          "price": 0.9,
+          "tp_price": 1,
+          "parent_order_id": null,
+          "resolved_window_id": "w-next"
+        },
+        {
+          "kind": "ENTRY",
+          "side": "NO",
+          "status": "OPEN",
+          "price": 0.8,
+          "tp_price": 1,
+          "parent_order_id": null,
+          "resolved_window_id": "w-next"
+        }
+      ],
+      "old_ui_visible_after_fill": [
+        {
+          "kind": "ENTRY",
+          "side": "YES",
+          "status": "OPEN",
+          "price": 0.1,
+          "tp_price": 1,
+          "resolved_window_id": "w-new"
+        },
+        {
+          "kind": "ENTRY",
+          "side": "YES",
+          "status": "OPEN",
+          "price": 0.2,
+          "tp_price": 1,
+          "resolved_window_id": "w-new"
+        },
+        {
+          "kind": "ENTRY",
+          "side": "NO",
+          "status": "OPEN",
+          "price": 0.8,
+          "tp_price": 1,
+          "resolved_window_id": "w-new"
+        },
+        {
+          "kind": "ENTRY",
+          "side": "YES",
+          "status": "OPEN",
+          "price": 0.1,
+          "tp_price": 1,
+          "resolved_window_id": "w-new"
+        },
+        {
+          "kind": "ENTRY",
+          "side": "YES",
+          "status": "OPEN",
+          "price": 0.2,
+          "tp_price": 1,
+          "resolved_window_id": "w-new"
+        },
+        {
+          "kind": "ENTRY",
+          "side": "NO",
+          "status": "OPEN",
+          "price": 0.8,
+          "tp_price": 1,
+          "resolved_window_id": "w-new"
+        }
+      ],
+      "old_ui_missing_side": false,
+      "status_after_next_window": {
+        "current_window_id": null,
+        "last_reason": "ladder_not_posted"
+      }
+    },
+    "real_runtime_fact": {
+      "health_root": 200,
+      "health_pairs": 404,
+      "start_ok": true,
+      "initial_window_id": "btc-updown-5m-1774810800",
+      "switched_window_id": "btc-updown-5m-1774811100",
+      "next_window_id": "btc-updown-5m-1774811400",
+      "one_side_triggered": true,
+      "frames": [
+        {
+          "t": "2026-03-29T19:01:10.059Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:01:15.068Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:01:20.081Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:01:25.090Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:01:30.102Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:01:35.110Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:01:40.125Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:01:45.129Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:01:50.142Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:01:55.148Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:02:00.153Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:02:05.161Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:02:10.168Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:02:15.186Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:02:20.190Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:02:25.202Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:02:30.208Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:02:35.215Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:02:40.229Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:02:45.237Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:02:50.243Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:02:55.254Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:03:00.268Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:03:05.272Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:03:10.284Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:03:15.293Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:03:20.307Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:03:25.327Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:03:30.341Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:03:35.354Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:03:40.367Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:03:45.371Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:03:50.389Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:03:55.393Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:04:00.404Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:04:05.415Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:04:10.418Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:04:15.421Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:04:20.424Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:04:25.429Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:04:30.440Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:04:35.452Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:04:40.457Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:04:45.461Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:04:50.474Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:04:55.479Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:05:00.487Z",
+          "window_id": "btc-updown-5m-1774810800",
+          "reason": "wait_next_window_after_start",
+          "display_window_id": "btc-updown-5m-1774810800",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:05:05.494Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "pre_open_or_open_not_open_delay",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:05:10.511Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "ladder_not_posted",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:05:15.519Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:05:20.533Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:05:25.551Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:05:30.555Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:05:35.564Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:05:40.576Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:05:45.589Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:05:50.593Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:05:55.599Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:06:00.611Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:06:05.618Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:06:10.632Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:06:15.640Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:06:20.656Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:06:25.664Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:06:30.677Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:06:35.689Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:06:40.700Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:06:45.714Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:06:50.723Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:06:55.737Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:07:00.743Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:07:05.751Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:07:10.761Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:07:15.766Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:07:20.780Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:07:25.798Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:07:30.802Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:07:35.810Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:07:40.824Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:07:45.828Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:07:50.841Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:07:55.851Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:08:00.873Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:08:05.890Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:08:10.898Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:08:15.903Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [
+            0.1,
+            0.2
+          ],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:08:20.912Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "up_cancel_before_end",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:08:25.922Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:08:30.938Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "ladder_not_posted",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:08:35.956Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "ladder_not_posted",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:08:40.969Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:08:45.977Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:08:50.982Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "ladder_not_posted",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:08:55.999Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "ladder_not_posted",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:09:01.014Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:09:06.029Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:09:11.034Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "ladder_not_posted",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:09:16.050Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "ladder_not_posted",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:09:21.059Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:09:26.075Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:09:31.087Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "ladder_not_posted",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:09:36.092Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "ladder_not_posted",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:09:41.107Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:09:46.113Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "price_or_bounds_null",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:09:51.124Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "ladder_not_posted",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:09:56.131Z",
+          "window_id": "btc-updown-5m-1774811100",
+          "reason": "ladder_not_posted",
+          "display_window_id": "btc-updown-5m-1774811100",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 2,
+          "tp_count": 0
+        },
+        {
+          "t": "2026-03-29T19:10:01.140Z",
+          "window_id": "btc-updown-5m-1774811400",
+          "reason": "pre_open_or_open_not_open_delay",
+          "display_window_id": "btc-updown-5m-1774811400",
+          "open_yes_prices": [],
+          "open_no_prices": [],
+          "filled_yes_count": 0,
+          "filled_no_count": 0,
+          "tp_count": 0
+        }
+      ]
+    }
+  },
+  "result": {
+    "007-A_pre_fix_current_window_missing_side_or_only_up": true,
+    "007-B_pre_fix_window_state_mixed_old_take_profit": true,
+    "007-C_post_fix_new_window_has_4_entries_and_no_tp": true,
+    "007-D_post_fix_next_window_switches_and_shows_only_new_window": true,
+    "007-E_real_runtime_sample_complete": true,
+    "007-F_non_regression_wait_next_window_after_start": true,
+    "007-G_non_regression_tp1_no_take_profit_rows": true
+  }
+}
