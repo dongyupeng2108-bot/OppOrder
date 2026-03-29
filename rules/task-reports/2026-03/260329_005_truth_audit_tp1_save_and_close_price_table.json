@@ -1,0 +1,143 @@
+{
+  "script_name": "truth_audit_tp1_save_and_close_price_table_260329_005",
+  "task_id": "260329_005",
+  "sample_name": "tp1_save_backfill_and_close_price_display_v1",
+  "pass": true,
+  "message": "tp_price=1 保存链与平仓价展示修复通过",
+  "first_break_layer": null,
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260329_005_truth_audit_tp1_save_and_close_price_table.json",
+  "summary": {
+    "conclusion": "A：tp_price=1 保存与回填、平仓价展示已收口",
+    "total_checks": 6,
+    "pass_checks": 6,
+    "fail_checks": 0,
+    "checks": {
+      "005-A_pre_fix_break_layer_server_normalize": true,
+      "005-B_tp1_save_keeps_all_rows": true,
+      "005-C_reload_backfill_keeps_all_rows": true,
+      "005-D_new_row_default_tp_is_1": true,
+      "005-E_order_table_header_and_cell_close_price": true,
+      "005-F_tplt1_binding_still_works": true
+    }
+  },
+  "raw_excerpt": {
+    "unique_first_break_layer": "server 校验/归一化层",
+    "save_preserve_rows": true,
+    "reload_preserve_rows": true,
+    "add_row_default_tp": 1,
+    "header_close_price": true,
+    "tp_lt1_linked_tp": {
+      "order_id": "paper_7d7a30e3",
+      "kind": "TAKE_PROFIT",
+      "side": "YES",
+      "price": 0.97,
+      "size": 2,
+      "tp_price": 0.97,
+      "ladder_key": "YES:0",
+      "parent_order_id": "paper_4c157665",
+      "status": "OPEN",
+      "fill_price": null,
+      "filled_at": null,
+      "created_at": "2026-03-29T17:38:32.769Z",
+      "source": "runner_tick:tp",
+      "inferred_window_id": null
+    },
+    "health_root": 200,
+    "health_pairs": 404
+  },
+  "generated_at": "2026-03-29T17:38:32.779Z",
+  "command": "node scripts/truth_audit_tp1_save_and_close_price_table_260329_005.mjs --task_id=260329_005 --sample=tp1_save_backfill_and_close_price_display_v1",
+  "conclusion_block": {
+    "verdict": "A：tp_price=1 保存与回填、平仓价展示已收口",
+    "first_break_layer": null
+  },
+  "key_counters": {
+    "total_checks": 6,
+    "pass_checks": 6,
+    "fail_checks": 0
+  },
+  "evidence_index": {
+    "pre_fix_fact": {
+      "unique_first_break_layer": "server 校验/归一化层",
+      "header_was_pnl": true,
+      "add_row_default_tp_not_1": true,
+      "server_silent_drop_filter": true,
+      "server_silent_fallback_legacy": true
+    },
+    "post_fix_save_fact": {
+      "save_http": 200,
+      "save_ok": true,
+      "up_len_expected": 3,
+      "up_len_actual": 3,
+      "down_len_expected": 2,
+      "down_len_actual": 2,
+      "up_rows_preserved": true,
+      "down_rows_preserved": true
+    },
+    "post_fix_reload_fact": {
+      "up_rows_preserved_after_reload": true,
+      "down_rows_preserved_after_reload": true,
+      "up_len_after_reload": 3,
+      "down_len_after_reload": 2
+    },
+    "post_fix_ui_default_fact": {
+      "ok": true,
+      "last_row": {
+        "price": 0.3,
+        "size": 2,
+        "tp_price": 1
+      }
+    },
+    "post_fix_table_display_fact": {
+      "header_close_price": true,
+      "cell_has_tp_subline": true,
+      "old_header_removed": true
+    },
+    "post_fix_tplt1_fact": {
+      "filled_entry": {
+        "order_id": "paper_4c157665",
+        "kind": "ENTRY",
+        "side": "YES",
+        "price": 0.99,
+        "size": 2,
+        "tp_price": 0.97,
+        "ladder_key": "YES:0",
+        "parent_order_id": null,
+        "status": "FILLED",
+        "fill_price": 0.27,
+        "filled_at": "2026-03-29T17:38:32.769Z",
+        "created_at": "2026-03-29T17:38:32.764Z",
+        "source": "runner_tick",
+        "inferred_window_id": null
+      },
+      "linked_tp": {
+        "order_id": "paper_7d7a30e3",
+        "kind": "TAKE_PROFIT",
+        "side": "YES",
+        "price": 0.97,
+        "size": 2,
+        "tp_price": 0.97,
+        "ladder_key": "YES:0",
+        "parent_order_id": "paper_4c157665",
+        "status": "OPEN",
+        "fill_price": null,
+        "filled_at": null,
+        "created_at": "2026-03-29T17:38:32.769Z",
+        "source": "runner_tick:tp",
+        "inferred_window_id": null
+      }
+    },
+    "healthcheck": {
+      "root": 200,
+      "pairs": 404
+    }
+  },
+  "result": {
+    "005-A_pre_fix_break_layer_server_normalize": true,
+    "005-B_tp1_save_keeps_all_rows": true,
+    "005-C_reload_backfill_keeps_all_rows": true,
+    "005-D_new_row_default_tp_is_1": true,
+    "005-E_order_table_header_and_cell_close_price": true,
+    "005-F_tplt1_binding_still_works": true
+  }
+}

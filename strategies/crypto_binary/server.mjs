@@ -774,6 +774,12 @@ const normalizeLadderRowsPayload = (value) => {
   }).filter(Boolean);
   return normalized.length > 0 ? normalized : null;
 };
+const hasInvalidLadderRowPayload = (value) => {
+  if (!Array.isArray(value) || value.length === 0) return false;
+  const normalized = normalizeLadderRowsPayload(value);
+  if (!normalized) return true;
+  return normalized.length !== value.length;
+};
 const normalizeCancelPayload = (value) => {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
   const beforeEndSec = Number(value.before_end_sec);
@@ -802,6 +808,9 @@ const validateBotConfigPayload = (payload) => {
   const atrMultiple = Number(payload.atr_multiple);
   const cancelAllRemainingSec = Number(payload.cancel_all_remaining_sec);
   const ladderPrices = normalizeLadderPrices(payload.ladder_prices);
+  if (hasInvalidLadderRowPayload(payload.up_ladder) || hasInvalidLadderRowPayload(payload.down_ladder)) {
+    return { ok: false, error: 'invalid up_ladder/down_ladder row' };
+  }
   const upLadder = normalizeLadderRowsPayload(payload.up_ladder);
   const downLadder = normalizeLadderRowsPayload(payload.down_ladder);
   const upCancel = normalizeCancelPayload(payload.up_cancel);

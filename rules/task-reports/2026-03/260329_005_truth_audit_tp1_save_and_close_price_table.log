@@ -1,0 +1,6 @@
+script_name=truth_audit_tp1_save_and_close_price_table_260329_005
+task_id=260329_005
+sample_name=tp1_save_backfill_and_close_price_display_v1
+pass=true
+first_break_layer=null
+message=tp_price=1 保存链与平仓价展示修复通过
