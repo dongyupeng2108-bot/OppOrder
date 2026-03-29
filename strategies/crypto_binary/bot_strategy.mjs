@@ -41,11 +41,11 @@ const normalizeLadderRows = (rows, fallbackPrices, fallbackSize) => {
       const size = toNumberOrNull(item?.size);
       const tpPriceRaw = item?.tp_price;
       const tpPrice = tpPriceRaw === null || tpPriceRaw === undefined || tpPriceRaw === ''
-        ? price
+        ? 1
         : toNumberOrNull(tpPriceRaw);
       if (price === null || price <= 0 || price >= 1) return null;
       if (size === null || size <= 0) return null;
-      if (tpPrice === null || tpPrice <= 0 || tpPrice >= 1) return null;
+      if (tpPrice === null || tpPrice <= 0 || tpPrice > 1) return null;
       return { price, size, tp_price: tpPrice };
     }).filter(Boolean);
     if (normalized.length > 0) return normalized;
@@ -56,7 +56,7 @@ const normalizeLadderRows = (rows, fallbackPrices, fallbackSize) => {
   const baseSize = Number.isFinite(Number(fallbackSize))
     ? Number(fallbackSize)
     : BOT_STRATEGY_CONTRACT.defaults.ladder_size;
-  return basePrices.map((price) => ({ price: Number(price), size: baseSize, tp_price: Number(price) }));
+  return basePrices.map((price) => ({ price: Number(price), size: baseSize, tp_price: 1 }));
 };
 const parseCancelConfig = (value, fallbackBeforeEndSec) => {
   const beforeEndSec = toNonNegativeIntegerOrNull(value?.before_end_sec);

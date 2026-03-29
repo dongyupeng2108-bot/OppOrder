@@ -1,6 +1,6 @@
 const DEFAULT_LADDER_PRICES = [0.27, 0.24, 0.21, 0.18];
 const DEFAULT_LADDER_SIZE = 5;
-const DEFAULT_LADDER = DEFAULT_LADDER_PRICES.map((price) => ({ price, size: DEFAULT_LADDER_SIZE, tp_price: price }));
+const DEFAULT_LADDER = DEFAULT_LADDER_PRICES.map((price) => ({ price, size: DEFAULT_LADDER_SIZE, tp_price: 1 }));
 
 const INTENT_KINDS = {
   NOOP: 'NOOP',
@@ -47,11 +47,11 @@ const normalizeLadderItems = (ladder) => {
     const size = toNumberOrNull(item?.size);
     const tpPriceRaw = item?.tp_price;
     const tpPrice = tpPriceRaw === null || tpPriceRaw === undefined || tpPriceRaw === ''
-      ? price
+      ? 1
       : toNumberOrNull(tpPriceRaw);
     if (price === null || price <= 0 || price >= 1) return null;
     if (size === null || size <= 0) return null;
-    if (tpPrice === null || tpPrice <= 0 || tpPrice >= 1) return null;
+    if (tpPrice === null || tpPrice <= 0 || tpPrice > 1) return null;
     return { price, size, tp_price: tpPrice };
   }).filter(Boolean);
   return normalized.length > 0 ? normalized : null;
@@ -59,7 +59,7 @@ const normalizeLadderItems = (ladder) => {
 const pricesAndSizeToLadder = (prices, size) => {
   const normalizedPrices = normalizeLadderPrices(prices);
   const normalizedSize = normalizeLadderSize(size);
-  return normalizedPrices.map((price) => ({ price, size: normalizedSize, tp_price: price }));
+  return normalizedPrices.map((price) => ({ price, size: normalizedSize, tp_price: 1 }));
 };
 
 export function normalizeStrategyInput(input = {}) {
