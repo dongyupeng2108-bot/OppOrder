@@ -1,0 +1,537 @@
+{
+  "script_name": "truth_audit_start_wait_next_window_260329_004",
+  "task_id": "260329_004",
+  "sample_name": "start_wait_next_window_runtime_v1",
+  "pass": true,
+  "message": "启动等待下一个窗口语义验收通过",
+  "first_break_layer": null,
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260329_004_truth_audit_start_wait_next_window.json",
+  "summary": {
+    "conclusion": "A：启动时机语义已修复（启动等待，下个窗口挂单）",
+    "total_checks": 4,
+    "pass_checks": 4,
+    "fail_checks": 0,
+    "checks": {
+      "004-A_fail_pre_fix_immediate_place_in_current_window": true,
+      "004-B_pass_post_fix_no_immediate_place_in_current_window": true,
+      "004-C_pass_real_runtime_wait_then_place_on_next_window": true,
+      "004-D_pass_up_down_both_sides_still_hold": true
+    }
+  },
+  "raw_excerpt": {
+    "unique_first_break_layer": "runner 启动首 tick 层",
+    "pre_fix_immediate_place": true,
+    "post_fix_no_immediate_place": true,
+    "initial_window_id": "btc-updown-5m-1774804200",
+    "switched_window_id": "btc-updown-5m-1774804500",
+    "before_switch_no_orders": true,
+    "after_switch_has_both": true
+  },
+  "generated_at": "2026-03-29T17:15:03.217Z",
+  "command": "node scripts/truth_audit_start_wait_next_window_260329_004.mjs --task_id=260329_004 --sample=start_wait_next_window_runtime_v1",
+  "conclusion_block": {
+    "verdict": "A：启动时机语义已修复（启动等待，下个窗口挂单）",
+    "first_break_layer": null
+  },
+  "key_counters": {
+    "total_checks": 4,
+    "pass_checks": 4,
+    "fail_checks": 0
+  },
+  "evidence_index": {
+    "pre_fix_debug_fact": {
+      "source": "manual_runtime_capture_before_fix",
+      "frames": [
+        {
+          "i": 0,
+          "window_id": "debug-main-path-v1-w1",
+          "last_reason": "pre_open_or_open_not_open_delay",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "i": 1,
+          "window_id": "debug-main-path-v1-w1",
+          "last_reason": "ladder_not_posted",
+          "open_yes": 4,
+          "open_no": 4
+        }
+      ],
+      "reproduce_cmd": "node -e <pre-fix start debugScenario=main_path_v1 sample>"
+    },
+    "post_fix_debug_fact": {
+      "start_status": 200,
+      "start_ok": true,
+      "frames": [
+        {
+          "i": 0,
+          "window_id": "debug-main-path-v1-w1",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "i": 1,
+          "window_id": "debug-main-path-v1-w1",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "i": 2,
+          "window_id": "debug-main-path-v1-w1",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "i": 3,
+          "window_id": "debug-main-path-v1-w1",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        }
+      ]
+    },
+    "post_fix_real_runtime_fact": {
+      "healthRoot": 200,
+      "healthPairs": 404,
+      "start_status": 200,
+      "start_ok": true,
+      "initial_window_id": "btc-updown-5m-1774804200",
+      "switched_window_id": "btc-updown-5m-1774804500",
+      "frames_head": [
+        {
+          "t": "2026-03-29T17:13:14.073Z",
+          "window_id": null,
+          "last_reason": null,
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:13:17.090Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:13:20.108Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:13:23.129Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:13:26.141Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:13:29.146Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:13:32.153Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:13:35.176Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:13:38.181Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:13:41.200Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:13:44.202Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:13:47.219Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:13:50.233Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:13:53.241Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:13:56.258Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:13:59.266Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:14:02.278Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:14:05.292Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:14:08.307Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:14:11.319Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:14:14.326Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:14:17.342Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:14:20.347Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:14:23.354Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        }
+      ],
+      "before_switch_frames": [
+        {
+          "t": "2026-03-29T17:13:17.090Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:13:20.108Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:13:23.129Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:13:26.141Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:13:29.146Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:13:32.153Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:13:35.176Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:13:38.181Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:13:41.200Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:13:44.202Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:13:47.219Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:13:50.233Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:13:53.241Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:13:56.258Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:13:59.266Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:14:02.278Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:14:05.292Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:14:08.307Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:14:11.319Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:14:14.326Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:14:17.342Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:14:20.347Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:14:23.354Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:14:26.358Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:14:29.363Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:14:32.381Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:14:35.397Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:14:38.400Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:14:41.411Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:14:44.428Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:14:47.443Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:14:50.448Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:14:53.464Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:14:56.472Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        },
+        {
+          "t": "2026-03-29T17:14:59.485Z",
+          "window_id": "btc-updown-5m-1774804200",
+          "last_reason": "wait_next_window_after_start",
+          "open_yes": 0,
+          "open_no": 0
+        }
+      ],
+      "after_switch_frames": [
+        {
+          "t": "2026-03-29T17:15:02.506Z",
+          "window_id": "btc-updown-5m-1774804500",
+          "last_reason": "price_or_bounds_null",
+          "open_yes": 1,
+          "open_no": 1
+        }
+      ]
+    }
+  },
+  "result": {
+    "004-A_fail_pre_fix_immediate_place_in_current_window": true,
+    "004-B_pass_post_fix_no_immediate_place_in_current_window": true,
+    "004-C_pass_real_runtime_wait_then_place_on_next_window": true,
+    "004-D_pass_up_down_both_sides_still_hold": true
+  }
+}
