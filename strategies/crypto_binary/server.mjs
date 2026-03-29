@@ -2449,6 +2449,8 @@ const server = createServer(async (req, res) => {
         orders: windowOrders,
         window_orders: windowOrders,
         all_orders: allOrders,
+        context_snapshot: botLastTickResult?.context_snapshot || null,
+        context_snapshot_at: state?.last_tick_at || null,
         summary: botExecutorPaper.getSummary(),
         window_scope: {
           scope,
