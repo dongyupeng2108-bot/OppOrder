@@ -1,0 +1,13 @@
+{
+  "task_id": "260329_002",
+  "is_shallow_repo": true,
+  "base": "8cabf2726ec92e3f9bb5527e1681bda9a3a26548",
+  "head": "28ddec2b3ee00a18f960ad1941c2e5e52eb7a888",
+  "merge_base": "8cabf2726ec92e3f9bb5527e1681bda9a3a26548",
+  "scope_files": [
+    "scripts/truth_audit_window_display_label_260329_002.mjs",
+    "ui/js/strategy-editor.js"
+  ],
+  "scope_count": 2,
+  "generated_at": "2026-03-29T15:08:30.849Z"
+}
