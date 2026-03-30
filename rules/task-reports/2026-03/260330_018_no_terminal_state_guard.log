@@ -1,0 +1,6 @@
+script_name=verify_no_terminal_state_guard
+task_id=260330_018
+sample_name=no_terminal_state_guard_v1
+pass=true
+first_break_layer=NONE_CHAIN_PASS
+message=no-terminal-state guard pass

@@ -1,0 +1,41 @@
+{
+  "script_name": "verify_no_terminal_state_guard",
+  "task_id": "260330_018",
+  "sample_name": "no_terminal_state_guard_v1",
+  "pass": true,
+  "message": "no-terminal-state guard pass",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_018_no_terminal_state_guard.json",
+  "summary": {
+    "total_checks": 2,
+    "pass_checks": 2,
+    "fail_checks": 0,
+    "checks": {
+      "acceptance_pass": true,
+      "first_break_layer_clean": true
+    }
+  },
+  "raw_excerpt": {
+    "audit_output": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_018_truth_audit_no_terminal_state_fix.json",
+    "audit_conclusion": {
+      "conclusion": "A：修复通过，NO 成交后同窗不再重复 PLACE_LADDER(NO)",
+      "verdict": "A：通过",
+      "first_break_layer": "NONE_CHAIN_PASS",
+      "real_debug_diverged": false,
+      "real_debug_first_divergence_layer": "state_persist"
+    }
+  },
+  "generated_at": "2026-03-30T23:40:01.304Z",
+  "key_counters": {
+    "total_checks": 2,
+    "pass_checks": 2,
+    "fail_checks": 0
+  },
+  "evidence_index": {
+    "audit_output": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_018_truth_audit_no_terminal_state_fix.json"
+  },
+  "result": {
+    "acceptance_pass": true,
+    "first_break_layer_clean": true
+  }
+}

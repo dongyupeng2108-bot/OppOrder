@@ -1,0 +1,3587 @@
+{
+  "script_name": "truth_audit_no_terminal_state_fix_260330_018",
+  "task_id": "260330_018",
+  "sample_name": "no_terminal_state_fix_v1",
+  "pass": true,
+  "message": "NO repeat PLACE_LADDER(NO) fix acceptance pass",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_018_truth_audit_no_terminal_state_fix.json",
+  "summary": {
+    "conclusion": "A：修复通过，NO 成交后同窗不再重复 PLACE_LADDER(NO)",
+    "verdict": "A：通过",
+    "total_checks": 5,
+    "pass_checks": 5,
+    "fail_checks": 0,
+    "checks": {
+      "018-A_pre_fix_fail_exists": true,
+      "018-B_post_fix_real_runtime_chain_covered": true,
+      "018-C_post_fix_no_repeat_place_no_after_fill": true,
+      "018-D_non_regression_no_new_ids_when_no_change": true,
+      "018-E_non_regression_place_dedupe_still_effective": true
+    }
+  },
+  "raw_excerpt": {
+    "pre_fix_focus": [
+      {
+        "ln": 130113,
+        "ts": "2026-03-30T20:08:01.012Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_FILL",
+        "message": "filled 2 orders",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "fills": [
+            {
+              "order_id": "paper_be03d8a8",
+              "side": "NO",
+              "order_price": 0.27,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_aea4b758",
+              "side": "NO",
+              "order_price": 0.24,
+              "fill_price": 0.12
+            }
+          ]
+        }
+      },
+      {
+        "ln": 130114,
+        "ts": "2026-03-30T20:08:01.013Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ln": 130115,
+        "ts": "2026-03-30T20:08:01.013Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick ladder_not_posted",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "intents_summary": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+          "changed": 2,
+          "filled": 2,
+          "open_total": 0,
+          "cancelled_total": 481,
+          "filled_total": 439
+        }
+      },
+      {
+        "ln": 130117,
+        "ts": "2026-03-30T20:08:01.601Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "NOOP",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "reason": "within_bounds_or_no_trigger"
+        }
+      },
+      {
+        "ln": 130118,
+        "ts": "2026-03-30T20:08:01.602Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick within_bounds_or_no_trigger",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "intents_summary": "NOOP",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 481,
+          "filled_total": 439
+        }
+      },
+      {
+        "ln": 130120,
+        "ts": "2026-03-30T20:08:02.677Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ln": 130121,
+        "ts": "2026-03-30T20:08:02.677Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick ladder_not_posted",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "intents_summary": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 481,
+          "filled_total": 439
+        }
+      },
+      {
+        "ln": 130123,
+        "ts": "2026-03-30T20:08:03.616Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "NOOP",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "reason": "within_bounds_or_no_trigger"
+        }
+      },
+      {
+        "ln": 130124,
+        "ts": "2026-03-30T20:08:03.616Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick within_bounds_or_no_trigger",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "intents_summary": "NOOP",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 481,
+          "filled_total": 439
+        }
+      },
+      {
+        "ln": 130126,
+        "ts": "2026-03-30T20:08:04.686Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ln": 130127,
+        "ts": "2026-03-30T20:08:04.686Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick ladder_not_posted",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "intents_summary": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 481,
+          "filled_total": 439
+        }
+      },
+      {
+        "ln": 130129,
+        "ts": "2026-03-30T20:08:05.626Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "NOOP",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "reason": "within_bounds_or_no_trigger"
+        }
+      },
+      {
+        "ln": 130130,
+        "ts": "2026-03-30T20:08:05.627Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick within_bounds_or_no_trigger",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "intents_summary": "NOOP",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 481,
+          "filled_total": 439
+        }
+      },
+      {
+        "ln": 130132,
+        "ts": "2026-03-30T20:08:06.694Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ln": 130133,
+        "ts": "2026-03-30T20:08:06.695Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick ladder_not_posted",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "intents_summary": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 481,
+          "filled_total": 439
+        }
+      },
+      {
+        "ln": 130135,
+        "ts": "2026-03-30T20:08:07.644Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "NOOP",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "reason": "within_bounds_or_no_trigger"
+        }
+      },
+      {
+        "ln": 130136,
+        "ts": "2026-03-30T20:08:07.646Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick within_bounds_or_no_trigger",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "intents_summary": "NOOP",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 481,
+          "filled_total": 439
+        }
+      },
+      {
+        "ln": 130138,
+        "ts": "2026-03-30T20:08:08.705Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ln": 130139,
+        "ts": "2026-03-30T20:08:08.706Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick ladder_not_posted",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "intents_summary": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 481,
+          "filled_total": 439
+        }
+      },
+      {
+        "ln": 130141,
+        "ts": "2026-03-30T20:08:09.656Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "NOOP",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "reason": "within_bounds_or_no_trigger"
+        }
+      },
+      {
+        "ln": 130142,
+        "ts": "2026-03-30T20:08:09.656Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick within_bounds_or_no_trigger",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "intents_summary": "NOOP",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 481,
+          "filled_total": 439
+        }
+      },
+      {
+        "ln": 130144,
+        "ts": "2026-03-30T20:08:10.720Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ln": 130145,
+        "ts": "2026-03-30T20:08:10.720Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick ladder_not_posted",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "intents_summary": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 481,
+          "filled_total": 439
+        }
+      },
+      {
+        "ln": 130147,
+        "ts": "2026-03-30T20:08:11.669Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "NOOP",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "reason": "within_bounds_or_no_trigger"
+        }
+      },
+      {
+        "ln": 130148,
+        "ts": "2026-03-30T20:08:11.669Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick within_bounds_or_no_trigger",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "intents_summary": "NOOP",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 481,
+          "filled_total": 439
+        }
+      },
+      {
+        "ln": 130150,
+        "ts": "2026-03-30T20:08:12.737Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ln": 130151,
+        "ts": "2026-03-30T20:08:12.737Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick ladder_not_posted",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "intents_summary": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 481,
+          "filled_total": 439
+        }
+      },
+      {
+        "ln": 130153,
+        "ts": "2026-03-30T20:08:13.676Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "NOOP",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "reason": "within_bounds_or_no_trigger"
+        }
+      },
+      {
+        "ln": 130154,
+        "ts": "2026-03-30T20:08:13.676Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick within_bounds_or_no_trigger",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "intents_summary": "NOOP",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 481,
+          "filled_total": 439
+        }
+      },
+      {
+        "ln": 130156,
+        "ts": "2026-03-30T20:08:14.740Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ln": 130157,
+        "ts": "2026-03-30T20:08:14.740Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick ladder_not_posted",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "intents_summary": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 481,
+          "filled_total": 439
+        }
+      },
+      {
+        "ln": 130159,
+        "ts": "2026-03-30T20:08:15.683Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "NOOP",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "reason": "within_bounds_or_no_trigger"
+        }
+      },
+      {
+        "ln": 130160,
+        "ts": "2026-03-30T20:08:15.684Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick within_bounds_or_no_trigger",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "intents_summary": "NOOP",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 481,
+          "filled_total": 439
+        }
+      },
+      {
+        "ln": 130162,
+        "ts": "2026-03-30T20:08:16.748Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ln": 130163,
+        "ts": "2026-03-30T20:08:16.748Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick ladder_not_posted",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "intents_summary": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 481,
+          "filled_total": 439
+        }
+      },
+      {
+        "ln": 130165,
+        "ts": "2026-03-30T20:08:17.686Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "NOOP",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "reason": "within_bounds_or_no_trigger"
+        }
+      },
+      {
+        "ln": 130166,
+        "ts": "2026-03-30T20:08:17.686Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick within_bounds_or_no_trigger",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "intents_summary": "NOOP",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 481,
+          "filled_total": 439
+        }
+      },
+      {
+        "ln": 130168,
+        "ts": "2026-03-30T20:08:18.762Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ln": 130169,
+        "ts": "2026-03-30T20:08:18.762Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick ladder_not_posted",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "intents_summary": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 481,
+          "filled_total": 439
+        }
+      },
+      {
+        "ln": 130171,
+        "ts": "2026-03-30T20:08:19.700Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "NOOP",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "reason": "within_bounds_or_no_trigger"
+        }
+      },
+      {
+        "ln": 130172,
+        "ts": "2026-03-30T20:08:19.700Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick within_bounds_or_no_trigger",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "intents_summary": "NOOP",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 481,
+          "filled_total": 439
+        }
+      },
+      {
+        "ln": 130174,
+        "ts": "2026-03-30T20:08:20.763Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ln": 130175,
+        "ts": "2026-03-30T20:08:20.763Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick ladder_not_posted",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1774901100",
+        "data": {
+          "intents_summary": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 481,
+          "filled_total": 439
+        }
+      }
+    ],
+    "real_head": [
+      {
+        "timestamp": "2026-03-30T23:39:14.251Z",
+        "current_window_id": null,
+        "decision_reason": "ladder_not_posted",
+        "decision_intents": "PLACE_LADDER(YES|0.27:5:1,0.24:5:1)",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [],
+        "no_terminal_state": false,
+        "changed": 2
+      },
+      {
+        "timestamp": "2026-03-30T23:39:15.269Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [
+          "paper_a1fb3325",
+          "paper_62279197",
+          "paper_2cb47003",
+          "paper_e606dc2e"
+        ],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:16.280Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:17.298Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:18.316Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:19.333Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:20.336Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:21.343Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:22.350Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:23.366Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:24.381Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:25.385Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:26.390Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:27.406Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:28.411Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:29.415Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:30.419Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:31.435Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:32.440Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:33.454Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:34.460Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:35.474Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:36.479Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:37.482Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:38.491Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:39.503Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:40.512Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:41.515Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:42.523Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:43.526Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      }
+    ],
+    "real_tail": [
+      {
+        "timestamp": "2026-03-30T23:39:31.435Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:32.440Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:33.454Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:34.460Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:35.474Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:36.479Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:37.482Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:38.491Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:39.503Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:40.512Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:41.515Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:42.523Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:43.526Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:44.543Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:45.558Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:46.562Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:47.564Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:48.567Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:49.583Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:50.594Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:51.610Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:52.617Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:53.619Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:54.636Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:55.639Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:56.643Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:57.651Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:58.656Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:39:59.672Z",
+        "current_window_id": "btc-updown-5m-1774913700",
+        "decision_reason": "wait_next_window_after_start",
+        "decision_intents": "NOOP",
+        "newly_created_order_ids_this_tick": [],
+        "no_open_order_ids": [],
+        "no_filled_order_ids": [
+          "paper_a1fb3325",
+          "paper_62279197"
+        ],
+        "no_terminal_state": false,
+        "changed": 0
+      },
+      {
+        "timestamp": "2026-03-30T23:40:00.676Z",
+        "current_window_id": "btc-updown-5m-1774914000",
+        "decision_reason": "ladder_not_posted",
+        "decision_intents": "PLACE_LADDER(YES|0.27:5:1,0.24:5:1) + PLACE_LADDER(NO|0.999:5:1,0.998:5:1)",
+        "newly_created_order_ids_this_tick": [
+          "paper_51219bc3",
+          "paper_89e7b457",
+          "paper_9df5ceab",
+          "paper_5383c2d1"
+        ],
+        "no_open_order_ids": [
+          "paper_51219bc3",
+          "paper_89e7b457"
+        ],
+        "no_filled_order_ids": [],
+        "no_terminal_state": false,
+        "changed": 4
+      }
+    ]
+  },
+  "generated_at": "2026-03-30T23:40:00.685Z",
+  "conclusion_block": {
+    "conclusion": "A：修复通过，NO 成交后同窗不再重复 PLACE_LADDER(NO)",
+    "verdict": "A：通过",
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "real_debug_diverged": false,
+    "real_debug_first_divergence_layer": "state_persist"
+  },
+  "key_counters": {
+    "total_checks": 5,
+    "pass_checks": 5,
+    "fail_checks": 0
+  },
+  "evidence_index": {
+    "pre_fix_fail_from_owner_raw_log": {
+      "file": "E:\\OppRadar\\data\\crypto_binary\\logs\\bot_2026-03-30.jsonl",
+      "window_id": "btc-updown-5m-1774901100",
+      "focus_rows": [
+        {
+          "ln": 130113,
+          "ts": "2026-03-30T20:08:01.012Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_FILL",
+          "message": "filled 2 orders",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "fills": [
+              {
+                "order_id": "paper_be03d8a8",
+                "side": "NO",
+                "order_price": 0.27,
+                "fill_price": 0.12
+              },
+              {
+                "order_id": "paper_aea4b758",
+                "side": "NO",
+                "order_price": 0.24,
+                "fill_price": 0.12
+              }
+            ]
+          }
+        },
+        {
+          "ln": 130114,
+          "ts": "2026-03-30T20:08:01.013Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_INTENTS",
+          "message": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "reason": "ladder_not_posted"
+          }
+        },
+        {
+          "ln": 130115,
+          "ts": "2026-03-30T20:08:01.013Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "RUNNER_TICK",
+          "message": "tick ladder_not_posted",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "intents_summary": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+            "changed": 2,
+            "filled": 2,
+            "open_total": 0,
+            "cancelled_total": 481,
+            "filled_total": 439
+          }
+        },
+        {
+          "ln": 130117,
+          "ts": "2026-03-30T20:08:01.601Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_INTENTS",
+          "message": "NOOP",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "reason": "within_bounds_or_no_trigger"
+          }
+        },
+        {
+          "ln": 130118,
+          "ts": "2026-03-30T20:08:01.602Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "RUNNER_TICK",
+          "message": "tick within_bounds_or_no_trigger",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "intents_summary": "NOOP",
+            "changed": 0,
+            "filled": 0,
+            "open_total": 0,
+            "cancelled_total": 481,
+            "filled_total": 439
+          }
+        },
+        {
+          "ln": 130120,
+          "ts": "2026-03-30T20:08:02.677Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_INTENTS",
+          "message": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "reason": "ladder_not_posted"
+          }
+        },
+        {
+          "ln": 130121,
+          "ts": "2026-03-30T20:08:02.677Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "RUNNER_TICK",
+          "message": "tick ladder_not_posted",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "intents_summary": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+            "changed": 0,
+            "filled": 0,
+            "open_total": 0,
+            "cancelled_total": 481,
+            "filled_total": 439
+          }
+        },
+        {
+          "ln": 130123,
+          "ts": "2026-03-30T20:08:03.616Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_INTENTS",
+          "message": "NOOP",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "reason": "within_bounds_or_no_trigger"
+          }
+        },
+        {
+          "ln": 130124,
+          "ts": "2026-03-30T20:08:03.616Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "RUNNER_TICK",
+          "message": "tick within_bounds_or_no_trigger",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "intents_summary": "NOOP",
+            "changed": 0,
+            "filled": 0,
+            "open_total": 0,
+            "cancelled_total": 481,
+            "filled_total": 439
+          }
+        },
+        {
+          "ln": 130126,
+          "ts": "2026-03-30T20:08:04.686Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_INTENTS",
+          "message": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "reason": "ladder_not_posted"
+          }
+        },
+        {
+          "ln": 130127,
+          "ts": "2026-03-30T20:08:04.686Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "RUNNER_TICK",
+          "message": "tick ladder_not_posted",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "intents_summary": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+            "changed": 0,
+            "filled": 0,
+            "open_total": 0,
+            "cancelled_total": 481,
+            "filled_total": 439
+          }
+        },
+        {
+          "ln": 130129,
+          "ts": "2026-03-30T20:08:05.626Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_INTENTS",
+          "message": "NOOP",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "reason": "within_bounds_or_no_trigger"
+          }
+        },
+        {
+          "ln": 130130,
+          "ts": "2026-03-30T20:08:05.627Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "RUNNER_TICK",
+          "message": "tick within_bounds_or_no_trigger",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "intents_summary": "NOOP",
+            "changed": 0,
+            "filled": 0,
+            "open_total": 0,
+            "cancelled_total": 481,
+            "filled_total": 439
+          }
+        },
+        {
+          "ln": 130132,
+          "ts": "2026-03-30T20:08:06.694Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_INTENTS",
+          "message": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "reason": "ladder_not_posted"
+          }
+        },
+        {
+          "ln": 130133,
+          "ts": "2026-03-30T20:08:06.695Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "RUNNER_TICK",
+          "message": "tick ladder_not_posted",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "intents_summary": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+            "changed": 0,
+            "filled": 0,
+            "open_total": 0,
+            "cancelled_total": 481,
+            "filled_total": 439
+          }
+        },
+        {
+          "ln": 130135,
+          "ts": "2026-03-30T20:08:07.644Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_INTENTS",
+          "message": "NOOP",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "reason": "within_bounds_or_no_trigger"
+          }
+        },
+        {
+          "ln": 130136,
+          "ts": "2026-03-30T20:08:07.646Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "RUNNER_TICK",
+          "message": "tick within_bounds_or_no_trigger",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "intents_summary": "NOOP",
+            "changed": 0,
+            "filled": 0,
+            "open_total": 0,
+            "cancelled_total": 481,
+            "filled_total": 439
+          }
+        },
+        {
+          "ln": 130138,
+          "ts": "2026-03-30T20:08:08.705Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_INTENTS",
+          "message": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "reason": "ladder_not_posted"
+          }
+        },
+        {
+          "ln": 130139,
+          "ts": "2026-03-30T20:08:08.706Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "RUNNER_TICK",
+          "message": "tick ladder_not_posted",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "intents_summary": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+            "changed": 0,
+            "filled": 0,
+            "open_total": 0,
+            "cancelled_total": 481,
+            "filled_total": 439
+          }
+        },
+        {
+          "ln": 130141,
+          "ts": "2026-03-30T20:08:09.656Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_INTENTS",
+          "message": "NOOP",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "reason": "within_bounds_or_no_trigger"
+          }
+        },
+        {
+          "ln": 130142,
+          "ts": "2026-03-30T20:08:09.656Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "RUNNER_TICK",
+          "message": "tick within_bounds_or_no_trigger",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "intents_summary": "NOOP",
+            "changed": 0,
+            "filled": 0,
+            "open_total": 0,
+            "cancelled_total": 481,
+            "filled_total": 439
+          }
+        },
+        {
+          "ln": 130144,
+          "ts": "2026-03-30T20:08:10.720Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_INTENTS",
+          "message": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "reason": "ladder_not_posted"
+          }
+        },
+        {
+          "ln": 130145,
+          "ts": "2026-03-30T20:08:10.720Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "RUNNER_TICK",
+          "message": "tick ladder_not_posted",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "intents_summary": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+            "changed": 0,
+            "filled": 0,
+            "open_total": 0,
+            "cancelled_total": 481,
+            "filled_total": 439
+          }
+        },
+        {
+          "ln": 130147,
+          "ts": "2026-03-30T20:08:11.669Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_INTENTS",
+          "message": "NOOP",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "reason": "within_bounds_or_no_trigger"
+          }
+        },
+        {
+          "ln": 130148,
+          "ts": "2026-03-30T20:08:11.669Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "RUNNER_TICK",
+          "message": "tick within_bounds_or_no_trigger",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "intents_summary": "NOOP",
+            "changed": 0,
+            "filled": 0,
+            "open_total": 0,
+            "cancelled_total": 481,
+            "filled_total": 439
+          }
+        },
+        {
+          "ln": 130150,
+          "ts": "2026-03-30T20:08:12.737Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_INTENTS",
+          "message": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "reason": "ladder_not_posted"
+          }
+        },
+        {
+          "ln": 130151,
+          "ts": "2026-03-30T20:08:12.737Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "RUNNER_TICK",
+          "message": "tick ladder_not_posted",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "intents_summary": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+            "changed": 0,
+            "filled": 0,
+            "open_total": 0,
+            "cancelled_total": 481,
+            "filled_total": 439
+          }
+        },
+        {
+          "ln": 130153,
+          "ts": "2026-03-30T20:08:13.676Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_INTENTS",
+          "message": "NOOP",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "reason": "within_bounds_or_no_trigger"
+          }
+        },
+        {
+          "ln": 130154,
+          "ts": "2026-03-30T20:08:13.676Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "RUNNER_TICK",
+          "message": "tick within_bounds_or_no_trigger",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "intents_summary": "NOOP",
+            "changed": 0,
+            "filled": 0,
+            "open_total": 0,
+            "cancelled_total": 481,
+            "filled_total": 439
+          }
+        },
+        {
+          "ln": 130156,
+          "ts": "2026-03-30T20:08:14.740Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_INTENTS",
+          "message": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "reason": "ladder_not_posted"
+          }
+        },
+        {
+          "ln": 130157,
+          "ts": "2026-03-30T20:08:14.740Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "RUNNER_TICK",
+          "message": "tick ladder_not_posted",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "intents_summary": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+            "changed": 0,
+            "filled": 0,
+            "open_total": 0,
+            "cancelled_total": 481,
+            "filled_total": 439
+          }
+        },
+        {
+          "ln": 130159,
+          "ts": "2026-03-30T20:08:15.683Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_INTENTS",
+          "message": "NOOP",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "reason": "within_bounds_or_no_trigger"
+          }
+        },
+        {
+          "ln": 130160,
+          "ts": "2026-03-30T20:08:15.684Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "RUNNER_TICK",
+          "message": "tick within_bounds_or_no_trigger",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "intents_summary": "NOOP",
+            "changed": 0,
+            "filled": 0,
+            "open_total": 0,
+            "cancelled_total": 481,
+            "filled_total": 439
+          }
+        },
+        {
+          "ln": 130162,
+          "ts": "2026-03-30T20:08:16.748Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_INTENTS",
+          "message": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "reason": "ladder_not_posted"
+          }
+        },
+        {
+          "ln": 130163,
+          "ts": "2026-03-30T20:08:16.748Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "RUNNER_TICK",
+          "message": "tick ladder_not_posted",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "intents_summary": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+            "changed": 0,
+            "filled": 0,
+            "open_total": 0,
+            "cancelled_total": 481,
+            "filled_total": 439
+          }
+        },
+        {
+          "ln": 130165,
+          "ts": "2026-03-30T20:08:17.686Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_INTENTS",
+          "message": "NOOP",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "reason": "within_bounds_or_no_trigger"
+          }
+        },
+        {
+          "ln": 130166,
+          "ts": "2026-03-30T20:08:17.686Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "RUNNER_TICK",
+          "message": "tick within_bounds_or_no_trigger",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "intents_summary": "NOOP",
+            "changed": 0,
+            "filled": 0,
+            "open_total": 0,
+            "cancelled_total": 481,
+            "filled_total": 439
+          }
+        },
+        {
+          "ln": 130168,
+          "ts": "2026-03-30T20:08:18.762Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_INTENTS",
+          "message": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "reason": "ladder_not_posted"
+          }
+        },
+        {
+          "ln": 130169,
+          "ts": "2026-03-30T20:08:18.762Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "RUNNER_TICK",
+          "message": "tick ladder_not_posted",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "intents_summary": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+            "changed": 0,
+            "filled": 0,
+            "open_total": 0,
+            "cancelled_total": 481,
+            "filled_total": 439
+          }
+        },
+        {
+          "ln": 130171,
+          "ts": "2026-03-30T20:08:19.700Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_INTENTS",
+          "message": "NOOP",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "reason": "within_bounds_or_no_trigger"
+          }
+        },
+        {
+          "ln": 130172,
+          "ts": "2026-03-30T20:08:19.700Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "RUNNER_TICK",
+          "message": "tick within_bounds_or_no_trigger",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "intents_summary": "NOOP",
+            "changed": 0,
+            "filled": 0,
+            "open_total": 0,
+            "cancelled_total": 481,
+            "filled_total": 439
+          }
+        },
+        {
+          "ln": 130174,
+          "ts": "2026-03-30T20:08:20.763Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "BOT_INTENTS",
+          "message": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "reason": "ladder_not_posted"
+          }
+        },
+        {
+          "ln": 130175,
+          "ts": "2026-03-30T20:08:20.763Z",
+          "level": "info",
+          "source": "bot_runner",
+          "event": "RUNNER_TICK",
+          "message": "tick ladder_not_posted",
+          "mode": "paper-staging",
+          "window_id": "btc-updown-5m-1774901100",
+          "data": {
+            "intents_summary": "PLACE_LADDER(NO|0.27:5:1,0.24:5:1)",
+            "changed": 0,
+            "filled": 0,
+            "open_total": 0,
+            "cancelled_total": 481,
+            "filled_total": 439
+          }
+        }
+      ],
+      "repeated_place_no_change_count": 10,
+      "fail_detected": true
+    },
+    "post_fix_real_runtime": {
+      "startup_window_id": "btc-updown-5m-1774913700",
+      "fill_window_id": "btc-updown-5m-1774913700",
+      "first_fill_index": 1,
+      "saw_next_window": true,
+      "reconciliation_table": [
+        {
+          "timestamp": "2026-03-30T23:39:14.251Z",
+          "current_window_id": null,
+          "decision_reason": "ladder_not_posted",
+          "decision_intents": "PLACE_LADDER(YES|0.27:5:1,0.24:5:1)",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [],
+          "no_terminal_state": false,
+          "changed": 2
+        },
+        {
+          "timestamp": "2026-03-30T23:39:15.269Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [
+            "paper_a1fb3325",
+            "paper_62279197",
+            "paper_2cb47003",
+            "paper_e606dc2e"
+          ],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:16.280Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:17.298Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:18.316Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:19.333Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:20.336Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:21.343Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:22.350Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:23.366Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:24.381Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:25.385Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:26.390Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:27.406Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:28.411Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:29.415Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:30.419Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:31.435Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:32.440Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:33.454Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:34.460Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:35.474Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:36.479Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:37.482Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:38.491Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:39.503Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:40.512Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:41.515Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:42.523Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:43.526Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:44.543Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:45.558Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:46.562Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:47.564Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:48.567Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:49.583Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:50.594Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:51.610Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:52.617Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:53.619Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:54.636Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:55.639Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:56.643Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:57.651Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:58.656Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:59.672Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:40:00.676Z",
+          "current_window_id": "btc-updown-5m-1774914000",
+          "decision_reason": "ladder_not_posted",
+          "decision_intents": "PLACE_LADDER(YES|0.27:5:1,0.24:5:1) + PLACE_LADDER(NO|0.999:5:1,0.998:5:1)",
+          "newly_created_order_ids_this_tick": [
+            "paper_51219bc3",
+            "paper_89e7b457",
+            "paper_9df5ceab",
+            "paper_5383c2d1"
+          ],
+          "no_open_order_ids": [
+            "paper_51219bc3",
+            "paper_89e7b457"
+          ],
+          "no_filled_order_ids": [],
+          "no_terminal_state": false,
+          "changed": 4
+        }
+      ],
+      "post_fill_same_window_rows": [
+        {
+          "timestamp": "2026-03-30T23:39:16.280Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:17.298Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:18.316Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:19.333Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:20.336Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:21.343Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:22.350Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:23.366Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:24.381Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:25.385Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:26.390Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:27.406Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:28.411Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:29.415Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:30.419Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:31.435Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:32.440Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:33.454Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:34.460Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:35.474Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:36.479Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:37.482Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:38.491Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:39.503Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:40.512Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:41.515Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:42.523Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:43.526Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:44.543Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:45.558Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:46.562Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:47.564Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:48.567Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:49.583Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:50.594Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:51.610Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:52.617Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:53.619Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:54.636Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:55.639Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:56.643Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:57.651Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:58.656Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        },
+        {
+          "timestamp": "2026-03-30T23:39:59.672Z",
+          "current_window_id": "btc-updown-5m-1774913700",
+          "decision_reason": "wait_next_window_after_start",
+          "decision_intents": "NOOP",
+          "newly_created_order_ids_this_tick": [],
+          "no_open_order_ids": [],
+          "no_filled_order_ids": [
+            "paper_a1fb3325",
+            "paper_62279197"
+          ],
+          "no_terminal_state": false,
+          "changed": 0
+        }
+      ],
+      "counters": {
+        "repeated_no_place_after_fill": 0,
+        "repeated_no_place_after_fill_with_new_ids": 0
+      },
+      "stages": {
+        "no_two_fill_observed": true,
+        "no_repeated_no_place_after_fill_same_window": true,
+        "no_new_ids_when_no_change_place": true,
+        "place_dedupe_still_effective": true,
+        "saw_next_window": true
+      }
+    },
+    "debug_control": {
+      "tick_a": {
+        "reason": "ladder_not_posted",
+        "intents": "PLACE_LADDER(YES|0.27:5:1,0.24:5:1) + PLACE_LADDER(NO|0.999:5:1,0.998:5:1)"
+      },
+      "tick_b": {
+        "reason": "ladder_not_posted",
+        "intents": "PLACE_LADDER(YES|0.27:5:1,0.24:5:1)"
+      },
+      "stages": {
+        "debug_no_cancelled_blocks_no_place": true,
+        "debug_place_dedupe_works": true
+      }
+    },
+    "guardrails": {
+      "max_wall_time_ms": 1500000,
+      "max_silence_ms": 120000,
+      "log_tail": 150
+    },
+    "healthcheck": {
+      "root": 200,
+      "pairs": 404
+    }
+  },
+  "result": {
+    "018-A_pre_fix_fail_exists": true,
+    "018-B_post_fix_real_runtime_chain_covered": true,
+    "018-C_post_fix_no_repeat_place_no_after_fill": true,
+    "018-D_non_regression_no_new_ids_when_no_change": true,
+    "018-E_non_regression_place_dedupe_still_effective": true
+  }
+}
