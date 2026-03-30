@@ -1,0 +1,6 @@
+script_name=truth_audit_no_reladder_log_order_consistency_260330_008
+task_id=260330_008
+sample_name=no_reladder_log_order_consistency_v1
+pass=true
+first_break_layer=1）同窗口撤单后终态/防重挂判定层
+message=同窗撤单后重挂/误报修复通过
