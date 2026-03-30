@@ -1,0 +1,6 @@
+script_name=verify_p0_runtime_fixes_guard
+task_id=260330_014
+sample_name=p0_runtime_fixes_guard_v1
+pass=true
+first_break_layer=NONE_CHAIN_PASS
+message=p0 runtime fixes guard pass
