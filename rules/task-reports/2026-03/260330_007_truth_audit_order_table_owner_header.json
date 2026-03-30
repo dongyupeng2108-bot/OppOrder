@@ -1,0 +1,57 @@
+{
+  "script_name": "truth_audit_order_table_owner_header_260330_007",
+  "task_id": "260330_007",
+  "sample_name": "order_table_owner_header_v1",
+  "pass": true,
+  "message": "订单状态表 Owner 表头与语义修复通过",
+  "first_break_layer": null,
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_007_truth_audit_order_table_owner_header.json",
+  "summary": {
+    "conclusion": "A：订单状态表主展示口径已按 Owner 方案收口",
+    "total_checks": 7,
+    "pass_checks": 7,
+    "fail_checks": 0,
+    "checks": {
+      "007-A_pre_fix_header_not_owner_schema": true,
+      "007-B_post_fix_header_owner_schema_exact": true,
+      "007-C_post_fix_four_owner_types_visible": true,
+      "007-D_post_fix_status_cn_all_visible": true,
+      "007-E_post_fix_updown_mapping_visible": true,
+      "007-F_non_regression_close_price_dedupe_kept": true,
+      "007-G_field_sufficiency_kind_side_stable": true
+    }
+  },
+  "raw_excerpt": {
+    "before_html_excerpt": "<tr><td style=\"white-space:normal;word-break:break-word;\">止盈单<div style=\"font-size:11px;color:#8ea1b5;white-space:normal;word-break:break-word;\">子单(parent-n)</div></td><td>NO</td><td>0.910<div style=\"font-size:11px;color:#aaa;\">fill:--</div></td><td style=\"color:#888\">撤单<div style=\"font-size:11px;color:#8ea1b5;\">CANCELLED</div></td><td>1</td><td>0.910</td></tr><tr><td style=\"white-space:normal;word-break:break-word;\">止盈单<div style=\"font-size:11px;color:#8ea1b5;white-space:normal;word-break:break-word;\">子单(parent-y)</div></td><td>YES</td><td>0.880<div style=\"font-size:11px;color:#aaa;\">fill:0.880</div></td><td style=\"color:#ffb74d\">成交<div style=\"font-size:11px;color:#8ea1b5;\">FILLED</div></td><td>2</td><td>等待结算<div style=\"font-size:11px;color:#aaa;\">结算价:1.000</div></td></tr><tr><td style=\"white-space:normal;word-break:break-word;\">进场单<div style=\"font-size:11px;color:#8ea1b5;white-space:normal;word-break:break-word;\">父单</div></td><td>NO</td><td>0.350<div style=\"font-size:11px;color:#aaa;\">fill:0.350</div></td><td style=\"color:#ffb74d\">成交<div style=\"font-size:11px;color:#8ea1b5;\">FILLED</div></td><td>3</td><td>0.820</td></tr><tr><td style=\"white-space:normal;word-break:break-word;\">进场",
+    "after_html_excerpt": "<tr><td style=\"white-space:normal;word-break:break-word;\">NO平仓<div style=\"font-size:11px;color:#8ea1b5;white-space:normal;word-break:break-word;\">子单(parent-n)</div></td><td>DOWN</td><td>0.910<div style=\"font-size:11px;color:#aaa;\">fill:--</div></td><td>1</td><td>0.910</td><td style=\"color:#888\">已撤单<div style=\"font-size:11px;color:#8ea1b5;\">CANCELLED</div></td></tr><tr><td style=\"white-space:normal;word-break:break-word;\">YES平仓<div style=\"font-size:11px;color:#8ea1b5;white-space:normal;word-break:break-word;\">子单(parent-y)</div></td><td>UP</td><td>0.880<div style=\"font-size:11px;color:#aaa;\">fill:0.880</div></td><td>2</td><td>等待结算<div style=\"font-size:11px;color:#aaa;\">结算价:1.000</div></td><td style=\"color:#ffb74d\">已经平仓<div style=\"font-size:11px;color:#8ea1b5;\">FILLED</div></td></tr><tr><td style=\"white-space:normal;word-break:break-word;\">NO<div style=\"font-size:11px;color:#8ea1b5;white-space:normal;word-break:break-word;\">父单</div></td><td>DOWN</td><td>0.350<div style=\"font-size:11px;color:#aaa;\">fill:0.350</div></td><td>3</td><td>0.820</td><td style=\"color:#ffb74d\">已成交<div style=\"font-size:11px;color:#8ea1b5;\">FILLED</div></td></tr><tr><td style=\"white-space:normal;word-break:break-"
+  },
+  "generated_at": "2026-03-30T10:56:38.857Z",
+  "conclusion_block": {
+    "verdict": "A：订单状态表主展示口径已按 Owner 方案收口",
+    "first_break_layer": null
+  },
+  "key_counters": {
+    "total_checks": 7,
+    "pass_checks": 7,
+    "fail_checks": 0
+  },
+  "evidence_index": {
+    "before_render": {
+      "table_html": "<tr><td style=\"white-space:normal;word-break:break-word;\">止盈单<div style=\"font-size:11px;color:#8ea1b5;white-space:normal;word-break:break-word;\">子单(parent-n)</div></td><td>NO</td><td>0.910<div style=\"font-size:11px;color:#aaa;\">fill:--</div></td><td style=\"color:#888\">撤单<div style=\"font-size:11px;color:#8ea1b5;\">CANCELLED</div></td><td>1</td><td>0.910</td></tr><tr><td style=\"white-space:normal;word-break:break-word;\">止盈单<div style=\"font-size:11px;color:#8ea1b5;white-space:normal;word-break:break-word;\">子单(parent-y)</div></td><td>YES</td><td>0.880<div style=\"font-size:11px;color:#aaa;\">fill:0.880</div></td><td style=\"color:#ffb74d\">成交<div style=\"font-size:11px;color:#8ea1b5;\">FILLED</div></td><td>2</td><td>等待结算<div style=\"font-size:11px;color:#aaa;\">结算价:1.000</div></td></tr><tr><td style=\"white-space:normal;word-break:break-word;\">进场单<div style=\"font-size:11px;color:#8ea1b5;white-space:normal;word-break:break-word;\">父单</div></td><td>NO</td><td>0.350<div style=\"font-size:11px;color:#aaa;\">fill:0.350</div></td><td style=\"color:#ffb74d\">成交<div style=\"font-size:11px;color:#8ea1b5;\">FILLED</div></td><td>3</td><td>0.820</td></tr><tr><td style=\"white-space:normal;word-break:break-word;\">进场单<div style=\"font-size:11px;color:#8ea1b5;white-space:normal;word-break:break-word;\">父单</div></td><td>YES</td><td>0.420<div style=\"font-size:11px;color:#aaa;\">fill:--</div></td><td style=\"color:#00e676\">挂单<div style=\"font-size:11px;color:#8ea1b5;\">OPEN</div></td><td>4</td><td>0.840</td></tr>",
+      "title": "当前窗口订单状态"
+    },
+    "after_render": {
+      "table_html": "<tr><td style=\"white-space:normal;word-break:break-word;\">NO平仓<div style=\"font-size:11px;color:#8ea1b5;white-space:normal;word-break:break-word;\">子单(parent-n)</div></td><td>DOWN</td><td>0.910<div style=\"font-size:11px;color:#aaa;\">fill:--</div></td><td>1</td><td>0.910</td><td style=\"color:#888\">已撤单<div style=\"font-size:11px;color:#8ea1b5;\">CANCELLED</div></td></tr><tr><td style=\"white-space:normal;word-break:break-word;\">YES平仓<div style=\"font-size:11px;color:#8ea1b5;white-space:normal;word-break:break-word;\">子单(parent-y)</div></td><td>UP</td><td>0.880<div style=\"font-size:11px;color:#aaa;\">fill:0.880</div></td><td>2</td><td>等待结算<div style=\"font-size:11px;color:#aaa;\">结算价:1.000</div></td><td style=\"color:#ffb74d\">已经平仓<div style=\"font-size:11px;color:#8ea1b5;\">FILLED</div></td></tr><tr><td style=\"white-space:normal;word-break:break-word;\">NO<div style=\"font-size:11px;color:#8ea1b5;white-space:normal;word-break:break-word;\">父单</div></td><td>DOWN</td><td>0.350<div style=\"font-size:11px;color:#aaa;\">fill:0.350</div></td><td>3</td><td>0.820</td><td style=\"color:#ffb74d\">已成交<div style=\"font-size:11px;color:#8ea1b5;\">FILLED</div></td></tr><tr><td style=\"white-space:normal;word-break:break-word;\">YES<div style=\"font-size:11px;color:#8ea1b5;white-space:normal;word-break:break-word;\">父单</div></td><td>UP</td><td>0.420<div style=\"font-size:11px;color:#aaa;\">fill:--</div></td><td>4</td><td>0.840</td><td style=\"color:#00e676\">挂单中<div style=\"font-size:11px;color:#8ea1b5;\">OPEN</div></td></tr>",
+      "title": "当前窗口订单状态"
+    }
+  },
+  "result": {
+    "007-A_pre_fix_header_not_owner_schema": true,
+    "007-B_post_fix_header_owner_schema_exact": true,
+    "007-C_post_fix_four_owner_types_visible": true,
+    "007-D_post_fix_status_cn_all_visible": true,
+    "007-E_post_fix_updown_mapping_visible": true,
+    "007-F_non_regression_close_price_dedupe_kept": true,
+    "007-G_field_sufficiency_kind_side_stable": true
+  }
+}
