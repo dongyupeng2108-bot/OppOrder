@@ -1,0 +1,60 @@
+{
+  "script_name": "truth_audit_log_display_layer_260330_004",
+  "task_id": "260330_004",
+  "sample_name": "log_display_layer_v1",
+  "pass": true,
+  "message": "实时日志展示层重构通过",
+  "first_break_layer": null,
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_004_truth_audit_log_display_layer.json",
+  "summary": {
+    "conclusion": "A：实时日志默认口径已收口为关键信息流",
+    "total_checks": 6,
+    "pass_checks": 6,
+    "fail_checks": 0,
+    "checks": {
+      "004-A_pre_fix_noise_spam_in_default_view": true,
+      "004-B_post_fix_default_is_key_stream": true,
+      "004-C_post_fix_raw_log_second_layer_available": true,
+      "004-D_post_fix_state_sentence_examples_present": true,
+      "004-E_scope_not_touch_execution_chain": true,
+      "004-F_scope_not_touch_module_test_runner": true
+    }
+  },
+  "raw_excerpt": {
+    "before_default_excerpt": "<div class=\"se-log-entry se-log-info\">10:00:01 [信息] 执行周期更新：tick 价格或边界未就绪 （原始:RUNNER_TICK | 原文:tick price_or_bounds_null）</div><div class=\"se-log-entry se-log-info\">10:00:02 [信息] 周期检查正常：scheduled 周期正常 （原始:BOT_TICK_OK | 原文:scheduled tick ok）</div><div class=\"se-log-entry se-log-info\">10:00:03 [信息] 窗口初始化完成：窗口初始化完成 （原始:BOT_WINDOW_INITIALIZED | 原文:window initialized）</div><div class=\"se-log-entry se-log-info\">10:00:04 [信息] 已提交挂单：挂阶梯单(双边) （原始:BOT_ORDER_APPLY | 原文:PLACE_LADDER(BOTH)）</div><div class=\"se-log-entry se-log-info\">10:00:05 [信息] 订单成交：成交 1 笔订单 （原始:BOT_FILL | 原文:filled 1 orders）</div>",
+    "after_key_excerpt": "<div class=\"se-log-entry se-log-info\">10:00:03 [信息] 进入新窗口，开始等待 open_delay</div><div class=\"se-log-entry se-log-info\">10:00:04 [信息] 已挂 UP 2 单 / DOWN 2 单</div><div class=\"se-log-entry se-log-info\">10:00:05 [信息] NO 方向 1 单成交</div>",
+    "after_raw_excerpt": "<div class=\"se-log-entry se-log-info\">10:00:01 [信息] 等待价格与边界数据（原始:RUNNER_TICK | 原文:tick price_or_bounds_null）</div><div class=\"se-log-entry se-log-info\">10:00:02 [信息] 心跳周期正常（原始:BOT_TICK_OK | 原文:scheduled tick ok）</div><div class=\"se-log-entry se-log-info\">10:00:03 [信息] 进入新窗口，开始等待 open_delay（原始:BOT_WINDOW_INITIALIZED | 原文:window initialized）</div><div class=\"se-log-entry se-log-info\">10:00:04 [信息] 已挂 UP 2 单 / DOWN 2 单（原始:BOT_ORDER_APPLY | 原文:PLACE_LADDER(BOTH)）</div><div class=\"se-log-entry se-log-info\">10:00:05 [信息] NO 方向 1 单成交（原始:BOT_FILL | 原文:filled 1 orders）</div>"
+  },
+  "generated_at": "2026-03-30T01:22:55.112Z",
+  "conclusion_block": {
+    "verdict": "A：实时日志默认口径已收口为关键信息流",
+    "first_break_layer": null
+  },
+  "key_counters": {
+    "total_checks": 6,
+    "pass_checks": 6,
+    "fail_checks": 0
+  },
+  "evidence_index": {
+    "before_render": {
+      "keyHtml": "<div class=\"se-log-entry se-log-info\">10:00:01 [信息] 执行周期更新：tick 价格或边界未就绪 （原始:RUNNER_TICK | 原文:tick price_or_bounds_null）</div><div class=\"se-log-entry se-log-info\">10:00:02 [信息] 周期检查正常：scheduled 周期正常 （原始:BOT_TICK_OK | 原文:scheduled tick ok）</div><div class=\"se-log-entry se-log-info\">10:00:03 [信息] 窗口初始化完成：窗口初始化完成 （原始:BOT_WINDOW_INITIALIZED | 原文:window initialized）</div><div class=\"se-log-entry se-log-info\">10:00:04 [信息] 已提交挂单：挂阶梯单(双边) （原始:BOT_ORDER_APPLY | 原文:PLACE_LADDER(BOTH)）</div><div class=\"se-log-entry se-log-info\">10:00:05 [信息] 订单成交：成交 1 笔订单 （原始:BOT_FILL | 原文:filled 1 orders）</div>",
+      "keyHint": "",
+      "rawHtml": "",
+      "rawHint": ""
+    },
+    "after_render": {
+      "keyHtml": "<div class=\"se-log-entry se-log-info\">10:00:03 [信息] 进入新窗口，开始等待 open_delay</div><div class=\"se-log-entry se-log-info\">10:00:04 [信息] 已挂 UP 2 单 / DOWN 2 单</div><div class=\"se-log-entry se-log-info\">10:00:05 [信息] NO 方向 1 单成交</div>",
+      "keyHint": "默认展示关键信息流（已折叠噪声 2 条）",
+      "rawHtml": "<div class=\"se-log-entry se-log-info\">10:00:01 [信息] 等待价格与边界数据（原始:RUNNER_TICK | 原文:tick price_or_bounds_null）</div><div class=\"se-log-entry se-log-info\">10:00:02 [信息] 心跳周期正常（原始:BOT_TICK_OK | 原文:scheduled tick ok）</div><div class=\"se-log-entry se-log-info\">10:00:03 [信息] 进入新窗口，开始等待 open_delay（原始:BOT_WINDOW_INITIALIZED | 原文:window initialized）</div><div class=\"se-log-entry se-log-info\">10:00:04 [信息] 已挂 UP 2 单 / DOWN 2 单（原始:BOT_ORDER_APPLY | 原文:PLACE_LADDER(BOTH)）</div><div class=\"se-log-entry se-log-info\">10:00:05 [信息] NO 方向 1 单成交（原始:BOT_FILL | 原文:filled 1 orders）</div>",
+      "rawHint": "当前展示原始日志（包含心跳/空转事件）"
+    }
+  },
+  "result": {
+    "004-A_pre_fix_noise_spam_in_default_view": true,
+    "004-B_post_fix_default_is_key_stream": true,
+    "004-C_post_fix_raw_log_second_layer_available": true,
+    "004-D_post_fix_state_sentence_examples_present": true,
+    "004-E_scope_not_touch_execution_chain": true,
+    "004-F_scope_not_touch_module_test_runner": true
+  }
+}
