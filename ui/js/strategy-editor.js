@@ -191,14 +191,14 @@ async function initStrategyEditor() {
           <div style="flex:1;min-height:0;overflow:auto;">
             <table class="se-order-table" style="table-layout:fixed;width:100%;">
               <colgroup>
-                <col style="width:18%">
-                <col style="width:14%">
-                <col style="width:18%">
-                <col style="width:16%">
-                <col style="width:14%">
                 <col style="width:20%">
+                <col style="width:12%">
+                <col style="width:18%">
+                <col style="width:12%">
+                <col style="width:20%">
+                <col style="width:18%">
               </colgroup>
-              <thead><tr><th>类型</th><th>方向</th><th>价格</th><th>状态</th><th>数量</th><th>平仓价</th></tr></thead>
+              <thead><tr><th>订单类型</th><th>UP/DOWN</th><th>价格</th><th>数量</th><th>平仓价</th><th>状态</th></tr></thead>
               <tbody id="se-order-body">
                 <tr><td colspan="6" style="color:#555;text-align:center">暂无</td></tr>
               </tbody>
@@ -1501,16 +1501,10 @@ function se_renderOrders(orders, status) {
   const finalList = scopedList;
   finalList.sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)));
   const topList = finalList.slice(0, 200);
-  const kindLabel = (value) => {
-    if (value === 'ENTRY') return '进场单';
-    if (value === 'TAKE_PROFIT') return '止盈单';
-    if (value === 'EXIT') return '平仓单';
-    return se_formatStateValue(value);
-  };
-  const lifecycleLabel = (value) => {
-    if (value === 'OPEN') return '挂单';
-    if (value === 'FILLED') return '成交';
-    if (value === 'CANCELLED') return '撤单';
+  const lifecycleLabel = (value, isCloseOrder) => {
+    if (value === 'OPEN') return '挂单中';
+    if (value === 'FILLED') return isCloseOrder ? '已经平仓' : '已成交';
+    if (value === 'CANCELLED') return '已撤单';
     return se_formatStateValue(value);
   };
   const lifecycleCode = (value) => {
@@ -1522,10 +1516,14 @@ function se_renderOrders(orders, status) {
     const orderPriceText = typeof o.price === 'number' ? o.price.toFixed(3) : '--';
     const fillPriceText = typeof o.fill_price === 'number' ? o.fill_price.toFixed(3) : '--';
     const priceCell = `${orderPriceText}<div style="font-size:11px;color:#aaa;">fill:${fillPriceText}</div>`;
-    const typeMain = kindLabel(o.kind);
+    const isCloseOrder = o.kind === 'TAKE_PROFIT' || o.kind === 'EXIT';
+    const typeMain = isCloseOrder
+      ? (o.side === 'YES' ? 'YES平仓' : (o.side === 'NO' ? 'NO平仓' : '平仓'))
+      : (o.side === 'YES' ? 'YES' : (o.side === 'NO' ? 'NO' : se_formatStateValue(o.side)));
     const typeSub = o.parent_order_id ? `子单(${String(o.parent_order_id).slice(0, 8)})` : '父单';
     const typeCell = `${typeMain}<div style="font-size:11px;color:#8ea1b5;white-space:normal;word-break:break-word;">${typeSub}</div>`;
-    const statusMain = lifecycleLabel(o.status);
+    const upDownMain = o.side === 'YES' ? 'UP' : (o.side === 'NO' ? 'DOWN' : se_formatStateValue(o.side));
+    const statusMain = lifecycleLabel(o.status, isCloseOrder);
     const statusSub = lifecycleCode(o.status);
     const statusCell = statusSub
       ? `${statusMain}<div style="font-size:11px;color:#8ea1b5;">${statusSub}</div>`
@@ -1543,7 +1541,7 @@ function se_renderOrders(orders, status) {
     const closeCell = closeSubText
       ? `${closePriceText}<div style="font-size:11px;color:#aaa;">${closeSubText}</div>`
       : closePriceText;
-    return `<tr><td style="white-space:normal;word-break:break-word;">${typeCell}</td><td>${se_formatStateValue(o.side)}</td><td>${priceCell}</td><td style="color:${statusColor}">${statusCell}</td><td>${se_formatStateValue(o.size)}</td><td>${closeCell}</td></tr>`;
+    return `<tr><td style="white-space:normal;word-break:break-word;">${typeCell}</td><td>${upDownMain}</td><td>${priceCell}</td><td>${se_formatStateValue(o.size)}</td><td>${closeCell}</td><td style="color:${statusColor}">${statusCell}</td></tr>`;
   });
   tbody.innerHTML = rows.length
     ? rows.join('')
