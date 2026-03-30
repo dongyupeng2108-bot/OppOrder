@@ -64,7 +64,7 @@ const notContains = (text, token) => !contains(text, token);
 
 const main = () => {
   const args = parseArgs();
-  const oldSource = readGitFile('HEAD:ui/js/strategy-editor.js');
+  const oldSource = readGitFile('HEAD~1:ui/js/strategy-editor.js');
   const newSource = fs.readFileSync(path.join(REPO_ROOT, 'ui', 'js', 'strategy-editor.js'), 'utf8');
   const payload = {
     window_scope: { scope: 'current_window', display_window_id: 'w-slim' },
