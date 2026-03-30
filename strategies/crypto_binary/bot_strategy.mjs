@@ -504,12 +504,20 @@ export function decideBotAction(inputOrContext = {}, maybeState = {}) {
   }
 
   if (!ladderPosted) {
+    if (state?.yes_cancelled === true && state?.no_cancelled === true) {
+      return normalizeStrategyOutput({
+        intents: [createNoopIntent()],
+        reason: 'window_cancel_terminal_after_directional_before_end',
+        patches: {},
+        diagnostics: diagnosticsBase
+      });
+    }
     const intents = [];
-    if (upLadder.length > 0) intents.push(createPlaceLadderIntent({ side: 'YES', ladder: upLadder }));
-    if (downLadder.length > 0) intents.push(createPlaceLadderIntent({ side: 'NO', ladder: downLadder }));
+    if (upLadder.length > 0 && state?.yes_cancelled !== true) intents.push(createPlaceLadderIntent({ side: 'YES', ladder: upLadder }));
+    if (downLadder.length > 0 && state?.no_cancelled !== true) intents.push(createPlaceLadderIntent({ side: 'NO', ladder: downLadder }));
     return normalizeStrategyOutput({
       intents: intents.length > 0 ? intents : [createNoopIntent()],
-      reason: 'ladder_not_posted',
+      reason: intents.length > 0 ? 'ladder_not_posted' : 'ladder_not_posted_all_sides_cancelled',
       patches: { ladder_posted: true },
       diagnostics: diagnosticsBase
     });

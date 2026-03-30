@@ -1,0 +1,371 @@
+{
+  "script_name": "truth_audit_no_reladder_log_order_consistency_260330_008",
+  "task_id": "260330_008",
+  "sample_name": "no_reladder_log_order_consistency_v1",
+  "pass": true,
+  "message": "同窗撤单后重挂/误报修复通过",
+  "first_break_layer": "1）同窗口撤单后终态/防重挂判定层",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_008_truth_audit_no_reladder_log_order_consistency.json",
+  "summary": {
+    "conclusion": "A：同窗撤单后重挂/误报链路已修复，日志与订单状态表一致",
+    "total_checks": 8,
+    "pass_checks": 8,
+    "fail_checks": 0,
+    "checks": {
+      "008-A_pre_fix_reladder_after_120_60_and_log_misreport": true,
+      "008-B_pre_fix_unique_first_break_layer_terminal_guard_missing": true,
+      "008-C_post_fix_no_reladder_and_no_false_place_after_120_60": true,
+      "008-D_post_fix_log_order_table_consistent": true,
+      "008-E_non_regression_260329_004_wait_next_window_still_exists": true,
+      "008-F_non_regression_260329_007_window_scope_chain_untouched": true,
+      "008-G_non_regression_260329_008_260330_006_directional_before_end_kept": true,
+      "008-H_non_regression_260330_005_key_log_place_kept": true
+    }
+  },
+  "raw_excerpt": {
+    "pre_timeline": [
+      {
+        "label": "place",
+        "remaining": 250,
+        "reason": "ladder_not_posted",
+        "intents": "PLACE_LADDER(YES|0.4:2:0.85,0.1:2:1) + PLACE_LADDER(NO|0.4:1:0.9,0.3:2:1)",
+        "open_yes": 2,
+        "open_no": 2,
+        "last_intent_log": "PLACE_LADDER(YES|0.4:2:0.85,0.1:2:1) + PLACE_LADDER(NO|0.4:1:0.9,0.3:2:1)"
+      },
+      {
+        "label": "yes_fill",
+        "remaining": 240,
+        "reason": "within_bounds_or_no_trigger",
+        "intents": "NOOP",
+        "open_yes": 1,
+        "open_no": 2,
+        "last_intent_log": "NOOP"
+      },
+      {
+        "label": "up_cancel_120",
+        "remaining": 120,
+        "reason": "up_cancel_before_end",
+        "intents": "CANCEL_OPEN(YES)",
+        "open_yes": 0,
+        "open_no": 2,
+        "last_intent_log": "CANCEL_OPEN(YES)"
+      },
+      {
+        "label": "down_cancel_60",
+        "remaining": 60,
+        "reason": "down_cancel_before_end",
+        "intents": "CANCEL_OPEN(NO)",
+        "open_yes": 0,
+        "open_no": 0,
+        "last_intent_log": "CANCEL_OPEN(NO)"
+      },
+      {
+        "label": "observe_55",
+        "remaining": 55,
+        "reason": "ladder_not_posted",
+        "intents": "PLACE_LADDER(YES|0.4:2:0.85,0.1:2:1) + PLACE_LADDER(NO|0.4:1:0.9,0.3:2:1)",
+        "open_yes": 0,
+        "open_no": 0,
+        "last_intent_log": "PLACE_LADDER(YES|0.4:2:0.85,0.1:2:1) + PLACE_LADDER(NO|0.4:1:0.9,0.3:2:1)"
+      },
+      {
+        "label": "observe_50",
+        "remaining": 50,
+        "reason": "within_bounds_or_no_trigger",
+        "intents": "NOOP",
+        "open_yes": 0,
+        "open_no": 0,
+        "last_intent_log": "NOOP"
+      }
+    ],
+    "post_harness_timeline": [
+      {
+        "label": "place",
+        "remaining": 250,
+        "reason": "ladder_not_posted",
+        "intents": "PLACE_LADDER(YES|0.4:2:0.85,0.1:2:1) + PLACE_LADDER(NO|0.4:1:0.9,0.3:2:1)",
+        "open_yes": 2,
+        "open_no": 2,
+        "last_intent_log": "PLACE_LADDER(YES|0.4:2:0.85,0.1:2:1) + PLACE_LADDER(NO|0.4:1:0.9,0.3:2:1)"
+      },
+      {
+        "label": "yes_fill",
+        "remaining": 240,
+        "reason": "within_bounds_or_no_trigger",
+        "intents": "NOOP",
+        "open_yes": 1,
+        "open_no": 2,
+        "last_intent_log": "NOOP"
+      },
+      {
+        "label": "up_cancel_120",
+        "remaining": 120,
+        "reason": "up_cancel_before_end",
+        "intents": "CANCEL_OPEN(YES)",
+        "open_yes": 0,
+        "open_no": 2,
+        "last_intent_log": "CANCEL_OPEN(YES)"
+      },
+      {
+        "label": "down_cancel_60",
+        "remaining": 60,
+        "reason": "down_cancel_before_end",
+        "intents": "CANCEL_OPEN(NO)",
+        "open_yes": 0,
+        "open_no": 0,
+        "last_intent_log": "CANCEL_OPEN(NO)"
+      },
+      {
+        "label": "observe_55",
+        "remaining": 55,
+        "reason": "window_cancel_terminal_after_directional_before_end",
+        "intents": "NOOP",
+        "open_yes": 0,
+        "open_no": 0,
+        "last_intent_log": "NOOP"
+      },
+      {
+        "label": "observe_50",
+        "remaining": 50,
+        "reason": "window_cancel_terminal_after_directional_before_end",
+        "intents": "NOOP",
+        "open_yes": 0,
+        "open_no": 0,
+        "last_intent_log": "NOOP"
+      }
+    ],
+    "real_runtime_timeline": [
+      {
+        "label": "place",
+        "remaining": 250,
+        "reason": "ladder_not_posted",
+        "intents": "PLACE_LADDER(YES|0.4:2:0.85,0.1:2:1) + PLACE_LADDER(NO|0.4:1:0.9,0.3:2:1)",
+        "open_yes": 2,
+        "open_no": 2,
+        "last_intent_log": "PLACE_LADDER(YES|0.4:2:0.85,0.1:2:1) + PLACE_LADDER(NO|0.4:1:0.9,0.3:2:1)"
+      },
+      {
+        "label": "yes_fill",
+        "remaining": 240,
+        "reason": "within_bounds_or_no_trigger",
+        "intents": "NOOP",
+        "open_yes": 1,
+        "open_no": 2,
+        "last_intent_log": "NOOP"
+      },
+      {
+        "label": "up_cancel_120",
+        "remaining": 120,
+        "reason": "up_cancel_before_end",
+        "intents": "CANCEL_OPEN(YES)",
+        "open_yes": 0,
+        "open_no": 2,
+        "last_intent_log": "CANCEL_OPEN(YES)"
+      },
+      {
+        "label": "down_cancel_60",
+        "remaining": 60,
+        "reason": "down_cancel_before_end",
+        "intents": "CANCEL_OPEN(NO)",
+        "open_yes": 0,
+        "open_no": 0,
+        "last_intent_log": "CANCEL_OPEN(NO)"
+      },
+      {
+        "label": "observe_after_10s",
+        "remaining": 50,
+        "reason": "window_cancel_terminal_after_directional_before_end",
+        "intents": "NOOP",
+        "open_yes": 0,
+        "open_no": 0,
+        "last_intent_log": "NOOP"
+      }
+    ]
+  },
+  "generated_at": "2026-03-30T11:55:56.862Z",
+  "conclusion_block": {
+    "verdict": "A：同窗撤单后重挂/误报链路已修复，日志与订单状态表一致",
+    "first_break_layer": "1）同窗口撤单后终态/防重挂判定层"
+  },
+  "key_counters": {
+    "total_checks": 8,
+    "pass_checks": 8,
+    "fail_checks": 0
+  },
+  "evidence_index": {
+    "pre_fix_timeline": [
+      {
+        "label": "place",
+        "remaining": 250,
+        "reason": "ladder_not_posted",
+        "intents": "PLACE_LADDER(YES|0.4:2:0.85,0.1:2:1) + PLACE_LADDER(NO|0.4:1:0.9,0.3:2:1)",
+        "open_yes": 2,
+        "open_no": 2,
+        "last_intent_log": "PLACE_LADDER(YES|0.4:2:0.85,0.1:2:1) + PLACE_LADDER(NO|0.4:1:0.9,0.3:2:1)"
+      },
+      {
+        "label": "yes_fill",
+        "remaining": 240,
+        "reason": "within_bounds_or_no_trigger",
+        "intents": "NOOP",
+        "open_yes": 1,
+        "open_no": 2,
+        "last_intent_log": "NOOP"
+      },
+      {
+        "label": "up_cancel_120",
+        "remaining": 120,
+        "reason": "up_cancel_before_end",
+        "intents": "CANCEL_OPEN(YES)",
+        "open_yes": 0,
+        "open_no": 2,
+        "last_intent_log": "CANCEL_OPEN(YES)"
+      },
+      {
+        "label": "down_cancel_60",
+        "remaining": 60,
+        "reason": "down_cancel_before_end",
+        "intents": "CANCEL_OPEN(NO)",
+        "open_yes": 0,
+        "open_no": 0,
+        "last_intent_log": "CANCEL_OPEN(NO)"
+      },
+      {
+        "label": "observe_55",
+        "remaining": 55,
+        "reason": "ladder_not_posted",
+        "intents": "PLACE_LADDER(YES|0.4:2:0.85,0.1:2:1) + PLACE_LADDER(NO|0.4:1:0.9,0.3:2:1)",
+        "open_yes": 0,
+        "open_no": 0,
+        "last_intent_log": "PLACE_LADDER(YES|0.4:2:0.85,0.1:2:1) + PLACE_LADDER(NO|0.4:1:0.9,0.3:2:1)"
+      },
+      {
+        "label": "observe_50",
+        "remaining": 50,
+        "reason": "within_bounds_or_no_trigger",
+        "intents": "NOOP",
+        "open_yes": 0,
+        "open_no": 0,
+        "last_intent_log": "NOOP"
+      }
+    ],
+    "post_fix_harness_timeline": [
+      {
+        "label": "place",
+        "remaining": 250,
+        "reason": "ladder_not_posted",
+        "intents": "PLACE_LADDER(YES|0.4:2:0.85,0.1:2:1) + PLACE_LADDER(NO|0.4:1:0.9,0.3:2:1)",
+        "open_yes": 2,
+        "open_no": 2,
+        "last_intent_log": "PLACE_LADDER(YES|0.4:2:0.85,0.1:2:1) + PLACE_LADDER(NO|0.4:1:0.9,0.3:2:1)"
+      },
+      {
+        "label": "yes_fill",
+        "remaining": 240,
+        "reason": "within_bounds_or_no_trigger",
+        "intents": "NOOP",
+        "open_yes": 1,
+        "open_no": 2,
+        "last_intent_log": "NOOP"
+      },
+      {
+        "label": "up_cancel_120",
+        "remaining": 120,
+        "reason": "up_cancel_before_end",
+        "intents": "CANCEL_OPEN(YES)",
+        "open_yes": 0,
+        "open_no": 2,
+        "last_intent_log": "CANCEL_OPEN(YES)"
+      },
+      {
+        "label": "down_cancel_60",
+        "remaining": 60,
+        "reason": "down_cancel_before_end",
+        "intents": "CANCEL_OPEN(NO)",
+        "open_yes": 0,
+        "open_no": 0,
+        "last_intent_log": "CANCEL_OPEN(NO)"
+      },
+      {
+        "label": "observe_55",
+        "remaining": 55,
+        "reason": "window_cancel_terminal_after_directional_before_end",
+        "intents": "NOOP",
+        "open_yes": 0,
+        "open_no": 0,
+        "last_intent_log": "NOOP"
+      },
+      {
+        "label": "observe_50",
+        "remaining": 50,
+        "reason": "window_cancel_terminal_after_directional_before_end",
+        "intents": "NOOP",
+        "open_yes": 0,
+        "open_no": 0,
+        "last_intent_log": "NOOP"
+      }
+    ],
+    "real_runtime_timeline": [
+      {
+        "label": "place",
+        "remaining": 250,
+        "reason": "ladder_not_posted",
+        "intents": "PLACE_LADDER(YES|0.4:2:0.85,0.1:2:1) + PLACE_LADDER(NO|0.4:1:0.9,0.3:2:1)",
+        "open_yes": 2,
+        "open_no": 2,
+        "last_intent_log": "PLACE_LADDER(YES|0.4:2:0.85,0.1:2:1) + PLACE_LADDER(NO|0.4:1:0.9,0.3:2:1)"
+      },
+      {
+        "label": "yes_fill",
+        "remaining": 240,
+        "reason": "within_bounds_or_no_trigger",
+        "intents": "NOOP",
+        "open_yes": 1,
+        "open_no": 2,
+        "last_intent_log": "NOOP"
+      },
+      {
+        "label": "up_cancel_120",
+        "remaining": 120,
+        "reason": "up_cancel_before_end",
+        "intents": "CANCEL_OPEN(YES)",
+        "open_yes": 0,
+        "open_no": 2,
+        "last_intent_log": "CANCEL_OPEN(YES)"
+      },
+      {
+        "label": "down_cancel_60",
+        "remaining": 60,
+        "reason": "down_cancel_before_end",
+        "intents": "CANCEL_OPEN(NO)",
+        "open_yes": 0,
+        "open_no": 0,
+        "last_intent_log": "CANCEL_OPEN(NO)"
+      },
+      {
+        "label": "observe_after_10s",
+        "remaining": 50,
+        "reason": "window_cancel_terminal_after_directional_before_end",
+        "intents": "NOOP",
+        "open_yes": 0,
+        "open_no": 0,
+        "last_intent_log": "NOOP"
+      }
+    ],
+    "healthcheck": {
+      "root": 200,
+      "pairs": 404
+    }
+  },
+  "result": {
+    "008-A_pre_fix_reladder_after_120_60_and_log_misreport": true,
+    "008-B_pre_fix_unique_first_break_layer_terminal_guard_missing": true,
+    "008-C_post_fix_no_reladder_and_no_false_place_after_120_60": true,
+    "008-D_post_fix_log_order_table_consistent": true,
+    "008-E_non_regression_260329_004_wait_next_window_still_exists": true,
+    "008-F_non_regression_260329_007_window_scope_chain_untouched": true,
+    "008-G_non_regression_260329_008_260330_006_directional_before_end_kept": true,
+    "008-H_non_regression_260330_005_key_log_place_kept": true
+  }
+}
