@@ -102,8 +102,10 @@ export function createBotRunner(options = {}) {
   const runSingleTick = async (params = {}) => {
     const contextBase = await getContext();
     let state = getState();
+    if (params.state_override && typeof params.state_override === 'object') {
+      state = patchState(params.state_override);
+    }
     const context = mergeOverride(contextBase, params.context_override);
-    state = mergeOverride(state, params.state_override);
 
     const lifecycleWindowId = context.window_id ?? null;
     if (startupWindowGateMode === 'pending') {
