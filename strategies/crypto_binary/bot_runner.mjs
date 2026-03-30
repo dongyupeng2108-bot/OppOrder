@@ -87,6 +87,7 @@ export function createBotRunner(options = {}) {
   const executedPlaceIntentByWindow = new Map();
   let startupWindowGateMode = 'inactive';
   let startupWindowGateId = null;
+  let startupWindowGateLastRemainingSec = null;
 
   const getRuntimeState = () => ({
     running,
@@ -111,9 +112,11 @@ export function createBotRunner(options = {}) {
     if (startupWindowGateMode === 'pending') {
       if (lifecycleWindowId === null) {
         startupWindowGateMode = 'open';
+        startupWindowGateLastRemainingSec = null;
       } else {
         startupWindowGateMode = 'wait_next_window';
         startupWindowGateId = lifecycleWindowId;
+        startupWindowGateLastRemainingSec = toFiniteNumber(context.remaining_sec);
         log({
           level: 'info',
           source: 'bot_runner',
@@ -125,14 +128,27 @@ export function createBotRunner(options = {}) {
         });
       }
     }
+    const lifecycleRemainingSec = toFiniteNumber(context.remaining_sec);
+    const releasedByRemainingRollover = (
+      startupWindowGateMode === 'wait_next_window'
+      && startupWindowGateId !== null
+      && lifecycleWindowId === startupWindowGateId
+      && startupWindowGateLastRemainingSec !== null
+      && lifecycleRemainingSec !== null
+      && lifecycleRemainingSec > startupWindowGateLastRemainingSec + 30
+    );
+    if (startupWindowGateMode === 'wait_next_window' && lifecycleRemainingSec !== null) {
+      startupWindowGateLastRemainingSec = lifecycleRemainingSec;
+    }
     if (
       startupWindowGateMode === 'wait_next_window'
       && lifecycleWindowId !== null
-      && lifecycleWindowId !== startupWindowGateId
+      && (lifecycleWindowId !== startupWindowGateId || releasedByRemainingRollover)
     ) {
       const releasedFrom = startupWindowGateId;
       startupWindowGateMode = 'open';
       startupWindowGateId = null;
+      startupWindowGateLastRemainingSec = null;
       log({
         level: 'info',
         source: 'bot_runner',
@@ -140,7 +156,11 @@ export function createBotRunner(options = {}) {
         message: `startup wait released on new window ${lifecycleWindowId}`,
         mode: state.mode ?? null,
         window_id: lifecycleWindowId,
-        data: { startup_window_id: releasedFrom, active_window_id: lifecycleWindowId }
+        data: {
+          startup_window_id: releasedFrom,
+          active_window_id: lifecycleWindowId,
+          release_reason: releasedByRemainingRollover ? 'remaining_rollover' : 'window_id_changed'
+        }
       });
     }
     const prevWindowId = state.current_window_id ?? null;
@@ -474,6 +494,7 @@ export function createBotRunner(options = {}) {
     running = true;
     startupWindowGateMode = 'pending';
     startupWindowGateId = null;
+    startupWindowGateLastRemainingSec = null;
     publishRuntime();
     log({
       level: 'info',
@@ -500,6 +521,7 @@ export function createBotRunner(options = {}) {
     running = false;
     startupWindowGateMode = 'inactive';
     startupWindowGateId = null;
+    startupWindowGateLastRemainingSec = null;
     if (timerRef) {
       clearInterval(timerRef);
       timerRef = null;
