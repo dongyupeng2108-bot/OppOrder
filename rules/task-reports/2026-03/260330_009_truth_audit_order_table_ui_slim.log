@@ -1,0 +1,6 @@
+script_name=truth_audit_order_table_ui_slim_260330_009
+task_id=260330_009
+sample_name=order_table_ui_slim_v1
+pass=true
+first_break_layer=null
+message=订单状态表 UI 简化修复通过
