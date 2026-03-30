@@ -1,0 +1,6 @@
+script_name=truth_audit_executor_isolation_260330_015
+task_id=260330_015
+sample_name=executor_isolation_v1
+pass=true
+first_break_layer=NONE_CHAIN_PASS
+message=P1 executor idempotency/window isolation audit pass
