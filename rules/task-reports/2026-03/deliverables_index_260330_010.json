@@ -1,41 +1,41 @@
 {
   "task_id": "260330_010",
-  "generated_at": "2026-03-30T13:36:01.250Z",
+  "generated_at": "2026-03-30T13:37:50.844Z",
   "files": [
     {
       "name": "result_260330_010.json",
       "size": 385,
-      "sha256_short": "88dbab30"
+      "sha256_short": "57cf791e"
     },
     {
       "name": "run_260330_010.log",
-      "size": 620,
-      "sha256_short": "28e26c92"
+      "size": 5203,
+      "sha256_short": "909ce93d"
     },
     {
       "name": "notify_260330_010.txt",
+      "size": 12085,
+      "sha256_short": "40b6c750"
+    },
+    {
+      "name": "gate_light_preview_260330_010.log",
+      "size": 5203,
+      "sha256_short": "909ce93d"
+    },
+    {
+      "name": "dod_evidence_260330_010.txt",
       "size": 3529,
       "sha256_short": "6e6bbd96"
     },
     {
-      "name": "gate_light_preview_260330_010.log",
-      "size": 620,
-      "sha256_short": "28e26c92"
-    },
-    {
-      "name": "dod_evidence_260330_010.txt",
-      "size": 259,
-      "sha256_short": "02b5f853"
-    },
-    {
       "name": "git_meta_260330_010.json",
-      "size": 175,
-      "sha256_short": "9e14f89e"
+      "size": 156,
+      "sha256_short": "f46706e6"
     },
     {
       "name": "trae_report_snippet_260330_010.txt",
-      "size": 1000,
-      "sha256_short": "11d541ba"
+      "size": 4450,
+      "sha256_short": "0464d95b"
     },
     {
       "name": "manual_verification_260330_010.json",
@@ -44,8 +44,8 @@
     },
     {
       "name": "ci_parity_260330_010.json",
-      "size": 374,
-      "sha256_short": "bcf6ba75"
+      "size": 1388,
+      "sha256_short": "42487240"
     },
     {
       "name": "preflight_attestation_260330_010.json",
@@ -55,17 +55,17 @@
     {
       "name": "workspace_healer_260330_010.json",
       "size": 847,
-      "sha256_short": "b5d83b95"
+      "sha256_short": "82ad90d7"
     },
     {
       "name": "errors_260330_010.jsonl",
       "size": 292,
-      "sha256_short": "8b03e241"
+      "sha256_short": "23cffd2b"
     },
     {
       "name": "errors_summary_260330_010.txt",
       "size": 226,
-      "sha256_short": "055e9d0b"
+      "sha256_short": "5ae07d73"
     },
     {
       "name": "260330_010_healthcheck_53122_root.txt",
