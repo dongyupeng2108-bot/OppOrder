@@ -1,0 +1,39 @@
+=== TRAE_REPORT_SNIPPET ===
+
+Header: TraeTask_260330_014
+BRANCH: 260330_014
+COMMIT: 61f2e491
+
+=== GIT_SCOPE_DIFF ===
+A	rules/task-reports/2026-03/implementation_260330_014.md
+A	rules/task-reports/2026-03/truth_audit_260330_014.md
+M	scripts/verify_all_manual.mjs
+A	scripts/verify_p0_runtime_fixes_guard.mjs
+
+=== DOD_EVIDENCE_STDOUT ===
+Missing Blocks:
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260330_014_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260330_014_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+
+=== CI_PARITY_PREVIEW ===
+Base: 799e7df
+Head: 61f2e49
+MergeBase: 799e7df
+Source: JSON (Evidence-as-Code)
+Scope: 4 files
+Files (Top 3):
+  - rules/task-reports/2026-03/implementation_260330_014.md
+  - rules/task-reports/2026-03/truth_audit_260330_014.md
+  - scripts/verify_all_manual.mjs
+  ... (truncated)
+=========================
+
+=== GATE_LIGHT_PREVIEW ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260330_014
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] Verifying task_id: 260330_014
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] FAILED: Report Block Check for notify_260330_014.txt
+GATE_LIGHT_EXIT=1
