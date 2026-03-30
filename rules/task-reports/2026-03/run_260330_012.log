@@ -1,43 +1,8 @@
-=== TRAE_REPORT_SNIPPET ===
-
-Header: TraeTask_260330_012
-BRANCH: 260330_012
-COMMIT: 26a50790
-
-=== GIT_SCOPE_DIFF ===
-M	rules/LATEST.json
-A	rules/task-reports/2026-03/260330_012.json
-A	rules/task-reports/2026-03/implementation_260330_012.md
-A	rules/task-reports/2026-03/notify_260330_012.txt
-A	rules/task-reports/2026-03/result_260330_012.json
-A	rules/task-reports/2026-03/trae_report_snippet_260330_012.txt
-A	rules/task-reports/2026-03/truth_audit_260330_012.md
-A	rules/task-reports/2026-03/workspace_healer_260330_012.json
-A	scripts/truth_audit_startup_wait_release_260330_012.mjs
-M	strategies/crypto_binary/bot_runner.mjs
-
-=== DOD_EVIDENCE_STDOUT ===
-Missing Blocks:
-
-DOD_EVIDENCE_HEALTHCHECK_ROOT: 260330_012_healthcheck_53122_root.txt => HTTP/1.1 200 OK
-DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260330_012_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
-
-=== CI_PARITY_PREVIEW ===
-Base: f672d95
-Head: 26a5079
-MergeBase: f672d95
-Source: JSON (Evidence-as-Code)
-Scope: 10 files
-Files (Top 3):
-  - rules/LATEST.json
-  - rules/task-reports/2026-03/260330_012.json
-  - rules/task-reports/2026-03/implementation_260330_012.md
-  ... (truncated)
-=========================
-
-=== GATE_LIGHT_PREVIEW ===
 [Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
 [Gate Light] Target locked via argument: 260330_012
+PR_TASK_ID_DETECTED=260330_012
+TARGET_TASK_ID=260330_012
+LATEST_TASK_ID=260330_012
 [Gate Light] LATEST.json consistency verified.
 [Gate Light] Verifying task_id: 260330_012
 [Gate Light] Running Automation Pack V1 Hard Guards...
@@ -50,13 +15,69 @@ Files (Top 3):
 [Gate Light] Checking doc path standards...
 [Gate Light] Doc path standards verified.
 [Gate Light] Checking for legacy doc path references...
+[CheckDocPathRefs] Scanning for legacy doc path references...
+[CheckDocPathRefs] PASS: No legacy doc path references found.
 [Gate Light] Checking for banned cmd syntax in PowerShell scripts...
+Starting static scan for banned cmd syntax in .ps1 files...
+Scanning targets: scripts/run_task.ps1, scripts/test_fail_budget.ps1, scripts/ps/Invoke-Step.ps1
+Static scan PASSED.
 [Gate Light] Checking for global healthcheck artifacts...
 [Gate Light] Global Artifact Guard verified.
 [Gate Light] Checking News Pull API Contract...
+[Contract Check] Loading schema from: E:\OppRadar\OppRadar\contracts\news_pull_response.schema.json
+[Contract Check] Validating Success Sample...
+PASS
+[Contract Check] Validating Error Sample...
+PASS
+[Contract Check] All samples validated against schema.
 [Gate Light] Checking Rank V2 API Contract...
+=== Rank V2 Contract Verification ===
+Schema loaded.
+Starting mock server...
+[Ledger] Init. Path: E:\OppRadar\data\opps_ledger\opps_ledger.jsonl
+[proxy] Global proxy set: http://127.0.0.1:51081
+LLM Provider initialized: mock
+Loaded 469 scans (total), 2 opps (total) from runtime store.
+Mock server running on port 53122
+Connected to SQLite database at E:\OppRadar\data\runtime\oppradar.sqlite
+Fetching http://localhost:53122/opportunities/rank_v2?provider=mock&limit=5&run_id=verify_rank_v2...
+GET /opportunities/rank_v2?provider=mock&limit=5&run_id=verify_rank_v2
+Received 3 items.
+Validating against schema...
+Schema Validation PASSED.
+Response Hash: 12827176
+::set-output name=rank_v2_hash::12827176
+VERIFICATION_SUCCESS
+Stopping temp server...
 [Gate Light] Checking Export V1 API Contract...
+=== Export V1 Contract Verification ===
+Schema loaded.
+Starting mock server...
+[Ledger] Init. Path: E:\OppRadar\data\opps_ledger\opps_ledger.jsonl
+[proxy] Global proxy set: http://127.0.0.1:51081
+LLM Provider initialized: mock
+Loaded 469 scans (total), 2 opps (total) from runtime store.
+Mock server running on port 53122
+Connected to SQLite database at E:\OppRadar\data\runtime\oppradar.sqlite
+Generating Run assets via http://localhost:53122/scans/run...
+POST /scans/run
+Run assets generated. Run ID: sc_3d0831b2
+Fetching Export: http://localhost:53122/opportunities/runs/export_v1?run_id=sc_3d0831b2...
+GET /opportunities/runs/export_v1?run_id=sc_3d0831b2
+Received Export JSON.
+Validating against schema...
+Export Schema Validation PASSED.
+Export Hash: f661f2be
+::set-output name=export_v1_hash::f661f2be
+EXPORT_CONTRACT_VERIFICATION_SUCCESS
+Stopping temp server...
 [Gate Light] Checking Ledger V0 API Contract...
+=== Ledger V0 Contract Verification ===
+Schema loaded.
+Starting server...
+Fetching /opportunities/ledger/query_v0?limit=1...
+Validating against schema...
+Validation PASSED.
 [Gate Light] Checking Scanner API Contract...
 [Gate Light] Checking Universe API Contract...
 [Gate Light] Checking Trading Routes API Contract...
@@ -85,4 +106,5 @@ Files (Top 3):
 [Gate Light] Skipping Postflight Envelope Validation (Preview Mode).
 [Gate Light] PASS
 GATE_LIGHT_EXIT=0
+
 GATE_LIGHT_EXIT=0

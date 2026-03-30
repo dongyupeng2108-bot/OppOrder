@@ -1,0 +1,2052 @@
+{
+  "script_name": "truth_audit_startup_wait_release_260330_012",
+  "task_id": "260330_012",
+  "sample_name": "startup_wait_release_v1",
+  "pass": true,
+  "message": "startup wait 跨窗放行修复通过",
+  "first_break_layer": "context",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_012_truth_audit_startup_wait_release.json",
+  "summary": {
+    "conclusion": "A：wait_next_window_after_start 已收口为仅阻断启动窗口，跨新窗口后放行",
+    "total_checks": 5,
+    "pass_checks": 5,
+    "fail_checks": 0,
+    "checks": {
+      "012-A_pre_fix_controlled_fail_wait_not_released": true,
+      "012-B_post_fix_controlled_pass_wait_released": true,
+      "012-C_real_runtime_start_window_still_blocked": true,
+      "012-D_real_runtime_cross_window_release_and_decision": true,
+      "012-E_non_regression_no_order_growth_on_non_place_tick": true
+    }
+  },
+  "raw_excerpt": {
+    "pre_fix_controlled": {
+      "label": "pre_fix_controlled",
+      "second_reason": "wait_next_window_after_start",
+      "second_intents": "NOOP",
+      "second_changed": 0,
+      "third_reason": "wait_next_window_after_start",
+      "third_intents": "NOOP",
+      "third_changed": 0,
+      "gated_messages": [
+        "wait_next_window_after_start",
+        "wait_next_window_after_start",
+        "wait_next_window_after_start"
+      ]
+    },
+    "post_fix_controlled": {
+      "label": "post_fix_controlled",
+      "second_reason": "gate_context_not_ready_window_init",
+      "second_intents": "NOOP",
+      "second_changed": 0,
+      "third_reason": "gate_context_not_ready_window_init",
+      "third_intents": "NOOP",
+      "third_changed": 0,
+      "gated_messages": [
+        "wait_next_window_after_start",
+        "gate_context_not_ready_window_init",
+        "gate_context_not_ready_window_init"
+      ]
+    },
+    "real_runtime_head": [
+      {
+        "t": 0,
+        "at": "2026-03-30T14:53:29.861Z",
+        "startup_window_id": "btc-updown-5m-1774882200",
+        "current_window_id": "btc-updown-5m-1774882200",
+        "remaining_sec": 90,
+        "gated_reason": "wait_next_window_after_start",
+        "intents_summary": "NOOP",
+        "recent_intents": [
+          "NOOP"
+        ],
+        "order_count": 44,
+        "window_order_count": 2
+      },
+      {
+        "t": 1,
+        "at": "2026-03-30T14:53:30.867Z",
+        "startup_window_id": "btc-updown-5m-1774882200",
+        "current_window_id": "btc-updown-5m-1774882200",
+        "remaining_sec": 89,
+        "gated_reason": "wait_next_window_after_start",
+        "intents_summary": "NOOP",
+        "recent_intents": [
+          "NOOP",
+          "NOOP"
+        ],
+        "order_count": 44,
+        "window_order_count": 2
+      },
+      {
+        "t": 2,
+        "at": "2026-03-30T14:53:31.882Z",
+        "startup_window_id": "btc-updown-5m-1774882200",
+        "current_window_id": "btc-updown-5m-1774882200",
+        "remaining_sec": 88,
+        "gated_reason": "wait_next_window_after_start",
+        "intents_summary": "NOOP",
+        "recent_intents": [
+          "NOOP",
+          "NOOP"
+        ],
+        "order_count": 44,
+        "window_order_count": 2
+      },
+      {
+        "t": 3,
+        "at": "2026-03-30T14:53:32.894Z",
+        "startup_window_id": "btc-updown-5m-1774882200",
+        "current_window_id": "btc-updown-5m-1774882200",
+        "remaining_sec": 87,
+        "gated_reason": "wait_next_window_after_start",
+        "intents_summary": "NOOP",
+        "recent_intents": [
+          "NOOP",
+          "NOOP",
+          "NOOP"
+        ],
+        "order_count": 44,
+        "window_order_count": 2
+      },
+      {
+        "t": 4,
+        "at": "2026-03-30T14:53:33.906Z",
+        "startup_window_id": "btc-updown-5m-1774882200",
+        "current_window_id": "btc-updown-5m-1774882200",
+        "remaining_sec": 86,
+        "gated_reason": "wait_next_window_after_start",
+        "intents_summary": "NOOP",
+        "recent_intents": [
+          "NOOP",
+          "NOOP",
+          "NOOP"
+        ],
+        "order_count": 44,
+        "window_order_count": 2
+      },
+      {
+        "t": 5,
+        "at": "2026-03-30T14:53:34.921Z",
+        "startup_window_id": "btc-updown-5m-1774882200",
+        "current_window_id": "btc-updown-5m-1774882200",
+        "remaining_sec": 85,
+        "gated_reason": "wait_next_window_after_start",
+        "intents_summary": "NOOP",
+        "recent_intents": [
+          "NOOP",
+          "NOOP",
+          "NOOP"
+        ],
+        "order_count": 44,
+        "window_order_count": 2
+      },
+      {
+        "t": 6,
+        "at": "2026-03-30T14:53:35.938Z",
+        "startup_window_id": "btc-updown-5m-1774882200",
+        "current_window_id": "btc-updown-5m-1774882200",
+        "remaining_sec": 84,
+        "gated_reason": "wait_next_window_after_start",
+        "intents_summary": "NOOP",
+        "recent_intents": [
+          "NOOP",
+          "NOOP",
+          "NOOP"
+        ],
+        "order_count": 44,
+        "window_order_count": 2
+      },
+      {
+        "t": 7,
+        "at": "2026-03-30T14:53:36.955Z",
+        "startup_window_id": "btc-updown-5m-1774882200",
+        "current_window_id": "btc-updown-5m-1774882200",
+        "remaining_sec": 83,
+        "gated_reason": "wait_next_window_after_start",
+        "intents_summary": "NOOP",
+        "recent_intents": [
+          "NOOP",
+          "NOOP",
+          "NOOP"
+        ],
+        "order_count": 44,
+        "window_order_count": 2
+      },
+      {
+        "t": 8,
+        "at": "2026-03-30T14:53:37.968Z",
+        "startup_window_id": "btc-updown-5m-1774882200",
+        "current_window_id": "btc-updown-5m-1774882200",
+        "remaining_sec": 82,
+        "gated_reason": "wait_next_window_after_start",
+        "intents_summary": "NOOP",
+        "recent_intents": [
+          "NOOP",
+          "NOOP",
+          "NOOP"
+        ],
+        "order_count": 44,
+        "window_order_count": 2
+      },
+      {
+        "t": 9,
+        "at": "2026-03-30T14:53:38.980Z",
+        "startup_window_id": "btc-updown-5m-1774882200",
+        "current_window_id": "btc-updown-5m-1774882200",
+        "remaining_sec": 81,
+        "gated_reason": "wait_next_window_after_start",
+        "intents_summary": "NOOP",
+        "recent_intents": [
+          "NOOP",
+          "NOOP",
+          "NOOP"
+        ],
+        "order_count": 44,
+        "window_order_count": 2
+      }
+    ],
+    "real_runtime_tail": [
+      {
+        "t": 71,
+        "at": "2026-03-30T14:54:41.745Z",
+        "startup_window_id": "btc-updown-5m-1774882200",
+        "current_window_id": "btc-updown-5m-1774882200",
+        "remaining_sec": 18,
+        "gated_reason": "wait_next_window_after_start",
+        "intents_summary": "NOOP",
+        "recent_intents": [
+          "NOOP",
+          "NOOP",
+          "NOOP"
+        ],
+        "order_count": 45,
+        "window_order_count": 3
+      },
+      {
+        "t": 72,
+        "at": "2026-03-30T14:54:42.758Z",
+        "startup_window_id": "btc-updown-5m-1774882200",
+        "current_window_id": "btc-updown-5m-1774882200",
+        "remaining_sec": 17,
+        "gated_reason": "wait_next_window_after_start",
+        "intents_summary": "NOOP",
+        "recent_intents": [
+          "NOOP",
+          "NOOP",
+          "NOOP"
+        ],
+        "order_count": 45,
+        "window_order_count": 3
+      },
+      {
+        "t": 73,
+        "at": "2026-03-30T14:54:43.768Z",
+        "startup_window_id": "btc-updown-5m-1774882200",
+        "current_window_id": "btc-updown-5m-1774882200",
+        "remaining_sec": 16,
+        "gated_reason": "wait_next_window_after_start",
+        "intents_summary": "NOOP",
+        "recent_intents": [
+          "NOOP",
+          "NOOP",
+          "NOOP"
+        ],
+        "order_count": 45,
+        "window_order_count": 3
+      },
+      {
+        "t": 74,
+        "at": "2026-03-30T14:54:44.777Z",
+        "startup_window_id": "btc-updown-5m-1774882200",
+        "current_window_id": "btc-updown-5m-1774882200",
+        "remaining_sec": 15,
+        "gated_reason": "wait_next_window_after_start",
+        "intents_summary": "NOOP",
+        "recent_intents": [
+          "NOOP",
+          "NOOP",
+          "NOOP"
+        ],
+        "order_count": 45,
+        "window_order_count": 3
+      },
+      {
+        "t": 75,
+        "at": "2026-03-30T14:54:45.792Z",
+        "startup_window_id": "btc-updown-5m-1774882200",
+        "current_window_id": "btc-updown-5m-1774882200",
+        "remaining_sec": 14,
+        "gated_reason": "wait_next_window_after_start",
+        "intents_summary": "NOOP",
+        "recent_intents": [
+          "NOOP",
+          "NOOP",
+          "NOOP"
+        ],
+        "order_count": 45,
+        "window_order_count": 3
+      },
+      {
+        "t": 76,
+        "at": "2026-03-30T14:54:46.808Z",
+        "startup_window_id": "btc-updown-5m-1774882200",
+        "current_window_id": "btc-updown-5m-1774882200",
+        "remaining_sec": 13,
+        "gated_reason": "wait_next_window_after_start",
+        "intents_summary": "NOOP",
+        "recent_intents": [
+          "NOOP",
+          "NOOP",
+          "NOOP"
+        ],
+        "order_count": 45,
+        "window_order_count": 3
+      },
+      {
+        "t": 77,
+        "at": "2026-03-30T14:54:47.818Z",
+        "startup_window_id": "btc-updown-5m-1774882200",
+        "current_window_id": "btc-updown-5m-1774882200",
+        "remaining_sec": 12,
+        "gated_reason": "wait_next_window_after_start",
+        "intents_summary": "NOOP",
+        "recent_intents": [
+          "NOOP",
+          "NOOP",
+          "NOOP"
+        ],
+        "order_count": 45,
+        "window_order_count": 3
+      },
+      {
+        "t": 78,
+        "at": "2026-03-30T14:54:48.832Z",
+        "startup_window_id": "btc-updown-5m-1774882200",
+        "current_window_id": "btc-updown-5m-1774882200",
+        "remaining_sec": 11,
+        "gated_reason": "wait_next_window_after_start",
+        "intents_summary": "NOOP",
+        "recent_intents": [
+          "NOOP",
+          "NOOP",
+          "NOOP"
+        ],
+        "order_count": 45,
+        "window_order_count": 3
+      },
+      {
+        "t": 79,
+        "at": "2026-03-30T14:54:49.845Z",
+        "startup_window_id": "btc-updown-5m-1774882200",
+        "current_window_id": "btc-updown-5m-1774882200",
+        "remaining_sec": 10,
+        "gated_reason": "wait_next_window_after_start",
+        "intents_summary": "NOOP",
+        "recent_intents": [
+          "NOOP",
+          "NOOP",
+          "NOOP"
+        ],
+        "order_count": 45,
+        "window_order_count": 3
+      },
+      {
+        "t": 80,
+        "at": "2026-03-30T14:54:50.861Z",
+        "startup_window_id": "btc-updown-5m-1774882200",
+        "current_window_id": "btc-updown-5m-1774882200",
+        "remaining_sec": 9,
+        "gated_reason": "wait_next_window_after_start",
+        "intents_summary": "NOOP",
+        "recent_intents": [
+          "NOOP",
+          "NOOP",
+          "NOOP"
+        ],
+        "order_count": 45,
+        "window_order_count": 3
+      },
+      {
+        "t": 81,
+        "at": "2026-03-30T14:54:51.874Z",
+        "startup_window_id": "btc-updown-5m-1774882200",
+        "current_window_id": "btc-updown-5m-1774882200",
+        "remaining_sec": 8,
+        "gated_reason": "wait_next_window_after_start",
+        "intents_summary": "NOOP",
+        "recent_intents": [
+          "NOOP",
+          "NOOP",
+          "NOOP"
+        ],
+        "order_count": 45,
+        "window_order_count": 3
+      },
+      {
+        "t": 82,
+        "at": "2026-03-30T14:54:52.885Z",
+        "startup_window_id": "btc-updown-5m-1774882200",
+        "current_window_id": "btc-updown-5m-1774882200",
+        "remaining_sec": 7,
+        "gated_reason": "wait_next_window_after_start",
+        "intents_summary": "NOOP",
+        "recent_intents": [
+          "NOOP",
+          "NOOP",
+          "NOOP"
+        ],
+        "order_count": 45,
+        "window_order_count": 3
+      },
+      {
+        "t": 83,
+        "at": "2026-03-30T14:54:53.894Z",
+        "startup_window_id": "btc-updown-5m-1774882200",
+        "current_window_id": "btc-updown-5m-1774882200",
+        "remaining_sec": 6,
+        "gated_reason": "wait_next_window_after_start",
+        "intents_summary": "NOOP",
+        "recent_intents": [
+          "NOOP",
+          "NOOP",
+          "NOOP"
+        ],
+        "order_count": 45,
+        "window_order_count": 3
+      },
+      {
+        "t": 84,
+        "at": "2026-03-30T14:54:54.911Z",
+        "startup_window_id": "btc-updown-5m-1774882200",
+        "current_window_id": "btc-updown-5m-1774882200",
+        "remaining_sec": 5,
+        "gated_reason": "wait_next_window_after_start",
+        "intents_summary": "NOOP",
+        "recent_intents": [
+          "NOOP",
+          "NOOP",
+          "NOOP"
+        ],
+        "order_count": 45,
+        "window_order_count": 3
+      },
+      {
+        "t": 85,
+        "at": "2026-03-30T14:54:55.926Z",
+        "startup_window_id": "btc-updown-5m-1774882200",
+        "current_window_id": "btc-updown-5m-1774882200",
+        "remaining_sec": 4,
+        "gated_reason": "wait_next_window_after_start",
+        "intents_summary": "NOOP",
+        "recent_intents": [
+          "NOOP",
+          "NOOP",
+          "NOOP"
+        ],
+        "order_count": 45,
+        "window_order_count": 3
+      },
+      {
+        "t": 86,
+        "at": "2026-03-30T14:54:56.939Z",
+        "startup_window_id": "btc-updown-5m-1774882200",
+        "current_window_id": "btc-updown-5m-1774882200",
+        "remaining_sec": 3,
+        "gated_reason": "wait_next_window_after_start",
+        "intents_summary": "NOOP",
+        "recent_intents": [
+          "NOOP",
+          "NOOP",
+          "NOOP"
+        ],
+        "order_count": 45,
+        "window_order_count": 3
+      },
+      {
+        "t": 87,
+        "at": "2026-03-30T14:54:57.955Z",
+        "startup_window_id": "btc-updown-5m-1774882200",
+        "current_window_id": "btc-updown-5m-1774882200",
+        "remaining_sec": 2,
+        "gated_reason": "wait_next_window_after_start",
+        "intents_summary": "NOOP",
+        "recent_intents": [
+          "NOOP",
+          "NOOP",
+          "NOOP"
+        ],
+        "order_count": 45,
+        "window_order_count": 3
+      },
+      {
+        "t": 88,
+        "at": "2026-03-30T14:54:58.965Z",
+        "startup_window_id": "btc-updown-5m-1774882200",
+        "current_window_id": "btc-updown-5m-1774882200",
+        "remaining_sec": 1,
+        "gated_reason": "wait_next_window_after_start",
+        "intents_summary": "NOOP",
+        "recent_intents": [
+          "NOOP",
+          "NOOP",
+          "NOOP"
+        ],
+        "order_count": 45,
+        "window_order_count": 3
+      },
+      {
+        "t": 89,
+        "at": "2026-03-30T14:54:59.979Z",
+        "startup_window_id": "btc-updown-5m-1774882200",
+        "current_window_id": "btc-updown-5m-1774882200",
+        "remaining_sec": 0,
+        "gated_reason": "wait_next_window_after_start",
+        "intents_summary": "NOOP",
+        "recent_intents": [
+          "NOOP",
+          "NOOP",
+          "NOOP"
+        ],
+        "order_count": 45,
+        "window_order_count": 3
+      },
+      {
+        "t": 90,
+        "at": "2026-03-30T14:55:00.992Z",
+        "startup_window_id": "btc-updown-5m-1774882200",
+        "current_window_id": "btc-updown-5m-1774882500",
+        "remaining_sec": 299,
+        "gated_reason": "wait_next_window_after_start",
+        "intents_summary": "PLACE_LADDER(YES|0.01:1:0.5) + PLACE_LADDER(NO|0.01:1:0.5)",
+        "recent_intents": [
+          "NOOP",
+          "NOOP",
+          "PLACE_LADDER(YES|0.01:1:0.5) + PLACE_LADDER(NO|0.01:1:0.5)"
+        ],
+        "order_count": 48,
+        "window_order_count": 3
+      }
+    ]
+  },
+  "generated_at": "2026-03-30T14:55:01.601Z",
+  "conclusion_block": {
+    "verdict": "A：wait_next_window_after_start 已收口为仅阻断启动窗口，跨新窗口后放行",
+    "first_break_layer": "context"
+  },
+  "key_counters": {
+    "total_checks": 5,
+    "pass_checks": 5,
+    "fail_checks": 0
+  },
+  "evidence_index": {
+    "controlled": {
+      "oldResult": {
+        "label": "pre_fix_controlled",
+        "second_reason": "wait_next_window_after_start",
+        "second_intents": "NOOP",
+        "second_changed": 0,
+        "third_reason": "wait_next_window_after_start",
+        "third_intents": "NOOP",
+        "third_changed": 0,
+        "gated_messages": [
+          "wait_next_window_after_start",
+          "wait_next_window_after_start",
+          "wait_next_window_after_start"
+        ]
+      },
+      "newResult": {
+        "label": "post_fix_controlled",
+        "second_reason": "gate_context_not_ready_window_init",
+        "second_intents": "NOOP",
+        "second_changed": 0,
+        "third_reason": "gate_context_not_ready_window_init",
+        "third_intents": "NOOP",
+        "third_changed": 0,
+        "gated_messages": [
+          "wait_next_window_after_start",
+          "gate_context_not_ready_window_init",
+          "gate_context_not_ready_window_init"
+        ]
+      }
+    },
+    "real_runtime": {
+      "startWindow": {
+        "window_id": "btc-updown-5m-1774882200",
+        "remaining_sec": 90
+      },
+      "timeline": [
+        {
+          "t": 0,
+          "at": "2026-03-30T14:53:29.861Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 90,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP"
+          ],
+          "order_count": 44,
+          "window_order_count": 2
+        },
+        {
+          "t": 1,
+          "at": "2026-03-30T14:53:30.867Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 89,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 44,
+          "window_order_count": 2
+        },
+        {
+          "t": 2,
+          "at": "2026-03-30T14:53:31.882Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 88,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 44,
+          "window_order_count": 2
+        },
+        {
+          "t": 3,
+          "at": "2026-03-30T14:53:32.894Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 87,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 44,
+          "window_order_count": 2
+        },
+        {
+          "t": 4,
+          "at": "2026-03-30T14:53:33.906Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 86,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 44,
+          "window_order_count": 2
+        },
+        {
+          "t": 5,
+          "at": "2026-03-30T14:53:34.921Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 85,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 44,
+          "window_order_count": 2
+        },
+        {
+          "t": 6,
+          "at": "2026-03-30T14:53:35.938Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 84,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 44,
+          "window_order_count": 2
+        },
+        {
+          "t": 7,
+          "at": "2026-03-30T14:53:36.955Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 83,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 44,
+          "window_order_count": 2
+        },
+        {
+          "t": 8,
+          "at": "2026-03-30T14:53:37.968Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 82,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 44,
+          "window_order_count": 2
+        },
+        {
+          "t": 9,
+          "at": "2026-03-30T14:53:38.980Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 81,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 44,
+          "window_order_count": 2
+        },
+        {
+          "t": 10,
+          "at": "2026-03-30T14:53:39.992Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 80,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 44,
+          "window_order_count": 2
+        },
+        {
+          "t": 11,
+          "at": "2026-03-30T14:53:41.003Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 78,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 44,
+          "window_order_count": 2
+        },
+        {
+          "t": 12,
+          "at": "2026-03-30T14:53:42.014Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 77,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 44,
+          "window_order_count": 2
+        },
+        {
+          "t": 13,
+          "at": "2026-03-30T14:53:43.031Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 76,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 14,
+          "at": "2026-03-30T14:53:44.039Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 75,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 15,
+          "at": "2026-03-30T14:53:45.054Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 74,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 16,
+          "at": "2026-03-30T14:53:46.068Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 73,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 17,
+          "at": "2026-03-30T14:53:47.080Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 72,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 18,
+          "at": "2026-03-30T14:53:48.093Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 71,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 19,
+          "at": "2026-03-30T14:53:49.105Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 70,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 20,
+          "at": "2026-03-30T14:53:50.117Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 69,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 21,
+          "at": "2026-03-30T14:53:51.127Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 68,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 22,
+          "at": "2026-03-30T14:53:52.144Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 67,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 23,
+          "at": "2026-03-30T14:53:53.157Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 66,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 24,
+          "at": "2026-03-30T14:53:54.171Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 65,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 25,
+          "at": "2026-03-30T14:53:55.186Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 64,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 26,
+          "at": "2026-03-30T14:53:56.202Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 63,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 27,
+          "at": "2026-03-30T14:53:57.216Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 62,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 28,
+          "at": "2026-03-30T14:53:58.229Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 61,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 29,
+          "at": "2026-03-30T14:53:59.242Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 60,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 30,
+          "at": "2026-03-30T14:54:00.253Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 59,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 31,
+          "at": "2026-03-30T14:54:01.264Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 58,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 32,
+          "at": "2026-03-30T14:54:02.280Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 57,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 33,
+          "at": "2026-03-30T14:54:03.296Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 56,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 34,
+          "at": "2026-03-30T14:54:04.303Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 55,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 35,
+          "at": "2026-03-30T14:54:05.322Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 54,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 36,
+          "at": "2026-03-30T14:54:06.334Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 53,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 37,
+          "at": "2026-03-30T14:54:07.349Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 52,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 38,
+          "at": "2026-03-30T14:54:08.360Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 51,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 39,
+          "at": "2026-03-30T14:54:09.370Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 50,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 40,
+          "at": "2026-03-30T14:54:10.382Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 49,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 41,
+          "at": "2026-03-30T14:54:11.392Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 48,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 42,
+          "at": "2026-03-30T14:54:12.402Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 47,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 43,
+          "at": "2026-03-30T14:54:13.418Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 46,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 44,
+          "at": "2026-03-30T14:54:14.428Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 45,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 45,
+          "at": "2026-03-30T14:54:15.441Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 44,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 46,
+          "at": "2026-03-30T14:54:16.453Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 43,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 47,
+          "at": "2026-03-30T14:54:17.471Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 42,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 48,
+          "at": "2026-03-30T14:54:18.485Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 41,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 49,
+          "at": "2026-03-30T14:54:19.500Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 40,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 50,
+          "at": "2026-03-30T14:54:20.507Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 39,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 51,
+          "at": "2026-03-30T14:54:21.521Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 38,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 52,
+          "at": "2026-03-30T14:54:22.531Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 37,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 53,
+          "at": "2026-03-30T14:54:23.541Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 36,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 54,
+          "at": "2026-03-30T14:54:24.553Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 35,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 55,
+          "at": "2026-03-30T14:54:25.565Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 34,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 56,
+          "at": "2026-03-30T14:54:26.575Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 33,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 57,
+          "at": "2026-03-30T14:54:27.587Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 32,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 58,
+          "at": "2026-03-30T14:54:28.598Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 31,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 59,
+          "at": "2026-03-30T14:54:29.608Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 30,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 60,
+          "at": "2026-03-30T14:54:30.622Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 29,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 61,
+          "at": "2026-03-30T14:54:31.626Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 28,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 62,
+          "at": "2026-03-30T14:54:32.638Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 27,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 63,
+          "at": "2026-03-30T14:54:33.650Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 26,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 64,
+          "at": "2026-03-30T14:54:34.664Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 25,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 65,
+          "at": "2026-03-30T14:54:35.676Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 24,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 66,
+          "at": "2026-03-30T14:54:36.687Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 23,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 67,
+          "at": "2026-03-30T14:54:37.699Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 22,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 68,
+          "at": "2026-03-30T14:54:38.705Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 21,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 69,
+          "at": "2026-03-30T14:54:39.721Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 20,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 70,
+          "at": "2026-03-30T14:54:40.734Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 19,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 71,
+          "at": "2026-03-30T14:54:41.745Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 18,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 72,
+          "at": "2026-03-30T14:54:42.758Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 17,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 73,
+          "at": "2026-03-30T14:54:43.768Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 16,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 74,
+          "at": "2026-03-30T14:54:44.777Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 15,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 75,
+          "at": "2026-03-30T14:54:45.792Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 14,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 76,
+          "at": "2026-03-30T14:54:46.808Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 13,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 77,
+          "at": "2026-03-30T14:54:47.818Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 12,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 78,
+          "at": "2026-03-30T14:54:48.832Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 11,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 79,
+          "at": "2026-03-30T14:54:49.845Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 10,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 80,
+          "at": "2026-03-30T14:54:50.861Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 9,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 81,
+          "at": "2026-03-30T14:54:51.874Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 8,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 82,
+          "at": "2026-03-30T14:54:52.885Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 7,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 83,
+          "at": "2026-03-30T14:54:53.894Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 6,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 84,
+          "at": "2026-03-30T14:54:54.911Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 5,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 85,
+          "at": "2026-03-30T14:54:55.926Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 4,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 86,
+          "at": "2026-03-30T14:54:56.939Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 3,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 87,
+          "at": "2026-03-30T14:54:57.955Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 2,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 88,
+          "at": "2026-03-30T14:54:58.965Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 1,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 89,
+          "at": "2026-03-30T14:54:59.979Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882200",
+          "remaining_sec": 0,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "NOOP"
+          ],
+          "order_count": 45,
+          "window_order_count": 3
+        },
+        {
+          "t": 90,
+          "at": "2026-03-30T14:55:00.992Z",
+          "startup_window_id": "btc-updown-5m-1774882200",
+          "current_window_id": "btc-updown-5m-1774882500",
+          "remaining_sec": 299,
+          "gated_reason": "wait_next_window_after_start",
+          "intents_summary": "PLACE_LADDER(YES|0.01:1:0.5) + PLACE_LADDER(NO|0.01:1:0.5)",
+          "recent_intents": [
+            "NOOP",
+            "NOOP",
+            "PLACE_LADDER(YES|0.01:1:0.5) + PLACE_LADDER(NO|0.01:1:0.5)"
+          ],
+          "order_count": 48,
+          "window_order_count": 3
+        }
+      ],
+      "observedRelease": true,
+      "observedNewWindow": true
+    },
+    "healthcheck": {
+      "root": 200,
+      "pairs": 404
+    },
+    "guardrails": {
+      "max_wall_time_ms": 1500000,
+      "max_silence_ms": 120000,
+      "log_tail": 120
+    }
+  },
+  "result": {
+    "012-A_pre_fix_controlled_fail_wait_not_released": true,
+    "012-B_post_fix_controlled_pass_wait_released": true,
+    "012-C_real_runtime_start_window_still_blocked": true,
+    "012-D_real_runtime_cross_window_release_and_decision": true,
+    "012-E_non_regression_no_order_growth_on_non_place_tick": true
+  }
+}
