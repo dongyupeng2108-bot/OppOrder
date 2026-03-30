@@ -1,0 +1,6 @@
+script_name=truth_audit_filled_total_chain_260330_016
+task_id=260330_016
+sample_name=filled_total_chain_v1
+pass=true
+first_break_layer=NONE_CHAIN_PASS
+message=filled_total truth chain audit pass
