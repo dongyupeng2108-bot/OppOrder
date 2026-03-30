@@ -1,0 +1,6 @@
+script_name=truth_audit_anchor_bounds_timing_260330_011
+task_id=260330_011
+sample_name=anchor_bounds_timing_v1
+pass=false
+first_break_layer=atr_input
+message=anchor/bounds/bounds_ready 真值定位未通过
