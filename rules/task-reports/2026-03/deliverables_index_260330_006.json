@@ -1,51 +1,51 @@
 {
   "task_id": "260330_006",
-  "generated_at": "2026-03-30T02:18:02.691Z",
+  "generated_at": "2026-03-30T02:21:06.586Z",
   "files": [
     {
       "name": "result_260330_006.json",
       "size": 385,
-      "sha256_short": "d3f2f45b"
+      "sha256_short": "62727360"
     },
     {
       "name": "run_260330_006.log",
-      "size": 620,
-      "sha256_short": "3347c7c6"
+      "size": 5203,
+      "sha256_short": "f267e3f6"
     },
     {
       "name": "notify_260330_006.txt",
+      "size": 12141,
+      "sha256_short": "e7d216e0"
+    },
+    {
+      "name": "gate_light_preview_260330_006.log",
+      "size": 5203,
+      "sha256_short": "f267e3f6"
+    },
+    {
+      "name": "dod_evidence_260330_006.txt",
       "size": 3585,
       "sha256_short": "f37f9c0e"
     },
     {
-      "name": "gate_light_preview_260330_006.log",
-      "size": 620,
-      "sha256_short": "3347c7c6"
-    },
-    {
-      "name": "dod_evidence_260330_006.txt",
-      "size": 259,
-      "sha256_short": "9eb59073"
-    },
-    {
       "name": "git_meta_260330_006.json",
-      "size": 155,
-      "sha256_short": "44023a20"
+      "size": 162,
+      "sha256_short": "3ce0b3cf"
     },
     {
       "name": "trae_report_snippet_260330_006.txt",
-      "size": 1110,
-      "sha256_short": "07dcb2c9"
+      "size": 4415,
+      "sha256_short": "44c8cf17"
     },
     {
       "name": "manual_verification_260330_006.json",
       "size": 99,
-      "sha256_short": "487af404"
+      "sha256_short": "1af1cd73"
     },
     {
       "name": "ci_parity_260330_006.json",
-      "size": 433,
-      "sha256_short": "ecd80ad6"
+      "size": 1348,
+      "sha256_short": "3fdad425"
     },
     {
       "name": "preflight_attestation_260330_006.json",
@@ -55,17 +55,17 @@
     {
       "name": "workspace_healer_260330_006.json",
       "size": 847,
-      "sha256_short": "6fe47776"
+      "sha256_short": "2cdd8427"
     },
     {
       "name": "errors_260330_006.jsonl",
       "size": 292,
-      "sha256_short": "eb8ac22c"
+      "sha256_short": "fbf4d4d3"
     },
     {
       "name": "errors_summary_260330_006.txt",
       "size": 226,
-      "sha256_short": "410c6cb2"
+      "sha256_short": "066323b2"
     },
     {
       "name": "260330_006_healthcheck_53122_root.txt",

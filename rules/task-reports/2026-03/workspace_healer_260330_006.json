@@ -1,4 +1,11 @@
 {
+  "branch": "260330_006",
+  "after": {
+    "untracked_count": 0,
+    "tracked_changed_count": 0,
+    "sample_paths": []
+  },
+  "repo_root": "E:/OppRadar",
   "cleaned_paths": [
     "rules/task-reports",
     "rules/reports",
@@ -6,27 +13,20 @@
     "rules/task-reports/locks",
     "rules/task-reports/runs"
   ],
-  "reason": null,
-  "repo_root": "E:/OppRadar",
+  "head_commit": "88518645ffb3b382ca349c159e67e81fadcc0622",
   "result": "PASS",
-  "after": {
-    "untracked_count": 0,
-    "sample_paths": [],
-    "tracked_changed_count": 0
-  },
+  "reason": null,
   "before": {
     "untracked_count": 366,
+    "tracked_changed_count": 0,
     "sample_paths": [
       "BTCQDD/",
       "data/crypto_binary/bot_runtime_recovery.json",
       "data/crypto_binary/bot_runtime_recovery_53123.json",
       "data/crypto_binary/bot_runtime_recovery_53124.json",
       "data/crypto_binary/bot_runtime_recovery_53125.json"
-    ],
-    "tracked_changed_count": 0
+    ]
   },
-  "head_commit": "e868e8b59b4771e1fb9c92fbfa76d943ba4d89cb",
   "mode": "EnforceClean",
-  "branch": "260330_006",
   "note": "LOCAL_BOUNDARY_CI_CLEAN_ASSUMPTION"
 }
