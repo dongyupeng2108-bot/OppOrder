@@ -1507,40 +1507,21 @@ function se_renderOrders(orders, status) {
     if (value === 'CANCELLED') return '已撤单';
     return se_formatStateValue(value);
   };
-  const lifecycleCode = (value) => {
-    if (value === 'OPEN' || value === 'FILLED' || value === 'CANCELLED') return value;
-    return '';
-  };
   const rows = topList.map((o) => {
     const statusColor = o.status === 'OPEN' ? '#00e676' : (o.status === 'FILLED' ? '#ffb74d' : '#888');
     const orderPriceText = typeof o.price === 'number' ? o.price.toFixed(3) : '--';
-    const fillPriceText = typeof o.fill_price === 'number' ? o.fill_price.toFixed(3) : '--';
-    const priceCell = `${orderPriceText}<div style="font-size:11px;color:#aaa;">fill:${fillPriceText}</div>`;
+    const priceCell = orderPriceText;
     const isCloseOrder = o.kind === 'TAKE_PROFIT' || o.kind === 'EXIT';
     const typeMain = isCloseOrder
       ? (o.side === 'YES' ? 'YES平仓' : (o.side === 'NO' ? 'NO平仓' : '平仓'))
       : (o.side === 'YES' ? 'YES' : (o.side === 'NO' ? 'NO' : se_formatStateValue(o.side)));
-    const typeSub = o.parent_order_id ? `子单(${String(o.parent_order_id).slice(0, 8)})` : '父单';
-    const typeCell = `${typeMain}<div style="font-size:11px;color:#8ea1b5;white-space:normal;word-break:break-word;">${typeSub}</div>`;
+    const typeCell = typeMain;
     const upDownMain = o.side === 'YES' ? 'UP' : (o.side === 'NO' ? 'DOWN' : se_formatStateValue(o.side));
     const statusMain = lifecycleLabel(o.status, isCloseOrder);
-    const statusSub = lifecycleCode(o.status);
-    const statusCell = statusSub
-      ? `${statusMain}<div style="font-size:11px;color:#8ea1b5;">${statusSub}</div>`
-      : statusMain;
-    const tpPriceText = typeof o.tp_price === 'number' ? o.tp_price.toFixed(3) : '--';
-    const tpIsSettle = typeof o.tp_price === 'number' && Number(o.tp_price) === 1;
-    const closePriceText = tpIsSettle
-      ? '等待结算'
-      : (typeof o.tp_price === 'number'
-        ? o.tp_price.toFixed(3)
-        : (typeof o.fill_price === 'number' ? o.fill_price.toFixed(3) : '--'));
-    const closeSubText = tpIsSettle
-      ? '结算价:1.000'
-      : (tpPriceText === '--' || tpPriceText === closePriceText ? '' : `tp:${tpPriceText}`);
-    const closeCell = closeSubText
-      ? `${closePriceText}<div style="font-size:11px;color:#aaa;">${closeSubText}</div>`
-      : closePriceText;
+    const statusCell = statusMain;
+    const closeCell = typeof o.tp_price === 'number'
+      ? o.tp_price.toFixed(3)
+      : (typeof o.fill_price === 'number' ? o.fill_price.toFixed(3) : '--');
     return `<tr><td style="white-space:normal;word-break:break-word;">${typeCell}</td><td>${upDownMain}</td><td>${priceCell}</td><td>${se_formatStateValue(o.size)}</td><td>${closeCell}</td><td style="color:${statusColor}">${statusCell}</td></tr>`;
   });
   tbody.innerHTML = rows.length
