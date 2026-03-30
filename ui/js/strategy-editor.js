@@ -1494,13 +1494,35 @@ function se_renderOrders(orders, status) {
   const finalList = scopedList;
   finalList.sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)));
   const topList = finalList.slice(0, 200);
+  const kindLabel = (value) => {
+    if (value === 'ENTRY') return '进场单';
+    if (value === 'TAKE_PROFIT') return '止盈单';
+    if (value === 'EXIT') return '平仓单';
+    return se_formatStateValue(value);
+  };
+  const lifecycleLabel = (value) => {
+    if (value === 'OPEN') return '挂单';
+    if (value === 'FILLED') return '成交';
+    if (value === 'CANCELLED') return '撤单';
+    return se_formatStateValue(value);
+  };
+  const lifecycleCode = (value) => {
+    if (value === 'OPEN' || value === 'FILLED' || value === 'CANCELLED') return value;
+    return '';
+  };
   const rows = topList.map((o) => {
     const statusColor = o.status === 'OPEN' ? '#00e676' : (o.status === 'FILLED' ? '#ffb74d' : '#888');
     const orderPriceText = typeof o.price === 'number' ? o.price.toFixed(3) : '--';
     const fillPriceText = typeof o.fill_price === 'number' ? o.fill_price.toFixed(3) : '--';
     const priceCell = `${orderPriceText}<div style="font-size:11px;color:#aaa;">fill:${fillPriceText}</div>`;
-    const typeLabel = o.kind === 'EXIT' ? '平仓' : (o.kind === 'ENTRY' ? '挂单' : se_formatStateValue(o.kind));
-    const statusLabel = o.status === 'FILLED' ? '成交' : (o.status === 'CANCELLED' ? '撤单' : (o.status === 'OPEN' ? '挂单' : se_formatStateValue(o.status)));
+    const typeMain = kindLabel(o.kind);
+    const typeSub = o.parent_order_id ? `子单(${String(o.parent_order_id).slice(0, 8)})` : '父单';
+    const typeCell = `${typeMain}<div style="font-size:11px;color:#8ea1b5;white-space:normal;word-break:break-word;">${typeSub}</div>`;
+    const statusMain = lifecycleLabel(o.status);
+    const statusSub = lifecycleCode(o.status);
+    const statusCell = statusSub
+      ? `${statusMain}<div style="font-size:11px;color:#8ea1b5;">${statusSub}</div>`
+      : statusMain;
     const tpPriceText = typeof o.tp_price === 'number' ? o.tp_price.toFixed(3) : '--';
     const tpIsSettle = typeof o.tp_price === 'number' && Number(o.tp_price) === 1;
     const closePriceText = tpIsSettle
@@ -1508,9 +1530,13 @@ function se_renderOrders(orders, status) {
       : (typeof o.tp_price === 'number'
         ? o.tp_price.toFixed(3)
         : (typeof o.fill_price === 'number' ? o.fill_price.toFixed(3) : '--'));
-    const closeSubText = tpIsSettle ? 'tp:1.000' : `tp:${tpPriceText}`;
-    const closeCell = `${closePriceText}<div style="font-size:11px;color:#aaa;">${closeSubText}</div>`;
-    return `<tr><td>${typeLabel}</td><td>${se_formatStateValue(o.side)}</td><td>${priceCell}</td><td style="color:${statusColor}">${statusLabel}</td><td>${se_formatStateValue(o.size)}</td><td>${closeCell}</td></tr>`;
+    const closeSubText = tpIsSettle
+      ? '结算价:1.000'
+      : (tpPriceText === '--' || tpPriceText === closePriceText ? '' : `tp:${tpPriceText}`);
+    const closeCell = closeSubText
+      ? `${closePriceText}<div style="font-size:11px;color:#aaa;">${closeSubText}</div>`
+      : closePriceText;
+    return `<tr><td style="white-space:normal;word-break:break-word;">${typeCell}</td><td>${se_formatStateValue(o.side)}</td><td>${priceCell}</td><td style="color:${statusColor}">${statusCell}</td><td>${se_formatStateValue(o.size)}</td><td>${closeCell}</td></tr>`;
   });
   tbody.innerHTML = rows.length
     ? rows.join('')
