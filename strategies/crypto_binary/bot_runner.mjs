@@ -308,6 +308,13 @@ export function createBotRunner(options = {}) {
     const windowOpenOrders = orders.filter((order) => order.status === 'OPEN' && isOrderInCurrentWindow(order, state));
     const openYes = windowOpenOrders.filter((order) => order.side === 'YES').map((order) => order.order_id);
     const openNo = windowOpenOrders.filter((order) => order.side === 'NO').map((order) => order.order_id);
+    const decisionPatches = decision.patches && typeof decision.patches === 'object' ? decision.patches : {};
+    const windowFilledNo = orders.filter((order) => (
+      order.status === 'FILLED'
+      && order.side === 'NO'
+      && isOrderInCurrentWindow(order, state)
+    ));
+    const noTerminalByFilled = openNo.length === 0 && windowFilledNo.length > 0;
     const statePatch = {
       current_window_id: state.current_window_id ?? context.window_id ?? null,
       last_window_id: state.last_window_id ?? null,
@@ -322,8 +329,11 @@ export function createBotRunner(options = {}) {
       yes_order_ids: openYes,
       no_order_ids: openNo,
       phase: inferPhase(decision, summary),
-      ...(decision.patches && typeof decision.patches === 'object' ? decision.patches : {})
+      ...decisionPatches
     };
+    if (noTerminalByFilled && statePatch.no_cancelled !== true) {
+      statePatch.no_cancelled = true;
+    }
     const stateAfter = patchState(statePatch);
     const activeWindowAfter = stateAfter?.current_window_id ?? null;
     for (const key of [...executedPlaceIntentByWindow.keys()]) {
@@ -348,6 +358,20 @@ export function createBotRunner(options = {}) {
             order_price: order.price,
             fill_price: order.fill_price
           }))
+        }
+      });
+    }
+    if (state.no_cancelled !== true && stateAfter.no_cancelled === true && noTerminalByFilled) {
+      log({
+        level: 'info',
+        source: 'bot_runner',
+        event: 'BOT_NO_TERMINAL_BY_FILL',
+        message: 'no terminal latched by filled orders in current window',
+        mode: state.mode ?? null,
+        window_id: contextForDecision.window_id ?? null,
+        data: {
+          no_filled_count: windowFilledNo.length,
+          no_open_count: openNo.length
         }
       });
     }
