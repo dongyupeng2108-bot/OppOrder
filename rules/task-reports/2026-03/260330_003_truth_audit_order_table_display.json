@@ -1,0 +1,57 @@
+{
+  "script_name": "truth_audit_order_table_display_260330_003",
+  "task_id": "260330_003",
+  "sample_name": "order_table_display_v1",
+  "pass": true,
+  "message": "订单状态表展示口径修复通过",
+  "first_break_layer": null,
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_003_truth_audit_order_table_display.json",
+  "summary": {
+    "conclusion": "A：当前窗口订单状态表展示口径已收口",
+    "total_checks": 7,
+    "pass_checks": 7,
+    "fail_checks": 0,
+    "checks": {
+      "003-A_pre_fix_close_price_repeats_tp_value": true,
+      "003-B_post_fix_close_price_deduped": true,
+      "003-C_pre_fix_type_uses_raw_take_profit_text": true,
+      "003-D_post_fix_type_full_readable_no_take_profit_truncate": true,
+      "003-E_post_fix_parent_child_and_lifecycle_clear": true,
+      "003-F_non_regression_260329_007_current_window_filter_not_changed": true,
+      "003-G_non_regression_260330_001_prob_snapshot_not_changed": true
+    }
+  },
+  "raw_excerpt": {
+    "before_html_excerpt": "<tr><td>TAKE_PROFIT</td><td>NO</td><td>0.900<div style=\"font-size:11px;color:#aaa;\">fill:--</div></td><td style=\"color:#00e676\">挂单</td><td>1</td><td>0.900<div style=\"font-size:11px;color:#aaa;\">tp:0.900</div></td></tr><tr><td>挂单</td><td>NO</td><td>0.400<div style=\"font-size:11px;color:#aaa;\">fill:0.300</div></td><td style=\"color:#ffb74d\">成交</td><td>1</td><td>0.900<div style=\"font-size:11px;color:#aaa;\">tp:0.900</div></td></tr><tr><td>挂单</td><td>YES</td><td>0.400<div style=\"font-size:11px;color:#aaa;\">fill:--</div></td><td style=\"color:#00e676\">挂单</td><td>2</td><td>0.850<div style=\"font-size:11px;color:#aaa;\">tp:0.850</div></td></tr>",
+    "after_html_excerpt": "<tr><td style=\"white-space:normal;word-break:break-word;\">止盈单<div style=\"font-size:11px;color:#8ea1b5;white-space:normal;word-break:break-word;\">子单(parent-n)</div></td><td>NO</td><td>0.900<div style=\"font-size:11px;color:#aaa;\">fill:--</div></td><td style=\"color:#00e676\">挂单<div style=\"font-size:11px;color:#8ea1b5;\">OPEN</div></td><td>1</td><td>0.900</td></tr><tr><td style=\"white-space:normal;word-break:break-word;\">进场单<div style=\"font-size:11px;color:#8ea1b5;white-space:normal;word-break:break-word;\">父单</div></td><td>NO</td><td>0.400<div style=\"font-size:11px;color:#aaa;\">fill:0.300</div></td><td style=\"color:#ffb74d\">成交<div style=\"font-size:11px;color:#8ea1b5;\">FILLED</div></td><td>1</td><td>0.900</td></tr><tr><td style=\"white-space:normal;word-break:break-word;\">进场单<div style=\"font-size:11px;color:#8ea1b5;white-space:normal;word-break:break-word;\">父单</div></td><td>YES</td><td>0.400<div style=\"font-size:11px;color:#aaa;\">fill:--</div></td><td style=\"color:#00e676\">挂单<div style=\"font-size:11px;color:#8ea1b5;\">OPEN</div></td><td>2</td><td>0.850</td></tr>"
+  },
+  "generated_at": "2026-03-30T00:52:31.322Z",
+  "conclusion_block": {
+    "verdict": "A：当前窗口订单状态表展示口径已收口",
+    "first_break_layer": null
+  },
+  "key_counters": {
+    "total_checks": 7,
+    "pass_checks": 7,
+    "fail_checks": 0
+  },
+  "evidence_index": {
+    "before_render": {
+      "table_html": "<tr><td>TAKE_PROFIT</td><td>NO</td><td>0.900<div style=\"font-size:11px;color:#aaa;\">fill:--</div></td><td style=\"color:#00e676\">挂单</td><td>1</td><td>0.900<div style=\"font-size:11px;color:#aaa;\">tp:0.900</div></td></tr><tr><td>挂单</td><td>NO</td><td>0.400<div style=\"font-size:11px;color:#aaa;\">fill:0.300</div></td><td style=\"color:#ffb74d\">成交</td><td>1</td><td>0.900<div style=\"font-size:11px;color:#aaa;\">tp:0.900</div></td></tr><tr><td>挂单</td><td>YES</td><td>0.400<div style=\"font-size:11px;color:#aaa;\">fill:--</div></td><td style=\"color:#00e676\">挂单</td><td>2</td><td>0.850<div style=\"font-size:11px;color:#aaa;\">tp:0.850</div></td></tr>",
+      "title": "当前窗口订单状态"
+    },
+    "after_render": {
+      "table_html": "<tr><td style=\"white-space:normal;word-break:break-word;\">止盈单<div style=\"font-size:11px;color:#8ea1b5;white-space:normal;word-break:break-word;\">子单(parent-n)</div></td><td>NO</td><td>0.900<div style=\"font-size:11px;color:#aaa;\">fill:--</div></td><td style=\"color:#00e676\">挂单<div style=\"font-size:11px;color:#8ea1b5;\">OPEN</div></td><td>1</td><td>0.900</td></tr><tr><td style=\"white-space:normal;word-break:break-word;\">进场单<div style=\"font-size:11px;color:#8ea1b5;white-space:normal;word-break:break-word;\">父单</div></td><td>NO</td><td>0.400<div style=\"font-size:11px;color:#aaa;\">fill:0.300</div></td><td style=\"color:#ffb74d\">成交<div style=\"font-size:11px;color:#8ea1b5;\">FILLED</div></td><td>1</td><td>0.900</td></tr><tr><td style=\"white-space:normal;word-break:break-word;\">进场单<div style=\"font-size:11px;color:#8ea1b5;white-space:normal;word-break:break-word;\">父单</div></td><td>YES</td><td>0.400<div style=\"font-size:11px;color:#aaa;\">fill:--</div></td><td style=\"color:#00e676\">挂单<div style=\"font-size:11px;color:#8ea1b5;\">OPEN</div></td><td>2</td><td>0.850</td></tr>",
+      "title": "当前窗口订单状态"
+    }
+  },
+  "result": {
+    "003-A_pre_fix_close_price_repeats_tp_value": true,
+    "003-B_post_fix_close_price_deduped": true,
+    "003-C_pre_fix_type_uses_raw_take_profit_text": true,
+    "003-D_post_fix_type_full_readable_no_take_profit_truncate": true,
+    "003-E_post_fix_parent_child_and_lifecycle_clear": true,
+    "003-F_non_regression_260329_007_current_window_filter_not_changed": true,
+    "003-G_non_regression_260330_001_prob_snapshot_not_changed": true
+  }
+}
