@@ -1,0 +1,247 @@
+{
+  "script_name": "truth_audit_directional_before_end_runtime_260330_006",
+  "task_id": "260330_006",
+  "sample_name": "directional_before_end_runtime_v1",
+  "pass": true,
+  "message": "分方向 before_end 撤单修复通过",
+  "first_break_layer": null,
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_006_truth_audit_directional_before_end_runtime.json",
+  "summary": {
+    "conclusion": "A：120/60 分方向 before_end 撤单语义已恢复",
+    "total_checks": 7,
+    "pass_checks": 7,
+    "fail_checks": 0,
+    "checks": {
+      "006-A_pre_fix_config_120_60_exists_but_not_cancelled_on_time": true,
+      "006-B_pre_fix_unique_first_break_layer_runner_tick_order": true,
+      "006-C_post_fix_yes_120_no_60_are_independent": true,
+      "006-D_post_fix_reason_intents_are_directional": true,
+      "006-E_non_regression_260329_004_wait_next_window_contract_kept": true,
+      "006-F_non_regression_260329_007_no_cross_window_filter_logic_change": true,
+      "006-G_non_regression_260329_008_global_fallback_priority_kept": true
+    }
+  },
+  "raw_excerpt": {
+    "pre_timeline": [
+      {
+        "remaining": 250,
+        "open_yes": 1,
+        "open_no": 1,
+        "yes_ids": 1,
+        "no_ids": 1
+      },
+      {
+        "remaining": 120,
+        "open_yes": 1,
+        "open_no": 1,
+        "yes_ids": 0,
+        "no_ids": 0
+      },
+      {
+        "remaining": 100,
+        "open_yes": 1,
+        "open_no": 1,
+        "yes_ids": 0,
+        "no_ids": 0
+      },
+      {
+        "remaining": 60,
+        "open_yes": 1,
+        "open_no": 1,
+        "yes_ids": 0,
+        "no_ids": 0
+      }
+    ],
+    "post_harness_timeline": [
+      {
+        "remaining": 250,
+        "reason": "ladder_not_posted",
+        "intents": "PLACE_LADDER(BOTH|)",
+        "yes_ids": 1,
+        "no_ids": 1,
+        "open_yes": 1,
+        "open_no": 1
+      },
+      {
+        "remaining": 120,
+        "reason": "up_cancel_before_end",
+        "intents": "CANCEL_OPEN(YES)",
+        "yes_ids": 0,
+        "no_ids": 1,
+        "open_yes": 0,
+        "open_no": 1
+      },
+      {
+        "remaining": 100,
+        "reason": "within_bounds_no_action",
+        "intents": "NOOP",
+        "yes_ids": 0,
+        "no_ids": 1,
+        "open_yes": 0,
+        "open_no": 1
+      },
+      {
+        "remaining": 60,
+        "reason": "down_cancel_before_end",
+        "intents": "CANCEL_OPEN(NO)",
+        "yes_ids": 0,
+        "no_ids": 0,
+        "open_yes": 0,
+        "open_no": 0
+      }
+    ],
+    "runtime_timeline": [
+      {
+        "remaining": 250,
+        "reason": "ladder_not_posted",
+        "intents": "PLACE_LADDER(YES|0.4:2:0.85) + PLACE_LADDER(NO|0.4:1:0.9)",
+        "open_yes": 1,
+        "open_no": 1
+      },
+      {
+        "remaining": 120,
+        "reason": "up_cancel_before_end",
+        "intents": "CANCEL_OPEN(YES)",
+        "open_yes": 0,
+        "open_no": 1
+      },
+      {
+        "remaining": 100,
+        "reason": "within_bounds_or_no_trigger",
+        "intents": "NOOP",
+        "open_yes": 0,
+        "open_no": 1
+      },
+      {
+        "remaining": 60,
+        "reason": "down_cancel_before_end",
+        "intents": "CANCEL_OPEN(NO)",
+        "open_yes": 0,
+        "open_no": 0
+      }
+    ]
+  },
+  "generated_at": "2026-03-30T02:19:05.436Z",
+  "conclusion_block": {
+    "verdict": "A：120/60 分方向 before_end 撤单语义已恢复",
+    "first_break_layer": null
+  },
+  "key_counters": {
+    "total_checks": 7,
+    "pass_checks": 7,
+    "fail_checks": 0
+  },
+  "evidence_index": {
+    "pre_fix_timeline": [
+      {
+        "remaining": 250,
+        "open_yes": 1,
+        "open_no": 1,
+        "yes_ids": 1,
+        "no_ids": 1
+      },
+      {
+        "remaining": 120,
+        "open_yes": 1,
+        "open_no": 1,
+        "yes_ids": 0,
+        "no_ids": 0
+      },
+      {
+        "remaining": 100,
+        "open_yes": 1,
+        "open_no": 1,
+        "yes_ids": 0,
+        "no_ids": 0
+      },
+      {
+        "remaining": 60,
+        "open_yes": 1,
+        "open_no": 1,
+        "yes_ids": 0,
+        "no_ids": 0
+      }
+    ],
+    "post_fix_harness_timeline": [
+      {
+        "remaining": 250,
+        "reason": "ladder_not_posted",
+        "intents": "PLACE_LADDER(BOTH|)",
+        "yes_ids": 1,
+        "no_ids": 1,
+        "open_yes": 1,
+        "open_no": 1
+      },
+      {
+        "remaining": 120,
+        "reason": "up_cancel_before_end",
+        "intents": "CANCEL_OPEN(YES)",
+        "yes_ids": 0,
+        "no_ids": 1,
+        "open_yes": 0,
+        "open_no": 1
+      },
+      {
+        "remaining": 100,
+        "reason": "within_bounds_no_action",
+        "intents": "NOOP",
+        "yes_ids": 0,
+        "no_ids": 1,
+        "open_yes": 0,
+        "open_no": 1
+      },
+      {
+        "remaining": 60,
+        "reason": "down_cancel_before_end",
+        "intents": "CANCEL_OPEN(NO)",
+        "yes_ids": 0,
+        "no_ids": 0,
+        "open_yes": 0,
+        "open_no": 0
+      }
+    ],
+    "real_runtime_timeline": [
+      {
+        "remaining": 250,
+        "reason": "ladder_not_posted",
+        "intents": "PLACE_LADDER(YES|0.4:2:0.85) + PLACE_LADDER(NO|0.4:1:0.9)",
+        "open_yes": 1,
+        "open_no": 1
+      },
+      {
+        "remaining": 120,
+        "reason": "up_cancel_before_end",
+        "intents": "CANCEL_OPEN(YES)",
+        "open_yes": 0,
+        "open_no": 1
+      },
+      {
+        "remaining": 100,
+        "reason": "within_bounds_or_no_trigger",
+        "intents": "NOOP",
+        "open_yes": 0,
+        "open_no": 1
+      },
+      {
+        "remaining": 60,
+        "reason": "down_cancel_before_end",
+        "intents": "CANCEL_OPEN(NO)",
+        "open_yes": 0,
+        "open_no": 0
+      }
+    ],
+    "healthcheck": {
+      "root": 200,
+      "pairs": 404
+    }
+  },
+  "result": {
+    "006-A_pre_fix_config_120_60_exists_but_not_cancelled_on_time": true,
+    "006-B_pre_fix_unique_first_break_layer_runner_tick_order": true,
+    "006-C_post_fix_yes_120_no_60_are_independent": true,
+    "006-D_post_fix_reason_intents_are_directional": true,
+    "006-E_non_regression_260329_004_wait_next_window_contract_kept": true,
+    "006-F_non_regression_260329_007_no_cross_window_filter_logic_change": true,
+    "006-G_non_regression_260329_008_global_fallback_priority_kept": true
+  }
+}
