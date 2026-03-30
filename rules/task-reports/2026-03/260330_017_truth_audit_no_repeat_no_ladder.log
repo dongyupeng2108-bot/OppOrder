@@ -1,0 +1,6 @@
+script_name=truth_audit_no_repeat_no_ladder_260330_017
+task_id=260330_017
+sample_name=no_repeat_no_ladder_v1
+pass=false
+first_break_layer=SAMPLE_BLOCKED_OR_INSUFFICIENT
+message=NO方向重复挂阶梯单真值定位未通过

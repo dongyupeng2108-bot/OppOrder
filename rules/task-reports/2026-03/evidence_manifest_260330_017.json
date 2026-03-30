@@ -1,0 +1,24 @@
+{
+  "task_id": "260330_017",
+  "mode": "LOCAL",
+  "generated_at": "2026-03-30T21:05:28.861Z",
+  "evidence_dir": "rules\\task-reports\\2026-03",
+  "required_files": [
+    "result_260330_017.json",
+    "run_260330_017.log",
+    "notify_260330_017.txt",
+    "gate_light_preview_260330_017.log",
+    "dod_evidence_260330_017.txt",
+    "git_meta_260330_017.json",
+    "trae_report_snippet_260330_017.txt",
+    "manual_verification_260330_017.json",
+    "ci_parity_260330_017.json",
+    "preflight_attestation_260330_017.json",
+    "workspace_healer_260330_017.json",
+    "errors_260330_017.jsonl",
+    "errors_summary_260330_017.txt",
+    "260330_017_healthcheck_53122_root.txt",
+    "260330_017_healthcheck_53122_pairs.txt",
+    "deliverables_index_260330_017.json"
+  ]
+}
