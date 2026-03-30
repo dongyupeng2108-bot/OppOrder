@@ -1,0 +1,15 @@
+{
+  "task_id": "260330_007",
+  "status": "DONE",
+  "mode": "LOCAL",
+  "dod_evidence": {
+    "healthcheck": [
+      "260330_007_healthcheck_53122_root.txt",
+      "260330_007_healthcheck_53122_pairs.txt"
+    ],
+    "gate_light_exit": 0
+  },
+  "summary": "Automation Pack V1 Validation for Task 260330_007",
+  "report_file": "notify_260330_007.txt",
+  "report_sha256_short": "c5d06d52"
+}
