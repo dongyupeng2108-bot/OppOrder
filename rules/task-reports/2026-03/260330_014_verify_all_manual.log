@@ -1,0 +1,6 @@
+task_id=260330_014
+overall_pass=true
+total=1
+pass_count=1
+fail_count=0
+verify_p0_runtime_fixes_guard|pass=true|message=p0 runtime fixes guard pass|evidence=E:\OppRadar\rules\task-reports\2026-03\260330_014_p0_runtime_fixes_guard.json

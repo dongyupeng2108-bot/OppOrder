@@ -42,7 +42,8 @@ const VERIFY_TARGET_ALLCHAIN = [
   { script: 'verify_pnl_chain_consistency.mjs', suffix: 'pnl_chain_consistency', sample: 'debug_exit_yes_path_v1+debug_fill_yes_path_v1' },
   { script: 'verify_config_effect_chain.mjs', suffix: 'config_effect_chain', sample: 'debug_main_path_v1+debug_fill_yes_path_v1+real_no_debug' },
   { script: 'verify_runtime_to_business_result.mjs', suffix: 'runtime_to_business_result', sample: 'debug_fill_yes_path_v1+debug_main_path_v1+debug_exit_yes_path_v1' },
-  { script: 'verify_strategy_runtime_regression_guard.mjs', suffix: 'strategy_runtime_regression_guard', sample: 'real_runtime_regression_guard_v1' }
+  { script: 'verify_strategy_runtime_regression_guard.mjs', suffix: 'strategy_runtime_regression_guard', sample: 'real_runtime_regression_guard_v1' },
+  { script: 'verify_p0_runtime_fixes_guard.mjs', suffix: 'p0_runtime_fixes_guard', sample: 'p0_runtime_fixes_guard_v1' }
 ];
 const VERIFY_TARGETS_BY_MODULE = {
   module1: [
@@ -66,7 +67,11 @@ const VERIFY_TARGETS_BY_MODULE = {
   ],
   module5: [
     { script: 'verify_strategy_runtime_regression_guard.mjs', suffix: 'strategy_runtime_regression_guard', sample: 'real_runtime_regression_guard_v1' },
-    { script: 'verify_config_effect_chain.mjs', suffix: 'config_effect_chain', sample: 'debug_main_path_v1+debug_fill_yes_path_v1+real_no_debug' }
+    { script: 'verify_config_effect_chain.mjs', suffix: 'config_effect_chain', sample: 'debug_main_path_v1+debug_fill_yes_path_v1+real_no_debug' },
+    { script: 'verify_p0_runtime_fixes_guard.mjs', suffix: 'p0_runtime_fixes_guard', sample: 'p0_runtime_fixes_guard_v1' }
+  ],
+  p0guard: [
+    { script: 'verify_p0_runtime_fixes_guard.mjs', suffix: 'p0_runtime_fixes_guard', sample: 'p0_runtime_fixes_guard_v1' }
   ],
   allchain: VERIFY_TARGET_ALLCHAIN
 };

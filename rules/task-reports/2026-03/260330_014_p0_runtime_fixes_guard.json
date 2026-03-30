@@ -1,0 +1,233 @@
+{
+  "script_name": "verify_p0_runtime_fixes_guard",
+  "task_id": "260330_014",
+  "sample_name": "p0_runtime_fixes_guard_v1",
+  "pass": true,
+  "message": "p0 runtime fixes guard pass",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_014_p0_runtime_fixes_guard.json",
+  "summary": {
+    "conclusion": "A：P0 修复回归包通过（startup_wait_release + atr_input_bounds_ready）",
+    "total_checks": 4,
+    "pass_checks": 4,
+    "fail_checks": 0,
+    "checks": {
+      "current_startup_wait_release_pass": true,
+      "current_atr_input_bounds_ready_pass": true,
+      "negative_startup_wait_stuck_detected_fail": true,
+      "negative_atr_input_null_detected_fail": true
+    }
+  },
+  "raw_excerpt": {
+    "startup_wait_release": {
+      "pass": true,
+      "evidence_file": null,
+      "conclusion": {
+        "startup_window_id": "btc-updown-5m-1774893600",
+        "seen_wait_next_window_after_start": true,
+        "seen_next_window": true,
+        "seen_place_after_next_window": true,
+        "startup_no_place": true
+      }
+    },
+    "atr_input_bounds_ready": {
+      "pass": true,
+      "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_014_current_atr_input_bounds_ready_guard.json",
+      "conclusion": {
+        "verdict": "A：real runtime 下 atr_input 已恢复，atr_5m -> bounds -> bounds_ready 时序成立",
+        "first_break_layer": "NONE_CHAIN_PASS"
+      }
+    },
+    "negative_detection": {
+      "startup_wait_stuck_from_260330_010": true,
+      "atr_input_null_from_260330_011": true
+    }
+  },
+  "generated_at": "2026-03-30T18:10:02.843Z",
+  "conclusion_block": {
+    "verdict": "A：P0 修复回归包通过（startup_wait_release + atr_input_bounds_ready）",
+    "sub_conclusions": {
+      "startup_wait_release": "PASS",
+      "atr_input_bounds_ready": "PASS"
+    },
+    "negative_detection": {
+      "startup_wait_stuck": "FAIL_DETECTED",
+      "atr_input_null": "FAIL_DETECTED"
+    }
+  },
+  "key_counters": {
+    "total_checks": 4,
+    "pass_checks": 4,
+    "fail_checks": 0
+  },
+  "evidence_index": {
+    "current_startup_wait_release": {
+      "script": "inline_runtime_startup_wait_release_check",
+      "output_path": null,
+      "exit_code": 0,
+      "timeline_head": [
+        {
+          "i": 0,
+          "current_window_id": null,
+          "reason": null,
+          "intents_summary": "NOOP"
+        },
+        {
+          "i": 1,
+          "current_window_id": "btc-updown-5m-1774893600",
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        },
+        {
+          "i": 2,
+          "current_window_id": "btc-updown-5m-1774893600",
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        },
+        {
+          "i": 3,
+          "current_window_id": "btc-updown-5m-1774893600",
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        },
+        {
+          "i": 4,
+          "current_window_id": "btc-updown-5m-1774893600",
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        },
+        {
+          "i": 5,
+          "current_window_id": "btc-updown-5m-1774893600",
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        },
+        {
+          "i": 6,
+          "current_window_id": "btc-updown-5m-1774893600",
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        },
+        {
+          "i": 7,
+          "current_window_id": "btc-updown-5m-1774893600",
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        },
+        {
+          "i": 8,
+          "current_window_id": "btc-updown-5m-1774893600",
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        },
+        {
+          "i": 9,
+          "current_window_id": "btc-updown-5m-1774893600",
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        },
+        {
+          "i": 10,
+          "current_window_id": "btc-updown-5m-1774893600",
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        },
+        {
+          "i": 11,
+          "current_window_id": "btc-updown-5m-1774893600",
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        }
+      ],
+      "timeline_tail": [
+        {
+          "i": 25,
+          "current_window_id": "btc-updown-5m-1774893600",
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        },
+        {
+          "i": 26,
+          "current_window_id": "btc-updown-5m-1774893600",
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        },
+        {
+          "i": 27,
+          "current_window_id": "btc-updown-5m-1774893600",
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        },
+        {
+          "i": 28,
+          "current_window_id": "btc-updown-5m-1774893600",
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        },
+        {
+          "i": 29,
+          "current_window_id": "btc-updown-5m-1774893600",
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        },
+        {
+          "i": 30,
+          "current_window_id": "btc-updown-5m-1774893600",
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        },
+        {
+          "i": 31,
+          "current_window_id": "btc-updown-5m-1774893600",
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        },
+        {
+          "i": 32,
+          "current_window_id": "btc-updown-5m-1774893600",
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        },
+        {
+          "i": 33,
+          "current_window_id": "btc-updown-5m-1774893600",
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        },
+        {
+          "i": 34,
+          "current_window_id": "btc-updown-5m-1774893600",
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        },
+        {
+          "i": 35,
+          "current_window_id": "btc-updown-5m-1774893600",
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        },
+        {
+          "i": 36,
+          "current_window_id": "btc-updown-5m-1774893900",
+          "reason": "ladder_not_posted",
+          "intents_summary": "PLACE_LADDER(YES|0.01:1:0.5) + PLACE_LADDER(NO|0.01:1:0.5)"
+        }
+      ]
+    },
+    "current_atr_input_bounds_ready": {
+      "script": "truth_audit_atr_input_recovery_260330_013.mjs",
+      "output_path": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_014_current_atr_input_bounds_ready_guard.json",
+      "exit_code": 0
+    },
+    "negative_fixtures": {
+      "startup_wait_stuck_hist_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_010_truth_audit_ready_chain_locate.json",
+      "atr_input_null_hist_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_011_truth_audit_anchor_bounds_timing.json"
+    }
+  },
+  "result": {
+    "current_startup_wait_release_pass": true,
+    "current_atr_input_bounds_ready_pass": true,
+    "negative_startup_wait_stuck_detected_fail": true,
+    "negative_atr_input_null_detected_fail": true
+  }
+}
