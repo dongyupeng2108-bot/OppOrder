@@ -1,4 +1,5 @@
 import { createPriceFeed } from './price_feed.mjs';
+import { ProxyAgent, fetch as undiciFetch } from 'undici';
 
 const createDefaultContext = () => ({
   window_id: null,
@@ -69,6 +70,13 @@ export function createBotContextAdapter(options = {}) {
   let sourceFeedSeen = false;
   let sourceFeedCount = 0;
   let sourceLastFeedAt = null;
+  const proxyUrl = process.env.HTTPS_PROXY || process.env.HTTP_PROXY || null;
+  const klinesDispatcher = proxyUrl ? new ProxyAgent(proxyUrl) : null;
+  let latestAtrAbs = null;
+  let latestAtrAt = null;
+  let latestAtrPeriod = null;
+  let atrFetchInFlight = null;
+  let atrFetchTs = 0;
 
   try {
     sourceInitStarted = true;
@@ -127,6 +135,49 @@ export function createBotContextAdapter(options = {}) {
     })();
     return directPriceFetchInFlight;
   };
+  const fetchAtrAbsolute = async (period) => {
+    const now = Date.now();
+    const normalizedPeriod = period === '15m' ? '15m' : '5m';
+    if (
+      latestAtrAbs !== null
+      && latestAtrPeriod === normalizedPeriod
+      && now - atrFetchTs < 8000
+    ) return latestAtrAbs;
+    if (atrFetchInFlight) return atrFetchInFlight;
+    atrFetchTs = now;
+    atrFetchInFlight = (async () => {
+      try {
+        const url = `https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=${normalizedPeriod}&limit=15`;
+        const res = klinesDispatcher
+          ? await undiciFetch(url, { dispatcher: klinesDispatcher })
+          : await fetch(url);
+        if (!res.ok) return latestAtrAbs;
+        const klines = await res.json();
+        if (!Array.isArray(klines) || klines.length < 2) return latestAtrAbs;
+        const completed = klines.slice(0, -1);
+        if (completed.length < 2) return latestAtrAbs;
+        let sumTR = 0;
+        for (const k of completed) {
+          const high = asFiniteNumber(k?.[2]);
+          const low = asFiniteNumber(k?.[3]);
+          if (high === null || low === null) continue;
+          sumTR += (high - low);
+        }
+        const atr = completed.length > 0 ? (sumTR / completed.length) : null;
+        if (atr !== null && atr > 0) {
+          latestAtrAbs = atr;
+          latestAtrAt = new Date().toISOString();
+          latestAtrPeriod = normalizedPeriod;
+        }
+        return latestAtrAbs;
+      } catch {
+        return latestAtrAbs;
+      } finally {
+        atrFetchInFlight = null;
+      }
+    })();
+    return atrFetchInFlight;
+  };
 
   const getContext = async () => {
     const context = createDefaultContext();
@@ -167,14 +218,30 @@ export function createBotContextAdapter(options = {}) {
     context.remaining_sec = Number.isFinite(endMs) ? Math.max(0, Math.floor((endMs - now) / 1000)) : null;
     context.btc_price = resolvedBtcPrice;
     context.anchor_btc = asFiniteNumber(state.anchor_btc);
-    context.atr_5m = asFiniteNumber(windowInfo?.atr_5m ?? windowInfo?.atr ?? state.atr_5m);
+    let resolvedAtr = asFiniteNumber(windowInfo?.atr_5m ?? windowInfo?.atr ?? state.atr_5m);
+    let atrResolutionKind = 'window_or_state';
+    if (resolvedAtr === null && state?.running === true) {
+      const atrFetched = await fetchAtrAbsolute(context.period);
+      const atrParsed = asFiniteNumber(atrFetched);
+      if (atrParsed !== null) {
+        resolvedAtr = atrParsed;
+        atrResolutionKind = 'binance_klines_fallback';
+      } else {
+        atrResolutionKind = 'missing';
+      }
+    }
+    context.atr_5m = resolvedAtr;
     context.upper_bound = asFiniteNumber(state.upper_bound);
     context.lower_bound = asFiniteNumber(state.lower_bound);
     const atrResolution = {
       window_atr_5m_raw: windowInfo?.atr_5m ?? null,
       window_atr_raw: windowInfo?.atr ?? null,
       state_atr_5m_raw: state?.atr_5m ?? null,
-      resolved_atr_5m: context.atr_5m
+      resolved_atr_5m: context.atr_5m,
+      resolution_kind: atrResolutionKind,
+      latest_fallback_atr_raw: latestAtrAbs,
+      latest_fallback_at: latestAtrAt,
+      latest_fallback_period: latestAtrPeriod
     };
     context.bid_yes = asFiniteNumber(snapshot?.bid_up);
     context.ask_yes = asFiniteNumber(snapshot?.ask_up);
