@@ -1,0 +1,95 @@
+{
+  "script_name": "verify_module1_golden_scenarios_v1",
+  "task_id": "260330_002",
+  "sample_name": "module1_golden_scenarios_v1",
+  "pass": true,
+  "message": "模块1黄金场景回归 v1 通过",
+  "first_break_layer": null,
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_002_module1_golden_scenarios_v1.json",
+  "summary": {
+    "conclusion": "A：模块1黄金场景回归包 v1 全通过",
+    "total_checks": 4,
+    "pass_checks": 4,
+    "fail_checks": 0,
+    "checks": {
+      "G1_scenario1_non_symmetric_tp1_wait_next_window": true,
+      "G2_scenario2_owner_screenshot_tick_consistency": true,
+      "G3_scenario3_directional_cancel_priority": true,
+      "G4_scenario4_window_switch_no_old_window_mix": true
+    }
+  },
+  "raw_excerpt": {
+    "scenario_total": 4,
+    "scenario_pass": 4,
+    "scenario_fail": 0,
+    "failed_scenarios": []
+  },
+  "generated_at": "2026-03-30T00:20:15.325Z",
+  "scenario_total": 4,
+  "scenario_pass": 4,
+  "scenario_fail": 0,
+  "failed_scenarios": [],
+  "scenarios": [
+    {
+      "scenario_id": "S1_non_symmetric_tp1_wait_next_window",
+      "conclusion": "PASS",
+      "pass": true,
+      "first_break_layer": null,
+      "evidence_index": {
+        "source_script": "truth_audit_window_chain_owner_scenario_260329_007",
+        "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_002_truth_audit_window_chain_owner_scenario.json",
+        "required_checks": [
+          "007-C_post_fix_new_window_has_4_entries_and_no_tp",
+          "007-F_non_regression_wait_next_window_after_start",
+          "007-G_non_regression_tp1_no_take_profit_rows"
+        ]
+      }
+    },
+    {
+      "scenario_id": "S2_owner_screenshot_tick_consistency",
+      "conclusion": "PASS",
+      "pass": true,
+      "first_break_layer": null,
+      "evidence_index": {
+        "source_script": "truth_audit_order_prob_consistency_260330_001",
+        "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_002_truth_audit_order_prob_consistency.json",
+        "required_checks": [
+          "001-C_post_fix_same_tick_prob_and_order_status_are_consistent",
+          "001-D_post_fix_min_regression_script_for_owner_scene_passed"
+        ]
+      }
+    },
+    {
+      "scenario_id": "S3_directional_cancel_priority",
+      "conclusion": "PASS",
+      "pass": true,
+      "first_break_layer": null,
+      "evidence_index": {
+        "source_script": "truth_audit_directional_cancel_priority_260329_008",
+        "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_002_truth_audit_directional_cancel_priority.json",
+        "required_checks": [
+          "008-C_post_fix_runtime_no60_yes120_directional_cancel",
+          "008-D_post_fix_reason_intent_separates_up_down_cancel"
+        ]
+      }
+    },
+    {
+      "scenario_id": "S4_window_switch_no_old_window_mix",
+      "conclusion": "PASS",
+      "pass": true,
+      "first_break_layer": null,
+      "evidence_index": {
+        "source_script": "truth_audit_window_chain_owner_scenario_260329_007",
+        "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_002_truth_audit_window_chain_owner_scenario.json",
+        "required_checks": [
+          "007-D_post_fix_next_window_switches_and_shows_only_new_window"
+        ]
+      }
+    }
+  ],
+  "evidence_index": {
+    "source_007": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_002_truth_audit_window_chain_owner_scenario.json",
+    "source_001": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_002_truth_audit_order_prob_consistency.json",
+    "source_008": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_002_truth_audit_directional_cancel_priority.json"
+  }
+}
