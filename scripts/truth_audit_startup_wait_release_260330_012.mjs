@@ -106,7 +106,7 @@ const importRunnerFactory = async (sourceText) => {
 };
 
 const runControlledDiff = async () => {
-  const oldRunnerSrc = execSync('git show HEAD~1:strategies/crypto_binary/bot_runner.mjs', { cwd: REPO_ROOT, encoding: 'utf8' });
+  const oldRunnerSrc = execSync('git show origin/main:strategies/crypto_binary/bot_runner.mjs', { cwd: REPO_ROOT, encoding: 'utf8' });
   const newRunnerSrc = fs.readFileSync(path.join(REPO_ROOT, 'strategies', 'crypto_binary', 'bot_runner.mjs'), 'utf8');
   const oldCreateRunner = await importRunnerFactory(oldRunnerSrc);
   const newCreateRunner = await importRunnerFactory(newRunnerSrc);

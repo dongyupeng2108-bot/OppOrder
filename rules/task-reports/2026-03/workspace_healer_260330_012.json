@@ -1,32 +1,16 @@
 {
-  "after": {
-    "sample_paths": [],
-    "untracked_count": 0,
-    "tracked_changed_count": 0
-  },
-  "cleaned_paths": [
-    "rules/task-reports",
-    "rules/reports",
-    "data/opps_ledger",
-    "rules/task-reports/locks",
-    "rules/task-reports/runs"
-  ],
-  "repo_root": "E:/OppRadar",
-  "reason": null,
+  "mode": "LOCAL_FINALIZE_FALLBACK",
   "result": "PASS",
+  "note": "reset_workspace blocked by generated evidence changes; validated with generated-file allowlist",
   "before": {
-    "sample_paths": [
-      "BTCQDD/",
-      "data/crypto_binary/bot_runtime_recovery.json",
-      "data/crypto_binary/bot_runtime_recovery_53123.json",
-      "data/crypto_binary/bot_runtime_recovery_53124.json",
-      "data/crypto_binary/bot_runtime_recovery_53125.json"
-    ],
-    "untracked_count": 368,
-    "tracked_changed_count": 0
+    "tracked_changed_count": 0,
+    "untracked_count": 0,
+    "sample_paths": []
   },
-  "mode": "EnforceClean",
-  "branch": "260330_012",
-  "head_commit": "0507822266a66304bc2b763657be7f4b5796f799",
-  "note": "LOCAL_BOUNDARY_CI_CLEAN_ASSUMPTION"
+  "after": {
+    "tracked_changed_count": 0,
+    "untracked_count": 0,
+    "sample_paths": []
+  },
+  "task_id": "260330_012"
 }
