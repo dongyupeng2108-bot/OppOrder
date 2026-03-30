@@ -1,0 +1,58 @@
+{
+  "script_name": "truth_audit_key_log_actions_260330_005",
+  "task_id": "260330_005",
+  "sample_name": "key_log_actions_v1",
+  "pass": true,
+  "message": "关键日志映射修复通过",
+  "first_break_layer": null,
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_005_truth_audit_key_log_actions.json",
+  "summary": {
+    "conclusion": "A：挂单完成已回到默认关键信息流，且噪声仍受控",
+    "total_checks": 5,
+    "pass_checks": 5,
+    "fail_checks": 0,
+    "checks": {
+      "005-A_pre_fix_place_action_missing_in_default_key_stream": true,
+      "005-B_post_fix_place_action_back_in_default_key_stream": true,
+      "005-C_post_fix_fill_and_cancel_still_in_key_stream": true,
+      "005-D_post_fix_noise_events_still_second_layer_only": true,
+      "005-E_scope_no_execution_chain_change": true
+    }
+  },
+  "raw_excerpt": {
+    "before_key_excerpt": "<div class=\"se-log-entry se-log-info\">11:00:02 [信息] NO 方向 1 单成交</div>",
+    "after_key_excerpt": "<div class=\"se-log-entry se-log-info\">11:00:01 [信息] 挂单完成：UP 与 DOWN 已提交</div><div class=\"se-log-entry se-log-info\">11:00:02 [信息] NO 方向 1 单成交</div><div class=\"se-log-entry se-log-info\">11:00:03 [信息] DOWN 到时撤单（60秒）</div>",
+    "after_raw_excerpt": "<div class=\"se-log-entry se-log-info\">11:00:01 [信息] 挂单完成：UP 与 DOWN 已提交（原始:BOT_INTENTS | 原文:PLACE_LADDER(BOTH)）</div><div class=\"se-log-entry se-log-info\">11:00:02 [信息] NO 方向 1 单成交（原始:BOT_FILL | 原文:filled 1 orders）</div><div class=\"se-log-entry se-log-info\">11:00:03 [信息] DOWN 到时撤单（60秒）（原始:BOT_INTENTS | 原文:CANCEL_OPEN(NO)）</div><div class=\"se-log-entry se-log-info\">11:00:04 [信息] 心跳周期正常（原始:BOT_TICK_OK | 原文:scheduled tick ok）</div><div class=\"se-log-entry se-log-info\">11:00:05 [信息] 等待价格与边界数据（原始:RUNNER_TICK | 原文:tick price_or_bounds_null）</div>"
+  },
+  "generated_at": "2026-03-30T01:50:57.909Z",
+  "conclusion_block": {
+    "verdict": "A：挂单完成已回到默认关键信息流，且噪声仍受控",
+    "first_break_layer": null
+  },
+  "key_counters": {
+    "total_checks": 5,
+    "pass_checks": 5,
+    "fail_checks": 0
+  },
+  "evidence_index": {
+    "before_render": {
+      "keyHtml": "<div class=\"se-log-entry se-log-info\">11:00:02 [信息] NO 方向 1 单成交</div>",
+      "keyHint": "默认展示关键信息流（已折叠噪声 2 条）",
+      "rawHtml": "",
+      "rawHint": ""
+    },
+    "after_render": {
+      "keyHtml": "<div class=\"se-log-entry se-log-info\">11:00:01 [信息] 挂单完成：UP 与 DOWN 已提交</div><div class=\"se-log-entry se-log-info\">11:00:02 [信息] NO 方向 1 单成交</div><div class=\"se-log-entry se-log-info\">11:00:03 [信息] DOWN 到时撤单（60秒）</div>",
+      "keyHint": "默认展示关键信息流（已折叠噪声 2 条）",
+      "rawHtml": "<div class=\"se-log-entry se-log-info\">11:00:01 [信息] 挂单完成：UP 与 DOWN 已提交（原始:BOT_INTENTS | 原文:PLACE_LADDER(BOTH)）</div><div class=\"se-log-entry se-log-info\">11:00:02 [信息] NO 方向 1 单成交（原始:BOT_FILL | 原文:filled 1 orders）</div><div class=\"se-log-entry se-log-info\">11:00:03 [信息] DOWN 到时撤单（60秒）（原始:BOT_INTENTS | 原文:CANCEL_OPEN(NO)）</div><div class=\"se-log-entry se-log-info\">11:00:04 [信息] 心跳周期正常（原始:BOT_TICK_OK | 原文:scheduled tick ok）</div><div class=\"se-log-entry se-log-info\">11:00:05 [信息] 等待价格与边界数据（原始:RUNNER_TICK | 原文:tick price_or_bounds_null）</div>",
+      "rawHint": "当前展示原始日志（包含心跳/空转事件）"
+    }
+  },
+  "result": {
+    "005-A_pre_fix_place_action_missing_in_default_key_stream": true,
+    "005-B_post_fix_place_action_back_in_default_key_stream": true,
+    "005-C_post_fix_fill_and_cancel_still_in_key_stream": true,
+    "005-D_post_fix_noise_events_still_second_layer_only": true,
+    "005-E_scope_no_execution_chain_change": true
+  }
+}

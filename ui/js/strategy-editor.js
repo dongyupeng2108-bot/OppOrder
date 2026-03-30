@@ -1642,6 +1642,12 @@ function se_isNoiseLog(event, message, data) {
   return false;
 }
 
+function se_logIntentsToken(message, data) {
+  const fromData = typeof data?.intents_summary === 'string' ? data.intents_summary.trim() : '';
+  if (fromData) return fromData;
+  return typeof message === 'string' ? message.trim() : '';
+}
+
 function se_buildStateSentence(log) {
   const level = (log.level || log.type || 'info').toLowerCase();
   const event = log.event || log.type || 'LOG';
@@ -1649,6 +1655,7 @@ function se_buildStateSentence(log) {
   const data = log.data && typeof log.data === 'object' ? log.data : null;
   const detail = se_translateLogDetail(message, data);
   const reason = se_logReasonToken(message, data);
+  const intents = se_logIntentsToken(message, data).toUpperCase();
   if (level === 'error') return `错误：${detail === '—' ? '请查看原始日志' : detail}`;
   if (level === 'warn' || level === 'warning') return `警告：${detail === '—' ? '请查看原始日志' : detail}`;
   if (event === 'BOT_STARTED') return '机器人已启动';
@@ -1665,6 +1672,16 @@ function se_buildStateSentence(log) {
     if (summary.includes('PLACE_LADDER(YES)')) return '已挂 UP 挂单';
     if (summary.includes('PLACE_LADDER(NO)')) return '已挂 DOWN 挂单';
     return '已提交挂单';
+  }
+  if (event === 'BOT_INTENTS') {
+    if (intents.includes('PLACE_LADDER(BOTH)')) return '挂单完成：UP 与 DOWN 已提交';
+    if (intents.includes('PLACE_LADDER(YES)')) return '挂单完成：UP 已提交';
+    if (intents.includes('PLACE_LADDER(NO)')) return '挂单完成：DOWN 已提交';
+    if (intents.includes('CANCEL_OPEN(YES)') && reason === 'up_cancel_before_end') return 'UP 到时撤单（120秒）';
+    if (intents.includes('CANCEL_OPEN(NO)') && reason === 'down_cancel_before_end') return 'DOWN 到时撤单（60秒）';
+    if (intents.includes('CANCEL_OPEN(YES)')) return 'UP 方向撤单已提交';
+    if (intents.includes('CANCEL_OPEN(NO)')) return 'DOWN 方向撤单已提交';
+    if (intents === 'NOOP') return '本周期无动作';
   }
   if (event === 'BOT_FILL') {
     const fills = Array.isArray(data?.fills) ? data.fills : [];
@@ -1693,9 +1710,11 @@ function se_isKeyLog(log) {
   const message = log.message || log.msg || '';
   const data = log.data && typeof log.data === 'object' ? log.data : null;
   const reason = se_logReasonToken(message, data);
+  const intents = se_logIntentsToken(message, data).toUpperCase();
   if (level === 'error' || level === 'warn' || level === 'warning') return true;
   if (event === 'BOT_STARTED' || event === 'BOT_STOPPED' || event === 'BOT_WINDOW_INITIALIZED') return true;
   if (event === 'BOT_FILL' || event === 'BOT_ORDER_APPLY' || event === 'BOT_ORDER_CANCEL' || event === 'BOT_POSTMORTEM_WRITTEN') return true;
+  if (event === 'BOT_INTENTS' && (intents.includes('PLACE_LADDER(') || intents.includes('CANCEL_OPEN('))) return true;
   if (event === 'BOT_DECISION_GATED' && (reason === 'wait_next_window_after_start' || reason === 'pre_open_or_open_not_open_delay' || reason === 'price_or_bounds_null')) return true;
   if (event === 'RUNNER_TICK' && (reason === 'up_cancel_before_end' || reason === 'down_cancel_before_end' || reason === 'up_formula_cancel' || reason === 'down_formula_cancel')) return true;
   if (se_isNoiseLog(event, message, data)) return false;
