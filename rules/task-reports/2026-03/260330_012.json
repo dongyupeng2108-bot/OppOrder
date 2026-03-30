@@ -1,0 +1,13 @@
+{
+  "task_id": "260330_012",
+  "timestamp": "2026-03-30T14:25:05.498Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "local_finalize": "PASS"
+  },
+  "context": {
+    "result_file": "rules/task-reports/2026-03/result_260330_012.json",
+    "notify_file": "rules/task-reports/2026-03/notify_260330_012.txt"
+  }
+}

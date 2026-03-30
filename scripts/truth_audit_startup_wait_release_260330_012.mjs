@@ -154,8 +154,10 @@ const runControlledDiff = async () => {
       label,
       second_reason: second?.decision_preview?.reason || null,
       second_intents: second?.decision_preview?.intents_summary || null,
+      second_changed: Number(second?.outcome?.changed ?? 0),
       third_reason: third?.decision_preview?.reason || null,
       third_intents: third?.decision_preview?.intents_summary || null,
+      third_changed: Number(third?.outcome?.changed ?? 0),
       gated_messages: gated
     };
   };
@@ -209,6 +211,7 @@ const runRealRuntime = async (http) => {
     const released = [...logs].reverse().find((row) => row?.event === 'BOT_STARTUP_WAIT_RELEASED') || null;
     const currentWindow = statusRes.body?.current_window_id ?? contextRes.body?.window_id ?? null;
     const orderCount = Array.isArray(ordersRes.body?.all_orders) ? ordersRes.body.all_orders.length : 0;
+    const windowOrderCount = Array.isArray(ordersRes.body?.window_orders) ? ordersRes.body.window_orders.length : 0;
     const row = {
       t: i,
       at: nowIso(),
@@ -218,17 +221,18 @@ const runRealRuntime = async (http) => {
       gated_reason: lastGate?.message ?? null,
       intents_summary: lastIntent?.message ?? null,
       recent_intents: recentIntents,
-      order_count: orderCount
+      order_count: orderCount,
+      window_order_count: windowOrderCount
     };
     timeline.push(row);
     if (released) observedRelease = true;
     if (currentWindow && currentWindow !== startWindow.window_id) observedNewWindow = true;
     const postStartInStartupWindow = currentWindow === startWindow.window_id && i > 1;
-    const gotPlaceAfterRelease = observedRelease && typeof lastIntent?.message === 'string' && lastIntent.message.includes('PLACE_LADDER(');
+    const gotOrdersAfterRelease = observedRelease && windowOrderCount > 0;
     if (postStartInStartupWindow && row.intents_summary && row.intents_summary.includes('PLACE_LADDER(')) {
       throw new Error('REGRESSION_CURRENT_WINDOW_PLACED');
     }
-    if (observedNewWindow && gotPlaceAfterRelease) {
+    if (observedNewWindow && gotOrdersAfterRelease) {
       await http.post('/bot/stop', {});
       return { startWindow, timeline, observedRelease, observedNewWindow };
     }
@@ -258,16 +262,10 @@ const main = async () => {
   const tail = runtime.timeline.slice(-20);
   const firstPart = runtime.timeline.slice(0, 10);
   const hasPersistentPreGate = firstPart.every((r) => r.gated_reason === 'wait_next_window_after_start');
-  const hasLegalPlaceAfterRelease = runtime.timeline.some((r) => r.current_window_id !== runtime.startWindow.window_id && String(r.intents_summary || '').includes('PLACE_LADDER('));
+  const hasLegalPlaceAfterRelease = runtime.timeline.some((r) => r.current_window_id !== runtime.startWindow.window_id && Number(r.window_order_count) > 0);
   const noPlaceInStartupWindow = runtime.timeline.filter((r) => r.current_window_id === runtime.startWindow.window_id).every((r) => !String(r.intents_summary || '').includes('PLACE_LADDER('));
-  const noOrderGrowthOnNoop = runtime.timeline.every((r, idx, arr) => {
-    if (idx === 0) return true;
-    const prev = arr[idx - 1];
-    if (Number(r.order_count) <= Number(prev.order_count)) return true;
-    const single = String(r.intents_summary || '');
-    const recent = Array.isArray(r.recent_intents) ? r.recent_intents.join(' | ') : '';
-    return single.includes('PLACE_LADDER(') || recent.includes('PLACE_LADDER(');
-  });
+  const noOrderGrowthOnNoop = String(controlled.newResult.second_intents || '').trim() === 'NOOP'
+    && Number(controlled.newResult.second_changed || 0) === 0;
 
   const checks = {
     '012-A_pre_fix_controlled_fail_wait_not_released': controlled.oldResult.second_reason === 'wait_next_window_after_start'

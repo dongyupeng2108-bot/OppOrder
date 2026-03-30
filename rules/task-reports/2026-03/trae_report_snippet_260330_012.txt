@@ -1,0 +1,36 @@
+=== TRAE_REPORT_SNIPPET ===
+
+Header: TraeTask_260330_012
+BRANCH: 260330_012
+COMMIT: 05078222
+
+=== GIT_SCOPE_DIFF ===
+A	scripts/truth_audit_startup_wait_release_260330_012.mjs
+M	strategies/crypto_binary/bot_runner.mjs
+
+=== DOD_EVIDENCE_STDOUT ===
+Missing Blocks:
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260330_012_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260330_012_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+
+=== CI_PARITY_PREVIEW ===
+Base: f672d95
+Head: 0507822
+MergeBase: f672d95
+Source: JSON (Evidence-as-Code)
+Scope: 2 files
+Files (Top 3):
+  - scripts/truth_audit_startup_wait_release_260330_012.mjs
+  - strategies/crypto_binary/bot_runner.mjs
+
+=========================
+
+=== GATE_LIGHT_PREVIEW ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260330_012
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] Verifying task_id: 260330_012
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] FAILED: Report Block Check for notify_260330_012.txt
+GATE_LIGHT_EXIT=1
