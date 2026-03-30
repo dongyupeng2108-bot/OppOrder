@@ -256,7 +256,7 @@ const realRuntimeScenario = async (http) => {
 
 const main = async () => {
   const args = parseArgs();
-  const oldSource = execSync('git show HEAD:strategies/crypto_binary/bot_runner.mjs', { cwd: REPO_ROOT, encoding: 'utf8' });
+  const oldSource = execSync('git show HEAD~1:strategies/crypto_binary/bot_runner.mjs', { cwd: REPO_ROOT, encoding: 'utf8' });
   const newSource = fs.readFileSync(path.join(REPO_ROOT, 'strategies', 'crypto_binary', 'bot_runner.mjs'), 'utf8');
   const newCreateRunner = await importRunnerFromSource(newSource);
   const preTimeline = [
