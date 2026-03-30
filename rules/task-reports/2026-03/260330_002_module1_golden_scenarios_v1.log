@@ -1,0 +1,6 @@
+script_name=verify_module1_golden_scenarios_v1
+task_id=260330_002
+sample_name=module1_golden_scenarios_v1
+pass=true
+first_break_layer=null
+message=模块1黄金场景回归 v1 通过

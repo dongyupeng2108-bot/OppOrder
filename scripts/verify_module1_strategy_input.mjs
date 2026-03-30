@@ -62,6 +62,12 @@ const subTests = [
     script: 'truth_audit_observability_consistency_260328_035.mjs',
     sample: 'reason_intents_summary_evidence_consistency_v1',
     evidenceSuffix: 'truth_audit_observability_consistency'
+  },
+  {
+    name: 'verify_module1_golden_scenarios_v1',
+    script: 'verify_module1_golden_scenarios_v1.mjs',
+    sample: 'module1_golden_scenarios_v1',
+    evidenceSuffix: 'module1_golden_scenarios_v1'
   }
 ];
 
@@ -75,7 +81,8 @@ const module1CoverageChecklist = [
   '窗口边界与状态重置',
   '恢复能力与持久化一致性',
   '公式白名单与危险表达式边界',
-  '观测与证据一致性'
+  '观测与证据一致性',
+  'Owner 黄金场景回归包 v1（4 场景）'
 ];
 
 const runSubTest = ({ script, sample, evidenceSuffix, name }, taskId, reportsDir) => {
