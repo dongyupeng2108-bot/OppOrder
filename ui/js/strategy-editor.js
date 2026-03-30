@@ -97,6 +97,10 @@ let _seTestLogTail = [];
 let _seTestUserTriggered = false;
 let _seTestRecoveredRunning = false;
 let _seTestSelectedModuleKey = 'allchain';
+let _seLogViewMode = 'key';
+let _seLogEntriesRaw = [];
+let _seLogEntriesKey = [];
+let _seLogNoiseSuppressed = 0;
 const SE_TEST_MODULES = [
   { key: 'module1', label: '模块1 策略与输入', hint: '高价值策略输入与运行语义回归集合' },
   { key: 'module2', label: '模块2 执行引擎', hint: '窗口生命周期、幂等、订单范围与执行引擎语义' },
@@ -209,11 +213,14 @@ async function initStrategyEditor() {
               <div style="display:flex;justify-content:space-between;align-items:center;">
                 <h3 style="margin:0;font-size:13px;color:#d6dde5;">实时日志</h3>
                 <div style="display:flex;align-items:center;gap:8px;">
+                  <button id="se-log-view-key" onclick="se_setLogViewMode('key')" style="height:22px;border:1px solid #35506b;background:#1a2a3a;color:#c8e6ff;border-radius:3px;padding:0 8px;cursor:pointer;font-size:11px;">关键信息流</button>
+                  <button id="se-log-view-raw" onclick="se_setLogViewMode('raw')" style="height:22px;border:1px solid #2f3946;background:#121821;color:#8ea1b5;border-radius:3px;padding:0 8px;cursor:pointer;font-size:11px;">原始日志</button>
                   <span style="font-size:11px;color:#7f8a97;">当前窗口</span>
                   <span id="se-log-current-window" style="font-size:11px;color:#d6dde5;font-family:monospace;">—</span>
                   <span id="se-countdown" style="font-size:11px;color:#aaa;font-family:monospace;">--:--</span>
                 </div>
               </div>
+              <div id="se-log-view-hint" style="font-size:11px;color:#8ea1b5;min-height:16px;">默认展示关键信息流</div>
               <div id="se-log-area" class="se-log-area" style="flex:1;min-height:0;"></div>
               <div id="se-ui-error" style="font-size:11px;color:#ff8a80;min-height:16px;"></div>
             </section>
@@ -1611,60 +1618,199 @@ function se_translateLogDetail(message, data) {
   return translated;
 }
 
-function se_renderLogs(logs) {
+function se_logReasonToken(message, data) {
+  const fromData = typeof data?.reason === 'string' ? data.reason.trim() : '';
+  if (fromData) return fromData;
+  const fromMsg = typeof message === 'string' ? message.trim() : '';
+  const matched = fromMsg.match(/tick\s+([a-zA-Z0-9_:-]+)/i);
+  return matched && matched[1] ? matched[1] : '';
+}
+
+function se_isNoiseLog(event, message, data) {
+  const reason = se_logReasonToken(message, data);
+  const intents = typeof data?.intents_summary === 'string' ? data.intents_summary.trim() : '';
+  if (reason === 'price_or_bounds_null') return true;
+  if (reason === 'scheduled_tick_ok') return true;
+  if (reason === 'tick_ok') return true;
+  if (reason === 'noop') return true;
+  if (event === 'BOT_TICK_OK') return true;
+  if (event === 'RUNNER_TICK' && (reason === 'price_or_bounds_null' || reason === 'scheduled_tick_ok')) return true;
+  if (String(message || '').toLowerCase().includes('scheduled tick ok')) return true;
+  if (String(message || '').toLowerCase().includes('tick price_or_bounds_null')) return true;
+  if (String(message || '').toUpperCase().includes('NOOP')) return true;
+  if (String(intents).toUpperCase() === 'NOOP') return true;
+  return false;
+}
+
+function se_buildStateSentence(log) {
+  const level = (log.level || log.type || 'info').toLowerCase();
+  const event = log.event || log.type || 'LOG';
+  const message = log.message || log.msg || '';
+  const data = log.data && typeof log.data === 'object' ? log.data : null;
+  const detail = se_translateLogDetail(message, data);
+  const reason = se_logReasonToken(message, data);
+  if (level === 'error') return `错误：${detail === '—' ? '请查看原始日志' : detail}`;
+  if (level === 'warn' || level === 'warning') return `警告：${detail === '—' ? '请查看原始日志' : detail}`;
+  if (event === 'BOT_STARTED') return '机器人已启动';
+  if (event === 'BOT_STOPPED') return '机器人已停止';
+  if (event === 'BOT_WINDOW_INITIALIZED') return '进入新窗口，开始等待 open_delay';
+  if (event === 'BOT_DECISION_GATED' && reason === 'wait_next_window_after_start') return '等待新窗口，当前窗口仅观察';
+  if (event === 'BOT_DECISION_GATED' && reason === 'pre_open_or_open_not_open_delay') return '等待 open_delay 到期';
+  if ((event === 'RUNNER_TICK' || event === 'BOT_DECISION_GATED') && reason === 'price_or_bounds_null') return '等待价格与边界数据';
+  if ((event === 'RUNNER_TICK' || event === 'BOT_DECISION') && reason === 'scheduled_tick_ok') return '本周期无动作';
+  if ((event === 'RUNNER_TICK' || event === 'BOT_DECISION') && reason === 'noop') return '本周期无动作';
+  if (event === 'BOT_ORDER_APPLY') {
+    const summary = typeof data?.intents_summary === 'string' ? data.intents_summary : '';
+    if (summary.includes('PLACE_LADDER(BOTH)')) return '已挂 UP 2 单 / DOWN 2 单';
+    if (summary.includes('PLACE_LADDER(YES)')) return '已挂 UP 挂单';
+    if (summary.includes('PLACE_LADDER(NO)')) return '已挂 DOWN 挂单';
+    return '已提交挂单';
+  }
+  if (event === 'BOT_FILL') {
+    const fills = Array.isArray(data?.fills) ? data.fills : [];
+    const noCount = fills.filter((item) => item?.side === 'NO').length;
+    const yesCount = fills.filter((item) => item?.side === 'YES').length;
+    if (noCount > 0 && yesCount === 0) return `NO 方向 ${noCount} 单成交`;
+    if (yesCount > 0 && noCount === 0) return `UP 方向 ${yesCount} 单成交`;
+    if (yesCount > 0 || noCount > 0) return `双边共 ${yesCount + noCount} 单成交`;
+    return detail === '—' ? '发生成交' : detail;
+  }
+  if (event === 'BOT_ORDER_CANCEL') {
+    if (reason === 'up_cancel_before_end') return 'UP 到时撤单（120秒）';
+    if (reason === 'down_cancel_before_end') return 'DOWN 到时撤单（60秒）';
+    if (reason === 'up_formula_cancel') return 'UP 公式触发撤单';
+    if (reason === 'down_formula_cancel') return 'DOWN 公式触发撤单';
+    return detail === '—' ? '已执行撤单' : detail;
+  }
+  if (event === 'BOT_POSTMORTEM_WRITTEN') return '当前窗口结束，结果已归档';
+  if (event === 'BOT_TICK_OK') return '心跳周期正常';
+  return detail === '—' ? '状态已更新' : detail;
+}
+
+function se_isKeyLog(log) {
+  const level = (log.level || log.type || 'info').toLowerCase();
+  const event = log.event || log.type || 'LOG';
+  const message = log.message || log.msg || '';
+  const data = log.data && typeof log.data === 'object' ? log.data : null;
+  const reason = se_logReasonToken(message, data);
+  if (level === 'error' || level === 'warn' || level === 'warning') return true;
+  if (event === 'BOT_STARTED' || event === 'BOT_STOPPED' || event === 'BOT_WINDOW_INITIALIZED') return true;
+  if (event === 'BOT_FILL' || event === 'BOT_ORDER_APPLY' || event === 'BOT_ORDER_CANCEL' || event === 'BOT_POSTMORTEM_WRITTEN') return true;
+  if (event === 'BOT_DECISION_GATED' && (reason === 'wait_next_window_after_start' || reason === 'pre_open_or_open_not_open_delay' || reason === 'price_or_bounds_null')) return true;
+  if (event === 'RUNNER_TICK' && (reason === 'up_cancel_before_end' || reason === 'down_cancel_before_end' || reason === 'up_formula_cancel' || reason === 'down_formula_cancel')) return true;
+  if (se_isNoiseLog(event, message, data)) return false;
+  return false;
+}
+
+function se_refreshLogViewModeUI() {
+  const keyBtn = document.getElementById('se-log-view-key');
+  const rawBtn = document.getElementById('se-log-view-raw');
+  const hint = document.getElementById('se-log-view-hint');
+  if (keyBtn) {
+    keyBtn.style.borderColor = _seLogViewMode === 'key' ? '#35506b' : '#2f3946';
+    keyBtn.style.background = _seLogViewMode === 'key' ? '#1a2a3a' : '#121821';
+    keyBtn.style.color = _seLogViewMode === 'key' ? '#c8e6ff' : '#8ea1b5';
+  }
+  if (rawBtn) {
+    rawBtn.style.borderColor = _seLogViewMode === 'raw' ? '#35506b' : '#2f3946';
+    rawBtn.style.background = _seLogViewMode === 'raw' ? '#1a2a3a' : '#121821';
+    rawBtn.style.color = _seLogViewMode === 'raw' ? '#c8e6ff' : '#8ea1b5';
+  }
+  if (hint) {
+    hint.textContent = _seLogViewMode === 'key'
+      ? `默认展示关键信息流（已折叠噪声 ${_seLogNoiseSuppressed} 条）`
+      : '当前展示原始日志（包含心跳/空转事件）';
+  }
+}
+
+function se_renderLogAreaByMode() {
   const area = document.getElementById('se-log-area');
-  if (!logs.length) {
-    area.innerHTML = '<div class="se-log-entry se-log-info">暂无 Bot 结构化日志</div>';
+  if (!area) return;
+  const source = _seLogViewMode === 'raw' ? _seLogEntriesRaw : _seLogEntriesKey;
+  const list = source.slice(-300);
+  se_refreshLogViewModeUI();
+  if (!list.length) {
+    area.innerHTML = _seLogViewMode === 'raw'
+      ? '<div class="se-log-entry se-log-info">暂无原始日志</div>'
+      : '<div class="se-log-entry se-log-info">暂无关键信息流</div>';
     return;
   }
+  const rows = list.map((item) => {
+    const line = _seLogViewMode === 'raw' ? item.rawLine : item.keyLine;
+    return `<div class="se-log-entry se-log-${item.level}">${line}</div>`;
+  });
+  area.innerHTML = rows.join('');
+  area.scrollTop = area.scrollHeight;
+}
 
-  const newLogs = _seLastLogTs
-    ? logs.filter(l => l.ts > _seLastLogTs)
-    : logs;
+function se_setLogViewMode(mode) {
+  if (mode !== 'key' && mode !== 'raw') return;
+  _seLogViewMode = mode;
+  se_renderLogAreaByMode();
+}
 
-  if (newLogs.length === 0) return;
-  if (area.children.length === 1 && area.textContent.includes('暂无 Bot 结构化日志')) {
-    area.innerHTML = '';
+function se_renderLogs(logs) {
+  const area = document.getElementById('se-log-area');
+  if (!area) return;
+  if (!logs.length && _seLogEntriesRaw.length === 0) {
+    se_renderLogAreaByMode();
+    return;
   }
-
+  const newLogs = _seLastLogTs
+    ? logs.filter((l) => l.ts > _seLastLogTs)
+    : logs;
+  if (newLogs.length === 0) {
+    se_renderLogAreaByMode();
+    return;
+  }
   _seLastLogTs = logs[logs.length - 1].ts;
-
-  newLogs.forEach(log => {
-    const div = document.createElement('div');
+  newLogs.forEach((log) => {
     const level = (log.level || log.type || 'info').toLowerCase();
     const event = log.event || log.type || 'LOG';
     const message = log.message || log.msg || '';
     const data = log.data && typeof log.data === 'object' ? log.data : null;
-    div.className = `se-log-entry se-log-${level}`;
     const time = new Date(log.ts).toLocaleTimeString('zh-CN', { hour12: false });
-    const mapped = se_logEventLabel(event);
+    const stateSentence = se_buildStateSentence(log);
     const detail = se_translateLogDetail(message, data);
-    const mainText = mapped
-      ? `${mapped}${detail !== '—' ? `：${detail}` : ''}`
-      : `未归类日志事件：${detail === '—' ? '请查看原始信息' : detail}`;
-    const rawText = `（原始:${event}${message ? ` | 原文:${message}` : ''}）`;
-    div.textContent = `${time} [${se_logLevelLabel(level)}] ${mainText} ${rawText}`.trim();
-    area.appendChild(div);
-
-    if (level === 'error') {
-      _seErrorCount++;
-    } else {
-      _seErrorCount = 0;
+    const rawLine = `${time} [${se_logLevelLabel(level)}] ${stateSentence}（原始:${event}${message ? ` | 原文:${message}` : ''}）`.trim();
+    const keyLine = `${time} [${se_logLevelLabel(level)}] ${stateSentence}`.trim();
+    const noise = se_isNoiseLog(event, message, data);
+    _seLogEntriesRaw.push({ ts: log.ts, level, event, message, data, rawLine, keyLine });
+    if (se_isKeyLog(log)) {
+      _seLogEntriesKey.push({ ts: log.ts, level, event, message, data, rawLine, keyLine });
+    } else if (noise || detail === '无动作' || detail === '周期正常') {
+      _seLogNoiseSuppressed += 1;
     }
+    if (level === 'error') _seErrorCount++;
+    else _seErrorCount = 0;
   });
-
+  while (_seLogEntriesRaw.length > 300) _seLogEntriesRaw.shift();
+  while (_seLogEntriesKey.length > 300) _seLogEntriesKey.shift();
+  se_renderLogAreaByMode();
   if (_seErrorCount >= 3 && _se_running) {
     se_stopBot();
     alert('连续报错 3 次，策略已自动停止');
   }
+}
 
-  // 限制 DOM 节点数量（最多 300 条）
-  while (area.children.length > 300) {
-    area.removeChild(area.firstChild);
-  }
-
-  // 自动滚到底部
-  area.scrollTop = area.scrollHeight;
+function se_appendLog(type, msg) {
+  const level = String(type || 'info').toLowerCase();
+  const ts = new Date().toISOString();
+  const line = `${new Date(ts).toLocaleTimeString('zh-CN', { hour12: false })} [${se_logLevelLabel(level)}] ${String(msg || '')}`.trim();
+  const entry = {
+    ts,
+    level,
+    event: 'UI_LOG',
+    message: String(msg || ''),
+    data: { source: 'ui' },
+    rawLine: line,
+    keyLine: line
+  };
+  _seLogEntriesRaw.push(entry);
+  _seLogEntriesKey.push(entry);
+  while (_seLogEntriesRaw.length > 300) _seLogEntriesRaw.shift();
+  while (_seLogEntriesKey.length > 300) _seLogEntriesKey.shift();
+  se_renderLogAreaByMode();
 }
 
 function se_renderPnlChart(pnlSeries) {
