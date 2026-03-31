@@ -1,0 +1,6 @@
+script_name=truth_audit_result_blocks_fields_260330_020
+task_id=260330_020
+sample_name=result_blocks_fields_v1
+pass=true
+first_break_layer=NONE_CHAIN_PASS
+message=result blocks truth audit pass
