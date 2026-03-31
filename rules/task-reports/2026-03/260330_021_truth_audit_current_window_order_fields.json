@@ -1,0 +1,2288 @@
+{
+  "script_name": "truth_audit_current_window_order_fields_260330_021",
+  "task_id": "260330_021",
+  "sample_name": "current_window_order_fields_v1",
+  "pass": true,
+  "message": "current window order fields truth audit pass",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_021_truth_audit_current_window_order_fields.json",
+  "summary": {
+    "conclusion": "A：当前窗口订单状态字段链通过",
+    "verdict": "A：通过",
+    "total_checks": 5,
+    "pass_checks": 5,
+    "fail_checks": 0,
+    "checks": {
+      "021-A_field_inventory_complete": true,
+      "021-B_real_runtime_chain_covered": true,
+      "021-C_reconcile_rows_all_pass": true,
+      "021-D_scope_partition_clean": true,
+      "021-E_status_close_projection_clean": true
+    }
+  },
+  "raw_excerpt": {
+    "field_inventory": {
+      "source_file": "E:\\OppRadar\\ui\\js\\strategy-editor.js",
+      "top_fields": [
+        {
+          "ui_block": "当前窗口订单状态",
+          "ui_field": "BTC价格",
+          "dom_id": "se-order-btc"
+        },
+        {
+          "ui_block": "当前窗口订单状态",
+          "ui_field": "UPDOWN概率",
+          "dom_id": "se-order-updown-prob"
+        },
+        {
+          "ui_block": "当前窗口订单状态",
+          "ui_field": "波动值",
+          "dom_id": "se-order-volatility"
+        }
+      ],
+      "table_headers": [
+        "订单类型",
+        "UP/DOWN",
+        "价格",
+        "数量",
+        "平仓价",
+        "状态"
+      ]
+    },
+    "real_rows_head": [
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.943Z",
+        "ui_field": "BTC价格",
+        "ui_value": "67418.3",
+        "source_api_or_state": "orders.context_snapshot | context",
+        "source_field": "btc_price",
+        "expected_value": "67418.3",
+        "order_id": null,
+        "current_window_id": "btc-updown-5m-1774920000",
+        "pass_fail": "PASS",
+        "notes": "top_field_projection",
+        "last_window_id": "btc-updown-5m-1774919700"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.943Z",
+        "ui_field": "UPDOWN概率",
+        "ui_value": "UP 0.990 / DOWN 0.000",
+        "source_api_or_state": "orders.context_snapshot | context",
+        "source_field": "bid_yes/bid_no fallback ask_*",
+        "expected_value": "UP 0.990 / DOWN 0.000",
+        "order_id": null,
+        "current_window_id": "btc-updown-5m-1774920000",
+        "pass_fail": "PASS",
+        "notes": "top_field_projection",
+        "last_window_id": "btc-updown-5m-1774919700"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.943Z",
+        "ui_field": "波动值",
+        "ui_value": "158.931",
+        "source_api_or_state": "orders.context_snapshot | context",
+        "source_field": "atr_5m",
+        "expected_value": "158.931",
+        "order_id": null,
+        "current_window_id": "btc-updown-5m-1774920000",
+        "pass_fail": "PASS",
+        "notes": "top_field_projection",
+        "last_window_id": "btc-updown-5m-1774919700"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.949Z",
+        "ui_field": "订单类型",
+        "ui_value": "NO",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "direct projection",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_4bd28f0a",
+        "expected_value": "NO",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.949Z",
+        "ui_field": "UP/DOWN",
+        "ui_value": "DOWN",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "direct projection",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_4bd28f0a",
+        "expected_value": "DOWN",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.949Z",
+        "ui_field": "价格",
+        "ui_value": "0.999",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "direct projection",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_4bd28f0a",
+        "expected_value": "0.999",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.949Z",
+        "ui_field": "数量",
+        "ui_value": "5",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "direct projection",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_4bd28f0a",
+        "expected_value": "5",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.949Z",
+        "ui_field": "平仓价",
+        "ui_value": "1.000",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "tp_price || fill_price || --",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_4bd28f0a",
+        "expected_value": "1.000",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.949Z",
+        "ui_field": "状态",
+        "ui_value": "已成交",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "lifecycleLabel(status, isCloseOrder)",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_4bd28f0a",
+        "expected_value": "已成交",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.949Z",
+        "ui_field": "订单类型",
+        "ui_value": "NO",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "direct projection",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_28bd976f",
+        "expected_value": "NO",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.949Z",
+        "ui_field": "UP/DOWN",
+        "ui_value": "DOWN",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "direct projection",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_28bd976f",
+        "expected_value": "DOWN",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.949Z",
+        "ui_field": "价格",
+        "ui_value": "0.998",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "direct projection",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_28bd976f",
+        "expected_value": "0.998",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.949Z",
+        "ui_field": "数量",
+        "ui_value": "5",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "direct projection",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_28bd976f",
+        "expected_value": "5",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.949Z",
+        "ui_field": "平仓价",
+        "ui_value": "1.000",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "tp_price || fill_price || --",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_28bd976f",
+        "expected_value": "1.000",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.949Z",
+        "ui_field": "状态",
+        "ui_value": "已成交",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "lifecycleLabel(status, isCloseOrder)",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_28bd976f",
+        "expected_value": "已成交",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.949Z",
+        "ui_field": "订单类型",
+        "ui_value": "YES",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "direct projection",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_4a8f138c",
+        "expected_value": "YES",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.949Z",
+        "ui_field": "UP/DOWN",
+        "ui_value": "UP",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "direct projection",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_4a8f138c",
+        "expected_value": "UP",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.949Z",
+        "ui_field": "价格",
+        "ui_value": "0.999",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "direct projection",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_4a8f138c",
+        "expected_value": "0.999",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.950Z",
+        "ui_field": "数量",
+        "ui_value": "5",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "direct projection",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_4a8f138c",
+        "expected_value": "5",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.950Z",
+        "ui_field": "平仓价",
+        "ui_value": "1.000",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "tp_price || fill_price || --",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_4a8f138c",
+        "expected_value": "1.000",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      }
+    ],
+    "debug_rows_head": [
+      {
+        "sample_tag": "debug_control",
+        "timestamp": "2026-03-31T01:18:51.525Z",
+        "ui_field": "BTC价格",
+        "ui_value": "100.0",
+        "source_api_or_state": "orders.context_snapshot | context",
+        "source_field": "btc_price",
+        "expected_value": "100.0",
+        "order_id": null,
+        "current_window_id": "debug-main-path-v1-w1",
+        "pass_fail": "PASS",
+        "notes": "top_field_projection",
+        "last_window_id": null
+      },
+      {
+        "sample_tag": "debug_control",
+        "timestamp": "2026-03-31T01:18:51.525Z",
+        "ui_field": "UPDOWN概率",
+        "ui_value": "UP 0.550 / DOWN 0.440",
+        "source_api_or_state": "orders.context_snapshot | context",
+        "source_field": "bid_yes/bid_no fallback ask_*",
+        "expected_value": "UP 0.550 / DOWN 0.440",
+        "order_id": null,
+        "current_window_id": "debug-main-path-v1-w1",
+        "pass_fail": "PASS",
+        "notes": "top_field_projection",
+        "last_window_id": null
+      },
+      {
+        "sample_tag": "debug_control",
+        "timestamp": "2026-03-31T01:18:51.525Z",
+        "ui_field": "波动值",
+        "ui_value": "2.000",
+        "source_api_or_state": "orders.context_snapshot | context",
+        "source_field": "atr_5m",
+        "expected_value": "2.000",
+        "order_id": null,
+        "current_window_id": "debug-main-path-v1-w1",
+        "pass_fail": "PASS",
+        "notes": "top_field_projection",
+        "last_window_id": null
+      }
+    ]
+  },
+  "generated_at": "2026-03-31T01:20:01.950Z",
+  "conclusion_block": {
+    "conclusion": "A：当前窗口订单状态字段链通过",
+    "verdict": "A：通过",
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "real_debug_diverged": false,
+    "real_debug_first_divergence_layer": "none"
+  },
+  "key_counters": {
+    "total_checks": 5,
+    "pass_checks": 5,
+    "fail_checks": 0
+  },
+  "evidence_index": {
+    "field_inventory": {
+      "source_file": "E:\\OppRadar\\ui\\js\\strategy-editor.js",
+      "top_fields": [
+        {
+          "ui_block": "当前窗口订单状态",
+          "ui_field": "BTC价格",
+          "dom_id": "se-order-btc"
+        },
+        {
+          "ui_block": "当前窗口订单状态",
+          "ui_field": "UPDOWN概率",
+          "dom_id": "se-order-updown-prob"
+        },
+        {
+          "ui_block": "当前窗口订单状态",
+          "ui_field": "波动值",
+          "dom_id": "se-order-volatility"
+        }
+      ],
+      "table_headers": [
+        "订单类型",
+        "UP/DOWN",
+        "价格",
+        "数量",
+        "平仓价",
+        "状态"
+      ]
+    },
+    "reconciliation_table": [
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.943Z",
+        "ui_field": "BTC价格",
+        "ui_value": "67418.3",
+        "source_api_or_state": "orders.context_snapshot | context",
+        "source_field": "btc_price",
+        "expected_value": "67418.3",
+        "order_id": null,
+        "current_window_id": "btc-updown-5m-1774920000",
+        "pass_fail": "PASS",
+        "notes": "top_field_projection",
+        "last_window_id": "btc-updown-5m-1774919700"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.943Z",
+        "ui_field": "UPDOWN概率",
+        "ui_value": "UP 0.990 / DOWN 0.000",
+        "source_api_or_state": "orders.context_snapshot | context",
+        "source_field": "bid_yes/bid_no fallback ask_*",
+        "expected_value": "UP 0.990 / DOWN 0.000",
+        "order_id": null,
+        "current_window_id": "btc-updown-5m-1774920000",
+        "pass_fail": "PASS",
+        "notes": "top_field_projection",
+        "last_window_id": "btc-updown-5m-1774919700"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.943Z",
+        "ui_field": "波动值",
+        "ui_value": "158.931",
+        "source_api_or_state": "orders.context_snapshot | context",
+        "source_field": "atr_5m",
+        "expected_value": "158.931",
+        "order_id": null,
+        "current_window_id": "btc-updown-5m-1774920000",
+        "pass_fail": "PASS",
+        "notes": "top_field_projection",
+        "last_window_id": "btc-updown-5m-1774919700"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.949Z",
+        "ui_field": "订单类型",
+        "ui_value": "NO",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "direct projection",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_4bd28f0a",
+        "expected_value": "NO",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.949Z",
+        "ui_field": "UP/DOWN",
+        "ui_value": "DOWN",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "direct projection",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_4bd28f0a",
+        "expected_value": "DOWN",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.949Z",
+        "ui_field": "价格",
+        "ui_value": "0.999",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "direct projection",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_4bd28f0a",
+        "expected_value": "0.999",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.949Z",
+        "ui_field": "数量",
+        "ui_value": "5",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "direct projection",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_4bd28f0a",
+        "expected_value": "5",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.949Z",
+        "ui_field": "平仓价",
+        "ui_value": "1.000",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "tp_price || fill_price || --",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_4bd28f0a",
+        "expected_value": "1.000",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.949Z",
+        "ui_field": "状态",
+        "ui_value": "已成交",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "lifecycleLabel(status, isCloseOrder)",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_4bd28f0a",
+        "expected_value": "已成交",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.949Z",
+        "ui_field": "订单类型",
+        "ui_value": "NO",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "direct projection",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_28bd976f",
+        "expected_value": "NO",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.949Z",
+        "ui_field": "UP/DOWN",
+        "ui_value": "DOWN",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "direct projection",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_28bd976f",
+        "expected_value": "DOWN",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.949Z",
+        "ui_field": "价格",
+        "ui_value": "0.998",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "direct projection",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_28bd976f",
+        "expected_value": "0.998",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.949Z",
+        "ui_field": "数量",
+        "ui_value": "5",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "direct projection",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_28bd976f",
+        "expected_value": "5",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.949Z",
+        "ui_field": "平仓价",
+        "ui_value": "1.000",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "tp_price || fill_price || --",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_28bd976f",
+        "expected_value": "1.000",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.949Z",
+        "ui_field": "状态",
+        "ui_value": "已成交",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "lifecycleLabel(status, isCloseOrder)",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_28bd976f",
+        "expected_value": "已成交",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.949Z",
+        "ui_field": "订单类型",
+        "ui_value": "YES",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "direct projection",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_4a8f138c",
+        "expected_value": "YES",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.949Z",
+        "ui_field": "UP/DOWN",
+        "ui_value": "UP",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "direct projection",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_4a8f138c",
+        "expected_value": "UP",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.949Z",
+        "ui_field": "价格",
+        "ui_value": "0.999",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "direct projection",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_4a8f138c",
+        "expected_value": "0.999",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.950Z",
+        "ui_field": "数量",
+        "ui_value": "5",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "direct projection",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_4a8f138c",
+        "expected_value": "5",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.950Z",
+        "ui_field": "平仓价",
+        "ui_value": "1.000",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "tp_price || fill_price || --",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_4a8f138c",
+        "expected_value": "1.000",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.950Z",
+        "ui_field": "状态",
+        "ui_value": "挂单中",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "lifecycleLabel(status, isCloseOrder)",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_4a8f138c",
+        "expected_value": "挂单中",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.950Z",
+        "ui_field": "订单类型",
+        "ui_value": "YES",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "direct projection",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_aa147547",
+        "expected_value": "YES",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.950Z",
+        "ui_field": "UP/DOWN",
+        "ui_value": "UP",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "direct projection",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_aa147547",
+        "expected_value": "UP",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.950Z",
+        "ui_field": "价格",
+        "ui_value": "0.998",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "direct projection",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_aa147547",
+        "expected_value": "0.998",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.950Z",
+        "ui_field": "数量",
+        "ui_value": "5",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "direct projection",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_aa147547",
+        "expected_value": "5",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.950Z",
+        "ui_field": "平仓价",
+        "ui_value": "1.000",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "tp_price || fill_price || --",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_aa147547",
+        "expected_value": "1.000",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      },
+      {
+        "sample_tag": "real_runtime",
+        "timestamp": "2026-03-31T01:20:01.950Z",
+        "ui_field": "状态",
+        "ui_value": "挂单中",
+        "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+        "source_field": "lifecycleLabel(status, isCloseOrder)",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "order_id": "paper_aa147547",
+        "expected_value": "挂单中",
+        "pass_fail": "PASS",
+        "notes": "resolved_window=btc-updown-5m-1774920000"
+      }
+    ],
+    "real_runtime": {
+      "sample_covered": true,
+      "startup_window_id": "btc-updown-5m-1774919700",
+      "saw_place_stage": true,
+      "saw_terminal_stage": true,
+      "saw_window_switch": true,
+      "timeline_head": [
+        {
+          "i": 0,
+          "at": "2026-03-31T01:19:15.011Z",
+          "current_window_id": null,
+          "last_window_id": null,
+          "intents_summary": "NOOP",
+          "window_orders_count": 0,
+          "terminal_rows": 0
+        },
+        {
+          "i": 1,
+          "at": "2026-03-31T01:19:16.022Z",
+          "current_window_id": "btc-updown-5m-1774919700",
+          "last_window_id": null,
+          "intents_summary": "NOOP",
+          "window_orders_count": 0,
+          "terminal_rows": 0
+        },
+        {
+          "i": 2,
+          "at": "2026-03-31T01:19:17.038Z",
+          "current_window_id": "btc-updown-5m-1774919700",
+          "last_window_id": null,
+          "intents_summary": "NOOP",
+          "window_orders_count": 0,
+          "terminal_rows": 0
+        },
+        {
+          "i": 3,
+          "at": "2026-03-31T01:19:18.041Z",
+          "current_window_id": "btc-updown-5m-1774919700",
+          "last_window_id": null,
+          "intents_summary": "NOOP",
+          "window_orders_count": 0,
+          "terminal_rows": 0
+        },
+        {
+          "i": 4,
+          "at": "2026-03-31T01:19:19.060Z",
+          "current_window_id": "btc-updown-5m-1774919700",
+          "last_window_id": null,
+          "intents_summary": "NOOP",
+          "window_orders_count": 0,
+          "terminal_rows": 0
+        },
+        {
+          "i": 5,
+          "at": "2026-03-31T01:19:20.076Z",
+          "current_window_id": "btc-updown-5m-1774919700",
+          "last_window_id": null,
+          "intents_summary": "NOOP",
+          "window_orders_count": 0,
+          "terminal_rows": 0
+        },
+        {
+          "i": 6,
+          "at": "2026-03-31T01:19:21.091Z",
+          "current_window_id": "btc-updown-5m-1774919700",
+          "last_window_id": null,
+          "intents_summary": "NOOP",
+          "window_orders_count": 0,
+          "terminal_rows": 0
+        },
+        {
+          "i": 7,
+          "at": "2026-03-31T01:19:22.095Z",
+          "current_window_id": "btc-updown-5m-1774919700",
+          "last_window_id": null,
+          "intents_summary": "NOOP",
+          "window_orders_count": 0,
+          "terminal_rows": 0
+        },
+        {
+          "i": 8,
+          "at": "2026-03-31T01:19:23.100Z",
+          "current_window_id": "btc-updown-5m-1774919700",
+          "last_window_id": null,
+          "intents_summary": "NOOP",
+          "window_orders_count": 0,
+          "terminal_rows": 0
+        },
+        {
+          "i": 9,
+          "at": "2026-03-31T01:19:24.102Z",
+          "current_window_id": "btc-updown-5m-1774919700",
+          "last_window_id": null,
+          "intents_summary": "NOOP",
+          "window_orders_count": 0,
+          "terminal_rows": 0
+        },
+        {
+          "i": 10,
+          "at": "2026-03-31T01:19:25.110Z",
+          "current_window_id": "btc-updown-5m-1774919700",
+          "last_window_id": null,
+          "intents_summary": "NOOP",
+          "window_orders_count": 0,
+          "terminal_rows": 0
+        },
+        {
+          "i": 11,
+          "at": "2026-03-31T01:19:26.123Z",
+          "current_window_id": "btc-updown-5m-1774919700",
+          "last_window_id": null,
+          "intents_summary": "NOOP",
+          "window_orders_count": 0,
+          "terminal_rows": 0
+        }
+      ],
+      "timeline_tail": [
+        {
+          "i": 35,
+          "at": "2026-03-31T01:19:50.338Z",
+          "current_window_id": "btc-updown-5m-1774919700",
+          "last_window_id": null,
+          "intents_summary": "NOOP",
+          "window_orders_count": 0,
+          "terminal_rows": 0
+        },
+        {
+          "i": 36,
+          "at": "2026-03-31T01:19:51.354Z",
+          "current_window_id": "btc-updown-5m-1774919700",
+          "last_window_id": null,
+          "intents_summary": "NOOP",
+          "window_orders_count": 0,
+          "terminal_rows": 0
+        },
+        {
+          "i": 37,
+          "at": "2026-03-31T01:19:52.359Z",
+          "current_window_id": "btc-updown-5m-1774919700",
+          "last_window_id": null,
+          "intents_summary": "NOOP",
+          "window_orders_count": 0,
+          "terminal_rows": 0
+        },
+        {
+          "i": 38,
+          "at": "2026-03-31T01:19:53.376Z",
+          "current_window_id": "btc-updown-5m-1774919700",
+          "last_window_id": null,
+          "intents_summary": "NOOP",
+          "window_orders_count": 0,
+          "terminal_rows": 0
+        },
+        {
+          "i": 39,
+          "at": "2026-03-31T01:19:54.380Z",
+          "current_window_id": "btc-updown-5m-1774919700",
+          "last_window_id": null,
+          "intents_summary": "NOOP",
+          "window_orders_count": 0,
+          "terminal_rows": 0
+        },
+        {
+          "i": 40,
+          "at": "2026-03-31T01:19:55.384Z",
+          "current_window_id": "btc-updown-5m-1774919700",
+          "last_window_id": null,
+          "intents_summary": "NOOP",
+          "window_orders_count": 0,
+          "terminal_rows": 0
+        },
+        {
+          "i": 41,
+          "at": "2026-03-31T01:19:56.399Z",
+          "current_window_id": "btc-updown-5m-1774919700",
+          "last_window_id": null,
+          "intents_summary": "NOOP",
+          "window_orders_count": 0,
+          "terminal_rows": 0
+        },
+        {
+          "i": 42,
+          "at": "2026-03-31T01:19:57.405Z",
+          "current_window_id": "btc-updown-5m-1774919700",
+          "last_window_id": null,
+          "intents_summary": "NOOP",
+          "window_orders_count": 0,
+          "terminal_rows": 0
+        },
+        {
+          "i": 43,
+          "at": "2026-03-31T01:19:58.408Z",
+          "current_window_id": "btc-updown-5m-1774919700",
+          "last_window_id": null,
+          "intents_summary": "NOOP",
+          "window_orders_count": 0,
+          "terminal_rows": 0
+        },
+        {
+          "i": 44,
+          "at": "2026-03-31T01:19:59.411Z",
+          "current_window_id": "btc-updown-5m-1774919700",
+          "last_window_id": null,
+          "intents_summary": "NOOP",
+          "window_orders_count": 0,
+          "terminal_rows": 0
+        },
+        {
+          "i": 45,
+          "at": "2026-03-31T01:20:00.415Z",
+          "current_window_id": "btc-updown-5m-1774919700",
+          "last_window_id": null,
+          "intents_summary": "NOOP",
+          "window_orders_count": 0,
+          "terminal_rows": 0
+        },
+        {
+          "i": 46,
+          "at": "2026-03-31T01:20:01.434Z",
+          "current_window_id": "btc-updown-5m-1774920000",
+          "last_window_id": "btc-updown-5m-1774919700",
+          "intents_summary": "PLACE_LADDER(YES|0.999:5:1,0.998:5:1) + PLACE_LADDER(NO|0.999:5:1,0.998:5:1)",
+          "window_orders_count": 4,
+          "terminal_rows": 2
+        }
+      ],
+      "rows": [
+        {
+          "sample_tag": "real_runtime",
+          "timestamp": "2026-03-31T01:20:01.943Z",
+          "ui_field": "BTC价格",
+          "ui_value": "67418.3",
+          "source_api_or_state": "orders.context_snapshot | context",
+          "source_field": "btc_price",
+          "expected_value": "67418.3",
+          "order_id": null,
+          "current_window_id": "btc-updown-5m-1774920000",
+          "pass_fail": "PASS",
+          "notes": "top_field_projection",
+          "last_window_id": "btc-updown-5m-1774919700"
+        },
+        {
+          "sample_tag": "real_runtime",
+          "timestamp": "2026-03-31T01:20:01.943Z",
+          "ui_field": "UPDOWN概率",
+          "ui_value": "UP 0.990 / DOWN 0.000",
+          "source_api_or_state": "orders.context_snapshot | context",
+          "source_field": "bid_yes/bid_no fallback ask_*",
+          "expected_value": "UP 0.990 / DOWN 0.000",
+          "order_id": null,
+          "current_window_id": "btc-updown-5m-1774920000",
+          "pass_fail": "PASS",
+          "notes": "top_field_projection",
+          "last_window_id": "btc-updown-5m-1774919700"
+        },
+        {
+          "sample_tag": "real_runtime",
+          "timestamp": "2026-03-31T01:20:01.943Z",
+          "ui_field": "波动值",
+          "ui_value": "158.931",
+          "source_api_or_state": "orders.context_snapshot | context",
+          "source_field": "atr_5m",
+          "expected_value": "158.931",
+          "order_id": null,
+          "current_window_id": "btc-updown-5m-1774920000",
+          "pass_fail": "PASS",
+          "notes": "top_field_projection",
+          "last_window_id": "btc-updown-5m-1774919700"
+        },
+        {
+          "sample_tag": "real_runtime",
+          "timestamp": "2026-03-31T01:20:01.949Z",
+          "ui_field": "订单类型",
+          "ui_value": "NO",
+          "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+          "source_field": "direct projection",
+          "current_window_id": "btc-updown-5m-1774920000",
+          "last_window_id": "btc-updown-5m-1774919700",
+          "order_id": "paper_4bd28f0a",
+          "expected_value": "NO",
+          "pass_fail": "PASS",
+          "notes": "resolved_window=btc-updown-5m-1774920000"
+        },
+        {
+          "sample_tag": "real_runtime",
+          "timestamp": "2026-03-31T01:20:01.949Z",
+          "ui_field": "UP/DOWN",
+          "ui_value": "DOWN",
+          "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+          "source_field": "direct projection",
+          "current_window_id": "btc-updown-5m-1774920000",
+          "last_window_id": "btc-updown-5m-1774919700",
+          "order_id": "paper_4bd28f0a",
+          "expected_value": "DOWN",
+          "pass_fail": "PASS",
+          "notes": "resolved_window=btc-updown-5m-1774920000"
+        },
+        {
+          "sample_tag": "real_runtime",
+          "timestamp": "2026-03-31T01:20:01.949Z",
+          "ui_field": "价格",
+          "ui_value": "0.999",
+          "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+          "source_field": "direct projection",
+          "current_window_id": "btc-updown-5m-1774920000",
+          "last_window_id": "btc-updown-5m-1774919700",
+          "order_id": "paper_4bd28f0a",
+          "expected_value": "0.999",
+          "pass_fail": "PASS",
+          "notes": "resolved_window=btc-updown-5m-1774920000"
+        },
+        {
+          "sample_tag": "real_runtime",
+          "timestamp": "2026-03-31T01:20:01.949Z",
+          "ui_field": "数量",
+          "ui_value": "5",
+          "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+          "source_field": "direct projection",
+          "current_window_id": "btc-updown-5m-1774920000",
+          "last_window_id": "btc-updown-5m-1774919700",
+          "order_id": "paper_4bd28f0a",
+          "expected_value": "5",
+          "pass_fail": "PASS",
+          "notes": "resolved_window=btc-updown-5m-1774920000"
+        },
+        {
+          "sample_tag": "real_runtime",
+          "timestamp": "2026-03-31T01:20:01.949Z",
+          "ui_field": "平仓价",
+          "ui_value": "1.000",
+          "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+          "source_field": "tp_price || fill_price || --",
+          "current_window_id": "btc-updown-5m-1774920000",
+          "last_window_id": "btc-updown-5m-1774919700",
+          "order_id": "paper_4bd28f0a",
+          "expected_value": "1.000",
+          "pass_fail": "PASS",
+          "notes": "resolved_window=btc-updown-5m-1774920000"
+        },
+        {
+          "sample_tag": "real_runtime",
+          "timestamp": "2026-03-31T01:20:01.949Z",
+          "ui_field": "状态",
+          "ui_value": "已成交",
+          "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+          "source_field": "lifecycleLabel(status, isCloseOrder)",
+          "current_window_id": "btc-updown-5m-1774920000",
+          "last_window_id": "btc-updown-5m-1774919700",
+          "order_id": "paper_4bd28f0a",
+          "expected_value": "已成交",
+          "pass_fail": "PASS",
+          "notes": "resolved_window=btc-updown-5m-1774920000"
+        },
+        {
+          "sample_tag": "real_runtime",
+          "timestamp": "2026-03-31T01:20:01.949Z",
+          "ui_field": "订单类型",
+          "ui_value": "NO",
+          "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+          "source_field": "direct projection",
+          "current_window_id": "btc-updown-5m-1774920000",
+          "last_window_id": "btc-updown-5m-1774919700",
+          "order_id": "paper_28bd976f",
+          "expected_value": "NO",
+          "pass_fail": "PASS",
+          "notes": "resolved_window=btc-updown-5m-1774920000"
+        },
+        {
+          "sample_tag": "real_runtime",
+          "timestamp": "2026-03-31T01:20:01.949Z",
+          "ui_field": "UP/DOWN",
+          "ui_value": "DOWN",
+          "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+          "source_field": "direct projection",
+          "current_window_id": "btc-updown-5m-1774920000",
+          "last_window_id": "btc-updown-5m-1774919700",
+          "order_id": "paper_28bd976f",
+          "expected_value": "DOWN",
+          "pass_fail": "PASS",
+          "notes": "resolved_window=btc-updown-5m-1774920000"
+        },
+        {
+          "sample_tag": "real_runtime",
+          "timestamp": "2026-03-31T01:20:01.949Z",
+          "ui_field": "价格",
+          "ui_value": "0.998",
+          "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+          "source_field": "direct projection",
+          "current_window_id": "btc-updown-5m-1774920000",
+          "last_window_id": "btc-updown-5m-1774919700",
+          "order_id": "paper_28bd976f",
+          "expected_value": "0.998",
+          "pass_fail": "PASS",
+          "notes": "resolved_window=btc-updown-5m-1774920000"
+        },
+        {
+          "sample_tag": "real_runtime",
+          "timestamp": "2026-03-31T01:20:01.949Z",
+          "ui_field": "数量",
+          "ui_value": "5",
+          "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+          "source_field": "direct projection",
+          "current_window_id": "btc-updown-5m-1774920000",
+          "last_window_id": "btc-updown-5m-1774919700",
+          "order_id": "paper_28bd976f",
+          "expected_value": "5",
+          "pass_fail": "PASS",
+          "notes": "resolved_window=btc-updown-5m-1774920000"
+        },
+        {
+          "sample_tag": "real_runtime",
+          "timestamp": "2026-03-31T01:20:01.949Z",
+          "ui_field": "平仓价",
+          "ui_value": "1.000",
+          "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+          "source_field": "tp_price || fill_price || --",
+          "current_window_id": "btc-updown-5m-1774920000",
+          "last_window_id": "btc-updown-5m-1774919700",
+          "order_id": "paper_28bd976f",
+          "expected_value": "1.000",
+          "pass_fail": "PASS",
+          "notes": "resolved_window=btc-updown-5m-1774920000"
+        },
+        {
+          "sample_tag": "real_runtime",
+          "timestamp": "2026-03-31T01:20:01.949Z",
+          "ui_field": "状态",
+          "ui_value": "已成交",
+          "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+          "source_field": "lifecycleLabel(status, isCloseOrder)",
+          "current_window_id": "btc-updown-5m-1774920000",
+          "last_window_id": "btc-updown-5m-1774919700",
+          "order_id": "paper_28bd976f",
+          "expected_value": "已成交",
+          "pass_fail": "PASS",
+          "notes": "resolved_window=btc-updown-5m-1774920000"
+        },
+        {
+          "sample_tag": "real_runtime",
+          "timestamp": "2026-03-31T01:20:01.949Z",
+          "ui_field": "订单类型",
+          "ui_value": "YES",
+          "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+          "source_field": "direct projection",
+          "current_window_id": "btc-updown-5m-1774920000",
+          "last_window_id": "btc-updown-5m-1774919700",
+          "order_id": "paper_4a8f138c",
+          "expected_value": "YES",
+          "pass_fail": "PASS",
+          "notes": "resolved_window=btc-updown-5m-1774920000"
+        },
+        {
+          "sample_tag": "real_runtime",
+          "timestamp": "2026-03-31T01:20:01.949Z",
+          "ui_field": "UP/DOWN",
+          "ui_value": "UP",
+          "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+          "source_field": "direct projection",
+          "current_window_id": "btc-updown-5m-1774920000",
+          "last_window_id": "btc-updown-5m-1774919700",
+          "order_id": "paper_4a8f138c",
+          "expected_value": "UP",
+          "pass_fail": "PASS",
+          "notes": "resolved_window=btc-updown-5m-1774920000"
+        },
+        {
+          "sample_tag": "real_runtime",
+          "timestamp": "2026-03-31T01:20:01.949Z",
+          "ui_field": "价格",
+          "ui_value": "0.999",
+          "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+          "source_field": "direct projection",
+          "current_window_id": "btc-updown-5m-1774920000",
+          "last_window_id": "btc-updown-5m-1774919700",
+          "order_id": "paper_4a8f138c",
+          "expected_value": "0.999",
+          "pass_fail": "PASS",
+          "notes": "resolved_window=btc-updown-5m-1774920000"
+        },
+        {
+          "sample_tag": "real_runtime",
+          "timestamp": "2026-03-31T01:20:01.950Z",
+          "ui_field": "数量",
+          "ui_value": "5",
+          "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+          "source_field": "direct projection",
+          "current_window_id": "btc-updown-5m-1774920000",
+          "last_window_id": "btc-updown-5m-1774919700",
+          "order_id": "paper_4a8f138c",
+          "expected_value": "5",
+          "pass_fail": "PASS",
+          "notes": "resolved_window=btc-updown-5m-1774920000"
+        },
+        {
+          "sample_tag": "real_runtime",
+          "timestamp": "2026-03-31T01:20:01.950Z",
+          "ui_field": "平仓价",
+          "ui_value": "1.000",
+          "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+          "source_field": "tp_price || fill_price || --",
+          "current_window_id": "btc-updown-5m-1774920000",
+          "last_window_id": "btc-updown-5m-1774919700",
+          "order_id": "paper_4a8f138c",
+          "expected_value": "1.000",
+          "pass_fail": "PASS",
+          "notes": "resolved_window=btc-updown-5m-1774920000"
+        },
+        {
+          "sample_tag": "real_runtime",
+          "timestamp": "2026-03-31T01:20:01.950Z",
+          "ui_field": "状态",
+          "ui_value": "挂单中",
+          "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+          "source_field": "lifecycleLabel(status, isCloseOrder)",
+          "current_window_id": "btc-updown-5m-1774920000",
+          "last_window_id": "btc-updown-5m-1774919700",
+          "order_id": "paper_4a8f138c",
+          "expected_value": "挂单中",
+          "pass_fail": "PASS",
+          "notes": "resolved_window=btc-updown-5m-1774920000"
+        },
+        {
+          "sample_tag": "real_runtime",
+          "timestamp": "2026-03-31T01:20:01.950Z",
+          "ui_field": "订单类型",
+          "ui_value": "YES",
+          "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+          "source_field": "direct projection",
+          "current_window_id": "btc-updown-5m-1774920000",
+          "last_window_id": "btc-updown-5m-1774919700",
+          "order_id": "paper_aa147547",
+          "expected_value": "YES",
+          "pass_fail": "PASS",
+          "notes": "resolved_window=btc-updown-5m-1774920000"
+        },
+        {
+          "sample_tag": "real_runtime",
+          "timestamp": "2026-03-31T01:20:01.950Z",
+          "ui_field": "UP/DOWN",
+          "ui_value": "UP",
+          "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+          "source_field": "direct projection",
+          "current_window_id": "btc-updown-5m-1774920000",
+          "last_window_id": "btc-updown-5m-1774919700",
+          "order_id": "paper_aa147547",
+          "expected_value": "UP",
+          "pass_fail": "PASS",
+          "notes": "resolved_window=btc-updown-5m-1774920000"
+        },
+        {
+          "sample_tag": "real_runtime",
+          "timestamp": "2026-03-31T01:20:01.950Z",
+          "ui_field": "价格",
+          "ui_value": "0.998",
+          "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+          "source_field": "direct projection",
+          "current_window_id": "btc-updown-5m-1774920000",
+          "last_window_id": "btc-updown-5m-1774919700",
+          "order_id": "paper_aa147547",
+          "expected_value": "0.998",
+          "pass_fail": "PASS",
+          "notes": "resolved_window=btc-updown-5m-1774920000"
+        },
+        {
+          "sample_tag": "real_runtime",
+          "timestamp": "2026-03-31T01:20:01.950Z",
+          "ui_field": "数量",
+          "ui_value": "5",
+          "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+          "source_field": "direct projection",
+          "current_window_id": "btc-updown-5m-1774920000",
+          "last_window_id": "btc-updown-5m-1774919700",
+          "order_id": "paper_aa147547",
+          "expected_value": "5",
+          "pass_fail": "PASS",
+          "notes": "resolved_window=btc-updown-5m-1774920000"
+        },
+        {
+          "sample_tag": "real_runtime",
+          "timestamp": "2026-03-31T01:20:01.950Z",
+          "ui_field": "平仓价",
+          "ui_value": "1.000",
+          "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+          "source_field": "tp_price || fill_price || --",
+          "current_window_id": "btc-updown-5m-1774920000",
+          "last_window_id": "btc-updown-5m-1774919700",
+          "order_id": "paper_aa147547",
+          "expected_value": "1.000",
+          "pass_fail": "PASS",
+          "notes": "resolved_window=btc-updown-5m-1774920000"
+        },
+        {
+          "sample_tag": "real_runtime",
+          "timestamp": "2026-03-31T01:20:01.950Z",
+          "ui_field": "状态",
+          "ui_value": "挂单中",
+          "source_api_or_state": "/bot/orders.window_orders + se_renderOrders",
+          "source_field": "lifecycleLabel(status, isCloseOrder)",
+          "current_window_id": "btc-updown-5m-1774920000",
+          "last_window_id": "btc-updown-5m-1774919700",
+          "order_id": "paper_aa147547",
+          "expected_value": "挂单中",
+          "pass_fail": "PASS",
+          "notes": "resolved_window=btc-updown-5m-1774920000"
+        }
+      ],
+      "status": {
+        "mode": "paper-staging",
+        "phase": "LADDER_POSTED",
+        "running": true,
+        "debug_scenario": null,
+        "debug_frame_index": 0,
+        "debug_completed": false,
+        "tick_interval_ms": 1000,
+        "last_tick_at": "2026-03-31T01:20:01.304Z",
+        "last_window_id": "btc-updown-5m-1774919700",
+        "current_window_id": "btc-updown-5m-1774920000",
+        "window_initialized_at": "2026-03-31T01:20:01.296Z",
+        "remaining_sec": 298,
+        "anchor_btc": 67418.3,
+        "atr_5m": 158.9307142857142,
+        "upper_bound": 67609.01685714287,
+        "lower_bound": 67227.58314285714,
+        "ladder_posted": true,
+        "yes_cancelled": false,
+        "no_cancelled": true,
+        "up_formula_cancelled": false,
+        "down_formula_cancelled": false,
+        "yes_order_ids": [
+          "paper_4a8f138c",
+          "paper_aa147547"
+        ],
+        "no_order_ids": [],
+        "last_reason": "ladder_not_posted",
+        "last_intents": [
+          {
+            "kind": "PLACE_LADDER",
+            "side": "YES",
+            "ladder": [
+              {
+                "price": 0.999,
+                "size": 5,
+                "tp_price": 1
+              },
+              {
+                "price": 0.998,
+                "size": 5,
+                "tp_price": 1
+              }
+            ],
+            "prices": [
+              0.999,
+              0.998
+            ],
+            "size": 5
+          },
+          {
+            "kind": "PLACE_LADDER",
+            "side": "NO",
+            "ladder": [
+              {
+                "price": 0.999,
+                "size": 5,
+                "tp_price": 1
+              },
+              {
+                "price": 0.998,
+                "size": 5,
+                "tp_price": 1
+              }
+            ],
+            "prices": [
+              0.999,
+              0.998
+            ],
+            "size": 5
+          }
+        ],
+        "updated_at": "2026-03-31T01:20:01.304Z",
+        "saved_config": {
+          "open_delay_sec": 0,
+          "ladder_prices": [
+            0.999,
+            0.998
+          ],
+          "ladder_size": 5,
+          "atr_multiple": 1.2,
+          "cancel_all_remaining_sec": 30,
+          "up_ladder": [
+            {
+              "price": 0.999,
+              "size": 5,
+              "tp_price": 1
+            },
+            {
+              "price": 0.998,
+              "size": 5,
+              "tp_price": 1
+            }
+          ],
+          "down_ladder": [
+            {
+              "price": 0.999,
+              "size": 5,
+              "tp_price": 1
+            },
+            {
+              "price": 0.998,
+              "size": 5,
+              "tp_price": 1
+            }
+          ],
+          "up_cancel": {
+            "before_end_sec": 120,
+            "formula": ""
+          },
+          "down_cancel": {
+            "before_end_sec": 120,
+            "formula": ""
+          }
+        },
+        "last_run_snapshot": {
+          "stop_reason": "MANUAL_STOP",
+          "completed_at": "2026-03-31T01:18:51.520Z",
+          "current_window_id": "debug-main-path-v1-w1",
+          "phase": "IDLE",
+          "filled_total": 0,
+          "cancelled_total": 0,
+          "realized_gross_pnl_total": 0,
+          "unrealized_gross_pnl_total": 0,
+          "active_config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100,
+            "up_ladder": [
+              {
+                "price": 0.27,
+                "size": 5,
+                "tp_price": 1
+              },
+              {
+                "price": 0.24,
+                "size": 5,
+                "tp_price": 1
+              },
+              {
+                "price": 0.21,
+                "size": 5,
+                "tp_price": 1
+              },
+              {
+                "price": 0.18,
+                "size": 5,
+                "tp_price": 1
+              }
+            ],
+            "down_ladder": [
+              {
+                "price": 0.27,
+                "size": 5,
+                "tp_price": 1
+              },
+              {
+                "price": 0.24,
+                "size": 5,
+                "tp_price": 1
+              },
+              {
+                "price": 0.21,
+                "size": 5,
+                "tp_price": 1
+              },
+              {
+                "price": 0.18,
+                "size": 5,
+                "tp_price": 1
+              }
+            ],
+            "up_cancel": {
+              "before_end_sec": 100,
+              "formula": ""
+            },
+            "down_cancel": {
+              "before_end_sec": 100,
+              "formula": ""
+            }
+          }
+        },
+        "active_runtime_snapshot": {
+          "config": {
+            "open_delay_sec": 0,
+            "ladder_prices": [
+              0.999,
+              0.998
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 30,
+            "up_ladder": [
+              {
+                "price": 0.999,
+                "size": 5,
+                "tp_price": 1
+              },
+              {
+                "price": 0.998,
+                "size": 5,
+                "tp_price": 1
+              }
+            ],
+            "down_ladder": [
+              {
+                "price": 0.999,
+                "size": 5,
+                "tp_price": 1
+              },
+              {
+                "price": 0.998,
+                "size": 5,
+                "tp_price": 1
+              }
+            ],
+            "up_cancel": {
+              "before_end_sec": 120,
+              "formula": ""
+            },
+            "down_cancel": {
+              "before_end_sec": 120,
+              "formula": ""
+            }
+          },
+          "phase": "LADDER_POSTED",
+          "current_window_id": "btc-updown-5m-1774920000",
+          "anchor_btc": 67418.3,
+          "upper_bound": 67609.01685714287,
+          "lower_bound": 67227.58314285714,
+          "running": true
+        }
+      },
+      "orders": {
+        "orders": [
+          {
+            "order_id": "paper_4bd28f0a",
+            "kind": "ENTRY",
+            "side": "NO",
+            "price": 0.999,
+            "size": 5,
+            "tp_price": 1,
+            "ladder_key": "NO:0",
+            "parent_order_id": null,
+            "window_id": "btc-updown-5m-1774920000",
+            "status": "FILLED",
+            "fill_price": 0.01,
+            "filled_at": "2026-03-31T01:20:01.300Z",
+            "created_at": "2026-03-31T01:20:01.298Z",
+            "source": "runner_tick|window=btc-updown-5m-1774920000",
+            "inferred_window_id": "btc-updown-5m-1774920000",
+            "resolved_window_id": "btc-updown-5m-1774920000"
+          },
+          {
+            "order_id": "paper_28bd976f",
+            "kind": "ENTRY",
+            "side": "NO",
+            "price": 0.998,
+            "size": 5,
+            "tp_price": 1,
+            "ladder_key": "NO:1",
+            "parent_order_id": null,
+            "window_id": "btc-updown-5m-1774920000",
+            "status": "FILLED",
+            "fill_price": 0.01,
+            "filled_at": "2026-03-31T01:20:01.300Z",
+            "created_at": "2026-03-31T01:20:01.298Z",
+            "source": "runner_tick|window=btc-updown-5m-1774920000",
+            "inferred_window_id": "btc-updown-5m-1774920000",
+            "resolved_window_id": "btc-updown-5m-1774920000"
+          },
+          {
+            "order_id": "paper_4a8f138c",
+            "kind": "ENTRY",
+            "side": "YES",
+            "price": 0.999,
+            "size": 5,
+            "tp_price": 1,
+            "ladder_key": "YES:0",
+            "parent_order_id": null,
+            "window_id": "btc-updown-5m-1774920000",
+            "status": "OPEN",
+            "fill_price": null,
+            "filled_at": null,
+            "created_at": "2026-03-31T01:20:01.297Z",
+            "source": "runner_tick|window=btc-updown-5m-1774920000",
+            "inferred_window_id": "btc-updown-5m-1774920000",
+            "resolved_window_id": "btc-updown-5m-1774920000"
+          },
+          {
+            "order_id": "paper_aa147547",
+            "kind": "ENTRY",
+            "side": "YES",
+            "price": 0.998,
+            "size": 5,
+            "tp_price": 1,
+            "ladder_key": "YES:1",
+            "parent_order_id": null,
+            "window_id": "btc-updown-5m-1774920000",
+            "status": "OPEN",
+            "fill_price": null,
+            "filled_at": null,
+            "created_at": "2026-03-31T01:20:01.297Z",
+            "source": "runner_tick|window=btc-updown-5m-1774920000",
+            "inferred_window_id": "btc-updown-5m-1774920000",
+            "resolved_window_id": "btc-updown-5m-1774920000"
+          }
+        ],
+        "window_orders": [
+          {
+            "order_id": "paper_4bd28f0a",
+            "kind": "ENTRY",
+            "side": "NO",
+            "price": 0.999,
+            "size": 5,
+            "tp_price": 1,
+            "ladder_key": "NO:0",
+            "parent_order_id": null,
+            "window_id": "btc-updown-5m-1774920000",
+            "status": "FILLED",
+            "fill_price": 0.01,
+            "filled_at": "2026-03-31T01:20:01.300Z",
+            "created_at": "2026-03-31T01:20:01.298Z",
+            "source": "runner_tick|window=btc-updown-5m-1774920000",
+            "inferred_window_id": "btc-updown-5m-1774920000",
+            "resolved_window_id": "btc-updown-5m-1774920000"
+          },
+          {
+            "order_id": "paper_28bd976f",
+            "kind": "ENTRY",
+            "side": "NO",
+            "price": 0.998,
+            "size": 5,
+            "tp_price": 1,
+            "ladder_key": "NO:1",
+            "parent_order_id": null,
+            "window_id": "btc-updown-5m-1774920000",
+            "status": "FILLED",
+            "fill_price": 0.01,
+            "filled_at": "2026-03-31T01:20:01.300Z",
+            "created_at": "2026-03-31T01:20:01.298Z",
+            "source": "runner_tick|window=btc-updown-5m-1774920000",
+            "inferred_window_id": "btc-updown-5m-1774920000",
+            "resolved_window_id": "btc-updown-5m-1774920000"
+          },
+          {
+            "order_id": "paper_4a8f138c",
+            "kind": "ENTRY",
+            "side": "YES",
+            "price": 0.999,
+            "size": 5,
+            "tp_price": 1,
+            "ladder_key": "YES:0",
+            "parent_order_id": null,
+            "window_id": "btc-updown-5m-1774920000",
+            "status": "OPEN",
+            "fill_price": null,
+            "filled_at": null,
+            "created_at": "2026-03-31T01:20:01.297Z",
+            "source": "runner_tick|window=btc-updown-5m-1774920000",
+            "inferred_window_id": "btc-updown-5m-1774920000",
+            "resolved_window_id": "btc-updown-5m-1774920000"
+          },
+          {
+            "order_id": "paper_aa147547",
+            "kind": "ENTRY",
+            "side": "YES",
+            "price": 0.998,
+            "size": 5,
+            "tp_price": 1,
+            "ladder_key": "YES:1",
+            "parent_order_id": null,
+            "window_id": "btc-updown-5m-1774920000",
+            "status": "OPEN",
+            "fill_price": null,
+            "filled_at": null,
+            "created_at": "2026-03-31T01:20:01.297Z",
+            "source": "runner_tick|window=btc-updown-5m-1774920000",
+            "inferred_window_id": "btc-updown-5m-1774920000",
+            "resolved_window_id": "btc-updown-5m-1774920000"
+          }
+        ],
+        "all_orders": [
+          {
+            "order_id": "paper_4a8f138c",
+            "kind": "ENTRY",
+            "side": "YES",
+            "price": 0.999,
+            "size": 5,
+            "tp_price": 1,
+            "ladder_key": "YES:0",
+            "parent_order_id": null,
+            "window_id": "btc-updown-5m-1774920000",
+            "status": "OPEN",
+            "fill_price": null,
+            "filled_at": null,
+            "created_at": "2026-03-31T01:20:01.297Z",
+            "source": "runner_tick|window=btc-updown-5m-1774920000",
+            "inferred_window_id": "btc-updown-5m-1774920000",
+            "resolved_window_id": "btc-updown-5m-1774920000"
+          },
+          {
+            "order_id": "paper_aa147547",
+            "kind": "ENTRY",
+            "side": "YES",
+            "price": 0.998,
+            "size": 5,
+            "tp_price": 1,
+            "ladder_key": "YES:1",
+            "parent_order_id": null,
+            "window_id": "btc-updown-5m-1774920000",
+            "status": "OPEN",
+            "fill_price": null,
+            "filled_at": null,
+            "created_at": "2026-03-31T01:20:01.297Z",
+            "source": "runner_tick|window=btc-updown-5m-1774920000",
+            "inferred_window_id": "btc-updown-5m-1774920000",
+            "resolved_window_id": "btc-updown-5m-1774920000"
+          },
+          {
+            "order_id": "paper_4bd28f0a",
+            "kind": "ENTRY",
+            "side": "NO",
+            "price": 0.999,
+            "size": 5,
+            "tp_price": 1,
+            "ladder_key": "NO:0",
+            "parent_order_id": null,
+            "window_id": "btc-updown-5m-1774920000",
+            "status": "FILLED",
+            "fill_price": 0.01,
+            "filled_at": "2026-03-31T01:20:01.300Z",
+            "created_at": "2026-03-31T01:20:01.298Z",
+            "source": "runner_tick|window=btc-updown-5m-1774920000",
+            "inferred_window_id": "btc-updown-5m-1774920000",
+            "resolved_window_id": "btc-updown-5m-1774920000"
+          },
+          {
+            "order_id": "paper_28bd976f",
+            "kind": "ENTRY",
+            "side": "NO",
+            "price": 0.998,
+            "size": 5,
+            "tp_price": 1,
+            "ladder_key": "NO:1",
+            "parent_order_id": null,
+            "window_id": "btc-updown-5m-1774920000",
+            "status": "FILLED",
+            "fill_price": 0.01,
+            "filled_at": "2026-03-31T01:20:01.300Z",
+            "created_at": "2026-03-31T01:20:01.298Z",
+            "source": "runner_tick|window=btc-updown-5m-1774920000",
+            "inferred_window_id": "btc-updown-5m-1774920000",
+            "resolved_window_id": "btc-updown-5m-1774920000"
+          }
+        ],
+        "context_snapshot": {
+          "window_id": "btc-updown-5m-1774920000",
+          "last_window_id": null,
+          "slug": "btc-updown-5m-1774920000",
+          "period": "5m",
+          "remaining_sec": 298,
+          "btc_price": 67418.3,
+          "anchor_btc": 67358.22,
+          "atr_5m": 158.9307142857142,
+          "upper_bound": 67609.01685714287,
+          "lower_bound": 67227.58314285714,
+          "bid_yes": 0.99,
+          "ask_yes": 1,
+          "bid_no": 0,
+          "ask_no": 0.01,
+          "tick_size": 0.001,
+          "stale": false,
+          "updated_at": "2026-03-31T01:20:00.059Z",
+          "_btc_source_trace": {
+            "source_init_started": true,
+            "source_init_error": null,
+            "source_feed_seen": true,
+            "source_feed_count": 36,
+            "source_last_feed_at": "2026-03-31T01:19:59.624Z",
+            "latest_cache_price": 67418.3,
+            "latest_cache_at": "2026-03-31T01:19:59.624Z",
+            "latest_cache_source": "rest_binance",
+            "price_resolution": {
+              "kind": "cache",
+              "used_strike_raw": null,
+              "used_anchor_fallback_raw": 67358.22
+            },
+            "atr_resolution": {
+              "window_atr_5m_raw": null,
+              "window_atr_raw": null,
+              "state_atr_5m_raw": 158.9307142857142,
+              "resolved_atr_5m": 158.9307142857142,
+              "resolution_kind": "window_or_state",
+              "latest_fallback_atr_raw": 158.9307142857142,
+              "latest_fallback_at": "2026-03-31T01:19:15.286Z",
+              "latest_fallback_period": "5m"
+            }
+          }
+        },
+        "context_snapshot_at": "2026-03-31T01:20:01.304Z",
+        "summary": {
+          "total": 4,
+          "open_total": 2,
+          "cancelled_total": 0,
+          "filled_total": 2,
+          "open_yes": 2,
+          "open_no": 0,
+          "filled_yes": 0,
+          "filled_no": 2
+        },
+        "window_scope": {
+          "scope": "current_window",
+          "running": true,
+          "active_window_id": "btc-updown-5m-1774920000",
+          "display_window_id": "btc-updown-5m-1774920000",
+          "label": "当前窗口订单",
+          "ownership_rule": "运行中仅展示当前活动窗口订单"
+        },
+        "hidden_other_window_count": 0
+      },
+      "stages": {
+        "field_inventory_binding": true,
+        "current_window_partition": true,
+        "order_scope_filter": true,
+        "status_projection": true,
+        "close_price_projection": true,
+        "dom_projection": true,
+        "diagnostics": {
+          "duplicated_order_ids": [],
+          "mixed_window_rows": 0
+        }
+      }
+    },
+    "debug_control": {
+      "rows": [
+        {
+          "sample_tag": "debug_control",
+          "timestamp": "2026-03-31T01:18:51.525Z",
+          "ui_field": "BTC价格",
+          "ui_value": "100.0",
+          "source_api_or_state": "orders.context_snapshot | context",
+          "source_field": "btc_price",
+          "expected_value": "100.0",
+          "order_id": null,
+          "current_window_id": "debug-main-path-v1-w1",
+          "pass_fail": "PASS",
+          "notes": "top_field_projection",
+          "last_window_id": null
+        },
+        {
+          "sample_tag": "debug_control",
+          "timestamp": "2026-03-31T01:18:51.525Z",
+          "ui_field": "UPDOWN概率",
+          "ui_value": "UP 0.550 / DOWN 0.440",
+          "source_api_or_state": "orders.context_snapshot | context",
+          "source_field": "bid_yes/bid_no fallback ask_*",
+          "expected_value": "UP 0.550 / DOWN 0.440",
+          "order_id": null,
+          "current_window_id": "debug-main-path-v1-w1",
+          "pass_fail": "PASS",
+          "notes": "top_field_projection",
+          "last_window_id": null
+        },
+        {
+          "sample_tag": "debug_control",
+          "timestamp": "2026-03-31T01:18:51.525Z",
+          "ui_field": "波动值",
+          "ui_value": "2.000",
+          "source_api_or_state": "orders.context_snapshot | context",
+          "source_field": "atr_5m",
+          "expected_value": "2.000",
+          "order_id": null,
+          "current_window_id": "debug-main-path-v1-w1",
+          "pass_fail": "PASS",
+          "notes": "top_field_projection",
+          "last_window_id": null
+        }
+      ],
+      "status": {
+        "mode": "paper-staging",
+        "phase": "IDLE",
+        "running": true,
+        "debug_scenario": "main_path_v1",
+        "debug_frame_index": 2,
+        "debug_completed": false,
+        "tick_interval_ms": 1000,
+        "last_tick_at": "2026-03-31T01:18:50.712Z",
+        "last_window_id": null,
+        "current_window_id": "debug-main-path-v1-w1",
+        "window_initialized_at": "2026-03-31T01:18:50.148Z",
+        "remaining_sec": 295,
+        "anchor_btc": 100,
+        "atr_5m": 2,
+        "upper_bound": 102.4,
+        "lower_bound": 97.6,
+        "ladder_posted": false,
+        "yes_cancelled": false,
+        "no_cancelled": false,
+        "up_formula_cancelled": false,
+        "down_formula_cancelled": false,
+        "yes_order_ids": [],
+        "no_order_ids": [],
+        "last_reason": "wait_next_window_after_start",
+        "last_intents": [
+          {
+            "kind": "NOOP"
+          }
+        ],
+        "updated_at": "2026-03-31T01:18:50.712Z",
+        "saved_config": {
+          "open_delay_sec": 10,
+          "ladder_prices": [
+            0.27,
+            0.24,
+            0.21,
+            0.18
+          ],
+          "ladder_size": 5,
+          "atr_multiple": 1.2,
+          "cancel_all_remaining_sec": 100,
+          "up_ladder": [
+            {
+              "price": 0.27,
+              "size": 5,
+              "tp_price": 1
+            },
+            {
+              "price": 0.24,
+              "size": 5,
+              "tp_price": 1
+            },
+            {
+              "price": 0.21,
+              "size": 5,
+              "tp_price": 1
+            },
+            {
+              "price": 0.18,
+              "size": 5,
+              "tp_price": 1
+            }
+          ],
+          "down_ladder": [
+            {
+              "price": 0.27,
+              "size": 5,
+              "tp_price": 1
+            },
+            {
+              "price": 0.24,
+              "size": 5,
+              "tp_price": 1
+            },
+            {
+              "price": 0.21,
+              "size": 5,
+              "tp_price": 1
+            },
+            {
+              "price": 0.18,
+              "size": 5,
+              "tp_price": 1
+            }
+          ],
+          "up_cancel": {
+            "before_end_sec": 100,
+            "formula": ""
+          },
+          "down_cancel": {
+            "before_end_sec": 100,
+            "formula": ""
+          }
+        },
+        "last_run_snapshot": null,
+        "active_runtime_snapshot": {
+          "config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100,
+            "up_ladder": [
+              {
+                "price": 0.27,
+                "size": 5,
+                "tp_price": 1
+              },
+              {
+                "price": 0.24,
+                "size": 5,
+                "tp_price": 1
+              },
+              {
+                "price": 0.21,
+                "size": 5,
+                "tp_price": 1
+              },
+              {
+                "price": 0.18,
+                "size": 5,
+                "tp_price": 1
+              }
+            ],
+            "down_ladder": [
+              {
+                "price": 0.27,
+                "size": 5,
+                "tp_price": 1
+              },
+              {
+                "price": 0.24,
+                "size": 5,
+                "tp_price": 1
+              },
+              {
+                "price": 0.21,
+                "size": 5,
+                "tp_price": 1
+              },
+              {
+                "price": 0.18,
+                "size": 5,
+                "tp_price": 1
+              }
+            ],
+            "up_cancel": {
+              "before_end_sec": 100,
+              "formula": ""
+            },
+            "down_cancel": {
+              "before_end_sec": 100,
+              "formula": ""
+            }
+          },
+          "phase": "IDLE",
+          "current_window_id": "debug-main-path-v1-w1",
+          "anchor_btc": 100,
+          "upper_bound": 102.4,
+          "lower_bound": 97.6,
+          "running": true
+        }
+      },
+      "orders": {
+        "orders": [],
+        "window_orders": [],
+        "all_orders": [],
+        "context_snapshot": {
+          "window_id": "debug-main-path-v1-w1",
+          "last_window_id": null,
+          "slug": "debug-main-path-v1-w1",
+          "period": "5m",
+          "remaining_sec": 295,
+          "btc_price": 100,
+          "anchor_btc": 100,
+          "atr_5m": 2,
+          "upper_bound": 102.4,
+          "lower_bound": 97.6,
+          "bid_yes": 0.55,
+          "ask_yes": 0.56,
+          "bid_no": 0.44,
+          "ask_no": 0.45,
+          "tick_size": 0.001,
+          "stale": false,
+          "updated_at": "2026-03-31T01:18:50.029Z",
+          "_btc_source_trace": {
+            "source_init_started": true,
+            "source_init_error": null,
+            "source_feed_seen": true,
+            "source_feed_count": 1,
+            "source_last_feed_at": "2026-03-31T01:18:49.565Z",
+            "latest_cache_price": 67363.88,
+            "latest_cache_at": "2026-03-31T01:18:49.565Z",
+            "latest_cache_source": "rest_binance",
+            "price_resolution": {
+              "kind": "cache",
+              "used_strike_raw": null,
+              "used_anchor_fallback_raw": 100
+            },
+            "atr_resolution": {
+              "window_atr_5m_raw": null,
+              "window_atr_raw": null,
+              "state_atr_5m_raw": 2,
+              "resolved_atr_5m": 2,
+              "resolution_kind": "window_or_state",
+              "latest_fallback_atr_raw": 158.9307142857142,
+              "latest_fallback_at": "2026-03-31T01:18:50.147Z",
+              "latest_fallback_period": "5m"
+            }
+          }
+        },
+        "context_snapshot_at": "2026-03-31T01:18:50.712Z",
+        "summary": {
+          "total": 0,
+          "open_total": 0,
+          "cancelled_total": 0,
+          "filled_total": 0,
+          "open_yes": 0,
+          "open_no": 0,
+          "filled_yes": 0,
+          "filled_no": 0
+        },
+        "window_scope": {
+          "scope": "current_window",
+          "running": true,
+          "active_window_id": "debug-main-path-v1-w1",
+          "display_window_id": "debug-main-path-v1-w1",
+          "label": "当前窗口订单",
+          "ownership_rule": "运行中仅展示当前活动窗口订单"
+        },
+        "hidden_other_window_count": 0
+      },
+      "intents_summary": "NOOP",
+      "stages": {
+        "field_inventory_binding": true,
+        "current_window_partition": true,
+        "order_scope_filter": true,
+        "status_projection": true,
+        "close_price_projection": true,
+        "dom_projection": true,
+        "diagnostics": {
+          "duplicated_order_ids": [],
+          "mixed_window_rows": 0
+        }
+      }
+    },
+    "stage_matrix": {
+      "real": {
+        "field_inventory_binding": true,
+        "current_window_partition": true,
+        "order_scope_filter": true,
+        "status_projection": true,
+        "close_price_projection": true,
+        "dom_projection": true,
+        "diagnostics": {
+          "duplicated_order_ids": [],
+          "mixed_window_rows": 0
+        }
+      },
+      "debug": {
+        "field_inventory_binding": true,
+        "current_window_partition": true,
+        "order_scope_filter": true,
+        "status_projection": true,
+        "close_price_projection": true,
+        "dom_projection": true,
+        "diagnostics": {
+          "duplicated_order_ids": [],
+          "mixed_window_rows": 0
+        }
+      }
+    },
+    "healthcheck": {
+      "root": 200,
+      "pairs": 404
+    },
+    "guardrails": {
+      "max_wall_time_ms": 1500000,
+      "max_silence_ms": 120000,
+      "log_tail": 120
+    }
+  },
+  "result": {
+    "021-A_field_inventory_complete": true,
+    "021-B_real_runtime_chain_covered": true,
+    "021-C_reconcile_rows_all_pass": true,
+    "021-D_scope_partition_clean": true,
+    "021-E_status_close_projection_clean": true
+  }
+}
