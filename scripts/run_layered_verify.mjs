@@ -29,7 +29,90 @@ const parseArgs = () => {
     mode: String(raw.mode || 'dev-fast'),
     module: String(raw.module || 'p1guard'),
     auditScript: raw.audit_script || null,
-    guardScript: raw.guard_script || null
+    guardScript: raw.guard_script || null,
+    preprGuardOnly: String(raw.prepr_guard_only || 'false') === 'true',
+    preprReportsDir: String(raw.prepr_reports_dir || 'rules/task-reports/2026-03'),
+    preprSimulateMainVerifyPass: String(raw.prepr_simulate_main_verify_pass || 'false') === 'true',
+    preprSimulateMainVerifyFail: String(raw.prepr_simulate_main_verify_fail || 'false') === 'true',
+    preprSimulateDirty: String(raw.prepr_simulate_dirty || 'false') === 'true',
+    preprSimulateLatestOutOfSync: String(raw.prepr_simulate_latest_out_of_sync || 'false') === 'true'
+  };
+};
+
+const readJsonSafe = (filePath) => {
+  try {
+    if (!fs.existsSync(filePath)) return null;
+    return JSON.parse(fs.readFileSync(filePath, 'utf8'));
+  } catch {
+    return null;
+  }
+};
+
+const collectMainVerifyPassEvidence = (taskId, reportsDir) => {
+  if (!fs.existsSync(reportsDir)) return [];
+  const files = fs.readdirSync(reportsDir).filter((name) => name.startsWith(`${taskId}_`) && name.endsWith('.json'));
+  const hits = [];
+  for (const file of files) {
+    const isCandidate = file.includes('_truth_audit_') || file.includes('_verify_');
+    if (!isCandidate) continue;
+    const parsed = readJsonSafe(path.join(reportsDir, file));
+    if (parsed?.pass === true) {
+      hits.push({
+        file,
+        script_name: parsed?.script_name || null
+      });
+    }
+  }
+  return hits;
+};
+
+const collectBusinessDirtyPaths = () => {
+  const result = spawnSync('git', ['status', '--porcelain'], { cwd: REPO_ROOT, encoding: 'utf8' });
+  if ((result.status ?? 1) !== 0) return ['__GIT_STATUS_FAILED__'];
+  const rows = String(result.stdout || '').split(/\r?\n/).filter(Boolean);
+  const out = [];
+  for (const row of rows) {
+    const pathRaw = row.slice(3).trim();
+    if (!pathRaw) continue;
+    const normalized = pathRaw.replaceAll('\\', '/');
+    if (normalized.startsWith('strategies/crypto_binary/')) out.push(normalized);
+  }
+  return out;
+};
+
+const evaluatePreprGuard = ({
+  taskId,
+  reportsDir,
+  simulateMainVerifyPass,
+  simulateMainVerifyFail,
+  simulateDirty,
+  simulateLatestOutOfSync
+}) => {
+  const reasons = [];
+  const passEvidence = collectMainVerifyPassEvidence(taskId, reportsDir);
+  const businessDirtyPaths = collectBusinessDirtyPaths();
+  const latest = readJsonSafe(path.join(REPO_ROOT, 'rules', 'LATEST.json'));
+  const latestTaskId = String(latest?.task_id || '');
+
+  const mainVerifyPass = simulateMainVerifyFail ? false : (simulateMainVerifyPass ? true : passEvidence.length > 0);
+  const workspaceClean = simulateDirty ? false : businessDirtyPaths.length === 0;
+  const latestAligned = simulateLatestOutOfSync ? false : latestTaskId === String(taskId);
+
+  if (!mainVerifyPass) reasons.push('BLOCK_PREPR_MAIN_VERIFY_NOT_PASS');
+  if (!workspaceClean) reasons.push('BLOCK_PREPR_WORKSPACE_DIRTY');
+  if (!latestAligned) reasons.push('BLOCK_PREPR_LATEST_OUT_OF_SYNC');
+
+  return {
+    allow_prepr: reasons.length === 0,
+    reasons,
+    mode: 'prepr',
+    main_verify_pass: mainVerifyPass,
+    workspace_clean: workspaceClean,
+    latest_aligned: latestAligned,
+    pass_evidence_files: passEvidence.map((item) => item.file),
+    business_dirty_paths: businessDirtyPaths,
+    latest_task_id: latestTaskId,
+    expected_task_id: String(taskId)
   };
 };
 
@@ -63,10 +146,24 @@ const runNodeCommand = (args) => {
   };
 };
 
-const runMode = ({ mode, taskId, sampleName, module, auditScript, guardScript }) => {
+const runMode = ({
+  mode,
+  taskId,
+  sampleName,
+  module,
+  auditScript,
+  guardScript,
+  preprGuardOnly,
+  preprReportsDir,
+  preprSimulateMainVerifyPass,
+  preprSimulateMainVerifyFail,
+  preprSimulateDirty,
+  preprSimulateLatestOutOfSync
+}) => {
   const resolvedAudit = auditScript || resolveTaskAuditScript(taskId);
   const resolvedGuard = guardScript || resolveGuardScript(module);
   const commands = [];
+  let preprGuard = null;
   if (mode === 'dev-fast') {
     if (!resolvedAudit) throw new Error('dev-fast requires --audit_script or a task-matched truth_audit script');
     commands.push(['--check', resolvedAudit]);
@@ -76,9 +173,35 @@ const runMode = ({ mode, taskId, sampleName, module, auditScript, guardScript })
     commands.push(['--check', resolvedGuard]);
     commands.push([resolvedGuard, `--task_id=${taskId}`, `--sample=${sampleName}`]);
   } else if (mode === 'prepr') {
-    commands.push(['scripts/verify_all_manual.mjs', `--task_id=${taskId}`, `--module=${module}`]);
-    commands.push(['scripts/finalize_task_evidence.mjs', '--task_id', taskId]);
-    commands.push(['scripts/gate_light_ci.mjs', '--task_id', taskId, '--result_dir', 'rules/task-reports/2026-03']);
+    preprGuard = evaluatePreprGuard({
+      taskId,
+      reportsDir: path.isAbsolute(preprReportsDir) ? preprReportsDir : path.join(REPO_ROOT, preprReportsDir),
+      simulateMainVerifyPass: preprSimulateMainVerifyPass,
+      simulateMainVerifyFail: preprSimulateMainVerifyFail,
+      simulateDirty: preprSimulateDirty,
+      simulateLatestOutOfSync: preprSimulateLatestOutOfSync
+    });
+    if (preprGuard.allow_prepr) {
+      if (!preprGuardOnly) {
+        commands.push(['scripts/verify_all_manual.mjs', `--task_id=${taskId}`, `--module=${module}`]);
+        commands.push(['scripts/finalize_task_evidence.mjs', '--task_id', taskId]);
+        commands.push(['scripts/gate_light_ci.mjs', '--task_id', taskId, '--result_dir', 'rules/task-reports/2026-03']);
+      }
+    } else {
+      return {
+        mode,
+        task_id: taskId,
+        sample: sampleName,
+        module,
+        audit_script: resolvedAudit,
+        guard_script: resolvedGuard,
+        commands: [],
+        elapsed_ms: 0,
+        pass: false,
+        failed_command: { command: 'prepr_guard', exit_code: 1, elapsed_ms: 0, stdout_tail: preprGuard.reasons, stderr_tail: [] },
+        prepr_guard: preprGuard
+      };
+    }
   } else {
     throw new Error(`unsupported mode: ${mode}`);
   }
@@ -96,7 +219,8 @@ const runMode = ({ mode, taskId, sampleName, module, auditScript, guardScript })
     commands: results,
     elapsed_ms: elapsedMs,
     pass: failed === null,
-    failed_command: failed
+    failed_command: failed,
+    prepr_guard: preprGuard
   };
 };
 
@@ -109,6 +233,13 @@ const main = () => {
     module: args.module,
     auditScript: args.auditScript,
     guardScript: args.guardScript
+    ,
+    preprGuardOnly: args.preprGuardOnly,
+    preprReportsDir: args.preprReportsDir,
+    preprSimulateMainVerifyPass: args.preprSimulateMainVerifyPass,
+    preprSimulateMainVerifyFail: args.preprSimulateMainVerifyFail,
+    preprSimulateDirty: args.preprSimulateDirty,
+    preprSimulateLatestOutOfSync: args.preprSimulateLatestOutOfSync
   });
 
   const checks = {
@@ -118,9 +249,13 @@ const main = () => {
       || modeResult.commands.every((item) => !item.command.includes('verify_all_manual')),
     prepr_has_verify_all_finalize_gate: args.mode !== 'prepr'
       || (
-        modeResult.commands.some((item) => item.command.includes('verify_all_manual.mjs'))
-        && modeResult.commands.some((item) => item.command.includes('finalize_task_evidence.mjs'))
-        && modeResult.commands.some((item) => item.command.includes('gate_light_ci.mjs'))
+        args.preprGuardOnly
+          ? modeResult.prepr_guard?.allow_prepr === true
+          : (
+            modeResult.commands.some((item) => item.command.includes('verify_all_manual.mjs'))
+            && modeResult.commands.some((item) => item.command.includes('finalize_task_evidence.mjs'))
+            && modeResult.commands.some((item) => item.command.includes('gate_light_ci.mjs'))
+          )
       )
   };
   const keys = Object.keys(checks);
@@ -152,6 +287,7 @@ const main = () => {
     mode: args.mode,
     elapsed_ms: modeResult.elapsed_ms,
     commands: modeResult.commands,
+    prepr_guard: modeResult.prepr_guard || null,
     key_counters: {
       total_checks: keys.length,
       pass_checks: passChecks,

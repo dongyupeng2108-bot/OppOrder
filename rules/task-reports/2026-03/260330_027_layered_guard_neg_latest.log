@@ -1,0 +1,6 @@
+script_name=run_layered_verify
+task_id=260330_027
+sample_name=prepr_guardrails_v1
+pass=false
+first_break_layer=layered_verify_mode
+message=layered verify mode prepr fail

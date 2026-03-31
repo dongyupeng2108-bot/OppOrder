@@ -1,0 +1,76 @@
+{
+  "script_name": "run_layered_verify",
+  "task_id": "260330_027",
+  "sample_name": "prepr_guardrails_v1",
+  "pass": true,
+  "message": "layered verify mode prepr pass",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_027_layered_guard_pos_allow.json",
+  "summary": {
+    "mode": "prepr",
+    "total_checks": 4,
+    "pass_checks": 4,
+    "fail_checks": 0,
+    "checks": {
+      "mode_supported": true,
+      "all_commands_pass": true,
+      "dev_fast_no_verify_all_manual": true,
+      "prepr_has_verify_all_finalize_gate": true
+    }
+  },
+  "raw_excerpt": {
+    "mode": "prepr",
+    "task_id": "260330_027",
+    "sample": "prepr_guardrails_v1",
+    "module": "p1guard",
+    "audit_script": null,
+    "guard_script": "scripts/verify_no_terminal_state_guard.mjs",
+    "commands": [],
+    "elapsed_ms": 0,
+    "pass": true,
+    "failed_command": null,
+    "prepr_guard": {
+      "allow_prepr": true,
+      "reasons": [],
+      "mode": "prepr",
+      "main_verify_pass": true,
+      "workspace_clean": true,
+      "latest_aligned": true,
+      "pass_evidence_files": [
+        "260330_027_verify_prepr_guardrails.json"
+      ],
+      "business_dirty_paths": [],
+      "latest_task_id": "260330_027",
+      "expected_task_id": "260330_027"
+    }
+  },
+  "generated_at": "2026-03-31T19:03:20.021Z",
+  "mode": "prepr",
+  "elapsed_ms": 0,
+  "commands": [],
+  "prepr_guard": {
+    "allow_prepr": true,
+    "reasons": [],
+    "mode": "prepr",
+    "main_verify_pass": true,
+    "workspace_clean": true,
+    "latest_aligned": true,
+    "pass_evidence_files": [
+      "260330_027_verify_prepr_guardrails.json"
+    ],
+    "business_dirty_paths": [],
+    "latest_task_id": "260330_027",
+    "expected_task_id": "260330_027"
+  },
+  "key_counters": {
+    "total_checks": 4,
+    "pass_checks": 4,
+    "fail_checks": 0
+  },
+  "result": {
+    "mode_supported": true,
+    "all_commands_pass": true,
+    "dev_fast_no_verify_all_manual": true,
+    "prepr_has_verify_all_finalize_gate": true
+  }
+}
