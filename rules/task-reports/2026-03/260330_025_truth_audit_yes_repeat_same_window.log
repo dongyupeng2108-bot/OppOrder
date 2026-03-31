@@ -1,0 +1,6 @@
+script_name=truth_audit_yes_repeat_same_window_260330_025
+task_id=260330_025
+sample_name=yes_repeat_same_window_v1
+pass=true
+first_break_layer=terminal_state_guard
+message=yes repeat same-window truth audit pass
