@@ -1,0 +1,6 @@
+script_name=truth_audit_result_refresh_stale_260330_022
+task_id=260330_022
+sample_name=result_refresh_stale_v1
+pass=false
+first_break_layer=last_window_partition
+message=result refresh stale audit fail
