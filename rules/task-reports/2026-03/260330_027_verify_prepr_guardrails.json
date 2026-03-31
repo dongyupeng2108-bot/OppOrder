@@ -1,0 +1,490 @@
+{
+  "script_name": "verify_prepr_guardrails_260330_027",
+  "task_id": "260330_027",
+  "sample_name": "prepr_guardrails_v1",
+  "pass": true,
+  "message": "prepr guardrails pass",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_027_verify_prepr_guardrails.json",
+  "summary": {
+    "total_checks": 4,
+    "pass_checks": 4,
+    "fail_checks": 0,
+    "checks": {
+      "neg_main_verify_blocked": true,
+      "neg_dirty_blocked": true,
+      "neg_latest_blocked": true,
+      "positive_allow_prepr": true
+    }
+  },
+  "raw_excerpt": {
+    "negative_main_verify": {
+      "allow_prepr": false,
+      "reasons": [
+        "BLOCK_PREPR_MAIN_VERIFY_NOT_PASS"
+      ],
+      "mode": "prepr",
+      "main_verify_pass": false,
+      "workspace_clean": true,
+      "latest_aligned": true,
+      "pass_evidence_files": [
+        "260330_027_verify_prepr_guardrails.json"
+      ],
+      "business_dirty_paths": [],
+      "latest_task_id": "260330_027",
+      "expected_task_id": "260330_027"
+    },
+    "negative_dirty": {
+      "allow_prepr": false,
+      "reasons": [
+        "BLOCK_PREPR_WORKSPACE_DIRTY"
+      ],
+      "mode": "prepr",
+      "main_verify_pass": true,
+      "workspace_clean": false,
+      "latest_aligned": true,
+      "pass_evidence_files": [
+        "260330_027_verify_prepr_guardrails.json"
+      ],
+      "business_dirty_paths": [],
+      "latest_task_id": "260330_027",
+      "expected_task_id": "260330_027"
+    },
+    "negative_latest": {
+      "allow_prepr": false,
+      "reasons": [
+        "BLOCK_PREPR_LATEST_OUT_OF_SYNC"
+      ],
+      "mode": "prepr",
+      "main_verify_pass": true,
+      "workspace_clean": true,
+      "latest_aligned": false,
+      "pass_evidence_files": [
+        "260330_027_verify_prepr_guardrails.json"
+      ],
+      "business_dirty_paths": [],
+      "latest_task_id": "260330_027",
+      "expected_task_id": "260330_027"
+    },
+    "positive_allow": {
+      "allow_prepr": true,
+      "reasons": [],
+      "mode": "prepr",
+      "main_verify_pass": true,
+      "workspace_clean": true,
+      "latest_aligned": true,
+      "pass_evidence_files": [
+        "260330_027_verify_prepr_guardrails.json"
+      ],
+      "business_dirty_paths": [],
+      "latest_task_id": "260330_027",
+      "expected_task_id": "260330_027"
+    }
+  },
+  "generated_at": "2026-03-31T19:03:20.033Z",
+  "evidence_index": {
+    "negative_main_verify": {
+      "command": "node scripts\\run_layered_verify.mjs --mode=prepr --task_id=260330_027 --sample=prepr_guardrails_v1 --module=p1guard --prepr_guard_only=true --prepr_reports_dir=rules/task-reports/2026-03 --output=E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_027_layered_guard_neg_main_verify.json --prepr_simulate_main_verify_fail=true",
+      "exit_code": 1,
+      "output_path": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_027_layered_guard_neg_main_verify.json",
+      "parsed": {
+        "script_name": "run_layered_verify",
+        "task_id": "260330_027",
+        "sample_name": "prepr_guardrails_v1",
+        "pass": false,
+        "message": "layered verify mode prepr fail",
+        "first_break_layer": "layered_verify_mode",
+        "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_027_layered_guard_neg_main_verify.json",
+        "summary": {
+          "mode": "prepr",
+          "total_checks": 4,
+          "pass_checks": 2,
+          "fail_checks": 2,
+          "checks": {
+            "mode_supported": true,
+            "all_commands_pass": false,
+            "dev_fast_no_verify_all_manual": true,
+            "prepr_has_verify_all_finalize_gate": false
+          }
+        },
+        "raw_excerpt": {
+          "mode": "prepr",
+          "task_id": "260330_027",
+          "sample": "prepr_guardrails_v1",
+          "module": "p1guard",
+          "audit_script": null,
+          "guard_script": "scripts/verify_no_terminal_state_guard.mjs",
+          "commands": [],
+          "elapsed_ms": 0,
+          "pass": false,
+          "failed_command": {
+            "command": "prepr_guard",
+            "exit_code": 1,
+            "elapsed_ms": 0,
+            "stdout_tail": [
+              "BLOCK_PREPR_MAIN_VERIFY_NOT_PASS"
+            ],
+            "stderr_tail": []
+          },
+          "prepr_guard": {
+            "allow_prepr": false,
+            "reasons": [
+              "BLOCK_PREPR_MAIN_VERIFY_NOT_PASS"
+            ],
+            "mode": "prepr",
+            "main_verify_pass": false,
+            "workspace_clean": true,
+            "latest_aligned": true,
+            "pass_evidence_files": [
+              "260330_027_verify_prepr_guardrails.json"
+            ],
+            "business_dirty_paths": [],
+            "latest_task_id": "260330_027",
+            "expected_task_id": "260330_027"
+          }
+        },
+        "generated_at": "2026-03-31T19:03:19.610Z",
+        "mode": "prepr",
+        "elapsed_ms": 0,
+        "commands": [],
+        "prepr_guard": {
+          "allow_prepr": false,
+          "reasons": [
+            "BLOCK_PREPR_MAIN_VERIFY_NOT_PASS"
+          ],
+          "mode": "prepr",
+          "main_verify_pass": false,
+          "workspace_clean": true,
+          "latest_aligned": true,
+          "pass_evidence_files": [
+            "260330_027_verify_prepr_guardrails.json"
+          ],
+          "business_dirty_paths": [],
+          "latest_task_id": "260330_027",
+          "expected_task_id": "260330_027"
+        },
+        "key_counters": {
+          "total_checks": 4,
+          "pass_checks": 2,
+          "fail_checks": 2
+        },
+        "result": {
+          "mode_supported": true,
+          "all_commands_pass": false,
+          "dev_fast_no_verify_all_manual": true,
+          "prepr_has_verify_all_finalize_gate": false
+        }
+      },
+      "stdout_tail": [
+        "MODE=prepr",
+        "TOTAL_ELAPSED_MS=0",
+        "VERIFY_OUTPUT=E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_027_layered_guard_neg_main_verify.json",
+        "VERIFY_LOG=E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_027_layered_guard_neg_main_verify.log",
+        "{\"pass\":false,\"mode\":\"prepr\",\"elapsed_ms\":0,\"pass_checks\":2,\"fail_checks\":2}"
+      ],
+      "stderr_tail": []
+    },
+    "negative_dirty": {
+      "command": "node scripts\\run_layered_verify.mjs --mode=prepr --task_id=260330_027 --sample=prepr_guardrails_v1 --module=p1guard --prepr_guard_only=true --prepr_reports_dir=rules/task-reports/2026-03 --output=E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_027_layered_guard_neg_dirty.json --prepr_simulate_dirty=true",
+      "exit_code": 1,
+      "output_path": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_027_layered_guard_neg_dirty.json",
+      "parsed": {
+        "script_name": "run_layered_verify",
+        "task_id": "260330_027",
+        "sample_name": "prepr_guardrails_v1",
+        "pass": false,
+        "message": "layered verify mode prepr fail",
+        "first_break_layer": "layered_verify_mode",
+        "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_027_layered_guard_neg_dirty.json",
+        "summary": {
+          "mode": "prepr",
+          "total_checks": 4,
+          "pass_checks": 2,
+          "fail_checks": 2,
+          "checks": {
+            "mode_supported": true,
+            "all_commands_pass": false,
+            "dev_fast_no_verify_all_manual": true,
+            "prepr_has_verify_all_finalize_gate": false
+          }
+        },
+        "raw_excerpt": {
+          "mode": "prepr",
+          "task_id": "260330_027",
+          "sample": "prepr_guardrails_v1",
+          "module": "p1guard",
+          "audit_script": null,
+          "guard_script": "scripts/verify_no_terminal_state_guard.mjs",
+          "commands": [],
+          "elapsed_ms": 0,
+          "pass": false,
+          "failed_command": {
+            "command": "prepr_guard",
+            "exit_code": 1,
+            "elapsed_ms": 0,
+            "stdout_tail": [
+              "BLOCK_PREPR_WORKSPACE_DIRTY"
+            ],
+            "stderr_tail": []
+          },
+          "prepr_guard": {
+            "allow_prepr": false,
+            "reasons": [
+              "BLOCK_PREPR_WORKSPACE_DIRTY"
+            ],
+            "mode": "prepr",
+            "main_verify_pass": true,
+            "workspace_clean": false,
+            "latest_aligned": true,
+            "pass_evidence_files": [
+              "260330_027_verify_prepr_guardrails.json"
+            ],
+            "business_dirty_paths": [],
+            "latest_task_id": "260330_027",
+            "expected_task_id": "260330_027"
+          }
+        },
+        "generated_at": "2026-03-31T19:03:19.746Z",
+        "mode": "prepr",
+        "elapsed_ms": 0,
+        "commands": [],
+        "prepr_guard": {
+          "allow_prepr": false,
+          "reasons": [
+            "BLOCK_PREPR_WORKSPACE_DIRTY"
+          ],
+          "mode": "prepr",
+          "main_verify_pass": true,
+          "workspace_clean": false,
+          "latest_aligned": true,
+          "pass_evidence_files": [
+            "260330_027_verify_prepr_guardrails.json"
+          ],
+          "business_dirty_paths": [],
+          "latest_task_id": "260330_027",
+          "expected_task_id": "260330_027"
+        },
+        "key_counters": {
+          "total_checks": 4,
+          "pass_checks": 2,
+          "fail_checks": 2
+        },
+        "result": {
+          "mode_supported": true,
+          "all_commands_pass": false,
+          "dev_fast_no_verify_all_manual": true,
+          "prepr_has_verify_all_finalize_gate": false
+        }
+      },
+      "stdout_tail": [
+        "MODE=prepr",
+        "TOTAL_ELAPSED_MS=0",
+        "VERIFY_OUTPUT=E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_027_layered_guard_neg_dirty.json",
+        "VERIFY_LOG=E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_027_layered_guard_neg_dirty.log",
+        "{\"pass\":false,\"mode\":\"prepr\",\"elapsed_ms\":0,\"pass_checks\":2,\"fail_checks\":2}"
+      ],
+      "stderr_tail": []
+    },
+    "negative_latest": {
+      "command": "node scripts\\run_layered_verify.mjs --mode=prepr --task_id=260330_027 --sample=prepr_guardrails_v1 --module=p1guard --prepr_guard_only=true --prepr_reports_dir=rules/task-reports/2026-03 --output=E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_027_layered_guard_neg_latest.json --prepr_simulate_latest_out_of_sync=true",
+      "exit_code": 1,
+      "output_path": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_027_layered_guard_neg_latest.json",
+      "parsed": {
+        "script_name": "run_layered_verify",
+        "task_id": "260330_027",
+        "sample_name": "prepr_guardrails_v1",
+        "pass": false,
+        "message": "layered verify mode prepr fail",
+        "first_break_layer": "layered_verify_mode",
+        "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_027_layered_guard_neg_latest.json",
+        "summary": {
+          "mode": "prepr",
+          "total_checks": 4,
+          "pass_checks": 2,
+          "fail_checks": 2,
+          "checks": {
+            "mode_supported": true,
+            "all_commands_pass": false,
+            "dev_fast_no_verify_all_manual": true,
+            "prepr_has_verify_all_finalize_gate": false
+          }
+        },
+        "raw_excerpt": {
+          "mode": "prepr",
+          "task_id": "260330_027",
+          "sample": "prepr_guardrails_v1",
+          "module": "p1guard",
+          "audit_script": null,
+          "guard_script": "scripts/verify_no_terminal_state_guard.mjs",
+          "commands": [],
+          "elapsed_ms": 0,
+          "pass": false,
+          "failed_command": {
+            "command": "prepr_guard",
+            "exit_code": 1,
+            "elapsed_ms": 0,
+            "stdout_tail": [
+              "BLOCK_PREPR_LATEST_OUT_OF_SYNC"
+            ],
+            "stderr_tail": []
+          },
+          "prepr_guard": {
+            "allow_prepr": false,
+            "reasons": [
+              "BLOCK_PREPR_LATEST_OUT_OF_SYNC"
+            ],
+            "mode": "prepr",
+            "main_verify_pass": true,
+            "workspace_clean": true,
+            "latest_aligned": false,
+            "pass_evidence_files": [
+              "260330_027_verify_prepr_guardrails.json"
+            ],
+            "business_dirty_paths": [],
+            "latest_task_id": "260330_027",
+            "expected_task_id": "260330_027"
+          }
+        },
+        "generated_at": "2026-03-31T19:03:19.883Z",
+        "mode": "prepr",
+        "elapsed_ms": 0,
+        "commands": [],
+        "prepr_guard": {
+          "allow_prepr": false,
+          "reasons": [
+            "BLOCK_PREPR_LATEST_OUT_OF_SYNC"
+          ],
+          "mode": "prepr",
+          "main_verify_pass": true,
+          "workspace_clean": true,
+          "latest_aligned": false,
+          "pass_evidence_files": [
+            "260330_027_verify_prepr_guardrails.json"
+          ],
+          "business_dirty_paths": [],
+          "latest_task_id": "260330_027",
+          "expected_task_id": "260330_027"
+        },
+        "key_counters": {
+          "total_checks": 4,
+          "pass_checks": 2,
+          "fail_checks": 2
+        },
+        "result": {
+          "mode_supported": true,
+          "all_commands_pass": false,
+          "dev_fast_no_verify_all_manual": true,
+          "prepr_has_verify_all_finalize_gate": false
+        }
+      },
+      "stdout_tail": [
+        "MODE=prepr",
+        "TOTAL_ELAPSED_MS=0",
+        "VERIFY_OUTPUT=E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_027_layered_guard_neg_latest.json",
+        "VERIFY_LOG=E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_027_layered_guard_neg_latest.log",
+        "{\"pass\":false,\"mode\":\"prepr\",\"elapsed_ms\":0,\"pass_checks\":2,\"fail_checks\":2}"
+      ],
+      "stderr_tail": []
+    },
+    "positive_allow": {
+      "command": "node scripts\\run_layered_verify.mjs --mode=prepr --task_id=260330_027 --sample=prepr_guardrails_v1 --module=p1guard --prepr_guard_only=true --prepr_reports_dir=rules/task-reports/2026-03 --output=E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_027_layered_guard_pos_allow.json --prepr_simulate_main_verify_pass=true",
+      "exit_code": 0,
+      "output_path": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_027_layered_guard_pos_allow.json",
+      "parsed": {
+        "script_name": "run_layered_verify",
+        "task_id": "260330_027",
+        "sample_name": "prepr_guardrails_v1",
+        "pass": true,
+        "message": "layered verify mode prepr pass",
+        "first_break_layer": "NONE_CHAIN_PASS",
+        "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_027_layered_guard_pos_allow.json",
+        "summary": {
+          "mode": "prepr",
+          "total_checks": 4,
+          "pass_checks": 4,
+          "fail_checks": 0,
+          "checks": {
+            "mode_supported": true,
+            "all_commands_pass": true,
+            "dev_fast_no_verify_all_manual": true,
+            "prepr_has_verify_all_finalize_gate": true
+          }
+        },
+        "raw_excerpt": {
+          "mode": "prepr",
+          "task_id": "260330_027",
+          "sample": "prepr_guardrails_v1",
+          "module": "p1guard",
+          "audit_script": null,
+          "guard_script": "scripts/verify_no_terminal_state_guard.mjs",
+          "commands": [],
+          "elapsed_ms": 0,
+          "pass": true,
+          "failed_command": null,
+          "prepr_guard": {
+            "allow_prepr": true,
+            "reasons": [],
+            "mode": "prepr",
+            "main_verify_pass": true,
+            "workspace_clean": true,
+            "latest_aligned": true,
+            "pass_evidence_files": [
+              "260330_027_verify_prepr_guardrails.json"
+            ],
+            "business_dirty_paths": [],
+            "latest_task_id": "260330_027",
+            "expected_task_id": "260330_027"
+          }
+        },
+        "generated_at": "2026-03-31T19:03:20.021Z",
+        "mode": "prepr",
+        "elapsed_ms": 0,
+        "commands": [],
+        "prepr_guard": {
+          "allow_prepr": true,
+          "reasons": [],
+          "mode": "prepr",
+          "main_verify_pass": true,
+          "workspace_clean": true,
+          "latest_aligned": true,
+          "pass_evidence_files": [
+            "260330_027_verify_prepr_guardrails.json"
+          ],
+          "business_dirty_paths": [],
+          "latest_task_id": "260330_027",
+          "expected_task_id": "260330_027"
+        },
+        "key_counters": {
+          "total_checks": 4,
+          "pass_checks": 4,
+          "fail_checks": 0
+        },
+        "result": {
+          "mode_supported": true,
+          "all_commands_pass": true,
+          "dev_fast_no_verify_all_manual": true,
+          "prepr_has_verify_all_finalize_gate": true
+        }
+      },
+      "stdout_tail": [
+        "MODE=prepr",
+        "TOTAL_ELAPSED_MS=0",
+        "VERIFY_OUTPUT=E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_027_layered_guard_pos_allow.json",
+        "VERIFY_LOG=E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_027_layered_guard_pos_allow.log",
+        "{\"pass\":true,\"mode\":\"prepr\",\"elapsed_ms\":0,\"pass_checks\":4,\"fail_checks\":0}"
+      ],
+      "stderr_tail": []
+    }
+  },
+  "key_counters": {
+    "total_checks": 4,
+    "pass_checks": 4,
+    "fail_checks": 0
+  },
+  "result": {
+    "neg_main_verify_blocked": true,
+    "neg_dirty_blocked": true,
+    "neg_latest_blocked": true,
+    "positive_allow_prepr": true
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "script_name": "run_layered_verify",
+  "task_id": "260330_027",
+  "sample_name": "prepr_guardrails_v1",
+  "pass": false,
+  "message": "layered verify mode prepr fail",
+  "first_break_layer": "layered_verify_mode",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_027_layered_guard_neg_dirty.json",
+  "summary": {
+    "mode": "prepr",
+    "total_checks": 4,
+    "pass_checks": 2,
+    "fail_checks": 2,
+    "checks": {
+      "mode_supported": true,
+      "all_commands_pass": false,
+      "dev_fast_no_verify_all_manual": true,
+      "prepr_has_verify_all_finalize_gate": false
+    }
+  },
+  "raw_excerpt": {
+    "mode": "prepr",
+    "task_id": "260330_027",
+    "sample": "prepr_guardrails_v1",
+    "module": "p1guard",
+    "audit_script": null,
+    "guard_script": "scripts/verify_no_terminal_state_guard.mjs",
+    "commands": [],
+    "elapsed_ms": 0,
+    "pass": false,
+    "failed_command": {
+      "command": "prepr_guard",
+      "exit_code": 1,
+      "elapsed_ms": 0,
+      "stdout_tail": [
+        "BLOCK_PREPR_WORKSPACE_DIRTY"
+      ],
+      "stderr_tail": []
+    },
+    "prepr_guard": {
+      "allow_prepr": false,
+      "reasons": [
+        "BLOCK_PREPR_WORKSPACE_DIRTY"
+      ],
+      "mode": "prepr",
+      "main_verify_pass": true,
+      "workspace_clean": false,
+      "latest_aligned": true,
+      "pass_evidence_files": [
+        "260330_027_verify_prepr_guardrails.json"
+      ],
+      "business_dirty_paths": [],
+      "latest_task_id": "260330_027",
+      "expected_task_id": "260330_027"
+    }
+  },
+  "generated_at": "2026-03-31T19:03:19.746Z",
+  "mode": "prepr",
+  "elapsed_ms": 0,
+  "commands": [],
+  "prepr_guard": {
+    "allow_prepr": false,
+    "reasons": [
+      "BLOCK_PREPR_WORKSPACE_DIRTY"
+    ],
+    "mode": "prepr",
+    "main_verify_pass": true,
+    "workspace_clean": false,
+    "latest_aligned": true,
+    "pass_evidence_files": [
+      "260330_027_verify_prepr_guardrails.json"
+    ],
+    "business_dirty_paths": [],
+    "latest_task_id": "260330_027",
+    "expected_task_id": "260330_027"
+  },
+  "key_counters": {
+    "total_checks": 4,
+    "pass_checks": 2,
+    "fail_checks": 2
+  },
+  "result": {
+    "mode_supported": true,
+    "all_commands_pass": false,
+    "dev_fast_no_verify_all_manual": true,
+    "prepr_has_verify_all_finalize_gate": false
+  }
+}

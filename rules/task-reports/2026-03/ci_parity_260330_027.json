@@ -1,0 +1,14 @@
+{
+  "task_id": "260330_027",
+  "is_shallow_repo": true,
+  "base": "fed5ccef6b64fd75770ce9e074b1701ffe7fb328",
+  "head": "f738d4ada93ce9b06ca62787f975ff533e313907",
+  "merge_base": "fed5ccef6b64fd75770ce9e074b1701ffe7fb328",
+  "scope_files": [
+    "rules/LATEST.json",
+    "scripts/run_layered_verify.mjs",
+    "scripts/verify_prepr_guardrails_260330_027.mjs"
+  ],
+  "scope_count": 3,
+  "generated_at": "2026-03-31T19:05:21.572Z"
+}
