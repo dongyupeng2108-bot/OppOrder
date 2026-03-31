@@ -1,0 +1,248 @@
+{
+  "script_name": "run_layered_verify",
+  "task_id": "260330_019",
+  "sample_name": "layered_prepr_v1",
+  "pass": true,
+  "message": "layered verify mode prepr pass",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "rules/task-reports/2026-03/260330_019_layered_prepr.json",
+  "summary": {
+    "mode": "prepr",
+    "total_checks": 4,
+    "pass_checks": 4,
+    "fail_checks": 0,
+    "checks": {
+      "mode_supported": true,
+      "all_commands_pass": true,
+      "dev_fast_no_verify_all_manual": true,
+      "prepr_has_verify_all_finalize_gate": true
+    }
+  },
+  "raw_excerpt": {
+    "mode": "prepr",
+    "task_id": "260330_019",
+    "sample": "layered_prepr_v1",
+    "module": "p1guard",
+    "audit_script": null,
+    "guard_script": "scripts/verify_no_terminal_state_guard.mjs",
+    "commands": [
+      {
+        "command": "node scripts/verify_all_manual.mjs --task_id=260330_019 --module=p1guard",
+        "exit_code": 0,
+        "elapsed_ms": 300224,
+        "stdout_tail": [
+          "VERIFY_ALL_OUTPUT=E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_019_verify_all_manual.json",
+          "VERIFY_ALL_LOG=E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_019_verify_all_manual.log",
+          "{\"overall_pass\":true,\"pass_count\":1,\"fail_count\":0}"
+        ],
+        "stderr_tail": []
+      },
+      {
+        "command": "node scripts/finalize_task_evidence.mjs --task_id 260330_019",
+        "exit_code": 0,
+        "elapsed_ms": 21421,
+        "stdout_tail": [
+          "[Postflight] Envelope: rules\\task-reports\\envelopes\\260330_019.envelope.json",
+          "[Postflight] PASS",
+          "[Gate Light] PASS",
+          "GATE_LIGHT_EXIT=0",
+          "[PASS] 最终本地 Gate Light 验证",
+          "LOCAL_BOUNDARY: 本命令复用仓库现有脚本链；仍可能与 GitHub Runner 的环境差异（系统/权限/网络）存在边界。",
+          "SUMMARY:",
+          "- PASS 准备目录",
+          "- PASS 生成 workspace_healer 证据",
+          "- PASS 对齐 LATEST.json",
+          "- PASS 生成 CI parity 证据",
+          "- PASS 生成 error digest 证据",
+          "- PASS 生成 healthcheck 证据",
+          "- PASS 确保 notify/result 骨架",
+          "- PASS 生成 gate preview 证据",
+          "- PASS 生成 snippet / git_meta / run / dod / attestation",
+          "- PASS 组装 evidence manifest",
+          "- PASS 关键证据跟踪检查",
+          "- PASS 清理本地噪声目录",
+          "- PASS 最终本地 Gate Light 验证"
+        ],
+        "stderr_tail": [
+          "From https://github.com/dongyupeng2108-bot/OppOrder",
+          " * branch              main       -> FETCH_HEAD",
+          "From https://github.com/dongyupeng2108-bot/OppOrder",
+          " * branch              main       -> FETCH_HEAD",
+          "warning: in the working copy of 'rules/LATEST.json', LF will be replaced by CRLF the next time Git touches it",
+          "warning: in the working copy of 'rules/task-reports/2026-03/260330_019.json', LF will be replaced by CRLF the next time Git touches it",
+          "warning: in the working copy of 'rules/task-reports/2026-03/notify_260330_019.txt', LF will be replaced by CRLF the next time Git touches it",
+          "warning: in the working copy of 'rules/task-reports/2026-03/result_260330_019.json', LF will be replaced by CRLF the next time Git touches it",
+          "warning: in the working copy of 'rules/task-reports/2026-03/trae_report_snippet_260330_019.txt', LF will be replaced by CRLF the next time Git touches it",
+          "warning: in the working copy of 'rules/task-reports/2026-03/workspace_healer_260330_019.json', LF will be replaced by CRLF the next time Git touches it",
+          "(node:3752) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.",
+          "(Use `node --trace-deprecation ...` to show where the warning was created)",
+          "(node:3644) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.",
+          "(Use `node --trace-deprecation ...` to show where the warning was created)",
+          "[DB] appendOpportunity error: SQLITE_CONSTRAINT: UNIQUE constraint failed: opportunity_event.id",
+          "[DB] appendOpportunity error: SQLITE_CONSTRAINT: UNIQUE constraint failed: opportunity_event.id",
+          "[DB] appendOpportunity error: SQLITE_CONSTRAINT: UNIQUE constraint failed: opportunity_event.id",
+          "[Gate Light] Scanner runs contract: SKIP (server unreachable)",
+          "[Gate Light] Universe runs contract: SKIP (server unreachable)",
+          "[Gate Light] Trading routes contract: SKIP (server unreachable)"
+        ]
+      },
+      {
+        "command": "node scripts/gate_light_ci.mjs --task_id 260330_019 --result_dir rules/task-reports/2026-03",
+        "exit_code": 0,
+        "elapsed_ms": 8524,
+        "stdout_tail": [
+          "[Gate Light] Immutable Integrate & SafeCmd Enforcement verified.",
+          "[Gate Light] Checking Scope Lock...",
+          "[Gate Light] WARN: No scope_lock file found. Skipping scope lock check (backward compatible).",
+          "[Gate Light] BTCQDD Healthcheck: PASS",
+          "[Gate Light] Executing: node scripts/postflight_validate_envelope.mjs --task_id 260330_019 --result_dir rules/task-reports/2026-03 --report_dir rules/task-reports/2026-03",
+          "[Postflight] Validating 260330_019 in rules/task-reports/2026-03...",
+          "[Postflight] Running Evidence Smoke Test for 260330_019...",
+          "[SmokeTest] Running Evidence Smoke Test for Task 260330_019 in rules/task-reports/2026-03...",
+          "[SmokeTest] PASS: All 16 required files exist and manifest is valid.",
+          "[DEBUG] Healthcheck Root Match: DOD_EVIDENCE_HEALTHCHECK_ROOT: 260330_019_healthcheck_53122_root.txt =>",
+          "[DEBUG] Healthcheck Pairs Match: DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260330_019_healthcheck_53122_pairs.txt =>",
+          "[DEBUG] Checking Evidence File: Label=Root, RefPath='260330_019_healthcheck_53122_root.txt'",
+          "[DEBUG] Resolved EvPath: 'rules\\task-reports\\2026-03\\260330_019_healthcheck_53122_root.txt'",
+          "[DEBUG] Checking Evidence File: Label=Pairs, RefPath='260330_019_healthcheck_53122_pairs.txt'",
+          "[DEBUG] Resolved EvPath: 'rules\\task-reports\\2026-03\\260330_019_healthcheck_53122_pairs.txt'",
+          "[Postflight] Report: rules\\task-reports\\2026-03\\260330_019.json",
+          "[Postflight] Envelope: rules\\task-reports\\envelopes\\260330_019.envelope.json",
+          "[Postflight] PASS",
+          "[Gate Light] PASS",
+          "GATE_LIGHT_EXIT=0"
+        ],
+        "stderr_tail": [
+          "(node:11496) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.",
+          "(Use `node --trace-deprecation ...` to show where the warning was created)",
+          "(node:2868) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.",
+          "(Use `node --trace-deprecation ...` to show where the warning was created)",
+          "[DB] appendOpportunity error: SQLITE_CONSTRAINT: UNIQUE constraint failed: opportunity_event.id",
+          "[DB] appendOpportunity error: SQLITE_CONSTRAINT: UNIQUE constraint failed: opportunity_event.id",
+          "[DB] appendOpportunity error: SQLITE_CONSTRAINT: UNIQUE constraint failed: opportunity_event.id",
+          "[Gate Light] Scanner runs contract: SKIP (server unreachable)",
+          "[Gate Light] Universe runs contract: SKIP (server unreachable)",
+          "[Gate Light] Trading routes contract: SKIP (server unreachable)"
+        ]
+      }
+    ],
+    "elapsed_ms": 330169,
+    "pass": true,
+    "failed_command": null
+  },
+  "generated_at": "2026-03-31T00:10:31.866Z",
+  "mode": "prepr",
+  "elapsed_ms": 330169,
+  "commands": [
+    {
+      "command": "node scripts/verify_all_manual.mjs --task_id=260330_019 --module=p1guard",
+      "exit_code": 0,
+      "elapsed_ms": 300224,
+      "stdout_tail": [
+        "VERIFY_ALL_OUTPUT=E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_019_verify_all_manual.json",
+        "VERIFY_ALL_LOG=E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_019_verify_all_manual.log",
+        "{\"overall_pass\":true,\"pass_count\":1,\"fail_count\":0}"
+      ],
+      "stderr_tail": []
+    },
+    {
+      "command": "node scripts/finalize_task_evidence.mjs --task_id 260330_019",
+      "exit_code": 0,
+      "elapsed_ms": 21421,
+      "stdout_tail": [
+        "[Postflight] Envelope: rules\\task-reports\\envelopes\\260330_019.envelope.json",
+        "[Postflight] PASS",
+        "[Gate Light] PASS",
+        "GATE_LIGHT_EXIT=0",
+        "[PASS] 最终本地 Gate Light 验证",
+        "LOCAL_BOUNDARY: 本命令复用仓库现有脚本链；仍可能与 GitHub Runner 的环境差异（系统/权限/网络）存在边界。",
+        "SUMMARY:",
+        "- PASS 准备目录",
+        "- PASS 生成 workspace_healer 证据",
+        "- PASS 对齐 LATEST.json",
+        "- PASS 生成 CI parity 证据",
+        "- PASS 生成 error digest 证据",
+        "- PASS 生成 healthcheck 证据",
+        "- PASS 确保 notify/result 骨架",
+        "- PASS 生成 gate preview 证据",
+        "- PASS 生成 snippet / git_meta / run / dod / attestation",
+        "- PASS 组装 evidence manifest",
+        "- PASS 关键证据跟踪检查",
+        "- PASS 清理本地噪声目录",
+        "- PASS 最终本地 Gate Light 验证"
+      ],
+      "stderr_tail": [
+        "From https://github.com/dongyupeng2108-bot/OppOrder",
+        " * branch              main       -> FETCH_HEAD",
+        "From https://github.com/dongyupeng2108-bot/OppOrder",
+        " * branch              main       -> FETCH_HEAD",
+        "warning: in the working copy of 'rules/LATEST.json', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'rules/task-reports/2026-03/260330_019.json', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'rules/task-reports/2026-03/notify_260330_019.txt', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'rules/task-reports/2026-03/result_260330_019.json', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'rules/task-reports/2026-03/trae_report_snippet_260330_019.txt', LF will be replaced by CRLF the next time Git touches it",
+        "warning: in the working copy of 'rules/task-reports/2026-03/workspace_healer_260330_019.json', LF will be replaced by CRLF the next time Git touches it",
+        "(node:3752) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.",
+        "(Use `node --trace-deprecation ...` to show where the warning was created)",
+        "(node:3644) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.",
+        "(Use `node --trace-deprecation ...` to show where the warning was created)",
+        "[DB] appendOpportunity error: SQLITE_CONSTRAINT: UNIQUE constraint failed: opportunity_event.id",
+        "[DB] appendOpportunity error: SQLITE_CONSTRAINT: UNIQUE constraint failed: opportunity_event.id",
+        "[DB] appendOpportunity error: SQLITE_CONSTRAINT: UNIQUE constraint failed: opportunity_event.id",
+        "[Gate Light] Scanner runs contract: SKIP (server unreachable)",
+        "[Gate Light] Universe runs contract: SKIP (server unreachable)",
+        "[Gate Light] Trading routes contract: SKIP (server unreachable)"
+      ]
+    },
+    {
+      "command": "node scripts/gate_light_ci.mjs --task_id 260330_019 --result_dir rules/task-reports/2026-03",
+      "exit_code": 0,
+      "elapsed_ms": 8524,
+      "stdout_tail": [
+        "[Gate Light] Immutable Integrate & SafeCmd Enforcement verified.",
+        "[Gate Light] Checking Scope Lock...",
+        "[Gate Light] WARN: No scope_lock file found. Skipping scope lock check (backward compatible).",
+        "[Gate Light] BTCQDD Healthcheck: PASS",
+        "[Gate Light] Executing: node scripts/postflight_validate_envelope.mjs --task_id 260330_019 --result_dir rules/task-reports/2026-03 --report_dir rules/task-reports/2026-03",
+        "[Postflight] Validating 260330_019 in rules/task-reports/2026-03...",
+        "[Postflight] Running Evidence Smoke Test for 260330_019...",
+        "[SmokeTest] Running Evidence Smoke Test for Task 260330_019 in rules/task-reports/2026-03...",
+        "[SmokeTest] PASS: All 16 required files exist and manifest is valid.",
+        "[DEBUG] Healthcheck Root Match: DOD_EVIDENCE_HEALTHCHECK_ROOT: 260330_019_healthcheck_53122_root.txt =>",
+        "[DEBUG] Healthcheck Pairs Match: DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260330_019_healthcheck_53122_pairs.txt =>",
+        "[DEBUG] Checking Evidence File: Label=Root, RefPath='260330_019_healthcheck_53122_root.txt'",
+        "[DEBUG] Resolved EvPath: 'rules\\task-reports\\2026-03\\260330_019_healthcheck_53122_root.txt'",
+        "[DEBUG] Checking Evidence File: Label=Pairs, RefPath='260330_019_healthcheck_53122_pairs.txt'",
+        "[DEBUG] Resolved EvPath: 'rules\\task-reports\\2026-03\\260330_019_healthcheck_53122_pairs.txt'",
+        "[Postflight] Report: rules\\task-reports\\2026-03\\260330_019.json",
+        "[Postflight] Envelope: rules\\task-reports\\envelopes\\260330_019.envelope.json",
+        "[Postflight] PASS",
+        "[Gate Light] PASS",
+        "GATE_LIGHT_EXIT=0"
+      ],
+      "stderr_tail": [
+        "(node:11496) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.",
+        "(Use `node --trace-deprecation ...` to show where the warning was created)",
+        "(node:2868) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.",
+        "(Use `node --trace-deprecation ...` to show where the warning was created)",
+        "[DB] appendOpportunity error: SQLITE_CONSTRAINT: UNIQUE constraint failed: opportunity_event.id",
+        "[DB] appendOpportunity error: SQLITE_CONSTRAINT: UNIQUE constraint failed: opportunity_event.id",
+        "[DB] appendOpportunity error: SQLITE_CONSTRAINT: UNIQUE constraint failed: opportunity_event.id",
+        "[Gate Light] Scanner runs contract: SKIP (server unreachable)",
+        "[Gate Light] Universe runs contract: SKIP (server unreachable)",
+        "[Gate Light] Trading routes contract: SKIP (server unreachable)"
+      ]
+    }
+  ],
+  "key_counters": {
+    "total_checks": 4,
+    "pass_checks": 4,
+    "fail_checks": 0
+  },
+  "result": {
+    "mode_supported": true,
+    "all_commands_pass": true,
+    "dev_fast_no_verify_all_manual": true,
+    "prepr_has_verify_all_finalize_gate": true
+  }
+}

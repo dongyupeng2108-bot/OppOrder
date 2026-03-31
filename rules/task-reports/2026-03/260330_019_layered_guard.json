@@ -1,0 +1,86 @@
+{
+  "script_name": "run_layered_verify",
+  "task_id": "260330_019",
+  "sample_name": "no_terminal_state_guard_v1",
+  "pass": true,
+  "message": "layered verify mode guard pass",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "rules/task-reports/2026-03/260330_019_layered_guard.json",
+  "summary": {
+    "mode": "guard",
+    "total_checks": 4,
+    "pass_checks": 4,
+    "fail_checks": 0,
+    "checks": {
+      "mode_supported": true,
+      "all_commands_pass": true,
+      "dev_fast_no_verify_all_manual": true,
+      "prepr_has_verify_all_finalize_gate": true
+    }
+  },
+  "raw_excerpt": {
+    "mode": "guard",
+    "task_id": "260330_019",
+    "sample": "no_terminal_state_guard_v1",
+    "module": "p1guard",
+    "audit_script": null,
+    "guard_script": "scripts/verify_no_terminal_state_guard.mjs",
+    "commands": [
+      {
+        "command": "node --check scripts/verify_no_terminal_state_guard.mjs",
+        "exit_code": 0,
+        "elapsed_ms": 48,
+        "stdout_tail": [],
+        "stderr_tail": []
+      },
+      {
+        "command": "node scripts/verify_no_terminal_state_guard.mjs --task_id=260330_019 --sample=no_terminal_state_guard_v1",
+        "exit_code": 0,
+        "elapsed_ms": 299632,
+        "stdout_tail": [
+          "VERIFY_OUTPUT=E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_019_no_terminal_state_guard.json",
+          "VERIFY_LOG=E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_019_no_terminal_state_guard.log",
+          "{\"pass\":true,\"pass_checks\":2,\"fail_checks\":0}"
+        ],
+        "stderr_tail": []
+      }
+    ],
+    "elapsed_ms": 299680,
+    "pass": true,
+    "failed_command": null
+  },
+  "generated_at": "2026-03-31T00:05:01.628Z",
+  "mode": "guard",
+  "elapsed_ms": 299680,
+  "commands": [
+    {
+      "command": "node --check scripts/verify_no_terminal_state_guard.mjs",
+      "exit_code": 0,
+      "elapsed_ms": 48,
+      "stdout_tail": [],
+      "stderr_tail": []
+    },
+    {
+      "command": "node scripts/verify_no_terminal_state_guard.mjs --task_id=260330_019 --sample=no_terminal_state_guard_v1",
+      "exit_code": 0,
+      "elapsed_ms": 299632,
+      "stdout_tail": [
+        "VERIFY_OUTPUT=E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_019_no_terminal_state_guard.json",
+        "VERIFY_LOG=E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_019_no_terminal_state_guard.log",
+        "{\"pass\":true,\"pass_checks\":2,\"fail_checks\":0}"
+      ],
+      "stderr_tail": []
+    }
+  ],
+  "key_counters": {
+    "total_checks": 4,
+    "pass_checks": 4,
+    "fail_checks": 0
+  },
+  "result": {
+    "mode_supported": true,
+    "all_commands_pass": true,
+    "dev_fast_no_verify_all_manual": true,
+    "prepr_has_verify_all_finalize_gate": true
+  }
+}

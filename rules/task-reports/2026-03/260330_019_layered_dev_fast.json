@@ -1,0 +1,86 @@
+{
+  "script_name": "run_layered_verify",
+  "task_id": "260330_019",
+  "sample_name": "no_terminal_state_fix_v1",
+  "pass": true,
+  "message": "layered verify mode dev-fast pass",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "rules/task-reports/2026-03/260330_019_layered_dev_fast.json",
+  "summary": {
+    "mode": "dev-fast",
+    "total_checks": 4,
+    "pass_checks": 4,
+    "fail_checks": 0,
+    "checks": {
+      "mode_supported": true,
+      "all_commands_pass": true,
+      "dev_fast_no_verify_all_manual": true,
+      "prepr_has_verify_all_finalize_gate": true
+    }
+  },
+  "raw_excerpt": {
+    "mode": "dev-fast",
+    "task_id": "260330_019",
+    "sample": "no_terminal_state_fix_v1",
+    "module": "p1guard",
+    "audit_script": "scripts/truth_audit_no_terminal_state_fix_260330_018.mjs",
+    "guard_script": "scripts/verify_no_terminal_state_guard.mjs",
+    "commands": [
+      {
+        "command": "node --check scripts/truth_audit_no_terminal_state_fix_260330_018.mjs",
+        "exit_code": 0,
+        "elapsed_ms": 49,
+        "stdout_tail": [],
+        "stderr_tail": []
+      },
+      {
+        "command": "node scripts/truth_audit_no_terminal_state_fix_260330_018.mjs --task_id=260330_019 --sample=no_terminal_state_fix_v1",
+        "exit_code": 0,
+        "elapsed_ms": 356319,
+        "stdout_tail": [
+          "VERIFY_OUTPUT=E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_019_truth_audit_no_terminal_state_fix.json",
+          "VERIFY_LOG=E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_019_truth_audit_no_terminal_state_fix.log",
+          "{\"pass\":true,\"conclusion\":\"A：修复通过，NO 成交后同窗不再重复 PLACE_LADDER(NO)\",\"verdict\":\"A：通过\",\"first_break_layer\":\"NONE_CHAIN_PASS\",\"pass_checks\":5,\"fail_checks\":0}"
+        ],
+        "stderr_tail": []
+      }
+    ],
+    "elapsed_ms": 356368,
+    "pass": true,
+    "failed_command": null
+  },
+  "generated_at": "2026-03-31T00:00:01.872Z",
+  "mode": "dev-fast",
+  "elapsed_ms": 356368,
+  "commands": [
+    {
+      "command": "node --check scripts/truth_audit_no_terminal_state_fix_260330_018.mjs",
+      "exit_code": 0,
+      "elapsed_ms": 49,
+      "stdout_tail": [],
+      "stderr_tail": []
+    },
+    {
+      "command": "node scripts/truth_audit_no_terminal_state_fix_260330_018.mjs --task_id=260330_019 --sample=no_terminal_state_fix_v1",
+      "exit_code": 0,
+      "elapsed_ms": 356319,
+      "stdout_tail": [
+        "VERIFY_OUTPUT=E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_019_truth_audit_no_terminal_state_fix.json",
+        "VERIFY_LOG=E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_019_truth_audit_no_terminal_state_fix.log",
+        "{\"pass\":true,\"conclusion\":\"A：修复通过，NO 成交后同窗不再重复 PLACE_LADDER(NO)\",\"verdict\":\"A：通过\",\"first_break_layer\":\"NONE_CHAIN_PASS\",\"pass_checks\":5,\"fail_checks\":0}"
+      ],
+      "stderr_tail": []
+    }
+  ],
+  "key_counters": {
+    "total_checks": 4,
+    "pass_checks": 4,
+    "fail_checks": 0
+  },
+  "result": {
+    "mode_supported": true,
+    "all_commands_pass": true,
+    "dev_fast_no_verify_all_manual": true,
+    "prepr_has_verify_all_finalize_gate": true
+  }
+}
