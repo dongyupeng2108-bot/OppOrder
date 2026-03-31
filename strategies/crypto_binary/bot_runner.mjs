@@ -314,6 +314,12 @@ export function createBotRunner(options = {}) {
       && order.side === 'NO'
       && isOrderInCurrentWindow(order, state)
     ));
+    const windowFilledYes = orders.filter((order) => (
+      order.status === 'FILLED'
+      && order.side === 'YES'
+      && isOrderInCurrentWindow(order, state)
+    ));
+    const yesTerminalByFilled = openYes.length === 0 && windowFilledYes.length > 0;
     const noTerminalByFilled = openNo.length === 0 && windowFilledNo.length > 0;
     const statePatch = {
       current_window_id: state.current_window_id ?? context.window_id ?? null,
@@ -331,6 +337,9 @@ export function createBotRunner(options = {}) {
       phase: inferPhase(decision, summary),
       ...decisionPatches
     };
+    if (yesTerminalByFilled && statePatch.yes_cancelled !== true) {
+      statePatch.yes_cancelled = true;
+    }
     if (noTerminalByFilled && statePatch.no_cancelled !== true) {
       statePatch.no_cancelled = true;
     }
@@ -358,6 +367,20 @@ export function createBotRunner(options = {}) {
             order_price: order.price,
             fill_price: order.fill_price
           }))
+        }
+      });
+    }
+    if (state.yes_cancelled !== true && stateAfter.yes_cancelled === true && yesTerminalByFilled) {
+      log({
+        level: 'info',
+        source: 'bot_runner',
+        event: 'BOT_YES_TERMINAL_BY_FILL',
+        message: 'yes terminal latched by filled orders in current window',
+        mode: state.mode ?? null,
+        window_id: contextForDecision.window_id ?? null,
+        data: {
+          yes_filled_count: windowFilledYes.length,
+          yes_open_count: openYes.length
         }
       });
     }
