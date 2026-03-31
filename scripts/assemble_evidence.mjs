@@ -399,6 +399,9 @@ const buildNotifyContent = (block) => `${header}
 === RESULT_JSON ===
 (See result_${taskId}.json)
 
+=== INDEX ===
+(See deliverables_index_${taskId}.json)
+
 === LOG_HEAD ===
 ${logHead}
 ...
