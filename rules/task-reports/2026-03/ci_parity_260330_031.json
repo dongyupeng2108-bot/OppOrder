@@ -1,0 +1,15 @@
+{
+  "task_id": "260330_031",
+  "is_shallow_repo": true,
+  "base": "8f2a437d4def3c75d27aaa732b98adaa958356e9",
+  "head": "3219013bf2695c4a0d51e99133750b9e18e04239",
+  "merge_base": "8f2a437d4def3c75d27aaa732b98adaa958356e9",
+  "scope_files": [
+    "rules/LATEST.json",
+    "scripts/truth_audit_cancel_decision_emission_fix_260330_031.mjs",
+    "strategies/crypto_binary/bot_runner.mjs",
+    "strategies/crypto_binary/bot_strategy.mjs"
+  ],
+  "scope_count": 4,
+  "generated_at": "2026-04-01T18:43:49.554Z"
+}
