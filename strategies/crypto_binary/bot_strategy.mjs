@@ -79,12 +79,20 @@ const computeFormulaVars = ({ context, state, prices }) => {
   const spread = yesSpread !== null && noSpread !== null ? Math.max(yesSpread, noSpread) : (yesSpread ?? noSpread ?? null);
   const atr = toNumberOrNull(context?.atr_5m);
   const btc = toNumberOrNull(context?.btc_price);
+  const hasOpenUpOrders = (
+    (Array.isArray(state?.yes_order_ids) && state.yes_order_ids.length > 0)
+    || (Number.isFinite(Number(state?.yes_open_order_count)) && Number(state.yes_open_order_count) > 0)
+  );
+  const hasOpenDownOrders = (
+    (Array.isArray(state?.no_order_ids) && state.no_order_ids.length > 0)
+    || (Number.isFinite(Number(state?.no_open_order_count)) && Number(state.no_open_order_count) > 0)
+  );
   return {
     secs_left: secsLeft ?? -1,
     spread: spread ?? -1,
     volatility_ratio: atr !== null && btc !== null && btc !== 0 ? atr / btc : -1,
-    has_open_up_orders: Array.isArray(state?.yes_order_ids) && state.yes_order_ids.length > 0,
-    has_open_down_orders: Array.isArray(state?.no_order_ids) && state.no_order_ids.length > 0,
+    has_open_up_orders: hasOpenUpOrders,
+    has_open_down_orders: hasOpenDownOrders,
     btc_price: prices.btcPrice ?? -1,
     upper_bound: prices.upperBound ?? -1,
     lower_bound: prices.lowerBound ?? -1
