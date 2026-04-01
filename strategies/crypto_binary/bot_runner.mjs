@@ -14,6 +14,11 @@ const toFiniteNumber = (value) => {
 };
 
 const isOrderInCurrentWindow = (order, state) => {
+  const currentWindowId = state?.current_window_id ?? null;
+  const orderWindowId = order?.resolved_window_id ?? order?.inferred_window_id ?? null;
+  if (currentWindowId != null && orderWindowId != null) {
+    return orderWindowId === currentWindowId;
+  }
   if (!state?.window_initialized_at) return false;
   const orderTs = Date.parse(order?.created_at || '');
   const initTs = Date.parse(state.window_initialized_at);
@@ -244,10 +249,72 @@ export function createBotRunner(options = {}) {
       lower_bound: state.lower_bound ?? null
     };
 
-    const decisionRaw = decide({
+    const ordersBeforeDecision = getOrders();
+    const activeWindowIdForDecision = state.current_window_id ?? contextForDecision.window_id ?? null;
+    const isOpenOrderInActiveWindow = (order) => {
+      if (!order || order?.status !== 'OPEN') return false;
+      const orderWindowId = order?.resolved_window_id ?? order?.inferred_window_id ?? null;
+      if (activeWindowIdForDecision !== null && orderWindowId !== null) {
+        return orderWindowId === activeWindowIdForDecision;
+      }
+      return isOrderInCurrentWindow(order, state);
+    };
+    const openNoOrderIdsBeforeDecision = ordersBeforeDecision
+      .filter((order) => order?.side === 'NO' && isOpenOrderInActiveWindow(order))
+      .map((order) => order.order_id)
+      .filter(Boolean);
+    const openYesOrderIdsBeforeDecision = ordersBeforeDecision
+      .filter((order) => order?.side === 'YES' && isOpenOrderInActiveWindow(order))
+      .map((order) => order.order_id)
+      .filter(Boolean);
+    const startedAtTs = Date.parse(state?.started_at || '');
+    const openNoFallbackByStartedAt = ordersBeforeDecision
+      .filter((order) => {
+        if (!order || order?.side !== 'NO' || order?.status !== 'OPEN') return false;
+        const orderTs = Date.parse(order?.created_at || '');
+        if (Number.isNaN(startedAtTs) || Number.isNaN(orderTs)) return true;
+        return orderTs >= startedAtTs;
+      })
+      .map((order) => order.order_id)
+      .filter(Boolean);
+    const noOrderIdsForDecision = Array.isArray(state?.no_order_ids) && state.no_order_ids.length > 0
+      ? state.no_order_ids
+      : (
+        openNoOrderIdsBeforeDecision.length > 0
+          ? openNoOrderIdsBeforeDecision
+          : (startupWindowGateMode === 'wait_next_window' ? openNoFallbackByStartedAt : [])
+      );
+    const downCancelBeforeEndSec = toFiniteNumber(config?.down_cancel?.before_end_sec ?? config?.cancel_all_remaining_sec);
+    const remainingSecForStartupCancel = toFiniteNumber(contextForDecision.remaining_sec);
+    const forceDownCancelInStartupWait = (
+      startupWindowGateMode === 'wait_next_window'
+      && noOrderIdsForDecision.length > 0
+      && state?.no_cancelled !== true
+      && downCancelBeforeEndSec !== null
+      && remainingSecForStartupCancel !== null
+      && remainingSecForStartupCancel <= downCancelBeforeEndSec
+    );
+    const decisionRaw = forceDownCancelInStartupWait
+      ? {
+          intents: [{ kind: 'CANCEL_OPEN', side: 'NO' }],
+          reason: 'down_cancel_before_end_startup_wait_resume',
+          patches: { no_cancelled: true },
+          diagnostics: {
+            startup_wait_force_down_cancel: true,
+            startup_wait_force_remaining_sec: remainingSecForStartupCancel,
+            startup_wait_force_before_end_sec: downCancelBeforeEndSec,
+            startup_wait_force_open_no_count: noOrderIdsForDecision.length
+          }
+        }
+      : decide({
       config,
       context: contextForDecision,
-      state
+      state: {
+        ...state,
+        no_order_ids: noOrderIdsForDecision,
+        yes_open_order_count: openYesOrderIdsBeforeDecision.length,
+        no_open_order_count: noOrderIdsForDecision.length
+      }
     });
     const currentWindowPresent = state.current_window_id != null;
     const btcReady = isCriticalBtcReady(contextForDecision.btc_price);
@@ -259,8 +326,13 @@ export function createBotRunner(options = {}) {
     const gateByWindowNotInitialized = currentWindowPresent && hasActionIntent && !state.window_initialized_at;
     const gateByBoundsNotReady = currentWindowPresent && boundsDependentIntent && !boundsReady;
     const gateByStartupWait = startupWindowGateMode === 'wait_next_window';
-    const shouldGate = gateByStartupWait || gateByBtcNotReady || gateByWindowNotInitialized || gateByBoundsNotReady;
-    const gatedReason = gateByStartupWait
+    const cancelOpenNoOnlyIntents = rawIntents.filter((intent) => intent?.kind === 'CANCEL_OPEN' && (intent?.side === 'NO' || intent?.side === 'ALL'));
+    const startupWaitCancelableIntentOnly = gateByStartupWait
+      && cancelOpenNoOnlyIntents.length > 0
+      && rawIntents.every((intent) => intent?.kind === 'NOOP' || (intent?.kind === 'CANCEL_OPEN' && (intent?.side === 'NO' || intent?.side === 'ALL')));
+    const gateByStartupWaitEffective = gateByStartupWait && !startupWaitCancelableIntentOnly;
+    const shouldGate = gateByStartupWaitEffective || gateByBtcNotReady || gateByWindowNotInitialized || gateByBoundsNotReady;
+    const gatedReason = gateByStartupWaitEffective
       ? 'wait_next_window_after_start'
       : (gateByBtcNotReady
       ? 'gate_context_not_ready_btc_price'
@@ -280,11 +352,41 @@ export function createBotRunner(options = {}) {
             gate_btc_ready: btcReady,
             gate_bounds_ready: boundsReady,
             gate_window_initialized: Boolean(state.window_initialized_at),
-            gate_startup_wait_active: gateByStartupWait,
+            gate_startup_wait_active: gateByStartupWaitEffective,
             gate_startup_window_id: startupWindowGateId
           }
         }
       : decisionRaw;
+    if (startupWaitCancelableIntentOnly) {
+      log({
+        level: 'info',
+        source: 'bot_runner',
+        event: 'BOT_STARTUP_WAIT_BYPASS_CANCEL_OPEN_NO',
+        message: 'startup wait bypassed for down cancel emission',
+        mode: state.mode ?? null,
+        window_id: contextForDecision.window_id ?? null,
+        data: {
+          startup_window_id: startupWindowGateId,
+          remaining_sec: contextForDecision.remaining_sec ?? null,
+          intents: cancelOpenNoOnlyIntents
+        }
+      });
+    }
+    if (forceDownCancelInStartupWait) {
+      log({
+        level: 'info',
+        source: 'bot_runner',
+        event: 'BOT_STARTUP_WAIT_FORCE_DOWN_CANCEL',
+        message: 'startup wait forced down cancel emission for same-window ownership',
+        mode: state.mode ?? null,
+        window_id: contextForDecision.window_id ?? null,
+        data: {
+          remaining_sec: remainingSecForStartupCancel,
+          down_cancel_before_end_sec: downCancelBeforeEndSec,
+          no_open_count: noOrderIdsForDecision.length
+        }
+      });
+    }
     const intentsSummary = summarizeIntents(decision.intents);
     const windowKey = state.current_window_id ?? contextForDecision.window_id ?? '__null_window__';
     const hasPlaceLadder = Array.isArray(decision.intents) && decision.intents.some((intent) => intent?.kind === 'PLACE_LADDER');
