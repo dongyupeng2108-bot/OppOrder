@@ -1,0 +1,6 @@
+script_name=verify_cancel_decision_emission_restart_guard_260330_032
+task_id=260330_032
+sample_name=restart_same_window_down_cancel_guard_v1
+pass=true
+first_break_layer=NONE_CHAIN_PASS
+message=restart down cancel regression guard pass
