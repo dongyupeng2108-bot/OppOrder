@@ -688,107 +688,145 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
     }
 
     if (isHeavyProfile) {
-        console.log('[Gate Light] Checking News Pull API Contract...');
-        try {
-            execSync('node scripts/check_news_pull_contract.mjs', { stdio: 'inherit' });
-        } catch (e) {
-            console.error('[Gate Light] News Pull Contract Check FAILED.');
-            process.exit(1);
-        }
-
-        console.log('[Gate Light] Checking Rank V2 API Contract...');
-        try {
-            execSync('node scripts/verify_rank_v2_contract.mjs', { stdio: 'inherit' });
-        } catch (e) {
-            console.error('[Gate Light] Rank V2 Contract Check FAILED.');
-            process.exit(1);
-        }
-
-        console.log('[Gate Light] Checking Export V1 API Contract...');
-        try {
-            execSync('node scripts/verify_export_v1_contract.mjs', { stdio: 'inherit' });
-        } catch (e) {
-            console.error('[Gate Light] Export V1 Contract Check FAILED.');
-            process.exit(1);
-        }
-
-        console.log('[Gate Light] Checking Ledger V0 API Contract...');
-        try {
-            execSync('node scripts/verify_ledger_v0_contract.mjs', { stdio: 'inherit' });
-        } catch (e) {
-            console.error('[Gate Light] Ledger V0 Contract Check FAILED.');
-            process.exit(1);
-        }
-
-        console.log('[Gate Light] Checking Scanner API Contract...');
-        try {
-            const scannerRes = await fetch('http://localhost:53122/scanner/runs?limit=1');
-            if (scannerRes.ok) {
-                const data = await scannerRes.json();
-                if (Array.isArray(data.runs) && typeof data.total === 'number') {
-                    console.log('[Gate Light] Scanner runs contract: PASS');
-                } else {
-                    console.warn('[Gate Light] Scanner runs contract: WARN (missing runs/total fields)');
+        const { spawn } = await import('child_process');
+        const http = await import('http');
+        const MOCK_PORT = 53122;
+        const MOCK_SCRIPT = path.resolve('OppRadar', 'mock_server_53122.mjs');
+        let mockProc = null;
+        const waitHealth = (pathname = '/') => new Promise((resolve) => {
+            const req = http.get({ host: '127.0.0.1', port: MOCK_PORT, path: pathname }, (res) => {
+                resolve(res.statusCode === 200);
+            });
+            req.setTimeout(1200, () => { req.destroy(); resolve(false); });
+            req.on('error', () => resolve(false));
+        });
+        const ensureMock = async () => {
+            const alive = (await waitHealth('/')) || (await waitHealth('/health'));
+            if (alive) {
+                console.log(`[Gate Light] MOCK_SERVER_SESSION=attached port=${MOCK_PORT}`);
+                return;
+            }
+            console.log(`[Gate Light] MOCK_SERVER_SESSION=starting script=${MOCK_SCRIPT}`);
+            mockProc = spawn(process.execPath, [MOCK_SCRIPT], { stdio: 'ignore', detached: false });
+            const begin = Date.now();
+            while (Date.now() - begin < 4000) {
+                if ((await waitHealth('/')) || (await waitHealth('/health'))) {
+                    console.log(`[Gate Light] MOCK_SERVER_SESSION=ready pid=${mockProc.pid}`);
+                    return;
                 }
-            } else {
-                console.warn('[Gate Light] Scanner runs contract: SKIP (endpoint returned ' + scannerRes.status + ')');
+                await new Promise(r => setTimeout(r, 200));
             }
-        } catch (e) {
-            console.warn('[Gate Light] Scanner runs contract: SKIP (server unreachable)');
-        }
+            console.error('[Gate Light] FAILED: Mock server did not become healthy.');
+            try { mockProc && mockProc.kill(); } catch {}
+            process.exit(1);
+        };
+        const stopMock = async () => {
+            if (mockProc) {
+                console.log('[Gate Light] MOCK_SERVER_SESSION=stopping');
+                try { mockProc.kill(); } catch {}
+                await new Promise(r => setTimeout(r, 400));
+            } else {
+                console.log('[Gate Light] MOCK_SERVER_SESSION=detached; no-stop');
+            }
+        };
 
-        console.log('[Gate Light] Checking Universe API Contract...');
-        try {
-            const universeRes = await fetch('http://localhost:53122/universe/runs?limit=1');
-            if (universeRes.ok) {
-                const data = await universeRes.json();
-                if (Array.isArray(data.runs) && typeof data.total === 'number') {
-                    console.log('[Gate Light] Universe runs contract: PASS');
+        await ensureMock();
+
+        const runNode = (script) => new Promise((resolve) => {
+            const p = spawn(process.execPath, [script], { stdio: 'inherit' });
+            p.on('exit', (code) => resolve({ script, code }));
+        });
+
+        console.log('[Gate Light] HEAVY_PARALLEL_START: news/rank/export/ledger');
+        const [newsRes, rankRes, exportRes, ledgerRes] = await Promise.all([
+            runNode('scripts/check_news_pull_contract.mjs'),
+            runNode('scripts/verify_rank_v2_contract.mjs'),
+            runNode('scripts/verify_export_v1_contract.mjs'),
+            runNode('scripts/verify_ledger_v0_contract.mjs'),
+        ]);
+        console.log('[Gate Light] HEAVY_PARALLEL_DONE:', JSON.stringify({
+            news: newsRes.code, rank: rankRes.code, export: exportRes.code, ledger: ledgerRes.code
+        }));
+        if (newsRes.code !== 0) { console.error('[Gate Light] News Pull Contract Check FAILED.'); await stopMock(); process.exit(1); }
+        if (rankRes.code !== 0) { console.error('[Gate Light] Rank V2 Contract Check FAILED.'); await stopMock(); process.exit(1); }
+        if (exportRes.code !== 0) { console.error('[Gate Light] Export V1 Contract Check FAILED.'); await stopMock(); process.exit(1); }
+        if (ledgerRes.code !== 0) { console.error('[Gate Light] Ledger V0 Contract Check FAILED.'); await stopMock(); process.exit(1); }
+        await stopMock();
+
+        const checkScanner = async () => {
+            console.log('[Gate Light] Checking Scanner API Contract...');
+            try {
+                const scannerRes = await fetch('http://localhost:53122/scanner/runs?limit=1');
+                if (scannerRes.ok) {
+                    const data = await scannerRes.json();
+                    if (Array.isArray(data.runs) && typeof data.total === 'number') {
+                        console.log('[Gate Light] Scanner runs contract: PASS');
+                    } else {
+                        console.warn('[Gate Light] Scanner runs contract: WARN (missing runs/total fields)');
+                    }
                 } else {
-                    console.warn('[Gate Light] Universe runs contract: WARN (missing runs/total fields)');
+                    console.warn('[Gate Light] Scanner runs contract: SKIP (endpoint returned ' + scannerRes.status + ')');
                 }
-            } else {
-                console.warn('[Gate Light] Universe runs contract: SKIP (endpoint returned ' + universeRes.status + ')');
+            } catch (e) {
+                console.warn('[Gate Light] Scanner runs contract: SKIP (server unreachable)');
             }
-        } catch (e) {
-            console.warn('[Gate Light] Universe runs contract: SKIP (server unreachable)');
-        }
-
-        console.log('[Gate Light] Checking Trading Routes API Contract...');
-        try {
-            const tradingOrdersRes = await fetch('http://localhost:53122/trading/orders');
-            if (tradingOrdersRes.ok) {
-                const data = await tradingOrdersRes.json();
-                if (Array.isArray(data.orders) && typeof data.total === 'number') {
-                    console.log('[Gate Light] Trading orders contract: PASS');
+        };
+        const checkUniverse = async () => {
+            console.log('[Gate Light] Checking Universe API Contract...');
+            try {
+                const universeRes = await fetch('http://localhost:53122/universe/runs?limit=1');
+                if (universeRes.ok) {
+                    const data = await universeRes.json();
+                    if (Array.isArray(data.runs) && typeof data.total === 'number') {
+                        console.log('[Gate Light] Universe runs contract: PASS');
+                    } else {
+                        console.warn('[Gate Light] Universe runs contract: WARN (missing runs/total fields)');
+                    }
                 } else {
-                    console.warn('[Gate Light] Trading orders contract: WARN (missing orders/total fields)');
+                    console.warn('[Gate Light] Universe runs contract: SKIP (endpoint returned ' + universeRes.status + ')');
                 }
-            } else {
-                console.warn('[Gate Light] Trading orders contract: SKIP (endpoint returned ' + tradingOrdersRes.status + ')');
+            } catch (e) {
+                console.warn('[Gate Light] Universe runs contract: SKIP (server unreachable)');
             }
-
-            const trading404Res = await fetch('http://localhost:53122/trading/orders/nonexistent_id');
-            if (trading404Res.status === 404) {
-                console.log('[Gate Light] Trading orders 404 contract: PASS');
-            } else {
-                console.warn('[Gate Light] Trading orders 404 contract: WARN (expected 404, got ' + trading404Res.status + ')');
-            }
-
-            const tradingKillRes = await fetch('http://localhost:53122/trading/kill', { method: 'POST' });
-            if (tradingKillRes.ok) {
-                const killData = await tradingKillRes.json();
-                if (typeof killData.status === 'string') {
-                    console.log('[Gate Light] Trading kill contract: PASS');
+        };
+        const checkTrading = async () => {
+            console.log('[Gate Light] Checking Trading Routes API Contract...');
+            try {
+                const tradingOrdersRes = await fetch('http://localhost:53122/trading/orders');
+                if (tradingOrdersRes.ok) {
+                    const data = await tradingOrdersRes.json();
+                    if (Array.isArray(data.orders) && typeof data.total === 'number') {
+                        console.log('[Gate Light] Trading orders contract: PASS');
+                    } else {
+                        console.warn('[Gate Light] Trading orders contract: WARN (missing orders/total fields)');
+                    }
                 } else {
-                    console.warn('[Gate Light] Trading kill contract: WARN (missing status field)');
+                    console.warn('[Gate Light] Trading orders contract: SKIP (endpoint returned ' + tradingOrdersRes.status + ')');
                 }
-            } else {
-                console.warn('[Gate Light] Trading kill contract: SKIP (endpoint returned ' + tradingKillRes.status + ')');
+                const trading404Res = await fetch('http://localhost:53122/trading/orders/nonexistent_id');
+                if (trading404Res.status === 404) {
+                    console.log('[Gate Light] Trading orders 404 contract: PASS');
+                } else {
+                    console.warn('[Gate Light] Trading orders 404 contract: WARN (expected 404, got ' + trading404Res.status + ')');
+                }
+                const tradingKillRes = await fetch('http://localhost:53122/trading/kill', { method: 'POST' });
+                if (tradingKillRes.ok) {
+                    const killData = await tradingKillRes.json();
+                    if (typeof killData.status === 'string') {
+                        console.log('[Gate Light] Trading kill contract: PASS');
+                    } else {
+                        console.warn('[Gate Light] Trading kill contract: WARN (missing status field)');
+                    }
+                } else {
+                    console.warn('[Gate Light] Trading kill contract: SKIP (endpoint returned ' + tradingKillRes.status + ')');
+                }
+            } catch (e) {
+                console.warn('[Gate Light] Trading routes contract: SKIP (server unreachable)');
             }
-        } catch (e) {
-            console.warn('[Gate Light] Trading routes contract: SKIP (server unreachable)');
-        }
+        };
+        console.log('[Gate Light] HEAVY_PARALLEL_START: scanner/universe/trading');
+        await Promise.all([checkScanner(), checkUniverse(), checkTrading()]);
+        console.log('[Gate Light] HEAVY_PARALLEL_DONE: scanner/universe/trading');
     } else {
         console.log('[Gate Light] LIGHT profile: skipping heavy-only contract checks (news/rank/export/ledger/scanner/universe/trading).');
     }
