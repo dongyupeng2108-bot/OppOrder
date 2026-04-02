@@ -1,0 +1,87 @@
+{
+  "script_name": "truth_audit_workflow_profile_split_260403_003",
+  "task_id": "260403_003",
+  "sample_name": "workflow_profile_split_v1",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "rules/task-reports/2026-04/260403_003/260403_003_truth_audit_workflow_profile_split.json",
+  "summary": {
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "light_exit": 0,
+    "heavy_exit": 0
+  },
+  "raw_excerpt": {
+    "light_checks": {
+      "profile_line": true,
+      "heavy_skip_list": true,
+      "heavy_mandatory_verified": false,
+      "heavy_mandatory_skipped": true
+    },
+    "heavy_checks": {
+      "profile_line": true,
+      "heavy_skip_list": false,
+      "heavy_mandatory_verified": true,
+      "heavy_mandatory_skipped": false
+    }
+  },
+  "generated_at": "2026-04-02T18:15:45.290Z",
+  "conclusion_block": {
+    "verdict": "A：通过",
+    "first_break_layer": "NONE_CHAIN_PASS"
+  },
+  "evidence_index": {
+    "light_sample": {
+      "task_id": "260330_045",
+      "profile": "light",
+      "result_dir": "E:\\OppRadar\\rules\\task-reports\\2026-03",
+      "exit_code": 0,
+      "stdout": "[Gate Light] DEBUG: Checking LATEST.json at E:\\OppRadar\\rules\\LATEST.json\n[Gate Light] Target locked via argument: 260330_045\nPR_TASK_ID_DETECTED=260330_045\nTARGET_TASK_ID=260330_045\nLATEST_TASK_ID=260330_045\n[Gate Light] LATEST.json consistency verified.\n[Gate Light] TASK_PROFILE=light\n[Gate Light] Verifying task_id: 260330_045\n[Gate Light] Running Automation Pack V1 Hard Guards...\n[Gate Light] Report Block Check Passed: notify_260330_045.txt\n[Gate Light] Report Block Check Passed: trae_report_snippet_260330_045.txt\n[Gate Light] Header Check Passed: TraeTask_260330_045\n[Gate Light] Checking Workspace Healer Evidence...\n[Gate Light] Workspace Healer verified (Clean Environment).\n[Gate Light] Checking Error Digest Evidence (warn-only)...\n[Gate Light] Error Digest files present (warn-only mode, no deep validation).\n[Gate Light] Checking doc path standards...\n[Gate Light] Doc path standards verified.\n[Gate Light] Checking for legacy doc path references...\n[CheckDocPathRefs] Scanning for legacy doc path references...\n[CheckDocPathRefs] PASS: No legacy doc path references found.\n[Gate Light] Checking for banned cmd syntax in PowerShell scripts...\nStarting static scan for banned cmd syntax in .ps1 files...\nScanning targets: scripts/run_task.ps1, scripts/test_fail_budget.ps1, scripts/ps/Invoke-Step.ps1\nStatic scan PASSED.\n[Gate Light] Checking for global healthcheck artifacts...\n[Gate Light] Global Artifact Guard verified.\n[Gate Light] LIGHT profile: skipping heavy-only contract checks (news/rank/export/ledger/scanner/universe/trading).\n[Gate Light] Checking healthcheck evidence...\n[Gate Light] Using evidence directory: E:\\OppRadar\\rules\\task-reports\\2026-03\n[Gate Light] Healthcheck evidence verified (Path + Content).\n[Gate Light] Checking DoD Evidence Excerpts...\n[Gate Light] DoD Evidence Excerpts verified.\n[Gate Light] Checking Deletion Audit (Locks & Runs)...\n[Gate Light] Deletion Audit: No lock/index yet (Assuming Pre-Integrate or First Run in progress).\n[Gate Light] Checking No Auto-Merge (Git Forbidden Commands)...\n[Gate Light] No Auto-Merge verified.\n[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...\n[Gate Light] Fetching origin/main history for diff context...\n[Gate Light] Allowed legacy task_id (transition): 260403_002\n[Gate Light] NoHistoricalEvidenceTouch verified.\n[Gate Light] LIGHT profile: skipping SnippetCommitMustMatch check.\n[Gate Light] LIGHT profile: skipping Rank V2 Contract Version Guard.\n[Gate Light] LIGHT profile: heavy mandatory evidence checks skipped.\n[Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...\n[Gate Light] Immutable Integrate & SafeCmd Enforcement verified.\n[Gate Light] Checking Scope Lock...\n[Gate Light] WARN: No scope_lock file found. Skipping scope lock check (backward compatible).\n[Gate Light] BTCQDD Healthcheck: PASS\n[Gate Light] Executing: node scripts/postflight_validate_envelope.mjs --task_id 260330_045 --result_dir E:\\OppRadar\\rules\\task-reports\\2026-03 --report_dir E:\\OppRadar\\rules\\task-reports\\2026-03\n[Postflight] Validating 260330_045 in E:\\OppRadar\\rules\\task-reports\\2026-03...\n[Postflight] Running Evidence Smoke Test for 260330_045...\n[SmokeTest] Running Evidence Smoke Test for Task 260330_045 in E:\\OppRadar\\rules\\task-reports\\2026-03...\n[SmokeTest] PASS: All 16 required files exist and manifest is valid.\n[DEBUG] Healthcheck Root Match: DOD_EVIDENCE_HEALTHCHECK_ROOT: 260330_045_healthcheck_53122_root.txt =>\n[DEBUG] Healthcheck Pairs Match: DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260330_045_healthcheck_53122_pairs.txt =>\n[DEBUG] Checking Evidence File: Label=Root, RefPath='260330_045_healthcheck_53122_root.txt'\n[DEBUG] Resolved EvPath: 'E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_045_healthcheck_53122_root.txt'\n[DEBUG] Checking Evidence File: Label=Pairs, RefPath='260330_045_healthcheck_53122_pairs.txt'\n[DEBUG] Resolved EvPath: 'E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_045_healthcheck_53122_pairs.txt'\n[Postflight] Report: E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_045.json\n[Postflight] Envelope: E:\\OppRadar\\rules\\task-reports\\envelopes\\260330_045.envelope.json\n[Postflight] PASS\n[Gate Light] PASS\nGATE_LIGHT_EXIT=0\n",
+      "stderr": "",
+      "checks": {
+        "profile_line": true,
+        "heavy_skip_list": true,
+        "heavy_mandatory_verified": false,
+        "heavy_mandatory_skipped": true
+      }
+    },
+    "heavy_sample": {
+      "task_id": "260403_002",
+      "profile": "heavy",
+      "result_dir": "E:\\OppRadar\\rules\\task-reports\\2026-04\\260403_002",
+      "exit_code": 0,
+      "stdout": "[Gate Light] DEBUG: Checking LATEST.json at E:\\OppRadar\\rules\\LATEST.json\n[Gate Light] Target locked via argument: 260403_002\nPR_TASK_ID_DETECTED=260403_002\nTARGET_TASK_ID=260403_002\nLATEST_TASK_ID=260403_002\n[Gate Light] LATEST.json consistency verified.\n[Gate Light] TASK_PROFILE=heavy\n[Gate Light] Verifying task_id: 260403_002\n[Gate Light] Running Automation Pack V1 Hard Guards...\n[Gate Light] Report Block Check Passed: notify_260403_002.txt\n[Gate Light] Report Block Check Passed: trae_report_snippet_260403_002.txt\n[Gate Light] Header Check Passed: TraeTask_260403_002\n[Gate Light] Checking Workspace Healer Evidence...\n[Gate Light] Workspace Healer verified (Clean Environment).\n[Gate Light] Checking Error Digest Evidence (warn-only)...\n[Gate Light] Error Digest files present (warn-only mode, no deep validation).\n[Gate Light] Checking doc path standards...\n[Gate Light] Doc path standards verified.\n[Gate Light] Checking for legacy doc path references...\n[CheckDocPathRefs] Scanning for legacy doc path references...\n[CheckDocPathRefs] PASS: No legacy doc path references found.\n[Gate Light] Checking for banned cmd syntax in PowerShell scripts...\nStarting static scan for banned cmd syntax in .ps1 files...\nScanning targets: scripts/run_task.ps1, scripts/test_fail_budget.ps1, scripts/ps/Invoke-Step.ps1\nStatic scan PASSED.\n[Gate Light] Checking for global healthcheck artifacts...\n[Gate Light] Global Artifact Guard verified.\n[Gate Light] Checking News Pull API Contract...\n[Contract Check] Loading schema from: E:\\OppRadar\\OppRadar\\contracts\\news_pull_response.schema.json\n[Contract Check] Validating Success Sample...\nPASS\n[Contract Check] Validating Error Sample...\nPASS\n[Contract Check] All samples validated against schema.\n[Gate Light] Checking Rank V2 API Contract...\n=== Rank V2 Contract Verification ===\nSchema loaded.\nStarting mock server...\n[Ledger] Init. Path: E:\\OppRadar\\data\\opps_ledger\\opps_ledger.jsonl\n[proxy] Global proxy set: http://127.0.0.1:51081\nLLM Provider initialized: mock\nLoaded 535 scans (total), 2 opps (total) from runtime store.\nMock server running on port 53122\nConnected to SQLite database at E:\\OppRadar\\data\\runtime\\oppradar.sqlite\nFetching http://localhost:53122/opportunities/rank_v2?provider=mock&limit=5&run_id=verify_rank_v2...\nGET /opportunities/rank_v2?provider=mock&limit=5&run_id=verify_rank_v2\nReceived 3 items.\nValidating against schema...\nSchema Validation PASSED.\nResponse Hash: 12827176\n::set-output name=rank_v2_hash::12827176\nVERIFICATION_SUCCESS\nStopping temp server...\n[Gate Light] Checking Export V1 API Contract...\n=== Export V1 Contract Verification ===\nSchema loaded.\nStarting mock server...\n[Ledger] Init. Path: E:\\OppRadar\\data\\opps_ledger\\opps_ledger.jsonl\n[proxy] Global proxy set: http://127.0.0.1:51081\nLLM Provider initialized: mock\nLoaded 535 scans (total), 2 opps (total) from runtime store.\nMock server running on port 53122\nConnected to SQLite database at E:\\OppRadar\\data\\runtime\\oppradar.sqlite\nGenerating Run assets via http://localhost:53122/scans/run...\nPOST /scans/run\nRun assets generated. Run ID: sc_5d5aab14\nFetching Export: http://localhost:53122/opportunities/runs/export_v1?run_id=sc_5d5aab14...\nGET /opportunities/runs/export_v1?run_id=sc_5d5aab14\nReceived Export JSON.\nValidating against schema...\nExport Schema Validation PASSED.\nExport Hash: 23cf4851\n::set-output name=export_v1_hash::23cf4851\nEXPORT_CONTRACT_VERIFICATION_SUCCESS\nStopping temp server...\n[Gate Light] Checking Ledger V0 API Contract...\n=== Ledger V0 Contract Verification ===\nSchema loaded.\nStarting server...\nFetching /opportunities/ledger/query_v0?limit=1...\nValidating against schema...\nValidation PASSED.\n[Gate Light] Checking Scanner API Contract...\n[Gate Light] Checking Universe API Contract...\n[Gate Light] Checking Trading Routes API Contract...\n[Gate Light] Checking healthcheck evidence...\n[Gate Light] Using evidence directory: E:\\OppRadar\\rules\\task-reports\\2026-04\\260403_002\n[Gate Light] Healthcheck evidence verified (Path + Content).\n[Gate Light] Checking DoD Evidence Excerpts...\n[Gate Light] DoD Evidence Excerpts verified.\n[Gate Light] Checking Deletion Audit (Locks & Runs)...\n[Gate Light] Deletion Audit: No lock/index yet (Assuming Pre-Integrate or First Run in progress).\n[Gate Light] Checking No Auto-Merge (Git Forbidden Commands)...\n[Gate Light] No Auto-Merge verified.\n[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...\n[Gate Light] Fetching origin/main history for diff context...\n[Gate Light] Allowed legacy task_id (transition): 260403_002\n[Gate Light] NoHistoricalEvidenceTouch verified.\n[Gate Light] Skipping SnippetCommitMustMatch check (Preview Mode).\n[Gate Light] Checking Rank V2 Contract Version Guard...\n[Gate Light] Base Commit: e6f60dfe56fb45cbe8723eeb82517560663e4cea\n[Gate Light] Schema Unchanged (3bd83a08). Version check skipped.\n[Gate Light] Rank V2 Contract Version Guard PASS\n[Gate Light] Checking Heavy Mandatory Evidence...\n[Gate Light] Heavy mandatory evidence verified.\n[Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...\n[Gate Light] Immutable Integrate & SafeCmd Enforcement verified.\n[Gate Light] Checking Scope Lock...\n[Gate Light] WARN: No scope_lock file found. Skipping scope lock check (backward compatible).\n[Gate Light] BTCQDD Healthcheck: PASS\n[Gate Light] Skipping Postflight Envelope Validation (Preview Mode).\n[Gate Light] PASS\nGATE_LIGHT_EXIT=0\n",
+      "stderr": "(node:12096) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n(node:29088) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n[DB] appendOpportunity error: SQLITE_CONSTRAINT: UNIQUE constraint failed: opportunity_event.id\n[DB] appendOpportunity error: SQLITE_CONSTRAINT: UNIQUE constraint failed: opportunity_event.id\n[DB] appendOpportunity error: SQLITE_CONSTRAINT: UNIQUE constraint failed: opportunity_event.id\n[Gate Light] Scanner runs contract: SKIP (server unreachable)\n[Gate Light] Universe runs contract: SKIP (server unreachable)\n[Gate Light] Trading routes contract: SKIP (server unreachable)\n",
+      "checks": {
+        "profile_line": true,
+        "heavy_skip_list": false,
+        "heavy_mandatory_verified": true,
+        "heavy_mandatory_skipped": false
+      }
+    },
+    "gate_diff_table": {
+      "both": [
+        "LATEST一致性",
+        "scope lock",
+        "postflight/envelope",
+        "workspace_healer",
+        "doc path",
+        "healthcheck证据"
+      ],
+      "light_only": [
+        "heavy-only contract checks skipped",
+        "heavy mandatory evidence skipped"
+      ],
+      "heavy_only": [
+        "global contracts(news/rank/export/ledger/scanner/universe/trading)",
+        "heavy mandatory evidence(first_break_layer/fail->pass/real runtime/non-regression)"
+      ]
+    },
+    "guardrails": {
+      "max_wall_time_ms": 3600000,
+      "max_silence_ms": 300000,
+      "log_tail": 150,
+      "wall_time_ms": 11992
+    }
+  }
+}

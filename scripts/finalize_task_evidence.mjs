@@ -113,6 +113,8 @@ if (!explicitTaskId && branchTaskId) {
 const noStage = getArg('no_stage') === '1' || getArg('no_stage') === 'true';
 const ciCleanAssumption = !(getArg('ci_clean_assumption') === '0' || getArg('ci_clean_assumption') === 'false');
 const pruneNoise = !(getArg('prune_noise') === '0' || getArg('prune_noise') === 'false');
+const gateProfile = String(getArg('profile') || '').trim().toLowerCase();
+const gateProfileArg = gateProfile === 'light' || gateProfile === 'heavy' ? ` --profile ${gateProfile}` : '';
 const yyyy = `20${taskId.slice(0, 2)}`;
 const mm = taskId.slice(2, 4);
 const evidenceDir = getArg('result_dir') || path.join('rules', 'task-reports', `${yyyy}-${mm}`);
@@ -337,7 +339,7 @@ const runAsync = async () => {
   });
 
   await step('生成 gate preview 证据', () => {
-    const preview = safeRun(`node scripts/gate_light_ci.mjs --task_id ${taskId} --result_dir "${evidenceDir}"`, { env: { GENERATE_PREVIEW: '1' } });
+    const preview = safeRun(`node scripts/gate_light_ci.mjs --task_id ${taskId} --result_dir "${evidenceDir}"${gateProfileArg}`, { env: { GENERATE_PREVIEW: '1' } });
     const logBody = `${preview.output}\nGATE_LIGHT_EXIT=${preview.ok ? 0 : 1}\n`;
     fs.writeFileSync(previewLogPath, logBody, 'utf8');
     run(`node scripts/extract_gate_light_preview.mjs --task_id=${taskId} --log="${previewLogPath}"`);
@@ -392,7 +394,7 @@ const runAsync = async () => {
   });
 
   await step('最终本地 Gate Light 验证', () => {
-    run(`node scripts/gate_light_ci.mjs --task_id ${taskId} --result_dir "${evidenceDir}"`);
+    run(`node scripts/gate_light_ci.mjs --task_id ${taskId} --result_dir "${evidenceDir}"${gateProfileArg}`);
   });
 
   console.log('LOCAL_BOUNDARY: 本命令复用仓库现有脚本链；仍可能与 GitHub Runner 的环境差异（系统/权限/网络）存在边界。');
