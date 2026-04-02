@@ -606,7 +606,7 @@ const queryBotPerformanceSummary = async (presetRaw, includeRows = false) => {
   let filtered = rows;
   if (preset === BOT_PERF_PRESET_TODAY) {
     const start = new Date();
-    start.setHours(0, 0, 0, 0);
+    start.setUTCHours(0, 0, 0, 0);
     const startTs = start.getTime();
     filtered = rows.filter((row) => {
       const ts = Date.parse(row.bot_completed_at || '');
