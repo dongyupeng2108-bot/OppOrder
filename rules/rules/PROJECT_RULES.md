@@ -131,6 +131,7 @@
   - 提审前最后一次性跑 `finalize_task_evidence + gate_light_ci`
   - 保留 heavy-only 检查（全局契约 + heavy mandatory 证据）
   - 执行提效允许项（260403_004）：合约校验并行化；Rank/Export/Ledger mock server 单会话复用；不改变覆盖与强制项
+  - 执行提效允许项（260403_005）：scanner/universe/trading 统一硬超时 4000ms；命中首个硬失败后 fail-fast 并输出首个失败节点；不改变覆盖与强制项
 
 ## 7.2 生效时点（260329_006）
 
