@@ -27,9 +27,26 @@
       "scanner_seen": true,
       "universe_seen": true,
       "trading_seen": true
-    }
+    },
+    "fail_to_pass": {
+      "preFail": {
+        "serial_execution_no_parallel_logs": true,
+        "multi_start_stop_for_rank_export_ledger": true
+      },
+      "postPass": {
+        "heavy_parallel_logs_present": true,
+        "single_mock_session_reused": true
+      }
+    },
+    "samples": [
+      {
+        "task_id": "260403_002",
+        "profile": "heavy",
+        "is_real_runtime": true
+      }
+    ]
   },
-  "generated_at": "2026-04-02T18:57:04.627Z",
+  "generated_at": "2026-04-02T19:14:26.388Z",
   "conclusion_block": {
     "verdict": "A：通过",
     "first_break_layer": "NONE_CHAIN_PASS"
@@ -53,6 +70,23 @@
       "universe_seen": true,
       "trading_seen": true
     },
+    "fail_to_pass": {
+      "preFail": {
+        "serial_execution_no_parallel_logs": true,
+        "multi_start_stop_for_rank_export_ledger": true
+      },
+      "postPass": {
+        "heavy_parallel_logs_present": true,
+        "single_mock_session_reused": true
+      }
+    },
+    "samples": [
+      {
+        "task_id": "260403_002",
+        "profile": "heavy",
+        "is_real_runtime": true
+      }
+    ],
     "heavy_checklist_before_after_same": [
       "news",
       "rank",
@@ -65,7 +99,7 @@
     "gate_stdout_excerpt": [
       "[Gate Light] TASK_PROFILE=heavy",
       "[Gate Light] MOCK_SERVER_SESSION=starting script=E:\\OppRadar\\OppRadar\\mock_server_53122.mjs",
-      "[Gate Light] MOCK_SERVER_SESSION=ready pid=19960",
+      "[Gate Light] MOCK_SERVER_SESSION=ready pid=16692",
       "[Gate Light] HEAVY_PARALLEL_START: news/rank/export/ledger",
       "=== Rank V2 Contract Verification ===",
       "=== Export V1 Contract Verification ===",
@@ -85,7 +119,7 @@
       "max_wall_time_ms": 3600000,
       "max_silence_ms": 300000,
       "log_tail": 150,
-      "wall_time_ms": 10345
+      "wall_time_ms": 10372
     }
   }
 }

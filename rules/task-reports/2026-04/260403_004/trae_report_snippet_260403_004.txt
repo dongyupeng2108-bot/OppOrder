@@ -2,7 +2,7 @@
 
 Header: TraeTask_260403_004
 BRANCH: 260403_004
-COMMIT: 849a118c
+COMMIT: c8fecf1e
 
 === GIT_SCOPE_DIFF ===
 M	rules/LATEST.json
@@ -29,7 +29,7 @@ DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260403_004_healthcheck_53122_pairs.txt => HTTP/1
 
 === CI_PARITY_PREVIEW ===
 Base: f1bedcf
-Head: 849a118
+Head: c8fecf1
 MergeBase: f1bedcf
 Source: JSON (Evidence-as-Code)
 Scope: 15 files
@@ -60,7 +60,7 @@ Files (Top 3):
 [Gate Light] Checking for global healthcheck artifacts...
 [Gate Light] Global Artifact Guard verified.
 [Gate Light] MOCK_SERVER_SESSION=starting script=E:\OppRadar\OppRadar\mock_server_53122.mjs
-[Gate Light] MOCK_SERVER_SESSION=ready pid=7904
+[Gate Light] MOCK_SERVER_SESSION=ready pid=15940
 [Gate Light] HEAVY_PARALLEL_START: news/rank/export/ledger
 [Gate Light] HEAVY_PARALLEL_DONE: {"news":0,"rank":0,"export":0,"ledger":0}
 [Gate Light] MOCK_SERVER_SESSION=stopping
