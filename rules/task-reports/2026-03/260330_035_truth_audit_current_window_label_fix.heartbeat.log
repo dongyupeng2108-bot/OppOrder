@@ -1,0 +1,7 @@
+{"ts":"2026-04-02T00:53:57.146Z","event":"HEARTBEAT","stage":"start_server_begin","port":53235}
+{"ts":"2026-04-02T00:53:57.484Z","event":"HEARTBEAT","stage":"start_server_ready","port":53235}
+{"ts":"2026-04-02T00:53:57.491Z","event":"HEARTBEAT","stage":"audit_begin"}
+{"ts":"2026-04-02T00:53:57.864Z","event":"HEARTBEAT","stage":"audit_running","iteration":0,"startup_collected":true,"first_fill_collected":false,"switched_collected":false,"dom_label_text":"April 1 8:45pm - 8:50pm","api_current_window_id":null}
+{"ts":"2026-04-02T00:54:23.188Z","event":"HEARTBEAT","stage":"audit_running","iteration":25,"startup_collected":true,"first_fill_collected":false,"switched_collected":true,"dom_label_text":"April 1 8:50pm - 8:55pm","api_current_window_id":"btc-updown-5m-1775091000"}
+{"ts":"2026-04-02T00:54:48.541Z","event":"HEARTBEAT","stage":"audit_running","iteration":50,"startup_collected":true,"first_fill_collected":false,"switched_collected":true,"dom_label_text":"April 1 8:50pm - 8:55pm","api_current_window_id":"btc-updown-5m-1775091000"}
+{"ts":"2026-04-02T00:55:00.731Z","event":"HEARTBEAT","stage":"audit_early_exit","exit_code":"EARLY_EXIT_FIX_EVIDENCE_READY"}

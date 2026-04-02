@@ -1350,7 +1350,12 @@ function se_renderOverview(status, summary, ordersData, postmortemPayload) {
   const stopReasonText = stopReasonRaw === 'AUTO_COMPLETED'
     ? '自动完成'
     : (stopReasonRaw === 'MANUAL_STOP' ? '手动停止' : (stopReasonRaw || '暂无'));
-  se_setText('se-log-current-window', se_formatWindowDisplayName(postmortem?.window_id || lastRun?.current_window_id));
+  const currentWindowLabelSource = status?.current_window_id
+    || activeRuntime?.current_window_id
+    || lastRun?.current_window_id
+    || postmortem?.window_id
+    || null;
+  se_setText('se-log-current-window', se_formatWindowDisplayName(currentWindowLabelSource));
   const paramSummary = savedConfig
     ? `开盘等待 ${se_formatStateValue(savedConfig.open_delay_sec)} 秒 · 波动 ${se_formatStateValue(savedConfig.atr_multiple)} · 全撤 ${se_formatStateValue(savedConfig.cancel_all_remaining_sec)} 秒`
     : '参数尚未加载';
