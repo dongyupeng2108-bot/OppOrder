@@ -580,9 +580,15 @@ const writeBotPostmortem = async (snapshot) => {
     JSON.stringify(actionSummary)
   ]);
 };
+const isPnlCountBasisAnomalyRow = (row) => {
+  const filled = toFiniteOrNull(row?.bot_filled_total) ?? 0;
+  const cancelled = toFiniteOrNull(row?.bot_cancelled_total) ?? 0;
+  const realized = toFiniteOrNull(row?.bot_realized_gross_pnl_total) ?? 0;
+  return filled === 0 && cancelled === 0 && Math.abs(realized) > 0;
+};
 const queryLatestBotPostmortem = async () => {
   if (!db) return null;
-  const row = await db.get(`
+  const rows = await db.all(`
     SELECT
       id,
       strategy_id,
@@ -602,8 +608,9 @@ const queryLatestBotPostmortem = async () => {
     FROM cb_postmortem
     WHERE strategy_id = ? AND bot_completed_at IS NOT NULL
     ORDER BY created_at DESC, id DESC
-    LIMIT 1
+    LIMIT 50
   `, [BOT_POSTMORTEM_STRATEGY_ID]);
+  const row = rows.find((item) => !isPnlCountBasisAnomalyRow(item)) || rows[0] || null;
   if (!row) return null;
   let activeConfig = null;
   let actionSummary = [];
