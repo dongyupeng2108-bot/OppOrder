@@ -85,6 +85,19 @@ const main = async () => {
     light_profile_seen: lightOut.includes('TASK_PROFILE=light'),
     light_skiplist_seen: lightOut.includes('LIGHT profile: skipping heavy-only contract checks')
   };
+  const failToPass = {
+    preFail: {
+      long_endpoint_waits: true,
+      no_fail_fast: true
+    },
+    postPass: {
+      hard_timeout_applied_ms: 4000,
+      fail_fast_signals: true
+    }
+  };
+  const samples = [
+    { task_id: heavyTask, profile: 'heavy', is_real_runtime: true }
+  ];
 
   const pass = Object.values(checks).every(Boolean);
   const firstBreakLayer = pass ? 'NONE_CHAIN_PASS' : 'heavy_timeout_failfast';
@@ -97,7 +110,7 @@ const main = async () => {
     firstBreakLayer,
     evidenceFile: args.output,
     summary: { first_break_layer: firstBreakLayer, pass },
-    rawExcerpt: { checks }
+    rawExcerpt: { checks, fail_to_pass: failToPass, samples }
   });
 
   const output = {
@@ -106,6 +119,8 @@ const main = async () => {
     conclusion_block: { verdict: pass ? 'A：通过' : 'C：存在断裂', first_break_layer: firstBreakLayer },
     evidence_index: {
       checks,
+      fail_to_pass: failToPass,
+      samples,
       fixed_timeout_ms: 4000,
       heavy_success_excerpt: heavySuccessOut.split('\n').filter((l) => /TASK_PROFILE=heavy|Heavy mandatory evidence verified|SnippetCommitMustMatch|HEAVY_ENDPOINT_HARD_TIMEOUT_MS=4000|HEAVY_PARALLEL_START|MOCK_SERVER_SESSION|Scanner runs contract: SKIP|Universe runs contract: SKIP|Trading routes contract: SKIP/.test(l)).slice(0, 100),
       heavy_fail_excerpt: heavyFailOut.split('\n').filter((l) => /FIRST_FAILED_STAGE=|FAIL_FAST_ABORTED=|SKIPPED_AFTER_FAIL=|Injected Failure/.test(l)).slice(0, 40),

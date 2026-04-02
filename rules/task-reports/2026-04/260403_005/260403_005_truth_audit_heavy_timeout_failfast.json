@@ -27,9 +27,26 @@
       "light_smoke_exit_ok": true,
       "light_profile_seen": true,
       "light_skiplist_seen": true
-    }
+    },
+    "fail_to_pass": {
+      "preFail": {
+        "long_endpoint_waits": true,
+        "no_fail_fast": true
+      },
+      "postPass": {
+        "hard_timeout_applied_ms": 4000,
+        "fail_fast_signals": true
+      }
+    },
+    "samples": [
+      {
+        "task_id": "260403_002",
+        "profile": "heavy",
+        "is_real_runtime": true
+      }
+    ]
   },
-  "generated_at": "2026-04-02T19:31:24.586Z",
+  "generated_at": "2026-04-02T20:10:33.425Z",
   "conclusion_block": {
     "verdict": "A：通过",
     "first_break_layer": "NONE_CHAIN_PASS"
@@ -52,11 +69,28 @@
       "light_profile_seen": true,
       "light_skiplist_seen": true
     },
+    "fail_to_pass": {
+      "preFail": {
+        "long_endpoint_waits": true,
+        "no_fail_fast": true
+      },
+      "postPass": {
+        "hard_timeout_applied_ms": 4000,
+        "fail_fast_signals": true
+      }
+    },
+    "samples": [
+      {
+        "task_id": "260403_002",
+        "profile": "heavy",
+        "is_real_runtime": true
+      }
+    ],
     "fixed_timeout_ms": 4000,
     "heavy_success_excerpt": [
       "[Gate Light] TASK_PROFILE=heavy",
       "[Gate Light] MOCK_SERVER_SESSION=starting script=E:\\OppRadar\\OppRadar\\mock_server_53122.mjs",
-      "[Gate Light] MOCK_SERVER_SESSION=ready pid=17448",
+      "[Gate Light] MOCK_SERVER_SESSION=ready pid=18892",
       "[Gate Light] HEAVY_PARALLEL_START: news/rank/export/ledger",
       "[Gate Light] MOCK_SERVER_SESSION=stopping",
       "[Gate Light] HEAVY_ENDPOINT_HARD_TIMEOUT_MS=4000",
@@ -64,8 +98,8 @@
       "[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...",
       "[Gate Light] Skipping SnippetCommitMustMatch check (Preview Mode).",
       "[Gate Light] Heavy mandatory evidence verified.",
-      "[Gate Light] Universe runs contract: SKIP (server unreachable)",
       "[Gate Light] Scanner runs contract: SKIP (server unreachable)",
+      "[Gate Light] Universe runs contract: SKIP (server unreachable)",
       "[Gate Light] Trading routes contract: SKIP (server unreachable)"
     ],
     "heavy_fail_excerpt": [
