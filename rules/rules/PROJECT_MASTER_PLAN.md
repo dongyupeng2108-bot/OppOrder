@@ -62,8 +62,12 @@
   - 完整 gate 前先过 Fast Gate（语法 / LATEST / scope / 必要证据存在性）
   - 默认采用证据最小提交集，完整 evidence 可生成但不默认进 PR
 - mandatory 收口：
-  - 轻任务：语法检查 + 修前/修后最小事实块 + finalize + gate
-  - 重任务：唯一 first_break_layer + Fail -> Pass + 1组 real runtime + 至少 2 条不回退项 + 改 server 时 healthcheck + 最后一次性 finalize + gate
+  - 轻任务：语法检查 + 修前/修后最小事实块 + LATEST/范围锁/postflight-envelope + `finalize --profile light` + `gate --profile light`
+  - 重任务：唯一 first_break_layer + Fail -> Pass + 1组 real runtime + 至少 2 条不回退项 + 改 server 时 healthcheck + `finalize --profile heavy` + `gate --profile heavy`
+- gate 分流：
+  - light：仅基础治理检查（both），跳过 heavy-only 全局契约与 heavy mandatory 证据
+  - heavy：基础治理检查（both）+ heavy-only 全量检查
+- 不新增第三分级：仅 light/heavy 两层
 - 最小验证硬规则：
   - 任何非纯测试任务必须做与任务直接相关的最小验证
   - 修复任务至少 1 组 Fail -> Pass

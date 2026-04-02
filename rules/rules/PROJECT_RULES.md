@@ -109,8 +109,10 @@
   - Integrate阶段只在提审前最后一次运行 finalize + gate
 - 重任务默认最小提交集：
   - 结论块、唯一 first_break_layer、Fail -> Pass 主证据、1组 real runtime 连续样本、至少 2 条不回退项、notify/result、必要 manifest/index、改 server 时 healthcheck
+  - 执行命令：`finalize_task_evidence --profile heavy` 与 `gate_light_ci --profile heavy`
 - 轻任务默认最小提交集：
-  - 相关文件语法检查、修前 1 条 / 修后 1 条最小事实块、finalize/gate 通过结果
+  - 相关文件语法检查、修前 1 条 / 修后 1 条最小事实块、LATEST/范围锁/postflight-envelope、finalize/gate 通过结果
+  - 执行命令：`finalize_task_evidence --profile light` 与 `gate_light_ci --profile light`
 
 ## 7.1 轻任务 / 重任务 mandatory 收口
 
@@ -119,6 +121,7 @@
   - 最小事实块（修前 1 条、修后 1 条）
   - `finalize_task_evidence`
   - `gate_light_ci`
+  - 跳过 heavy-only 检查（全局契约/mocks/heavy mandatory 证据）
 - 重任务 mandatory：
   - 唯一 first_break_layer
   - 1组 Fail -> Pass 主证据
@@ -126,12 +129,14 @@
   - 至少 2 条不回退项
   - 改 server 时附 `GET /` 与 `GET /pairs`
   - 提审前最后一次性跑 `finalize_task_evidence + gate_light_ci`
+  - 保留 heavy-only 检查（全局契约 + heavy mandatory 证据）
 
 ## 7.2 生效时点（260329_006）
 
 - 本 Workflow Upgrade Task 合并后，下一条新任务起立即执行
 - 不设观察期
 - 已在执行中的任务不做半途切换
+- 不新增第三分级，仅 light/heavy 两层
 
 ## 8. 变更边界
 

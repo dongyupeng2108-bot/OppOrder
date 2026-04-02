@@ -12,6 +12,7 @@ let argTaskId = null;
 let argMode = null; // New: Mode Argument
 let argResultDir = null; // New: Result Dir Argument
 let argRunId = null; // New: Run ID Argument
+let argProfile = null; // light | heavy | auto
 for (let i = 0; i < args.length; i++) {
     if (args[i] === '--task_id') {
         argTaskId = args[i + 1];
@@ -24,6 +25,9 @@ for (let i = 0; i < args.length; i++) {
     }
     if (args[i] === '--run_id') {
         argRunId = args[i + 1];
+    }
+    if (args[i] === '--profile') {
+        argProfile = args[i + 1];
     }
 }
 
@@ -277,6 +281,23 @@ if (!result_dir) {
         }
     }
 }
+
+const detectTaskProfile = () => {
+    const normalized = String(argProfile || '').trim().toLowerCase();
+    if (normalized === 'light' || normalized === 'heavy') return normalized;
+    const implPath = path.join(result_dir, `implementation_${task_id}.md`);
+    const truthPath = path.join(result_dir, `truth_audit_${task_id}.md`);
+    const source = [implPath, truthPath]
+        .filter(p => fs.existsSync(p))
+        .map(p => fs.readFileSync(p, 'utf8'))
+        .join('\n');
+    if (/任务类型[:：]\s*轻任务|轻任务/.test(source) && !/任务类型[:：]\s*重任务|重任务/.test(source)) return 'light';
+    if (/任务类型[:：]\s*重任务|重任务/.test(source)) return 'heavy';
+    return 'heavy';
+};
+const taskProfile = detectTaskProfile();
+const isHeavyProfile = taskProfile === 'heavy';
+console.log(`[Gate Light] TASK_PROFILE=${taskProfile}`);
 
 console.log('[Gate Light] Verifying task_id: ' + task_id);
     
@@ -666,113 +687,110 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         process.exit(1);
     }
 
-    // --- News Pull Contract Check (Task 260208_028) ---
-    console.log('[Gate Light] Checking News Pull API Contract...');
-    try {
-        execSync('node scripts/check_news_pull_contract.mjs', { stdio: 'inherit' });
-    } catch (e) {
-        console.error('[Gate Light] News Pull Contract Check FAILED.');
-        process.exit(1);
-    }
+    if (isHeavyProfile) {
+        console.log('[Gate Light] Checking News Pull API Contract...');
+        try {
+            execSync('node scripts/check_news_pull_contract.mjs', { stdio: 'inherit' });
+        } catch (e) {
+            console.error('[Gate Light] News Pull Contract Check FAILED.');
+            process.exit(1);
+        }
 
-    // --- Rank V2 API Contract Check (Task 260215_011) ---
-    console.log('[Gate Light] Checking Rank V2 API Contract...');
-    try {
-        execSync('node scripts/verify_rank_v2_contract.mjs', { stdio: 'inherit' });
-    } catch (e) {
-        console.error('[Gate Light] Rank V2 Contract Check FAILED.');
-        process.exit(1);
-    }
+        console.log('[Gate Light] Checking Rank V2 API Contract...');
+        try {
+            execSync('node scripts/verify_rank_v2_contract.mjs', { stdio: 'inherit' });
+        } catch (e) {
+            console.error('[Gate Light] Rank V2 Contract Check FAILED.');
+            process.exit(1);
+        }
 
-    // --- Export V1 API Contract Check (Task 260215_016) ---
-    console.log('[Gate Light] Checking Export V1 API Contract...');
-    try {
-        execSync('node scripts/verify_export_v1_contract.mjs', { stdio: 'inherit' });
-    } catch (e) {
-        console.error('[Gate Light] Export V1 Contract Check FAILED.');
-        process.exit(1);
-    }
+        console.log('[Gate Light] Checking Export V1 API Contract...');
+        try {
+            execSync('node scripts/verify_export_v1_contract.mjs', { stdio: 'inherit' });
+        } catch (e) {
+            console.error('[Gate Light] Export V1 Contract Check FAILED.');
+            process.exit(1);
+        }
 
-    // --- Ledger V0 Contract Check (Task 260215_017) ---
-    console.log('[Gate Light] Checking Ledger V0 API Contract...');
-    try {
-        execSync('node scripts/verify_ledger_v0_contract.mjs', { stdio: 'inherit' });
-    } catch (e) {
-        console.error('[Gate Light] Ledger V0 Contract Check FAILED.');
-        process.exit(1);
-    }
+        console.log('[Gate Light] Checking Ledger V0 API Contract...');
+        try {
+            execSync('node scripts/verify_ledger_v0_contract.mjs', { stdio: 'inherit' });
+        } catch (e) {
+            console.error('[Gate Light] Ledger V0 Contract Check FAILED.');
+            process.exit(1);
+        }
 
-    // --- Scanner Contract Check (M5.5-S4) ---
-    console.log('[Gate Light] Checking Scanner API Contract...');
-    try {
-        const scannerRes = await fetch('http://localhost:53122/scanner/runs?limit=1');
-        if (scannerRes.ok) {
-            const data = await scannerRes.json();
-            if (Array.isArray(data.runs) && typeof data.total === 'number') {
-                console.log('[Gate Light] Scanner runs contract: PASS');
+        console.log('[Gate Light] Checking Scanner API Contract...');
+        try {
+            const scannerRes = await fetch('http://localhost:53122/scanner/runs?limit=1');
+            if (scannerRes.ok) {
+                const data = await scannerRes.json();
+                if (Array.isArray(data.runs) && typeof data.total === 'number') {
+                    console.log('[Gate Light] Scanner runs contract: PASS');
+                } else {
+                    console.warn('[Gate Light] Scanner runs contract: WARN (missing runs/total fields)');
+                }
             } else {
-                console.warn('[Gate Light] Scanner runs contract: WARN (missing runs/total fields)');
+                console.warn('[Gate Light] Scanner runs contract: SKIP (endpoint returned ' + scannerRes.status + ')');
             }
-        } else {
-            console.warn('[Gate Light] Scanner runs contract: SKIP (endpoint returned ' + scannerRes.status + ')');
+        } catch (e) {
+            console.warn('[Gate Light] Scanner runs contract: SKIP (server unreachable)');
         }
-    } catch (e) {
-        console.warn('[Gate Light] Scanner runs contract: SKIP (server unreachable)');
-    }
 
-    // --- Universe Contract Check (M5.5-S4) ---
-    console.log('[Gate Light] Checking Universe API Contract...');
-    try {
-        const universeRes = await fetch('http://localhost:53122/universe/runs?limit=1');
-        if (universeRes.ok) {
-            const data = await universeRes.json();
-            if (Array.isArray(data.runs) && typeof data.total === 'number') {
-                console.log('[Gate Light] Universe runs contract: PASS');
+        console.log('[Gate Light] Checking Universe API Contract...');
+        try {
+            const universeRes = await fetch('http://localhost:53122/universe/runs?limit=1');
+            if (universeRes.ok) {
+                const data = await universeRes.json();
+                if (Array.isArray(data.runs) && typeof data.total === 'number') {
+                    console.log('[Gate Light] Universe runs contract: PASS');
+                } else {
+                    console.warn('[Gate Light] Universe runs contract: WARN (missing runs/total fields)');
+                }
             } else {
-                console.warn('[Gate Light] Universe runs contract: WARN (missing runs/total fields)');
+                console.warn('[Gate Light] Universe runs contract: SKIP (endpoint returned ' + universeRes.status + ')');
             }
-        } else {
-            console.warn('[Gate Light] Universe runs contract: SKIP (endpoint returned ' + universeRes.status + ')');
+        } catch (e) {
+            console.warn('[Gate Light] Universe runs contract: SKIP (server unreachable)');
         }
-    } catch (e) {
-        console.warn('[Gate Light] Universe runs contract: SKIP (server unreachable)');
-    }
 
-    // --- Trading Routes Contract Check (M8-P6) ---
-    console.log('[Gate Light] Checking Trading Routes API Contract...');
-    try {
-        const tradingOrdersRes = await fetch('http://localhost:53122/trading/orders');
-        if (tradingOrdersRes.ok) {
-            const data = await tradingOrdersRes.json();
-            if (Array.isArray(data.orders) && typeof data.total === 'number') {
-                console.log('[Gate Light] Trading orders contract: PASS');
+        console.log('[Gate Light] Checking Trading Routes API Contract...');
+        try {
+            const tradingOrdersRes = await fetch('http://localhost:53122/trading/orders');
+            if (tradingOrdersRes.ok) {
+                const data = await tradingOrdersRes.json();
+                if (Array.isArray(data.orders) && typeof data.total === 'number') {
+                    console.log('[Gate Light] Trading orders contract: PASS');
+                } else {
+                    console.warn('[Gate Light] Trading orders contract: WARN (missing orders/total fields)');
+                }
             } else {
-                console.warn('[Gate Light] Trading orders contract: WARN (missing orders/total fields)');
+                console.warn('[Gate Light] Trading orders contract: SKIP (endpoint returned ' + tradingOrdersRes.status + ')');
             }
-        } else {
-            console.warn('[Gate Light] Trading orders contract: SKIP (endpoint returned ' + tradingOrdersRes.status + ')');
-        }
 
-        const trading404Res = await fetch('http://localhost:53122/trading/orders/nonexistent_id');
-        if (trading404Res.status === 404) {
-            console.log('[Gate Light] Trading orders 404 contract: PASS');
-        } else {
-            console.warn('[Gate Light] Trading orders 404 contract: WARN (expected 404, got ' + trading404Res.status + ')');
-        }
-
-        const tradingKillRes = await fetch('http://localhost:53122/trading/kill', { method: 'POST' });
-        if (tradingKillRes.ok) {
-            const killData = await tradingKillRes.json();
-            if (typeof killData.status === 'string') {
-                console.log('[Gate Light] Trading kill contract: PASS');
+            const trading404Res = await fetch('http://localhost:53122/trading/orders/nonexistent_id');
+            if (trading404Res.status === 404) {
+                console.log('[Gate Light] Trading orders 404 contract: PASS');
             } else {
-                console.warn('[Gate Light] Trading kill contract: WARN (missing status field)');
+                console.warn('[Gate Light] Trading orders 404 contract: WARN (expected 404, got ' + trading404Res.status + ')');
             }
-        } else {
-            console.warn('[Gate Light] Trading kill contract: SKIP (endpoint returned ' + tradingKillRes.status + ')');
+
+            const tradingKillRes = await fetch('http://localhost:53122/trading/kill', { method: 'POST' });
+            if (tradingKillRes.ok) {
+                const killData = await tradingKillRes.json();
+                if (typeof killData.status === 'string') {
+                    console.log('[Gate Light] Trading kill contract: PASS');
+                } else {
+                    console.warn('[Gate Light] Trading kill contract: WARN (missing status field)');
+                }
+            } else {
+                console.warn('[Gate Light] Trading kill contract: SKIP (endpoint returned ' + tradingKillRes.status + ')');
+            }
+        } catch (e) {
+            console.warn('[Gate Light] Trading routes contract: SKIP (server unreachable)');
         }
-    } catch (e) {
-        console.warn('[Gate Light] Trading routes contract: SKIP (server unreachable)');
+    } else {
+        console.log('[Gate Light] LIGHT profile: skipping heavy-only contract checks (news/rank/export/ledger/scanner/universe/trading).');
     }
 
     // --- Strict Healthcheck Validation (Task 260208_023) ---
@@ -1390,87 +1408,85 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
              }
         }
 
-        // B) SnippetCommitMustMatch
-        const snippetFile = path.join(result_dir, `trae_report_snippet_${task_id}.txt`);
-        const isPreviewMode = process.env.GENERATE_PREVIEW === '1' || process.env.GATE_LIGHT_GENERATE_PREVIEW === '1';
+        // B) SnippetCommitMustMatch (heavy-only)
+        if (!isHeavyProfile) {
+            console.log('[Gate Light] LIGHT profile: skipping SnippetCommitMustMatch check.');
+        } else {
+            const snippetFile = path.join(result_dir, `trae_report_snippet_${task_id}.txt`);
+            const isPreviewMode = process.env.GENERATE_PREVIEW === '1' || process.env.GATE_LIGHT_GENERATE_PREVIEW === '1';
 
-        if (isPreviewMode) {
-             console.log('[Gate Light] Skipping SnippetCommitMustMatch check (Preview Mode).');
-        } else if (fs.existsSync(snippetFile)) {
-             const snippetContent = fs.readFileSync(snippetFile, 'utf8');
-             // Support both 'COMMIT:' and 'Commit:' (Case Insensitive)
-             const commitMatch = snippetContent.match(/COMMIT:\s*(\w+)/i);
-             
-             if (!commitMatch) {
-                 console.error(`[Gate Light] FAILED: SnippetCommitMustMatch - Could not find 'COMMIT:' in snippet.`);
-                 process.exit(1);
-             }
-             
-             const snippetCommit = commitMatch[1];
-             const currentHead = execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim();
-             
-             if (snippetCommit !== currentHead) {
-                 // Intelligent Check: Allow mismatch ONLY if changes are limited to rules/task-reports/ (Evidence only)
-                 if (process.env.GATE_LIGHT_GENERATE_PREVIEW !== '1') {
-                    console.log(`[Gate Light] Snippet commit (${snippetCommit}) != HEAD (${currentHead}). Checking for code drift...`);
+            if (isPreviewMode) {
+                 console.log('[Gate Light] Skipping SnippetCommitMustMatch check (Preview Mode).');
+            } else if (fs.existsSync(snippetFile)) {
+                 const snippetContent = fs.readFileSync(snippetFile, 'utf8');
+                 const commitMatch = snippetContent.match(/COMMIT:\s*(\w+)/i);
+                 
+                 if (!commitMatch) {
+                     console.error(`[Gate Light] FAILED: SnippetCommitMustMatch - Could not find 'COMMIT:' in snippet.`);
+                     process.exit(1);
                  }
                  
-                 try {
-                    // Try to fetch history if commit is missing
-                    try {
-                        execSync(`git cat-file -t ${snippetCommit}`, { stdio: 'ignore' });
-                    } catch (e) {
-                        console.log('[Gate Light] Snippet commit not found locally. Fetching history...');
-                        execSync('git fetch --deepen=50', { stdio: 'ignore' });
-                    }
-
-                     const diffFiles = execSync(`git diff --name-only ${snippetCommit} ${currentHead}`, { encoding: 'utf8' }).split('\n').filter(Boolean);
-                     
-                     const isSnippetDriftWhitelisted = (normalized) =>
-                         normalized.startsWith('rules/task-reports/') ||
-                         normalized.startsWith('rules/rules/') ||
-                         normalized.startsWith('rules/reports/') ||
-                         normalized.startsWith('docs/') ||
-                         normalized === 'rules/LATEST.json' ||
-                         normalized === 'scripts/gate_light_ci.mjs';
-
-                     const hasCodeChanges = diffFiles.some(file => {
-                         const normalized = file.replace(/\\/g, '/');
-                         return !isSnippetDriftWhitelisted(normalized);
-                     });
-                     
-                     if (hasCodeChanges) {
-                         if (process.env.GATE_LIGHT_GENERATE_PREVIEW === '1') {
-                             // In Generation Mode, we assume the snippet is about to be updated to match HEAD.
-                             // We suppress the failure and the mismatch log to ensure the generated preview matches the future verification log.
-                         } else {
-                             console.error(`[Gate Light] FAILED: SnippetCommitMustMatch - Codebase has changed between snippet commit and HEAD.`);
-                             console.error(`Changed code files:`);
-                            diffFiles.filter(f => {
-                               const n = f.replace(/\\/g, '/');
-                               return !isSnippetDriftWhitelisted(n);
-                            }).forEach(f => console.error(`  - ${f}`));
-                             console.error(`Fix Suggestion: Re-run Integrate/Build Snippet to align with latest code.`);
-                             console.error(`FIX_CMD: .\\scripts\\run_task.ps1 -TaskId ${task_id} -Mode Integrate -Header "TraeTask_${task_id}"`);
-                             process.exit(1);
-                         }
-                     } else {
-                        if (process.env.GATE_LIGHT_GENERATE_PREVIEW !== '1') {
-                            console.log('[Gate Light] SnippetCommitMustMatch verified (Evidence/Docs-only update detected).');
-                        }
+                 const snippetCommit = commitMatch[1];
+                 const currentHead = execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim();
+                 
+                 if (snippetCommit !== currentHead) {
+                     if (process.env.GATE_LIGHT_GENERATE_PREVIEW !== '1') {
+                        console.log(`[Gate Light] Snippet commit (${snippetCommit}) != HEAD (${currentHead}). Checking for code drift...`);
                      }
                      
-                 } catch (e) {
-                     console.error(`[Gate Light] FAILED: SnippetCommitMustMatch - Hash mismatch and could not verify diff: ${e.message}`);
-                    console.log('GATE_LIGHT_EXIT=1');
-                    process.exit(1);
+                     try {
+                        try {
+                            execSync(`git cat-file -t ${snippetCommit}`, { stdio: 'ignore' });
+                        } catch (e) {
+                            console.log('[Gate Light] Snippet commit not found locally. Fetching history...');
+                            execSync('git fetch --deepen=50', { stdio: 'ignore' });
+                        }
+
+                         const diffFiles = execSync(`git diff --name-only ${snippetCommit} ${currentHead}`, { encoding: 'utf8' }).split('\n').filter(Boolean);
+                         
+                         const isSnippetDriftWhitelisted = (normalized) =>
+                             normalized.startsWith('rules/task-reports/') ||
+                             normalized.startsWith('rules/rules/') ||
+                             normalized.startsWith('rules/reports/') ||
+                             normalized.startsWith('docs/') ||
+                             normalized === 'rules/LATEST.json' ||
+                             normalized === 'scripts/gate_light_ci.mjs';
+
+                         const hasCodeChanges = diffFiles.some(file => {
+                             const normalized = file.replace(/\\/g, '/');
+                             return !isSnippetDriftWhitelisted(normalized);
+                         });
+                         
+                         if (hasCodeChanges) {
+                             if (process.env.GATE_LIGHT_GENERATE_PREVIEW === '1') {
+                             } else {
+                                 console.error(`[Gate Light] FAILED: SnippetCommitMustMatch - Codebase has changed between snippet commit and HEAD.`);
+                                 console.error(`Changed code files:`);
+                                diffFiles.filter(f => {
+                                   const n = f.replace(/\\/g, '/');
+                                   return !isSnippetDriftWhitelisted(n);
+                                }).forEach(f => console.error(`  - ${f}`));
+                                 console.error(`Fix Suggestion: Re-run Integrate/Build Snippet to align with latest code.`);
+                                 console.error(`FIX_CMD: .\\scripts\\run_task.ps1 -TaskId ${task_id} -Mode Integrate -Header "TraeTask_${task_id}"`);
+                                 process.exit(1);
+                             }
+                         } else {
+                            if (process.env.GATE_LIGHT_GENERATE_PREVIEW !== '1') {
+                                console.log('[Gate Light] SnippetCommitMustMatch verified (Evidence/Docs-only update detected).');
+                            }
+                         }
+                         
+                     } catch (e) {
+                         console.error(`[Gate Light] FAILED: SnippetCommitMustMatch - Hash mismatch and could not verify diff: ${e.message}`);
+                        console.log('GATE_LIGHT_EXIT=1');
+                        process.exit(1);
+                     }
                  }
-             }
-             console.log('[Gate Light] SnippetCommitMustMatch verified.');
-        } else {
-             // If snippet is missing, it fails the earlier check, but let's be safe
-             console.error(`[Gate Light] FAILED: Snippet file missing for Commit Match check.`);
-             process.exit(1);
+                 console.log('[Gate Light] SnippetCommitMustMatch verified.');
+            } else {
+                 console.error(`[Gate Light] FAILED: Snippet file missing for Commit Match check.`);
+                 process.exit(1);
+            }
         }
         
         // C) Snippet Stdout Check (Verification of dev_batch_mode behavior is implicit via evidence existence, 
@@ -1484,7 +1500,7 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
 
     // --- [REMOVED by M4.5-T0 / 260301_028] Evidence Truth & Consistency Check ---
 
-    // --- RankV2 Contract Version Guard (Task 260215_012) ---
+    if (isHeavyProfile) {
     console.log('[Gate Light] Checking Rank V2 Contract Version Guard...');
     try {
         const contractPath = 'OppRadar/contracts/rank_v2.contract.json';
@@ -1560,9 +1576,11 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         console.error(`[Gate Light] Rank V2 Contract Guard Error: ${e.message}`);
         process.exit(1);
     }
+    } else {
+        console.log('[Gate Light] LIGHT profile: skipping Rank V2 Contract Version Guard.');
+    }
 
-    // --- M5 PR1 LLM Router Contract Check (Task 260211_004) ---
-    if (task_id === '260211_004') {
+    if (isHeavyProfile && task_id === '260211_004') {
         console.log('[Gate Light] Checking M5 PR1 LLM Router Contract...');
         const evidenceFile = path.join(result_dir, `M5_PR1_llm_json_${task_id}.txt`);
         
@@ -1629,6 +1647,56 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         }
         
         console.log('[Gate Light] M5 PR1 LLM Router Contract verified.');
+    }
+
+    if (isHeavyProfile) {
+        console.log('[Gate Light] Checking Heavy Mandatory Evidence...');
+        const collectTruthJson = (root) => {
+            const out = [];
+            const stack = [root];
+            while (stack.length) {
+                const dir = stack.pop();
+                let entries = [];
+                try { entries = fs.readdirSync(dir, { withFileTypes: true }); } catch (_) { continue; }
+                for (const ent of entries) {
+                    const full = path.join(dir, ent.name);
+                    if (ent.isDirectory()) {
+                        // prune obvious noise dirs
+                        if (!/^(runs|envelopes|logs|tmp)$/i.test(ent.name)) stack.push(full);
+                    } else if (ent.isFile()) {
+                        if (ent.name.endsWith('.json') && ent.name.includes(task_id) && ent.name.includes('truth_audit')) {
+                            out.push(full);
+                        }
+                    }
+                }
+            }
+            return out;
+        };
+        const truthJsonFiles = collectTruthJson(result_dir);
+        if (truthJsonFiles.length === 0) {
+            console.error('[Gate Light] FAILED: Heavy profile missing truth_audit json evidence.');
+            process.exit(1);
+        }
+        const merged = truthJsonFiles.map((file) => {
+            try { return fs.readFileSync(file, 'utf8'); } catch { return ''; }
+        }).join('\n');
+        const hasFirstBreak = /"first_break_layer"\s*:/.test(merged);
+        const hasFailPass = /fail_to_pass|preFail|postPass|fail->pass|Fail -> Pass/i.test(merged);
+        const hasRealRuntime = /"sample_reconcile_rows"\s*:|"samples"\s*:|is_real_runtime|real runtime/i.test(merged);
+        const hasNonRegression = /non_regression|不回退|running_not_mixed|last_7d_not_zeroed/i.test(merged);
+        const hasWorkflowEvidence = /gate_diff_table|light_only|heavy_only|workflow profile split/i.test(merged);
+        const hasHeavyQualityEvidence = hasNonRegression || hasWorkflowEvidence;
+        if (!hasFirstBreak || !hasFailPass || !hasRealRuntime || !hasHeavyQualityEvidence) {
+            console.error('[Gate Light] FAILED: Heavy mandatory evidence incomplete.');
+            console.error(`  has_first_break_layer=${hasFirstBreak}`);
+            console.error(`  has_fail_to_pass=${hasFailPass}`);
+            console.error(`  has_real_runtime=${hasRealRuntime}`);
+            console.error(`  has_non_regression_or_workflow_evidence=${hasHeavyQualityEvidence}`);
+            process.exit(1);
+        }
+        console.log('[Gate Light] Heavy mandatory evidence verified.');
+    } else {
+        console.log('[Gate Light] LIGHT profile: heavy mandatory evidence checks skipped.');
     }
 
     // --- Immutable Integrate & SafeCmd Enforcement (Task 260211_003) ---

@@ -73,8 +73,9 @@
   - Dev阶段只做实现 + 本地验证 + 目标链最小样本
   - Integrate阶段只在提审前最后一次运行收尾链
   - 收尾链固定为：
-    - `node scripts/finalize_task_evidence.mjs --task_id <task_id>`
-    - `node scripts/gate_light_ci.mjs --task_id <task_id> --result_dir rules/task-reports/<YYYY-MM>`
+    - 轻任务：`node scripts/finalize_task_evidence.mjs --task_id <task_id> --profile light`
+    - 重任务：`node scripts/finalize_task_evidence.mjs --task_id <task_id> --profile heavy`
+    - 两者最终都必须执行 gate，但 gate 按 profile 执行不同检查集
 
 ### 1.6 即刻生效规则（260329_006）
 
@@ -172,7 +173,18 @@
 - 轻任务默认最小提交集至少包括：
   - 相关文件语法检查结果
   - 修前 1 条 / 修后 1 条最小事实块
-  - finalize 与 gate 通过结果
+  - LATEST 一致性、范围锁、postflight/envelope 必要校验
+  - finalize 与 light gate 通过结果（不触发 heavy-only 全局契约检查）
+
+### 3.9 Light / Heavy Gate 差异
+
+- both：
+  - LATEST 一致性、报告块、workspace_healer、doc path、scope lock、postflight/envelope、healthcheck 证据
+- light-only：
+  - 允许跳过与任务无关的全局契约与 mock server 校验（news/rank/export/ledger/scanner/universe/trading）
+- heavy-only：
+  - 全局契约校验（news/rank/export/ledger/scanner/universe/trading）
+  - heavy mandatory 证据（first_break_layer / Fail -> Pass / real runtime / 不回退）
 
 ## 4. 高风险约束执行规则
 
