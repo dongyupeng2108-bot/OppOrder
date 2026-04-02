@@ -1,30 +1,30 @@
 Trae Task Report
-Task ID: 260403_005
-Header: TraeTask_260403_005
-Date: 2026-04-02T20:11:18.829Z
-Branch: 260403_005
-Commit: 6d4f6665a4cafd6522be19ab09ec973c2af44a2b
+Task ID: 260403_006
+Header: TraeTask_260403_006
+Date: 2026-04-02T20:32:12.403Z
+Branch: 260403_006
+Commit: fc661bfaad3ac2d1673364dca8bf41add68f5158
 
 
 === RESULT_JSON ===
-(See result_260403_005.json)
+(See result_260403_006.json)
 
 === INDEX ===
-(See deliverables_index_260403_005.json)
+(See deliverables_index_260403_006.json)
 
 === LOG_HEAD ===
 [Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
-[Gate Light] Target locked via argument: 260403_005
-PR_TASK_ID_DETECTED=260403_005
-TARGET_TASK_ID=260403_005
-LATEST_TASK_ID=260403_005
+[Gate Light] Target locked via argument: 260403_006
+PR_TASK_ID_DETECTED=260403_006
+TARGET_TASK_ID=260403_006
+LATEST_TASK_ID=260403_006
 [Gate Light] LATEST.json consistency verified.
 [Gate Light] TASK_PROFILE=heavy
-[Gate Light] Verifying task_id: 260403_005
+[Gate Light] Verifying task_id: 260403_006
 [Gate Light] Running Automation Pack V1 Hard Guards...
-[Gate Light] Report Block Check Passed: notify_260403_005.txt
-[Gate Light] Report Block Check Passed: trae_report_snippet_260403_005.txt
-[Gate Light] Header Check Passed: TraeTask_260403_005
+[Gate Light] Report Block Check Passed: notify_260403_006.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260403_006.txt
+[Gate Light] Header Check Passed: TraeTask_260403_006
 [Gate Light] Checking Workspace Healer Evidence...
 [Gate Light] Workspace Healer verified (Clean Environment).
 [Gate Light] Skipping Error Digest Validation (Preview Mode).
@@ -39,51 +39,51 @@ LATEST_TASK_ID=260403_005
 ...
 [Gate Light] No Auto-Merge verified.
 [Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
-[Gate Light] Fetching origin/main history for diff context...
-[Gate Light] Allowed legacy task_id (transition): 260403_004
+[Gate Light] Allowed legacy task_id (transition): 260403_005
 [Gate Light] NoHistoricalEvidenceTouch verified.
+SNIPPET_GIT_STRATEGY=local_first
 [Gate Light] Skipping SnippetCommitMustMatch check (Preview Mode).
 [Gate Light] Checking Rank V2 Contract Version Guard...
-[Gate Light] Base Commit: 88bf35fe9e15c95df98c6969ab3288ed2ca9ff7b
+[Gate Light] Base Commit: 6d4f6665a4cafd6522be19ab09ec973c2af44a2b
 [Gate Light] Schema Unchanged (3bd83a08). Version check skipped.
 [Gate Light] Rank V2 Contract Version Guard PASS
 [Gate Light] Checking Heavy Mandatory Evidence...
-[Gate Light] Heavy mandatory evidence verified.
-[Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...
-[Gate Light] Immutable Integrate & SafeCmd Enforcement verified.
-[Gate Light] Checking Scope Lock...
-[Gate Light] WARN: No scope_lock file found. Skipping scope lock check (backward compatible).
-[Gate Light] BTCQDD Healthcheck: PASS
-[Gate Light] Skipping Postflight Envelope Validation (Preview Mode).
-[Gate Light] PASS
 
+[Gate Light] Universe runs contract: SKIP (server unreachable)
+[Gate Light] Scanner runs contract: SKIP (server unreachable)
+[Gate Light] Trading routes contract: SKIP (server unreachable)
+[Gate Light] FAILED: Heavy mandatory evidence incomplete.
+  has_first_break_layer=true
+  has_fail_to_pass=false
+  has_real_runtime=false
+  has_non_regression_or_workflow_evidence=true
 
 Trae Task Report
-Task ID: 260403_005
-Header: TraeTask_260403_005
-Date: 2026-04-02T19:49:35.278Z
-Branch: 260403_005
-Commit: 944f6cdd03278ee4e54d62ad0458a5d930ff6bf2
+Task ID: 260403_006
+Header: TraeTask_260403_006
+Date: 2026-04-02T20:25:47.516Z
+Branch: 260403_006
+Commit: 3f82266f171b080369706efffec84bd7b9cf33b2
 
 
 === RESULT_JSON ===
-(See result_260403_005.json)
+(See result_260403_006.json)
 
 === INDEX ===
-(See deliverables_index_260403_005.json)
+(See deliverables_index_260403_006.json)
 
 === LOG_HEAD ===
 [Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
-[Gate Light] Target locked via argument: 260403_005
-PR_TASK_ID_DETECTED=260403_005
-TARGET_TASK_ID=260403_005
-LATEST_TASK_ID=260403_005
+[Gate Light] Target locked via argument: 260403_006
+PR_TASK_ID_DETECTED=260403_006
+TARGET_TASK_ID=260403_006
+LATEST_TASK_ID=260403_006
 [Gate Light] LATEST.json consistency verified.
 [Gate Light] TASK_PROFILE=heavy
-[Gate Light] Verifying task_id: 260403_005
+[Gate Light] Verifying task_id: 260403_006
 [Gate Light] Running Automation Pack V1 Hard Guards...
 
-[Gate Light] FAILED: Report Block Check for notify_260403_005.txt
+[Gate Light] FAILED: Report Block Check for notify_260403_006.txt
   Missing Blocks: === DOD_EVIDENCE_STDOUT ===
   Missing Blocks: === GATE_LIGHT_PREVIEW === OR === GATE_LIGHT_VERIFY ===
   ACTION: Use 'assemble_evidence.mjs' to regenerate reports.
@@ -92,40 +92,40 @@ LATEST_TASK_ID=260403_005
 === LOG_TAIL ===
 ...
 [Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
-[Gate Light] Target locked via argument: 260403_005
-PR_TASK_ID_DETECTED=260403_005
-TARGET_TASK_ID=260403_005
-LATEST_TASK_ID=260403_005
+[Gate Light] Target locked via argument: 260403_006
+PR_TASK_ID_DETECTED=260403_006
+TARGET_TASK_ID=260403_006
+LATEST_TASK_ID=260403_006
 [Gate Light] LATEST.json consistency verified.
 [Gate Light] TASK_PROFILE=heavy
-[Gate Light] Verifying task_id: 260403_005
+[Gate Light] Verifying task_id: 260403_006
 [Gate Light] Running Automation Pack V1 Hard Guards...
 
-[Gate Light] FAILED: Report Block Check for notify_260403_005.txt
+[Gate Light] FAILED: Report Block Check for notify_260403_006.txt
   Missing Blocks: === DOD_EVIDENCE_STDOUT ===
   Missing Blocks: === GATE_LIGHT_PREVIEW === OR === GATE_LIGHT_VERIFY ===
   ACTION: Use 'assemble_evidence.mjs' to regenerate reports.
 
 === DOD_EVIDENCE_STDOUT ===
 RESULT_JSON
-rules/task-reports/2026-04/260403_005/result_260403_005.json
+rules/task-reports/2026-04/260403_006/result_260403_006.json
 LOG_HEAD
-[LocalFinalize] task 260403_005
+[LocalFinalize] task 260403_006
 LOG_TAIL
 local finalize flow
 EVIDENCE
-rules/task-reports/2026-04/260403_005/trae_report_snippet_260403_005.txt
+rules/task-reports/2026-04/260403_006/trae_report_snippet_260403_006.txt
 INDEX
-rules/task-reports/2026-04/260403_005/result_260403_005.json
+rules/task-reports/2026-04/260403_006/result_260403_006.json
 ===========================
 
 
 === CI_PARITY_PREVIEW ===
-Base: 88bf35fe9e15c95df98c6969ab3288ed2ca9ff7b
-Head: 944f6cdd03278ee4e54d62ad0458a5d930ff6bf2
-MergeBase: 88bf35fe9e15c95df98c6969ab3288ed2ca9ff7b
+Base: 6d4f6665a4cafd6522be19ab09ec973c2af44a2b
+Head: 3f82266f171b080369706efffec84bd7b9cf33b2
+MergeBase: 6d4f6665a4cafd6522be19ab09ec973c2af44a2b
 Source: JSON (Evidence-as-Code)
-Scope: 14 files
+Scope: 10 files
 Files (Top 3):
   - rules/LATEST.json
   - rules/rules/PROJECT_MASTER_PLAN.md
@@ -145,16 +145,16 @@ Untracked: 0
 
 
 [Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
-[Gate Light] Target locked via argument: 260403_005
-PR_TASK_ID_DETECTED=260403_005
-TARGET_TASK_ID=260403_005
-LATEST_TASK_ID=260403_005
+[Gate Light] Target locked via argument: 260403_006
+PR_TASK_ID_DETECTED=260403_006
+TARGET_TASK_ID=260403_006
+LATEST_TASK_ID=260403_006
 [Gate Light] LATEST.json consistency verified.
 [Gate Light] TASK_PROFILE=heavy
-[Gate Light] Verifying task_id: 260403_005
+[Gate Light] Verifying task_id: 260403_006
 [Gate Light] Running Automation Pack V1 Hard Guards...
 
-[Gate Light] FAILED: Report Block Check for notify_260403_005.txt
+[Gate Light] FAILED: Report Block Check for notify_260403_006.txt
   Missing Blocks: === DOD_EVIDENCE_STDOUT ===
   Missing Blocks: === GATE_LIGHT_PREVIEW === OR === GATE_LIGHT_VERIFY ===
   ACTION: Use 'assemble_evidence.mjs' to regenerate reports.
@@ -162,8 +162,8 @@ LATEST_TASK_ID=260403_005
 
 
 === ERROR_SUMMARY ===
-TASK_ID: 260403_005
-COMMIT: 944f6cdd03278ee4e54d62ad0458a5d930ff6bf2
+TASK_ID: 260403_006
+COMMIT: 3f82266f171b080369706efffec84bd7b9cf33b2
 TOTAL_ERRORS: 0
 MODE: LOCAL
 CONTRACT_SELF_CHECK_EXIT: N/A
@@ -181,17 +181,17 @@ Errors (First 5):
 GATE_LIGHT_EXIT=0
 [Generated by scripts/assemble_evidence.mjs]
 
-DOD_EVIDENCE_HEALTHCHECK_ROOT: 260403_005_healthcheck_53122_root.txt => HTTP/1.1 200 OK
-DOD_EVIDENCE_SITE_HEALTH_ROOT_53122: 260403_005_healthcheck_53122_root.txt => HTTP/1.1 200 OK
-DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260403_005_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
-DOD_EVIDENCE_SITE_HEALTH_PAIRS_53122: 260403_005_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260403_006_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_SITE_HEALTH_ROOT_53122: 260403_006_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260403_006_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_SITE_HEALTH_PAIRS_53122: 260403_006_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
 
 === CI_PARITY_PREVIEW ===
-Base: 88bf35fe9e15c95df98c6969ab3288ed2ca9ff7b
-Head: 6d4f6665a4cafd6522be19ab09ec973c2af44a2b
-MergeBase: 88bf35fe9e15c95df98c6969ab3288ed2ca9ff7b
+Base: 6d4f6665a4cafd6522be19ab09ec973c2af44a2b
+Head: fc661bfaad3ac2d1673364dca8bf41add68f5158
+MergeBase: 6d4f6665a4cafd6522be19ab09ec973c2af44a2b
 Source: JSON (Evidence-as-Code)
-Scope: 19 files
+Scope: 34 files
 Files (Top 3):
   - rules/LATEST.json
   - rules/rules/PROJECT_MASTER_PLAN.md
@@ -212,17 +212,17 @@ Untracked: 0
 
 === GATE_LIGHT_PREVIEW ===
 [Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
-[Gate Light] Target locked via argument: 260403_005
-PR_TASK_ID_DETECTED=260403_005
-TARGET_TASK_ID=260403_005
-LATEST_TASK_ID=260403_005
+[Gate Light] Target locked via argument: 260403_006
+PR_TASK_ID_DETECTED=260403_006
+TARGET_TASK_ID=260403_006
+LATEST_TASK_ID=260403_006
 [Gate Light] LATEST.json consistency verified.
 [Gate Light] TASK_PROFILE=heavy
-[Gate Light] Verifying task_id: 260403_005
+[Gate Light] Verifying task_id: 260403_006
 [Gate Light] Running Automation Pack V1 Hard Guards...
-[Gate Light] Report Block Check Passed: notify_260403_005.txt
-[Gate Light] Report Block Check Passed: trae_report_snippet_260403_005.txt
-[Gate Light] Header Check Passed: TraeTask_260403_005
+[Gate Light] Report Block Check Passed: notify_260403_006.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260403_006.txt
+[Gate Light] Header Check Passed: TraeTask_260403_006
 [Gate Light] Checking Workspace Healer Evidence...
 [Gate Light] Workspace Healer verified (Clean Environment).
 [Gate Light] Skipping Error Digest Validation (Preview Mode).
@@ -238,7 +238,7 @@ Static scan PASSED.
 [Gate Light] Checking for global healthcheck artifacts...
 [Gate Light] Global Artifact Guard verified.
 [Gate Light] MOCK_SERVER_SESSION=starting script=E:\OppRadar\OppRadar\mock_server_53122.mjs
-[Gate Light] MOCK_SERVER_SESSION=ready pid=15468
+[Gate Light] MOCK_SERVER_SESSION=ready pid=15532
 [Gate Light] HEAVY_PARALLEL_START: news/rank/export/ledger
 [Contract Check] Loading schema from: E:\OppRadar\OppRadar\contracts\news_pull_response.schema.json
 [Contract Check] Validating Success Sample...
@@ -266,13 +266,13 @@ Server already running.
 Fetching /opportunities/ledger/query_v0?limit=1...
 Validating against schema...
 Validation PASSED.
-Run assets generated. Run ID: sc_7c5f6654
-Fetching Export: http://localhost:53122/opportunities/runs/export_v1?run_id=sc_7c5f6654...
+Run assets generated. Run ID: sc_803660a1
+Fetching Export: http://localhost:53122/opportunities/runs/export_v1?run_id=sc_803660a1...
 Received Export JSON.
 Validating against schema...
 Export Schema Validation PASSED.
-Export Hash: 1840937f
-::set-output name=export_v1_hash::1840937f
+Export Hash: 44a815d8
+::set-output name=export_v1_hash::44a815d8
 EXPORT_CONTRACT_VERIFICATION_SUCCESS
 [Gate Light] HEAVY_PARALLEL_DONE: {"news":0,"rank":0,"export":0,"ledger":0}
 [Gate Light] MOCK_SERVER_SESSION=stopping
@@ -283,7 +283,7 @@ EXPORT_CONTRACT_VERIFICATION_SUCCESS
 [Gate Light] Checking Trading Routes API Contract...
 [Gate Light] HEAVY_PARALLEL_DONE: scanner/universe/trading
 [Gate Light] Checking healthcheck evidence...
-[Gate Light] Using evidence directory: rules/task-reports/2026-04/260403_005
+[Gate Light] Using evidence directory: rules/task-reports/2026-04/260403_006
 [Gate Light] Healthcheck evidence verified (Path + Content).
 [Gate Light] Skipping DoD Evidence Excerpt Check (Preview Mode).
 [Gate Light] Checking Deletion Audit (Locks & Runs)...
@@ -291,31 +291,31 @@ EXPORT_CONTRACT_VERIFICATION_SUCCESS
 [Gate Light] Checking No Auto-Merge (Git Forbidden Commands)...
 [Gate Light] No Auto-Merge verified.
 [Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
-[Gate Light] Fetching origin/main history for diff context...
-[Gate Light] Allowed legacy task_id (transition): 260403_004
+[Gate Light] Allowed legacy task_id (transition): 260403_005
 [Gate Light] NoHistoricalEvidenceTouch verified.
+SNIPPET_GIT_STRATEGY=local_first
 [Gate Light] Skipping SnippetCommitMustMatch check (Preview Mode).
 [Gate Light] Checking Rank V2 Contract Version Guard...
-[Gate Light] Base Commit: 88bf35fe9e15c95df98c6969ab3288ed2ca9ff7b
+[Gate Light] Base Commit: 6d4f6665a4cafd6522be19ab09ec973c2af44a2b
 [Gate Light] Schema Unchanged (3bd83a08). Version check skipped.
 [Gate Light] Rank V2 Contract Version Guard PASS
 [Gate Light] Checking Heavy Mandatory Evidence...
-[Gate Light] Heavy mandatory evidence verified.
-[Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...
-[Gate Light] Immutable Integrate & SafeCmd Enforcement verified.
-[Gate Light] Checking Scope Lock...
-[Gate Light] WARN: No scope_lock file found. Skipping scope lock check (backward compatible).
-[Gate Light] BTCQDD Healthcheck: PASS
-[Gate Light] Skipping Postflight Envelope Validation (Preview Mode).
-[Gate Light] PASS
 
+[Gate Light] Universe runs contract: SKIP (server unreachable)
+[Gate Light] Scanner runs contract: SKIP (server unreachable)
+[Gate Light] Trading routes contract: SKIP (server unreachable)
+[Gate Light] FAILED: Heavy mandatory evidence incomplete.
+  has_first_break_layer=true
+  has_fail_to_pass=false
+  has_real_runtime=false
+  has_non_regression_or_workflow_evidence=true
 ==========================
 
 
 
 === ERROR_SUMMARY ===
-TASK_ID: 260403_005
-COMMIT: 6d4f6665a4cafd6522be19ab09ec973c2af44a2b
+TASK_ID: 260403_006
+COMMIT: fc661bfaad3ac2d1673364dca8bf41add68f5158
 TOTAL_ERRORS: 0
 MODE: LOCAL
 CONTRACT_SELF_CHECK_EXIT: N/A

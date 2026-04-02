@@ -69,6 +69,7 @@
   - heavy：基础治理检查（both）+ heavy-only 全量检查
   - 260403_004 提效边界：仅 heavy 执行层并行与 mock server 复用，不改变 heavy 检查覆盖度与强制项
   - 260403_005 提效边界：仅 heavy 统一短超时（4000ms）与 fail-fast；不改 light 语义，不改 heavy 覆盖与强制项
+  - 260403_006 提效边界：仅 heavy Git 校验降噪（local-first + 最小必要 fetch）；不改 SnippetCommitMustMatch 判定语义
 - 不新增第三分级：仅 light/heavy 两层
 - 最小验证硬规则：
   - 任何非纯测试任务必须做与任务直接相关的最小验证

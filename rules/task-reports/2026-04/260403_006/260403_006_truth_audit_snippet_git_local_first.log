@@ -1,0 +1,6 @@
+script_name=truth_audit_snippet_git_local_first_260403_006
+task_id=260403_006
+sample_name=snippet_git_local_first_v1
+pass=true
+first_break_layer=NONE_CHAIN_PASS
+message=first_break_layer=NONE_CHAIN_PASS

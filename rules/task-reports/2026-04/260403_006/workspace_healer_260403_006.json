@@ -1,22 +1,15 @@
 {
-  "result": "PASS",
-  "reason": null,
+  "head_commit": "2e14b1b1b2abbe90cbe936ef676324d8e1fc49f5",
   "after": {
     "untracked_count": 0,
     "tracked_changed_count": 0,
     "sample_paths": []
   },
-  "repo_root": "E:/OppRadar",
-  "head_commit": "6d4f6665a4cafd6522be19ab09ec973c2af44a2b",
-  "branch": "260403_005",
-  "cleaned_paths": [
-    "rules/task-reports",
-    "rules/reports",
-    "data/opps_ledger",
-    "rules/task-reports/locks",
-    "rules/task-reports/runs"
-  ],
   "mode": "EnforceClean",
+  "reason": null,
+  "branch": "260403_006",
+  "repo_root": "E:/OppRadar",
+  "result": "PASS",
   "before": {
     "untracked_count": 410,
     "tracked_changed_count": 0,
@@ -28,5 +21,12 @@
       "data/crypto_binary/bot_runtime_recovery_53125.json"
     ]
   },
+  "cleaned_paths": [
+    "rules/task-reports",
+    "rules/reports",
+    "data/opps_ledger",
+    "rules/task-reports/locks",
+    "rules/task-reports/runs"
+  ],
   "note": "LOCAL_BOUNDARY_CI_CLEAN_ASSUMPTION"
 }

@@ -187,6 +187,7 @@
   - heavy mandatory 证据（first_break_layer / Fail -> Pass / real runtime / 不回退）
   - 执行提效允许项（260403_004）：并行执行 + Rank/Export/Ledger mock server 单会话复用；不得减少覆盖项与强制项
   - 执行提效允许项（260403_005）：scanner/universe/trading 统一硬超时 4000ms；heavy 命中首个硬失败后 fail-fast 并输出 FIRST_FAILED_STAGE/FAIL_FAST_ABORTED/SKIPPED_AFTER_FAIL
+  - 执行提效允许项（260403_006）：SnippetCommitMustMatch 采用 local-first git 策略，仅本地信息不足时最小必要 fetch/deepen，并输出 SNIPPET_GIT_STRATEGY/SNIPPET_GIT_FETCH_NEEDED
 
 ## 4. 高风险约束执行规则
 
