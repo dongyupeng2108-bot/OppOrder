@@ -1,0 +1,79 @@
+{
+  "script_name": "truth_audit_pnl_display_precision_260330_045",
+  "task_id": "260330_045",
+  "sample_name": "pnl_display_precision_v1",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "rules/task-reports/2026-03/260330_045_truth_audit_pnl_display_precision.json",
+  "summary": {
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "pass": true
+  },
+  "raw_excerpt": {
+    "pre_dom": {
+      "pnl_text_prev_window": "42.39860412558299",
+      "pnl_text_recent_summary": "485.9",
+      "avg_per_window_text": "5.58523249345317"
+    },
+    "post_dom": {
+      "pnl_text_prev_window": "42.40",
+      "pnl_text_recent_summary": "485.92",
+      "avg_per_window_text": "5.59"
+    },
+    "api_raw": {
+      "postmortem_realized_gross_pnl_total": 42.39860412558299,
+      "summary_realized_gross_pnl_total": 485.91522693042583,
+      "summary_avg_realized_gross_pnl_per_window": 5.58523249345317
+    }
+  },
+  "generated_at": "2026-04-02T14:17:15.559Z",
+  "conclusion_block": {
+    "verdict": "A：通过",
+    "first_break_layer": "NONE_CHAIN_PASS"
+  },
+  "evidence_index": {
+    "checks": {
+      "post_pnl_recent_summary_2dec": true,
+      "post_avg_per_window_2dec": true,
+      "api_raw_unchanged_proof_present": true,
+      "pre_post_dom_changed": true
+    },
+    "pre_dom_text": {
+      "pnl_text_prev_window": "42.39860412558299",
+      "pnl_text_recent_summary": "485.9",
+      "avg_per_window_text": "5.58523249345317"
+    },
+    "post_dom_text": {
+      "pnl_text_prev_window": "42.40",
+      "pnl_text_recent_summary": "485.92",
+      "avg_per_window_text": "5.59"
+    },
+    "api_raw_values": {
+      "postmortem_realized_gross_pnl_total": 42.39860412558299,
+      "summary_realized_gross_pnl_total": 485.91522693042583,
+      "summary_avg_realized_gross_pnl_per_window": 5.58523249345317
+    },
+    "healthcheck": {
+      "root": 200,
+      "pairs": 404
+    },
+    "heartbeat_log": "rules/task-reports/2026-03/260330_045_truth_audit_pnl_display_precision.heartbeat.log",
+    "last_heartbeat": {
+      "ts": "2026-04-02T14:17:15.557Z",
+      "event": "HEARTBEAT",
+      "stage": "audit_done",
+      "checks": {
+        "post_pnl_recent_summary_2dec": true,
+        "post_avg_per_window_2dec": true,
+        "api_raw_unchanged_proof_present": true,
+        "pre_post_dom_changed": true
+      }
+    },
+    "guardrails": {
+      "max_wall_time_ms": 900000,
+      "max_silence_ms": 120000,
+      "log_tail": 100
+    }
+  }
+}
