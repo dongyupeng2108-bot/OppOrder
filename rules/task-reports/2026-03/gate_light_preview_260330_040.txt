@@ -1,0 +1,8 @@
+=== GATE_LIGHT_PREVIEW ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260330_040
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] Verifying task_id: 260330_040
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] FAILED: Report Block Check for notify_260330_040.txt
+GATE_LIGHT_EXIT=1
