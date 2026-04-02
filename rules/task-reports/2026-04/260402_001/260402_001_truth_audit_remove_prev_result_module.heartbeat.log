@@ -1,0 +1,3 @@
+{"ts":"2026-04-02T15:27:10.338Z","event":"HEARTBEAT","stage":"start_server_begin","port":53246}
+{"ts":"2026-04-02T15:27:10.655Z","event":"HEARTBEAT","stage":"start_server_ready","port":53246}
+{"ts":"2026-04-02T15:27:11.291Z","event":"HEARTBEAT","stage":"audit_done","checks":{"pre_has_prev_module":true,"post_prev_module_removed":true,"post_no_prev_api_consumption":true,"post_perf_moved_to_prev_position":true,"perf_expression_unchanged":true,"backend_prev_route_removed":true,"backend_perf_route_kept":true,"runtime_perf_available":true,"runtime_prev_route_removed":true},"first_break_layer":"NONE_CHAIN_PASS"}

@@ -67,9 +67,9 @@ const SE_MODULE_INFO = [
   },
   {
     name: '运行结果',
-    duty: '负责 postmortem、last_run_snapshot、performance_summary 结果表达。',
+    duty: '负责 last_run_snapshot、performance_summary 结果表达。',
     input: '执行结束态、订单成交结果、窗口结算数据、聚合统计输入。',
-    output: '/bot/postmortem/latest、/bot/performance/summary 与结果快照字段。'
+    output: '/bot/performance/summary 与结果快照字段。'
   },
   {
     name: '版本测试/保障',
@@ -207,7 +207,7 @@ async function initStrategyEditor() {
           <div id="se-latency" style="font-size:10px;color:#888;text-align:right;padding:4px 8px 0 8px;"></div>
         </section>
         <div style="background:#0b0d10;border-left:1px solid #1a2028;border-right:1px solid #1a2028;"></div>
-        <div style="min-height:0;display:grid;grid-template-rows:minmax(260px,1fr) 208px;gap:10px;">
+        <div style="min-height:0;display:grid;grid-template-rows:minmax(260px,1fr);gap:10px;">
           <div style="display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,0.5fr);gap:10px;min-height:0;">
             <section style="border:1px solid #232a33;background:#11161c;padding:10px;display:flex;flex-direction:column;min-height:0;gap:8px;">
               <div style="display:flex;justify-content:space-between;align-items:center;">
@@ -229,35 +229,27 @@ async function initStrategyEditor() {
                 <div id="se-pm-account-name" style="font-size:12px;color:#b7c4d3;">PM账号名：--</div>
                 <div id="se-pm-account-balance" style="font-size:12px;color:#d6dde5;">余额：--美元（今日--）</div>
               </div>
-              <h3 style="margin:0;font-size:13px;color:#d6dde5;">上一窗口结果</h3>
+              <h3 style="margin:0;font-size:13px;color:#d6dde5;">近期表现摘要</h3>
+              <div style="display:flex;gap:6px;">
+                <button id="se-perf-btn-today" onclick="se_setPerformancePreset('today')" style="background:#1f1f1f;color:#ddd;border:1px solid #555;border-radius:4px;padding:2px 8px;cursor:pointer;">今日</button>
+                <button id="se-perf-btn-last7d" onclick="se_setPerformancePreset('last_7d')" style="background:#111;color:#aaa;border:1px solid #333;border-radius:4px;padding:2px 8px;cursor:pointer;">近7天</button>
+                <button id="se-perf-btn-last30" onclick="se_setPerformancePreset('last_30_windows')" style="background:#111;color:#aaa;border:1px solid #333;border-radius:4px;padding:2px 8px;cursor:pointer;">近30窗口</button>
+              </div>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
-                <div style="color:#7f8a97;">已成交总数</div><div id="se-prev-filled-total" style="text-align:right;color:#d6dde5;">—</div>
-                <div style="color:#7f8a97;">已撤单总数</div><div id="se-prev-cancelled-total" style="text-align:right;color:#d6dde5;">—</div>
-                <div style="color:#7f8a97;">PNL</div><div id="se-prev-pnl" style="text-align:right;color:#d6dde5;">—</div>
+                <div style="color:#7f8a97;">统计区间</div><div id="se-perf-range" style="text-align:right;color:#d6dde5;">今日</div>
+              </div>
+              <div style="border:1px solid #232a33;background:#11161c;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:0;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
+                  <div style="color:#7f8a97;">窗口数</div><div id="se-perf-window-count" style="text-align:right;color:#d6dde5;">—</div>
+                  <div style="color:#7f8a97;">胜率</div><div id="se-perf-win-rate" style="text-align:right;color:#d6dde5;">—</div>
+                  <div style="color:#7f8a97;">总成交单数</div><div id="se-perf-filled-total" style="text-align:right;color:#d6dde5;">—</div>
+                  <div style="color:#7f8a97;">总计PNL</div><div id="se-perf-realized-total" style="text-align:right;color:#d6dde5;">—</div>
+                  <div style="color:#7f8a97;">平均每窗口盈亏</div><div id="se-perf-avg-realized" style="text-align:right;color:#d6dde5;">—</div>
+                </div>
+                <div id="se-perf-note" style="font-size:11px;color:#9aa0a6;min-height:16px;">—</div>
               </div>
             </section>
           </div>
-          <section style="border:1px solid #232a33;background:#11161c;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:0;">
-            <h3 style="margin:0;font-size:13px;color:#d6dde5;">近期表现摘要</h3>
-            <div style="display:flex;gap:6px;">
-              <button id="se-perf-btn-today" onclick="se_setPerformancePreset('today')" style="background:#1f1f1f;color:#ddd;border:1px solid #555;border-radius:4px;padding:2px 8px;cursor:pointer;">今日</button>
-              <button id="se-perf-btn-last7d" onclick="se_setPerformancePreset('last_7d')" style="background:#111;color:#aaa;border:1px solid #333;border-radius:4px;padding:2px 8px;cursor:pointer;">近7天</button>
-              <button id="se-perf-btn-last30" onclick="se_setPerformancePreset('last_30_windows')" style="background:#111;color:#aaa;border:1px solid #333;border-radius:4px;padding:2px 8px;cursor:pointer;">近30窗口</button>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
-              <div style="color:#7f8a97;">统计区间</div><div id="se-perf-range" style="text-align:right;color:#d6dde5;">今日</div>
-            </div>
-            <div style="border:1px solid #232a33;background:#11161c;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:0;">
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
-                <div style="color:#7f8a97;">窗口数</div><div id="se-perf-window-count" style="text-align:right;color:#d6dde5;">—</div>
-                <div style="color:#7f8a97;">胜率</div><div id="se-perf-win-rate" style="text-align:right;color:#d6dde5;">—</div>
-                <div style="color:#7f8a97;">总成交单数</div><div id="se-perf-filled-total" style="text-align:right;color:#d6dde5;">—</div>
-                <div style="color:#7f8a97;">总计PNL</div><div id="se-perf-realized-total" style="text-align:right;color:#d6dde5;">—</div>
-                <div style="color:#7f8a97;">平均每窗口盈亏</div><div id="se-perf-avg-realized" style="text-align:right;color:#d6dde5;">—</div>
-              </div>
-              <div id="se-perf-note" style="font-size:11px;color:#9aa0a6;min-height:16px;">—</div>
-            </div>
-          </section>
         </div>
       </div>
       <aside id="se-param-collapse" style="display:none;position:absolute;top:62px;left:10px;width:320px;max-height:calc(100% - 74px);border:1px solid #1c222b;background:#0d1218;padding:10px;overflow:auto;z-index:20;">
@@ -1055,7 +1047,6 @@ async function se_poll() {
     const summaryData = await summaryRes.json();
     let contextData = {};
     let previewData = null;
-    let postmortemData = null;
     let performanceData = null;
     let accountData = null;
     let previewError = null;
@@ -1076,14 +1067,6 @@ async function se_poll() {
       previewError = previewError || err.message;
     }
     try {
-      const postmortemRes = await fetch(`${BASE_URL}/bot/postmortem/latest`);
-      postmortemData = await postmortemRes.json();
-      if (!postmortemRes.ok || postmortemData?.ok === false) throw new Error(postmortemData?.error || `postmortem HTTP ${postmortemRes.status}`);
-    } catch (err) {
-      postmortemData = null;
-      previewError = previewError || err.message;
-    }
-    try {
       const perfRes = await fetch(`${BASE_URL}/bot/performance/summary?preset=${encodeURIComponent(_sePerformancePreset)}&detail=1`);
       performanceData = await perfRes.json();
       if (!perfRes.ok || performanceData?.ok === false) throw new Error(performanceData?.error || `performance HTTP ${perfRes.status}`);
@@ -1099,7 +1082,7 @@ async function se_poll() {
       accountData = null;
     }
     se_renderContext(contextData, status, ordersData);
-    se_renderOverview(status, summaryData, ordersData, postmortemData);
+    se_renderOverview(status, summaryData, ordersData);
     se_renderPerformance(performanceData, status);
     se_renderPmAccountInfo(accountData?.account || null);
     se_renderDecision(status, contextData, previewData, ordersData, previewError);
@@ -1312,7 +1295,7 @@ function se_pickSummaryValue(summary, keys, fallback = null) {
   return fallback;
 }
 
-function se_renderOverview(status, summary, ordersData, postmortemPayload) {
+function se_renderOverview(status, summary, ordersData) {
   const mergedSummary = summary && typeof summary === 'object' ? summary : {};
   const yesEntry = se_pickSummaryValue(mergedSummary, ['yes_entry_filled_count', 'yes_filled_count'], 0);
   const yesExit = se_pickSummaryValue(mergedSummary, ['yes_exit_filled_count'], 0);
@@ -1343,17 +1326,13 @@ function se_renderOverview(status, summary, ordersData, postmortemPayload) {
   const activeConfig = activeRuntime?.config && typeof activeRuntime.config === 'object' ? activeRuntime.config : null;
   const lastRun = status?.last_run_snapshot && typeof status.last_run_snapshot === 'object' ? status.last_run_snapshot : null;
   const lastActiveConfig = lastRun?.active_config && typeof lastRun.active_config === 'object' ? lastRun.active_config : null;
-  const postmortem = postmortemPayload?.postmortem && typeof postmortemPayload.postmortem === 'object'
-    ? postmortemPayload.postmortem
-    : null;
-  const stopReasonRaw = lastRun?.stop_reason || postmortem?.stop_reason || null;
+  const stopReasonRaw = lastRun?.stop_reason || null;
   const stopReasonText = stopReasonRaw === 'AUTO_COMPLETED'
     ? '自动完成'
     : (stopReasonRaw === 'MANUAL_STOP' ? '手动停止' : (stopReasonRaw || '暂无'));
   const currentWindowLabelSource = status?.current_window_id
     || activeRuntime?.current_window_id
     || lastRun?.current_window_id
-    || postmortem?.window_id
     || null;
   se_setText('se-log-current-window', se_formatWindowDisplayName(currentWindowLabelSource));
   const paramSummary = savedConfig
@@ -1366,16 +1345,7 @@ function se_renderOverview(status, summary, ordersData, postmortemPayload) {
   const lastActiveConfigText = lastActiveConfig
     ? `等待 ${se_formatStateValue(lastActiveConfig.open_delay_sec)} · 波动 ${se_formatStateValue(lastActiveConfig.atr_multiple)} · 全撤 ${se_formatStateValue(lastActiveConfig.cancel_all_remaining_sec)}`
     : 'N/A (null)';
-  const completedAt = postmortem?.completed_at || lastRun?.completed_at;
-  se_setText('se-prev-window', postmortem?.window_id || lastRun?.current_window_id);
-  se_setText('se-prev-stop-reason', stopReasonText);
-  se_setText('se-prev-completed-at', completedAt);
-  se_setText('se-prev-filled-total', postmortem?.filled_total ?? lastRun?.filled_total);
-  se_setText('se-prev-cancelled-total', postmortem?.cancelled_total ?? lastRun?.cancelled_total ?? 0);
-  se_setText('se-prev-pnl', se_formatPnlDisplay(postmortem?.realized_gross_pnl_total ?? lastRun?.realized_gross_pnl_total));
-  se_setText('se-prev-realized-total', se_formatPnlDisplay(postmortem?.realized_gross_pnl_total ?? lastRun?.realized_gross_pnl_total));
-  se_setText('se-prev-action-summary', postmortem?.action_summary ?? 'N/A (null)');
-  se_setText('se-prev-param-summary', lastActiveConfigText);
+  const completedAt = lastRun?.completed_at;
   se_setText('se-runtime-yes-position', yesPos);
   se_setText('se-runtime-no-position', noPos);
   se_setText('se-runtime-filled-total', filledTotal);
@@ -1386,35 +1356,19 @@ function se_renderOverview(status, summary, ordersData, postmortemPayload) {
   se_setText('se-last-active-config', lastActiveConfigDebugText);
   se_setText('se-last-stop-reason', stopReasonText);
   se_setText('se-last-completed-at', completedAt);
-  se_setText('se-last-window-id', postmortem?.window_id || lastRun?.current_window_id);
+  se_setText('se-last-window-id', lastRun?.current_window_id);
   se_setText('se-last-phase', lastRun?.phase);
-  se_setText('se-last-filled-total', postmortem?.filled_total ?? lastRun?.filled_total);
-  se_setText('se-last-realized-total', se_formatPnlDisplay(postmortem?.realized_gross_pnl_total ?? lastRun?.realized_gross_pnl_total));
-  se_setText('se-last-unrealized-total', postmortem?.unrealized_gross_pnl_total ?? lastRun?.unrealized_gross_pnl_total);
-  se_setText('se-pm-window-id', postmortem?.window_id);
+  se_setText('se-last-filled-total', lastRun?.filled_total);
+  se_setText('se-last-realized-total', se_formatPnlDisplay(lastRun?.realized_gross_pnl_total));
+  se_setText('se-last-unrealized-total', lastRun?.unrealized_gross_pnl_total);
+  se_setText('se-pm-window-id', null);
   se_setText('se-pm-stop-reason', stopReasonText);
-  se_setText('se-pm-filled-total', postmortem?.filled_total);
-  se_setText('se-pm-realized-total', se_formatPnlDisplay(postmortem?.realized_gross_pnl_total));
-  se_setText('se-pm-unrealized-total', postmortem?.unrealized_gross_pnl_total);
-  se_setText('se-pm-action-summary', postmortem?.action_summary);
-  const toFinite = (value) => {
-    const num = Number(value);
-    return Number.isFinite(num) ? num : null;
-  };
-  const summaryRealizedNum = toFinite(realizedTotal);
-  const summaryUnrealizedNum = toFinite(unrealizedTotal);
-  const postmortemRealizedNum = toFinite(postmortem?.realized_gross_pnl_total);
-  const postmortemUnrealizedNum = toFinite(postmortem?.unrealized_gross_pnl_total);
-  const pnlMatched = summaryRealizedNum !== null
-    && summaryUnrealizedNum !== null
-    && postmortemRealizedNum !== null
-    && postmortemUnrealizedNum !== null
-    && summaryRealizedNum === postmortemRealizedNum
-    && summaryUnrealizedNum === postmortemUnrealizedNum;
-  se_setText('se-pm-pnl-match', postmortem ? (pnlMatched ? 'MATCH' : 'MISMATCH') : 'N/A (null)');
-  se_setText('se-pm-note', postmortem
-    ? `UI pnl(realized=${se_formatStateValue(realizedTotal)}, unrealized=${se_formatStateValue(unrealizedTotal)}) vs postmortem pnl(realized=${se_formatStateValue(postmortem?.realized_gross_pnl_total)}, unrealized=${se_formatStateValue(postmortem?.unrealized_gross_pnl_total)})`
-    : '当前无 postmortem 记录');
+  se_setText('se-pm-filled-total', null);
+  se_setText('se-pm-realized-total', null);
+  se_setText('se-pm-unrealized-total', null);
+  se_setText('se-pm-action-summary', null);
+  se_setText('se-pm-pnl-match', 'N/A (null)');
+  se_setText('se-pm-note', 'postmortem latest 模块已下线');
   se_setText('se-bot-state-tip', `YES upnl=${se_formatStateValue(yesUnreal)} | NO upnl=${se_formatStateValue(noUnreal)} | poll=${_seLastPollError ? 'error' : 'ok'}`);
 }
 

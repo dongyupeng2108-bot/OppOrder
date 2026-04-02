@@ -580,60 +580,6 @@ const writeBotPostmortem = async (snapshot) => {
     JSON.stringify(actionSummary)
   ]);
 };
-const isPnlCountBasisAnomalyRow = (row) => {
-  const filled = toFiniteOrNull(row?.bot_filled_total) ?? 0;
-  const cancelled = toFiniteOrNull(row?.bot_cancelled_total) ?? 0;
-  const realized = toFiniteOrNull(row?.bot_realized_gross_pnl_total) ?? 0;
-  return filled === 0 && cancelled === 0 && Math.abs(realized) > 0;
-};
-const queryLatestBotPostmortem = async () => {
-  if (!db) return null;
-  const rows = await db.all(`
-    SELECT
-      id,
-      strategy_id,
-      event_id,
-      window_start,
-      window_end,
-      created_at,
-      bot_stop_reason,
-      bot_completed_at,
-      bot_window_id,
-      bot_filled_total,
-      bot_cancelled_total,
-      bot_realized_gross_pnl_total,
-      bot_unrealized_gross_pnl_total,
-      bot_active_config_json,
-      bot_action_summary
-    FROM cb_postmortem
-    WHERE strategy_id = ? AND bot_completed_at IS NOT NULL
-    ORDER BY created_at DESC, id DESC
-    LIMIT 50
-  `, [BOT_POSTMORTEM_STRATEGY_ID]);
-  const row = rows.find((item) => !isPnlCountBasisAnomalyRow(item)) || rows[0] || null;
-  if (!row) return null;
-  let activeConfig = null;
-  let actionSummary = [];
-  try { activeConfig = row.bot_active_config_json ? JSON.parse(row.bot_active_config_json) : null; } catch (_) { activeConfig = null; }
-  try { actionSummary = row.bot_action_summary ? JSON.parse(row.bot_action_summary) : []; } catch (_) { actionSummary = []; }
-  return {
-    id: row.id ?? null,
-    strategy_id: row.strategy_id ?? null,
-    event_id: row.event_id ?? null,
-    window_start: row.window_start ?? null,
-    window_end: row.window_end ?? null,
-    created_at: row.created_at ?? null,
-    window_id: row.bot_window_id ?? null,
-    stop_reason: row.bot_stop_reason ?? null,
-    completed_at: row.bot_completed_at ?? null,
-    filled_total: toFiniteOrNull(row.bot_filled_total) ?? 0,
-    cancelled_total: toFiniteOrNull(row.bot_cancelled_total) ?? 0,
-    realized_gross_pnl_total: toFiniteOrNull(row.bot_realized_gross_pnl_total) ?? 0,
-    unrealized_gross_pnl_total: toFiniteOrNull(row.bot_unrealized_gross_pnl_total) ?? 0,
-    active_config: activeConfig,
-    action_summary: Array.isArray(actionSummary) ? actionSummary : []
-  };
-};
 const normalizePerformancePreset = (value) => {
   if (value === BOT_PERF_PRESET_LAST_7D) return BOT_PERF_PRESET_LAST_7D;
   if (value === BOT_PERF_PRESET_LAST_30_WINDOWS) return BOT_PERF_PRESET_LAST_30_WINDOWS;
@@ -2397,20 +2343,6 @@ const server = createServer(async (req, res) => {
       sendJson(res, {
         ok: true,
         account
-      });
-    } catch (err) {
-      sendJson(res, { ok: false, error: err.message }, 500);
-    }
-    return;
-  }
-
-  if (req.method === 'GET' && req.url === '/bot/postmortem/latest') {
-    ensureBotRecoveryHydrated();
-    try {
-      const latest = await queryLatestBotPostmortem();
-      sendJson(res, {
-        ok: true,
-        postmortem: latest
       });
     } catch (err) {
       sendJson(res, { ok: false, error: err.message }, 500);
