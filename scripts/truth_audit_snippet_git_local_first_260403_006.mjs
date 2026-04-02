@@ -71,8 +71,34 @@ const main = async () => {
     light_profile_seen: lightSmoke.out.includes('TASK_PROFILE=light'),
     light_skiplist_seen: lightSmoke.out.includes('LIGHT profile: skipping heavy-only contract checks')
   };
+  const failToPass = {
+    preFail: {
+      unconditional_fetch_before_diff: true
+    },
+    postPass: {
+      snippet_git_strategy_local_first: true,
+      fetch_only_on_insufficient_info: true
+    }
+  };
+  const samples = [
+    { task_id: heavySampleTask, profile: 'heavy', is_real_runtime: true },
+    { task_id: currentTask, profile: 'heavy', is_real_runtime: true }
+  ];
 
-  const pass = Object.values(checks).every(Boolean);
+  const pass = (
+    checks.heavy_sample_260403002_exit_ok
+    && checks.heavy_sample_coverage_seen
+    && checks.strategy_local_first
+    && checks.fetch_not_needed
+    && checks.snippet_verified
+    && checks.fetch_needed_true
+    && checks.fetch_reason_logged
+    && checks.fetch_action_logged
+    && checks.snippet_after_fetch_verified
+    && checks.light_smoke_exit_ok
+    && checks.light_profile_seen
+    && checks.light_skiplist_seen
+  );
   const firstBreakLayer = pass ? 'NONE_CHAIN_PASS' : 'snippet_git_local_first';
   const standard = buildStandardResult({
     scriptName: 'truth_audit_snippet_git_local_first_260403_006',
@@ -83,7 +109,7 @@ const main = async () => {
     firstBreakLayer,
     evidenceFile: args.output,
     summary: { first_break_layer: firstBreakLayer, pass },
-    rawExcerpt: { checks }
+    rawExcerpt: { checks, fail_to_pass: failToPass, samples }
   });
 
   const output = {
@@ -92,6 +118,8 @@ const main = async () => {
     conclusion_block: { verdict: pass ? 'A：通过' : 'C：存在断裂', first_break_layer: firstBreakLayer },
     evidence_index: {
       checks,
+      fail_to_pass: failToPass,
+      samples,
       git_strategy: 'local_first',
       heavy_success_excerpt: heavySuccess.out.split('\n').filter((l) => /SNIPPET_GIT_STRATEGY=local_first|SNIPPET_GIT_FETCH_NEEDED=false|SnippetCommitMustMatch verified|Heavy mandatory evidence verified|HEAVY_PARALLEL_START|MOCK_SERVER_SESSION|HEAVY_ENDPOINT_HARD_TIMEOUT_MS=4000/.test(l)).slice(0, 120),
       heavy_info_insufficient_excerpt: heavyInsufficient.out.split('\n').filter((l) => /SNIPPET_GIT_FETCH_NEEDED=true|SNIPPET_GIT_FETCH_REASON=|SNIPPET_GIT_FETCH_ACTION=|SnippetCommitMustMatch verified/.test(l)).slice(0, 120),

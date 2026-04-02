@@ -1515,16 +1515,7 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                             console.log('[Gate Light] SNIPPET_GIT_FETCH_ACTION=git fetch origin --deepen=50');
                             execSync('git fetch origin --deepen=50', { stdio: 'ignore' });
                         } else {
-                    if (forceFetch) {
-                        snippetFetchNeeded = true;
-                        snippetFetchReason = 'forced_for_governance_test';
-                        console.log('SNIPPET_GIT_FETCH_NEEDED=true');
-                        console.log('[Gate Light] SNIPPET_GIT_FETCH_REASON=' + snippetFetchReason);
-                        console.log('[Gate Light] SNIPPET_GIT_FETCH_ACTION=git fetch origin --deepen=50');
-                        execSync('git fetch origin --deepen=50', { stdio: 'ignore' });
-                    } else {
-                        console.log('SNIPPET_GIT_FETCH_NEEDED=false');
-                    }
+                            console.log('SNIPPET_GIT_FETCH_NEEDED=false');
                         }
 
                          const diffFiles = execSync(`git diff --name-only ${snippetCommit} ${currentHead}`, { encoding: 'utf8' }).split('\n').filter(Boolean);
@@ -1566,9 +1557,16 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                         console.log('GATE_LIGHT_EXIT=1');
                         process.exit(1);
                      }
+                } else if (forceFetch) {
+                    snippetFetchNeeded = true;
+                    snippetFetchReason = 'forced_for_governance_test';
+                    console.log('SNIPPET_GIT_FETCH_NEEDED=true');
+                    console.log('[Gate Light] SNIPPET_GIT_FETCH_REASON=' + snippetFetchReason);
+                    console.log('[Gate Light] SNIPPET_GIT_FETCH_ACTION=git fetch origin --deepen=50');
+                    execSync('git fetch origin --deepen=50', { stdio: 'ignore' });
                 } else {
                     console.log('SNIPPET_GIT_FETCH_NEEDED=false');
-                 }
+                }
                  console.log('[Gate Light] SnippetCommitMustMatch verified.');
             } else {
                  console.error(`[Gate Light] FAILED: Snippet file missing for Commit Match check.`);
