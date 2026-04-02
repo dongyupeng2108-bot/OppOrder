@@ -1,0 +1,6 @@
+script_name=truth_audit_log_density_summary_260330_042
+task_id=260330_042
+sample_name=log_density_summary_v1
+pass=true
+first_break_layer=NONE_CHAIN_PASS
+message=baseline captured

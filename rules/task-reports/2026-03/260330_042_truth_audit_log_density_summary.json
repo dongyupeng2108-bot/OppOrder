@@ -1,0 +1,1714 @@
+{
+  "script_name": "truth_audit_log_density_summary_260330_042",
+  "task_id": "260330_042",
+  "sample_name": "log_density_summary_v1",
+  "pass": true,
+  "message": "low_stream_density_after=0.167",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "rules/task-reports/2026-03/260330_042_truth_audit_log_density_summary.json",
+  "summary": {
+    "mode": "after",
+    "pass": true,
+    "summary_period_ms": 5000,
+    "first_break_layer": "NONE_CHAIN_PASS"
+  },
+  "raw_excerpt": {
+    "density_per_sec": 11.333,
+    "low_stream_density_per_sec": 0.167,
+    "low_value_raw_total": 0,
+    "summary_event_count": 1
+  },
+  "generated_at": "2026-04-02T12:39:30.459Z",
+  "conclusion_block": {
+    "verdict": "A：通过",
+    "first_break_layer": "NONE_CHAIN_PASS"
+  },
+  "evidence_index": {
+    "mode": "after",
+    "baseline_file": "rules/task-reports/2026-03/260330_042_log_baseline_before.json",
+    "summary_period_ms": 5000,
+    "current_summary": {
+      "total_logs": 68,
+      "duration_sec": 6,
+      "density_per_sec": 11.333,
+      "low_value_raw_total": 0,
+      "low_value_raw_by_event": [
+        {
+          "event": "RUNNER_TICK",
+          "count": 0
+        },
+        {
+          "event": "BOT_TICK_OK",
+          "count": 0
+        },
+        {
+          "event": "BOT_DECISION_GATED",
+          "count": 0
+        }
+      ],
+      "summary_event_count": 1,
+      "summary_avg_interval_ms": null,
+      "low_stream_density_per_sec": 0.167,
+      "key_event_counts": {
+        "BOT_INTENTS": 25,
+        "BOT_FILL": 20,
+        "BOT_WINDOW_CHANGED": 5
+      },
+      "place_ladder_count": 24,
+      "cancel_open_count": 0,
+      "order_state_change_count": 20,
+      "by_event_top": [
+        {
+          "event": "BOT_INTENTS",
+          "count": 25
+        },
+        {
+          "event": "BOT_FILL",
+          "count": 20
+        },
+        {
+          "event": "BOT_DEBUG_FRAME",
+          "count": 5
+        },
+        {
+          "event": "BOT_WINDOW_CHANGED",
+          "count": 5
+        },
+        {
+          "event": "BOT_WINDOW_INITIALIZED",
+          "count": 5
+        },
+        {
+          "event": "BOT_DEBUG_SCENARIO_ENABLED",
+          "count": 1
+        },
+        {
+          "event": "BOT_STARTED",
+          "count": 1
+        },
+        {
+          "event": "BOT_CONFIG_APPLIED",
+          "count": 1
+        },
+        {
+          "event": "BOT_STARTUP_WAIT_NEXT_WINDOW",
+          "count": 1
+        },
+        {
+          "event": "BOT_STARTUP_WAIT_RELEASED",
+          "count": 1
+        },
+        {
+          "event": "BOT_RUN_SNAPSHOT",
+          "count": 1
+        },
+        {
+          "event": "BOT_TICK_SUMMARY",
+          "count": 1
+        },
+        {
+          "event": "BOT_STOPPED",
+          "count": 1
+        }
+      ]
+    },
+    "compare": {
+      "density_before": 18,
+      "density_after": 11.333,
+      "density_delta": -6.667,
+      "low_stream_density_before": 5,
+      "low_stream_density_after": 0.167,
+      "total_before": 90,
+      "total_after": 68,
+      "low_raw_before": 25,
+      "low_raw_after": 0,
+      "summary_count_after": 1,
+      "summary_avg_interval_ms_after": null
+    },
+    "sampled_log_tail": [
+      {
+        "ts": "2026-04-02T12:39:24.237Z",
+        "level": "info",
+        "source": "server",
+        "event": "BOT_DEBUG_SCENARIO_ENABLED",
+        "message": "debug scenario enabled: main_path_v1",
+        "mode": "paper-staging",
+        "window_id": null,
+        "data": {
+          "frame_total": 6
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:24.241Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_STARTED",
+        "message": "bot runner started",
+        "mode": null,
+        "window_id": null,
+        "data": {
+          "tick_interval_ms": 1000
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:24.246Z",
+        "level": "info",
+        "source": "server",
+        "event": "BOT_CONFIG_APPLIED",
+        "message": "bot start using current config",
+        "mode": "paper-staging",
+        "window_id": null,
+        "data": {
+          "open_delay_sec": 0,
+          "ladder_prices": [
+            0.31,
+            0.32
+          ],
+          "ladder_size": 4,
+          "atr_multiple": 1.2,
+          "cancel_all_remaining_sec": 80,
+          "up_ladder": [
+            {
+              "price": 0.31,
+              "size": 4,
+              "tp_price": 0.71
+            },
+            {
+              "price": 0.32,
+              "size": 4,
+              "tp_price": 0.72
+            }
+          ],
+          "down_ladder": [
+            {
+              "price": 0.33,
+              "size": 4,
+              "tp_price": 0.73
+            },
+            {
+              "price": 0.34,
+              "size": 4,
+              "tp_price": 0.74
+            }
+          ],
+          "up_cancel": {
+            "before_end_sec": 100,
+            "formula": ""
+          },
+          "down_cancel": {
+            "before_end_sec": 100,
+            "formula": ""
+          }
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:24.247Z",
+        "level": "info",
+        "source": "server",
+        "event": "BOT_DEBUG_FRAME",
+        "message": "debug frame 1/6",
+        "mode": "paper-staging",
+        "window_id": "debug-main-path-v1-w1",
+        "data": {
+          "debug_scenario": "main_path_v1",
+          "frame_index": 1,
+          "remaining_sec": 299,
+          "btc_price": 100
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:26.128Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_STARTUP_WAIT_NEXT_WINDOW",
+        "message": "startup observed active window audit-042-0, waiting next window",
+        "mode": "paper-staging",
+        "window_id": "audit-042-0",
+        "data": {
+          "startup_window_id": "audit-042-0"
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:26.135Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_FILL",
+        "message": "filled 4 orders",
+        "mode": "paper-staging",
+        "window_id": "audit-042-0",
+        "data": {
+          "fills": [
+            {
+              "order_id": "paper_b023596c",
+              "side": "YES",
+              "order_price": 0.31,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_5b241598",
+              "side": "YES",
+              "order_price": 0.32,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_355e506b",
+              "side": "NO",
+              "order_price": 0.33,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_84451c08",
+              "side": "NO",
+              "order_price": 0.34,
+              "fill_price": 0.12
+            }
+          ]
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:26.135Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "NOOP",
+        "mode": "paper-staging",
+        "window_id": "audit-042-0",
+        "data": {
+          "reason": "wait_next_window_after_start"
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:26.137Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_STARTUP_WAIT_RELEASED",
+        "message": "startup wait released on new window debug-main-path-v1-w1",
+        "mode": "paper-staging",
+        "window_id": "debug-main-path-v1-w1",
+        "data": {
+          "startup_window_id": "audit-042-0",
+          "active_window_id": "debug-main-path-v1-w1",
+          "release_reason": "window_id_changed"
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:26.138Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_WINDOW_CHANGED",
+        "message": "window changed: audit-042-0 -> debug-main-path-v1-w1",
+        "mode": "paper-staging",
+        "window_id": "debug-main-path-v1-w1",
+        "data": {
+          "from_window_id": "audit-042-0",
+          "to_window_id": "debug-main-path-v1-w1"
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:26.139Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_WINDOW_INITIALIZED",
+        "message": "window initialized",
+        "mode": "paper-staging",
+        "window_id": "debug-main-path-v1-w1",
+        "data": {
+          "anchor_btc": 100,
+          "atr_5m": 2,
+          "upper_bound": 102.4,
+          "lower_bound": 97.6,
+          "atr_multiplier": 1.2,
+          "need_anchor_init": true,
+          "need_bounds_init": false
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:26.148Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(YES|0.31:4:0.71,0.32:4:0.72) + PLACE_LADDER(NO|0.33:4:0.73,0.34:4:0.74)",
+        "mode": "paper-staging",
+        "window_id": "debug-main-path-v1-w1",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:26.264Z",
+        "level": "info",
+        "source": "server",
+        "event": "BOT_DEBUG_FRAME",
+        "message": "debug frame 2/6",
+        "mode": "paper-staging",
+        "window_id": "debug-main-path-v1-w1",
+        "data": {
+          "debug_scenario": "main_path_v1",
+          "frame_index": 2,
+          "remaining_sec": 295,
+          "btc_price": 100
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:26.288Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_FILL",
+        "message": "filled 8 orders",
+        "mode": "paper-staging",
+        "window_id": "audit-042-1",
+        "data": {
+          "fills": [
+            {
+              "order_id": "paper_1973095b",
+              "side": "YES",
+              "order_price": 0.31,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_07f5670e",
+              "side": "YES",
+              "order_price": 0.32,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_6dfd86bb",
+              "side": "NO",
+              "order_price": 0.33,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_6f667b4d",
+              "side": "NO",
+              "order_price": 0.34,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_1d8e2bde",
+              "side": "YES",
+              "order_price": 0.31,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_a4b7f5ac",
+              "side": "YES",
+              "order_price": 0.32,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_fd62bb19",
+              "side": "NO",
+              "order_price": 0.33,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_f7943180",
+              "side": "NO",
+              "order_price": 0.34,
+              "fill_price": 0.12
+            }
+          ]
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:26.289Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(YES|0.31:4:0.71,0.32:4:0.72) + PLACE_LADDER(NO|0.33:4:0.73,0.34:4:0.74)",
+        "mode": "paper-staging",
+        "window_id": "audit-042-1",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:26.426Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_FILL",
+        "message": "filled 4 orders",
+        "mode": "paper-staging",
+        "window_id": "audit-042-2",
+        "data": {
+          "fills": [
+            {
+              "order_id": "paper_8caf2f8c",
+              "side": "YES",
+              "order_price": 0.31,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_133c4440",
+              "side": "YES",
+              "order_price": 0.32,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_3bc0013c",
+              "side": "NO",
+              "order_price": 0.33,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_d4d32f60",
+              "side": "NO",
+              "order_price": 0.34,
+              "fill_price": 0.12
+            }
+          ]
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:26.427Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(YES|0.31:4:0.71,0.32:4:0.72) + PLACE_LADDER(NO|0.33:4:0.73,0.34:4:0.74)",
+        "mode": "paper-staging",
+        "window_id": "audit-042-2",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:26.452Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_WINDOW_CHANGED",
+        "message": "window changed: audit-042-2 -> debug-main-path-v1-w1",
+        "mode": "paper-staging",
+        "window_id": "debug-main-path-v1-w1",
+        "data": {
+          "from_window_id": "audit-042-2",
+          "to_window_id": "debug-main-path-v1-w1"
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:26.452Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_WINDOW_INITIALIZED",
+        "message": "window initialized",
+        "mode": "paper-staging",
+        "window_id": "debug-main-path-v1-w1",
+        "data": {
+          "anchor_btc": 100,
+          "atr_5m": 2,
+          "upper_bound": 102.4,
+          "lower_bound": 97.6,
+          "atr_multiplier": 1.2,
+          "need_anchor_init": true,
+          "need_bounds_init": false
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:26.458Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(YES|0.31:4:0.71,0.32:4:0.72) + PLACE_LADDER(NO|0.33:4:0.73,0.34:4:0.74)",
+        "mode": "paper-staging",
+        "window_id": "debug-main-path-v1-w1",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:26.564Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_FILL",
+        "message": "filled 8 orders",
+        "mode": "paper-staging",
+        "window_id": "audit-042-3",
+        "data": {
+          "fills": [
+            {
+              "order_id": "paper_cccf9aa1",
+              "side": "YES",
+              "order_price": 0.31,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_2e00b857",
+              "side": "YES",
+              "order_price": 0.32,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_071e2747",
+              "side": "NO",
+              "order_price": 0.33,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_6633df76",
+              "side": "NO",
+              "order_price": 0.34,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_41b3c290",
+              "side": "YES",
+              "order_price": 0.31,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_ea4f0a92",
+              "side": "YES",
+              "order_price": 0.32,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_b41af97d",
+              "side": "NO",
+              "order_price": 0.33,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_c39afcff",
+              "side": "NO",
+              "order_price": 0.34,
+              "fill_price": 0.12
+            }
+          ]
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:26.564Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(YES|0.31:4:0.71,0.32:4:0.72) + PLACE_LADDER(NO|0.33:4:0.73,0.34:4:0.74)",
+        "mode": "paper-staging",
+        "window_id": "audit-042-3",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:26.701Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_FILL",
+        "message": "filled 4 orders",
+        "mode": "paper-staging",
+        "window_id": "audit-042-4",
+        "data": {
+          "fills": [
+            {
+              "order_id": "paper_4e29cac0",
+              "side": "YES",
+              "order_price": 0.31,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_82dd2ecb",
+              "side": "YES",
+              "order_price": 0.32,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_42348862",
+              "side": "NO",
+              "order_price": 0.33,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_e4a07b2d",
+              "side": "NO",
+              "order_price": 0.34,
+              "fill_price": 0.12
+            }
+          ]
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:26.702Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(YES|0.31:4:0.71,0.32:4:0.72) + PLACE_LADDER(NO|0.33:4:0.73,0.34:4:0.74)",
+        "mode": "paper-staging",
+        "window_id": "audit-042-4",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:26.838Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_FILL",
+        "message": "filled 4 orders",
+        "mode": "paper-staging",
+        "window_id": "audit-042-5",
+        "data": {
+          "fills": [
+            {
+              "order_id": "paper_963c1780",
+              "side": "YES",
+              "order_price": 0.31,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_935da01c",
+              "side": "YES",
+              "order_price": 0.32,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_5757eca9",
+              "side": "NO",
+              "order_price": 0.33,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_6fe9038d",
+              "side": "NO",
+              "order_price": 0.34,
+              "fill_price": 0.12
+            }
+          ]
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:26.839Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(YES|0.31:4:0.71,0.32:4:0.72) + PLACE_LADDER(NO|0.33:4:0.73,0.34:4:0.74)",
+        "mode": "paper-staging",
+        "window_id": "audit-042-5",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:26.979Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_FILL",
+        "message": "filled 4 orders",
+        "mode": "paper-staging",
+        "window_id": "audit-042-6",
+        "data": {
+          "fills": [
+            {
+              "order_id": "paper_547c2fe3",
+              "side": "YES",
+              "order_price": 0.31,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_ca2c780a",
+              "side": "YES",
+              "order_price": 0.32,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_d68fb3ad",
+              "side": "NO",
+              "order_price": 0.33,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_1969082c",
+              "side": "NO",
+              "order_price": 0.34,
+              "fill_price": 0.12
+            }
+          ]
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:26.979Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(YES|0.31:4:0.71,0.32:4:0.72) + PLACE_LADDER(NO|0.33:4:0.73,0.34:4:0.74)",
+        "mode": "paper-staging",
+        "window_id": "audit-042-6",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:27.130Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_FILL",
+        "message": "filled 4 orders",
+        "mode": "paper-staging",
+        "window_id": "audit-042-7",
+        "data": {
+          "fills": [
+            {
+              "order_id": "paper_e10c4aa0",
+              "side": "YES",
+              "order_price": 0.31,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_9b16df7b",
+              "side": "YES",
+              "order_price": 0.32,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_e7b8c483",
+              "side": "NO",
+              "order_price": 0.33,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_a42fbd62",
+              "side": "NO",
+              "order_price": 0.34,
+              "fill_price": 0.12
+            }
+          ]
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:27.130Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(YES|0.31:4:0.71,0.32:4:0.72) + PLACE_LADDER(NO|0.33:4:0.73,0.34:4:0.74)",
+        "mode": "paper-staging",
+        "window_id": "audit-042-7",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:27.267Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_FILL",
+        "message": "filled 4 orders",
+        "mode": "paper-staging",
+        "window_id": "audit-042-8",
+        "data": {
+          "fills": [
+            {
+              "order_id": "paper_257ab6f2",
+              "side": "YES",
+              "order_price": 0.31,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_65a39adc",
+              "side": "YES",
+              "order_price": 0.32,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_4b4735e7",
+              "side": "NO",
+              "order_price": 0.33,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_c380dc64",
+              "side": "NO",
+              "order_price": 0.34,
+              "fill_price": 0.12
+            }
+          ]
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:27.267Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(YES|0.31:4:0.71,0.32:4:0.72) + PLACE_LADDER(NO|0.33:4:0.73,0.34:4:0.74)",
+        "mode": "paper-staging",
+        "window_id": "audit-042-8",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:27.272Z",
+        "level": "info",
+        "source": "server",
+        "event": "BOT_DEBUG_FRAME",
+        "message": "debug frame 3/6",
+        "mode": "paper-staging",
+        "window_id": "debug-main-path-v1-w1",
+        "data": {
+          "debug_scenario": "main_path_v1",
+          "frame_index": 3,
+          "remaining_sec": 290,
+          "btc_price": 100
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:27.273Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_WINDOW_CHANGED",
+        "message": "window changed: audit-042-8 -> debug-main-path-v1-w1",
+        "mode": "paper-staging",
+        "window_id": "debug-main-path-v1-w1",
+        "data": {
+          "from_window_id": "audit-042-8",
+          "to_window_id": "debug-main-path-v1-w1"
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:27.273Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_WINDOW_INITIALIZED",
+        "message": "window initialized",
+        "mode": "paper-staging",
+        "window_id": "debug-main-path-v1-w1",
+        "data": {
+          "anchor_btc": 100,
+          "atr_5m": 2,
+          "upper_bound": 102.4,
+          "lower_bound": 97.6,
+          "atr_multiplier": 1.2,
+          "need_anchor_init": true,
+          "need_bounds_init": false
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:27.279Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(YES|0.31:4:0.71,0.32:4:0.72) + PLACE_LADDER(NO|0.33:4:0.73,0.34:4:0.74)",
+        "mode": "paper-staging",
+        "window_id": "debug-main-path-v1-w1",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:27.404Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_FILL",
+        "message": "filled 8 orders",
+        "mode": "paper-staging",
+        "window_id": "audit-042-9",
+        "data": {
+          "fills": [
+            {
+              "order_id": "paper_5799aea8",
+              "side": "YES",
+              "order_price": 0.31,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_f2b3d0d3",
+              "side": "YES",
+              "order_price": 0.32,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_32ef2fb7",
+              "side": "NO",
+              "order_price": 0.33,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_60f1929d",
+              "side": "NO",
+              "order_price": 0.34,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_7eeba217",
+              "side": "YES",
+              "order_price": 0.31,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_6b9b5b68",
+              "side": "YES",
+              "order_price": 0.32,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_aeee1509",
+              "side": "NO",
+              "order_price": 0.33,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_53a3df75",
+              "side": "NO",
+              "order_price": 0.34,
+              "fill_price": 0.12
+            }
+          ]
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:27.404Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(YES|0.31:4:0.71,0.32:4:0.72) + PLACE_LADDER(NO|0.33:4:0.73,0.34:4:0.74)",
+        "mode": "paper-staging",
+        "window_id": "audit-042-9",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:27.542Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_FILL",
+        "message": "filled 4 orders",
+        "mode": "paper-staging",
+        "window_id": "audit-042-10",
+        "data": {
+          "fills": [
+            {
+              "order_id": "paper_06ef8280",
+              "side": "YES",
+              "order_price": 0.31,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_497ec3c5",
+              "side": "YES",
+              "order_price": 0.32,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_33816fac",
+              "side": "NO",
+              "order_price": 0.33,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_fd3512b5",
+              "side": "NO",
+              "order_price": 0.34,
+              "fill_price": 0.12
+            }
+          ]
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:27.543Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(YES|0.31:4:0.71,0.32:4:0.72) + PLACE_LADDER(NO|0.33:4:0.73,0.34:4:0.74)",
+        "mode": "paper-staging",
+        "window_id": "audit-042-10",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:27.683Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_FILL",
+        "message": "filled 4 orders",
+        "mode": "paper-staging",
+        "window_id": "audit-042-11",
+        "data": {
+          "fills": [
+            {
+              "order_id": "paper_fac6ee9b",
+              "side": "YES",
+              "order_price": 0.31,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_ad38dc25",
+              "side": "YES",
+              "order_price": 0.32,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_a809e6fd",
+              "side": "NO",
+              "order_price": 0.33,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_20c8b114",
+              "side": "NO",
+              "order_price": 0.34,
+              "fill_price": 0.12
+            }
+          ]
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:27.683Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(YES|0.31:4:0.71,0.32:4:0.72) + PLACE_LADDER(NO|0.33:4:0.73,0.34:4:0.74)",
+        "mode": "paper-staging",
+        "window_id": "audit-042-11",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:27.832Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_FILL",
+        "message": "filled 4 orders",
+        "mode": "paper-staging",
+        "window_id": "audit-042-12",
+        "data": {
+          "fills": [
+            {
+              "order_id": "paper_c9fa9f62",
+              "side": "YES",
+              "order_price": 0.31,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_cc99c866",
+              "side": "YES",
+              "order_price": 0.32,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_a9ce85d6",
+              "side": "NO",
+              "order_price": 0.33,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_539f74f1",
+              "side": "NO",
+              "order_price": 0.34,
+              "fill_price": 0.12
+            }
+          ]
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:27.833Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(YES|0.31:4:0.71,0.32:4:0.72) + PLACE_LADDER(NO|0.33:4:0.73,0.34:4:0.74)",
+        "mode": "paper-staging",
+        "window_id": "audit-042-12",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:27.970Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_FILL",
+        "message": "filled 4 orders",
+        "mode": "paper-staging",
+        "window_id": "audit-042-13",
+        "data": {
+          "fills": [
+            {
+              "order_id": "paper_61c028f9",
+              "side": "YES",
+              "order_price": 0.31,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_95ca445f",
+              "side": "YES",
+              "order_price": 0.32,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_86a8add6",
+              "side": "NO",
+              "order_price": 0.33,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_1e748225",
+              "side": "NO",
+              "order_price": 0.34,
+              "fill_price": 0.12
+            }
+          ]
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:27.970Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(YES|0.31:4:0.71,0.32:4:0.72) + PLACE_LADDER(NO|0.33:4:0.73,0.34:4:0.74)",
+        "mode": "paper-staging",
+        "window_id": "audit-042-13",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:28.112Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_FILL",
+        "message": "filled 4 orders",
+        "mode": "paper-staging",
+        "window_id": "audit-042-14",
+        "data": {
+          "fills": [
+            {
+              "order_id": "paper_83fa9039",
+              "side": "YES",
+              "order_price": 0.31,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_b51b7d48",
+              "side": "YES",
+              "order_price": 0.32,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_22f5ba4a",
+              "side": "NO",
+              "order_price": 0.33,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_5a08705a",
+              "side": "NO",
+              "order_price": 0.34,
+              "fill_price": 0.12
+            }
+          ]
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:28.113Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(YES|0.31:4:0.71,0.32:4:0.72) + PLACE_LADDER(NO|0.33:4:0.73,0.34:4:0.74)",
+        "mode": "paper-staging",
+        "window_id": "audit-042-14",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:28.265Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_FILL",
+        "message": "filled 4 orders",
+        "mode": "paper-staging",
+        "window_id": "audit-042-15",
+        "data": {
+          "fills": [
+            {
+              "order_id": "paper_a4a941dd",
+              "side": "YES",
+              "order_price": 0.31,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_0604c3ce",
+              "side": "YES",
+              "order_price": 0.32,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_5f2f344e",
+              "side": "NO",
+              "order_price": 0.33,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_dc52f9cb",
+              "side": "NO",
+              "order_price": 0.34,
+              "fill_price": 0.12
+            }
+          ]
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:28.265Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(YES|0.31:4:0.71,0.32:4:0.72) + PLACE_LADDER(NO|0.33:4:0.73,0.34:4:0.74)",
+        "mode": "paper-staging",
+        "window_id": "audit-042-15",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:28.271Z",
+        "level": "info",
+        "source": "server",
+        "event": "BOT_DEBUG_FRAME",
+        "message": "debug frame 4/6",
+        "mode": "paper-staging",
+        "window_id": "debug-main-path-v1-w1",
+        "data": {
+          "debug_scenario": "main_path_v1",
+          "frame_index": 4,
+          "remaining_sec": 250,
+          "btc_price": 103
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:28.418Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_FILL",
+        "message": "filled 4 orders",
+        "mode": "paper-staging",
+        "window_id": "audit-042-16",
+        "data": {
+          "fills": [
+            {
+              "order_id": "paper_6fa6950c",
+              "side": "YES",
+              "order_price": 0.31,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_89fdd9b4",
+              "side": "YES",
+              "order_price": 0.32,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_008b6fdb",
+              "side": "NO",
+              "order_price": 0.33,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_352f04e3",
+              "side": "NO",
+              "order_price": 0.34,
+              "fill_price": 0.12
+            }
+          ]
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:28.418Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(YES|0.31:4:0.71,0.32:4:0.72) + PLACE_LADDER(NO|0.33:4:0.73,0.34:4:0.74)",
+        "mode": "paper-staging",
+        "window_id": "audit-042-16",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:28.457Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_WINDOW_CHANGED",
+        "message": "window changed: audit-042-16 -> debug-main-path-v1-w1",
+        "mode": "paper-staging",
+        "window_id": "debug-main-path-v1-w1",
+        "data": {
+          "from_window_id": "audit-042-16",
+          "to_window_id": "debug-main-path-v1-w1"
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:28.457Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_WINDOW_INITIALIZED",
+        "message": "window initialized",
+        "mode": "paper-staging",
+        "window_id": "debug-main-path-v1-w1",
+        "data": {
+          "anchor_btc": 103,
+          "atr_5m": 2,
+          "upper_bound": 105.4,
+          "lower_bound": 100.6,
+          "atr_multiplier": 1.2,
+          "need_anchor_init": true,
+          "need_bounds_init": false
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:28.463Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(YES|0.31:4:0.71,0.32:4:0.72) + PLACE_LADDER(NO|0.33:4:0.73,0.34:4:0.74)",
+        "mode": "paper-staging",
+        "window_id": "debug-main-path-v1-w1",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:28.556Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_FILL",
+        "message": "filled 8 orders",
+        "mode": "paper-staging",
+        "window_id": "audit-042-17",
+        "data": {
+          "fills": [
+            {
+              "order_id": "paper_6d5a3d22",
+              "side": "YES",
+              "order_price": 0.31,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_95b1cc12",
+              "side": "YES",
+              "order_price": 0.32,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_887efa6b",
+              "side": "NO",
+              "order_price": 0.33,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_114bedf8",
+              "side": "NO",
+              "order_price": 0.34,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_53f1b677",
+              "side": "YES",
+              "order_price": 0.31,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_364e3605",
+              "side": "YES",
+              "order_price": 0.32,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_612d8d12",
+              "side": "NO",
+              "order_price": 0.33,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_7250b575",
+              "side": "NO",
+              "order_price": 0.34,
+              "fill_price": 0.12
+            }
+          ]
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:28.556Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(YES|0.31:4:0.71,0.32:4:0.72) + PLACE_LADDER(NO|0.33:4:0.73,0.34:4:0.74)",
+        "mode": "paper-staging",
+        "window_id": "audit-042-17",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:28.692Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_FILL",
+        "message": "filled 4 orders",
+        "mode": "paper-staging",
+        "window_id": "audit-042-18",
+        "data": {
+          "fills": [
+            {
+              "order_id": "paper_ea693df0",
+              "side": "YES",
+              "order_price": 0.31,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_9226b5f6",
+              "side": "YES",
+              "order_price": 0.32,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_cc74274a",
+              "side": "NO",
+              "order_price": 0.33,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_f1880ab4",
+              "side": "NO",
+              "order_price": 0.34,
+              "fill_price": 0.12
+            }
+          ]
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:28.694Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(YES|0.31:4:0.71,0.32:4:0.72) + PLACE_LADDER(NO|0.33:4:0.73,0.34:4:0.74)",
+        "mode": "paper-staging",
+        "window_id": "audit-042-18",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:28.848Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_FILL",
+        "message": "filled 4 orders",
+        "mode": "paper-staging",
+        "window_id": "audit-042-19",
+        "data": {
+          "fills": [
+            {
+              "order_id": "paper_d5e4a9bf",
+              "side": "YES",
+              "order_price": 0.31,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_c2d5c58a",
+              "side": "YES",
+              "order_price": 0.32,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_55e6c573",
+              "side": "NO",
+              "order_price": 0.33,
+              "fill_price": 0.12
+            },
+            {
+              "order_id": "paper_807825a0",
+              "side": "NO",
+              "order_price": 0.34,
+              "fill_price": 0.12
+            }
+          ]
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:28.848Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(YES|0.31:4:0.71,0.32:4:0.72) + PLACE_LADDER(NO|0.33:4:0.73,0.34:4:0.74)",
+        "mode": "paper-staging",
+        "window_id": "audit-042-19",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:29.279Z",
+        "level": "info",
+        "source": "server",
+        "event": "BOT_DEBUG_FRAME",
+        "message": "debug frame 5/6",
+        "mode": "paper-staging",
+        "window_id": "debug-main-path-v1-w1",
+        "data": {
+          "debug_scenario": "main_path_v1",
+          "frame_index": 5,
+          "remaining_sec": 220,
+          "btc_price": 97
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:29.279Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_WINDOW_CHANGED",
+        "message": "window changed: audit-042-19 -> debug-main-path-v1-w1",
+        "mode": "paper-staging",
+        "window_id": "debug-main-path-v1-w1",
+        "data": {
+          "from_window_id": "audit-042-19",
+          "to_window_id": "debug-main-path-v1-w1"
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:29.280Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_WINDOW_INITIALIZED",
+        "message": "window initialized",
+        "mode": "paper-staging",
+        "window_id": "debug-main-path-v1-w1",
+        "data": {
+          "anchor_btc": 97,
+          "atr_5m": 2,
+          "upper_bound": 99.4,
+          "lower_bound": 94.6,
+          "atr_multiplier": 1.2,
+          "need_anchor_init": true,
+          "need_bounds_init": false
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:29.286Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(YES|0.31:4:0.71,0.32:4:0.72) + PLACE_LADDER(NO|0.33:4:0.73,0.34:4:0.74)",
+        "mode": "paper-staging",
+        "window_id": "debug-main-path-v1-w1",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:30.197Z",
+        "level": "info",
+        "source": "server",
+        "event": "BOT_RUN_SNAPSHOT",
+        "message": "MANUAL_STOP",
+        "mode": "paper-staging",
+        "window_id": "debug-main-path-v1-w1",
+        "data": {
+          "stop_reason": "MANUAL_STOP",
+          "completed_at": "2026-04-02T12:39:30.197Z",
+          "current_window_id": "debug-main-path-v1-w1",
+          "phase": "LADDER_POSTED",
+          "filled_total": 88,
+          "cancelled_total": 0,
+          "realized_gross_pnl_total": 0,
+          "unrealized_gross_pnl_total": 713.9999999999995,
+          "active_config": {
+            "open_delay_sec": 0,
+            "ladder_prices": [
+              0.31,
+              0.32
+            ],
+            "ladder_size": 4,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 80,
+            "up_ladder": [
+              {
+                "price": 0.31,
+                "size": 4,
+                "tp_price": 0.71
+              },
+              {
+                "price": 0.32,
+                "size": 4,
+                "tp_price": 0.72
+              }
+            ],
+            "down_ladder": [
+              {
+                "price": 0.33,
+                "size": 4,
+                "tp_price": 0.73
+              },
+              {
+                "price": 0.34,
+                "size": 4,
+                "tp_price": 0.74
+              }
+            ],
+            "up_cancel": {
+              "before_end_sec": 100,
+              "formula": ""
+            },
+            "down_cancel": {
+              "before_end_sec": 100,
+              "formula": ""
+            }
+          }
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:30.200Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_TICK_SUMMARY",
+        "message": "tick summary 5000ms",
+        "mode": null,
+        "window_id": "debug-main-path-v1-w1",
+        "data": {
+          "period_ms": 5000,
+          "suppressed_total": 31,
+          "counts": {
+            "RUNNER_TICK": 25,
+            "BOT_TICK_OK": 5,
+            "BOT_DECISION_GATED": 1
+          },
+          "last_reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ts": "2026-04-02T12:39:30.200Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_STOPPED",
+        "message": "bot runner stopped",
+        "mode": null,
+        "window_id": null,
+        "data": {}
+      }
+    ],
+    "healthcheck": {
+      "root": 200,
+      "pairs": 404
+    },
+    "heartbeat_log": "rules/task-reports/2026-03/260330_042_truth_audit_log_density_summary.heartbeat.log",
+    "last_heartbeat": {
+      "ts": "2026-04-02T12:39:30.457Z",
+      "event": "HEARTBEAT",
+      "stage": "scenario_done",
+      "sampled_logs": 68
+    },
+    "low_value_events": [
+      "RUNNER_TICK",
+      "BOT_TICK_OK",
+      "BOT_DECISION_GATED"
+    ],
+    "key_events": [
+      "BOT_INTENTS",
+      "BOT_FILL",
+      "BOT_WINDOW_CHANGED"
+    ],
+    "guardrails": {
+      "max_wall_time_ms": 900000,
+      "max_silence_ms": 120000,
+      "log_tail": 100
+    }
+  }
+}
