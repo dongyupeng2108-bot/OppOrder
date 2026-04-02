@@ -1,0 +1,1939 @@
+{
+  "script_name": "truth_audit_current_window_label_fix_260330_035",
+  "task_id": "260330_035",
+  "sample_name": "current_window_label_fix_v1",
+  "pass": true,
+  "message": "current window label source fix pass",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "rules/task-reports/2026-03/260330_035_truth_audit_current_window_label_fix.json",
+  "summary": {
+    "exit_code": "EARLY_EXIT_FIX_EVIDENCE_READY",
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "fail_to_pass": true
+  },
+  "raw_excerpt": {
+    "startup_dom_label": "April 1 8:45pm - 8:50pm",
+    "startup_api_current_window_id": null,
+    "switched_dom_label": "April 1 8:50pm - 8:55pm",
+    "switched_api_current_window_id": "btc-updown-5m-1775091000"
+  },
+  "generated_at": "2026-04-02T00:55:00.742Z",
+  "conclusion_block": {
+    "verdict": "A：通过",
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "exit_code": "EARLY_EXIT_FIX_EVIDENCE_READY"
+  },
+  "fail_to_pass": {
+    "prefix_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_034_truth_audit_current_window_label_projection.json",
+    "pre_first_break_layer": "current_window_label_source",
+    "pre_mismatch_observed": true,
+    "post_first_break_layer": "NONE_CHAIN_PASS",
+    "post_labels_match_api_current_window_id": true,
+    "pass": true
+  },
+  "evidence_index": {
+    "ui_meta": {
+      "source_file": "E:/OppRadar/ui/js/strategy-editor.js",
+      "label_source_line": 1358,
+      "label_source_expr": "se_setText('se-log-current-window', se_formatWindowDisplayName(currentWindowLabelSource));",
+      "source_uses_current_window_id_priority": true
+    },
+    "startup_snapshot": {
+      "timestamp": "2026-04-02T00:53:57.842Z",
+      "dom_label_text": "April 1 8:45pm - 8:50pm",
+      "dom_source_window_id": "btc-updown-5m-1775090700",
+      "api_current_window_id": null,
+      "api_last_window_id": null,
+      "api_postmortem_window_id": "btc-updown-5m-1775090700"
+    },
+    "first_fill_snapshot": {
+      "timestamp": "2026-04-02T00:55:00.731Z",
+      "dom_label_text": "April 1 8:55pm - 9:00pm",
+      "dom_source_window_id": "btc-updown-5m-1775091300",
+      "api_current_window_id": "btc-updown-5m-1775091300",
+      "api_last_window_id": "btc-updown-5m-1775091000",
+      "api_postmortem_window_id": "btc-updown-5m-1775090700"
+    },
+    "switched_snapshot": {
+      "timestamp": "2026-04-02T00:53:59.896Z",
+      "dom_label_text": "April 1 8:50pm - 8:55pm",
+      "dom_source_window_id": "btc-updown-5m-1775091000",
+      "api_current_window_id": "btc-updown-5m-1775091000",
+      "api_last_window_id": null,
+      "api_postmortem_window_id": "btc-updown-5m-1775090700"
+    },
+    "first_fill_log": {
+      "ts": "2026-04-02T00:55:00.364Z",
+      "level": "info",
+      "source": "bot_runner",
+      "event": "BOT_FILL",
+      "message": "filled 1 orders",
+      "mode": "paper-staging",
+      "window_id": "btc-updown-5m-1775091300",
+      "data": {
+        "fills": [
+          {
+            "order_id": "paper_1fe41079",
+            "side": "NO",
+            "order_price": 0.3,
+            "fill_price": 0.01
+          }
+        ]
+      }
+    },
+    "window_changed_log": {
+      "ts": "2026-04-02T00:53:59.015Z",
+      "level": "info",
+      "source": "bot_runner",
+      "event": "BOT_WINDOW_CHANGED",
+      "message": "window changed: null -> btc-updown-5m-1775091000",
+      "mode": "paper-staging",
+      "window_id": "btc-updown-5m-1775091000",
+      "data": {
+        "from_window_id": null,
+        "to_window_id": "btc-updown-5m-1775091000"
+      }
+    },
+    "final_projection": {
+      "dom_label_text": "April 1 8:55pm - 9:00pm",
+      "dom_source_window_id": "btc-updown-5m-1775091300",
+      "api_current_window_id": "btc-updown-5m-1775091300",
+      "api_last_window_id": "btc-updown-5m-1775091000"
+    },
+    "checks": {
+      "source_uses_current_window_id_priority": true,
+      "labels_match_api_current_window_id": true
+    },
+    "dom_api_log_reconcile_head": [
+      {
+        "timestamp": "2026-04-02T00:53:57.842Z",
+        "dom_label_text": "April 1 8:45pm - 8:50pm",
+        "dom_source_window_id": "btc-updown-5m-1775090700",
+        "api_current_window_id": null,
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:53:58.879Z",
+        "dom_label_text": "April 1 8:45pm - 8:50pm",
+        "dom_source_window_id": "btc-updown-5m-1775090700",
+        "api_current_window_id": null,
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:53:59.896Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:00.904Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:01.922Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:02.938Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:03.956Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:04.973Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:05.993Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:06.998Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:08.003Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:09.009Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:10.028Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:11.041Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:12.061Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:13.079Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:14.084Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:15.103Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:16.109Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:17.113Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      }
+    ],
+    "dom_api_log_reconcile_tail": [
+      {
+        "timestamp": "2026-04-02T00:53:57.842Z",
+        "dom_label_text": "April 1 8:45pm - 8:50pm",
+        "dom_source_window_id": "btc-updown-5m-1775090700",
+        "api_current_window_id": null,
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:53:58.879Z",
+        "dom_label_text": "April 1 8:45pm - 8:50pm",
+        "dom_source_window_id": "btc-updown-5m-1775090700",
+        "api_current_window_id": null,
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:53:59.896Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:00.904Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:01.922Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:02.938Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:03.956Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:04.973Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:05.993Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:06.998Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:08.003Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:09.009Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:10.028Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:11.041Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:12.061Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:13.079Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:14.084Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:15.103Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:16.109Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:17.113Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:18.131Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:19.135Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:20.145Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:21.155Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:22.171Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:23.188Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:24.208Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:25.228Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:26.233Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:27.239Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:28.244Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:29.261Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:30.267Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:31.284Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:32.299Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:33.315Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:34.328Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:35.344Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:36.348Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:37.365Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:38.377Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:39.396Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:40.412Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:41.431Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:42.437Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:43.460Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:44.476Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:45.490Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:46.507Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:47.525Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:48.541Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:49.547Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:50.557Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:51.572Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:52.589Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:53.610Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:54.625Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:55.642Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:56.660Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:57.677Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:58.695Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:54:59.714Z",
+        "dom_label_text": "April 1 8:50pm - 8:55pm",
+        "dom_source_window_id": "btc-updown-5m-1775091000",
+        "api_current_window_id": "btc-updown-5m-1775091000",
+        "api_last_window_id": null,
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      },
+      {
+        "timestamp": "2026-04-02T00:55:00.731Z",
+        "dom_label_text": "April 1 8:55pm - 9:00pm",
+        "dom_source_window_id": "btc-updown-5m-1775091300",
+        "api_current_window_id": "btc-updown-5m-1775091300",
+        "api_last_window_id": "btc-updown-5m-1775091000",
+        "api_postmortem_window_id": "btc-updown-5m-1775090700"
+      }
+    ],
+    "logs_tail": [
+      {
+        "ts": "2026-04-02T00:54:42.248Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "NOOP",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:42.249Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_DECISION_GATED",
+        "message": "wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "startup_wait_active": true,
+          "btc_ready": true,
+          "bounds_ready": true,
+          "window_initialized": true
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:42.249Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "intents_summary": "NOOP",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 0,
+          "filled_total": 0
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:42.254Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_TICK_OK",
+        "message": "scheduled tick ok",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:43.079Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "NOOP",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:43.080Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_DECISION_GATED",
+        "message": "wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "startup_wait_active": true,
+          "btc_ready": true,
+          "bounds_ready": true,
+          "window_initialized": true
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:43.080Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "intents_summary": "NOOP",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 0,
+          "filled_total": 0
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:43.083Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_TICK_OK",
+        "message": "scheduled tick ok",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:44.270Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "NOOP",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:44.270Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_DECISION_GATED",
+        "message": "wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "startup_wait_active": true,
+          "btc_ready": true,
+          "bounds_ready": true,
+          "window_initialized": true
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:44.271Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "intents_summary": "NOOP",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 0,
+          "filled_total": 0
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:44.275Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_TICK_OK",
+        "message": "scheduled tick ok",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:45.087Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "NOOP",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:45.088Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_DECISION_GATED",
+        "message": "wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "startup_wait_active": true,
+          "btc_ready": true,
+          "bounds_ready": true,
+          "window_initialized": true
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:45.088Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "intents_summary": "NOOP",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 0,
+          "filled_total": 0
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:45.092Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_TICK_OK",
+        "message": "scheduled tick ok",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:46.268Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "NOOP",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:46.268Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_DECISION_GATED",
+        "message": "wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "startup_wait_active": true,
+          "btc_ready": true,
+          "bounds_ready": true,
+          "window_initialized": true
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:46.269Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "intents_summary": "NOOP",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 0,
+          "filled_total": 0
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:46.272Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_TICK_OK",
+        "message": "scheduled tick ok",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:47.101Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "NOOP",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:47.101Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_DECISION_GATED",
+        "message": "wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "startup_wait_active": true,
+          "btc_ready": true,
+          "bounds_ready": true,
+          "window_initialized": true
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:47.102Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "intents_summary": "NOOP",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 0,
+          "filled_total": 0
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:47.105Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_TICK_OK",
+        "message": "scheduled tick ok",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:48.288Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "NOOP",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:48.289Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_DECISION_GATED",
+        "message": "wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "startup_wait_active": true,
+          "btc_ready": true,
+          "bounds_ready": true,
+          "window_initialized": true
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:48.289Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "intents_summary": "NOOP",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 0,
+          "filled_total": 0
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:48.296Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_TICK_OK",
+        "message": "scheduled tick ok",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:49.109Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "NOOP",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:49.110Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_DECISION_GATED",
+        "message": "wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "startup_wait_active": true,
+          "btc_ready": true,
+          "bounds_ready": true,
+          "window_initialized": true
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:49.110Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "intents_summary": "NOOP",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 0,
+          "filled_total": 0
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:49.115Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_TICK_OK",
+        "message": "scheduled tick ok",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:50.295Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "NOOP",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:50.296Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_DECISION_GATED",
+        "message": "wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "startup_wait_active": true,
+          "btc_ready": true,
+          "bounds_ready": true,
+          "window_initialized": true
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:50.297Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "intents_summary": "NOOP",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 0,
+          "filled_total": 0
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:50.301Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_TICK_OK",
+        "message": "scheduled tick ok",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:51.121Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "NOOP",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:51.122Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_DECISION_GATED",
+        "message": "wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "startup_wait_active": true,
+          "btc_ready": true,
+          "bounds_ready": true,
+          "window_initialized": true
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:51.122Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "intents_summary": "NOOP",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 0,
+          "filled_total": 0
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:51.127Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_TICK_OK",
+        "message": "scheduled tick ok",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:52.316Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "NOOP",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:52.317Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_DECISION_GATED",
+        "message": "wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "startup_wait_active": true,
+          "btc_ready": true,
+          "bounds_ready": true,
+          "window_initialized": true
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:52.317Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "intents_summary": "NOOP",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 0,
+          "filled_total": 0
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:52.320Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_TICK_OK",
+        "message": "scheduled tick ok",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:53.141Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "NOOP",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:53.142Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_DECISION_GATED",
+        "message": "wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "startup_wait_active": true,
+          "btc_ready": true,
+          "bounds_ready": true,
+          "window_initialized": true
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:53.142Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "intents_summary": "NOOP",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 0,
+          "filled_total": 0
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:53.146Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_TICK_OK",
+        "message": "scheduled tick ok",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:54.340Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "NOOP",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:54.341Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_DECISION_GATED",
+        "message": "wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "startup_wait_active": true,
+          "btc_ready": true,
+          "bounds_ready": true,
+          "window_initialized": true
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:54.341Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "intents_summary": "NOOP",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 0,
+          "filled_total": 0
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:54.344Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_TICK_OK",
+        "message": "scheduled tick ok",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:55.162Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "NOOP",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:55.162Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_DECISION_GATED",
+        "message": "wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "startup_wait_active": true,
+          "btc_ready": true,
+          "bounds_ready": true,
+          "window_initialized": true
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:55.162Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "intents_summary": "NOOP",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 0,
+          "filled_total": 0
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:55.166Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_TICK_OK",
+        "message": "scheduled tick ok",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:56.346Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "NOOP",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:56.346Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_DECISION_GATED",
+        "message": "wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "startup_wait_active": true,
+          "btc_ready": true,
+          "bounds_ready": true,
+          "window_initialized": true
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:56.347Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "intents_summary": "NOOP",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 0,
+          "filled_total": 0
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:56.351Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_TICK_OK",
+        "message": "scheduled tick ok",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:57.165Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "NOOP",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:57.165Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_DECISION_GATED",
+        "message": "wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "startup_wait_active": true,
+          "btc_ready": true,
+          "bounds_ready": true,
+          "window_initialized": true
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:57.166Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "intents_summary": "NOOP",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 0,
+          "filled_total": 0
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:57.170Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_TICK_OK",
+        "message": "scheduled tick ok",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:58.350Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "NOOP",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:58.351Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_DECISION_GATED",
+        "message": "wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "startup_wait_active": true,
+          "btc_ready": true,
+          "bounds_ready": true,
+          "window_initialized": true
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:58.351Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "intents_summary": "NOOP",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 0,
+          "filled_total": 0
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:58.354Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_TICK_OK",
+        "message": "scheduled tick ok",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:59.171Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "NOOP",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:59.172Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_DECISION_GATED",
+        "message": "wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "startup_wait_active": true,
+          "btc_ready": true,
+          "bounds_ready": true,
+          "window_initialized": true
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:59.173Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick wait_next_window_after_start",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "intents_summary": "NOOP",
+          "changed": 0,
+          "filled": 0,
+          "open_total": 0,
+          "cancelled_total": 0,
+          "filled_total": 0
+        }
+      },
+      {
+        "ts": "2026-04-02T00:54:59.177Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_TICK_OK",
+        "message": "scheduled tick ok",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091000",
+        "data": {
+          "reason": "wait_next_window_after_start",
+          "intents_summary": "NOOP"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:55:00.354Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_STARTUP_WAIT_RELEASED",
+        "message": "startup wait released on new window btc-updown-5m-1775091300",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091300",
+        "data": {
+          "startup_window_id": "btc-updown-5m-1775091000",
+          "active_window_id": "btc-updown-5m-1775091300",
+          "release_reason": "window_id_changed"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:55:00.355Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_WINDOW_CHANGED",
+        "message": "window changed: btc-updown-5m-1775091000 -> btc-updown-5m-1775091300",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091300",
+        "data": {
+          "from_window_id": "btc-updown-5m-1775091000",
+          "to_window_id": "btc-updown-5m-1775091300"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:55:00.355Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_WINDOW_INITIALIZED",
+        "message": "window initialized",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091300",
+        "data": {
+          "anchor_btc": 68617.95,
+          "atr_5m": 100.8250000000002,
+          "upper_bound": 68738.94,
+          "lower_bound": 68496.95999999999,
+          "atr_multiplier": 1.2,
+          "need_anchor_init": true,
+          "need_bounds_init": false
+        }
+      },
+      {
+        "ts": "2026-04-02T00:55:00.364Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_FILL",
+        "message": "filled 1 orders",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091300",
+        "data": {
+          "fills": [
+            {
+              "order_id": "paper_1fe41079",
+              "side": "NO",
+              "order_price": 0.3,
+              "fill_price": 0.01
+            }
+          ]
+        }
+      },
+      {
+        "ts": "2026-04-02T00:55:00.364Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_NO_TERMINAL_BY_FILL",
+        "message": "no terminal latched by filled orders in current window",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091300",
+        "data": {
+          "no_filled_count": 1,
+          "no_open_count": 0
+        }
+      },
+      {
+        "ts": "2026-04-02T00:55:00.364Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "PLACE_LADDER(YES|0.3:5:1) + PLACE_LADDER(NO|0.3:5:1)",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091300",
+        "data": {
+          "reason": "ladder_not_posted"
+        }
+      },
+      {
+        "ts": "2026-04-02T00:55:00.364Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "RUNNER_TICK",
+        "message": "tick ladder_not_posted",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091300",
+        "data": {
+          "intents_summary": "PLACE_LADDER(YES|0.3:5:1) + PLACE_LADDER(NO|0.3:5:1)",
+          "changed": 2,
+          "filled": 1,
+          "open_total": 1,
+          "cancelled_total": 0,
+          "filled_total": 1
+        }
+      },
+      {
+        "ts": "2026-04-02T00:55:00.369Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_TICK_OK",
+        "message": "scheduled tick ok",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775091300",
+        "data": {
+          "reason": "ladder_not_posted",
+          "intents_summary": "PLACE_LADDER(YES|0.3:5:1) + PLACE_LADDER(NO|0.3:5:1)"
+        }
+      }
+    ],
+    "heartbeat_log": "rules/task-reports/2026-03/260330_035_truth_audit_current_window_label_fix.heartbeat.log",
+    "last_heartbeat": {
+      "ts": "2026-04-02T00:55:00.731Z",
+      "event": "HEARTBEAT",
+      "stage": "audit_early_exit",
+      "exit_code": "EARLY_EXIT_FIX_EVIDENCE_READY"
+    },
+    "healthcheck": {
+      "root": 200,
+      "pairs": 404
+    },
+    "guardrails": {
+      "max_wall_time_ms": 900000,
+      "max_silence_ms": 120000,
+      "log_tail": 100
+    }
+  }
+}
