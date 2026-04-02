@@ -132,6 +132,7 @@
   - 保留 heavy-only 检查（全局契约 + heavy mandatory 证据）
   - 执行提效允许项（260403_004）：合约校验并行化；Rank/Export/Ledger mock server 单会话复用；不改变覆盖与强制项
   - 执行提效允许项（260403_005）：scanner/universe/trading 统一硬超时 4000ms；命中首个硬失败后 fail-fast 并输出首个失败节点；不改变覆盖与强制项
+  - 执行提效允许项（260403_006）：SnippetCommitMustMatch 使用 local-first git 校验；仅本地信息不足时执行最小必要 fetch/deepen；不改变判定语义
 
 ## 7.2 生效时点（260329_006）
 

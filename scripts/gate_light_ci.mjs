@@ -1352,15 +1352,6 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
     else if (task_id >= '260209_009') {
         console.log('[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...');
 
-        // PREP: Ensure origin/main is available and has enough history for merge-base calculation
-        try {
-            console.log('[Gate Light] Fetching origin/main history for diff context...');
-            // Force update of remote tracking branch and ensure depth
-            execSync('git fetch origin main:refs/remotes/origin/main --depth=100', { stdio: 'ignore' });
-        } catch (e) {
-            console.log('[Gate Light] Warning: git fetch failed (offline?), will try using existing refs.');
-        }
-
         // A) NoHistoricalEvidenceTouch
         try {
             // Note: This requires git to be available and origin/main to be fetched
@@ -1433,10 +1424,10 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         } catch (e) {
              const errMessage = e.message || '';
              // If "no merge base" or "unknown revision", try deepening history and retry
-             if (errMessage.includes('no merge base') || errMessage.includes('unknown revision') || errMessage.includes('ambiguous argument')) {
+            if (errMessage.includes('no merge base') || errMessage.includes('unknown revision') || errMessage.includes('ambiguous argument')) {
                  console.log('[Gate Light] Diff failed (missing history/ref). Attempting to deepen fetch...');
                  try {
-                     execSync('git fetch origin main:refs/remotes/origin/main --deepen=500', { stdio: 'ignore' });
+                    execSync('git fetch origin main:refs/remotes/origin/main --depth=100', { stdio: 'ignore' });
                      const retryDiff = execSync('git diff --name-status origin/main...HEAD', { encoding: 'utf8' });
                      // Process retry output (same logic as above, but just checking if it works essentially)
                      // Actually need to run the check logic again.
@@ -1446,8 +1437,9 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                      const forbiddenModifications = [];
                      retryDiff.split('\n').forEach(line => {
                          const parts = line.trim().split(/\s+/);
-                         if (parts.length < 2) return;
+                        if (parts.length < 2) return;
                          const filePath = parts[parts.length - 1];
+                        if (parts[0] === 'A') return;
                          const normalizedPath = filePath.replace(/\\/g, '/');
                          if (normalizedPath.startsWith('rules/task-reports/')) {
                              const filename = path.basename(normalizedPath);
@@ -1480,6 +1472,7 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         if (!isHeavyProfile) {
             console.log('[Gate Light] LIGHT profile: skipping SnippetCommitMustMatch check.');
         } else {
+            console.log('SNIPPET_GIT_STRATEGY=local_first');
             const snippetFile = path.join(result_dir, `trae_report_snippet_${task_id}.txt`);
             const isPreviewMode = process.env.GENERATE_PREVIEW === '1' || process.env.GATE_LIGHT_GENERATE_PREVIEW === '1';
 
@@ -1496,6 +1489,9 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                  
                  const snippetCommit = commitMatch[1];
                  const currentHead = execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim();
+                let snippetFetchNeeded = false;
+                let snippetFetchReason = '';
+                const forceFetch = process.env.GATE_SNIPPET_FORCE_FETCH === '1';
                  
                  if (snippetCommit !== currentHead) {
                      if (process.env.GATE_LIGHT_GENERATE_PREVIEW !== '1') {
@@ -1506,8 +1502,29 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                         try {
                             execSync(`git cat-file -t ${snippetCommit}`, { stdio: 'ignore' });
                         } catch (e) {
-                            console.log('[Gate Light] Snippet commit not found locally. Fetching history...');
-                            execSync('git fetch --deepen=50', { stdio: 'ignore' });
+                            snippetFetchNeeded = true;
+                            snippetFetchReason = 'snippet_commit_not_local';
+                        }
+                        if (forceFetch) {
+                            snippetFetchNeeded = true;
+                            snippetFetchReason = snippetFetchReason || 'forced_for_governance_test';
+                        }
+                        if (snippetFetchNeeded) {
+                            console.log('SNIPPET_GIT_FETCH_NEEDED=true');
+                            console.log('[Gate Light] SNIPPET_GIT_FETCH_REASON=' + snippetFetchReason);
+                            console.log('[Gate Light] SNIPPET_GIT_FETCH_ACTION=git fetch origin --deepen=50');
+                            execSync('git fetch origin --deepen=50', { stdio: 'ignore' });
+                        } else {
+                    if (forceFetch) {
+                        snippetFetchNeeded = true;
+                        snippetFetchReason = 'forced_for_governance_test';
+                        console.log('SNIPPET_GIT_FETCH_NEEDED=true');
+                        console.log('[Gate Light] SNIPPET_GIT_FETCH_REASON=' + snippetFetchReason);
+                        console.log('[Gate Light] SNIPPET_GIT_FETCH_ACTION=git fetch origin --deepen=50');
+                        execSync('git fetch origin --deepen=50', { stdio: 'ignore' });
+                    } else {
+                        console.log('SNIPPET_GIT_FETCH_NEEDED=false');
+                    }
                         }
 
                          const diffFiles = execSync(`git diff --name-only ${snippetCommit} ${currentHead}`, { encoding: 'utf8' }).split('\n').filter(Boolean);
@@ -1549,6 +1566,8 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                         console.log('GATE_LIGHT_EXIT=1');
                         process.exit(1);
                      }
+                } else {
+                    console.log('SNIPPET_GIT_FETCH_NEEDED=false');
                  }
                  console.log('[Gate Light] SnippetCommitMustMatch verified.');
             } else {
