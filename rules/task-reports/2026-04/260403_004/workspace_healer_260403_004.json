@@ -1,7 +1,9 @@
 {
+  "head_commit": "88bf35fe9e15c95df98c6969ab3288ed2ca9ff7b",
+  "reason": null,
   "mode": "EnforceClean",
-  "head_commit": "c8fecf1e63de20a8dee0a0f864d686b919e45fcc",
   "result": "PASS",
+  "branch": "260403_004",
   "before": {
     "untracked_count": 410,
     "tracked_changed_count": 0,
@@ -13,8 +15,6 @@
       "data/crypto_binary/bot_runtime_recovery_53125.json"
     ]
   },
-  "reason": null,
-  "branch": "260403_004",
   "cleaned_paths": [
     "rules/task-reports",
     "rules/reports",
@@ -22,11 +22,11 @@
     "rules/task-reports/locks",
     "rules/task-reports/runs"
   ],
-  "repo_root": "E:/OppRadar",
   "after": {
     "untracked_count": 0,
     "tracked_changed_count": 0,
     "sample_paths": []
   },
+  "repo_root": "E:/OppRadar",
   "note": "LOCAL_BOUNDARY_CI_CLEAN_ASSUMPTION"
 }

@@ -1,0 +1,83 @@
+{
+  "script_name": "truth_audit_heavy_timeout_failfast_260403_005",
+  "task_id": "260403_005",
+  "sample_name": "heavy_timeout_failfast_v1",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "rules/task-reports/2026-04/260403_005/260403_005_truth_audit_heavy_timeout_failfast.json",
+  "summary": {
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "pass": true
+  },
+  "raw_excerpt": {
+    "checks": {
+      "heavy_success_exit_ok": true,
+      "heavy_profile_seen": true,
+      "heavy_mandatory_seen": true,
+      "snippet_seen": true,
+      "timeout_fixed_seen": true,
+      "parallel_seen": true,
+      "mock_reuse_seen": true,
+      "fast_skip_seen": true,
+      "heavy_fail_exit_nonzero": true,
+      "first_failed_stage_seen": true,
+      "fail_fast_seen": true,
+      "skipped_after_fail_seen": true,
+      "light_smoke_exit_ok": true,
+      "light_profile_seen": true,
+      "light_skiplist_seen": true
+    }
+  },
+  "generated_at": "2026-04-02T19:31:24.586Z",
+  "conclusion_block": {
+    "verdict": "A：通过",
+    "first_break_layer": "NONE_CHAIN_PASS"
+  },
+  "evidence_index": {
+    "checks": {
+      "heavy_success_exit_ok": true,
+      "heavy_profile_seen": true,
+      "heavy_mandatory_seen": true,
+      "snippet_seen": true,
+      "timeout_fixed_seen": true,
+      "parallel_seen": true,
+      "mock_reuse_seen": true,
+      "fast_skip_seen": true,
+      "heavy_fail_exit_nonzero": true,
+      "first_failed_stage_seen": true,
+      "fail_fast_seen": true,
+      "skipped_after_fail_seen": true,
+      "light_smoke_exit_ok": true,
+      "light_profile_seen": true,
+      "light_skiplist_seen": true
+    },
+    "fixed_timeout_ms": 4000,
+    "heavy_success_excerpt": [
+      "[Gate Light] TASK_PROFILE=heavy",
+      "[Gate Light] MOCK_SERVER_SESSION=starting script=E:\\OppRadar\\OppRadar\\mock_server_53122.mjs",
+      "[Gate Light] MOCK_SERVER_SESSION=ready pid=17448",
+      "[Gate Light] HEAVY_PARALLEL_START: news/rank/export/ledger",
+      "[Gate Light] MOCK_SERVER_SESSION=stopping",
+      "[Gate Light] HEAVY_ENDPOINT_HARD_TIMEOUT_MS=4000",
+      "[Gate Light] HEAVY_PARALLEL_START: scanner/universe/trading",
+      "[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...",
+      "[Gate Light] Skipping SnippetCommitMustMatch check (Preview Mode).",
+      "[Gate Light] Heavy mandatory evidence verified.",
+      "[Gate Light] Universe runs contract: SKIP (server unreachable)",
+      "[Gate Light] Scanner runs contract: SKIP (server unreachable)",
+      "[Gate Light] Trading routes contract: SKIP (server unreachable)"
+    ],
+    "heavy_fail_excerpt": [
+      "FIRST_FAILED_STAGE=news_contract",
+      "FAIL_FAST_ABORTED=true",
+      "SKIPPED_AFTER_FAIL=[\"rank_contract\",\"export_contract\",\"ledger_contract\",\"scanner_contract\",\"universe_contract\",\"trading_contract\"]",
+      "[Injected Failure] news contract"
+    ],
+    "light_smoke_excerpt": [
+      "[Gate Light] TASK_PROFILE=light",
+      "[Gate Light] LIGHT profile: skipping heavy-only contract checks (news/rank/export/ledger/scanner/universe/trading).",
+      "GATE_LIGHT_EXIT=0"
+    ]
+  }
+}
