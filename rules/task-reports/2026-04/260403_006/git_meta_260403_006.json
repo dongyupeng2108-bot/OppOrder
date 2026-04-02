@@ -1,1 +1,1 @@
-{"commit":"fc661bfaad3ac2d1673364dca8bf41add68f5158","message":"TraeTask_260403_006: heavy SnippetCommitMustMatch改为local-first并最小化fetch/deepen（含治理验收与正式收尾证据）","branch":"260403_006"}
+{"commit":"2e14b1b1b2abbe90cbe936ef676324d8e1fc49f5","message":"260403_006: 修正Snippet local-first强制补抓路径并刷新治理验收证据","branch":"260403_006"}

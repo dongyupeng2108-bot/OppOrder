@@ -1,8 +1,8 @@
 {
   "task_id": "260403_006",
-  "is_shallow_repo": true,
+  "is_shallow_repo": false,
   "base": "6d4f6665a4cafd6522be19ab09ec973c2af44a2b",
-  "head": "fc661bfaad3ac2d1673364dca8bf41add68f5158",
+  "head": "2e14b1b1b2abbe90cbe936ef676324d8e1fc49f5",
   "merge_base": "6d4f6665a4cafd6522be19ab09ec973c2af44a2b",
   "scope_files": [
     "rules/LATEST.json",
@@ -41,5 +41,5 @@
     "scripts/truth_audit_snippet_git_local_first_260403_006.mjs"
   ],
   "scope_count": 34,
-  "generated_at": "2026-04-02T20:32:00.766Z"
+  "generated_at": "2026-04-02T20:38:00.865Z"
 }
