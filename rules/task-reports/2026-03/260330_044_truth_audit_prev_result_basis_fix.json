@@ -1,0 +1,1473 @@
+{
+  "script_name": "truth_audit_prev_result_basis_fix_260330_044",
+  "task_id": "260330_044",
+  "sample_name": "prev_result_basis_fix_v1",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "rules/task-reports/2026-03/260330_044_truth_audit_prev_result_basis_fix.json",
+  "summary": {
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "pass": true
+  },
+  "raw_excerpt": {
+    "pre_fail_exists": true,
+    "post_latest_not_anomaly": true
+  },
+  "generated_at": "2026-04-02T13:47:26.183Z",
+  "conclusion_block": {
+    "verdict": "A：通过",
+    "first_break_layer": "NONE_CHAIN_PASS"
+  },
+  "evidence_index": {
+    "checks": {
+      "pre_fail_exists": true,
+      "post_latest_not_anomaly": true,
+      "fail_to_pass_main_proof": true,
+      "non_regression_recent_summary": true,
+      "non_regression_normal_latest": true
+    },
+    "fail_to_pass": {
+      "pre": {
+        "source_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_043_truth_audit_prev_result_summary_basis.json",
+        "pre_found_anomaly_rows": 12,
+        "sample_anomaly_row": {
+          "id": 2950,
+          "window_id": "btc-updown-5m-1775134200",
+          "completed_at": "2026-04-02T12:50:44.239Z",
+          "filled_total": 0,
+          "cancelled_total": 0,
+          "realized_gross_pnl_total": 42.26921625018299,
+          "unrealized_gross_pnl_total": 674.5307837498164
+        },
+        "simulated_dom_if_hit": {
+          "filled_total": 0,
+          "cancelled_total": 0,
+          "pnl": 42.26921625018299,
+          "dom_raw_text": "已成交总数=0; 已撤单总数=0; PNL=42.26921625018299"
+        },
+        "pre_fail_condition": true
+      },
+      "post": {
+        "latest_postmortem": {
+          "window_id": "debug-fill-yes-path-v1-w1",
+          "filled_total": 0,
+          "cancelled_total": 0,
+          "realized_gross_pnl_total": 0
+        },
+        "previous_result_dom": {
+          "filled_total": 0,
+          "cancelled_total": 0,
+          "pnl": 0,
+          "dom_raw_text": "已成交总数=0; 已撤单总数=0; PNL=0"
+        }
+      }
+    },
+    "dom_api_reconcile": {
+      "dom": {
+        "previous_result_dom": {
+          "filled_total": 0,
+          "cancelled_total": 0,
+          "pnl": 0,
+          "dom_raw_text": "已成交总数=0; 已撤单总数=0; PNL=0"
+        },
+        "recent_summary_dom": {
+          "window_count": 86,
+          "filled_total": 427,
+          "realized_gross_pnl_total": 443.51662280484294,
+          "dom_raw_text": "窗口数=86; 总成交单数=427; 总计PNL=443.51662280484294"
+        }
+      },
+      "postmortem_latest": {
+        "ok": true,
+        "postmortem": {
+          "id": 2954,
+          "strategy_id": "bot_console",
+          "event_id": "debug-fill-yes-path-v1-w1",
+          "window_start": "2026-04-02T13:47:25.901Z",
+          "window_end": "2026-04-02T13:47:25.901Z",
+          "created_at": "2026-04-02T13:47:25.901Z",
+          "window_id": "debug-fill-yes-path-v1-w1",
+          "stop_reason": "MANUAL_STOP",
+          "completed_at": "2026-04-02T13:47:25.901Z",
+          "filled_total": 0,
+          "cancelled_total": 0,
+          "realized_gross_pnl_total": 0,
+          "unrealized_gross_pnl_total": 0,
+          "active_config": {
+            "open_delay_sec": 0,
+            "ladder_prices": [
+              0.61,
+              0.62
+            ],
+            "ladder_size": 3,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 80,
+            "up_ladder": [
+              {
+                "price": 0.61,
+                "size": 3,
+                "tp_price": 0.81
+              },
+              {
+                "price": 0.62,
+                "size": 3,
+                "tp_price": 0.82
+              }
+            ],
+            "down_ladder": [
+              {
+                "price": 0.63,
+                "size": 3,
+                "tp_price": 0.83
+              },
+              {
+                "price": 0.64,
+                "size": 3,
+                "tp_price": 0.84
+              }
+            ],
+            "up_cancel": {
+              "before_end_sec": 100,
+              "formula": ""
+            },
+            "down_cancel": {
+              "before_end_sec": 100,
+              "formula": ""
+            }
+          },
+          "action_summary": [
+            "NO_ACTION"
+          ]
+        }
+      },
+      "performance_summary_detail": {
+        "ok": true,
+        "summary": {
+          "preset": "today",
+          "window_count": 86,
+          "filled_total": 427,
+          "cancelled_total": 0,
+          "realized_gross_pnl_total": 443.51662280484294,
+          "unrealized_gross_pnl_total": 9451.140480481541,
+          "avg_realized_gross_pnl_per_window": 5.157170032614453,
+          "avg_unrealized_gross_pnl_per_window": 109.89698233118071,
+          "running_window_excluded": true,
+          "sample_postmortem_rows": [
+            {
+              "id": 2954,
+              "window_id": "debug-fill-yes-path-v1-w1",
+              "completed_at": "2026-04-02T13:47:25.901Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 2953,
+              "window_id": "debug-fill-yes-path-v1-w1",
+              "completed_at": "2026-04-02T13:46:34.488Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 2952,
+              "window_id": "debug-fill-yes-path-v1-w1",
+              "completed_at": "2026-04-02T13:02:44.734Z",
+              "filled_total": 4,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 1.439999999999996
+            },
+            {
+              "id": 2951,
+              "window_id": "debug-fill-yes-path-v1-w1",
+              "completed_at": "2026-04-02T13:01:13.195Z",
+              "filled_total": 2,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0.7199999999999993
+            },
+            {
+              "id": 2950,
+              "window_id": "btc-updown-5m-1775134200",
+              "completed_at": "2026-04-02T12:50:44.239Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 42.26921625018299,
+              "unrealized_gross_pnl_total": 674.5307837498164
+            },
+            {
+              "id": 2949,
+              "window_id": "debug-main-path-v1-w1",
+              "completed_at": "2026-04-02T12:39:30.197Z",
+              "filled_total": 88,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 713.9999999999995
+            },
+            {
+              "id": 2948,
+              "window_id": "debug-main-path-v1-w1",
+              "completed_at": "2026-04-02T12:38:53.611Z",
+              "filled_total": 68,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 570
+            },
+            {
+              "id": 2947,
+              "window_id": "debug-main-path-v1-w1",
+              "completed_at": "2026-04-02T12:37:45.387Z",
+              "filled_total": 48,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 426.00000000000034
+            },
+            {
+              "id": 2946,
+              "window_id": "debug-main-path-v1-w1",
+              "completed_at": "2026-04-02T12:37:10.758Z",
+              "filled_total": 32,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 282.00000000000017
+            },
+            {
+              "id": 2945,
+              "window_id": "debug-main-path-v1-w1",
+              "completed_at": "2026-04-02T12:32:24.367Z",
+              "filled_total": 12,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 137.99999999999997
+            }
+          ],
+          "participating_postmortem_rows": [
+            {
+              "id": 2954,
+              "window_id": "debug-fill-yes-path-v1-w1",
+              "completed_at": "2026-04-02T13:47:25.901Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 2953,
+              "window_id": "debug-fill-yes-path-v1-w1",
+              "completed_at": "2026-04-02T13:46:34.488Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 2952,
+              "window_id": "debug-fill-yes-path-v1-w1",
+              "completed_at": "2026-04-02T13:02:44.734Z",
+              "filled_total": 4,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 1.439999999999996
+            },
+            {
+              "id": 2951,
+              "window_id": "debug-fill-yes-path-v1-w1",
+              "completed_at": "2026-04-02T13:01:13.195Z",
+              "filled_total": 2,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0.7199999999999993
+            },
+            {
+              "id": 2950,
+              "window_id": "btc-updown-5m-1775134200",
+              "completed_at": "2026-04-02T12:50:44.239Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 42.26921625018299,
+              "unrealized_gross_pnl_total": 674.5307837498164
+            },
+            {
+              "id": 2949,
+              "window_id": "debug-main-path-v1-w1",
+              "completed_at": "2026-04-02T12:39:30.197Z",
+              "filled_total": 88,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 713.9999999999995
+            },
+            {
+              "id": 2948,
+              "window_id": "debug-main-path-v1-w1",
+              "completed_at": "2026-04-02T12:38:53.611Z",
+              "filled_total": 68,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 570
+            },
+            {
+              "id": 2947,
+              "window_id": "debug-main-path-v1-w1",
+              "completed_at": "2026-04-02T12:37:45.387Z",
+              "filled_total": 48,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 426.00000000000034
+            },
+            {
+              "id": 2946,
+              "window_id": "debug-main-path-v1-w1",
+              "completed_at": "2026-04-02T12:37:10.758Z",
+              "filled_total": 32,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 282.00000000000017
+            },
+            {
+              "id": 2945,
+              "window_id": "debug-main-path-v1-w1",
+              "completed_at": "2026-04-02T12:32:24.367Z",
+              "filled_total": 12,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 137.99999999999997
+            },
+            {
+              "id": 2944,
+              "window_id": "debug-main-path-v1-w1",
+              "completed_at": "2026-04-02T11:54:25.751Z",
+              "filled_total": 28,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 276.0000000000001
+            },
+            {
+              "id": 2943,
+              "window_id": "debug-main-path-v1-w1",
+              "completed_at": "2026-04-02T11:48:23.315Z",
+              "filled_total": 12,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 137.99999999999997
+            },
+            {
+              "id": 2942,
+              "window_id": "btc-updown-5m-1775101800",
+              "completed_at": "2026-04-02T03:50:49.958Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 42.14975181035172,
+              "unrealized_gross_pnl_total": 674.1202481896477
+            },
+            {
+              "id": 2941,
+              "window_id": "btc-updown-5m-1775100300",
+              "completed_at": "2026-04-02T03:26:49.529Z",
+              "filled_total": 18,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 7.854503816793892,
+              "unrealized_gross_pnl_total": 169.2554961832061
+            },
+            {
+              "id": 2940,
+              "window_id": "btc-updown-5m-1775100300",
+              "completed_at": "2026-04-02T03:26:48.985Z",
+              "filled_total": 14,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 8.110666666666667,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 2939,
+              "window_id": "btc-updown-5m-1775100300",
+              "completed_at": "2026-04-02T03:26:45.162Z",
+              "filled_total": 14,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 8.110666666666667,
+              "unrealized_gross_pnl_total": 175.87933333333336
+            },
+            {
+              "id": 2938,
+              "window_id": "audit-040-no_recovery_new_only-1775100350974",
+              "completed_at": "2026-04-02T03:25:51.804Z",
+              "filled_total": 4,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 8.199139784946237,
+              "unrealized_gross_pnl_total": -29.709139784946235
+            },
+            {
+              "id": 2937,
+              "window_id": "btc-updown-5m-1775100300",
+              "completed_at": "2026-04-02T03:25:50.949Z",
+              "filled_total": 6,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 8.60943661971831,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 2936,
+              "window_id": "btc-updown-5m-1775100300",
+              "completed_at": "2026-04-02T03:25:45.587Z",
+              "filled_total": 6,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 8.60943661971831,
+              "unrealized_gross_pnl_total": 128.0905633802817
+            },
+            {
+              "id": 2935,
+              "window_id": "btc-updown-5m-1775100300",
+              "completed_at": "2026-04-02T03:25:01.153Z",
+              "filled_total": 2,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 9.24,
+              "unrealized_gross_pnl_total": 55.949999999999996
+            },
+            {
+              "id": 2934,
+              "window_id": "audit-040-after_restart-1775100295834",
+              "completed_at": "2026-04-02T03:25:00.362Z",
+              "filled_total": 4,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 9.24,
+              "unrealized_gross_pnl_total": 4.2700000000000005
+            },
+            {
+              "id": 2933,
+              "window_id": "audit-040-after_update_running-1775100294262",
+              "completed_at": "2026-04-02T03:24:54.683Z",
+              "filled_total": 4,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 9.24,
+              "unrealized_gross_pnl_total": 4.7299999999999995
+            },
+            {
+              "id": 2932,
+              "window_id": "btc-updown-5m-1775100000",
+              "completed_at": "2026-04-02T03:23:34.336Z",
+              "filled_total": 4,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 9.24,
+              "unrealized_gross_pnl_total": 6.6
+            },
+            {
+              "id": 2931,
+              "window_id": "btc-updown-5m-1775100000",
+              "completed_at": "2026-04-02T03:23:25.936Z",
+              "filled_total": 2,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 9.24,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 2930,
+              "window_id": "btc-updown-5m-1775100000",
+              "completed_at": "2026-04-02T03:23:12.318Z",
+              "filled_total": 2,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 9.24,
+              "unrealized_gross_pnl_total": 6.84
+            },
+            {
+              "id": 2929,
+              "window_id": "btc-updown-5m-1775099400",
+              "completed_at": "2026-04-02T03:11:18.592Z",
+              "filled_total": 4,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 2.88,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 2928,
+              "window_id": "audit-039-restore_old_before_restart-1775099471882",
+              "completed_at": "2026-04-02T03:11:12.471Z",
+              "filled_total": 4,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 2.88,
+              "unrealized_gross_pnl_total": 0.28000000000000447
+            },
+            {
+              "id": 2927,
+              "window_id": "btc-updown-5m-1775099400",
+              "completed_at": "2026-04-02T03:11:11.870Z",
+              "filled_total": 4,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 2.88,
+              "unrealized_gross_pnl_total": 26.320000000000007
+            },
+            {
+              "id": 2926,
+              "window_id": "btc-updown-5m-1775099400",
+              "completed_at": "2026-04-02T03:11:09.400Z",
+              "filled_total": 2,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 17.900000000000002
+            },
+            {
+              "id": 2925,
+              "window_id": "audit-260330038-w1",
+              "completed_at": "2026-04-02T02:55:40.357Z",
+              "filled_total": 4,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": -0.45999999999999946
+            },
+            {
+              "id": 2924,
+              "window_id": null,
+              "completed_at": "2026-04-02T02:55:35.982Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 2923,
+              "window_id": "debug-fill-yes-path-v1-w1",
+              "completed_at": "2026-04-02T02:44:51.697Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 2922,
+              "window_id": null,
+              "completed_at": "2026-04-02T02:44:34.820Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 2921,
+              "window_id": "debug-main-path-v1-w1",
+              "completed_at": "2026-04-02T02:23:28.095Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 2920,
+              "window_id": "debug-main-path-v1-w1",
+              "completed_at": "2026-04-02T02:23:19.101Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 2919,
+              "window_id": "btc-updown-5m-1775094600",
+              "completed_at": "2026-04-02T01:50:17.448Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": -0.44000000000000083
+            },
+            {
+              "id": 2918,
+              "window_id": null,
+              "completed_at": "2026-04-02T01:50:03.958Z",
+              "filled_total": 4,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 2917,
+              "window_id": "btc-updown-5m-1775094300",
+              "completed_at": "2026-04-02T01:49:06.679Z",
+              "filled_total": 4,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": -0.2400000000000002
+            },
+            {
+              "id": 2916,
+              "window_id": null,
+              "completed_at": "2026-04-02T01:48:52.927Z",
+              "filled_total": 4,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 2915,
+              "window_id": "btc-updown-5m-1775094300",
+              "completed_at": "2026-04-02T01:47:40.312Z",
+              "filled_total": 4,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": -0.2600000000000009
+            },
+            {
+              "id": 2914,
+              "window_id": "btc-updown-5m-1775094000",
+              "completed_at": "2026-04-02T01:43:14.205Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 2913,
+              "window_id": "btc-updown-5m-1775091300",
+              "completed_at": "2026-04-02T00:55:00.734Z",
+              "filled_total": 1,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": -0.05
+            },
+            {
+              "id": 2912,
+              "window_id": "btc-updown-5m-1775090700",
+              "completed_at": "2026-04-02T00:45:35.398Z",
+              "filled_total": 1,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": -0.050000000000000044
+            },
+            {
+              "id": 2911,
+              "window_id": "btc-updown-5m-1775089500",
+              "completed_at": "2026-04-02T00:25:01.593Z",
+              "filled_total": 1,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 11.350000000000001
+            },
+            {
+              "id": 2910,
+              "window_id": "btc-updown-5m-1775088900",
+              "completed_at": "2026-04-02T00:15:00.754Z",
+              "filled_total": 1,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": -2.4
+            },
+            {
+              "id": 2909,
+              "window_id": "debug-fill-yes-path-v1-w1",
+              "completed_at": "2026-04-01T20:00:29.122Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 4.6200000000000205,
+              "unrealized_gross_pnl_total": 1.680000000000013
+            },
+            {
+              "id": 2908,
+              "window_id": "debug-main-path-v1-w1",
+              "completed_at": "2026-04-01T19:59:00.214Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 4.6200000000000205,
+              "unrealized_gross_pnl_total": 11.760000000000016
+            },
+            {
+              "id": 2907,
+              "window_id": "btc-updown-5m-1775073000",
+              "completed_at": "2026-04-01T19:54:00.455Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 43.745
+            },
+            {
+              "id": 2906,
+              "window_id": "btc-updown-5m-1775073000",
+              "completed_at": "2026-04-01T19:53:40.693Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 43.544999999999995
+            },
+            {
+              "id": 2905,
+              "window_id": "btc-updown-5m-1775072700",
+              "completed_at": "2026-04-01T19:51:34.963Z",
+              "filled_total": 4,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0.18627627627627685,
+              "unrealized_gross_pnl_total": 132.73372372372395
+            },
+            {
+              "id": 2904,
+              "window_id": "btc-updown-5m-1775072400",
+              "completed_at": "2026-04-01T19:44:28.396Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 10.16050912778905,
+              "unrealized_gross_pnl_total": 17.716490872210954
+            },
+            {
+              "id": 2903,
+              "window_id": "btc-updown-5m-1775072100",
+              "completed_at": "2026-04-01T19:38:06.919Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 2.45,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 2902,
+              "window_id": "btc-updown-5m-1775071800",
+              "completed_at": "2026-04-01T19:33:43.414Z",
+              "filled_total": 1,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 41.00140383314654,
+              "unrealized_gross_pnl_total": 978.2985961668535
+            },
+            {
+              "id": 2901,
+              "window_id": "debug-fill-yes-path-v1-w1",
+              "completed_at": "2026-04-01T19:33:29.046Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 41.00140383314654,
+              "unrealized_gross_pnl_total": 767.4185961668535
+            },
+            {
+              "id": 2900,
+              "window_id": null,
+              "completed_at": "2026-04-01T19:33:23.290Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 41.00140383314654,
+              "unrealized_gross_pnl_total": 568.4385961668536
+            },
+            {
+              "id": 2899,
+              "window_id": null,
+              "completed_at": "2026-04-01T19:33:22.568Z",
+              "filled_total": 1,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 41.00140383314654,
+              "unrealized_gross_pnl_total": 909.9885961668537
+            },
+            {
+              "id": 2898,
+              "window_id": "btc-updown-5m-1775071800",
+              "completed_at": "2026-04-01T19:33:22.228Z",
+              "filled_total": 1,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 41.00140383314654,
+              "unrealized_gross_pnl_total": 909.9885961668537
+            },
+            {
+              "id": 2897,
+              "window_id": "debug-main-path-v1-w1",
+              "completed_at": "2026-04-01T19:33:17.051Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 4.6200000000000205,
+              "unrealized_gross_pnl_total": 11.760000000000016
+            },
+            {
+              "id": 2896,
+              "window_id": "debug-main-path-v1-w1",
+              "completed_at": "2026-04-01T19:33:07.959Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 4.6200000000000205,
+              "unrealized_gross_pnl_total": 11.760000000000016
+            },
+            {
+              "id": 2895,
+              "window_id": "debug-fill-yes-path-v1-w1",
+              "completed_at": "2026-04-01T19:31:06.275Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 4.6200000000000205,
+              "unrealized_gross_pnl_total": 1.680000000000013
+            },
+            {
+              "id": 2894,
+              "window_id": "debug-main-path-v1-w1",
+              "completed_at": "2026-04-01T19:29:37.446Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 4.6200000000000205,
+              "unrealized_gross_pnl_total": 11.760000000000016
+            },
+            {
+              "id": 2893,
+              "window_id": "debug-fill-yes-path-v1-w1",
+              "completed_at": "2026-04-01T19:29:06.936Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 38.595
+            },
+            {
+              "id": 2892,
+              "window_id": "btc-updown-5m-1775071500",
+              "completed_at": "2026-04-01T19:29:00.442Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 24.744999999999997
+            },
+            {
+              "id": 2891,
+              "window_id": "btc-updown-5m-1775071200",
+              "completed_at": "2026-04-01T19:24:01.045Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 35.74499999999999
+            },
+            {
+              "id": 2890,
+              "window_id": "btc-updown-5m-1775071200",
+              "completed_at": "2026-04-01T19:23:40.011Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 34.94500000000001
+            },
+            {
+              "id": 2889,
+              "window_id": "debug-fill-yes-path-v1-w1",
+              "completed_at": "2026-04-01T18:39:06.553Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 38.595
+            },
+            {
+              "id": 2888,
+              "window_id": "btc-updown-5m-1775068500",
+              "completed_at": "2026-04-01T18:39:01.084Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 42.34500000000001
+            },
+            {
+              "id": 2887,
+              "window_id": "btc-updown-5m-1775068200",
+              "completed_at": "2026-04-01T18:34:00.082Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 23.244999999999997
+            },
+            {
+              "id": 2886,
+              "window_id": "btc-updown-5m-1775068200",
+              "completed_at": "2026-04-01T18:33:39.627Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 25.845000000000002
+            },
+            {
+              "id": 2885,
+              "window_id": "debug-fill-yes-path-v1-w1",
+              "completed_at": "2026-04-01T18:29:06.513Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 35.445
+            },
+            {
+              "id": 2884,
+              "window_id": "btc-updown-5m-1775067900",
+              "completed_at": "2026-04-01T18:29:01.045Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 22.245000000000008
+            },
+            {
+              "id": 2883,
+              "window_id": "btc-updown-5m-1775067600",
+              "completed_at": "2026-04-01T18:24:03.207Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 25.845000000000002
+            },
+            {
+              "id": 2882,
+              "window_id": "btc-updown-5m-1775067600",
+              "completed_at": "2026-04-01T18:23:39.811Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 25.045
+            },
+            {
+              "id": 2881,
+              "window_id": "btc-updown-5m-1775067300",
+              "completed_at": "2026-04-01T18:19:41.847Z",
+              "filled_total": 1,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 37.345000000000006
+            },
+            {
+              "id": 2880,
+              "window_id": "btc-updown-5m-1775067300",
+              "completed_at": "2026-04-01T18:18:39.837Z",
+              "filled_total": 1,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 35.995000000000005
+            },
+            {
+              "id": 2879,
+              "window_id": "btc-updown-5m-1775067300",
+              "completed_at": "2026-04-01T18:15:01.148Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            },
+            {
+              "id": 2878,
+              "window_id": "btc-updown-5m-1775067000",
+              "completed_at": "2026-04-01T18:13:47.068Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 14.295000000000002
+            },
+            {
+              "id": 2877,
+              "window_id": "btc-updown-5m-1775066700",
+              "completed_at": "2026-04-01T18:09:44.887Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 24.195000000000007
+            },
+            {
+              "id": 2876,
+              "window_id": "btc-updown-5m-1775066700",
+              "completed_at": "2026-04-01T18:08:47.576Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 18.695000000000004
+            },
+            {
+              "id": 2875,
+              "window_id": "btc-updown-5m-1775066400",
+              "completed_at": "2026-04-01T18:00:59.823Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 19.945
+            },
+            {
+              "id": 2874,
+              "window_id": "btc-updown-5m-1775066100",
+              "completed_at": "2026-04-01T17:58:48.193Z",
+              "filled_total": 2,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 21.695
+            },
+            {
+              "id": 2873,
+              "window_id": "btc-updown-5m-1775064600",
+              "completed_at": "2026-04-01T17:33:47.646Z",
+              "filled_total": 1,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 9.145000000000001
+            },
+            {
+              "id": 2872,
+              "window_id": "btc-updown-5m-1775062800",
+              "completed_at": "2026-04-01T17:07:30.802Z",
+              "filled_total": 1,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 2.250000000000001
+            },
+            {
+              "id": 2871,
+              "window_id": "btc-updown-5m-1775062500",
+              "completed_at": "2026-04-01T16:58:47.810Z",
+              "filled_total": 1,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 2.3000000000000007
+            },
+            {
+              "id": 2870,
+              "window_id": "btc-updown-5m-1775061900",
+              "completed_at": "2026-04-01T16:46:37.227Z",
+              "filled_total": 1,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 1.7000000000000004
+            },
+            {
+              "id": 2869,
+              "window_id": "btc-updown-5m-1775061600",
+              "completed_at": "2026-04-01T16:43:53.402Z",
+              "filled_total": 0,
+              "cancelled_total": 0,
+              "realized_gross_pnl_total": 0,
+              "unrealized_gross_pnl_total": 0
+            }
+          ]
+        }
+      }
+    },
+    "non_regression": {
+      "recent_summary_totals": {
+        "summary": {
+          "window_count": 86,
+          "filled_total": 427,
+          "realized_gross_pnl_total": 443.51662280484294
+        },
+        "participating_rows_sum": {
+          "window_count": 86,
+          "filled_total": 427,
+          "realized_gross_pnl_total": 443.51662280484294
+        }
+      },
+      "normal_latest_row": {
+        "filled_total": 0,
+        "cancelled_total": 0,
+        "pnl": 0,
+        "dom_raw_text": "已成交总数=0; 已撤单总数=0; PNL=0"
+      },
+      "normal_row_sample_from_performance": {
+        "id": 2952,
+        "window_id": "debug-fill-yes-path-v1-w1",
+        "completed_at": "2026-04-02T13:02:44.734Z",
+        "filled_total": 4,
+        "cancelled_total": 0,
+        "realized_gross_pnl_total": 0,
+        "unrealized_gross_pnl_total": 1.439999999999996
+      }
+    },
+    "logs_tail": [
+      {
+        "ts": "2026-04-02T13:47:21.932Z",
+        "level": "info",
+        "source": "server",
+        "event": "BOT_LOGGER_READY",
+        "message": "bot logger initialized",
+        "mode": "paper-staging",
+        "window_id": null,
+        "data": {
+          "port": 53244,
+          "strategy": "none"
+        }
+      },
+      {
+        "ts": "2026-04-02T13:47:21.964Z",
+        "level": "info",
+        "source": "server",
+        "event": "SERVER_LISTENING",
+        "message": "server listening on 53244",
+        "mode": "paper-staging",
+        "window_id": null,
+        "data": {
+          "port": 53244,
+          "strategy": "none"
+        }
+      },
+      {
+        "ts": "2026-04-02T13:47:22.009Z",
+        "level": "info",
+        "source": "server",
+        "event": "BOT_RECOVERY_RESTORE_INPUT",
+        "message": "recovery snapshot input loaded",
+        "mode": "paper-staging",
+        "window_id": null,
+        "data": {
+          "path": "E:\\OppRadar\\data\\crypto_binary\\bot_runtime_recovery_53244.json",
+          "saved_open_delay_sec": 0
+        }
+      },
+      {
+        "ts": "2026-04-02T13:47:22.011Z",
+        "level": "info",
+        "source": "server",
+        "event": "BOT_RECOVERY_RESTORED",
+        "message": "recovery snapshot restored",
+        "mode": "paper-staging",
+        "window_id": null,
+        "data": {
+          "saved_open_delay_sec": 0,
+          "active_open_delay_sec": 0
+        }
+      },
+      {
+        "ts": "2026-04-02T13:47:22.282Z",
+        "level": "info",
+        "source": "server",
+        "event": "BOT_CONFIG_UPDATED",
+        "message": "bot config updated",
+        "mode": "paper-staging",
+        "window_id": null,
+        "data": {
+          "open_delay_sec": 0,
+          "ladder_prices": [
+            0.61,
+            0.62
+          ],
+          "ladder_size": 3,
+          "atr_multiple": 1.2,
+          "cancel_all_remaining_sec": 80,
+          "up_ladder": [
+            {
+              "price": 0.61,
+              "size": 3,
+              "tp_price": 0.81
+            },
+            {
+              "price": 0.62,
+              "size": 3,
+              "tp_price": 0.82
+            }
+          ],
+          "down_ladder": [
+            {
+              "price": 0.63,
+              "size": 3,
+              "tp_price": 0.83
+            },
+            {
+              "price": 0.64,
+              "size": 3,
+              "tp_price": 0.84
+            }
+          ],
+          "up_cancel": {
+            "before_end_sec": 100,
+            "formula": ""
+          },
+          "down_cancel": {
+            "before_end_sec": 100,
+            "formula": ""
+          }
+        }
+      },
+      {
+        "ts": "2026-04-02T13:47:22.284Z",
+        "level": "info",
+        "source": "server",
+        "event": "BOT_DEBUG_SCENARIO_ENABLED",
+        "message": "debug scenario enabled: fill_yes_path_v1",
+        "mode": "paper-staging",
+        "window_id": null,
+        "data": {
+          "frame_total": 6
+        }
+      },
+      {
+        "ts": "2026-04-02T13:47:22.285Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_STARTED",
+        "message": "bot runner started",
+        "mode": null,
+        "window_id": null,
+        "data": {
+          "tick_interval_ms": 1000
+        }
+      },
+      {
+        "ts": "2026-04-02T13:47:22.287Z",
+        "level": "info",
+        "source": "server",
+        "event": "BOT_CONFIG_APPLIED",
+        "message": "bot start using current config",
+        "mode": "paper-staging",
+        "window_id": null,
+        "data": {
+          "open_delay_sec": 0,
+          "ladder_prices": [
+            0.61,
+            0.62
+          ],
+          "ladder_size": 3,
+          "atr_multiple": 1.2,
+          "cancel_all_remaining_sec": 80,
+          "up_ladder": [
+            {
+              "price": 0.61,
+              "size": 3,
+              "tp_price": 0.81
+            },
+            {
+              "price": 0.62,
+              "size": 3,
+              "tp_price": 0.82
+            }
+          ],
+          "down_ladder": [
+            {
+              "price": 0.63,
+              "size": 3,
+              "tp_price": 0.83
+            },
+            {
+              "price": 0.64,
+              "size": 3,
+              "tp_price": 0.84
+            }
+          ],
+          "up_cancel": {
+            "before_end_sec": 100,
+            "formula": ""
+          },
+          "down_cancel": {
+            "before_end_sec": 100,
+            "formula": ""
+          }
+        }
+      },
+      {
+        "ts": "2026-04-02T13:47:22.288Z",
+        "level": "info",
+        "source": "server",
+        "event": "BOT_DEBUG_FRAME",
+        "message": "debug frame 1/6",
+        "mode": "paper-staging",
+        "window_id": "debug-fill-yes-path-v1-w1",
+        "data": {
+          "debug_scenario": "fill_yes_path_v1",
+          "frame_index": 1,
+          "remaining_sec": 299,
+          "btc_price": 100
+        }
+      },
+      {
+        "ts": "2026-04-02T13:47:24.021Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_STARTUP_WAIT_NEXT_WINDOW",
+        "message": "startup observed active window debug-fill-yes-path-v1-w1, waiting next window",
+        "mode": "paper-staging",
+        "window_id": "debug-fill-yes-path-v1-w1",
+        "data": {
+          "startup_window_id": "debug-fill-yes-path-v1-w1"
+        }
+      },
+      {
+        "ts": "2026-04-02T13:47:24.021Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_WINDOW_CHANGED",
+        "message": "window changed: null -> debug-fill-yes-path-v1-w1",
+        "mode": "paper-staging",
+        "window_id": "debug-fill-yes-path-v1-w1",
+        "data": {
+          "from_window_id": null,
+          "to_window_id": "debug-fill-yes-path-v1-w1"
+        }
+      },
+      {
+        "ts": "2026-04-02T13:47:24.022Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_WINDOW_INITIALIZED",
+        "message": "window initialized",
+        "mode": "paper-staging",
+        "window_id": "debug-fill-yes-path-v1-w1",
+        "data": {
+          "anchor_btc": 100,
+          "atr_5m": 2,
+          "upper_bound": 102.4,
+          "lower_bound": 97.6,
+          "atr_multiplier": 1.2,
+          "need_anchor_init": true,
+          "need_bounds_init": false
+        }
+      },
+      {
+        "ts": "2026-04-02T13:47:24.023Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "NOOP",
+        "mode": "paper-staging",
+        "window_id": "debug-fill-yes-path-v1-w1",
+        "data": {
+          "reason": "wait_next_window_after_start"
+        }
+      },
+      {
+        "ts": "2026-04-02T13:47:24.296Z",
+        "level": "info",
+        "source": "server",
+        "event": "BOT_DEBUG_FRAME",
+        "message": "debug frame 2/6",
+        "mode": "paper-staging",
+        "window_id": "debug-fill-yes-path-v1-w1",
+        "data": {
+          "debug_scenario": "fill_yes_path_v1",
+          "frame_index": 2,
+          "remaining_sec": 295,
+          "btc_price": 100
+        }
+      },
+      {
+        "ts": "2026-04-02T13:47:24.479Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "NOOP",
+        "mode": "paper-staging",
+        "window_id": "debug-fill-yes-path-v1-w1",
+        "data": {
+          "reason": "wait_next_window_after_start"
+        }
+      },
+      {
+        "ts": "2026-04-02T13:47:25.299Z",
+        "level": "info",
+        "source": "server",
+        "event": "BOT_DEBUG_FRAME",
+        "message": "debug frame 3/6",
+        "mode": "paper-staging",
+        "window_id": "debug-fill-yes-path-v1-w1",
+        "data": {
+          "debug_scenario": "fill_yes_path_v1",
+          "frame_index": 3,
+          "remaining_sec": 290,
+          "btc_price": 100
+        }
+      },
+      {
+        "ts": "2026-04-02T13:47:25.300Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_INTENTS",
+        "message": "NOOP",
+        "mode": "paper-staging",
+        "window_id": "debug-fill-yes-path-v1-w1",
+        "data": {
+          "reason": "wait_next_window_after_start"
+        }
+      },
+      {
+        "ts": "2026-04-02T13:47:25.901Z",
+        "level": "info",
+        "source": "server",
+        "event": "BOT_RUN_SNAPSHOT",
+        "message": "MANUAL_STOP",
+        "mode": "paper-staging",
+        "window_id": "debug-fill-yes-path-v1-w1",
+        "data": {
+          "stop_reason": "MANUAL_STOP",
+          "completed_at": "2026-04-02T13:47:25.901Z",
+          "current_window_id": "debug-fill-yes-path-v1-w1",
+          "phase": "IDLE",
+          "filled_total": 0,
+          "cancelled_total": 0,
+          "realized_gross_pnl_total": 0,
+          "unrealized_gross_pnl_total": 0,
+          "active_config": {
+            "open_delay_sec": 0,
+            "ladder_prices": [
+              0.61,
+              0.62
+            ],
+            "ladder_size": 3,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 80,
+            "up_ladder": [
+              {
+                "price": 0.61,
+                "size": 3,
+                "tp_price": 0.81
+              },
+              {
+                "price": 0.62,
+                "size": 3,
+                "tp_price": 0.82
+              }
+            ],
+            "down_ladder": [
+              {
+                "price": 0.63,
+                "size": 3,
+                "tp_price": 0.83
+              },
+              {
+                "price": 0.64,
+                "size": 3,
+                "tp_price": 0.84
+              }
+            ],
+            "up_cancel": {
+              "before_end_sec": 100,
+              "formula": ""
+            },
+            "down_cancel": {
+              "before_end_sec": 100,
+              "formula": ""
+            }
+          }
+        }
+      },
+      {
+        "ts": "2026-04-02T13:47:25.903Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_TICK_SUMMARY",
+        "message": "tick summary 5000ms",
+        "mode": null,
+        "window_id": "debug-fill-yes-path-v1-w1",
+        "data": {
+          "period_ms": 5000,
+          "suppressed_total": 9,
+          "counts": {
+            "RUNNER_TICK": 3,
+            "BOT_TICK_OK": 3,
+            "BOT_DECISION_GATED": 3
+          },
+          "last_reason": "wait_next_window_after_start"
+        }
+      },
+      {
+        "ts": "2026-04-02T13:47:25.903Z",
+        "level": "info",
+        "source": "bot_runner",
+        "event": "BOT_STOPPED",
+        "message": "bot runner stopped",
+        "mode": null,
+        "window_id": null,
+        "data": {}
+      }
+    ],
+    "healthcheck": {
+      "root": 200,
+      "pairs": 404
+    },
+    "heartbeat_log": "rules/task-reports/2026-03/260330_044_truth_audit_prev_result_basis_fix.heartbeat.log",
+    "last_heartbeat": {
+      "ts": "2026-04-02T13:47:26.182Z",
+      "event": "HEARTBEAT",
+      "stage": "audit_done",
+      "checks": {
+        "pre_fail_exists": true,
+        "post_latest_not_anomaly": true,
+        "fail_to_pass_main_proof": true,
+        "non_regression_recent_summary": true,
+        "non_regression_normal_latest": true
+      }
+    },
+    "guardrails": {
+      "max_wall_time_ms": 1200000,
+      "max_silence_ms": 120000,
+      "log_tail": 120
+    }
+  }
+}

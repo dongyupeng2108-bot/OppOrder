@@ -1,0 +1,16 @@
+{
+  "mode": "LOCAL_FINALIZE_FALLBACK",
+  "result": "PASS",
+  "note": "reset_workspace blocked by generated evidence changes; validated with generated-file allowlist",
+  "before": {
+    "tracked_changed_count": 0,
+    "untracked_count": 0,
+    "sample_paths": []
+  },
+  "after": {
+    "tracked_changed_count": 0,
+    "untracked_count": 0,
+    "sample_paths": []
+  },
+  "task_id": "260330_044"
+}
