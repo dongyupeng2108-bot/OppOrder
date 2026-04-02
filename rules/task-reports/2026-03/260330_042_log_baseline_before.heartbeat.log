@@ -1,0 +1,3 @@
+{"ts":"2026-04-02T12:32:17.989Z","event":"HEARTBEAT","stage":"start_server_begin","port":53242}
+{"ts":"2026-04-02T12:32:18.303Z","event":"HEARTBEAT","stage":"start_server_ready","port":53242}
+{"ts":"2026-04-02T12:32:24.371Z","event":"HEARTBEAT","stage":"scenario_done","sampled_logs":90}
