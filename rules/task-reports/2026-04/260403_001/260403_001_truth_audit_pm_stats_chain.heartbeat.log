@@ -1,0 +1,3 @@
+{"ts":"2026-04-02T16:47:40.240Z","event":"HEARTBEAT","stage":"start_server_begin","port":53247}
+{"ts":"2026-04-02T16:47:40.577Z","event":"HEARTBEAT","stage":"start_server_ready","port":53247}
+{"ts":"2026-04-02T16:47:40.611Z","event":"HEARTBEAT","stage":"audit_done","first_break_layer":"window_rollup_count_basis","checks":{"official_available":false,"sample_insufficient":false,"today_rows_nonzero":false,"today_expected_from_last7d_count":23,"today_summary_window_count":0,"first_break_layer":"window_rollup_count_basis"}}
