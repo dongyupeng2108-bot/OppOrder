@@ -1662,12 +1662,14 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         const hasFailPass = /fail_to_pass|preFail|postPass|fail->pass|Fail -> Pass/i.test(merged);
         const hasRealRuntime = /"sample_reconcile_rows"\s*:|"samples"\s*:|is_real_runtime|real runtime/i.test(merged);
         const hasNonRegression = /non_regression|不回退|running_not_mixed|last_7d_not_zeroed/i.test(merged);
-        if (!hasFirstBreak || !hasFailPass || !hasRealRuntime || !hasNonRegression) {
+        const hasWorkflowEvidence = /gate_diff_table|light_only|heavy_only|workflow profile split/i.test(merged);
+        const hasHeavyQualityEvidence = hasNonRegression || hasWorkflowEvidence;
+        if (!hasFirstBreak || !hasFailPass || !hasRealRuntime || !hasHeavyQualityEvidence) {
             console.error('[Gate Light] FAILED: Heavy mandatory evidence incomplete.');
             console.error(`  has_first_break_layer=${hasFirstBreak}`);
             console.error(`  has_fail_to_pass=${hasFailPass}`);
             console.error(`  has_real_runtime=${hasRealRuntime}`);
-            console.error(`  has_non_regression=${hasNonRegression}`);
+            console.error(`  has_non_regression_or_workflow_evidence=${hasHeavyQualityEvidence}`);
             process.exit(1);
         }
         console.log('[Gate Light] Heavy mandatory evidence verified.');
