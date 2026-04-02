@@ -185,6 +185,7 @@
 - heavy-only：
   - 全局契约校验（news/rank/export/ledger/scanner/universe/trading）
   - heavy mandatory 证据（first_break_layer / Fail -> Pass / real runtime / 不回退）
+  - 执行提效允许项（260403_004）：并行执行 + Rank/Export/Ledger mock server 单会话复用；不得减少覆盖项与强制项
 
 ## 4. 高风险约束执行规则
 

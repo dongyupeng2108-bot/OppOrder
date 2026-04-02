@@ -1,0 +1,94 @@
+=== TRAE_REPORT_SNIPPET ===
+
+Header: TraeTask_260403_004
+BRANCH: 260403_004
+COMMIT: c8fecf1e
+
+=== GIT_SCOPE_DIFF ===
+M	rules/LATEST.json
+M	rules/rules/PROJECT_MASTER_PLAN.md
+M	rules/rules/PROJECT_RULES.md
+M	rules/rules/WORKFLOW.md
+A	rules/task-reports/2026-04/260403_004/260403_004.json
+A	rules/task-reports/2026-04/260403_004/260403_004_truth_audit_heavy_gate_efficiency.json
+A	rules/task-reports/2026-04/260403_004/260403_004_truth_audit_heavy_gate_efficiency.log
+A	rules/task-reports/2026-04/260403_004/implementation_260403_004.md
+A	rules/task-reports/2026-04/260403_004/notify_260403_004.txt
+A	rules/task-reports/2026-04/260403_004/result_260403_004.json
+A	rules/task-reports/2026-04/260403_004/trae_report_snippet_260403_004.txt
+A	rules/task-reports/2026-04/260403_004/truth_audit_260403_004.md
+A	rules/task-reports/2026-04/260403_004/workspace_healer_260403_004.json
+M	scripts/gate_light_ci.mjs
+A	scripts/truth_audit_heavy_gate_efficiency_260403_004.mjs
+
+=== DOD_EVIDENCE_STDOUT ===
+Missing Blocks:
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260403_004_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260403_004_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+
+=== CI_PARITY_PREVIEW ===
+Base: f1bedcf
+Head: c8fecf1
+MergeBase: f1bedcf
+Source: JSON (Evidence-as-Code)
+Scope: 15 files
+Files (Top 3):
+  - rules/LATEST.json
+  - rules/rules/PROJECT_MASTER_PLAN.md
+  - rules/rules/PROJECT_RULES.md
+  ... (truncated)
+=========================
+
+=== GATE_LIGHT_PREVIEW ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260403_004
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] TASK_PROFILE=heavy
+[Gate Light] Verifying task_id: 260403_004
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Report Block Check Passed: notify_260403_004.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260403_004.txt
+[Gate Light] Header Check Passed: TraeTask_260403_004
+[Gate Light] Checking Workspace Healer Evidence...
+[Gate Light] Workspace Healer verified (Clean Environment).
+[Gate Light] Skipping Error Digest Validation (Preview Mode).
+[Gate Light] Checking doc path standards...
+[Gate Light] Doc path standards verified.
+[Gate Light] Checking for legacy doc path references...
+[Gate Light] Checking for banned cmd syntax in PowerShell scripts...
+[Gate Light] Checking for global healthcheck artifacts...
+[Gate Light] Global Artifact Guard verified.
+[Gate Light] MOCK_SERVER_SESSION=starting script=E:\OppRadar\OppRadar\mock_server_53122.mjs
+[Gate Light] MOCK_SERVER_SESSION=ready pid=15940
+[Gate Light] HEAVY_PARALLEL_START: news/rank/export/ledger
+[Gate Light] HEAVY_PARALLEL_DONE: {"news":0,"rank":0,"export":0,"ledger":0}
+[Gate Light] MOCK_SERVER_SESSION=stopping
+[Gate Light] HEAVY_PARALLEL_START: scanner/universe/trading
+[Gate Light] Checking Scanner API Contract...
+[Gate Light] Checking Universe API Contract...
+[Gate Light] Checking Trading Routes API Contract...
+[Gate Light] HEAVY_PARALLEL_DONE: scanner/universe/trading
+[Gate Light] Checking healthcheck evidence...
+[Gate Light] Using evidence directory: rules/task-reports/2026-04/260403_004
+[Gate Light] Healthcheck evidence verified (Path + Content).
+[Gate Light] Skipping DoD Evidence Excerpt Check (Preview Mode).
+[Gate Light] Checking Deletion Audit (Locks & Runs)...
+[Gate Light] Deletion Audit: No lock/index yet (Assuming Pre-Integrate or First Run in progress).
+[Gate Light] Checking No Auto-Merge (Git Forbidden Commands)...
+[Gate Light] No Auto-Merge verified.
+[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
+[Gate Light] Fetching origin/main history for diff context...
+[Gate Light] Allowed legacy task_id (transition): 260403_003
+[Gate Light] NoHistoricalEvidenceTouch verified.
+[Gate Light] Skipping SnippetCommitMustMatch check (Preview Mode).
+[Gate Light] Checking Rank V2 Contract Version Guard...
+[Gate Light] Base Commit: f1bedcf162e69f46aa77e92565b9083b947212c9
+[Gate Light] Schema Unchanged (3bd83a08). Version check skipped.
+[Gate Light] Rank V2 Contract Version Guard PASS
+[Gate Light] Checking Heavy Mandatory Evidence...
+[Gate Light] Universe runs contract: SKIP (server unreachable)
+[Gate Light] Scanner runs contract: SKIP (server unreachable)
+[Gate Light] Trading routes contract: SKIP (server unreachable)
+[Gate Light] FAILED: Heavy mandatory evidence incomplete.
+GATE_LIGHT_EXIT=1

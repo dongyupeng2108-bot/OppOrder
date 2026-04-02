@@ -1,0 +1,540 @@
+Trae Task Report
+Task ID: 260403_004
+Header: TraeTask_260403_004
+Date: 2026-04-02T19:13:36.134Z
+Branch: 260403_004
+Commit: c8fecf1e63de20a8dee0a0f864d686b919e45fcc
+
+
+=== RESULT_JSON ===
+(See result_260403_004.json)
+
+=== INDEX ===
+(See deliverables_index_260403_004.json)
+
+=== LOG_HEAD ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260403_004
+PR_TASK_ID_DETECTED=260403_004
+TARGET_TASK_ID=260403_004
+LATEST_TASK_ID=260403_004
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] TASK_PROFILE=heavy
+[Gate Light] Verifying task_id: 260403_004
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Report Block Check Passed: notify_260403_004.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260403_004.txt
+[Gate Light] Header Check Passed: TraeTask_260403_004
+[Gate Light] Checking Workspace Healer Evidence...
+[Gate Light] Workspace Healer verified (Clean Environment).
+[Gate Light] Skipping Error Digest Validation (Preview Mode).
+[Gate Light] Checking doc path standards...
+[Gate Light] Doc path standards verified.
+[Gate Light] Checking for legacy doc path references...
+[CheckDocPathRefs] Scanning for legacy doc path references...
+[CheckDocPathRefs] PASS: No legacy doc path references found.
+...
+
+=== LOG_TAIL ===
+...
+[Gate Light] No Auto-Merge verified.
+[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
+[Gate Light] Fetching origin/main history for diff context...
+[Gate Light] Allowed legacy task_id (transition): 260403_003
+[Gate Light] NoHistoricalEvidenceTouch verified.
+[Gate Light] Skipping SnippetCommitMustMatch check (Preview Mode).
+[Gate Light] Checking Rank V2 Contract Version Guard...
+[Gate Light] Base Commit: f1bedcf162e69f46aa77e92565b9083b947212c9
+[Gate Light] Schema Unchanged (3bd83a08). Version check skipped.
+[Gate Light] Rank V2 Contract Version Guard PASS
+[Gate Light] Checking Heavy Mandatory Evidence...
+
+[Gate Light] Universe runs contract: SKIP (server unreachable)
+[Gate Light] Scanner runs contract: SKIP (server unreachable)
+[Gate Light] Trading routes contract: SKIP (server unreachable)
+[Gate Light] FAILED: Heavy mandatory evidence incomplete.
+  has_first_break_layer=true
+  has_fail_to_pass=false
+  has_real_runtime=false
+  has_non_regression_or_workflow_evidence=true
+
+Trae Task Report
+Task ID: 260403_004
+Header: TraeTask_260403_004
+Date: 2026-04-02T19:11:49.792Z
+Branch: 260403_004
+Commit: 849a118c422eca05b0ffaceacc977e46c37a748b
+
+
+=== RESULT_JSON ===
+(See result_260403_004.json)
+
+=== INDEX ===
+(See deliverables_index_260403_004.json)
+
+=== LOG_HEAD ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260403_004
+PR_TASK_ID_DETECTED=260403_004
+TARGET_TASK_ID=260403_004
+LATEST_TASK_ID=260403_004
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] TASK_PROFILE=heavy
+[Gate Light] Verifying task_id: 260403_004
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Report Block Check Passed: notify_260403_004.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260403_004.txt
+[Gate Light] Header Check Passed: TraeTask_260403_004
+[Gate Light] Checking Workspace Healer Evidence...
+[Gate Light] Workspace Healer verified (Clean Environment).
+[Gate Light] Skipping Error Digest Validation (Preview Mode).
+[Gate Light] Checking doc path standards...
+[Gate Light] Doc path standards verified.
+[Gate Light] Checking for legacy doc path references...
+[CheckDocPathRefs] Scanning for legacy doc path references...
+[CheckDocPathRefs] PASS: No legacy doc path references found.
+...
+
+=== LOG_TAIL ===
+...
+[Gate Light] No Auto-Merge verified.
+[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
+[Gate Light] Fetching origin/main history for diff context...
+[Gate Light] Allowed legacy task_id (transition): 260403_003
+[Gate Light] NoHistoricalEvidenceTouch verified.
+[Gate Light] Skipping SnippetCommitMustMatch check (Preview Mode).
+[Gate Light] Checking Rank V2 Contract Version Guard...
+[Gate Light] Base Commit: f1bedcf162e69f46aa77e92565b9083b947212c9
+[Gate Light] Schema Unchanged (3bd83a08). Version check skipped.
+[Gate Light] Rank V2 Contract Version Guard PASS
+[Gate Light] Checking Heavy Mandatory Evidence...
+
+[Gate Light] Universe runs contract: SKIP (server unreachable)
+[Gate Light] Scanner runs contract: SKIP (server unreachable)
+[Gate Light] Trading routes contract: SKIP (server unreachable)
+[Gate Light] FAILED: Heavy mandatory evidence incomplete.
+  has_first_break_layer=true
+  has_fail_to_pass=false
+  has_real_runtime=false
+  has_non_regression_or_workflow_evidence=true
+
+Trae Task Report
+Task ID: 260403_004
+Header: TraeTask_260403_004
+Date: 2026-04-02T19:09:59.232Z
+Branch: 260403_004
+Commit: 09847f54a1638fc79e158364cfe28511b74f284d
+
+
+=== RESULT_JSON ===
+(See result_260403_004.json)
+
+=== INDEX ===
+(See deliverables_index_260403_004.json)
+
+=== LOG_HEAD ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260403_004
+PR_TASK_ID_DETECTED=260403_004
+TARGET_TASK_ID=260403_004
+LATEST_TASK_ID=260403_004
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] TASK_PROFILE=heavy
+[Gate Light] Verifying task_id: 260403_004
+[Gate Light] Running Automation Pack V1 Hard Guards...
+
+[Gate Light] FAILED: Report Block Check for notify_260403_004.txt
+  Missing Blocks: === DOD_EVIDENCE_STDOUT ===
+  Missing Blocks: === GATE_LIGHT_PREVIEW === OR === GATE_LIGHT_VERIFY ===
+  ACTION: Use 'assemble_evidence.mjs' to regenerate reports.
+...
+
+=== LOG_TAIL ===
+...
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260403_004
+PR_TASK_ID_DETECTED=260403_004
+TARGET_TASK_ID=260403_004
+LATEST_TASK_ID=260403_004
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] TASK_PROFILE=heavy
+[Gate Light] Verifying task_id: 260403_004
+[Gate Light] Running Automation Pack V1 Hard Guards...
+
+[Gate Light] FAILED: Report Block Check for notify_260403_004.txt
+  Missing Blocks: === DOD_EVIDENCE_STDOUT ===
+  Missing Blocks: === GATE_LIGHT_PREVIEW === OR === GATE_LIGHT_VERIFY ===
+  ACTION: Use 'assemble_evidence.mjs' to regenerate reports.
+
+=== DOD_EVIDENCE_STDOUT ===
+RESULT_JSON
+rules/task-reports/2026-04/260403_004/result_260403_004.json
+LOG_HEAD
+[LocalFinalize] task 260403_004
+LOG_TAIL
+local finalize flow
+EVIDENCE
+rules/task-reports/2026-04/260403_004/trae_report_snippet_260403_004.txt
+INDEX
+rules/task-reports/2026-04/260403_004/result_260403_004.json
+===========================
+
+
+=== CI_PARITY_PREVIEW ===
+Base: f1bedcf162e69f46aa77e92565b9083b947212c9
+Head: 09847f54a1638fc79e158364cfe28511b74f284d
+MergeBase: f1bedcf162e69f46aa77e92565b9083b947212c9
+Source: JSON (Evidence-as-Code)
+Scope: 10 files
+Files (Top 3):
+  - rules/LATEST.json
+  - rules/rules/PROJECT_MASTER_PLAN.md
+  - rules/rules/PROJECT_RULES.md
+...
+=========================
+
+=== WORKSPACE_HEALER ===
+Result: PASS
+Mode: EnforceClean
+Tracked Changed: 0
+Untracked: 0
+========================
+
+
+
+
+
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260403_004
+PR_TASK_ID_DETECTED=260403_004
+TARGET_TASK_ID=260403_004
+LATEST_TASK_ID=260403_004
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] TASK_PROFILE=heavy
+[Gate Light] Verifying task_id: 260403_004
+[Gate Light] Running Automation Pack V1 Hard Guards...
+
+[Gate Light] FAILED: Report Block Check for notify_260403_004.txt
+  Missing Blocks: === DOD_EVIDENCE_STDOUT ===
+  Missing Blocks: === GATE_LIGHT_PREVIEW === OR === GATE_LIGHT_VERIFY ===
+  ACTION: Use 'assemble_evidence.mjs' to regenerate reports.
+
+
+
+=== ERROR_SUMMARY ===
+TASK_ID: 260403_004
+COMMIT: 09847f54a1638fc79e158364cfe28511b74f284d
+TOTAL_ERRORS: 0
+MODE: LOCAL
+CONTRACT_SELF_CHECK_EXIT: N/A
+CONTRACT_SELF_CHECK_LINES: N/A
+
+TOP ERROR CLASSES:
+None
+
+TOP ERROR TIERS:
+None
+
+Errors (First 5):
+=====================
+
+GATE_LIGHT_EXIT=0
+[Generated by scripts/assemble_evidence.mjs]
+
+
+=== CI_PARITY_PREVIEW ===
+Base: f1bedcf162e69f46aa77e92565b9083b947212c9
+Head: 849a118c422eca05b0ffaceacc977e46c37a748b
+MergeBase: f1bedcf162e69f46aa77e92565b9083b947212c9
+Source: JSON (Evidence-as-Code)
+Scope: 15 files
+Files (Top 3):
+  - rules/LATEST.json
+  - rules/rules/PROJECT_MASTER_PLAN.md
+  - rules/rules/PROJECT_RULES.md
+...
+=========================
+
+=== WORKSPACE_HEALER ===
+Result: PASS
+Mode: EnforceClean
+Tracked Changed: 0
+Untracked: 0
+========================
+
+
+
+
+
+=== GATE_LIGHT_PREVIEW ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260403_004
+PR_TASK_ID_DETECTED=260403_004
+TARGET_TASK_ID=260403_004
+LATEST_TASK_ID=260403_004
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] TASK_PROFILE=heavy
+[Gate Light] Verifying task_id: 260403_004
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Report Block Check Passed: notify_260403_004.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260403_004.txt
+[Gate Light] Header Check Passed: TraeTask_260403_004
+[Gate Light] Checking Workspace Healer Evidence...
+[Gate Light] Workspace Healer verified (Clean Environment).
+[Gate Light] Skipping Error Digest Validation (Preview Mode).
+[Gate Light] Checking doc path standards...
+[Gate Light] Doc path standards verified.
+[Gate Light] Checking for legacy doc path references...
+[CheckDocPathRefs] Scanning for legacy doc path references...
+[CheckDocPathRefs] PASS: No legacy doc path references found.
+[Gate Light] Checking for banned cmd syntax in PowerShell scripts...
+Starting static scan for banned cmd syntax in .ps1 files...
+Scanning targets: scripts/run_task.ps1, scripts/test_fail_budget.ps1, scripts/ps/Invoke-Step.ps1
+Static scan PASSED.
+[Gate Light] Checking for global healthcheck artifacts...
+[Gate Light] Global Artifact Guard verified.
+[Gate Light] MOCK_SERVER_SESSION=starting script=E:\OppRadar\OppRadar\mock_server_53122.mjs
+[Gate Light] MOCK_SERVER_SESSION=ready pid=7904
+[Gate Light] HEAVY_PARALLEL_START: news/rank/export/ledger
+[Contract Check] Loading schema from: E:\OppRadar\OppRadar\contracts\news_pull_response.schema.json
+[Contract Check] Validating Success Sample...
+PASS
+[Contract Check] Validating Error Sample...
+PASS
+[Contract Check] All samples validated against schema.
+=== Rank V2 Contract Verification ===
+Schema loaded.
+=== Export V1 Contract Verification ===
+Schema loaded.
+=== Ledger V0 Contract Verification ===
+Schema loaded.
+Server already running.
+Fetching http://localhost:53122/opportunities/rank_v2?provider=mock&limit=5&run_id=verify_rank_v2...
+Received 3 items.
+Validating against schema...
+Schema Validation PASSED.
+Response Hash: 12827176
+::set-output name=rank_v2_hash::12827176
+VERIFICATION_SUCCESS
+Server already running.
+Generating Run assets via http://localhost:53122/scans/run...
+Server already running.
+Fetching /opportunities/ledger/query_v0?limit=1...
+Validating against schema...
+Validation PASSED.
+Run assets generated. Run ID: sc_80e24507
+Fetching Export: http://localhost:53122/opportunities/runs/export_v1?run_id=sc_80e24507...
+Received Export JSON.
+Validating against schema...
+Export Schema Validation PASSED.
+Export Hash: b1ba0e44
+::set-output name=export_v1_hash::b1ba0e44
+EXPORT_CONTRACT_VERIFICATION_SUCCESS
+[Gate Light] HEAVY_PARALLEL_DONE: {"news":0,"rank":0,"export":0,"ledger":0}
+[Gate Light] MOCK_SERVER_SESSION=stopping
+[Gate Light] HEAVY_PARALLEL_START: scanner/universe/trading
+[Gate Light] Checking Scanner API Contract...
+[Gate Light] Checking Universe API Contract...
+[Gate Light] Checking Trading Routes API Contract...
+[Gate Light] HEAVY_PARALLEL_DONE: scanner/universe/trading
+[Gate Light] Checking healthcheck evidence...
+[Gate Light] Using evidence directory: rules/task-reports/2026-04/260403_004
+[Gate Light] Healthcheck evidence verified (Path + Content).
+[Gate Light] Skipping DoD Evidence Excerpt Check (Preview Mode).
+[Gate Light] Checking Deletion Audit (Locks & Runs)...
+[Gate Light] Deletion Audit: No lock/index yet (Assuming Pre-Integrate or First Run in progress).
+[Gate Light] Checking No Auto-Merge (Git Forbidden Commands)...
+[Gate Light] No Auto-Merge verified.
+[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
+[Gate Light] Fetching origin/main history for diff context...
+[Gate Light] Allowed legacy task_id (transition): 260403_003
+[Gate Light] NoHistoricalEvidenceTouch verified.
+[Gate Light] Skipping SnippetCommitMustMatch check (Preview Mode).
+[Gate Light] Checking Rank V2 Contract Version Guard...
+[Gate Light] Base Commit: f1bedcf162e69f46aa77e92565b9083b947212c9
+[Gate Light] Schema Unchanged (3bd83a08). Version check skipped.
+[Gate Light] Rank V2 Contract Version Guard PASS
+[Gate Light] Checking Heavy Mandatory Evidence...
+
+[Gate Light] Universe runs contract: SKIP (server unreachable)
+[Gate Light] Scanner runs contract: SKIP (server unreachable)
+[Gate Light] Trading routes contract: SKIP (server unreachable)
+[Gate Light] FAILED: Heavy mandatory evidence incomplete.
+  has_first_break_layer=true
+  has_fail_to_pass=false
+  has_real_runtime=false
+  has_non_regression_or_workflow_evidence=true
+==========================
+
+
+
+=== ERROR_SUMMARY ===
+TASK_ID: 260403_004
+COMMIT: 849a118c422eca05b0ffaceacc977e46c37a748b
+TOTAL_ERRORS: 0
+MODE: LOCAL
+CONTRACT_SELF_CHECK_EXIT: N/A
+CONTRACT_SELF_CHECK_LINES: N/A
+
+TOP ERROR CLASSES:
+None
+
+TOP ERROR TIERS:
+None
+
+Errors (First 5):
+=====================
+
+GATE_LIGHT_EXIT=0
+[Generated by scripts/assemble_evidence.mjs]
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260403_004_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_SITE_HEALTH_ROOT_53122: 260403_004_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260403_004_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_SITE_HEALTH_PAIRS_53122: 260403_004_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+
+=== CI_PARITY_PREVIEW ===
+Base: f1bedcf162e69f46aa77e92565b9083b947212c9
+Head: c8fecf1e63de20a8dee0a0f864d686b919e45fcc
+MergeBase: f1bedcf162e69f46aa77e92565b9083b947212c9
+Source: JSON (Evidence-as-Code)
+Scope: 15 files
+Files (Top 3):
+  - rules/LATEST.json
+  - rules/rules/PROJECT_MASTER_PLAN.md
+  - rules/rules/PROJECT_RULES.md
+...
+=========================
+
+=== WORKSPACE_HEALER ===
+Result: PASS
+Mode: EnforceClean
+Tracked Changed: 0
+Untracked: 0
+========================
+
+
+
+
+
+=== GATE_LIGHT_PREVIEW ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260403_004
+PR_TASK_ID_DETECTED=260403_004
+TARGET_TASK_ID=260403_004
+LATEST_TASK_ID=260403_004
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] TASK_PROFILE=heavy
+[Gate Light] Verifying task_id: 260403_004
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Report Block Check Passed: notify_260403_004.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260403_004.txt
+[Gate Light] Header Check Passed: TraeTask_260403_004
+[Gate Light] Checking Workspace Healer Evidence...
+[Gate Light] Workspace Healer verified (Clean Environment).
+[Gate Light] Skipping Error Digest Validation (Preview Mode).
+[Gate Light] Checking doc path standards...
+[Gate Light] Doc path standards verified.
+[Gate Light] Checking for legacy doc path references...
+[CheckDocPathRefs] Scanning for legacy doc path references...
+[CheckDocPathRefs] PASS: No legacy doc path references found.
+[Gate Light] Checking for banned cmd syntax in PowerShell scripts...
+Starting static scan for banned cmd syntax in .ps1 files...
+Scanning targets: scripts/run_task.ps1, scripts/test_fail_budget.ps1, scripts/ps/Invoke-Step.ps1
+Static scan PASSED.
+[Gate Light] Checking for global healthcheck artifacts...
+[Gate Light] Global Artifact Guard verified.
+[Gate Light] MOCK_SERVER_SESSION=starting script=E:\OppRadar\OppRadar\mock_server_53122.mjs
+[Gate Light] MOCK_SERVER_SESSION=ready pid=15940
+[Gate Light] HEAVY_PARALLEL_START: news/rank/export/ledger
+[Contract Check] Loading schema from: E:\OppRadar\OppRadar\contracts\news_pull_response.schema.json
+[Contract Check] Validating Success Sample...
+PASS
+[Contract Check] Validating Error Sample...
+PASS
+[Contract Check] All samples validated against schema.
+=== Rank V2 Contract Verification ===
+Schema loaded.
+=== Export V1 Contract Verification ===
+Schema loaded.
+=== Ledger V0 Contract Verification ===
+Schema loaded.
+Server already running.
+Fetching http://localhost:53122/opportunities/rank_v2?provider=mock&limit=5&run_id=verify_rank_v2...
+Received 3 items.
+Validating against schema...
+Schema Validation PASSED.
+Response Hash: 12827176
+::set-output name=rank_v2_hash::12827176
+VERIFICATION_SUCCESS
+Server already running.
+Generating Run assets via http://localhost:53122/scans/run...
+Server already running.
+Fetching /opportunities/ledger/query_v0?limit=1...
+Validating against schema...
+Validation PASSED.
+Run assets generated. Run ID: sc_5ce026be
+Fetching Export: http://localhost:53122/opportunities/runs/export_v1?run_id=sc_5ce026be...
+Received Export JSON.
+Validating against schema...
+Export Schema Validation PASSED.
+Export Hash: b6e7d800
+::set-output name=export_v1_hash::b6e7d800
+EXPORT_CONTRACT_VERIFICATION_SUCCESS
+[Gate Light] HEAVY_PARALLEL_DONE: {"news":0,"rank":0,"export":0,"ledger":0}
+[Gate Light] MOCK_SERVER_SESSION=stopping
+[Gate Light] HEAVY_PARALLEL_START: scanner/universe/trading
+[Gate Light] Checking Scanner API Contract...
+[Gate Light] Checking Universe API Contract...
+[Gate Light] Checking Trading Routes API Contract...
+[Gate Light] HEAVY_PARALLEL_DONE: scanner/universe/trading
+[Gate Light] Checking healthcheck evidence...
+[Gate Light] Using evidence directory: rules/task-reports/2026-04/260403_004
+[Gate Light] Healthcheck evidence verified (Path + Content).
+[Gate Light] Skipping DoD Evidence Excerpt Check (Preview Mode).
+[Gate Light] Checking Deletion Audit (Locks & Runs)...
+[Gate Light] Deletion Audit: No lock/index yet (Assuming Pre-Integrate or First Run in progress).
+[Gate Light] Checking No Auto-Merge (Git Forbidden Commands)...
+[Gate Light] No Auto-Merge verified.
+[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
+[Gate Light] Fetching origin/main history for diff context...
+[Gate Light] Allowed legacy task_id (transition): 260403_003
+[Gate Light] NoHistoricalEvidenceTouch verified.
+[Gate Light] Skipping SnippetCommitMustMatch check (Preview Mode).
+[Gate Light] Checking Rank V2 Contract Version Guard...
+[Gate Light] Base Commit: f1bedcf162e69f46aa77e92565b9083b947212c9
+[Gate Light] Schema Unchanged (3bd83a08). Version check skipped.
+[Gate Light] Rank V2 Contract Version Guard PASS
+[Gate Light] Checking Heavy Mandatory Evidence...
+
+[Gate Light] Universe runs contract: SKIP (server unreachable)
+[Gate Light] Scanner runs contract: SKIP (server unreachable)
+[Gate Light] Trading routes contract: SKIP (server unreachable)
+[Gate Light] FAILED: Heavy mandatory evidence incomplete.
+  has_first_break_layer=true
+  has_fail_to_pass=false
+  has_real_runtime=false
+  has_non_regression_or_workflow_evidence=true
+==========================
+
+
+
+=== ERROR_SUMMARY ===
+TASK_ID: 260403_004
+COMMIT: c8fecf1e63de20a8dee0a0f864d686b919e45fcc
+TOTAL_ERRORS: 0
+MODE: LOCAL
+CONTRACT_SELF_CHECK_EXIT: N/A
+CONTRACT_SELF_CHECK_LINES: N/A
+
+TOP ERROR CLASSES:
+None
+
+TOP ERROR TIERS:
+None
+
+Errors (First 5):
+=====================
+
+GATE_LIGHT_EXIT=0
+[Generated by scripts/assemble_evidence.mjs]
