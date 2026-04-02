@@ -1651,13 +1651,35 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
 
     if (isHeavyProfile) {
         console.log('[Gate Light] Checking Heavy Mandatory Evidence...');
-        const truthJsonFiles = fs.readdirSync(result_dir)
-            .filter((name) => name.endsWith('.json') && name.includes(task_id) && name.includes('truth_audit'));
+        const collectTruthJson = (root) => {
+            const out = [];
+            const stack = [root];
+            while (stack.length) {
+                const dir = stack.pop();
+                let entries = [];
+                try { entries = fs.readdirSync(dir, { withFileTypes: true }); } catch (_) { continue; }
+                for (const ent of entries) {
+                    const full = path.join(dir, ent.name);
+                    if (ent.isDirectory()) {
+                        // prune obvious noise dirs
+                        if (!/^(runs|envelopes|logs|tmp)$/i.test(ent.name)) stack.push(full);
+                    } else if (ent.isFile()) {
+                        if (ent.name.endsWith('.json') && ent.name.includes(task_id) && ent.name.includes('truth_audit')) {
+                            out.push(full);
+                        }
+                    }
+                }
+            }
+            return out;
+        };
+        const truthJsonFiles = collectTruthJson(result_dir);
         if (truthJsonFiles.length === 0) {
             console.error('[Gate Light] FAILED: Heavy profile missing truth_audit json evidence.');
             process.exit(1);
         }
-        const merged = truthJsonFiles.map((name) => fs.readFileSync(path.join(result_dir, name), 'utf8')).join('\n');
+        const merged = truthJsonFiles.map((file) => {
+            try { return fs.readFileSync(file, 'utf8'); } catch { return ''; }
+        }).join('\n');
         const hasFirstBreak = /"first_break_layer"\s*:/.test(merged);
         const hasFailPass = /fail_to_pass|preFail|postPass|fail->pass|Fail -> Pass/i.test(merged);
         const hasRealRuntime = /"sample_reconcile_rows"\s*:|"samples"\s*:|is_real_runtime|real runtime/i.test(merged);
