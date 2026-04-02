@@ -1,0 +1,35 @@
+=== TRAE_REPORT_SNIPPET ===
+
+Header: TraeTask_260330_045
+BRANCH: 260330_045
+COMMIT: 48c32010
+
+=== GIT_SCOPE_DIFF ===
+EMPTY_DIFF_OK
+Reason: No code changes detected against origin/main (Evidence/Docs update only)
+
+=== DOD_EVIDENCE_STDOUT ===
+Missing Blocks:
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260330_045_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260330_045_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+
+=== CI_PARITY_PREVIEW ===
+Base: 48c3201
+Head: 48c3201
+MergeBase: 48c3201
+Source: JSON (Evidence-as-Code)
+Scope: 0 files
+Files (Top 3):
+
+
+=========================
+
+=== GATE_LIGHT_PREVIEW ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260330_045
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] Verifying task_id: 260330_045
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] FAILED: Report Block Check for notify_260330_045.txt
+GATE_LIGHT_EXIT=1

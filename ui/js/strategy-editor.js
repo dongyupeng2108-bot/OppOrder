@@ -1333,7 +1333,7 @@ function se_renderOverview(status, summary, ordersData, postmortemPayload) {
   se_setText('se-summary-yes-position', yesPos);
   se_setText('se-summary-no-position', noPos);
   se_setText('se-summary-filled-total', filledTotal);
-  se_setText('se-summary-realized-total', realizedTotal);
+  se_setText('se-summary-realized-total', se_formatPnlDisplay(realizedTotal));
   se_setText('se-summary-unrealized-total', unrealizedTotal);
   se_setText('se-summary-updated-at', updatedAt);
   const savedConfig = status?.saved_config && typeof status.saved_config === 'object' ? status.saved_config : null;
@@ -1372,14 +1372,14 @@ function se_renderOverview(status, summary, ordersData, postmortemPayload) {
   se_setText('se-prev-completed-at', completedAt);
   se_setText('se-prev-filled-total', postmortem?.filled_total ?? lastRun?.filled_total);
   se_setText('se-prev-cancelled-total', postmortem?.cancelled_total ?? lastRun?.cancelled_total ?? 0);
-  se_setText('se-prev-pnl', postmortem?.realized_gross_pnl_total ?? lastRun?.realized_gross_pnl_total);
-  se_setText('se-prev-realized-total', postmortem?.realized_gross_pnl_total ?? lastRun?.realized_gross_pnl_total);
+  se_setText('se-prev-pnl', se_formatPnlDisplay(postmortem?.realized_gross_pnl_total ?? lastRun?.realized_gross_pnl_total));
+  se_setText('se-prev-realized-total', se_formatPnlDisplay(postmortem?.realized_gross_pnl_total ?? lastRun?.realized_gross_pnl_total));
   se_setText('se-prev-action-summary', postmortem?.action_summary ?? 'N/A (null)');
   se_setText('se-prev-param-summary', lastActiveConfigText);
   se_setText('se-runtime-yes-position', yesPos);
   se_setText('se-runtime-no-position', noPos);
   se_setText('se-runtime-filled-total', filledTotal);
-  se_setText('se-runtime-realized-total', realizedTotal);
+  se_setText('se-runtime-realized-total', se_formatPnlDisplay(realizedTotal));
   const lastActiveConfigDebugText = lastActiveConfig
     ? `open_delay=${se_formatStateValue(lastActiveConfig.open_delay_sec)} | prices=${se_formatStateValue(lastActiveConfig.ladder_prices)} | size=${se_formatStateValue(lastActiveConfig.ladder_size)} | atr=${se_formatStateValue(lastActiveConfig.atr_multiple)} | cancel=${se_formatStateValue(lastActiveConfig.cancel_all_remaining_sec)}`
     : 'N/A (null)';
@@ -1389,12 +1389,12 @@ function se_renderOverview(status, summary, ordersData, postmortemPayload) {
   se_setText('se-last-window-id', postmortem?.window_id || lastRun?.current_window_id);
   se_setText('se-last-phase', lastRun?.phase);
   se_setText('se-last-filled-total', postmortem?.filled_total ?? lastRun?.filled_total);
-  se_setText('se-last-realized-total', postmortem?.realized_gross_pnl_total ?? lastRun?.realized_gross_pnl_total);
+  se_setText('se-last-realized-total', se_formatPnlDisplay(postmortem?.realized_gross_pnl_total ?? lastRun?.realized_gross_pnl_total));
   se_setText('se-last-unrealized-total', postmortem?.unrealized_gross_pnl_total ?? lastRun?.unrealized_gross_pnl_total);
   se_setText('se-pm-window-id', postmortem?.window_id);
   se_setText('se-pm-stop-reason', stopReasonText);
   se_setText('se-pm-filled-total', postmortem?.filled_total);
-  se_setText('se-pm-realized-total', postmortem?.realized_gross_pnl_total);
+  se_setText('se-pm-realized-total', se_formatPnlDisplay(postmortem?.realized_gross_pnl_total));
   se_setText('se-pm-unrealized-total', postmortem?.unrealized_gross_pnl_total);
   se_setText('se-pm-action-summary', postmortem?.action_summary);
   const toFinite = (value) => {
@@ -1450,10 +1450,6 @@ function se_renderPerformance(perfPayload, status) {
     const num = Number(value);
     return Number.isFinite(num) ? num : null;
   };
-  const formatFixed1 = (value) => {
-    const num = toFinite(value);
-    return num === null ? '—' : num.toFixed(1);
-  };
   const winNumerator = rows.filter((row) => toFinite(row?.realized_gross_pnl_total) !== null && toFinite(row?.realized_gross_pnl_total) > 0).length;
   const winDenominator = rows.length;
   const winRateText = winDenominator > 0 ? `${((winNumerator / winDenominator) * 100).toFixed(1)}%` : '—';
@@ -1461,8 +1457,8 @@ function se_renderPerformance(perfPayload, status) {
   document.getElementById('se-perf-window-count').textContent = se_formatStateValue(summary?.window_count);
   document.getElementById('se-perf-win-rate').textContent = winRateText;
   document.getElementById('se-perf-filled-total').textContent = se_formatStateValue(summary?.filled_total);
-  document.getElementById('se-perf-realized-total').textContent = formatFixed1(summary?.realized_gross_pnl_total);
-  document.getElementById('se-perf-avg-realized').textContent = se_formatStateValue(summary?.avg_realized_gross_pnl_per_window);
+  document.getElementById('se-perf-realized-total').textContent = se_formatPnlDisplay(summary?.realized_gross_pnl_total, '—');
+  document.getElementById('se-perf-avg-realized').textContent = se_formatPnlDisplay(summary?.avg_realized_gross_pnl_per_window, '—');
   const noteEl = document.getElementById('se-perf-note');
   if (!noteEl) return;
   const empty = (summary?.window_count ?? 0) === 0;
@@ -1485,6 +1481,12 @@ function se_formatStateValue(value) {
   if (value === null || value === undefined || value === '') return 'N/A (null)';
   if (Array.isArray(value)) return value.length ? value.join(',') : '[]';
   return `${value}`;
+}
+
+function se_formatPnlDisplay(value, emptyText = 'N/A (null)') {
+  if (value === null || value === undefined || value === '') return emptyText;
+  const num = Number(value);
+  return Number.isFinite(num) ? num.toFixed(2) : emptyText;
 }
 
 function se_renderOrders(orders, status) {
