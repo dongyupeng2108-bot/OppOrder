@@ -1,0 +1,46 @@
+=== TRAE_REPORT_SNIPPET ===
+
+Header: TraeTask_260403_004
+BRANCH: 260403_004
+COMMIT: 09847f54
+
+=== GIT_SCOPE_DIFF ===
+M	rules/LATEST.json
+M	rules/rules/PROJECT_MASTER_PLAN.md
+M	rules/rules/PROJECT_RULES.md
+M	rules/rules/WORKFLOW.md
+A	rules/task-reports/2026-04/260403_004/260403_004_truth_audit_heavy_gate_efficiency.json
+A	rules/task-reports/2026-04/260403_004/260403_004_truth_audit_heavy_gate_efficiency.log
+A	rules/task-reports/2026-04/260403_004/implementation_260403_004.md
+A	rules/task-reports/2026-04/260403_004/truth_audit_260403_004.md
+M	scripts/gate_light_ci.mjs
+A	scripts/truth_audit_heavy_gate_efficiency_260403_004.mjs
+
+=== DOD_EVIDENCE_STDOUT ===
+Missing Blocks:
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260403_004_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260403_004_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+
+=== CI_PARITY_PREVIEW ===
+Base: f1bedcf
+Head: 09847f5
+MergeBase: f1bedcf
+Source: JSON (Evidence-as-Code)
+Scope: 10 files
+Files (Top 3):
+  - rules/LATEST.json
+  - rules/rules/PROJECT_MASTER_PLAN.md
+  - rules/rules/PROJECT_RULES.md
+  ... (truncated)
+=========================
+
+=== GATE_LIGHT_PREVIEW ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260403_004
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] TASK_PROFILE=heavy
+[Gate Light] Verifying task_id: 260403_004
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] FAILED: Report Block Check for notify_260403_004.txt
+GATE_LIGHT_EXIT=1
