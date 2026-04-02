@@ -15,6 +15,12 @@ const normalizeEntry = (entry = {}) => ({
   data: entry.data && typeof entry.data === 'object' ? entry.data : {}
 });
 
+const THROTTLE_RULES = {
+  RUNNER_TICK: 3000,
+  BOT_TICK_OK: 3000,
+  BOT_DECISION_GATED: 1500
+};
+
 export function createBotLogger(options = {}) {
   const maxEntries = Number.isFinite(options.maxEntries) ? Math.max(1, Math.floor(options.maxEntries)) : 400;
   const logDir = options.logDir || resolve(__dirname, '..', '..', 'data', 'crypto_binary', 'logs');
@@ -22,11 +28,24 @@ export function createBotLogger(options = {}) {
     mkdirSync(logDir, { recursive: true });
   }
   const ring = [];
+  const lastEmitByKey = new Map();
 
   const getFilePath = (ts) => resolve(logDir, `bot_${ts.slice(0, 10)}.jsonl`);
 
   const log = (entry = {}) => {
     const normalized = normalizeEntry(entry);
+    const throttleMs = THROTTLE_RULES[normalized.event] || 0;
+    if (throttleMs > 0) {
+      const key = `${normalized.event}|${normalized.source}|${normalized.window_id ?? '__null__'}`;
+      const nowMs = Date.parse(normalized.ts);
+      const lastMs = lastEmitByKey.get(key) ?? null;
+      if (lastMs != null && Number.isFinite(nowMs) && (nowMs - lastMs) < throttleMs) {
+        return null;
+      }
+      if (Number.isFinite(nowMs)) {
+        lastEmitByKey.set(key, nowMs);
+      }
+    }
     ring.push(normalized);
     if (ring.length > maxEntries) {
       ring.splice(0, ring.length - maxEntries);
