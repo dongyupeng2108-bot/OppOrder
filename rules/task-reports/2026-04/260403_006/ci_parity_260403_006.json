@@ -1,0 +1,21 @@
+{
+  "task_id": "260403_006",
+  "is_shallow_repo": true,
+  "base": "6d4f6665a4cafd6522be19ab09ec973c2af44a2b",
+  "head": "3f82266f171b080369706efffec84bd7b9cf33b2",
+  "merge_base": "6d4f6665a4cafd6522be19ab09ec973c2af44a2b",
+  "scope_files": [
+    "rules/LATEST.json",
+    "rules/rules/PROJECT_MASTER_PLAN.md",
+    "rules/rules/PROJECT_RULES.md",
+    "rules/rules/WORKFLOW.md",
+    "rules/task-reports/2026-04/260403_005/notify_260403_005.txt",
+    "rules/task-reports/2026-04/260403_005/result_260403_005.json",
+    "rules/task-reports/2026-04/260403_005/trae_report_snippet_260403_005.txt",
+    "rules/task-reports/2026-04/260403_005/workspace_healer_260403_005.json",
+    "scripts/gate_light_ci.mjs",
+    "scripts/truth_audit_snippet_git_local_first_260403_006.mjs"
+  ],
+  "scope_count": 10,
+  "generated_at": "2026-04-02T20:25:44.371Z"
+}
