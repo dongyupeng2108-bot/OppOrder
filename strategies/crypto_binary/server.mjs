@@ -307,17 +307,18 @@ const toInternalRunnerConfig = (value) => ({
 const setBotConfigCurrent = (nextConfig, options = {}) => {
   const shouldPersist = options.persist !== false;
   botConfigCurrent = cloneBotConfig(nextConfig);
-  if (botState.getState().running !== true) {
-    const internal = toInternalRunnerConfig(botConfigCurrent);
-    botRunnerConfig.open_delay_sec = internal.open_delay_sec;
-    botRunnerConfig.ladder_prices = [...internal.ladder_prices];
-    botRunnerConfig.ladder_size = internal.ladder_size;
-    botRunnerConfig.atr_multiplier = internal.atr_multiplier;
-    botRunnerConfig.cancel_all_remaining_sec = internal.cancel_all_remaining_sec;
-    botRunnerConfig.up_ladder = cloneLadderRows(internal.up_ladder);
-    botRunnerConfig.down_ladder = cloneLadderRows(internal.down_ladder);
-    botRunnerConfig.up_cancel = cloneCancelConfig(internal.up_cancel);
-    botRunnerConfig.down_cancel = cloneCancelConfig(internal.down_cancel);
+  const internal = toInternalRunnerConfig(botConfigCurrent);
+  botRunnerConfig.open_delay_sec = internal.open_delay_sec;
+  botRunnerConfig.ladder_prices = [...internal.ladder_prices];
+  botRunnerConfig.ladder_size = internal.ladder_size;
+  botRunnerConfig.atr_multiplier = internal.atr_multiplier;
+  botRunnerConfig.cancel_all_remaining_sec = internal.cancel_all_remaining_sec;
+  botRunnerConfig.up_ladder = cloneLadderRows(internal.up_ladder);
+  botRunnerConfig.down_ladder = cloneLadderRows(internal.down_ladder);
+  botRunnerConfig.up_cancel = cloneCancelConfig(internal.up_cancel);
+  botRunnerConfig.down_cancel = cloneCancelConfig(internal.down_cancel);
+  if (botState.getState().running === true) {
+    botActiveRuntimeConfig = cloneBotConfig(botConfigCurrent);
   }
   if (shouldPersist) {
     persistBotRecoverySnapshot();
@@ -1111,9 +1112,16 @@ botState.patchState({
 });
 
 function syncBotStateFromLedger() {
+  const state = botState.getState();
+  const currentWindowId = state?.current_window_id ?? null;
   const orders = botExecutorPaper.getOrders();
-  const openYes = orders.filter(o => o.status === 'OPEN' && o.side === 'YES').map(o => o.order_id);
-  const openNo = orders.filter(o => o.status === 'OPEN' && o.side === 'NO').map(o => o.order_id);
+  const scopedOpenOrders = orders.filter((o) => (
+    o.status === 'OPEN'
+    && currentWindowId
+    && o.window_id === currentWindowId
+  ));
+  const openYes = scopedOpenOrders.filter(o => o.side === 'YES').map(o => o.order_id);
+  const openNo = scopedOpenOrders.filter(o => o.side === 'NO').map(o => o.order_id);
   botState.patchState({
     yes_order_ids: openYes,
     no_order_ids: openNo,
@@ -1186,10 +1194,7 @@ function restoreBotRecoverySnapshot() {
         phase: recoveredState.phase || 'IDLE'
       });
     }
-    const runtimeCfg = snapshot.active_runtime_config && typeof snapshot.active_runtime_config === 'object'
-      ? snapshot.active_runtime_config
-      : savedCfgRaw;
-    botActiveRuntimeConfig = cloneBotConfig(coerceRecoveredBotConfig(runtimeCfg));
+    botActiveRuntimeConfig = cloneBotConfig(recoveredConfig);
     botRuntimeWasRunning = false;
     persistBotRecoverySnapshot();
     botLogger.log({

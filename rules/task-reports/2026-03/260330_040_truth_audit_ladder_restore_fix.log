@@ -1,0 +1,6 @@
+script_name=truth_audit_ladder_restore_fix_260330_040
+task_id=260330_040
+sample_name=ladder_restore_fix_v1
+pass=true
+first_break_layer=NONE_CHAIN_PASS
+message=startup_active_snapshot_restore fixed

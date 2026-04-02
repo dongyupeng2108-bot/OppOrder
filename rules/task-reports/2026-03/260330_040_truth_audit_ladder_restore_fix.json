@@ -1,0 +1,522 @@
+{
+  "script_name": "truth_audit_ladder_restore_fix_260330_040",
+  "task_id": "260330_040",
+  "sample_name": "ladder_restore_fix_v1",
+  "pass": true,
+  "message": "startup_active_snapshot_restore fixed",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "rules/task-reports/2026-03/260330_040_truth_audit_ladder_restore_fix.json",
+  "summary": {
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "pass": true
+  },
+  "raw_excerpt": {
+    "pre_fail_active_signature": "YES[0.21:5:0.31,0.23:5:0.33]|NO[0.25:6:0.35,0.27:6:0.37]",
+    "post_active_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+    "post_place_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]"
+  },
+  "generated_at": "2026-04-02T03:26:50.145Z",
+  "conclusion_block": {
+    "verdict": "A：通过",
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "pass": true
+  },
+  "evidence_index": {
+    "fail_to_pass": {
+      "pre": {
+        "source_file": "E:\\OppRadar\\rules\\task-reports\\2026-03\\260330_039_truth_audit_ladder_point_hypothesis_chain.json",
+        "first_break_layer": "startup_active_snapshot_restore",
+        "timing_after_saved_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+        "timing_after_active_signature": "YES[0.21:5:0.31,0.23:5:0.33]|NO[0.25:6:0.35,0.27:6:0.37]",
+        "timing_after_place_signature": "YES[0.21:5:0.31,0.23:5:0.33]|NO[0.25:6:0.35,0.27:6:0.37]"
+      },
+      "post": {
+        "after_update": {
+          "scenario": "after_update_running",
+          "window_id": "audit-040-after_update_running-1775100404809",
+          "saved_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+          "active_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+          "place_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+          "order_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+          "place_log": {
+            "ts": "2026-04-02T03:26:44.918Z",
+            "message": "PLACE_LADDER(YES|0.88:11:0.96,0.89:11:0.97) + PLACE_LADDER(NO|0.9:12:0.98,0.91:12:0.99)",
+            "reason": "ladder_not_posted",
+            "parsed": {
+              "YES": [
+                {
+                  "price": 0.88,
+                  "size": 11,
+                  "tp_price": 0.96
+                },
+                {
+                  "price": 0.89,
+                  "size": 11,
+                  "tp_price": 0.97
+                }
+              ],
+              "NO": [
+                {
+                  "price": 0.9,
+                  "size": 12,
+                  "tp_price": 0.98
+                },
+                {
+                  "price": 0.91,
+                  "size": 12,
+                  "tp_price": 0.99
+                }
+              ]
+            }
+          }
+        },
+        "after_restart": {
+          "scenario": "after_restart",
+          "window_id": "audit-040-after_restart-1775100406054",
+          "saved_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+          "active_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+          "place_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+          "order_signature": "YES[]|NO[]",
+          "place_log": {
+            "ts": "2026-04-02T03:26:48.635Z",
+            "message": "PLACE_LADDER(YES|0.88:11:0.96,0.89:11:0.97) + PLACE_LADDER(NO|0.9:12:0.98,0.91:12:0.99)",
+            "reason": "ladder_not_posted",
+            "parsed": {
+              "YES": [
+                {
+                  "price": 0.88,
+                  "size": 11,
+                  "tp_price": 0.96
+                },
+                {
+                  "price": 0.89,
+                  "size": 11,
+                  "tp_price": 0.97
+                }
+              ],
+              "NO": [
+                {
+                  "price": 0.9,
+                  "size": 12,
+                  "tp_price": 0.98
+                },
+                {
+                  "price": 0.91,
+                  "size": 12,
+                  "tp_price": 0.99
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "four_way_table": {
+      "strategy_setting": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+      "active": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+      "place_ladder": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+      "order_table": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]"
+    },
+    "checks": {
+      "pre_fail_evidence_ok": true,
+      "post_four_way_pass": true,
+      "restart_path_pass": true,
+      "non_regression_no_recovery": true,
+      "non_regression_old_not_resurrected": true,
+      "has_real_place_ladder_log": true
+    },
+    "no_regression": {
+      "no_recovery_new_only": {
+        "scenario": "no_recovery_new_only",
+        "window_id": "audit-040-no_recovery_new_only-1775100408999",
+        "saved_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+        "active_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+        "place_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+        "order_signature": "YES[]|NO[]",
+        "place_log": {
+          "ts": "2026-04-02T03:26:49.194Z",
+          "message": "PLACE_LADDER(YES|0.88:11:0.96,0.89:11:0.97) + PLACE_LADDER(NO|0.9:12:0.98,0.91:12:0.99)",
+          "reason": "ladder_not_posted",
+          "parsed": {
+            "YES": [
+              {
+                "price": 0.88,
+                "size": 11,
+                "tp_price": 0.96
+              },
+              {
+                "price": 0.89,
+                "size": 11,
+                "tp_price": 0.97
+              }
+            ],
+            "NO": [
+              {
+                "price": 0.9,
+                "size": 12,
+                "tp_price": 0.98
+              },
+              {
+                "price": 0.91,
+                "size": 12,
+                "tp_price": 0.99
+              }
+            ]
+          }
+        }
+      },
+      "old_not_resurrected": {
+        "old_signature": "YES[0.21:5:0.31,0.23:5:0.33]|NO[0.25:6:0.35,0.27:6:0.37]",
+        "after_update_place_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+        "after_restart_place_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]"
+      }
+    },
+    "real_place_ladder_log_line": "PLACE_LADDER(YES|0.88:11:0.96,0.89:11:0.97) + PLACE_LADDER(NO|0.9:12:0.98,0.91:12:0.99)",
+    "timeline_head": [
+      {
+        "scenario": "before_update_old",
+        "window_id": "audit-040-before_update_old-1775100402722",
+        "saved_signature": "YES[0.21:5:0.31,0.23:5:0.33]|NO[0.25:6:0.35,0.27:6:0.37]",
+        "active_signature": "YES[0.21:5:0.31,0.23:5:0.33]|NO[0.25:6:0.35,0.27:6:0.37]",
+        "place_signature": "YES[0.21:5:0.31,0.23:5:0.33]|NO[0.25:6:0.35,0.27:6:0.37]",
+        "order_signature": "YES[0.21:5:0.31,0.23:5:0.33]|NO[0.25:6:0.35,0.27:6:0.37]",
+        "place_log": {
+          "ts": "2026-04-02T03:26:44.462Z",
+          "message": "PLACE_LADDER(YES|0.21:5:0.31,0.23:5:0.33) + PLACE_LADDER(NO|0.25:6:0.35,0.27:6:0.37)",
+          "reason": "ladder_not_posted",
+          "parsed": {
+            "YES": [
+              {
+                "price": 0.21,
+                "size": 5,
+                "tp_price": 0.31
+              },
+              {
+                "price": 0.23,
+                "size": 5,
+                "tp_price": 0.33
+              }
+            ],
+            "NO": [
+              {
+                "price": 0.25,
+                "size": 6,
+                "tp_price": 0.35
+              },
+              {
+                "price": 0.27,
+                "size": 6,
+                "tp_price": 0.37
+              }
+            ]
+          }
+        }
+      },
+      {
+        "scenario": "after_update_running",
+        "window_id": "audit-040-after_update_running-1775100404809",
+        "saved_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+        "active_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+        "place_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+        "order_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+        "place_log": {
+          "ts": "2026-04-02T03:26:44.918Z",
+          "message": "PLACE_LADDER(YES|0.88:11:0.96,0.89:11:0.97) + PLACE_LADDER(NO|0.9:12:0.98,0.91:12:0.99)",
+          "reason": "ladder_not_posted",
+          "parsed": {
+            "YES": [
+              {
+                "price": 0.88,
+                "size": 11,
+                "tp_price": 0.96
+              },
+              {
+                "price": 0.89,
+                "size": 11,
+                "tp_price": 0.97
+              }
+            ],
+            "NO": [
+              {
+                "price": 0.9,
+                "size": 12,
+                "tp_price": 0.98
+              },
+              {
+                "price": 0.91,
+                "size": 12,
+                "tp_price": 0.99
+              }
+            ]
+          }
+        }
+      },
+      {
+        "scenario": "restart_probe",
+        "saved_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+        "active_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+        "place_signature": null,
+        "order_signature": null
+      },
+      {
+        "scenario": "after_restart",
+        "window_id": "audit-040-after_restart-1775100406054",
+        "saved_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+        "active_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+        "place_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+        "order_signature": "YES[]|NO[]",
+        "place_log": {
+          "ts": "2026-04-02T03:26:48.635Z",
+          "message": "PLACE_LADDER(YES|0.88:11:0.96,0.89:11:0.97) + PLACE_LADDER(NO|0.9:12:0.98,0.91:12:0.99)",
+          "reason": "ladder_not_posted",
+          "parsed": {
+            "YES": [
+              {
+                "price": 0.88,
+                "size": 11,
+                "tp_price": 0.96
+              },
+              {
+                "price": 0.89,
+                "size": 11,
+                "tp_price": 0.97
+              }
+            ],
+            "NO": [
+              {
+                "price": 0.9,
+                "size": 12,
+                "tp_price": 0.98
+              },
+              {
+                "price": 0.91,
+                "size": 12,
+                "tp_price": 0.99
+              }
+            ]
+          }
+        }
+      },
+      {
+        "scenario": "no_recovery_new_only",
+        "window_id": "audit-040-no_recovery_new_only-1775100408999",
+        "saved_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+        "active_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+        "place_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+        "order_signature": "YES[]|NO[]",
+        "place_log": {
+          "ts": "2026-04-02T03:26:49.194Z",
+          "message": "PLACE_LADDER(YES|0.88:11:0.96,0.89:11:0.97) + PLACE_LADDER(NO|0.9:12:0.98,0.91:12:0.99)",
+          "reason": "ladder_not_posted",
+          "parsed": {
+            "YES": [
+              {
+                "price": 0.88,
+                "size": 11,
+                "tp_price": 0.96
+              },
+              {
+                "price": 0.89,
+                "size": 11,
+                "tp_price": 0.97
+              }
+            ],
+            "NO": [
+              {
+                "price": 0.9,
+                "size": 12,
+                "tp_price": 0.98
+              },
+              {
+                "price": 0.91,
+                "size": 12,
+                "tp_price": 0.99
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "timeline_tail": [
+      {
+        "scenario": "before_update_old",
+        "window_id": "audit-040-before_update_old-1775100402722",
+        "saved_signature": "YES[0.21:5:0.31,0.23:5:0.33]|NO[0.25:6:0.35,0.27:6:0.37]",
+        "active_signature": "YES[0.21:5:0.31,0.23:5:0.33]|NO[0.25:6:0.35,0.27:6:0.37]",
+        "place_signature": "YES[0.21:5:0.31,0.23:5:0.33]|NO[0.25:6:0.35,0.27:6:0.37]",
+        "order_signature": "YES[0.21:5:0.31,0.23:5:0.33]|NO[0.25:6:0.35,0.27:6:0.37]",
+        "place_log": {
+          "ts": "2026-04-02T03:26:44.462Z",
+          "message": "PLACE_LADDER(YES|0.21:5:0.31,0.23:5:0.33) + PLACE_LADDER(NO|0.25:6:0.35,0.27:6:0.37)",
+          "reason": "ladder_not_posted",
+          "parsed": {
+            "YES": [
+              {
+                "price": 0.21,
+                "size": 5,
+                "tp_price": 0.31
+              },
+              {
+                "price": 0.23,
+                "size": 5,
+                "tp_price": 0.33
+              }
+            ],
+            "NO": [
+              {
+                "price": 0.25,
+                "size": 6,
+                "tp_price": 0.35
+              },
+              {
+                "price": 0.27,
+                "size": 6,
+                "tp_price": 0.37
+              }
+            ]
+          }
+        }
+      },
+      {
+        "scenario": "after_update_running",
+        "window_id": "audit-040-after_update_running-1775100404809",
+        "saved_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+        "active_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+        "place_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+        "order_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+        "place_log": {
+          "ts": "2026-04-02T03:26:44.918Z",
+          "message": "PLACE_LADDER(YES|0.88:11:0.96,0.89:11:0.97) + PLACE_LADDER(NO|0.9:12:0.98,0.91:12:0.99)",
+          "reason": "ladder_not_posted",
+          "parsed": {
+            "YES": [
+              {
+                "price": 0.88,
+                "size": 11,
+                "tp_price": 0.96
+              },
+              {
+                "price": 0.89,
+                "size": 11,
+                "tp_price": 0.97
+              }
+            ],
+            "NO": [
+              {
+                "price": 0.9,
+                "size": 12,
+                "tp_price": 0.98
+              },
+              {
+                "price": 0.91,
+                "size": 12,
+                "tp_price": 0.99
+              }
+            ]
+          }
+        }
+      },
+      {
+        "scenario": "restart_probe",
+        "saved_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+        "active_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+        "place_signature": null,
+        "order_signature": null
+      },
+      {
+        "scenario": "after_restart",
+        "window_id": "audit-040-after_restart-1775100406054",
+        "saved_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+        "active_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+        "place_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+        "order_signature": "YES[]|NO[]",
+        "place_log": {
+          "ts": "2026-04-02T03:26:48.635Z",
+          "message": "PLACE_LADDER(YES|0.88:11:0.96,0.89:11:0.97) + PLACE_LADDER(NO|0.9:12:0.98,0.91:12:0.99)",
+          "reason": "ladder_not_posted",
+          "parsed": {
+            "YES": [
+              {
+                "price": 0.88,
+                "size": 11,
+                "tp_price": 0.96
+              },
+              {
+                "price": 0.89,
+                "size": 11,
+                "tp_price": 0.97
+              }
+            ],
+            "NO": [
+              {
+                "price": 0.9,
+                "size": 12,
+                "tp_price": 0.98
+              },
+              {
+                "price": 0.91,
+                "size": 12,
+                "tp_price": 0.99
+              }
+            ]
+          }
+        }
+      },
+      {
+        "scenario": "no_recovery_new_only",
+        "window_id": "audit-040-no_recovery_new_only-1775100408999",
+        "saved_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+        "active_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+        "place_signature": "YES[0.88:11:0.96,0.89:11:0.97]|NO[0.9:12:0.98,0.91:12:0.99]",
+        "order_signature": "YES[]|NO[]",
+        "place_log": {
+          "ts": "2026-04-02T03:26:49.194Z",
+          "message": "PLACE_LADDER(YES|0.88:11:0.96,0.89:11:0.97) + PLACE_LADDER(NO|0.9:12:0.98,0.91:12:0.99)",
+          "reason": "ladder_not_posted",
+          "parsed": {
+            "YES": [
+              {
+                "price": 0.88,
+                "size": 11,
+                "tp_price": 0.96
+              },
+              {
+                "price": 0.89,
+                "size": 11,
+                "tp_price": 0.97
+              }
+            ],
+            "NO": [
+              {
+                "price": 0.9,
+                "size": 12,
+                "tp_price": 0.98
+              },
+              {
+                "price": 0.91,
+                "size": 12,
+                "tp_price": 0.99
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "healthcheck": {
+      "root": 200,
+      "pairs": 404
+    },
+    "heartbeat_log": "rules/task-reports/2026-03/260330_040_truth_audit_ladder_restore_fix.heartbeat.log",
+    "last_heartbeat": {
+      "ts": "2026-04-02T03:26:46.044Z",
+      "event": "HEARTBEAT",
+      "stage": "start_server_ready",
+      "port": 53240
+    },
+    "guardrails": {
+      "max_wall_time_ms": 1500000,
+      "max_silence_ms": 120000,
+      "log_tail": 120
+    }
+  }
+}
