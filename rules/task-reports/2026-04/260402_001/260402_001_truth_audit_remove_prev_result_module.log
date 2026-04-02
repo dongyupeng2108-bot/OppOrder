@@ -1,0 +1,6 @@
+script_name=truth_audit_remove_prev_result_module_260402_001
+task_id=260402_001
+sample_name=remove_prev_result_module_v1
+pass=true
+first_break_layer=NONE_CHAIN_PASS
+message=first_break_layer=NONE_CHAIN_PASS

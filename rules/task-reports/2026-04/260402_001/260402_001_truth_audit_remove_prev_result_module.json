@@ -1,0 +1,151 @@
+{
+  "script_name": "truth_audit_remove_prev_result_module_260402_001",
+  "task_id": "260402_001",
+  "sample_name": "remove_prev_result_module_v1",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "rules/task-reports/2026-04/260402_001/260402_001_truth_audit_remove_prev_result_module.json",
+  "summary": {
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "pass": true
+  },
+  "raw_excerpt": {
+    "checks": {
+      "pre_has_prev_module": true,
+      "post_prev_module_removed": true,
+      "post_no_prev_api_consumption": true,
+      "post_perf_moved_to_prev_position": true,
+      "perf_expression_unchanged": true,
+      "backend_prev_route_removed": true,
+      "backend_perf_route_kept": true,
+      "runtime_perf_available": true,
+      "runtime_prev_route_removed": true
+    },
+    "dependency_audit": {
+      "previous_result_frontend_consumption": {
+        "api": "/bot/postmortem/latest",
+        "fields": [
+          "filled_total",
+          "cancelled_total",
+          "realized_gross_pnl_total"
+        ],
+        "producer": "server.mjs queryLatestBotPostmortem + /bot/postmortem/latest route"
+      },
+      "recent_summary_frontend_consumption": {
+        "api": "/bot/performance/summary?detail=1",
+        "fields": [
+          "window_count",
+          "filled_total",
+          "realized_gross_pnl_total",
+          "avg_realized_gross_pnl_per_window",
+          "participating_postmortem_rows"
+        ],
+        "producer": "server.mjs queryBotPerformanceSummary + /bot/performance/summary route"
+      },
+      "chain_shared": false,
+      "chain_shared_reason": "近期表现摘要仅依赖 performance summary，不依赖 postmortem/latest 选择链"
+    }
+  },
+  "generated_at": "2026-04-02T15:27:11.292Z",
+  "conclusion_block": {
+    "verdict": "A：通过",
+    "first_break_layer": "NONE_CHAIN_PASS"
+  },
+  "evidence_index": {
+    "baseline_ref": "011f8556:ui/js/strategy-editor.js",
+    "dependency_audit": {
+      "previous_result_frontend_consumption": {
+        "api": "/bot/postmortem/latest",
+        "fields": [
+          "filled_total",
+          "cancelled_total",
+          "realized_gross_pnl_total"
+        ],
+        "producer": "server.mjs queryLatestBotPostmortem + /bot/postmortem/latest route"
+      },
+      "recent_summary_frontend_consumption": {
+        "api": "/bot/performance/summary?detail=1",
+        "fields": [
+          "window_count",
+          "filled_total",
+          "realized_gross_pnl_total",
+          "avg_realized_gross_pnl_per_window",
+          "participating_postmortem_rows"
+        ],
+        "producer": "server.mjs queryBotPerformanceSummary + /bot/performance/summary route"
+      },
+      "chain_shared": false,
+      "chain_shared_reason": "近期表现摘要仅依赖 performance summary，不依赖 postmortem/latest 选择链"
+    },
+    "checks": {
+      "pre_has_prev_module": true,
+      "post_prev_module_removed": true,
+      "post_no_prev_api_consumption": true,
+      "post_perf_moved_to_prev_position": true,
+      "perf_expression_unchanged": true,
+      "backend_prev_route_removed": true,
+      "backend_perf_route_kept": true,
+      "runtime_perf_available": true,
+      "runtime_prev_route_removed": true
+    },
+    "pre_dom_evidence": {
+      "has_prev_module_title": true,
+      "has_prev_dom_fields": true,
+      "has_prev_api_fetch": true,
+      "perf_title_count": 1,
+      "perf_realized_expr": "document.getElementById('se-perf-realized-total').textContent = se_formatPnlDisplay(summary?.realized_gross_pnl_total, '—');",
+      "perf_avg_expr": "document.getElementById('se-perf-avg-realized').textContent = se_formatPnlDisplay(summary?.avg_realized_gross_pnl_per_window, '—');"
+    },
+    "post_dom_evidence": {
+      "has_prev_module_title": false,
+      "has_prev_dom_fields": false,
+      "has_prev_api_fetch": false,
+      "perf_title_count": 1,
+      "perf_moved_to_prev_position": true,
+      "perf_realized_expr": "document.getElementById('se-perf-realized-total').textContent = se_formatPnlDisplay(summary?.realized_gross_pnl_total, '—');",
+      "perf_avg_expr": "document.getElementById('se-perf-avg-realized').textContent = se_formatPnlDisplay(summary?.avg_realized_gross_pnl_per_window, '—');"
+    },
+    "runtime_evidence": {
+      "perf_status": 200,
+      "latest_status": 404,
+      "summary_values": {
+        "window_count": 87,
+        "filled_total": 428,
+        "realized_gross_pnl_total": 485.91522693042583,
+        "avg_realized_gross_pnl_per_window": 5.58523249345317
+      },
+      "dom_text_simulated_post": {
+        "pnl_total_text": "485.92",
+        "avg_per_window_text": "5.59"
+      }
+    },
+    "healthcheck": {
+      "root": 200,
+      "pairs": 404
+    },
+    "heartbeat_log": "rules/task-reports/2026-04/260402_001/260402_001_truth_audit_remove_prev_result_module.heartbeat.log",
+    "last_heartbeat": {
+      "ts": "2026-04-02T15:27:11.291Z",
+      "event": "HEARTBEAT",
+      "stage": "audit_done",
+      "checks": {
+        "pre_has_prev_module": true,
+        "post_prev_module_removed": true,
+        "post_no_prev_api_consumption": true,
+        "post_perf_moved_to_prev_position": true,
+        "perf_expression_unchanged": true,
+        "backend_prev_route_removed": true,
+        "backend_perf_route_kept": true,
+        "runtime_perf_available": true,
+        "runtime_prev_route_removed": true
+      },
+      "first_break_layer": "NONE_CHAIN_PASS"
+    },
+    "guardrails": {
+      "max_wall_time_ms": 2700000,
+      "max_silence_ms": 300000,
+      "log_tail": 150
+    }
+  }
+}
