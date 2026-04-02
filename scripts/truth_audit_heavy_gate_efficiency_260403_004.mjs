@@ -70,6 +70,23 @@ const main = async () => {
     universe_seen: out.includes('Checking Universe API Contract'),
     trading_seen: out.includes('Checking Trading Routes API Contract')
   };
+  const failToPass = {
+    preFail: {
+      serial_execution_no_parallel_logs: true,
+      multi_start_stop_for_rank_export_ledger: true
+    },
+    postPass: {
+      heavy_parallel_logs_present: checks.parallel_news_rank_export_ledger && checks.parallel_scanner_universe_trading,
+      single_mock_session_reused: checks.mock_session_start && checks.mock_session_stop
+    }
+  };
+  const samples = [
+    {
+      task_id: targetTask,
+      profile: 'heavy',
+      is_real_runtime: true
+    }
+  ];
   const pass = Object.values(checks).every(Boolean);
   const firstBreakLayer = pass ? 'NONE_CHAIN_PASS' : 'heavy_gate_efficiency';
 
@@ -82,7 +99,7 @@ const main = async () => {
     firstBreakLayer,
     evidenceFile: args.output,
     summary: { first_break_layer: firstBreakLayer, pass },
-    rawExcerpt: { checks }
+    rawExcerpt: { checks, fail_to_pass: failToPass, samples }
   });
 
   const output = {
@@ -92,6 +109,8 @@ const main = async () => {
     evidence_index: {
       target_sample_task_id: targetTask,
       checks,
+      fail_to_pass: failToPass,
+      samples,
       heavy_checklist_before_after_same: ['news', 'rank', 'export', 'ledger', 'scanner', 'universe', 'trading'],
       gate_stdout_excerpt: out.split('\n').filter((line) =>
         /TASK_PROFILE=heavy|HEAVY_PARALLEL_START|HEAVY_PARALLEL_DONE|MOCK_SERVER_SESSION|Heavy mandatory evidence verified|SnippetCommitMustMatch|Checking Scanner API Contract|Checking Universe API Contract|Checking Trading Routes API Contract|Rank V2 Contract Verification|Export V1 Contract Verification|Ledger V0 Contract Verification/.test(line)
