@@ -655,8 +655,8 @@ async function validate(resultDir, taskId, report) {
                     }
                     
                     const content = fs.readFileSync(evPath, 'utf8');
-                    if (!content.match(/HTTP\/\d\.\d\s+[1-5]\d{2}\s+[A-Za-z]/)) {
-                        fail(report, ERR.HEALTHCHECK_INVALID, `${label} evidence content missing valid 'HTTP... <status>'.`);
+                    if (!content.match(/HTTP\/.*200/)) {
+                        fail(report, ERR.HEALTHCHECK_INVALID, `${label} evidence content missing 'HTTP... 200'.`);
                         return false;
                     }
                     return true;
@@ -680,14 +680,14 @@ async function validate(resultDir, taskId, report) {
 
             const combinedContent = notifyContent + "\n" + hcContent;
             
-            const hasRoot = /\/\s*->\s*[1-5]\d{2}/.test(combinedContent);
-            const hasPairs = /\/pairs\s*->\s*[1-5]\d{2}/.test(combinedContent);
+            const hasRoot = combinedContent.includes('/ -> 200');
+            const hasPairs = combinedContent.includes('/pairs -> 200');
             
             report.checks.domain = report.checks.domain || {};
             report.checks.domain.healthcheckFound = true;
 
             if (!hasRoot || !hasPairs) {
-                fail(report, ERR.HEALTHCHECK_INVALID, `Healthcheck Evidence Invalid (/ -> /pairs -> <status>)`);
+                fail(report, ERR.HEALTHCHECK_INVALID, `Healthcheck Evidence Invalid (/ -> /pairs -> 200)`);
             }
         }
     } catch (e) {
