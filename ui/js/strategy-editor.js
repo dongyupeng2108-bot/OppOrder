@@ -88,6 +88,7 @@ let _seErrorCount = 0;
 let _seLastPollError = null;
 let _seActionPending = false;
 let _sePerformancePreset = 'today';
+let _seTodayResetPending = false;
 let _seTestRunPending = false;
 let _seTestStatus = { state: 'idle' };
 let _seTestLastResultFile = null;
@@ -234,6 +235,9 @@ async function initStrategyEditor() {
                 <button id="se-perf-btn-today" onclick="se_setPerformancePreset('today')" style="background:#1f1f1f;color:#ddd;border:1px solid #555;border-radius:4px;padding:2px 8px;cursor:pointer;">今日</button>
                 <button id="se-perf-btn-last7d" onclick="se_setPerformancePreset('last_7d')" style="background:#111;color:#aaa;border:1px solid #333;border-radius:4px;padding:2px 8px;cursor:pointer;">近7天</button>
                 <button id="se-perf-btn-last30" onclick="se_setPerformancePreset('last_30_windows')" style="background:#111;color:#aaa;border:1px solid #333;border-radius:4px;padding:2px 8px;cursor:pointer;">近30窗口</button>
+              </div>
+              <div style="display:flex;justify-content:flex-end;">
+                <button id="se-perf-btn-reset-today" onclick="se_resetTodayPerformance()" style="background:#2b1d1d;color:#ffd0d0;border:1px solid #7a4242;border-radius:4px;padding:2px 10px;cursor:pointer;">清空今日统计数据</button>
               </div>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
                 <div style="color:#7f8a97;">统计区间</div><div id="se-perf-range" style="text-align:right;color:#d6dde5;">今日</div>
@@ -1388,6 +1392,39 @@ function se_setPerformancePreset(preset, triggerPoll = true) {
   });
   if (triggerPoll) {
     se_poll();
+  }
+}
+
+async function se_resetTodayPerformance() {
+  if (_seTodayResetPending) return;
+  _seTodayResetPending = true;
+  const btn = document.getElementById('se-perf-btn-reset-today');
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = '清空中...';
+    btn.style.opacity = '0.7';
+  }
+  try {
+    const resp = await fetch(`${BASE_URL}/bot/performance/today/reset`, { method: 'POST' });
+    const data = await resp.json();
+    if (!resp.ok || data?.ok === false) {
+      throw new Error(data?.error || `HTTP ${resp.status}`);
+    }
+    _sePerformancePreset = 'today';
+    se_setPerformancePreset('today', false);
+    se_appendLog('SYSTEM', `今日统计已清空（baseline=${data?.today_reset_baseline_at || 'N/A'}）`);
+    se_renderPollError(null);
+    await se_poll();
+  } catch (err) {
+    se_renderPollError(`清空今日统计失败: ${err.message}`);
+    se_appendLog('ERROR', `清空今日统计失败: ${err.message}`);
+  } finally {
+    _seTodayResetPending = false;
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = '清空今日统计数据';
+      btn.style.opacity = '1';
+    }
   }
 }
 
