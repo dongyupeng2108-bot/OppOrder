@@ -13,6 +13,7 @@ let argMode = null; // New: Mode Argument
 let argResultDir = null; // New: Result Dir Argument
 let argRunId = null; // New: Run ID Argument
 let argProfile = null; // light | heavy | auto
+let argDomain = null; // btcqdd | opportunities | global | full
 for (let i = 0; i < args.length; i++) {
     if (args[i] === '--task_id') {
         argTaskId = args[i + 1];
@@ -28,6 +29,9 @@ for (let i = 0; i < args.length; i++) {
     }
     if (args[i] === '--profile') {
         argProfile = args[i + 1];
+    }
+    if (args[i] === '--domain') {
+        argDomain = args[i + 1];
     }
 }
 
@@ -298,6 +302,43 @@ const detectTaskProfile = () => {
 const taskProfile = detectTaskProfile();
 const isHeavyProfile = taskProfile === 'heavy';
 console.log(`[Gate Light] TASK_PROFILE=${taskProfile}`);
+const domainMapPath = path.join('.trae', 'gate_domain_map.json');
+let domainMap = null;
+try {
+    if (fs.existsSync(domainMapPath)) {
+        domainMap = JSON.parse(fs.readFileSync(domainMapPath, 'utf8'));
+    }
+} catch (e) {
+    console.error(`[Gate Light] FAILED: invalid gate domain map: ${e.message}`);
+    process.exit(1);
+}
+const heavyDefaultDomain = String(domainMap?.heavy_default_domain || 'btcqdd').trim().toLowerCase();
+const allowedHeavyDomains = Array.isArray(domainMap?.allowed_domains) && domainMap.allowed_domains.length > 0
+    ? domainMap.allowed_domains.map((x) => String(x).trim().toLowerCase())
+    : ['btcqdd', 'opportunities', 'global', 'full'];
+const selectedDomain = isHeavyProfile
+    ? String(argDomain || heavyDefaultDomain).trim().toLowerCase()
+    : 'light';
+if (isHeavyProfile && !allowedHeavyDomains.includes(selectedDomain)) {
+    console.error(`[Gate Light] FAILED: invalid --domain='${selectedDomain}'. allowed=${allowedHeavyDomains.join(',')}`);
+    process.exit(1);
+}
+const domainPackMap = domainMap?.domain_pack_map && typeof domainMap.domain_pack_map === 'object'
+    ? domainMap.domain_pack_map
+    : {
+        btcqdd: ['btcqdd_core'],
+        opportunities: ['btcqdd_core', 'opportunities_contracts'],
+        global: ['btcqdd_core', 'global_checks'],
+        full: ['btcqdd_core', 'opportunities_contracts', 'global_checks']
+    };
+const activeDomainPacks = new Set((domainPackMap[selectedDomain] || []).map((x) => String(x).trim().toLowerCase()));
+const domainHasPack = (packName) => activeDomainPacks.has(String(packName || '').trim().toLowerCase());
+const runOpportunitiesContracts = isHeavyProfile && domainHasPack('opportunities_contracts');
+const runRankVersionGuard = isHeavyProfile && domainHasPack('opportunities_contracts');
+if (isHeavyProfile) {
+    console.log(`[Gate Light] TASK_DOMAIN=${selectedDomain}`);
+    console.log(`[Gate Light] DOMAIN_PACKS=${JSON.stringify(Array.from(activeDomainPacks))}`);
+}
 
 console.log('[Gate Light] Verifying task_id: ' + task_id);
     
@@ -687,7 +728,7 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         process.exit(1);
     }
 
-    if (isHeavyProfile) {
+    if (isHeavyProfile && runOpportunitiesContracts) {
         const { spawn } = await import('child_process');
         const http = await import('http');
         const MOCK_PORT = 53122;
@@ -857,6 +898,9 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         console.log('[Gate Light] HEAVY_PARALLEL_START: scanner/universe/trading');
         await Promise.all([checkScanner(), checkUniverse(), checkTrading()]);
         console.log('[Gate Light] HEAVY_PARALLEL_DONE: scanner/universe/trading');
+    } else if (isHeavyProfile) {
+        console.log(`[Gate Light] DOMAIN_SKIP: opportunities contract pack skipped (domain=${selectedDomain}).`);
+        console.log('[Gate Light] DOMAIN_SKIP_CHECKS: news/rank/export/ledger/scanner/universe/trading');
     } else {
         console.log('[Gate Light] LIGHT profile: skipping heavy-only contract checks (news/rank/export/ledger/scanner/universe/trading).');
     }
@@ -1585,7 +1629,7 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
 
     // --- [REMOVED by M4.5-T0 / 260301_028] Evidence Truth & Consistency Check ---
 
-    if (isHeavyProfile) {
+    if (runRankVersionGuard) {
     console.log('[Gate Light] Checking Rank V2 Contract Version Guard...');
     try {
         const contractPath = 'OppRadar/contracts/rank_v2.contract.json';
@@ -1661,6 +1705,8 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         console.error(`[Gate Light] Rank V2 Contract Guard Error: ${e.message}`);
         process.exit(1);
     }
+    } else if (isHeavyProfile) {
+        console.log(`[Gate Light] DOMAIN_SKIP: Rank V2 Contract Version Guard skipped (domain=${selectedDomain}).`);
     } else {
         console.log('[Gate Light] LIGHT profile: skipping Rank V2 Contract Version Guard.');
     }

@@ -1,0 +1,50 @@
+{
+  "version": "2026-04-03",
+  "heavy_default_domain": "btcqdd",
+  "allowed_domains": [
+    "btcqdd",
+    "opportunities",
+    "global",
+    "full"
+  ],
+  "packs": {
+    "btcqdd_core": [
+      "core_evidence",
+      "scope_lock",
+      "postflight_envelope",
+      "healthcheck",
+      "snippet_commit_must_match",
+      "heavy_mandatory",
+      "fail_fast_timeout_git_local_first"
+    ],
+    "opportunities_contracts": [
+      "news",
+      "rank",
+      "export",
+      "ledger",
+      "scanner",
+      "universe",
+      "trading",
+      "rank_v2_contract_version_guard"
+    ],
+    "global_checks": []
+  },
+  "domain_pack_map": {
+    "btcqdd": [
+      "btcqdd_core"
+    ],
+    "opportunities": [
+      "btcqdd_core",
+      "opportunities_contracts"
+    ],
+    "global": [
+      "btcqdd_core",
+      "global_checks"
+    ],
+    "full": [
+      "btcqdd_core",
+      "opportunities_contracts",
+      "global_checks"
+    ]
+  }
+}
