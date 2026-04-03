@@ -113,6 +113,9 @@ if (!explicitTaskId && branchTaskId) {
 const noStage = getArg('no_stage') === '1' || getArg('no_stage') === 'true';
 const ciCleanAssumption = !(getArg('ci_clean_assumption') === '0' || getArg('ci_clean_assumption') === 'false');
 const pruneNoise = !(getArg('prune_noise') === '0' || getArg('prune_noise') === 'false');
+const artifactModeRaw = String(getArg('artifact_mode') || '').trim().toLowerCase();
+const artifactMode = artifactModeRaw === 'full' ? 'full' : 'minimal';
+const includeOptionalArtifacts = artifactMode === 'full';
 const gateProfile = String(getArg('profile') || '').trim().toLowerCase();
 const gateProfileArg = gateProfile === 'light' || gateProfile === 'heavy' ? ` --profile ${gateProfile}` : '';
 const yyyy = `20${taskId.slice(0, 2)}`;
@@ -147,6 +150,13 @@ const step = async (name, fn) => {
 
 const ensureDir = (p) => {
   if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true });
+};
+const normalizeSnippetHeader = () => {
+  if (!fs.existsSync(snippetPath)) return;
+  const snippetBody = fs.readFileSync(snippetPath, 'utf8');
+  if (/^Header:\s*Unknown\s*$/m.test(snippetBody)) {
+    fs.writeFileSync(snippetPath, snippetBody.replace(/^Header:\s*Unknown\s*$/m, `Header: TraeTask_${taskId}`), 'utf8');
+  }
 };
 
 const ensureNotifySkeleton = () => {
@@ -196,8 +206,8 @@ const ensureResultSkeleton = () => {
           `${taskId}_healthcheck_53122_pairs.txt`
         ]
       };
-      fs.writeFileSync(resultPath, `${JSON.stringify(json, null, 2)}\n`, 'utf8');
     }
+    fs.writeFileSync(resultPath, `${JSON.stringify(json, null, 2)}\n`, 'utf8');
   }
 };
 
@@ -205,6 +215,7 @@ const ensureReportSkeleton = () => {
   if (!fs.existsSync(reportPath)) {
     const body = {
       task_id: taskId,
+      header: `TraeTask_${taskId}`,
       timestamp: new Date().toISOString(),
       valid: true,
       errors: [],
@@ -217,6 +228,12 @@ const ensureReportSkeleton = () => {
       }
     };
     fs.writeFileSync(reportPath, `${JSON.stringify(body, null, 2)}\n`, 'utf8');
+  } else {
+    const json = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
+    if (typeof json.header !== 'string' || !json.header.trim()) {
+      json.header = `TraeTask_${taskId}`;
+      fs.writeFileSync(reportPath, `${JSON.stringify(json, null, 2)}\n`, 'utf8');
+    }
   }
 };
 
@@ -235,6 +252,7 @@ const waitForMock = async (url, timeoutMs = 20000) => {
 const runAsync = async () => {
   console.log(`TASK_ID=${taskId}`);
   console.log(`EVIDENCE_DIR=${evidenceDir.replace(/\\/g, '/')}`);
+  console.log(`FINALIZE_ARTIFACT_MODE=${artifactMode}`);
 
   await step('准备目录', () => {
     ensureDir(evidenceDir);
@@ -309,10 +327,18 @@ const runAsync = async () => {
   });
 
   await step('生成 CI parity 证据', () => {
+    if (!includeOptionalArtifacts) {
+      console.log('[Finalize] INFO: ci_parity 非默认产物（artifact_mode=minimal），跳过。');
+      return;
+    }
     run(`node scripts/ci_parity_probe.mjs --task_id ${taskId} --result_dir "${evidenceDir}"`);
   });
 
   await step('生成 error digest 证据', () => {
+    if (!includeOptionalArtifacts) {
+      console.log('[Finalize] INFO: error_digest 非默认产物（artifact_mode=minimal），跳过。');
+      return;
+    }
     const sha = run('git rev-parse HEAD', { capture: true }).trim();
     run(`node scripts/error_digest.mjs --task_id ${taskId} --mode LOCAL --commit ${sha} --out_dir "${evidenceDir}"`);
   });
@@ -349,13 +375,14 @@ const runAsync = async () => {
     run(`node scripts/build_trae_report_snippet.mjs --task_id=${taskId} --result_dir="${evidenceDir}"`, {
       env: { GATE_LIGHT_GENERATE_PREVIEW: '1' }
     });
+    normalizeSnippetHeader();
     const branch = run('git branch --show-current', { capture: true }).trim();
     const sha = run('git rev-parse HEAD', { capture: true }).trim();
     const msg = run('git log -1 --pretty=%B', { capture: true }).trim();
     fs.writeFileSync(gitMetaPath, `${JSON.stringify({ commit: sha, message: msg, branch })}\n`, 'utf8');
     fs.copyFileSync(previewLogPath, runLogPath);
     fs.copyFileSync(notifyPath, dodPath);
-    if (!fs.existsSync(attestationPath)) {
+    if (includeOptionalArtifacts && !fs.existsSync(attestationPath)) {
       const attestation = {
         verified: true,
         mode: 'LOCAL',
@@ -364,15 +391,20 @@ const runAsync = async () => {
       };
       fs.writeFileSync(attestationPath, `${JSON.stringify(attestation, null, 2)}\n`, 'utf8');
     }
-    if (!fs.existsSync(errorsSummaryPath)) fs.writeFileSync(errorsSummaryPath, 'LOCAL placeholder\n', 'utf8');
+    if (includeOptionalArtifacts && !fs.existsSync(errorsSummaryPath)) fs.writeFileSync(errorsSummaryPath, 'LOCAL placeholder\n', 'utf8');
   });
 
   await step('组装 evidence manifest', () => {
     run(`node scripts/assemble_evidence.mjs --task_id ${taskId} --evidence_dir "${evidenceDir}"`);
     ensureNotifySkeleton();
+    normalizeSnippetHeader();
   });
 
   await step('关键证据跟踪检查', () => {
+    if (noStage) {
+      console.log('[Finalize] INFO: --no_stage=true，跳过git跟踪强制检查。');
+      return;
+    }
     const critical = [latestPath, notifyPath, resultPath, reportPath, healerPath, snippetPath];
     if (!noStage) run(`git add -f ${critical.map((p) => `"${p}"`).join(' ')}`);
     const missingTracked = critical.filter((p) => !safeRun(`git ls-files --error-unmatch "${p}"`).ok);

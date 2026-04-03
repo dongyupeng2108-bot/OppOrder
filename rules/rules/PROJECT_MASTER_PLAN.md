@@ -73,6 +73,10 @@
   - 260403_005 提效边界：仅 heavy 统一短超时（4000ms）与 fail-fast；不改 light 语义，不改 heavy 覆盖与强制项
   - 260403_006 提效边界：仅 heavy Git 校验降噪（local-first + 最小必要 fetch）；不改 SnippetCommitMustMatch 判定语义
 - 不新增第三分级：仅 light/heavy 两层
+- finalize 默认产物最小化（260403_013）：
+  - 默认（minimal）仅生成 gate 必需最小产物：`result/notify/truth_audit/evidence_manifest(deliverables_index)/workspace_healer/run/dod/git_meta/healthcheck(命中时)`；
+  - `ci_parity`、`errors*`、`preflight_attestation`改为按需（`--artifact_mode full`）；
+  - 不改 `gate_light_ci` 判定语义、不改 heavy 默认边界、不改 light/heavy 分层定义。
 - 最小验证硬规则：
   - 任何非纯测试任务必须做与任务直接相关的最小验证
   - 修复任务至少 1 组 Fail -> Pass
