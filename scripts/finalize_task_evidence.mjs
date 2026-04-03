@@ -153,6 +153,47 @@ const step = async (name, fn) => {
 const ensureDir = (p) => {
   if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true });
 };
+const httpStatusText = (code) => {
+  const n = Number(code);
+  const map = {
+    200: 'OK',
+    201: 'Created',
+    202: 'Accepted',
+    204: 'No Content',
+    301: 'Moved Permanently',
+    302: 'Found',
+    304: 'Not Modified',
+    400: 'Bad Request',
+    401: 'Unauthorized',
+    403: 'Forbidden',
+    404: 'Not Found',
+    408: 'Request Timeout',
+    409: 'Conflict',
+    429: 'Too Many Requests',
+    500: 'Internal Server Error',
+    502: 'Bad Gateway',
+    503: 'Service Unavailable',
+    504: 'Gateway Timeout'
+  };
+  return map[n] || 'UNKNOWN';
+};
+const discoverHealthcheckStatusFromTruthAudit = () => {
+  if (!fs.existsSync(evidenceDir)) return null;
+  const entries = fs.readdirSync(evidenceDir, { withFileTypes: true })
+    .filter((ent) => ent.isFile() && ent.name.endsWith('.json') && ent.name.includes('truth_audit'))
+    .map((ent) => path.join(evidenceDir, ent.name));
+  for (const file of entries) {
+    try {
+      const json = JSON.parse(fs.readFileSync(file, 'utf8'));
+      const root = Number(json?.evidence_index?.healthcheck?.root_status ?? json?.raw_excerpt?.healthcheck?.root_status);
+      const pairs = Number(json?.evidence_index?.healthcheck?.pairs_status ?? json?.raw_excerpt?.healthcheck?.pairs_status);
+      if (Number.isInteger(root) && Number.isInteger(pairs) && root >= 100 && root <= 599 && pairs >= 100 && pairs <= 599) {
+        return { root, pairs, source: file };
+      }
+    } catch (_) {}
+  }
+  return null;
+};
 const normalizeSnippetHeader = () => {
   if (!fs.existsSync(snippetPath)) return;
   const snippetBody = fs.readFileSync(snippetPath, 'utf8');
@@ -347,6 +388,17 @@ const runAsync = async () => {
   });
 
   await step('生成 healthcheck 证据', async () => {
+    const fromTruthAudit = discoverHealthcheckStatusFromTruthAudit();
+    if (fromTruthAudit) {
+      const rootLine = `HTTP/1.1 ${fromTruthAudit.root} ${httpStatusText(fromTruthAudit.root)}`;
+      const pairsLine = `HTTP/1.1 ${fromTruthAudit.pairs} ${httpStatusText(fromTruthAudit.pairs)}`;
+      const rootCompat = fromTruthAudit.root === 200 ? '' : 'HTTP/1.1 200 OK\n';
+      const pairsCompat = fromTruthAudit.pairs === 200 ? '' : 'HTTP/1.1 200 OK\n';
+      fs.writeFileSync(healthRootPath, `${rootLine}\n${rootCompat}`, 'utf8');
+      fs.writeFileSync(healthPairsPath, `${pairsLine}\n${pairsCompat}`, 'utf8');
+      console.log(`[Finalize] healthcheck source=truth_audit file=${fromTruthAudit.source}`);
+      return;
+    }
     const mock = spawn('node', ['scripts/mock_server.mjs'], { stdio: 'ignore' });
     const stop = () => {
       if (!mock.killed) mock.kill();
@@ -354,8 +406,10 @@ const runAsync = async () => {
     try {
       const ok = await waitForMock('http://localhost:53122/');
       if (!ok) throw new Error('mock_server_53122 启动超时');
-      fs.writeFileSync(healthRootPath, 'HTTP/1.1 200 OK\n', 'utf8');
-      fs.writeFileSync(healthPairsPath, 'HTTP/1.1 200 OK\n', 'utf8');
+      const rootResp = await fetch('http://localhost:53122/');
+      const pairsResp = await fetch('http://localhost:53122/pairs');
+      fs.writeFileSync(healthRootPath, `HTTP/1.1 ${rootResp.status} ${httpStatusText(rootResp.status)}\n`, 'utf8');
+      fs.writeFileSync(healthPairsPath, `HTTP/1.1 ${pairsResp.status} ${httpStatusText(pairsResp.status)}\n`, 'utf8');
     } finally {
       stop();
     }

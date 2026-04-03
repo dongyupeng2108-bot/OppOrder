@@ -1,0 +1,128 @@
+{
+  "script_name": "truth_audit_notify_healthcheck_excerpt_fix_260403_017",
+  "task_id": "260403_017",
+  "sample_name": "notify_healthcheck_excerpt_fix_v1",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "rules/task-reports/2026-04/260403_017/260403_017_truth_audit_notify_healthcheck_excerpt_fix.json",
+  "summary": {
+    "pass": true
+  },
+  "raw_excerpt": {
+    "fail_to_pass": {
+      "preFail": {
+        "pre_json_root_status": 200,
+        "pre_json_pairs_status": 404,
+        "pre_notify_pairs_line": "DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260403_016_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK",
+        "mismatch_pairs_404_vs_notify_200": true
+      },
+      "postPass": {
+        "expected_status": {
+          "root_status": 200,
+          "pairs_status": 404
+        },
+        "healthcheck_files": {
+          "root_line": "HTTP/1.1 200 OK",
+          "pairs_line": "HTTP/1.1 404 Not Found",
+          "root_status": 200,
+          "pairs_status": 404
+        },
+        "notify_excerpt": {
+          "root_line": "DOD_EVIDENCE_HEALTHCHECK_ROOT: 260403_017_healthcheck_53122_root.txt => HTTP/1.1 200 OK",
+          "pairs_line": "DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260403_017_healthcheck_53122_pairs.txt => HTTP/1.1 404 Not Found"
+        }
+      }
+    },
+    "healthcheck": {
+      "root_status": 200,
+      "pairs_status": 404
+    },
+    "samples": [
+      {
+        "sample_type": "pre_conflict_260403_016",
+        "is_real_runtime": true
+      },
+      {
+        "sample_type": "post_consistency_260403_017",
+        "is_real_runtime": true
+      }
+    ],
+    "governance_substitute": {
+      "passed": true,
+      "source": "notify_healthcheck_excerpt_mapping_fix"
+    },
+    "non_regression": {
+      "notify_fields_not_removed": true
+    },
+    "checks": {
+      "prefail_conflict_reproduced": true,
+      "post_files_ready": true,
+      "post_root_status_match_expected": true,
+      "post_pairs_status_match_expected": true,
+      "notify_root_matches_file_line": true,
+      "notify_pairs_matches_file_line": true
+    }
+  },
+  "generated_at": "2026-04-03T19:52:09.030Z",
+  "task_type": "workflow_upgrade",
+  "conclusion_block": {
+    "verdict": "A：通过",
+    "first_break_layer": "NONE_CHAIN_PASS"
+  },
+  "evidence_index": {
+    "fail_to_pass": {
+      "preFail": {
+        "pre_json_root_status": 200,
+        "pre_json_pairs_status": 404,
+        "pre_notify_pairs_line": "DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260403_016_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK",
+        "mismatch_pairs_404_vs_notify_200": true
+      },
+      "postPass": {
+        "expected_status": {
+          "root_status": 200,
+          "pairs_status": 404
+        },
+        "healthcheck_files": {
+          "root_line": "HTTP/1.1 200 OK",
+          "pairs_line": "HTTP/1.1 404 Not Found",
+          "root_status": 200,
+          "pairs_status": 404
+        },
+        "notify_excerpt": {
+          "root_line": "DOD_EVIDENCE_HEALTHCHECK_ROOT: 260403_017_healthcheck_53122_root.txt => HTTP/1.1 200 OK",
+          "pairs_line": "DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260403_017_healthcheck_53122_pairs.txt => HTTP/1.1 404 Not Found"
+        }
+      }
+    },
+    "healthcheck": {
+      "root_status": 200,
+      "pairs_status": 404
+    },
+    "samples": [
+      {
+        "sample_type": "pre_conflict_260403_016",
+        "is_real_runtime": true
+      },
+      {
+        "sample_type": "post_consistency_260403_017",
+        "is_real_runtime": true
+      }
+    ],
+    "governance_substitute": {
+      "passed": true,
+      "source": "notify_healthcheck_excerpt_mapping_fix"
+    },
+    "non_regression": {
+      "notify_fields_not_removed": true
+    },
+    "checks": {
+      "prefail_conflict_reproduced": true,
+      "post_files_ready": true,
+      "post_root_status_match_expected": true,
+      "post_pairs_status_match_expected": true,
+      "notify_root_matches_file_line": true,
+      "notify_pairs_matches_file_line": true
+    }
+  }
+}
