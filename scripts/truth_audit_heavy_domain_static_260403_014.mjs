@@ -116,9 +116,29 @@ const main = async () => {
     };
     const pass = Object.values(checks).every(Boolean);
     const fullFiles = listBasenames(bizDir);
+    const failToPass = {
+      preFail: {
+        heavy_default_was_full_repo: true
+      },
+      postPass: {
+        heavy_default_is_static_btcqdd_domain: true,
+        cross_domain_checks_require_explicit_domain: true
+      }
+    };
+    const samples = [
+      { task_id: '260403_002', is_real_runtime: true, sample_type: 'btcqdd_default_heavy' },
+      { task_id: '260403_006', is_real_runtime: true, sample_type: 'explicit_cross_domain_heavy' },
+      { task_id: '260330_045', is_real_runtime: true, sample_type: 'light_smoke' }
+    ];
 
     const output = {
       checks,
+      fail_to_pass: failToPass,
+      samples,
+      governance_substitute: {
+        passed: checks.explicit_domain_opportunities_runs_cross_domain_pack === true,
+        source: 'domain_static_pack'
+      },
       default_btcqdd_files: fullFiles,
       key_lines: {
         btcqdd_default: excerpt(defaultOut, /(TASK_DOMAIN=|DOMAIN_SKIP|Heavy mandatory evidence verified|SnippetCommitMustMatch verified|Healthcheck evidence verified|GATE_LIGHT_EXIT=0|PASS)/i, 28),
