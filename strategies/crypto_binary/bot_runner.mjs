@@ -73,6 +73,7 @@ export function createBotRunner(options = {}) {
   const log = options.log;
   const onRuntimeUpdate = typeof options.onRuntimeUpdate === 'function' ? options.onRuntimeUpdate : null;
   const onTickResult = typeof options.onTickResult === 'function' ? options.onTickResult : null;
+  const onWindowChanged = typeof options.onWindowChanged === 'function' ? options.onWindowChanged : null;
   const config = options.config || {};
   if (typeof getContext !== 'function') throw new Error('getContext required');
   if (typeof getState !== 'function') throw new Error('getState required');
@@ -170,6 +171,7 @@ export function createBotRunner(options = {}) {
     }
     const prevWindowId = state.current_window_id ?? null;
     if (lifecycleWindowId !== prevWindowId) {
+      const stateBeforeWindowChange = cloneValue(state);
       const resetPatch = options.createWindowResetPatch
         ? options.createWindowResetPatch(lifecycleWindowId)
         : {
@@ -196,6 +198,25 @@ export function createBotRunner(options = {}) {
         window_id: lifecycleWindowId,
         data: { from_window_id: prevWindowId, to_window_id: lifecycleWindowId }
       });
+      if (onWindowChanged) {
+        try {
+          onWindowChanged({
+            from_window_id: prevWindowId,
+            to_window_id: lifecycleWindowId,
+            state_before: stateBeforeWindowChange,
+            state_after: cloneValue(state)
+          });
+        } catch (error) {
+          log({
+            level: 'error',
+            source: 'bot_runner',
+            event: 'BOT_WINDOW_CHANGED_HOOK_FAILED',
+            message: error?.message || String(error),
+            mode: state.mode ?? null,
+            window_id: lifecycleWindowId ?? null
+          });
+        }
+      }
     }
 
     const lifecycleAtr = toFiniteNumber(context.atr_5m);
