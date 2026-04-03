@@ -1,0 +1,6 @@
+script_name=truth_audit_finalize_minimal_260403_013
+task_id=260403_013
+sample_name=finalize_minimal_artifacts_v1
+pass=true
+first_break_layer=NONE_CHAIN_PASS
+message=first_break_layer=NONE_CHAIN_PASS

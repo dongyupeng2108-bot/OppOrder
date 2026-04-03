@@ -1,33 +1,8 @@
-=== TRAE_REPORT_SNIPPET ===
-
-Header: TraeTask_260403_013
-BRANCH: 260403_013
-COMMIT: 6c7caa21d
-
-=== GIT_SCOPE_DIFF ===
-M	rules/LATEST.json
-M	rules/rules/PROJECT_MASTER_PLAN.md
-M	rules/rules/PROJECT_RULES.md
-M	rules/rules/WORKFLOW.md
-A	rules/task-reports/2026-04/260403_013/260403_013.json
-A	rules/task-reports/2026-04/260403_013/notify_260403_013.txt
-A	rules/task-reports/2026-04/260403_013/result_260403_013.json
-A	rules/task-reports/2026-04/260403_013/trae_report_snippet_260403_013.txt
-A	rules/task-reports/2026-04/260403_013/workspace_healer_260403_013.json
-M	scripts/finalize_task_evidence.mjs
-A	scripts/truth_audit_finalize_minimal_260403_013.mjs
-
-=== DOD_EVIDENCE_STDOUT ===
-Missing Blocks:
-
-DOD_EVIDENCE_HEALTHCHECK_ROOT: 260403_013_healthcheck_53122_root.txt => HTTP/1.1 200 OK
-DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260403_013_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
-
-
-
-=== GATE_LIGHT_PREVIEW ===
 [Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
 [Gate Light] Target locked via argument: 260403_013
+PR_TASK_ID_DETECTED=260403_013
+TARGET_TASK_ID=260403_013
+LATEST_TASK_ID=260403_013
 [Gate Light] LATEST.json consistency verified.
 [Gate Light] TASK_PROFILE=heavy
 [Gate Light] Verifying task_id: 260403_013
@@ -41,12 +16,51 @@ DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260403_013_healthcheck_53122_pairs.txt => HTTP/1
 [Gate Light] Checking doc path standards...
 [Gate Light] Doc path standards verified.
 [Gate Light] Checking for legacy doc path references...
+[CheckDocPathRefs] Scanning for legacy doc path references...
+[CheckDocPathRefs] PASS: No legacy doc path references found.
 [Gate Light] Checking for banned cmd syntax in PowerShell scripts...
+Starting static scan for banned cmd syntax in .ps1 files...
+Scanning targets: scripts/run_task.ps1, scripts/test_fail_budget.ps1, scripts/ps/Invoke-Step.ps1
+Static scan PASSED.
 [Gate Light] Checking for global healthcheck artifacts...
 [Gate Light] Global Artifact Guard verified.
 [Gate Light] MOCK_SERVER_SESSION=starting script=E:\OppRadar\OppRadar\mock_server_53122.mjs
 [Gate Light] MOCK_SERVER_SESSION=ready pid=29368
 [Gate Light] HEAVY_PARALLEL_START: news/rank/export/ledger
+[Contract Check] Loading schema from: E:\OppRadar\OppRadar\contracts\news_pull_response.schema.json
+[Contract Check] Validating Success Sample...
+PASS
+[Contract Check] Validating Error Sample...
+PASS
+[Contract Check] All samples validated against schema.
+=== Rank V2 Contract Verification ===
+Schema loaded.
+=== Export V1 Contract Verification ===
+Schema loaded.
+=== Ledger V0 Contract Verification ===
+Schema loaded.
+Server already running.
+Fetching http://localhost:53122/opportunities/rank_v2?provider=mock&limit=5&run_id=verify_rank_v2...
+Received 3 items.
+Validating against schema...
+Schema Validation PASSED.
+Response Hash: 12827176
+::set-output name=rank_v2_hash::12827176
+VERIFICATION_SUCCESS
+Server already running.
+Generating Run assets via http://localhost:53122/scans/run...
+Server already running.
+Fetching /opportunities/ledger/query_v0?limit=1...
+Validating against schema...
+Validation PASSED.
+Run assets generated. Run ID: sc_ab522e60
+Fetching Export: http://localhost:53122/opportunities/runs/export_v1?run_id=sc_ab522e60...
+Received Export JSON.
+Validating against schema...
+Export Schema Validation PASSED.
+Export Hash: 55631b32
+::set-output name=export_v1_hash::55631b32
+EXPORT_CONTRACT_VERIFICATION_SUCCESS
 [Gate Light] HEAVY_PARALLEL_DONE: {"news":0,"rank":0,"export":0,"ledger":0}
 [Gate Light] MOCK_SERVER_SESSION=stopping
 [Gate Light] HEAVY_ENDPOINT_HARD_TIMEOUT_MS=4000
@@ -66,6 +80,7 @@ DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260403_013_healthcheck_53122_pairs.txt => HTTP/1
 [Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
 [Gate Light] Allowed legacy task_id (transition): 260403_012
 [Gate Light] NoHistoricalEvidenceTouch verified.
+SNIPPET_GIT_STRATEGY=local_first
 [Gate Light] Skipping SnippetCommitMustMatch check (Preview Mode).
 [Gate Light] Checking Rank V2 Contract Version Guard...
 [Gate Light] Base Commit: 9af7b1e96c9fa6a1572580becb851eec183523af
@@ -81,4 +96,5 @@ DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260403_013_healthcheck_53122_pairs.txt => HTTP/1
 [Gate Light] Skipping Postflight Envelope Validation (Preview Mode).
 [Gate Light] PASS
 GATE_LIGHT_EXIT=0
+
 GATE_LIGHT_EXIT=0
