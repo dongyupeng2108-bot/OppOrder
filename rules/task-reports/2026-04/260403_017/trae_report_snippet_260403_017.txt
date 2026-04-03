@@ -2,19 +2,31 @@
 
 Header: TraeTask_260403_017
 BRANCH: 260403_017
-COMMIT: 72b3b8576
+COMMIT: 04d57a401
 
 === GIT_SCOPE_DIFF ===
 M	rules/LATEST.json
 A	rules/task-reports/2026-04/260403_017/260403_017.json
+A	rules/task-reports/2026-04/260403_017/260403_017_healthcheck_53122_pairs.txt
+A	rules/task-reports/2026-04/260403_017/260403_017_healthcheck_53122_root.txt
 A	rules/task-reports/2026-04/260403_017/260403_017_truth_audit_notify_healthcheck_excerpt_fix.json
 A	rules/task-reports/2026-04/260403_017/260403_017_truth_audit_notify_healthcheck_excerpt_fix.log
+A	rules/task-reports/2026-04/260403_017/deliverables_index_260403_017.json
+A	rules/task-reports/2026-04/260403_017/dod_evidence_260403_017.txt
+A	rules/task-reports/2026-04/260403_017/evidence_manifest_260403_017.json
+A	rules/task-reports/2026-04/260403_017/gate_light_preview_260403_017.log
+A	rules/task-reports/2026-04/260403_017/gate_light_preview_260403_017.txt
+A	rules/task-reports/2026-04/260403_017/gate_light_profile_260403_017.json
+A	rules/task-reports/2026-04/260403_017/git_meta_260403_017.json
 A	rules/task-reports/2026-04/260403_017/implementation_260403_017.md
+A	rules/task-reports/2026-04/260403_017/manual_verification_260403_017.json
 A	rules/task-reports/2026-04/260403_017/notify_260403_017.txt
 A	rules/task-reports/2026-04/260403_017/result_260403_017.json
+A	rules/task-reports/2026-04/260403_017/run_260403_017.log
 A	rules/task-reports/2026-04/260403_017/trae_report_snippet_260403_017.txt
 A	rules/task-reports/2026-04/260403_017/truth_audit_260403_017.md
 A	rules/task-reports/2026-04/260403_017/workspace_healer_260403_017.json
+A	rules/task-reports/2026-04/envelopes/260403_017.envelope.json
 A	scripts/260403_017/truth_audit_notify_healthcheck_excerpt_fix_260403_017.mjs
 M	scripts/finalize_task_evidence.mjs
 M	scripts/gate_light_ci.mjs
