@@ -1,0 +1,144 @@
+{
+  "script_name": "truth_audit_today_chain_260403_007",
+  "task_id": "260403_007",
+  "sample_name": "today_chain_real_runtime_v1",
+  "pass": true,
+  "message": "first_break_layer=completed_window_absent",
+  "first_break_layer": "completed_window_absent",
+  "evidence_file": "rules/task-reports/2026-04/260403_007/260403_007_truth_audit_today_chain.json",
+  "summary": {
+    "first_break_layer": "completed_window_absent",
+    "pass": true
+  },
+  "raw_excerpt": {
+    "checks": {
+      "real_samples_ge_2": true,
+      "today_zero_now": true,
+      "has_fill_after_1359": true,
+      "frontend_direct_projection_text_present": true,
+      "first_break_resolved": true
+    },
+    "samples": [
+      {
+        "task_id": "260403_007",
+        "window_id": "btc-updown-5m-1775138400",
+        "is_real_runtime": true,
+        "started_at": "2026-04-02T14:00:00.000Z",
+        "window_end_at_5m": "2026-04-02T14:05:00.000Z",
+        "completed_at": null,
+        "fill_events_after_1359": 1,
+        "official_resolved": null,
+        "resolved_at": null,
+        "official_evidence": "no explicit official resolved fields in summary rows",
+        "has_postmortem_row": false,
+        "filled_total": null,
+        "realized_gross_pnl_total": null,
+        "should_include_today_server_utc": false,
+        "actually_in_today_summary": false,
+        "today_exclusion_reason": "not_completed_no_postmortem"
+      },
+      {
+        "task_id": "260403_007",
+        "window_id": "btc-updown-5m-1775138700",
+        "is_real_runtime": true,
+        "started_at": "2026-04-02T14:05:00.000Z",
+        "window_end_at_5m": "2026-04-02T14:10:00.000Z",
+        "completed_at": null,
+        "fill_events_after_1359": 1,
+        "official_resolved": null,
+        "resolved_at": null,
+        "official_evidence": "no explicit official resolved fields in summary rows",
+        "has_postmortem_row": false,
+        "filled_total": null,
+        "realized_gross_pnl_total": null,
+        "should_include_today_server_utc": false,
+        "actually_in_today_summary": false,
+        "today_exclusion_reason": "not_completed_no_postmortem"
+      }
+    ],
+    "fail_to_pass": {
+      "preFail": {
+        "today_zero_without_chain_attribution": true
+      },
+      "postPass": {
+        "chain_attribution_done": true,
+        "first_break_layer": "completed_window_absent"
+      }
+    }
+  },
+  "generated_at": "2026-04-03T06:46:32.597Z",
+  "conclusion_block": {
+    "verdict": "A：通过",
+    "first_break_layer": "completed_window_absent"
+  },
+  "evidence_index": {
+    "observed_after": "2026-04-02T13:59:00.000Z",
+    "checks": {
+      "real_samples_ge_2": true,
+      "today_zero_now": true,
+      "has_fill_after_1359": true,
+      "frontend_direct_projection_text_present": true,
+      "first_break_resolved": true
+    },
+    "samples": [
+      {
+        "task_id": "260403_007",
+        "window_id": "btc-updown-5m-1775138400",
+        "is_real_runtime": true,
+        "started_at": "2026-04-02T14:00:00.000Z",
+        "window_end_at_5m": "2026-04-02T14:05:00.000Z",
+        "completed_at": null,
+        "fill_events_after_1359": 1,
+        "official_resolved": null,
+        "resolved_at": null,
+        "official_evidence": "no explicit official resolved fields in summary rows",
+        "has_postmortem_row": false,
+        "filled_total": null,
+        "realized_gross_pnl_total": null,
+        "should_include_today_server_utc": false,
+        "actually_in_today_summary": false,
+        "today_exclusion_reason": "not_completed_no_postmortem"
+      },
+      {
+        "task_id": "260403_007",
+        "window_id": "btc-updown-5m-1775138700",
+        "is_real_runtime": true,
+        "started_at": "2026-04-02T14:05:00.000Z",
+        "window_end_at_5m": "2026-04-02T14:10:00.000Z",
+        "completed_at": null,
+        "fill_events_after_1359": 1,
+        "official_resolved": null,
+        "resolved_at": null,
+        "official_evidence": "no explicit official resolved fields in summary rows",
+        "has_postmortem_row": false,
+        "filled_total": null,
+        "realized_gross_pnl_total": null,
+        "should_include_today_server_utc": false,
+        "actually_in_today_summary": false,
+        "today_exclusion_reason": "not_completed_no_postmortem"
+      }
+    ],
+    "fail_to_pass": {
+      "preFail": {
+        "today_zero_without_chain_attribution": true
+      },
+      "postPass": {
+        "chain_attribution_done": true,
+        "first_break_layer": "completed_window_absent"
+      }
+    },
+    "pm_official_layer_note": "summary rows have no explicit official resolved fields; use window_end_vs_completed_at and postmortem presence as chain evidence",
+    "today_summary_key": {
+      "window_count": 0,
+      "participating_postmortem_rows_count": 0,
+      "utc_day_start_ts": 1775174400000,
+      "utc_day_start_iso": "2026-04-03T00:00:00.000Z"
+    },
+    "frontend_dom_key_text": "当前无已完成窗口数据（running 窗口不计入）",
+    "frontend_direct_projection": true
+  },
+  "non_regression": {
+    "no_business_logic_change": true,
+    "ui_is_projection_only": true
+  }
+}

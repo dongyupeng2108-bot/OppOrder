@@ -1,0 +1,6 @@
+script_name=truth_audit_today_chain_260403_007
+task_id=260403_007
+sample_name=today_chain_real_runtime_v1
+pass=true
+first_break_layer=completed_window_absent
+message=first_break_layer=completed_window_absent
