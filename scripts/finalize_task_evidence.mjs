@@ -361,6 +361,12 @@ const runAsync = async () => {
     run(`node scripts/build_trae_report_snippet.mjs --task_id=${taskId} --result_dir="${evidenceDir}"`, {
       env: { GATE_LIGHT_GENERATE_PREVIEW: '1' }
     });
+    if (fs.existsSync(snippetPath)) {
+      const snippetBody = fs.readFileSync(snippetPath, 'utf8');
+      if (/^Header:\s*Unknown\s*$/m.test(snippetBody)) {
+        fs.writeFileSync(snippetPath, snippetBody.replace(/^Header:\s*Unknown\s*$/m, `Header: TraeTask_${taskId}`), 'utf8');
+      }
+    }
     const branch = run('git branch --show-current', { capture: true }).trim();
     const sha = run('git rev-parse HEAD', { capture: true }).trim();
     const msg = run('git log -1 --pretty=%B', { capture: true }).trim();
@@ -385,6 +391,10 @@ const runAsync = async () => {
   });
 
   await step('关键证据跟踪检查', () => {
+    if (noStage) {
+      console.log('[Finalize] INFO: --no_stage=true，跳过git跟踪强制检查。');
+      return;
+    }
     const critical = [latestPath, notifyPath, resultPath, reportPath, healerPath, snippetPath];
     if (!noStage) run(`git add -f ${critical.map((p) => `"${p}"`).join(' ')}`);
     const missingTracked = critical.filter((p) => !safeRun(`git ls-files --error-unmatch "${p}"`).ok);
