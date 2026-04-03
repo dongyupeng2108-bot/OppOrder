@@ -661,22 +661,31 @@ const queryBotPerformanceSummary = async (presetRaw, includeRows = false) => {
   }
   return payload;
 };
-const finalizeBotRunSnapshot = (stopReason) => {
+const shouldFinalizeWindowOnRollover = (windowId) => {
+  if (!windowId) return false;
+  return botLastRunSnapshot?.current_window_id !== windowId;
+};
+
+const finalizeBotRunSnapshot = (stopReason, options = {}) => {
   const state = botState.getState();
+  const completedWindowId = options.completed_window_id ?? state?.current_window_id ?? null;
   const summary = getBotPaperSummaryScoped();
-  const scopedFilledTotal = getScopedFilledTotalForState(state, state?.current_window_id ?? null);
-  const activeConfig = getBotActiveRuntimeConfig() || getBotConfigSnapshot();
+  const scopedFilledTotal = getScopedFilledTotalForState(state, completedWindowId);
+  const activeConfig = options.active_config || getBotActiveRuntimeConfig() || getBotConfigSnapshot();
+  const phase = options.phase ?? state.phase ?? null;
+  const triggerSource = options.trigger_source ?? 'RUNTIME_STOP';
   const completedAt = new Date().toISOString();
   botLastRunSnapshot = {
     stop_reason: stopReason,
     completed_at: completedAt,
-    current_window_id: state.current_window_id ?? null,
-    phase: state.phase ?? null,
+    current_window_id: completedWindowId,
+    phase,
     filled_total: toFiniteOrNull(scopedFilledTotal) ?? 0,
     cancelled_total: toFiniteOrNull(summary?.cancelled_total) ?? 0,
     realized_gross_pnl_total: toFiniteOrNull(summary?.realized_gross_pnl_total) ?? 0,
     unrealized_gross_pnl_total: toFiniteOrNull(summary?.unrealized_gross_pnl_total) ?? 0,
-    active_config: cloneBotConfig(activeConfig)
+    active_config: cloneBotConfig(activeConfig),
+    trigger_source: triggerSource
   };
   const postmortemSnapshot = { ...botLastRunSnapshot, action_summary: [...botRunActionSummary] };
   writeBotPostmortem(postmortemSnapshot).catch((err) => {
@@ -686,7 +695,7 @@ const finalizeBotRunSnapshot = (stopReason) => {
       event: 'BOT_POSTMORTEM_WRITE_FAILED',
       message: err.message,
       mode: BOT_MODE,
-      window_id: state.current_window_id ?? null
+      window_id: completedWindowId
     });
   });
   botLogger.log({
@@ -695,7 +704,7 @@ const finalizeBotRunSnapshot = (stopReason) => {
     event: 'BOT_RUN_SNAPSHOT',
     message: stopReason,
     mode: BOT_MODE,
-    window_id: state.current_window_id ?? null,
+    window_id: completedWindowId,
     data: { ...botLastRunSnapshot, active_config: cloneBotConfig(botLastRunSnapshot.active_config) }
   });
 };
@@ -984,6 +993,16 @@ const botRunner = createBotRunner({
   getOrders: () => botExecutorPaper.getOrders(),
   getSummary: () => botExecutorPaper.getSummary(),
   getScheduledTickParams: () => getDebugScheduledTickParams(),
+  onWindowChanged: ({ from_window_id, state_before }) => {
+    if (!from_window_id) return;
+    if (!shouldFinalizeWindowOnRollover(from_window_id, state_before)) return;
+    finalizeBotRunSnapshot('WINDOW_ROLLOVER_COMPLETED', {
+      completed_window_id: from_window_id,
+      phase: state_before?.phase ?? null,
+      active_config: getBotActiveRuntimeConfig() || getBotConfigSnapshot(),
+      trigger_source: 'WINDOW_CHANGED'
+    });
+  },
   onRuntimeUpdate: (runtime) => {
     botState.patchState(runtime);
     const isRunning = runtime?.running === true;

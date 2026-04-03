@@ -1,0 +1,6 @@
+script_name=truth_audit_completed_trigger_fix_260403_010
+task_id=260403_010
+sample_name=completed_trigger_fix_real_runtime_v1
+pass=true
+first_break_layer=NONE_CHAIN_PASS
+message=first_break_layer=NONE_CHAIN_PASS

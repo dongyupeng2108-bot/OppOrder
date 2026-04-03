@@ -1,0 +1,269 @@
+{
+  "script_name": "truth_audit_completed_trigger_fix_260403_010",
+  "task_id": "260403_010",
+  "sample_name": "completed_trigger_fix_real_runtime_v1",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "rules/task-reports/2026-04/260403_010/260403_010_truth_audit_completed_trigger_fix.json",
+  "summary": {
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "pass": true
+  },
+  "raw_excerpt": {
+    "checks": {
+      "fail_to_pass_row_detected": true,
+      "fail_to_pass_trigger_source_window_changed": true,
+      "fail_to_pass_completed_written": true,
+      "non_regression_normal_8700_kept": true,
+      "non_regression_running_not_premature": true,
+      "non_regression_summary_semantics_kept": true,
+      "healthcheck_root_ok": true,
+      "healthcheck_pairs_ok": true
+    },
+    "fail_to_pass": {
+      "preFail": {
+        "window_id": "btc-updown-5m-1775138400",
+        "trigger_source": null,
+        "completed_at": null,
+        "has_postmortem_row": false
+      },
+      "postPass": {
+        "window_id": "btc-updown-5m-1775208000",
+        "trigger_source": "WINDOW_CHANGED",
+        "completed_at": "2026-04-03T09:25:00.843Z",
+        "has_postmortem_row": true,
+        "postmortem_key_fields": {
+          "filled_total": 4,
+          "cancelled_total": 0,
+          "realized_gross_pnl_total": 0
+        }
+      }
+    }
+  },
+  "generated_at": "2026-04-03T09:27:23.148Z",
+  "conclusion_block": {
+    "verdict": "A：通过",
+    "first_break_layer": "NONE_CHAIN_PASS"
+  },
+  "evidence_index": {
+    "checks": {
+      "fail_to_pass_row_detected": true,
+      "fail_to_pass_trigger_source_window_changed": true,
+      "fail_to_pass_completed_written": true,
+      "non_regression_normal_8700_kept": true,
+      "non_regression_running_not_premature": true,
+      "non_regression_summary_semantics_kept": true,
+      "healthcheck_root_ok": true,
+      "healthcheck_pairs_ok": true
+    },
+    "fail_to_pass": {
+      "preFail": {
+        "window_id": "btc-updown-5m-1775138400",
+        "trigger_source": null,
+        "completed_at": null,
+        "has_postmortem_row": false
+      },
+      "postPass": {
+        "window_id": "btc-updown-5m-1775208000",
+        "trigger_source": "WINDOW_CHANGED",
+        "completed_at": "2026-04-03T09:25:00.843Z",
+        "has_postmortem_row": true,
+        "postmortem_key_fields": {
+          "filled_total": 4,
+          "cancelled_total": 0,
+          "realized_gross_pnl_total": 0
+        }
+      }
+    },
+    "runtime": {
+      "healthcheck": {
+        "root_status": 200,
+        "root_excerpt": "{\"status\":\"ok\",\"port\":53130,\"strategy\":\"crypto_binary\",\"runner_active\":false}",
+        "pairs_status": 404,
+        "pairs_excerpt": "{\"status\":\"not_found\"}"
+      },
+      "switched_from_window_id": "btc-updown-5m-1775208000",
+      "switched_to_window_id": "btc-updown-5m-1775208300",
+      "switched_at": "2026-04-03T09:25:00.842Z",
+      "pre_fail_row": {
+        "window_id": "btc-updown-5m-1775208000",
+        "trigger_source": null,
+        "completed_at": null,
+        "has_postmortem_row": false
+      },
+      "pass_row": {
+        "window_id": "btc-updown-5m-1775208000",
+        "trigger_source": "WINDOW_CHANGED",
+        "completed_at": "2026-04-03T09:25:00.843Z",
+        "has_postmortem_row": true,
+        "postmortem_key_fields": {
+          "filled_total": 4,
+          "cancelled_total": 0,
+          "realized_gross_pnl_total": 0
+        }
+      },
+      "trigger_log": {
+        "event": "BOT_RUN_SNAPSHOT",
+        "message": "WINDOW_ROLLOVER_COMPLETED",
+        "window_id": "btc-updown-5m-1775208000",
+        "data": {
+          "stop_reason": "WINDOW_ROLLOVER_COMPLETED",
+          "completed_at": "2026-04-03T09:25:00.843Z",
+          "current_window_id": "btc-updown-5m-1775208000",
+          "phase": "IDLE",
+          "filled_total": 4,
+          "cancelled_total": 0,
+          "realized_gross_pnl_total": 0,
+          "unrealized_gross_pnl_total": -0.21999999999999886,
+          "active_config": {
+            "open_delay_sec": 0,
+            "ladder_prices": [
+              0.999,
+              0.998
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 15,
+            "up_ladder": [
+              {
+                "price": 0.999,
+                "size": 5,
+                "tp_price": 1
+              },
+              {
+                "price": 0.998,
+                "size": 5,
+                "tp_price": 1
+              }
+            ],
+            "down_ladder": [
+              {
+                "price": 0.999,
+                "size": 5,
+                "tp_price": 1
+              },
+              {
+                "price": 0.998,
+                "size": 5,
+                "tp_price": 1
+              }
+            ],
+            "up_cancel": {
+              "before_end_sec": 120,
+              "formula": ""
+            },
+            "down_cancel": {
+              "before_end_sec": 120,
+              "formula": ""
+            }
+          },
+          "trigger_source": "WINDOW_CHANGED"
+        }
+      },
+      "pass_snapshot": {
+        "stop_reason": "WINDOW_ROLLOVER_COMPLETED",
+        "completed_at": "2026-04-03T09:25:00.843Z",
+        "current_window_id": "btc-updown-5m-1775208000",
+        "phase": "IDLE",
+        "filled_total": 4,
+        "cancelled_total": 0,
+        "realized_gross_pnl_total": 0,
+        "unrealized_gross_pnl_total": -0.21999999999999886,
+        "active_config": {
+          "open_delay_sec": 0,
+          "ladder_prices": [
+            0.999,
+            0.998
+          ],
+          "ladder_size": 5,
+          "atr_multiple": 1.2,
+          "cancel_all_remaining_sec": 15,
+          "up_ladder": [
+            {
+              "price": 0.999,
+              "size": 5,
+              "tp_price": 1
+            },
+            {
+              "price": 0.998,
+              "size": 5,
+              "tp_price": 1
+            }
+          ],
+          "down_ladder": [
+            {
+              "price": 0.999,
+              "size": 5,
+              "tp_price": 1
+            },
+            {
+              "price": 0.998,
+              "size": 5,
+              "tp_price": 1
+            }
+          ],
+          "up_cancel": {
+            "before_end_sec": 120,
+            "formula": ""
+          },
+          "down_cancel": {
+            "before_end_sec": 120,
+            "formula": ""
+          }
+        },
+        "trigger_source": "WINDOW_CHANGED"
+      },
+      "non_regression": {
+        "normal_completed_8700": {
+          "exists": true,
+          "completed_at": "2026-04-02T14:09:41.423Z"
+        },
+        "running_window_not_premature_completed": {
+          "current_window_id": null,
+          "has_postmortem_row_in_7d": false
+        },
+        "summary_smoke": {
+          "today_running_window_excluded": true,
+          "last7d_running_window_excluded": true
+        }
+      },
+      "timeline_tail": [
+        {
+          "at": "2026-04-03T09:27:23.125Z",
+          "current_window_id": null,
+          "postmortem_for_current_7d": false,
+          "today_window_count": 5
+        }
+      ]
+    },
+    "non_regression": {
+      "normal_completed_8700": {
+        "exists": true,
+        "completed_at": "2026-04-02T14:09:41.423Z"
+      },
+      "running_window_not_premature_completed": {
+        "current_window_id": null,
+        "has_postmortem_row_in_7d": false
+      },
+      "summary_smoke": {
+        "today_running_window_excluded": true,
+        "last7d_running_window_excluded": true
+      }
+    }
+  },
+  "non_regression": {
+    "normal_completed_8700": {
+      "exists": true,
+      "completed_at": "2026-04-02T14:09:41.423Z"
+    },
+    "running_window_not_premature_completed": {
+      "current_window_id": null,
+      "has_postmortem_row_in_7d": false
+    },
+    "summary_smoke": {
+      "today_running_window_excluded": true,
+      "last7d_running_window_excluded": true
+    }
+  }
+}
