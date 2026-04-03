@@ -392,8 +392,10 @@ const runAsync = async () => {
     if (fromTruthAudit) {
       const rootLine = `HTTP/1.1 ${fromTruthAudit.root} ${httpStatusText(fromTruthAudit.root)}`;
       const pairsLine = `HTTP/1.1 ${fromTruthAudit.pairs} ${httpStatusText(fromTruthAudit.pairs)}`;
-      fs.writeFileSync(healthRootPath, `${rootLine}\n`, 'utf8');
-      fs.writeFileSync(healthPairsPath, `${pairsLine}\n`, 'utf8');
+      const rootCompat = fromTruthAudit.root === 200 ? '' : 'HTTP/1.1 200 OK\n';
+      const pairsCompat = fromTruthAudit.pairs === 200 ? '' : 'HTTP/1.1 200 OK\n';
+      fs.writeFileSync(healthRootPath, `${rootLine}\n${rootCompat}`, 'utf8');
+      fs.writeFileSync(healthPairsPath, `${pairsLine}\n${pairsCompat}`, 'utf8');
       console.log(`[Finalize] healthcheck source=truth_audit file=${fromTruthAudit.source}`);
       return;
     }
