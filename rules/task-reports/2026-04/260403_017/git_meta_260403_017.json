@@ -1,1 +1,1 @@
-{"commit":"04d57a401b72fb595a969e5ccec79a69119d6a4d","message":"260403_017: healthcheck证据保留首行真值并兼容旧postflight检查","branch":"260403_017"}
+{"commit":"e6c0d6b0418912fcf1f8736ad3c2588629e9c8ad","message":"260403_017: 回退受保护脚本postflight变更，保持治理修补最小范围","branch":"260403_017"}

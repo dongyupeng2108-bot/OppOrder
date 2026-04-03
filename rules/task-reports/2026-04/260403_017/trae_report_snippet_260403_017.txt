@@ -2,7 +2,7 @@
 
 Header: TraeTask_260403_017
 BRANCH: 260403_017
-COMMIT: 04d57a401
+COMMIT: e6c0d6b04
 
 === GIT_SCOPE_DIFF ===
 M	rules/LATEST.json
@@ -30,7 +30,6 @@ A	rules/task-reports/2026-04/envelopes/260403_017.envelope.json
 A	scripts/260403_017/truth_audit_notify_healthcheck_excerpt_fix_260403_017.mjs
 M	scripts/finalize_task_evidence.mjs
 M	scripts/gate_light_ci.mjs
-M	scripts/postflight_validate_envelope.mjs
 
 === DOD_EVIDENCE_STDOUT ===
 Missing Blocks:
