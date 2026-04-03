@@ -1,0 +1,29 @@
+=== TRAE_REPORT_SNIPPET ===
+
+Header: TraeTask_260403_017
+BRANCH: 260403_017
+COMMIT: c7423a2b7
+
+=== GIT_SCOPE_DIFF ===
+M	rules/LATEST.json
+A	scripts/260403_017/truth_audit_notify_healthcheck_excerpt_fix_260403_017.mjs
+M	scripts/finalize_task_evidence.mjs
+M	scripts/gate_light_ci.mjs
+
+=== DOD_EVIDENCE_STDOUT ===
+Missing Blocks:
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260403_017_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260403_017_healthcheck_53122_pairs.txt => HTTP/1.1 404 Not Found
+
+
+
+=== GATE_LIGHT_PREVIEW ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260403_017
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] TASK_PROFILE=light
+[Gate Light] Verifying task_id: 260403_017
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] FAILED: Report Block Check for notify_260403_017.txt
+GATE_LIGHT_EXIT=1
