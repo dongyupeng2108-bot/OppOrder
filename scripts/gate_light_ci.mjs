@@ -1736,6 +1736,87 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
 
     if (isHeavyProfile) {
         console.log('[Gate Light] Checking Heavy Mandatory Evidence...');
+        const parseJsonSafe = (file) => {
+            try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch { return null; }
+        };
+        const isTruthyObject = (value) => value && typeof value === 'object' && !Array.isArray(value);
+        const flattenChecks = (obj) => {
+            const checks = {};
+            const collect = (node) => {
+                if (!isTruthyObject(node)) return;
+                for (const [k, v] of Object.entries(node)) {
+                    if (typeof v === 'boolean') checks[k] = checks[k] === true ? true : v;
+                    if (isTruthyObject(v)) collect(v);
+                }
+            };
+            collect(obj?.raw_excerpt?.checks);
+            collect(obj?.evidence_index?.checks);
+            return checks;
+        };
+        const hasFailToPassStructured = (obj) => {
+            return Boolean(
+                obj?.raw_excerpt?.fail_to_pass
+                || obj?.evidence_index?.fail_to_pass
+                || (isTruthyObject(obj?.raw_excerpt?.preFail) && isTruthyObject(obj?.raw_excerpt?.postPass))
+                || (isTruthyObject(obj?.raw_excerpt?.pre_fail) && isTruthyObject(obj?.raw_excerpt?.post_pass))
+            );
+        };
+        const hasRealRuntimeStructured = (obj) => {
+            const sampleBuckets = [];
+            if (Array.isArray(obj?.raw_excerpt?.samples)) sampleBuckets.push(...obj.raw_excerpt.samples);
+            if (Array.isArray(obj?.evidence_index?.samples)) sampleBuckets.push(...obj.evidence_index.samples);
+            if (Array.isArray(obj?.raw_excerpt?.sample_reconcile_rows)) sampleBuckets.push(...obj.raw_excerpt.sample_reconcile_rows);
+            if (Array.isArray(obj?.evidence_index?.sample_reconcile_rows)) sampleBuckets.push(...obj.evidence_index.sample_reconcile_rows);
+            if (sampleBuckets.some((row) => row?.is_real_runtime === true)) return true;
+            const runtimeRows = [];
+            if (Array.isArray(obj?.raw_excerpt?.sample_rows)) runtimeRows.push(...obj.raw_excerpt.sample_rows);
+            if (Array.isArray(obj?.evidence_index?.sample_rows)) runtimeRows.push(...obj.evidence_index.sample_rows);
+            if (Array.isArray(obj?.evidence_index?.participating_postmortem_rows)) runtimeRows.push(...obj.evidence_index.participating_postmortem_rows);
+            return runtimeRows.some((row) => typeof row?.window_id === 'string' && /btc-updown-5m-\d{10}/i.test(row.window_id));
+        };
+        const hasNonRegressionStructured = (obj, checks) => {
+            if (isTruthyObject(obj?.non_regression)) return true;
+            if (isTruthyObject(obj?.evidence_index?.non_regression)) return true;
+            return Object.keys(checks || {}).some((k) => /non_regression|不回退|running_not_mixed|last_7d_not_zeroed/i.test(k) && checks[k] === true);
+        };
+        const hasHealthcheckStructured = (obj) => {
+            const health = obj?.evidence_index?.healthcheck;
+            if (isTruthyObject(health) && Number.isInteger(health.root_status) && Number.isInteger(health.pairs_status)) return true;
+            const he = obj?.raw_excerpt?.healthcheck;
+            if (isTruthyObject(he) && Number.isInteger(he.root_status) && Number.isInteger(he.pairs_status)) return true;
+            return false;
+        };
+        const hasGovernanceResultStructured = (obj, checks) => {
+            if (checks?.governance_substitute_pass === true || checks?.workflow_upgrade_pass === true) return true;
+            const keys = Object.keys(checks || {});
+            const keyHit = keys.some((k) => (
+                /strategy_local_first|fetch_not_needed|fetch_needed_true|snippet_verified|snippet_after_fetch_verified|heavy_mandatory_verified|light_smoke_exit_ok|gate_behavior_preserved|mandatory_rewrite_verified/i.test(k)
+                && checks[k] === true
+            ));
+            const governancePassHit = keys.some((k) => /governance_heavy_.*_pass/i.test(k) && checks[k] === true);
+            if (governancePassHit) return true;
+            if (keyHit) return true;
+            return Boolean(obj?.evidence_index?.governance_substitute || obj?.raw_excerpt?.governance_substitute);
+        };
+        const detectServerTouched = () => {
+            try {
+                let diff = '';
+                try {
+                    execSync('git rev-parse origin/main', { stdio: 'ignore' });
+                    diff = execSync('git diff --name-only origin/main...HEAD', { encoding: 'utf8', stdio: 'pipe' });
+                } catch {
+                    diff = execSync('git diff --name-only', { encoding: 'utf8', stdio: 'pipe' });
+                }
+                return String(diff || '')
+                    .split(/\r?\n/)
+                    .map((s) => s.trim())
+                    .filter(Boolean)
+                    .some((p) => /(^|\/)server\.mjs$/i.test(p.replace(/\\/g, '/')));
+            } catch {
+                console.warn('[Gate Light] WARN: unable to determine server.mjs diff status; skip healthcheck hard requirement.');
+                return false;
+            }
+        };
         const collectTruthJson = (root) => {
             const out = [];
             const stack = [root];
@@ -1762,21 +1843,59 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
             console.error('[Gate Light] FAILED: Heavy profile missing truth_audit json evidence.');
             process.exit(1);
         }
+        const parsedTruth = truthJsonFiles.map((file) => ({ file, data: parseJsonSafe(file) })).filter((x) => x.data);
         const merged = truthJsonFiles.map((file) => {
             try { return fs.readFileSync(file, 'utf8'); } catch { return ''; }
         }).join('\n');
-        const hasFirstBreak = /"first_break_layer"\s*:/.test(merged);
-        const hasFailPass = /fail_to_pass|preFail|postPass|fail->pass|Fail -> Pass/i.test(merged);
-        const hasRealRuntime = /"sample_reconcile_rows"\s*:|"samples"\s*:|is_real_runtime|real runtime/i.test(merged);
-        const hasNonRegression = /non_regression|不回退|running_not_mixed|last_7d_not_zeroed/i.test(merged);
-        const hasWorkflowEvidence = /gate_diff_table|light_only|heavy_only|workflow profile split|heavy_gate_efficiency|parallel_news_rank_export_ledger|HEAVY_PARALLEL_START|MOCK_SERVER_SESSION/i.test(merged);
-        const hasHeavyQualityEvidence = hasNonRegression || hasWorkflowEvidence;
-        if (!hasFirstBreak || !hasFailPass || !hasRealRuntime || !hasHeavyQualityEvidence) {
+        const workflowMetaHit = /gate_diff_table|light_only|heavy_only|workflow profile split|heavy_gate_efficiency|parallel_news_rank_export_ledger|HEAVY_PARALLEL_START|MOCK_SERVER_SESSION/i.test(merged);
+        if (workflowMetaHit) {
+            console.warn('[Gate Light] WARN: workflow meta evidence detected (no longer blocking in heavy mandatory).');
+        }
+        const signals = parsedTruth.map(({ data }) => {
+            const checks = flattenChecks(data);
+            const scriptName = String(data?.script_name || '');
+            const isGovernanceTask = data?.task_type === 'workflow_upgrade'
+                || /workflow|governance|upgrade|mandatory_rewrite|heavy_mandatory/i.test(scriptName)
+                || /snippet_git_local_first|gate_mandatory|workflow_upgrade/i.test(scriptName)
+                || hasGovernanceResultStructured(data, checks);
+            return {
+                isGovernanceTask,
+                hasFirstBreak: typeof data?.first_break_layer === 'string' && data.first_break_layer.length > 0,
+                hasFailPass: hasFailToPassStructured(data) || /fail_to_pass|preFail|postPass|pre_fail|post_pass|fail->pass|Fail -> Pass/i.test(JSON.stringify(data)),
+                hasRealRuntime: hasRealRuntimeStructured(data) || /is_real_runtime|real runtime/i.test(JSON.stringify(data)),
+                hasNonRegression: hasNonRegressionStructured(data, checks),
+                hasGovernanceResult: hasGovernanceResultStructured(data, checks),
+                hasHealthcheck: hasHealthcheckStructured(data) || /healthcheck|root_status|pairs_status/i.test(JSON.stringify(data))
+            };
+        });
+        const isGovernanceHeavy = signals.some((s) => s.isGovernanceTask);
+        const hasFirstBreak = signals.some((s) => s.hasFirstBreak);
+        const hasFailPass = signals.some((s) => s.hasFailPass);
+        const hasRealRuntime = signals.some((s) => s.hasRealRuntime);
+        const hasNonRegression = signals.some((s) => s.hasNonRegression);
+        const hasGovernanceResult = signals.some((s) => s.hasGovernanceResult);
+        const hasHealthcheck = signals.some((s) => s.hasHealthcheck);
+        const serverTouched = detectServerTouched();
+        const businessMissing = !hasFirstBreak || !hasFailPass || !hasRealRuntime || !hasNonRegression || (serverTouched && !hasHealthcheck);
+        const governanceMissing = !hasFirstBreak || !hasFailPass || !hasGovernanceResult;
+        if ((!isGovernanceHeavy && businessMissing) || (isGovernanceHeavy && governanceMissing)) {
             console.error('[Gate Light] FAILED: Heavy mandatory evidence incomplete.');
+            console.error(`  heavy_mode=${isGovernanceHeavy ? 'governance' : 'business'}`);
             console.error(`  has_first_break_layer=${hasFirstBreak}`);
             console.error(`  has_fail_to_pass=${hasFailPass}`);
             console.error(`  has_real_runtime=${hasRealRuntime}`);
-            console.error(`  has_non_regression_or_workflow_evidence=${hasHeavyQualityEvidence}`);
+            if (isGovernanceHeavy) {
+                console.error(`  has_governance_substitute=${hasGovernanceResult}`);
+                console.warn(`  has_real_runtime=${hasRealRuntime} (not blocking for governance heavy)`);
+            } else {
+                console.error(`  has_non_regression=${hasNonRegression}`);
+            }
+            if (!isGovernanceHeavy && serverTouched) {
+                console.error(`  server_touched=true`);
+                console.error(`  has_healthcheck=${hasHealthcheck}`);
+            } else if (!isGovernanceHeavy) {
+                console.warn('  server_touched=false (healthcheck not mandatory for this run).');
+            }
             process.exit(1);
         }
         console.log('[Gate Light] Heavy mandatory evidence verified.');

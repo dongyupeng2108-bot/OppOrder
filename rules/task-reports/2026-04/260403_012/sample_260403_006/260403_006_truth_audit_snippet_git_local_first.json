@@ -1,0 +1,124 @@
+{
+  "script_name": "truth_audit_snippet_git_local_first_260403_006",
+  "task_id": "260403_006",
+  "sample_name": "snippet_git_local_first_v1",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "rules/task-reports/2026-04/260403_006/260403_006_truth_audit_snippet_git_local_first.json",
+  "summary": {
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "pass": true
+  },
+  "raw_excerpt": {
+    "checks": {
+      "heavy_sample_260403002_exit_ok": true,
+      "heavy_sample_coverage_seen": true,
+      "heavy_success_exit_ok": true,
+      "strategy_local_first": true,
+      "fetch_not_needed": true,
+      "snippet_verified": true,
+      "heavy_mandatory_verified": true,
+      "heavy_info_insufficient_exit_ok": true,
+      "fetch_needed_true": true,
+      "fetch_reason_logged": true,
+      "fetch_action_logged": true,
+      "snippet_after_fetch_verified": true,
+      "light_smoke_exit_ok": true,
+      "light_profile_seen": true,
+      "light_skiplist_seen": true
+    },
+    "fail_to_pass": {
+      "preFail": {
+        "unconditional_fetch_before_diff": true
+      },
+      "postPass": {
+        "snippet_git_strategy_local_first": true,
+        "fetch_only_on_insufficient_info": true
+      }
+    },
+    "samples": [
+      {
+        "task_id": "260403_002",
+        "profile": "heavy",
+        "is_real_runtime": true
+      },
+      {
+        "task_id": "260403_006",
+        "profile": "heavy",
+        "is_real_runtime": true
+      }
+    ]
+  },
+  "generated_at": "2026-04-02T20:36:39.662Z",
+  "conclusion_block": {
+    "verdict": "A：通过",
+    "first_break_layer": "NONE_CHAIN_PASS"
+  },
+  "evidence_index": {
+    "checks": {
+      "heavy_sample_260403002_exit_ok": true,
+      "heavy_sample_coverage_seen": true,
+      "heavy_success_exit_ok": true,
+      "strategy_local_first": true,
+      "fetch_not_needed": true,
+      "snippet_verified": true,
+      "heavy_mandatory_verified": true,
+      "heavy_info_insufficient_exit_ok": true,
+      "fetch_needed_true": true,
+      "fetch_reason_logged": true,
+      "fetch_action_logged": true,
+      "snippet_after_fetch_verified": true,
+      "light_smoke_exit_ok": true,
+      "light_profile_seen": true,
+      "light_skiplist_seen": true
+    },
+    "fail_to_pass": {
+      "preFail": {
+        "unconditional_fetch_before_diff": true
+      },
+      "postPass": {
+        "snippet_git_strategy_local_first": true,
+        "fetch_only_on_insufficient_info": true
+      }
+    },
+    "samples": [
+      {
+        "task_id": "260403_002",
+        "profile": "heavy",
+        "is_real_runtime": true
+      },
+      {
+        "task_id": "260403_006",
+        "profile": "heavy",
+        "is_real_runtime": true
+      }
+    ],
+    "git_strategy": "local_first",
+    "heavy_success_excerpt": [
+      "[Gate Light] MOCK_SERVER_SESSION=starting script=E:\\OppRadar\\OppRadar\\mock_server_53122.mjs",
+      "[Gate Light] MOCK_SERVER_SESSION=ready pid=5992",
+      "[Gate Light] HEAVY_PARALLEL_START: news/rank/export/ledger",
+      "[Gate Light] MOCK_SERVER_SESSION=stopping",
+      "[Gate Light] HEAVY_ENDPOINT_HARD_TIMEOUT_MS=4000",
+      "[Gate Light] HEAVY_PARALLEL_START: scanner/universe/trading",
+      "SNIPPET_GIT_STRATEGY=local_first",
+      "SNIPPET_GIT_FETCH_NEEDED=false",
+      "[Gate Light] SnippetCommitMustMatch verified (Evidence/Docs-only update detected).",
+      "[Gate Light] SnippetCommitMustMatch verified.",
+      "[Gate Light] Heavy mandatory evidence verified."
+    ],
+    "heavy_info_insufficient_excerpt": [
+      "SNIPPET_GIT_FETCH_NEEDED=true",
+      "[Gate Light] SNIPPET_GIT_FETCH_REASON=forced_for_governance_test",
+      "[Gate Light] SNIPPET_GIT_FETCH_ACTION=git fetch origin --deepen=50",
+      "[Gate Light] SnippetCommitMustMatch verified (Evidence/Docs-only update detected).",
+      "[Gate Light] SnippetCommitMustMatch verified."
+    ],
+    "light_smoke_excerpt": [
+      "[Gate Light] TASK_PROFILE=light",
+      "[Gate Light] LIGHT profile: skipping heavy-only contract checks (news/rank/export/ledger/scanner/universe/trading).",
+      "GATE_LIGHT_EXIT=0"
+    ]
+  }
+}

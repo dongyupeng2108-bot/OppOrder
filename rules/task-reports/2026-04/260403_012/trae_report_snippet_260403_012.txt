@@ -1,0 +1,241 @@
+=== TRAE_REPORT_SNIPPET ===
+
+Header: TraeTask_260403_012
+BRANCH: 260403_012
+COMMIT: 1f74000d4
+
+=== GIT_SCOPE_DIFF ===
+M	rules/LATEST.json
+M	rules/rules/PROJECT_MASTER_PLAN.md
+M	rules/rules/PROJECT_RULES.md
+M	rules/rules/WORKFLOW.md
+A	rules/task-reports/2026-04/260403_012/260403_012.json
+A	rules/task-reports/2026-04/260403_012/260403_012_healthcheck_53122_pairs.txt
+A	rules/task-reports/2026-04/260403_012/260403_012_healthcheck_53122_root.txt
+A	rules/task-reports/2026-04/260403_012/260403_012_truth_audit_heavy_mandatory_rewrite.json
+A	rules/task-reports/2026-04/260403_012/260403_012_truth_audit_heavy_mandatory_rewrite.log
+A	rules/task-reports/2026-04/260403_012/ci_parity_260403_012.json
+A	rules/task-reports/2026-04/260403_012/deliverables_index_260403_012.json
+A	rules/task-reports/2026-04/260403_012/dod_evidence_260403_012.txt
+A	rules/task-reports/2026-04/260403_012/envelopes/260330_045.envelope.json
+A	rules/task-reports/2026-04/260403_012/envelopes/260403_002.envelope.json
+A	rules/task-reports/2026-04/260403_012/envelopes/260403_006.envelope.json
+A	rules/task-reports/2026-04/260403_012/errors_260403_012.jsonl
+A	rules/task-reports/2026-04/260403_012/errors_summary_260403_012.txt
+A	rules/task-reports/2026-04/260403_012/evidence_manifest_260403_012.json
+A	rules/task-reports/2026-04/260403_012/gate_light_preview_260403_012.log
+A	rules/task-reports/2026-04/260403_012/gate_light_preview_260403_012.txt
+A	rules/task-reports/2026-04/260403_012/gate_light_profile_260403_012.json
+A	rules/task-reports/2026-04/260403_012/git_meta_260403_012.json
+A	rules/task-reports/2026-04/260403_012/implementation_260403_012.md
+A	rules/task-reports/2026-04/260403_012/manual_verification_260403_012.json
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime/260403_002.json
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime/260403_002_healthcheck_53122_pairs.txt
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime/260403_002_healthcheck_53122_root.txt
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime/260403_002_truth_audit_today_rollup_fix.heartbeat.log
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime/260403_002_truth_audit_today_rollup_fix.json
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime/260403_002_truth_audit_today_rollup_fix.log
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime/ci_parity_260403_002.json
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime/deliverables_index_260403_002.json
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime/dod_evidence_260403_002.txt
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime/errors_260403_002.jsonl
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime/errors_summary_260403_002.txt
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime/evidence_manifest_260403_002.json
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime/gate_light_preview_260403_002.log
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime/gate_light_preview_260403_002.txt
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime/gate_light_profile_260403_002.json
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime/git_meta_260403_002.json
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime/implementation_260403_002.md
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime/manual_verification_260403_002.json
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime/notify_260403_002.txt
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime/preflight_attestation_260403_002.json
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime/result_260403_002.json
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime/run_260403_002.log
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime/trae_report_snippet_260403_002.txt
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime/truth_audit_260403_002.md
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime/workspace_healer_260403_002.json
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime_260403_002/260403_002.json
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime_260403_002/260403_002_healthcheck_53122_pairs.txt
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime_260403_002/260403_002_healthcheck_53122_root.txt
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime_260403_002/260403_002_truth_audit_today_rollup_fix.heartbeat.log
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime_260403_002/260403_002_truth_audit_today_rollup_fix.json
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime_260403_002/260403_002_truth_audit_today_rollup_fix.log
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime_260403_002/ci_parity_260403_002.json
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime_260403_002/deliverables_index_260403_002.json
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime_260403_002/dod_evidence_260403_002.txt
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime_260403_002/errors_260403_002.jsonl
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime_260403_002/errors_summary_260403_002.txt
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime_260403_002/evidence_manifest_260403_002.json
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime_260403_002/gate_light_preview_260403_002.log
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime_260403_002/gate_light_preview_260403_002.txt
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime_260403_002/gate_light_profile_260403_002.json
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime_260403_002/git_meta_260403_002.json
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime_260403_002/implementation_260403_002.md
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime_260403_002/manual_verification_260403_002.json
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime_260403_002/notify_260403_002.txt
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime_260403_002/preflight_attestation_260403_002.json
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime_260403_002/result_260403_002.json
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime_260403_002/run_260403_002.log
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime_260403_002/trae_report_snippet_260403_002.txt
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime_260403_002/truth_audit_260403_002.md
+A	rules/task-reports/2026-04/260403_012/negative_missing_real_runtime_260403_002/workspace_healer_260403_002.json
+A	rules/task-reports/2026-04/260403_012/notify_260403_012.txt
+A	rules/task-reports/2026-04/260403_012/preflight_attestation_260403_012.json
+A	rules/task-reports/2026-04/260403_012/result_260403_012.json
+A	rules/task-reports/2026-04/260403_012/run_260403_012.log
+A	rules/task-reports/2026-04/260403_012/sample_260330_045/260330_045.json
+A	rules/task-reports/2026-04/260403_012/sample_260330_045/260330_045_healthcheck_53122_pairs.txt
+A	rules/task-reports/2026-04/260403_012/sample_260330_045/260330_045_healthcheck_53122_root.txt
+A	rules/task-reports/2026-04/260403_012/sample_260330_045/260330_045_truth_audit_pnl_display_precision.heartbeat.log
+A	rules/task-reports/2026-04/260403_012/sample_260330_045/260330_045_truth_audit_pnl_display_precision.json
+A	rules/task-reports/2026-04/260403_012/sample_260330_045/260330_045_truth_audit_pnl_display_precision.log
+A	rules/task-reports/2026-04/260403_012/sample_260330_045/ci_parity_260330_045.json
+A	rules/task-reports/2026-04/260403_012/sample_260330_045/deliverables_index_260330_045.json
+A	rules/task-reports/2026-04/260403_012/sample_260330_045/dod_evidence_260330_045.txt
+A	rules/task-reports/2026-04/260403_012/sample_260330_045/errors_260330_045.jsonl
+A	rules/task-reports/2026-04/260403_012/sample_260330_045/errors_summary_260330_045.txt
+A	rules/task-reports/2026-04/260403_012/sample_260330_045/evidence_manifest_260330_045.json
+A	rules/task-reports/2026-04/260403_012/sample_260330_045/gate_light_preview_260330_045.log
+A	rules/task-reports/2026-04/260403_012/sample_260330_045/gate_light_preview_260330_045.txt
+A	rules/task-reports/2026-04/260403_012/sample_260330_045/gate_light_profile_260330_045.json
+A	rules/task-reports/2026-04/260403_012/sample_260330_045/git_meta_260330_045.json
+A	rules/task-reports/2026-04/260403_012/sample_260330_045/implementation_260330_045.md
+A	rules/task-reports/2026-04/260403_012/sample_260330_045/manual_verification_260330_045.json
+A	rules/task-reports/2026-04/260403_012/sample_260330_045/notify_260330_045.txt
+A	rules/task-reports/2026-04/260403_012/sample_260330_045/preflight_attestation_260330_045.json
+A	rules/task-reports/2026-04/260403_012/sample_260330_045/result_260330_045.json
+A	rules/task-reports/2026-04/260403_012/sample_260330_045/run_260330_045.log
+A	rules/task-reports/2026-04/260403_012/sample_260330_045/trae_report_snippet_260330_045.txt
+A	rules/task-reports/2026-04/260403_012/sample_260330_045/truth_audit_260330_045.md
+A	rules/task-reports/2026-04/260403_012/sample_260330_045/workspace_healer_260330_045.json
+A	rules/task-reports/2026-04/260403_012/sample_260403_002/260403_002.json
+A	rules/task-reports/2026-04/260403_012/sample_260403_002/260403_002_healthcheck_53122_pairs.txt
+A	rules/task-reports/2026-04/260403_012/sample_260403_002/260403_002_healthcheck_53122_root.txt
+A	rules/task-reports/2026-04/260403_012/sample_260403_002/260403_002_truth_audit_today_rollup_fix.heartbeat.log
+A	rules/task-reports/2026-04/260403_012/sample_260403_002/260403_002_truth_audit_today_rollup_fix.json
+A	rules/task-reports/2026-04/260403_012/sample_260403_002/260403_002_truth_audit_today_rollup_fix.log
+A	rules/task-reports/2026-04/260403_012/sample_260403_002/ci_parity_260403_002.json
+A	rules/task-reports/2026-04/260403_012/sample_260403_002/deliverables_index_260403_002.json
+A	rules/task-reports/2026-04/260403_012/sample_260403_002/dod_evidence_260403_002.txt
+A	rules/task-reports/2026-04/260403_012/sample_260403_002/errors_260403_002.jsonl
+A	rules/task-reports/2026-04/260403_012/sample_260403_002/errors_summary_260403_002.txt
+A	rules/task-reports/2026-04/260403_012/sample_260403_002/evidence_manifest_260403_002.json
+A	rules/task-reports/2026-04/260403_012/sample_260403_002/gate_light_preview_260403_002.log
+A	rules/task-reports/2026-04/260403_012/sample_260403_002/gate_light_preview_260403_002.txt
+A	rules/task-reports/2026-04/260403_012/sample_260403_002/gate_light_profile_260403_002.json
+A	rules/task-reports/2026-04/260403_012/sample_260403_002/git_meta_260403_002.json
+A	rules/task-reports/2026-04/260403_012/sample_260403_002/implementation_260403_002.md
+A	rules/task-reports/2026-04/260403_012/sample_260403_002/manual_verification_260403_002.json
+A	rules/task-reports/2026-04/260403_012/sample_260403_002/notify_260403_002.txt
+A	rules/task-reports/2026-04/260403_012/sample_260403_002/preflight_attestation_260403_002.json
+A	rules/task-reports/2026-04/260403_012/sample_260403_002/result_260403_002.json
+A	rules/task-reports/2026-04/260403_012/sample_260403_002/run_260403_002.log
+A	rules/task-reports/2026-04/260403_012/sample_260403_002/trae_report_snippet_260403_002.txt
+A	rules/task-reports/2026-04/260403_012/sample_260403_002/truth_audit_260403_002.md
+A	rules/task-reports/2026-04/260403_012/sample_260403_002/workspace_healer_260403_002.json
+A	rules/task-reports/2026-04/260403_012/sample_260403_006/260403_006.json
+A	rules/task-reports/2026-04/260403_012/sample_260403_006/260403_006_healthcheck_53122_pairs.txt
+A	rules/task-reports/2026-04/260403_012/sample_260403_006/260403_006_healthcheck_53122_root.txt
+A	rules/task-reports/2026-04/260403_012/sample_260403_006/260403_006_truth_audit_snippet_git_local_first.json
+A	rules/task-reports/2026-04/260403_012/sample_260403_006/260403_006_truth_audit_snippet_git_local_first.log
+A	rules/task-reports/2026-04/260403_012/sample_260403_006/ci_parity_260403_006.json
+A	rules/task-reports/2026-04/260403_012/sample_260403_006/deliverables_index_260403_006.json
+A	rules/task-reports/2026-04/260403_012/sample_260403_006/dod_evidence_260403_006.txt
+A	rules/task-reports/2026-04/260403_012/sample_260403_006/errors_260403_006.jsonl
+A	rules/task-reports/2026-04/260403_012/sample_260403_006/errors_summary_260403_006.txt
+A	rules/task-reports/2026-04/260403_012/sample_260403_006/evidence_manifest_260403_006.json
+A	rules/task-reports/2026-04/260403_012/sample_260403_006/gate_light_preview_260403_006.log
+A	rules/task-reports/2026-04/260403_012/sample_260403_006/gate_light_preview_260403_006.txt
+A	rules/task-reports/2026-04/260403_012/sample_260403_006/gate_light_profile_260403_006.json
+A	rules/task-reports/2026-04/260403_012/sample_260403_006/git_meta_260403_006.json
+A	rules/task-reports/2026-04/260403_012/sample_260403_006/implementation_260403_006.md
+A	rules/task-reports/2026-04/260403_012/sample_260403_006/manual_verification_260403_006.json
+A	rules/task-reports/2026-04/260403_012/sample_260403_006/notify_260403_006.txt
+A	rules/task-reports/2026-04/260403_012/sample_260403_006/preflight_attestation_260403_006.json
+A	rules/task-reports/2026-04/260403_012/sample_260403_006/result_260403_006.json
+A	rules/task-reports/2026-04/260403_012/sample_260403_006/run_260403_006.log
+A	rules/task-reports/2026-04/260403_012/sample_260403_006/trae_report_snippet_260403_006.txt
+A	rules/task-reports/2026-04/260403_012/sample_260403_006/truth_audit_260403_006.md
+A	rules/task-reports/2026-04/260403_012/sample_260403_006/workspace_healer_260403_006.json
+A	rules/task-reports/2026-04/260403_012/trae_report_snippet_260403_012.txt
+A	rules/task-reports/2026-04/260403_012/truth_audit_260403_012.md
+A	rules/task-reports/2026-04/260403_012/workspace_healer_260403_012.json
+M	scripts/gate_light_ci.mjs
+A	scripts/truth_audit_heavy_mandatory_rewrite_260403_012.mjs
+
+=== DOD_EVIDENCE_STDOUT ===
+Missing Blocks:
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260403_012_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260403_012_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+
+=== CI_PARITY_PREVIEW ===
+Base: c058219
+Head: 1f74000
+MergeBase: c058219
+Source: JSON (Evidence-as-Code)
+Scope: 157 files
+Files (Top 3):
+  - rules/LATEST.json
+  - rules/rules/PROJECT_MASTER_PLAN.md
+  - rules/rules/PROJECT_RULES.md
+  ... (truncated)
+=========================
+
+=== GATE_LIGHT_PREVIEW ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260403_012
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] TASK_PROFILE=heavy
+[Gate Light] Verifying task_id: 260403_012
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Report Block Check Passed: notify_260403_012.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260403_012.txt
+[Gate Light] Header Check Passed: TraeTask_260403_012
+[Gate Light] Checking Workspace Healer Evidence...
+[Gate Light] Workspace Healer verified (Clean Environment).
+[Gate Light] Skipping Error Digest Validation (Preview Mode).
+[Gate Light] Checking doc path standards...
+[Gate Light] Doc path standards verified.
+[Gate Light] Checking for legacy doc path references...
+[Gate Light] Checking for banned cmd syntax in PowerShell scripts...
+[Gate Light] Checking for global healthcheck artifacts...
+[Gate Light] Global Artifact Guard verified.
+[Gate Light] MOCK_SERVER_SESSION=starting script=E:\OppRadar\OppRadar\mock_server_53122.mjs
+[Gate Light] MOCK_SERVER_SESSION=ready pid=25696
+[Gate Light] HEAVY_PARALLEL_START: news/rank/export/ledger
+[Gate Light] HEAVY_PARALLEL_DONE: {"news":0,"rank":0,"export":0,"ledger":0}
+[Gate Light] MOCK_SERVER_SESSION=stopping
+[Gate Light] HEAVY_ENDPOINT_HARD_TIMEOUT_MS=4000
+[Gate Light] HEAVY_PARALLEL_START: scanner/universe/trading
+[Gate Light] Checking Scanner API Contract...
+[Gate Light] Checking Universe API Contract...
+[Gate Light] Checking Trading Routes API Contract...
+[Gate Light] HEAVY_PARALLEL_DONE: scanner/universe/trading
+[Gate Light] Checking healthcheck evidence...
+[Gate Light] Using evidence directory: rules/task-reports/2026-04/260403_012
+[Gate Light] Healthcheck evidence verified (Path + Content).
+[Gate Light] Skipping DoD Evidence Excerpt Check (Preview Mode).
+[Gate Light] Checking Deletion Audit (Locks & Runs)...
+[Gate Light] Deletion Audit: No lock/index yet (Assuming Pre-Integrate or First Run in progress).
+[Gate Light] Checking No Auto-Merge (Git Forbidden Commands)...
+[Gate Light] No Auto-Merge verified.
+[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
+[Gate Light] Allowed legacy task_id (transition): 260403_011
+[Gate Light] NoHistoricalEvidenceTouch verified.
+[Gate Light] Skipping SnippetCommitMustMatch check (Preview Mode).
+[Gate Light] Checking Rank V2 Contract Version Guard...
+[Gate Light] Base Commit: c058219002ea2731d9ffa3bf05cf058d1a626005
+[Gate Light] Schema Unchanged (3bd83a08). Version check skipped.
+[Gate Light] Rank V2 Contract Version Guard PASS
+[Gate Light] Checking Heavy Mandatory Evidence...
+[Gate Light] Heavy mandatory evidence verified.
+[Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...
+[Gate Light] Immutable Integrate & SafeCmd Enforcement verified.
+[Gate Light] Checking Scope Lock...
+[Gate Light] WARN: No scope_lock file found. Skipping scope lock check (backward compatible).
+[Gate Light] BTCQDD Healthcheck: PASS
+[Gate Light] Skipping Postflight Envelope Validation (Preview Mode).
+[Gate Light] PASS
+GATE_LIGHT_EXIT=0
+GATE_LIGHT_EXIT=0
