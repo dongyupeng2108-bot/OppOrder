@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260403_007/result_260403_007.json
+LOG_HEAD
+[LocalFinalize] task 260403_007
+LOG_TAIL
+local finalize flow
+EVIDENCE
+rules/task-reports/2026-04/260403_007/trae_report_snippet_260403_007.txt
+INDEX
+rules/task-reports/2026-04/260403_007/result_260403_007.json
