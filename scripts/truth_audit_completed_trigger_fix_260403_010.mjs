@@ -227,6 +227,10 @@ const main = async () => {
     },
     postPass: runtime.pass_row || null
   };
+  const samples = [
+    { window_id: runtime.pass_row?.window_id ?? null, is_real_runtime: true, sample_type: 'fail_to_pass_postfix' },
+    { window_id: 'btc-updown-5m-1775138700', is_real_runtime: true, sample_type: 'non_regression_reference' }
+  ];
 
   const standard = buildStandardResult({
     scriptName: 'truth_audit_completed_trigger_fix_260403_010',
@@ -237,7 +241,7 @@ const main = async () => {
     firstBreakLayer,
     evidenceFile: args.output,
     summary: { first_break_layer: firstBreakLayer, pass },
-    rawExcerpt: { checks, fail_to_pass: failToPass }
+    rawExcerpt: { checks, fail_to_pass: failToPass, samples }
   });
 
   const output = {
@@ -247,6 +251,7 @@ const main = async () => {
     evidence_index: {
       checks,
       fail_to_pass: failToPass,
+      samples,
       runtime,
       non_regression: runtime.non_regression
     },

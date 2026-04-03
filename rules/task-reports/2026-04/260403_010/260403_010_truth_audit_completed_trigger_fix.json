@@ -39,9 +39,21 @@
           "realized_gross_pnl_total": 0
         }
       }
-    }
+    },
+    "samples": [
+      {
+        "window_id": "btc-updown-5m-1775208000",
+        "is_real_runtime": true,
+        "sample_type": "fail_to_pass_postfix"
+      },
+      {
+        "window_id": "btc-updown-5m-1775138700",
+        "is_real_runtime": true,
+        "sample_type": "non_regression_reference"
+      }
+    ]
   },
-  "generated_at": "2026-04-03T09:27:23.148Z",
+  "generated_at": "2026-04-03T09:42:30.445Z",
   "conclusion_block": {
     "verdict": "A：通过",
     "first_break_layer": "NONE_CHAIN_PASS"
@@ -76,6 +88,18 @@
         }
       }
     },
+    "samples": [
+      {
+        "window_id": "btc-updown-5m-1775208000",
+        "is_real_runtime": true,
+        "sample_type": "fail_to_pass_postfix"
+      },
+      {
+        "window_id": "btc-updown-5m-1775138700",
+        "is_real_runtime": true,
+        "sample_type": "non_regression_reference"
+      }
+    ],
     "runtime": {
       "healthcheck": {
         "root_status": 200,
@@ -230,10 +254,10 @@
       },
       "timeline_tail": [
         {
-          "at": "2026-04-03T09:27:23.125Z",
+          "at": "2026-04-03T09:42:30.422Z",
           "current_window_id": null,
           "postmortem_for_current_7d": false,
-          "today_window_count": 5
+          "today_window_count": 6
         }
       ]
     },
