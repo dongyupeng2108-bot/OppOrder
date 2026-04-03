@@ -112,7 +112,7 @@
   - 执行命令：`finalize_task_evidence --profile heavy` 与 `gate_light_ci --profile heavy`
 - finalize 默认产物（`artifact_mode=minimal`）：
   - 默认保留：`result/notify/truth_audit/evidence_manifest(deliverables_index)/workspace_healer/run/dod/git_meta/healthcheck(命中时)`
-  - 默认不生成：`ci_parity`、`errors_jsonl/errors_summary`、`preflight_attestation`、完整 gate preview 派生
+  - 默认不生成：`ci_parity`、`errors_jsonl/errors_summary`、`preflight_attestation`
   - 如需完整产物，显式使用 `--artifact_mode full`
   - 该策略不改变 gate_light_ci 判定语义与 light/heavy 定义
 - 轻任务默认最小提交集：

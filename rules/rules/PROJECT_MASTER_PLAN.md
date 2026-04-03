@@ -75,7 +75,7 @@
 - 不新增第三分级：仅 light/heavy 两层
 - finalize 默认产物最小化（260403_013）：
   - 默认（minimal）仅生成 gate 必需最小产物：`result/notify/truth_audit/evidence_manifest(deliverables_index)/workspace_healer/run/dod/git_meta/healthcheck(命中时)`；
-  - `ci_parity`、`errors*`、`preflight_attestation`、完整 gate preview 派生改为按需（`--artifact_mode full`）；
+  - `ci_parity`、`errors*`、`preflight_attestation`改为按需（`--artifact_mode full`）；
   - 不改 `gate_light_ci` 判定语义、不改 heavy 默认边界、不改 light/heavy 分层定义。
 - 最小验证硬规则：
   - 任何非纯测试任务必须做与任务直接相关的最小验证

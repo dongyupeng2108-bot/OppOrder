@@ -351,11 +351,6 @@ const runAsync = async () => {
   });
 
   await step('生成 gate preview 证据', () => {
-    if (!includeOptionalArtifacts) {
-      fs.writeFileSync(previewLogPath, `[Finalize] PREVIEW_SKIPPED_BY_MINIMAL_MODE task_id=${taskId}\nGATE_LIGHT_EXIT=0\n`, 'utf8');
-      console.log('[Finalize] INFO: gate preview 非默认产物（artifact_mode=minimal），生成最小占位日志。');
-      return;
-    }
     const preview = safeRun(`node scripts/gate_light_ci.mjs --task_id ${taskId} --result_dir "${evidenceDir}"${gateProfileArg}`, { env: { GENERATE_PREVIEW: '1' } });
     const logBody = `${preview.output}\nGATE_LIGHT_EXIT=${preview.ok ? 0 : 1}\n`;
     fs.writeFileSync(previewLogPath, logBody, 'utf8');

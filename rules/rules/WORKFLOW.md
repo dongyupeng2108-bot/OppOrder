@@ -163,7 +163,7 @@
 - 允许生成完整 evidence，但默认进 PR 采用最小必需集
 - finalize 默认产物策略（artifact_mode=minimal）：
   - 默认最小产物：`result`、`notify`、`truth_audit`、`evidence_manifest`/`deliverables_index`、`workspace_healer`、`run`、`dod_evidence`、`git_meta`、命中时 healthcheck（`*_healthcheck_53122_root/pairs`）
-  - 仅按需/非默认产物：`ci_parity_*`、`errors_*`、`errors_summary_*`、`preflight_attestation_*`、完整 gate preview 派生（默认仅保留最小 `gate_light_preview_*.log` 占位）
+  - 仅按需/非默认产物：`ci_parity_*`、`errors_*`、`errors_summary_*`、`preflight_attestation_*`
   - 本策略不改变 gate 判定语义；仅收缩 finalize 默认生成集合
 - 重任务默认最小提交集至少包括：
   - 结论块
