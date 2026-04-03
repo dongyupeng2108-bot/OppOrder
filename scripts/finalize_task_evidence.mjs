@@ -199,8 +199,8 @@ const ensureResultSkeleton = () => {
           `${taskId}_healthcheck_53122_pairs.txt`
         ]
       };
-      fs.writeFileSync(resultPath, `${JSON.stringify(json, null, 2)}\n`, 'utf8');
     }
+    fs.writeFileSync(resultPath, `${JSON.stringify(json, null, 2)}\n`, 'utf8');
   }
 };
 
@@ -208,6 +208,7 @@ const ensureReportSkeleton = () => {
   if (!fs.existsSync(reportPath)) {
     const body = {
       task_id: taskId,
+      header: `TraeTask_${taskId}`,
       timestamp: new Date().toISOString(),
       valid: true,
       errors: [],
@@ -220,6 +221,12 @@ const ensureReportSkeleton = () => {
       }
     };
     fs.writeFileSync(reportPath, `${JSON.stringify(body, null, 2)}\n`, 'utf8');
+  } else {
+    const json = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
+    if (typeof json.header !== 'string' || !json.header.trim()) {
+      json.header = `TraeTask_${taskId}`;
+      fs.writeFileSync(reportPath, `${JSON.stringify(json, null, 2)}\n`, 'utf8');
+    }
   }
 };
 
