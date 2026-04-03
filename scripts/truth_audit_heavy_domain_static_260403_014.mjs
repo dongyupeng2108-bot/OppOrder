@@ -141,10 +141,10 @@ const main = async () => {
       },
       default_btcqdd_files: fullFiles,
       key_lines: {
-        btcqdd_default: excerpt(defaultOut, /(TASK_DOMAIN=|DOMAIN_SKIP|Heavy mandatory evidence verified|SnippetCommitMustMatch verified|Healthcheck evidence verified|GATE_LIGHT_EXIT=0|PASS)/i, 28),
-        cross_domain_full: excerpt(fullOut, /(TASK_DOMAIN=full|HEAVY_PARALLEL_START|HEAVY_PARALLEL_DONE|GATE_LIGHT_EXIT=0|PASS)/i, 28),
-        cross_domain_opportunities: excerpt(oppOut, /(TASK_DOMAIN=opportunities|HEAVY_PARALLEL_START|HEAVY_PARALLEL_DONE|GATE_LIGHT_EXIT=0|PASS)/i, 28),
-        light_smoke: excerpt(lightOut, /(TASK_PROFILE=light|LIGHT profile: skipping heavy-only contract checks|GATE_LIGHT_EXIT=0|PASS)/i, 24)
+        btcqdd_default: excerpt(defaultOut, /(TASK_DOMAIN=|DOMAIN_SKIP|Heavy mandatory evidence verified|SnippetCommitMustMatch verified|Healthcheck evidence verified|GATE_LIGHT_EXIT=0)/i, 28),
+        cross_domain_full: excerpt(fullOut, /(TASK_DOMAIN=full|HEAVY_PARALLEL_START|HEAVY_PARALLEL_DONE|GATE_LIGHT_EXIT=0)/i, 28),
+        cross_domain_opportunities: excerpt(oppOut, /(TASK_DOMAIN=opportunities|HEAVY_PARALLEL_START|HEAVY_PARALLEL_DONE|GATE_LIGHT_EXIT=0)/i, 28),
+        light_smoke: excerpt(lightOut, /(TASK_PROFILE=light|LIGHT profile: skipping heavy-only contract checks|GATE_LIGHT_EXIT=0)/i, 24)
       }
     };
 

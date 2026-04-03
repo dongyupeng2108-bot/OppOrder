@@ -1,0 +1,14 @@
+{
+  "task_id": "260403_014",
+  "header": "TraeTask_260403_014",
+  "timestamp": "2026-04-03T17:21:16.286Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "local_finalize": "PASS"
+  },
+  "context": {
+    "result_file": "rules/task-reports/2026-04/260403_014/result_260403_014.json",
+    "notify_file": "rules/task-reports/2026-04/260403_014/notify_260403_014.txt"
+  }
+}
