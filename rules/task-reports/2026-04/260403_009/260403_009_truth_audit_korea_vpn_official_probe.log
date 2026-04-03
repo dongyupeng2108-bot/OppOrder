@@ -1,0 +1,6 @@
+script_name=truth_audit_korea_vpn_official_probe_260403_009
+task_id=260403_009
+sample_name=korea_vpn_official_probe_v1
+pass=true
+first_break_layer=official_probe_blocked_by_network_env
+message=first_break_layer=official_probe_blocked_by_network_env
