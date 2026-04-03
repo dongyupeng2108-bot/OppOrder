@@ -110,6 +110,11 @@
 - 重任务默认最小提交集：
   - 结论块、唯一 first_break_layer、Fail -> Pass 主证据、1组 real runtime 连续样本、至少 2 条不回退项、notify/result、必要 manifest/index、改 server 时 healthcheck
   - 执行命令：`finalize_task_evidence --profile heavy` 与 `gate_light_ci --profile heavy`
+- finalize 默认产物（`artifact_mode=minimal`）：
+  - 默认保留：`result/notify/truth_audit/evidence_manifest(deliverables_index)/workspace_healer/run/dod/git_meta/healthcheck(命中时)`
+  - 默认不生成：`ci_parity`、`errors_jsonl/errors_summary`、`preflight_attestation`、完整 gate preview 派生
+  - 如需完整产物，显式使用 `--artifact_mode full`
+  - 该策略不改变 gate_light_ci 判定语义与 light/heavy 定义
 - 轻任务默认最小提交集：
   - 相关文件语法检查、修前 1 条 / 修后 1 条最小事实块、LATEST/范围锁/postflight-envelope、finalize/gate 通过结果
   - 执行命令：`finalize_task_evidence --profile light` 与 `gate_light_ci --profile light`

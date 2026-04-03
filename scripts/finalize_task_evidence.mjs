@@ -113,6 +113,9 @@ if (!explicitTaskId && branchTaskId) {
 const noStage = getArg('no_stage') === '1' || getArg('no_stage') === 'true';
 const ciCleanAssumption = !(getArg('ci_clean_assumption') === '0' || getArg('ci_clean_assumption') === 'false');
 const pruneNoise = !(getArg('prune_noise') === '0' || getArg('prune_noise') === 'false');
+const artifactModeRaw = String(getArg('artifact_mode') || '').trim().toLowerCase();
+const artifactMode = artifactModeRaw === 'full' ? 'full' : 'minimal';
+const includeOptionalArtifacts = artifactMode === 'full';
 const gateProfile = String(getArg('profile') || '').trim().toLowerCase();
 const gateProfileArg = gateProfile === 'light' || gateProfile === 'heavy' ? ` --profile ${gateProfile}` : '';
 const yyyy = `20${taskId.slice(0, 2)}`;
@@ -235,6 +238,7 @@ const waitForMock = async (url, timeoutMs = 20000) => {
 const runAsync = async () => {
   console.log(`TASK_ID=${taskId}`);
   console.log(`EVIDENCE_DIR=${evidenceDir.replace(/\\/g, '/')}`);
+  console.log(`FINALIZE_ARTIFACT_MODE=${artifactMode}`);
 
   await step('准备目录', () => {
     ensureDir(evidenceDir);
@@ -309,10 +313,18 @@ const runAsync = async () => {
   });
 
   await step('生成 CI parity 证据', () => {
+    if (!includeOptionalArtifacts) {
+      console.log('[Finalize] INFO: ci_parity 非默认产物（artifact_mode=minimal），跳过。');
+      return;
+    }
     run(`node scripts/ci_parity_probe.mjs --task_id ${taskId} --result_dir "${evidenceDir}"`);
   });
 
   await step('生成 error digest 证据', () => {
+    if (!includeOptionalArtifacts) {
+      console.log('[Finalize] INFO: error_digest 非默认产物（artifact_mode=minimal），跳过。');
+      return;
+    }
     const sha = run('git rev-parse HEAD', { capture: true }).trim();
     run(`node scripts/error_digest.mjs --task_id ${taskId} --mode LOCAL --commit ${sha} --out_dir "${evidenceDir}"`);
   });
@@ -339,6 +351,11 @@ const runAsync = async () => {
   });
 
   await step('生成 gate preview 证据', () => {
+    if (!includeOptionalArtifacts) {
+      fs.writeFileSync(previewLogPath, `[Finalize] PREVIEW_SKIPPED_BY_MINIMAL_MODE task_id=${taskId}\nGATE_LIGHT_EXIT=0\n`, 'utf8');
+      console.log('[Finalize] INFO: gate preview 非默认产物（artifact_mode=minimal），生成最小占位日志。');
+      return;
+    }
     const preview = safeRun(`node scripts/gate_light_ci.mjs --task_id ${taskId} --result_dir "${evidenceDir}"${gateProfileArg}`, { env: { GENERATE_PREVIEW: '1' } });
     const logBody = `${preview.output}\nGATE_LIGHT_EXIT=${preview.ok ? 0 : 1}\n`;
     fs.writeFileSync(previewLogPath, logBody, 'utf8');
@@ -355,7 +372,7 @@ const runAsync = async () => {
     fs.writeFileSync(gitMetaPath, `${JSON.stringify({ commit: sha, message: msg, branch })}\n`, 'utf8');
     fs.copyFileSync(previewLogPath, runLogPath);
     fs.copyFileSync(notifyPath, dodPath);
-    if (!fs.existsSync(attestationPath)) {
+    if (includeOptionalArtifacts && !fs.existsSync(attestationPath)) {
       const attestation = {
         verified: true,
         mode: 'LOCAL',
@@ -364,7 +381,7 @@ const runAsync = async () => {
       };
       fs.writeFileSync(attestationPath, `${JSON.stringify(attestation, null, 2)}\n`, 'utf8');
     }
-    if (!fs.existsSync(errorsSummaryPath)) fs.writeFileSync(errorsSummaryPath, 'LOCAL placeholder\n', 'utf8');
+    if (includeOptionalArtifacts && !fs.existsSync(errorsSummaryPath)) fs.writeFileSync(errorsSummaryPath, 'LOCAL placeholder\n', 'utf8');
   });
 
   await step('组装 evidence manifest', () => {
