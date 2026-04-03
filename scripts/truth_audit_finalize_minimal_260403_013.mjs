@@ -28,7 +28,8 @@ const setLatest = (taskId) => {
 const runCmd = (command) => {
   const rs = spawnSync('pwsh', ['-NoLogo', '-NoProfile', '-Command', command], {
     cwd: REPO_ROOT,
-    encoding: 'utf8'
+    encoding: 'utf8',
+    maxBuffer: 20 * 1024 * 1024
   });
   return {
     ok: rs.status === 0,
