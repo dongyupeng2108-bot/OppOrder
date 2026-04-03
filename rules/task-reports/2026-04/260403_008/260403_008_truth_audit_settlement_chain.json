@@ -1,0 +1,384 @@
+{
+  "script_name": "truth_audit_settlement_chain_260403_008",
+  "task_id": "260403_008",
+  "sample_name": "settlement_chain_real_runtime_v1",
+  "pass": true,
+  "message": "first_break_layer=completed_trigger_missing",
+  "first_break_layer": "status_mapping_correct_but_completed_trigger_missing",
+  "evidence_file": "rules/task-reports/2026-04/260403_008/260403_008_truth_audit_settlement_chain.json",
+  "summary": {
+    "first_break_layer": "completed_trigger_missing",
+    "pass": true
+  },
+  "raw_excerpt": {
+    "checks": {
+      "real_runtime_samples_ge_2": true,
+      "mixed_trigger_observed": true,
+      "settlement_fetch_mapping_absent": true,
+      "first_break_layer_unique": true
+    },
+    "samples": [
+      {
+        "task_id": "260403_008",
+        "window_id": "btc-updown-5m-1775138400",
+        "is_real_runtime": true,
+        "market_slug": "btc-updown-5m-1775138400",
+        "market_id": null,
+        "window_end_at": "2026-04-02T14:05:00.000Z",
+        "local_state": "running_or_rolled_without_snapshot",
+        "pm_official_layer": {
+          "probe_url": "https://gamma-api.polymarket.com/markets/slug/btc-updown-5m-1775138400",
+          "attempts": [
+            {
+              "attempt": 1,
+              "ok": false,
+              "status": null,
+              "resolved": null,
+              "official_outcome": null,
+              "resolved_at": null,
+              "raw_status_fields": null,
+              "error": "This operation was aborted"
+            },
+            {
+              "attempt": 2,
+              "ok": false,
+              "status": null,
+              "resolved": null,
+              "official_outcome": null,
+              "resolved_at": null,
+              "raw_status_fields": null,
+              "error": "This operation was aborted"
+            },
+            {
+              "attempt": 3,
+              "ok": false,
+              "status": null,
+              "resolved": null,
+              "official_outcome": null,
+              "resolved_at": null,
+              "raw_status_fields": null,
+              "error": "This operation was aborted"
+            }
+          ],
+          "official_probe_failed": true,
+          "official_resolved": false
+        },
+        "local_fetch_layer": {
+          "settlement_runtime_fields_exposed": false,
+          "settlement_logs_count": 0,
+          "settlement_logs_head": []
+        },
+        "completed_trigger_layer": {
+          "snapshot_event_ts": null,
+          "stop_event_ts": "2026-04-02T00:15:00.757Z",
+          "completed_at": null,
+          "trigger_source": null,
+          "missing_reason": "no_snapshot_write_for_this_window"
+        },
+        "postmortem_today_layer": {
+          "in_postmortem_7d": false,
+          "postmortem_row": null,
+          "in_today": false,
+          "today_window_count": 0,
+          "today_rows_count": 0
+        },
+        "fill_events_count": 1
+      },
+      {
+        "task_id": "260403_008",
+        "window_id": "btc-updown-5m-1775138700",
+        "is_real_runtime": true,
+        "market_slug": "btc-updown-5m-1775138700",
+        "market_id": null,
+        "window_end_at": "2026-04-02T14:10:00.000Z",
+        "local_state": "completed_via_snapshot",
+        "pm_official_layer": {
+          "probe_url": "https://gamma-api.polymarket.com/markets/slug/btc-updown-5m-1775138700",
+          "attempts": [
+            {
+              "attempt": 1,
+              "ok": false,
+              "status": null,
+              "resolved": null,
+              "official_outcome": null,
+              "resolved_at": null,
+              "raw_status_fields": null,
+              "error": "This operation was aborted"
+            },
+            {
+              "attempt": 2,
+              "ok": false,
+              "status": null,
+              "resolved": null,
+              "official_outcome": null,
+              "resolved_at": null,
+              "raw_status_fields": null,
+              "error": "This operation was aborted"
+            },
+            {
+              "attempt": 3,
+              "ok": false,
+              "status": null,
+              "resolved": null,
+              "official_outcome": null,
+              "resolved_at": null,
+              "raw_status_fields": null,
+              "error": "This operation was aborted"
+            }
+          ],
+          "official_probe_failed": true,
+          "official_resolved": false
+        },
+        "local_fetch_layer": {
+          "settlement_runtime_fields_exposed": false,
+          "settlement_logs_count": 0,
+          "settlement_logs_head": []
+        },
+        "completed_trigger_layer": {
+          "snapshot_event_ts": "2026-04-02T14:09:41.424Z",
+          "stop_event_ts": "2026-04-02T14:09:41.428Z",
+          "completed_at": "2026-04-02T14:09:41.423Z",
+          "trigger_source": "BOT_RUN_SNAPSHOT",
+          "missing_reason": null
+        },
+        "postmortem_today_layer": {
+          "in_postmortem_7d": true,
+          "postmortem_row": {
+            "id": 2955,
+            "window_id": "btc-updown-5m-1775138700",
+            "completed_at": "2026-04-02T14:09:41.423Z",
+            "filled_total": 1,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 42.39860412558299,
+            "unrealized_gross_pnl_total": 503.5013958744164
+          },
+          "in_today": false,
+          "today_window_count": 0,
+          "today_rows_count": 0
+        },
+        "fill_events_count": 1
+      }
+    ],
+    "fail_to_pass": {
+      "preFail": {
+        "completed_window_absent_without_upstream_layer": true
+      },
+      "postPass": {
+        "upstream_layer_resolved": true,
+        "first_break_layer": "completed_trigger_missing"
+      }
+    }
+  },
+  "generated_at": "2026-04-03T07:22:30.857Z",
+  "conclusion_block": {
+    "verdict": "A：通过",
+    "first_break_layer": "completed_trigger_missing"
+  },
+  "evidence_index": {
+    "checks": {
+      "real_runtime_samples_ge_2": true,
+      "mixed_trigger_observed": true,
+      "settlement_fetch_mapping_absent": true,
+      "first_break_layer_unique": true
+    },
+    "samples": [
+      {
+        "task_id": "260403_008",
+        "window_id": "btc-updown-5m-1775138400",
+        "is_real_runtime": true,
+        "market_slug": "btc-updown-5m-1775138400",
+        "market_id": null,
+        "window_end_at": "2026-04-02T14:05:00.000Z",
+        "local_state": "running_or_rolled_without_snapshot",
+        "pm_official_layer": {
+          "probe_url": "https://gamma-api.polymarket.com/markets/slug/btc-updown-5m-1775138400",
+          "attempts": [
+            {
+              "attempt": 1,
+              "ok": false,
+              "status": null,
+              "resolved": null,
+              "official_outcome": null,
+              "resolved_at": null,
+              "raw_status_fields": null,
+              "error": "This operation was aborted"
+            },
+            {
+              "attempt": 2,
+              "ok": false,
+              "status": null,
+              "resolved": null,
+              "official_outcome": null,
+              "resolved_at": null,
+              "raw_status_fields": null,
+              "error": "This operation was aborted"
+            },
+            {
+              "attempt": 3,
+              "ok": false,
+              "status": null,
+              "resolved": null,
+              "official_outcome": null,
+              "resolved_at": null,
+              "raw_status_fields": null,
+              "error": "This operation was aborted"
+            }
+          ],
+          "official_probe_failed": true,
+          "official_resolved": false
+        },
+        "local_fetch_layer": {
+          "settlement_runtime_fields_exposed": false,
+          "settlement_logs_count": 0,
+          "settlement_logs_head": []
+        },
+        "completed_trigger_layer": {
+          "snapshot_event_ts": null,
+          "stop_event_ts": "2026-04-02T00:15:00.757Z",
+          "completed_at": null,
+          "trigger_source": null,
+          "missing_reason": "no_snapshot_write_for_this_window"
+        },
+        "postmortem_today_layer": {
+          "in_postmortem_7d": false,
+          "postmortem_row": null,
+          "in_today": false,
+          "today_window_count": 0,
+          "today_rows_count": 0
+        },
+        "fill_events_count": 1
+      },
+      {
+        "task_id": "260403_008",
+        "window_id": "btc-updown-5m-1775138700",
+        "is_real_runtime": true,
+        "market_slug": "btc-updown-5m-1775138700",
+        "market_id": null,
+        "window_end_at": "2026-04-02T14:10:00.000Z",
+        "local_state": "completed_via_snapshot",
+        "pm_official_layer": {
+          "probe_url": "https://gamma-api.polymarket.com/markets/slug/btc-updown-5m-1775138700",
+          "attempts": [
+            {
+              "attempt": 1,
+              "ok": false,
+              "status": null,
+              "resolved": null,
+              "official_outcome": null,
+              "resolved_at": null,
+              "raw_status_fields": null,
+              "error": "This operation was aborted"
+            },
+            {
+              "attempt": 2,
+              "ok": false,
+              "status": null,
+              "resolved": null,
+              "official_outcome": null,
+              "resolved_at": null,
+              "raw_status_fields": null,
+              "error": "This operation was aborted"
+            },
+            {
+              "attempt": 3,
+              "ok": false,
+              "status": null,
+              "resolved": null,
+              "official_outcome": null,
+              "resolved_at": null,
+              "raw_status_fields": null,
+              "error": "This operation was aborted"
+            }
+          ],
+          "official_probe_failed": true,
+          "official_resolved": false
+        },
+        "local_fetch_layer": {
+          "settlement_runtime_fields_exposed": false,
+          "settlement_logs_count": 0,
+          "settlement_logs_head": []
+        },
+        "completed_trigger_layer": {
+          "snapshot_event_ts": "2026-04-02T14:09:41.424Z",
+          "stop_event_ts": "2026-04-02T14:09:41.428Z",
+          "completed_at": "2026-04-02T14:09:41.423Z",
+          "trigger_source": "BOT_RUN_SNAPSHOT",
+          "missing_reason": null
+        },
+        "postmortem_today_layer": {
+          "in_postmortem_7d": true,
+          "postmortem_row": {
+            "id": 2955,
+            "window_id": "btc-updown-5m-1775138700",
+            "completed_at": "2026-04-02T14:09:41.423Z",
+            "filled_total": 1,
+            "cancelled_total": 0,
+            "realized_gross_pnl_total": 42.39860412558299,
+            "unrealized_gross_pnl_total": 503.5013958744164
+          },
+          "in_today": false,
+          "today_window_count": 0,
+          "today_rows_count": 0
+        },
+        "fill_events_count": 1
+      }
+    ],
+    "fail_to_pass": {
+      "preFail": {
+        "completed_window_absent_without_upstream_layer": true
+      },
+      "postPass": {
+        "upstream_layer_resolved": true,
+        "first_break_layer": "completed_trigger_missing"
+      }
+    },
+    "status_keys": [
+      "mode",
+      "phase",
+      "running",
+      "debug_scenario",
+      "debug_frame_index",
+      "debug_completed",
+      "tick_interval_ms",
+      "last_tick_at",
+      "last_window_id",
+      "current_window_id",
+      "window_initialized_at",
+      "remaining_sec",
+      "anchor_btc",
+      "atr_5m",
+      "upper_bound",
+      "lower_bound",
+      "ladder_posted",
+      "yes_cancelled",
+      "no_cancelled",
+      "up_formula_cancelled",
+      "down_formula_cancelled",
+      "yes_order_ids",
+      "no_order_ids",
+      "last_reason",
+      "last_intents",
+      "updated_at",
+      "saved_config",
+      "last_run_snapshot",
+      "active_runtime_snapshot"
+    ],
+    "today_summary": {
+      "preset": "today",
+      "window_count": 0,
+      "filled_total": 0,
+      "cancelled_total": 0,
+      "realized_gross_pnl_total": 0,
+      "unrealized_gross_pnl_total": 0,
+      "avg_realized_gross_pnl_per_window": 0,
+      "avg_unrealized_gross_pnl_per_window": 0,
+      "running_window_excluded": true,
+      "sample_postmortem_rows": [],
+      "participating_postmortem_rows": []
+    },
+    "last7_summary_count": 1476
+  },
+  "non_regression": {
+    "no_business_logic_change": true
+  }
+}
