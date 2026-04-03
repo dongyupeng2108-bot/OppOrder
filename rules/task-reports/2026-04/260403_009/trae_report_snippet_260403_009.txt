@@ -1,0 +1,87 @@
+=== TRAE_REPORT_SNIPPET ===
+
+Header: TraeTask_260403_009
+BRANCH: 260403_009
+COMMIT: 33549476c
+
+=== GIT_SCOPE_DIFF ===
+M	rules/LATEST.json
+A	rules/task-reports/2026-04/260403_007/260403_007.json
+A	rules/task-reports/2026-04/260403_007/260403_007_healthcheck_53122_pairs.txt
+A	rules/task-reports/2026-04/260403_007/260403_007_healthcheck_53122_root.txt
+A	rules/task-reports/2026-04/260403_007/260403_007_truth_audit_today_chain.json
+A	rules/task-reports/2026-04/260403_007/260403_007_truth_audit_today_chain.log
+A	rules/task-reports/2026-04/260403_007/ci_parity_260403_007.json
+A	rules/task-reports/2026-04/260403_007/deliverables_index_260403_007.json
+A	rules/task-reports/2026-04/260403_007/dod_evidence_260403_007.txt
+A	rules/task-reports/2026-04/260403_007/errors_260403_007.jsonl
+A	rules/task-reports/2026-04/260403_007/errors_summary_260403_007.txt
+A	rules/task-reports/2026-04/260403_007/evidence_manifest_260403_007.json
+A	rules/task-reports/2026-04/260403_007/gate_light_preview_260403_007.log
+A	rules/task-reports/2026-04/260403_007/gate_light_preview_260403_007.txt
+A	rules/task-reports/2026-04/260403_007/gate_light_profile_260403_007.json
+A	rules/task-reports/2026-04/260403_007/git_meta_260403_007.json
+A	rules/task-reports/2026-04/260403_007/implementation_260403_007.md
+A	rules/task-reports/2026-04/260403_007/manual_verification_260403_007.json
+A	rules/task-reports/2026-04/260403_007/notify_260403_007.txt
+A	rules/task-reports/2026-04/260403_007/preflight_attestation_260403_007.json
+A	rules/task-reports/2026-04/260403_007/result_260403_007.json
+A	rules/task-reports/2026-04/260403_007/run_260403_007.log
+A	rules/task-reports/2026-04/260403_007/trae_report_snippet_260403_007.txt
+A	rules/task-reports/2026-04/260403_007/truth_audit_260403_007.md
+A	rules/task-reports/2026-04/260403_007/workspace_healer_260403_007.json
+A	rules/task-reports/2026-04/260403_008/260403_008.json
+A	rules/task-reports/2026-04/260403_008/260403_008_healthcheck_53122_pairs.txt
+A	rules/task-reports/2026-04/260403_008/260403_008_healthcheck_53122_root.txt
+A	rules/task-reports/2026-04/260403_008/260403_008_truth_audit_settlement_chain.json
+A	rules/task-reports/2026-04/260403_008/260403_008_truth_audit_settlement_chain.log
+A	rules/task-reports/2026-04/260403_008/ci_parity_260403_008.json
+A	rules/task-reports/2026-04/260403_008/deliverables_index_260403_008.json
+A	rules/task-reports/2026-04/260403_008/dod_evidence_260403_008.txt
+A	rules/task-reports/2026-04/260403_008/errors_260403_008.jsonl
+A	rules/task-reports/2026-04/260403_008/errors_summary_260403_008.txt
+A	rules/task-reports/2026-04/260403_008/evidence_manifest_260403_008.json
+A	rules/task-reports/2026-04/260403_008/gate_light_preview_260403_008.log
+A	rules/task-reports/2026-04/260403_008/gate_light_preview_260403_008.txt
+A	rules/task-reports/2026-04/260403_008/gate_light_profile_260403_008.json
+A	rules/task-reports/2026-04/260403_008/git_meta_260403_008.json
+A	rules/task-reports/2026-04/260403_008/implementation_260403_008.md
+A	rules/task-reports/2026-04/260403_008/manual_verification_260403_008.json
+A	rules/task-reports/2026-04/260403_008/notify_260403_008.txt
+A	rules/task-reports/2026-04/260403_008/preflight_attestation_260403_008.json
+A	rules/task-reports/2026-04/260403_008/result_260403_008.json
+A	rules/task-reports/2026-04/260403_008/run_260403_008.log
+A	rules/task-reports/2026-04/260403_008/trae_report_snippet_260403_008.txt
+A	rules/task-reports/2026-04/260403_008/truth_audit_260403_008.md
+A	rules/task-reports/2026-04/260403_008/workspace_healer_260403_008.json
+A	scripts/truth_audit_settlement_chain_260403_008.mjs
+A	scripts/truth_audit_today_chain_260403_007.mjs
+
+=== DOD_EVIDENCE_STDOUT ===
+Missing Blocks:
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260403_009_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260403_009_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+
+=== CI_PARITY_PREVIEW ===
+Base: fc9241f
+Head: 3354947
+MergeBase: fc9241f
+Source: JSON (Evidence-as-Code)
+Scope: 51 files
+Files (Top 3):
+  - rules/LATEST.json
+  - rules/task-reports/2026-04/260403_007/260403_007.json
+  - rules/task-reports/2026-04/260403_007/260403_007_healthcheck_53122_pairs.txt
+  ... (truncated)
+=========================
+
+=== GATE_LIGHT_PREVIEW ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260403_009
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] TASK_PROFILE=heavy
+[Gate Light] Verifying task_id: 260403_009
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] FAILED: Report Block Check for notify_260403_009.txt
+GATE_LIGHT_EXIT=1

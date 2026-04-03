@@ -1,0 +1,277 @@
+{
+  "script_name": "truth_audit_korea_vpn_official_probe_260403_009",
+  "task_id": "260403_009",
+  "sample_name": "korea_vpn_official_probe_v1",
+  "pass": true,
+  "message": "first_break_layer=official_probe_blocked_by_network_env",
+  "first_break_layer": "official_probe_blocked_by_network_env",
+  "evidence_file": "rules/task-reports/2026-04/260403_009/260403_009_truth_audit_korea_vpn_official_probe.json",
+  "summary": {
+    "first_break_layer": "official_probe_blocked_by_network_env",
+    "pass": true,
+    "conclusion": "B：韩国VPN下仍不可读，阻断点升级为official_probe_blocked_by_network_env"
+  },
+  "raw_excerpt": {
+    "checks": {
+      "real_runtime_samples_ge_2": true,
+      "official_probe_retried_with_limit": true,
+      "local_completed_review_done": true,
+      "first_break_layer_unique": true
+    },
+    "samples": [
+      {
+        "task_id": "260403_009",
+        "is_real_runtime": true,
+        "window_id": "btc-updown-5m-1775138400",
+        "fill_events_count": 1,
+        "official_probe": {
+          "url": "https://gamma-api.polymarket.com/markets/slug/btc-updown-5m-1775138400",
+          "attempts": [
+            {
+              "attempt": 1,
+              "ok": false,
+              "status": null,
+              "error": "This operation was aborted",
+              "official_resolved_raw": null,
+              "official_outcome_raw": null,
+              "resolved_at_raw": null,
+              "raw_status_fields": null,
+              "raw_excerpt": ""
+            },
+            {
+              "attempt": 2,
+              "ok": false,
+              "status": null,
+              "error": "This operation was aborted",
+              "official_resolved_raw": null,
+              "official_outcome_raw": null,
+              "resolved_at_raw": null,
+              "raw_status_fields": null,
+              "raw_excerpt": ""
+            },
+            {
+              "attempt": 3,
+              "ok": false,
+              "status": null,
+              "error": "This operation was aborted",
+              "official_resolved_raw": null,
+              "official_outcome_raw": null,
+              "resolved_at_raw": null,
+              "raw_status_fields": null,
+              "raw_excerpt": ""
+            }
+          ],
+          "accessible": false,
+          "resolved": false
+        },
+        "local_completed_review": {
+          "completed_at": null,
+          "has_postmortem_row": false,
+          "trigger_source": null
+        }
+      },
+      {
+        "task_id": "260403_009",
+        "is_real_runtime": true,
+        "window_id": "btc-updown-5m-1775138700",
+        "fill_events_count": 1,
+        "official_probe": {
+          "url": "https://gamma-api.polymarket.com/markets/slug/btc-updown-5m-1775138700",
+          "attempts": [
+            {
+              "attempt": 1,
+              "ok": false,
+              "status": null,
+              "error": "This operation was aborted",
+              "official_resolved_raw": null,
+              "official_outcome_raw": null,
+              "resolved_at_raw": null,
+              "raw_status_fields": null,
+              "raw_excerpt": ""
+            },
+            {
+              "attempt": 2,
+              "ok": false,
+              "status": null,
+              "error": "This operation was aborted",
+              "official_resolved_raw": null,
+              "official_outcome_raw": null,
+              "resolved_at_raw": null,
+              "raw_status_fields": null,
+              "raw_excerpt": ""
+            },
+            {
+              "attempt": 3,
+              "ok": false,
+              "status": null,
+              "error": "This operation was aborted",
+              "official_resolved_raw": null,
+              "official_outcome_raw": null,
+              "resolved_at_raw": null,
+              "raw_status_fields": null,
+              "raw_excerpt": ""
+            }
+          ],
+          "accessible": false,
+          "resolved": false
+        },
+        "local_completed_review": {
+          "completed_at": "2026-04-02T14:09:41.423Z",
+          "has_postmortem_row": true,
+          "trigger_source": "BOT_RUN_SNAPSHOT"
+        }
+      }
+    ],
+    "fail_to_pass": {
+      "preFail": {
+        "official_probe_blocked_uncertain": true
+      },
+      "postPass": {
+        "korean_vpn_retest_done": true,
+        "first_break_layer": "official_probe_blocked_by_network_env"
+      }
+    }
+  },
+  "generated_at": "2026-04-03T07:54:20.475Z",
+  "conclusion_block": {
+    "verdict": "A：通过",
+    "first_break_layer": "official_probe_blocked_by_network_env",
+    "conclusion": "B：韩国VPN下仍不可读，阻断点升级为official_probe_blocked_by_network_env"
+  },
+  "evidence_index": {
+    "environment": {
+      "vpn_expected": "korea",
+      "ip_probe_status": 429,
+      "ip_probe_ok": false,
+      "ip_probe_raw_excerpt": "{\n    \"error\": true,\n    \"reason\": \"RateLimited\",\n    \"message\": \"Visit https://ipapi.co/ratelimited/ for details\"\n}"
+    },
+    "probe_limits": {
+      "retries": 3,
+      "interval_ms": 15000,
+      "timeout_ms": 8000
+    },
+    "checks": {
+      "real_runtime_samples_ge_2": true,
+      "official_probe_retried_with_limit": true,
+      "local_completed_review_done": true,
+      "first_break_layer_unique": true
+    },
+    "samples": [
+      {
+        "task_id": "260403_009",
+        "is_real_runtime": true,
+        "window_id": "btc-updown-5m-1775138400",
+        "fill_events_count": 1,
+        "official_probe": {
+          "url": "https://gamma-api.polymarket.com/markets/slug/btc-updown-5m-1775138400",
+          "attempts": [
+            {
+              "attempt": 1,
+              "ok": false,
+              "status": null,
+              "error": "This operation was aborted",
+              "official_resolved_raw": null,
+              "official_outcome_raw": null,
+              "resolved_at_raw": null,
+              "raw_status_fields": null,
+              "raw_excerpt": ""
+            },
+            {
+              "attempt": 2,
+              "ok": false,
+              "status": null,
+              "error": "This operation was aborted",
+              "official_resolved_raw": null,
+              "official_outcome_raw": null,
+              "resolved_at_raw": null,
+              "raw_status_fields": null,
+              "raw_excerpt": ""
+            },
+            {
+              "attempt": 3,
+              "ok": false,
+              "status": null,
+              "error": "This operation was aborted",
+              "official_resolved_raw": null,
+              "official_outcome_raw": null,
+              "resolved_at_raw": null,
+              "raw_status_fields": null,
+              "raw_excerpt": ""
+            }
+          ],
+          "accessible": false,
+          "resolved": false
+        },
+        "local_completed_review": {
+          "completed_at": null,
+          "has_postmortem_row": false,
+          "trigger_source": null
+        }
+      },
+      {
+        "task_id": "260403_009",
+        "is_real_runtime": true,
+        "window_id": "btc-updown-5m-1775138700",
+        "fill_events_count": 1,
+        "official_probe": {
+          "url": "https://gamma-api.polymarket.com/markets/slug/btc-updown-5m-1775138700",
+          "attempts": [
+            {
+              "attempt": 1,
+              "ok": false,
+              "status": null,
+              "error": "This operation was aborted",
+              "official_resolved_raw": null,
+              "official_outcome_raw": null,
+              "resolved_at_raw": null,
+              "raw_status_fields": null,
+              "raw_excerpt": ""
+            },
+            {
+              "attempt": 2,
+              "ok": false,
+              "status": null,
+              "error": "This operation was aborted",
+              "official_resolved_raw": null,
+              "official_outcome_raw": null,
+              "resolved_at_raw": null,
+              "raw_status_fields": null,
+              "raw_excerpt": ""
+            },
+            {
+              "attempt": 3,
+              "ok": false,
+              "status": null,
+              "error": "This operation was aborted",
+              "official_resolved_raw": null,
+              "official_outcome_raw": null,
+              "resolved_at_raw": null,
+              "raw_status_fields": null,
+              "raw_excerpt": ""
+            }
+          ],
+          "accessible": false,
+          "resolved": false
+        },
+        "local_completed_review": {
+          "completed_at": "2026-04-02T14:09:41.423Z",
+          "has_postmortem_row": true,
+          "trigger_source": "BOT_RUN_SNAPSHOT"
+        }
+      }
+    ],
+    "fail_to_pass": {
+      "preFail": {
+        "official_probe_blocked_uncertain": true
+      },
+      "postPass": {
+        "korean_vpn_retest_done": true,
+        "first_break_layer": "official_probe_blocked_by_network_env"
+      }
+    }
+  },
+  "non_regression": {
+    "running_not_mixed": true,
+    "note": "不回退：仅重测官方probe与本地completed复核，未改业务逻辑"
+  }
+}
