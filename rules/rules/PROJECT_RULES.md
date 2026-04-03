@@ -126,10 +126,12 @@
   - 唯一 first_break_layer
   - 1组 Fail -> Pass 主证据
   - 1组 real runtime 连续样本
-  - 至少 2 条不回退项
-  - 改 server 时附 `GET /` 与 `GET /pairs`
+  - 业务 heavy：至少 2 条不回退项（non_regression）
+  - Workflow Upgrade / 治理 heavy：治理替代证据（治理结果本身）
+  - 业务 heavy 改 server 时附 `GET /` 与 `GET /pairs`
   - 提审前最后一次性跑 `finalize_task_evidence + gate_light_ci`
   - 保留 heavy-only 检查（全局契约 + heavy mandatory 证据）
+  - 流程元证据降级为 warn，不再作为 heavy mandatory 阻断项（如 `HEAVY_PARALLEL_START`、profile split 痕迹、gate/finalize 内部流程日志字样）
   - 执行提效允许项（260403_004）：合约校验并行化；Rank/Export/Ledger mock server 单会话复用；不改变覆盖与强制项
   - 执行提效允许项（260403_005）：scanner/universe/trading 统一硬超时 4000ms；命中首个硬失败后 fail-fast 并输出首个失败节点；不改变覆盖与强制项
   - 执行提效允许项（260403_006）：SnippetCommitMustMatch 使用 local-first git 校验；仅本地信息不足时执行最小必要 fetch/deepen；不改变判定语义

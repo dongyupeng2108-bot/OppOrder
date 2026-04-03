@@ -63,10 +63,12 @@
   - 默认采用证据最小提交集，完整 evidence 可生成但不默认进 PR
 - mandatory 收口：
   - 轻任务：语法检查 + 修前/修后最小事实块 + LATEST/范围锁/postflight-envelope + `finalize --profile light` + `gate --profile light`
-  - 重任务：唯一 first_break_layer + Fail -> Pass + 1组 real runtime + 至少 2 条不回退项 + 改 server 时 healthcheck + `finalize --profile heavy` + `gate --profile heavy`
+  - 重任务（业务 heavy）：唯一 first_break_layer + Fail -> Pass + 1组 real runtime + non_regression + 改 server 时 healthcheck + `finalize --profile heavy` + `gate --profile heavy`
+  - 重任务（Workflow Upgrade / 治理 heavy）：唯一 first_break_layer + Fail -> Pass + 1组 real runtime + 治理替代证据 + `finalize --profile heavy` + `gate --profile heavy`
 - gate 分流：
   - light：仅基础治理检查（both），跳过 heavy-only 全局契约与 heavy mandatory 证据
   - heavy：基础治理检查（both）+ heavy-only 全量检查
+  - 流程元证据降级为 warn（不再作为 heavy mandatory 阻断）：`HEAVY_PARALLEL_START`、profile split 痕迹、gate/finalize 内部流程日志字样
   - 260403_004 提效边界：仅 heavy 执行层并行与 mock server 复用，不改变 heavy 检查覆盖度与强制项
   - 260403_005 提效边界：仅 heavy 统一短超时（4000ms）与 fail-fast；不改 light 语义，不改 heavy 覆盖与强制项
   - 260403_006 提效边界：仅 heavy Git 校验降噪（local-first + 最小必要 fetch）；不改 SnippetCommitMustMatch 判定语义
