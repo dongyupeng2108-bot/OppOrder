@@ -60,7 +60,7 @@ const buildSample = (taskId) => {
   const sourceMonthDir = path.join(REPO_ROOT, 'rules', 'task-reports', month);
   const scoped = path.join(sourceMonthDir, taskId);
   const sourceDir = fs.existsSync(scoped) ? scoped : sourceMonthDir;
-  const baseOut = path.join(REPO_ROOT, 'rules', 'task-reports', '2026-04', '260403_013');
+  const baseOut = path.join(REPO_ROOT, '.tmp', 'finalize_minimal_260403_013');
   const fullDir = path.join(baseOut, `sample_full_${taskId}`);
   const minimalDir = path.join(baseOut, `sample_min_${taskId}`);
   fs.rmSync(fullDir, { recursive: true, force: true });
@@ -85,7 +85,7 @@ const buildSample = (taskId) => {
 const runFinalizeAndGate = (taskId, profile, dir, artifactMode = null) => {
   setLatest(taskId);
   const modeArg = artifactMode ? ` --artifact_mode ${artifactMode}` : '';
-  const finalize = runCmd(`node scripts/finalize_task_evidence.mjs --task_id ${taskId} --result_dir "${dir}" --profile ${profile}${modeArg}`);
+  const finalize = runCmd(`node scripts/finalize_task_evidence.mjs --task_id ${taskId} --result_dir "${dir}" --profile ${profile}${modeArg} --no_stage true`);
   const gate = runCmd(`node scripts/gate_light_ci.mjs --task_id ${taskId} --result_dir "${dir}" --profile ${profile}`);
   return { finalize, gate, ok: finalize.ok && gate.ok };
 };
