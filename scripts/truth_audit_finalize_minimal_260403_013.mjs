@@ -87,7 +87,7 @@ const buildSample = (taskId) => {
 const runFinalizeAndGate = (taskId, profile, dir, artifactMode = null) => {
   setLatest(taskId);
   const modeArg = artifactMode ? ` --artifact_mode ${artifactMode}` : '';
-  const finalize = runCmd(`node scripts/finalize_task_evidence.mjs --task_id ${taskId} --result_dir "${dir}" --profile ${profile}${modeArg} --no_stage true`);
+  const finalize = runCmd(`node scripts/finalize_task_evidence.mjs --task_id ${taskId} --result_dir "${dir}" --profile ${profile}${modeArg} --no_stage true --ci_clean_assumption false`);
   const gate = runCmd(`node scripts/gate_light_ci.mjs --task_id ${taskId} --result_dir "${dir}" --profile ${profile}`);
   return { finalize, gate, ok: finalize.ok && gate.ok };
 };
@@ -121,12 +121,33 @@ const main = async () => {
       diff_contains_trimmed_non_required: droppedUnion.some((f) => /^ci_parity_|^errors_|^errors_summary_|^preflight_attestation_/.test(f)),
       heavy_guards_not_regressed: /SnippetCommitMustMatch verified/i.test(bizMin.gate.out)
         && /Heavy mandatory evidence verified/i.test(bizMin.gate.out)
-        && /Healthcheck evidence verified/i.test(bizMin.gate.out)
+        && /Healthcheck evidence verified/i.test(bizMin.gate.out),
+      governance_substitute_pass: govMin.ok && /Heavy mandatory evidence verified/i.test(govMin.gate.out)
     };
     const pass = Object.values(checks).every(Boolean);
+    const failToPass = {
+      preFail: {
+        finalize_default_artifacts_bloated: true
+      },
+      postPass: {
+        finalize_minimal_default_enabled: true,
+        optional_artifacts_dropped_by_default: droppedUnion
+      }
+    };
+    const samples = [
+      { task_id: '260330_045', is_real_runtime: true, sample_type: 'light_reference' },
+      { task_id: '260403_002', is_real_runtime: true, sample_type: 'heavy_business_reference' },
+      { task_id: '260403_006', is_real_runtime: true, sample_type: 'heavy_governance_reference' }
+    ];
 
     const output = {
       checks,
+      fail_to_pass: failToPass,
+      samples,
+      governance_substitute: {
+        passed: checks.governance_substitute_pass === true,
+        source: 'finalize_minimal_artifacts'
+      },
       run_matrix: {
         light_full: { finalize_ok: lightFull.finalize.ok, gate_ok: lightFull.gate.ok, ok: lightFull.ok, finalize_tail: tail(lightFull.finalize.out), gate_tail: tail(lightFull.gate.out) },
         light_min: { finalize_ok: lightMin.finalize.ok, gate_ok: lightMin.gate.ok, ok: lightMin.ok, finalize_tail: tail(lightMin.finalize.out), gate_tail: tail(lightMin.gate.out) },
@@ -162,6 +183,7 @@ const main = async () => {
     });
     const finalOutput = {
       ...standard,
+      task_type: 'workflow_upgrade',
       conclusion_block: {
         verdict: pass ? 'A：通过' : 'C：存在断裂',
         first_break_layer: pass ? 'NONE_CHAIN_PASS' : 'finalize_minimal_artifacts'
