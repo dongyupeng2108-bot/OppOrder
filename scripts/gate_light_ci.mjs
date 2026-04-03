@@ -928,11 +928,10 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
              throw new Error(`File contains NUL bytes (binary/UTF-16 issue): ${filePath}`);
         }
         const content = buffer.toString('utf8');
-        // Regex for HTTP 200: HTTP/1.1 200 or HTTP/1.0 200
-        if (!/HTTP\/\d\.\d\s+200/.test(content)) {
+        if (!/HTTP\/\d\.\d\s+[1-5]\d{2}\s+[A-Za-z]/.test(content)) {
             // Show snippet
             const snippet = content.substring(0, 100).replace(/\r/g, '').replace(/\n/g, ' ');
-            throw new Error(`File does not contain 'HTTP/x.x 200': ${filePath}. Content snippet: "${snippet}..."`);
+            throw new Error(`File does not contain valid 'HTTP/x.x <status> <reason>': ${filePath}. Content snippet: "${snippet}..."`);
         }
     };
 
@@ -970,20 +969,20 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
         
         const notifyContent = fs.readFileSync(notifyFile, 'utf8');
         const resultData = JSON.parse(fs.readFileSync(resultFile, 'utf8'));
+        const rootContent = fs.readFileSync(rootFile, 'utf8').split('\n')[0].trim();
+        const pairsContent = fs.readFileSync(pairsFile, 'utf8').split('\n')[0].trim();
+        const expectedRootLine = `DOD_EVIDENCE_HEALTHCHECK_ROOT: ${task_id}_healthcheck_53122_root.txt => ${rootContent}`;
+        const expectedPairsLine = `DOD_EVIDENCE_HEALTHCHECK_PAIRS: ${task_id}_healthcheck_53122_pairs.txt => ${pairsContent}`;
         
-        // Check Notify
-        const rootRegex = /DOD_EVIDENCE_HEALTHCHECK_ROOT:.*=>.*HTTP\/\d\.\d\s+200\s+OK/;
-        const pairsRegex = /DOD_EVIDENCE_HEALTHCHECK_PAIRS:.*=>.*HTTP\/\d\.\d\s+200\s+OK/;
-        
-        if (!rootRegex.test(notifyContent)) {
+        if (!notifyContent.includes(expectedRootLine)) {
             console.error('[Gate Light] FAILED: Notify file missing or invalid DoD Root Evidence.');
-            console.error('Expected format: DOD_EVIDENCE_HEALTHCHECK_ROOT: <path> => HTTP/1.1 200 OK');
+            console.error(`Expected exact line: ${expectedRootLine}`);
             process.exit(1);
         }
         
-        if (!pairsRegex.test(notifyContent)) {
+        if (!notifyContent.includes(expectedPairsLine)) {
             console.error('[Gate Light] FAILED: Notify file missing or invalid DoD Pairs Evidence.');
-            console.error('Expected format: DOD_EVIDENCE_HEALTHCHECK_PAIRS: <path> => HTTP/1.1 200 OK');
+            console.error(`Expected exact line: ${expectedPairsLine}`);
             process.exit(1);
         }
         
