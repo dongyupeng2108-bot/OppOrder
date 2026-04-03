@@ -102,6 +102,10 @@ const main = async () => {
       { sample_type: 'pre_conflict_260403_016', is_real_runtime: true },
       { sample_type: 'post_consistency_260403_017', is_real_runtime: true }
     ],
+    governance_substitute: {
+      passed: checks.post_root_status_match_expected && checks.post_pairs_status_match_expected && checks.notify_root_matches_file_line && checks.notify_pairs_matches_file_line,
+      source: 'notify_healthcheck_excerpt_mapping_fix'
+    },
     non_regression: {
       notify_fields_not_removed: notifyRootLine.length > 0 && notifyPairsLine.length > 0
     },

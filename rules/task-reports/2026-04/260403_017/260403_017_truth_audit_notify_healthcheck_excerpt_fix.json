@@ -48,6 +48,10 @@
         "is_real_runtime": true
       }
     ],
+    "governance_substitute": {
+      "passed": true,
+      "source": "notify_healthcheck_excerpt_mapping_fix"
+    },
     "non_regression": {
       "notify_fields_not_removed": true
     },
@@ -60,7 +64,7 @@
       "notify_pairs_matches_file_line": true
     }
   },
-  "generated_at": "2026-04-03T19:48:47.884Z",
+  "generated_at": "2026-04-03T19:52:09.030Z",
   "task_type": "workflow_upgrade",
   "conclusion_block": {
     "verdict": "A：通过",
@@ -105,6 +109,10 @@
         "is_real_runtime": true
       }
     ],
+    "governance_substitute": {
+      "passed": true,
+      "source": "notify_healthcheck_excerpt_mapping_fix"
+    },
     "non_regression": {
       "notify_fields_not_removed": true
     },
