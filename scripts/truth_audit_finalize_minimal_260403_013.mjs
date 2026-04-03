@@ -37,6 +37,7 @@ const runCmd = (command) => {
     out: `${rs.stdout || ''}\n${rs.stderr || ''}`.trim()
   };
 };
+const tail = (text, n = 30) => String(text || '').split(/\r?\n/).slice(-n);
 const excerpt = (text, regex, fallback = 16) => {
   const lines = String(text || '').split(/\r?\n/);
   const picks = lines.filter((l) => regex.test(l));
@@ -126,6 +127,14 @@ const main = async () => {
 
     const output = {
       checks,
+      run_matrix: {
+        light_full: { finalize_ok: lightFull.finalize.ok, gate_ok: lightFull.gate.ok, ok: lightFull.ok, finalize_tail: tail(lightFull.finalize.out), gate_tail: tail(lightFull.gate.out) },
+        light_min: { finalize_ok: lightMin.finalize.ok, gate_ok: lightMin.gate.ok, ok: lightMin.ok, finalize_tail: tail(lightMin.finalize.out), gate_tail: tail(lightMin.gate.out) },
+        heavy_business_full: { finalize_ok: bizFull.finalize.ok, gate_ok: bizFull.gate.ok, ok: bizFull.ok, finalize_tail: tail(bizFull.finalize.out), gate_tail: tail(bizFull.gate.out) },
+        heavy_business_min: { finalize_ok: bizMin.finalize.ok, gate_ok: bizMin.gate.ok, ok: bizMin.ok, finalize_tail: tail(bizMin.finalize.out), gate_tail: tail(bizMin.gate.out) },
+        heavy_governance_full: { finalize_ok: govFull.finalize.ok, gate_ok: govFull.gate.ok, ok: govFull.ok, finalize_tail: tail(govFull.finalize.out), gate_tail: tail(govFull.gate.out) },
+        heavy_governance_min: { finalize_ok: govMin.finalize.ok, gate_ok: govMin.gate.ok, ok: govMin.ok, finalize_tail: tail(govMin.finalize.out), gate_tail: tail(govMin.gate.out) }
+      },
       artifact_diff: {
         light_full_minus_minimal: diffLight,
         heavy_business_full_minus_minimal: diffBiz,
