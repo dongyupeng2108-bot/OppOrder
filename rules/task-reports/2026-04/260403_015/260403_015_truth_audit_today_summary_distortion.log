@@ -1,0 +1,6 @@
+script_name=truth_audit_today_summary_distortion_260403_015
+task_id=260403_015
+sample_name=today_summary_distortion_v1
+pass=true
+first_break_layer=postmortem_result_snapshot_scope_mismatch
+message=first_break_layer=postmortem_result_snapshot_scope_mismatch
