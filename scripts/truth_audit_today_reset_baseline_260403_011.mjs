@@ -184,6 +184,20 @@ const main = async () => {
       new_completed_at: completedRow?.completed_at ?? null
     }
   };
+  const samples = [
+    {
+      task_id: args.taskId,
+      window_id: completedRow?.window_id ?? null,
+      is_real_runtime: true,
+      sample_type: 'post_reset_new_completed'
+    },
+    {
+      task_id: args.taskId,
+      window_id: 'btc-updown-5m-1775138700',
+      is_real_runtime: true,
+      sample_type: 'non_regression_reference'
+    }
+  ];
 
   const standard = buildStandardResult({
     scriptName: 'truth_audit_today_reset_baseline_260403_011',
@@ -194,7 +208,7 @@ const main = async () => {
     firstBreakLayer,
     evidenceFile: args.output,
     summary: { first_break_layer: firstBreakLayer, pass },
-    rawExcerpt: { checks, fail_to_pass: failToPass }
+    rawExcerpt: { checks, fail_to_pass: failToPass, samples }
   });
 
   const output = {
@@ -204,6 +218,7 @@ const main = async () => {
     evidence_index: {
       checks,
       fail_to_pass: failToPass,
+      samples,
       before_after_table: {
         today_before: metrics(todayBefore),
         today_after_reset: metrics(todayAfterReset),

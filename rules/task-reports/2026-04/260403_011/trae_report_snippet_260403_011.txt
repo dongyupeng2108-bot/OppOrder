@@ -1,0 +1,44 @@
+=== TRAE_REPORT_SNIPPET ===
+
+Header: TraeTask_260403_011
+BRANCH: 260403_011
+COMMIT: ab161b1d1
+
+=== GIT_SCOPE_DIFF ===
+M	rules/LATEST.json
+A	rules/task-reports/2026-04/260403_011/260403_011_truth_audit_today_reset_baseline.json
+A	rules/task-reports/2026-04/260403_011/260403_011_truth_audit_today_reset_baseline.log
+A	rules/task-reports/2026-04/260403_011/implementation_260403_011.md
+A	rules/task-reports/2026-04/260403_011/truth_audit_260403_011.md
+A	scripts/truth_audit_today_reset_baseline_260403_011.mjs
+M	strategies/crypto_binary/server.mjs
+M	ui/js/strategy-editor.js
+
+=== DOD_EVIDENCE_STDOUT ===
+Missing Blocks:
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260403_011_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260403_011_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+
+=== CI_PARITY_PREVIEW ===
+Base: 597ffbc
+Head: ab161b1
+MergeBase: 597ffbc
+Source: JSON (Evidence-as-Code)
+Scope: 8 files
+Files (Top 3):
+  - rules/LATEST.json
+  - rules/task-reports/2026-04/260403_011/260403_011_truth_audit_today_reset_baseline.json
+  - rules/task-reports/2026-04/260403_011/260403_011_truth_audit_today_reset_baseline.log
+  ... (truncated)
+=========================
+
+=== GATE_LIGHT_PREVIEW ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260403_011
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] TASK_PROFILE=heavy
+[Gate Light] Verifying task_id: 260403_011
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] FAILED: Report Block Check for notify_260403_011.txt
+GATE_LIGHT_EXIT=1
