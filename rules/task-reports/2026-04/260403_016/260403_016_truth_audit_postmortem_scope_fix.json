@@ -1,0 +1,262 @@
+{
+  "script_name": "truth_audit_postmortem_scope_fix_260403_016",
+  "task_id": "260403_016",
+  "sample_name": "postmortem_scope_fix_v1",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "rules/task-reports/2026-04/260403_016/260403_016_truth_audit_postmortem_scope_fix.json",
+  "summary": {
+    "pass": true
+  },
+  "raw_excerpt": {
+    "snapshot": {
+      "base_url": "http://localhost:53250",
+      "healthcheck_base_url": "http://localhost:53250",
+      "baseline_ts": 1775242116493,
+      "baseline_at": "2026-04-03T18:48:36.493Z"
+    },
+    "fail_to_pass": {
+      "preFail": {
+        "postmortem_row_pnl_gt_zero_but_truth_zero": [
+          {
+            "window_id": "btc-updown-5m-1775239500",
+            "row_realized_gross_pnl_total": 42.07807663910079,
+            "truth_realized_gross_pnl_total": 0,
+            "row_filled_total": 2,
+            "truth_filled_total": 2
+          },
+          {
+            "window_id": "btc-updown-5m-1775239200",
+            "row_realized_gross_pnl_total": 42.07501097522348,
+            "truth_realized_gross_pnl_total": 0,
+            "row_filled_total": 0,
+            "truth_filled_total": 0
+          }
+        ]
+      },
+      "postPass": {
+        "reset_after_new_windows_row_truth_consistent": [
+          {
+            "window_id": "btc-updown-5m-1775242500",
+            "completed_at": "2026-04-03T19:00:00.906Z",
+            "row_filled_total": 0,
+            "row_realized_gross_pnl_total": 0,
+            "truth_realized_gross_pnl_total": 0,
+            "truth_filled_total": 0,
+            "in_win_rate_numerator": false,
+            "filled_match": true,
+            "realized_match": true
+          },
+          {
+            "window_id": "btc-updown-5m-1775242200",
+            "completed_at": "2026-04-03T18:55:01.831Z",
+            "row_filled_total": 4,
+            "row_realized_gross_pnl_total": 0,
+            "truth_realized_gross_pnl_total": 0,
+            "truth_filled_total": 4,
+            "in_win_rate_numerator": false,
+            "filled_match": true,
+            "realized_match": true
+          }
+        ],
+        "no_new_pollution_rows": true
+      }
+    },
+    "today_summary_after_fix": {
+      "window_count": 2,
+      "filled_total": 4,
+      "realized_gross_pnl_total": 0,
+      "participating_count": 2
+    },
+    "post_reset_rows_reconcile_table": [
+      {
+        "window_id": "btc-updown-5m-1775242500",
+        "completed_at": "2026-04-03T19:00:00.906Z",
+        "row_filled_total": 0,
+        "row_realized_gross_pnl_total": 0,
+        "truth_realized_gross_pnl_total": 0,
+        "truth_filled_total": 0,
+        "in_win_rate_numerator": false,
+        "filled_match": true,
+        "realized_match": true
+      },
+      {
+        "window_id": "btc-updown-5m-1775242200",
+        "completed_at": "2026-04-03T18:55:01.831Z",
+        "row_filled_total": 4,
+        "row_realized_gross_pnl_total": 0,
+        "truth_realized_gross_pnl_total": 0,
+        "truth_filled_total": 4,
+        "in_win_rate_numerator": false,
+        "filled_match": true,
+        "realized_match": true
+      }
+    ],
+    "post_reset_win_rate_manual": {
+      "win_numerator": 0,
+      "win_denominator": 2,
+      "win_rate_percent": 0,
+      "realized_gross_pnl_total_sum": 0
+    },
+    "post_reset_pollution_rows": [],
+    "non_regression": {
+      "running_not_pre_counted_today": true,
+      "stop_does_not_break_stats_chain": true,
+      "today_reset_baseline_usable": true
+    },
+    "healthcheck": {
+      "root_status": 200,
+      "pairs_status": 404
+    },
+    "samples": [
+      {
+        "window_id": "btc-updown-5m-1775242500",
+        "is_real_runtime": true,
+        "sample_type": "post_reset_completed_window"
+      },
+      {
+        "window_id": "btc-updown-5m-1775242200",
+        "is_real_runtime": true,
+        "sample_type": "post_reset_completed_window"
+      }
+    ],
+    "checks": {
+      "prefail_contamination_present": true,
+      "post_reset_two_completed_windows_ready": true,
+      "post_reset_rows_match_truth": true,
+      "post_reset_no_pollution_rows": true,
+      "running_window_not_counted": true,
+      "stop_semantics_chain_alive": true,
+      "healthcheck_root_pairs_checked": true
+    }
+  },
+  "generated_at": "2026-04-03T19:00:07.354Z",
+  "task_type": "fix_acceptance_heavy",
+  "conclusion_block": {
+    "verdict": "A：通过",
+    "first_break_layer": "NONE_CHAIN_PASS"
+  },
+  "evidence_index": {
+    "snapshot": {
+      "base_url": "http://localhost:53250",
+      "healthcheck_base_url": "http://localhost:53250",
+      "baseline_ts": 1775242116493,
+      "baseline_at": "2026-04-03T18:48:36.493Z"
+    },
+    "fail_to_pass": {
+      "preFail": {
+        "postmortem_row_pnl_gt_zero_but_truth_zero": [
+          {
+            "window_id": "btc-updown-5m-1775239500",
+            "row_realized_gross_pnl_total": 42.07807663910079,
+            "truth_realized_gross_pnl_total": 0,
+            "row_filled_total": 2,
+            "truth_filled_total": 2
+          },
+          {
+            "window_id": "btc-updown-5m-1775239200",
+            "row_realized_gross_pnl_total": 42.07501097522348,
+            "truth_realized_gross_pnl_total": 0,
+            "row_filled_total": 0,
+            "truth_filled_total": 0
+          }
+        ]
+      },
+      "postPass": {
+        "reset_after_new_windows_row_truth_consistent": [
+          {
+            "window_id": "btc-updown-5m-1775242500",
+            "completed_at": "2026-04-03T19:00:00.906Z",
+            "row_filled_total": 0,
+            "row_realized_gross_pnl_total": 0,
+            "truth_realized_gross_pnl_total": 0,
+            "truth_filled_total": 0,
+            "in_win_rate_numerator": false,
+            "filled_match": true,
+            "realized_match": true
+          },
+          {
+            "window_id": "btc-updown-5m-1775242200",
+            "completed_at": "2026-04-03T18:55:01.831Z",
+            "row_filled_total": 4,
+            "row_realized_gross_pnl_total": 0,
+            "truth_realized_gross_pnl_total": 0,
+            "truth_filled_total": 4,
+            "in_win_rate_numerator": false,
+            "filled_match": true,
+            "realized_match": true
+          }
+        ],
+        "no_new_pollution_rows": true
+      }
+    },
+    "today_summary_after_fix": {
+      "window_count": 2,
+      "filled_total": 4,
+      "realized_gross_pnl_total": 0,
+      "participating_count": 2
+    },
+    "post_reset_rows_reconcile_table": [
+      {
+        "window_id": "btc-updown-5m-1775242500",
+        "completed_at": "2026-04-03T19:00:00.906Z",
+        "row_filled_total": 0,
+        "row_realized_gross_pnl_total": 0,
+        "truth_realized_gross_pnl_total": 0,
+        "truth_filled_total": 0,
+        "in_win_rate_numerator": false,
+        "filled_match": true,
+        "realized_match": true
+      },
+      {
+        "window_id": "btc-updown-5m-1775242200",
+        "completed_at": "2026-04-03T18:55:01.831Z",
+        "row_filled_total": 4,
+        "row_realized_gross_pnl_total": 0,
+        "truth_realized_gross_pnl_total": 0,
+        "truth_filled_total": 4,
+        "in_win_rate_numerator": false,
+        "filled_match": true,
+        "realized_match": true
+      }
+    ],
+    "post_reset_win_rate_manual": {
+      "win_numerator": 0,
+      "win_denominator": 2,
+      "win_rate_percent": 0,
+      "realized_gross_pnl_total_sum": 0
+    },
+    "post_reset_pollution_rows": [],
+    "non_regression": {
+      "running_not_pre_counted_today": true,
+      "stop_does_not_break_stats_chain": true,
+      "today_reset_baseline_usable": true
+    },
+    "healthcheck": {
+      "root_status": 200,
+      "pairs_status": 404
+    },
+    "samples": [
+      {
+        "window_id": "btc-updown-5m-1775242500",
+        "is_real_runtime": true,
+        "sample_type": "post_reset_completed_window"
+      },
+      {
+        "window_id": "btc-updown-5m-1775242200",
+        "is_real_runtime": true,
+        "sample_type": "post_reset_completed_window"
+      }
+    ],
+    "checks": {
+      "prefail_contamination_present": true,
+      "post_reset_two_completed_windows_ready": true,
+      "post_reset_rows_match_truth": true,
+      "post_reset_no_pollution_rows": true,
+      "running_window_not_counted": true,
+      "stop_semantics_chain_alive": true,
+      "healthcheck_root_pairs_checked": true
+    }
+  }
+}

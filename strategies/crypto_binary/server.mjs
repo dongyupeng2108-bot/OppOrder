@@ -688,6 +688,7 @@ const finalizeBotRunSnapshot = (stopReason, options = {}) => {
   const completedWindowId = options.completed_window_id ?? state?.current_window_id ?? null;
   const summary = getBotPaperSummaryScoped();
   const scopedFilledTotal = getScopedFilledTotalForState(state, completedWindowId);
+  const scopedRealizedGrossPnlTotal = getScopedRealizedGrossPnlTotalForState(state, completedWindowId);
   const activeConfig = options.active_config || getBotActiveRuntimeConfig() || getBotConfigSnapshot();
   const phase = options.phase ?? state.phase ?? null;
   const triggerSource = options.trigger_source ?? 'RUNTIME_STOP';
@@ -699,7 +700,7 @@ const finalizeBotRunSnapshot = (stopReason, options = {}) => {
     phase,
     filled_total: toFiniteOrNull(scopedFilledTotal) ?? 0,
     cancelled_total: toFiniteOrNull(summary?.cancelled_total) ?? 0,
-    realized_gross_pnl_total: toFiniteOrNull(summary?.realized_gross_pnl_total) ?? 0,
+    realized_gross_pnl_total: toFiniteOrNull(scopedRealizedGrossPnlTotal) ?? 0,
     unrealized_gross_pnl_total: toFiniteOrNull(summary?.unrealized_gross_pnl_total) ?? 0,
     active_config: cloneBotConfig(activeConfig),
     trigger_source: triggerSource
@@ -1336,6 +1337,35 @@ const getScopedFilledTotalForState = (state = {}, preferredWindowId = null) => {
   if (!displayWindowId) return 0;
   const strictWindowOrders = allOrders.filter((order) => order.resolved_window_id === displayWindowId);
   return countUniqueFilledOrderIds(strictWindowOrders);
+};
+const getScopedRealizedGrossPnlTotalForState = (state = {}, preferredWindowId = null) => {
+  const { allOrders } = buildBotOrdersWithWindowIds();
+  const scope = resolveBotWindowScope(state);
+  const displayWindowId = preferredWindowId || scope.displayWindowId;
+  if (!displayWindowId) return 0;
+  const strictWindowOrders = allOrders
+    .filter((order) => order.resolved_window_id === displayWindowId && order.status === 'FILLED');
+  const calcSideRealized = (side) => {
+    const filledEntries = strictWindowOrders.filter((order) => order.side === side && order.kind === 'ENTRY');
+    const filledExits = strictWindowOrders.filter((order) => order.side === side && order.kind !== 'ENTRY');
+    const entrySize = filledEntries.reduce((sum, order) => sum + (Number.isFinite(order?.size) ? order.size : 0), 0);
+    if (entrySize <= 0) return 0;
+    const entryNotional = filledEntries.reduce((sum, order) => {
+      const fillPrice = Number.isFinite(order?.fill_price) ? order.fill_price : null;
+      const size = Number.isFinite(order?.size) ? order.size : 0;
+      if (fillPrice == null || size <= 0) return sum;
+      return sum + (fillPrice * size);
+    }, 0);
+    const avgFillPrice = entryNotional / entrySize;
+    return filledExits.reduce((sum, order) => {
+      const fillPrice = Number.isFinite(order?.fill_price) ? order.fill_price : null;
+      const size = Number.isFinite(order?.size) ? order.size : 0;
+      if (fillPrice == null || size <= 0) return sum;
+      return sum + ((fillPrice - avgFillPrice) * size);
+    }, 0);
+  };
+  const total = calcSideRealized('YES') + calcSideRealized('NO');
+  return toFiniteOrNull(total) ?? 0;
 };
 const getBotPaperSummaryScoped = (context = null) => {
   const baseSummary = context == null
