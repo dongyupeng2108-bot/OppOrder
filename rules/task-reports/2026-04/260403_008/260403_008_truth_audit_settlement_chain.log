@@ -1,0 +1,6 @@
+script_name=truth_audit_settlement_chain_260403_008
+task_id=260403_008
+sample_name=settlement_chain_real_runtime_v1
+pass=true
+first_break_layer=status_mapping_correct_but_completed_trigger_missing
+message=first_break_layer=completed_trigger_missing
