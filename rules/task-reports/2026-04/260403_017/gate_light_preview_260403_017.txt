@@ -1,33 +1,3 @@
-=== TRAE_REPORT_SNIPPET ===
-
-Header: TraeTask_260403_017
-BRANCH: 260403_017
-COMMIT: 72b3b8576
-
-=== GIT_SCOPE_DIFF ===
-M	rules/LATEST.json
-A	rules/task-reports/2026-04/260403_017/260403_017.json
-A	rules/task-reports/2026-04/260403_017/260403_017_truth_audit_notify_healthcheck_excerpt_fix.json
-A	rules/task-reports/2026-04/260403_017/260403_017_truth_audit_notify_healthcheck_excerpt_fix.log
-A	rules/task-reports/2026-04/260403_017/implementation_260403_017.md
-A	rules/task-reports/2026-04/260403_017/notify_260403_017.txt
-A	rules/task-reports/2026-04/260403_017/result_260403_017.json
-A	rules/task-reports/2026-04/260403_017/trae_report_snippet_260403_017.txt
-A	rules/task-reports/2026-04/260403_017/truth_audit_260403_017.md
-A	rules/task-reports/2026-04/260403_017/workspace_healer_260403_017.json
-A	scripts/260403_017/truth_audit_notify_healthcheck_excerpt_fix_260403_017.mjs
-M	scripts/finalize_task_evidence.mjs
-M	scripts/gate_light_ci.mjs
-M	scripts/postflight_validate_envelope.mjs
-
-=== DOD_EVIDENCE_STDOUT ===
-Missing Blocks:
-
-DOD_EVIDENCE_HEALTHCHECK_ROOT: 260403_017_healthcheck_53122_root.txt => HTTP/1.1 200 OK
-DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260403_017_healthcheck_53122_pairs.txt => HTTP/1.1 404 Not Found
-
-
-
 === GATE_LIGHT_PREVIEW ===
 [Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
 [Gate Light] Target locked via argument: 260403_017
