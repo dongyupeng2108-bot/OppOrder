@@ -151,6 +151,13 @@ const step = async (name, fn) => {
 const ensureDir = (p) => {
   if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true });
 };
+const normalizeSnippetHeader = () => {
+  if (!fs.existsSync(snippetPath)) return;
+  const snippetBody = fs.readFileSync(snippetPath, 'utf8');
+  if (/^Header:\s*Unknown\s*$/m.test(snippetBody)) {
+    fs.writeFileSync(snippetPath, snippetBody.replace(/^Header:\s*Unknown\s*$/m, `Header: TraeTask_${taskId}`), 'utf8');
+  }
+};
 
 const ensureNotifySkeleton = () => {
   if (!fs.existsSync(notifyPath)) {
@@ -368,12 +375,7 @@ const runAsync = async () => {
     run(`node scripts/build_trae_report_snippet.mjs --task_id=${taskId} --result_dir="${evidenceDir}"`, {
       env: { GATE_LIGHT_GENERATE_PREVIEW: '1' }
     });
-    if (fs.existsSync(snippetPath)) {
-      const snippetBody = fs.readFileSync(snippetPath, 'utf8');
-      if (/^Header:\s*Unknown\s*$/m.test(snippetBody)) {
-        fs.writeFileSync(snippetPath, snippetBody.replace(/^Header:\s*Unknown\s*$/m, `Header: TraeTask_${taskId}`), 'utf8');
-      }
-    }
+    normalizeSnippetHeader();
     const branch = run('git branch --show-current', { capture: true }).trim();
     const sha = run('git rev-parse HEAD', { capture: true }).trim();
     const msg = run('git log -1 --pretty=%B', { capture: true }).trim();
@@ -395,6 +397,7 @@ const runAsync = async () => {
   await step('组装 evidence manifest', () => {
     run(`node scripts/assemble_evidence.mjs --task_id ${taskId} --evidence_dir "${evidenceDir}"`);
     ensureNotifySkeleton();
+    normalizeSnippetHeader();
   });
 
   await step('关键证据跟踪检查', () => {
