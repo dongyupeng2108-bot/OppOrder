@@ -121,6 +121,7 @@ let botRuntimeWasRunning = false;
 let botRunActionSummary = [];
 let botLastTickResult = null;
 let botRecoveryHydrated = false;
+let botTodayResetBaselineTs = null;
 let botAccountSnapshotCache = null;
 let botAccountSnapshotCachedAt = 0;
 let botTestRunnerState = {
@@ -585,6 +586,22 @@ const normalizePerformancePreset = (value) => {
   if (value === BOT_PERF_PRESET_LAST_30_WINDOWS) return BOT_PERF_PRESET_LAST_30_WINDOWS;
   return BOT_PERF_PRESET_TODAY;
 };
+const getTodayUtcStartTs = (nowTs = Date.now()) => {
+  const d = new Date(nowTs);
+  d.setUTCHours(0, 0, 0, 0);
+  return d.getTime();
+};
+const getEffectiveTodayBaselineTs = (nowTs = Date.now()) => {
+  const todayStartTs = getTodayUtcStartTs(nowTs);
+  const resetTs = Number.isFinite(Number(botTodayResetBaselineTs)) ? Number(botTodayResetBaselineTs) : null;
+  if (resetTs == null) return todayStartTs;
+  return resetTs > todayStartTs ? resetTs : todayStartTs;
+};
+const resetTodayPerformanceBaseline = () => {
+  botTodayResetBaselineTs = Date.now();
+  persistBotRecoverySnapshot();
+  return botTodayResetBaselineTs;
+};
 const queryBotPerformanceSummary = async (presetRaw, includeRows = false) => {
   if (!db) return null;
   const preset = normalizePerformancePreset(presetRaw);
@@ -605,12 +622,10 @@ const queryBotPerformanceSummary = async (presetRaw, includeRows = false) => {
   const now = Date.now();
   let filtered = rows;
   if (preset === BOT_PERF_PRESET_TODAY) {
-    const start = new Date();
-    start.setUTCHours(0, 0, 0, 0);
-    const startTs = start.getTime();
+    const baselineTs = getEffectiveTodayBaselineTs(now);
     filtered = rows.filter((row) => {
       const ts = Date.parse(row.bot_completed_at || '');
-      return !Number.isNaN(ts) && ts >= startTs && ts <= now;
+      return !Number.isNaN(ts) && ts >= baselineTs && ts <= now;
     });
   } else if (preset === BOT_PERF_PRESET_LAST_7D) {
     const startTs = now - (7 * 24 * 60 * 60 * 1000);
@@ -638,6 +653,8 @@ const queryBotPerformanceSummary = async (presetRaw, includeRows = false) => {
     avg_realized_gross_pnl_per_window: avgRealized,
     avg_unrealized_gross_pnl_per_window: avgUnrealized,
     running_window_excluded: true,
+    today_reset_baseline_ts: preset === BOT_PERF_PRESET_TODAY ? getEffectiveTodayBaselineTs(now) : null,
+    today_reset_baseline_at: preset === BOT_PERF_PRESET_TODAY ? new Date(getEffectiveTodayBaselineTs(now)).toISOString() : null,
     sample_postmortem_rows: filtered.slice(0, 10).map((row) => ({
       id: row.id ?? null,
       window_id: row.bot_window_id ?? null,
@@ -1109,6 +1126,7 @@ function persistBotRecoverySnapshot() {
       state: botState.getState(),
       orders: botExecutorPaper.getOrders(),
       last_run_snapshot: getBotLastRunSnapshot(),
+      today_reset_baseline_ts: Number.isFinite(Number(botTodayResetBaselineTs)) ? Number(botTodayResetBaselineTs) : null,
       saved_at: new Date().toISOString()
     };
     mkdirSync(dirname(BOT_RUNTIME_RECOVERY_PATH), { recursive: true });
@@ -1154,6 +1172,11 @@ function restoreBotRecoverySnapshot() {
     }
     if (snapshot.last_run_snapshot && typeof snapshot.last_run_snapshot === 'object') {
       botLastRunSnapshot = snapshot.last_run_snapshot;
+    }
+    if (Number.isFinite(Number(snapshot.today_reset_baseline_ts))) {
+      botTodayResetBaselineTs = Number(snapshot.today_reset_baseline_ts);
+    } else {
+      botTodayResetBaselineTs = null;
     }
     const recoveredState = snapshot.state && typeof snapshot.state === 'object' ? snapshot.state : null;
     if (recoveredState) {
@@ -2337,6 +2360,8 @@ const server = createServer(async (req, res) => {
       sendJson(res, {
         ...state,
         current_window_id: currentWindowId,
+        today_reset_baseline_ts: getEffectiveTodayBaselineTs(),
+        today_reset_baseline_at: new Date(getEffectiveTodayBaselineTs()).toISOString(),
         saved_config: getBotConfigSnapshot(),
         last_run_snapshot: getBotLastRunSnapshot(),
         active_runtime_snapshot: {
@@ -2378,6 +2403,23 @@ const server = createServer(async (req, res) => {
       const summary = await queryBotPerformanceSummary(presetRaw, includeRows);
       sendJson(res, {
         ok: true,
+        summary
+      });
+    } catch (err) {
+      sendJson(res, { ok: false, error: err.message }, 500);
+    }
+    return;
+  }
+
+  if (req.method === 'POST' && req.url === '/bot/performance/today/reset') {
+    ensureBotRecoveryHydrated();
+    try {
+      const baselineTs = resetTodayPerformanceBaseline();
+      const summary = await queryBotPerformanceSummary(BOT_PERF_PRESET_TODAY, true);
+      sendJson(res, {
+        ok: true,
+        today_reset_baseline_ts: baselineTs,
+        today_reset_baseline_at: new Date(baselineTs).toISOString(),
         summary
       });
     } catch (err) {

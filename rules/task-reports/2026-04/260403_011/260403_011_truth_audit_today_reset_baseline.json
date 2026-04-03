@@ -1,0 +1,351 @@
+{
+  "script_name": "truth_audit_today_reset_baseline_260403_011",
+  "task_id": "260403_011",
+  "sample_name": "today_reset_baseline_real_runtime_v1",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "rules/task-reports/2026-04/260403_011/260403_011_truth_audit_today_reset_baseline.json",
+  "summary": {
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "pass": true
+  },
+  "raw_excerpt": {
+    "checks": {
+      "pre_today_nonzero": true,
+      "reset_today_zero": true,
+      "reset_not_affect_7d": true,
+      "reset_not_affect_30": true,
+      "postmortem_history_not_deleted": true,
+      "running_not_premature_counted": true,
+      "new_completed_after_reset_in_today": true,
+      "stop_semantics_kept": true,
+      "healthcheck_root_ok": true,
+      "healthcheck_pairs_reachable": true
+    },
+    "fail_to_pass": {
+      "preFail": {
+        "today": {
+          "window_count": 2,
+          "filled_total": 1,
+          "realized_gross_pnl_total": 41.909959128878285,
+          "avg_realized_gross_pnl_per_window": 20.954979564439142
+        },
+        "today_window_count_nonzero": true
+      },
+      "postPass": {
+        "baseline_at": "2026-04-03T10:21:04.767Z",
+        "today_after_reset": {
+          "window_count": 0,
+          "filled_total": 0,
+          "realized_gross_pnl_total": 0,
+          "avg_realized_gross_pnl_per_window": 0
+        },
+        "new_completed_window_id": "btc-updown-5m-1775211600",
+        "new_completed_at": "2026-04-03T10:21:05.641Z"
+      }
+    },
+    "samples": [
+      {
+        "task_id": "260403_011",
+        "window_id": "btc-updown-5m-1775211600",
+        "is_real_runtime": true,
+        "sample_type": "post_reset_new_completed"
+      },
+      {
+        "task_id": "260403_011",
+        "window_id": "btc-updown-5m-1775138700",
+        "is_real_runtime": true,
+        "sample_type": "non_regression_reference"
+      }
+    ]
+  },
+  "generated_at": "2026-04-03T10:21:06.864Z",
+  "conclusion_block": {
+    "verdict": "A：通过",
+    "first_break_layer": "NONE_CHAIN_PASS"
+  },
+  "evidence_index": {
+    "checks": {
+      "pre_today_nonzero": true,
+      "reset_today_zero": true,
+      "reset_not_affect_7d": true,
+      "reset_not_affect_30": true,
+      "postmortem_history_not_deleted": true,
+      "running_not_premature_counted": true,
+      "new_completed_after_reset_in_today": true,
+      "stop_semantics_kept": true,
+      "healthcheck_root_ok": true,
+      "healthcheck_pairs_reachable": true
+    },
+    "fail_to_pass": {
+      "preFail": {
+        "today": {
+          "window_count": 2,
+          "filled_total": 1,
+          "realized_gross_pnl_total": 41.909959128878285,
+          "avg_realized_gross_pnl_per_window": 20.954979564439142
+        },
+        "today_window_count_nonzero": true
+      },
+      "postPass": {
+        "baseline_at": "2026-04-03T10:21:04.767Z",
+        "today_after_reset": {
+          "window_count": 0,
+          "filled_total": 0,
+          "realized_gross_pnl_total": 0,
+          "avg_realized_gross_pnl_per_window": 0
+        },
+        "new_completed_window_id": "btc-updown-5m-1775211600",
+        "new_completed_at": "2026-04-03T10:21:05.641Z"
+      }
+    },
+    "samples": [
+      {
+        "task_id": "260403_011",
+        "window_id": "btc-updown-5m-1775211600",
+        "is_real_runtime": true,
+        "sample_type": "post_reset_new_completed"
+      },
+      {
+        "task_id": "260403_011",
+        "window_id": "btc-updown-5m-1775138700",
+        "is_real_runtime": true,
+        "sample_type": "non_regression_reference"
+      }
+    ],
+    "before_after_table": {
+      "today_before": {
+        "window_count": 2,
+        "filled_total": 1,
+        "realized_gross_pnl_total": 41.909959128878285,
+        "avg_realized_gross_pnl_per_window": 20.954979564439142
+      },
+      "today_after_reset": {
+        "window_count": 0,
+        "filled_total": 0,
+        "realized_gross_pnl_total": 0,
+        "avg_realized_gross_pnl_per_window": 0
+      },
+      "last7_before": {
+        "window_count": 1488,
+        "filled_total": 1814,
+        "realized_gross_pnl_total": 1705.5777345448769,
+        "avg_realized_gross_pnl_per_window": 1.1462215957962882
+      },
+      "last7_after_reset": {
+        "window_count": 1488,
+        "filled_total": 1814,
+        "realized_gross_pnl_total": 1705.5777345448769,
+        "avg_realized_gross_pnl_per_window": 1.1462215957962882
+      },
+      "last30_before": {
+        "window_count": 30,
+        "filled_total": 383,
+        "realized_gross_pnl_total": 369.70425245236623,
+        "avg_realized_gross_pnl_per_window": 12.32347508174554
+      },
+      "last30_after_reset": {
+        "window_count": 30,
+        "filled_total": 383,
+        "realized_gross_pnl_total": 369.70425245236623,
+        "avg_realized_gross_pnl_per_window": 12.32347508174554
+      }
+    },
+    "history_truth_proof": {
+      "before": {
+        "last_30_window_ids": [
+          "btc-updown-5m-1775211300",
+          "btc-updown-5m-1775211300",
+          "btc-updown-5m-1775211000",
+          "btc-updown-5m-1775210700",
+          "btc-updown-5m-1775210400",
+          "btc-updown-5m-1775208300",
+          "btc-updown-5m-1775208000",
+          "btc-updown-5m-1775207700",
+          "btc-updown-5m-1775207400",
+          "btc-updown-5m-1775206800",
+          "btc-updown-5m-1775138700",
+          "debug-fill-yes-path-v1-w1",
+          "debug-fill-yes-path-v1-w1",
+          "debug-fill-yes-path-v1-w1",
+          "debug-fill-yes-path-v1-w1",
+          "btc-updown-5m-1775134200",
+          "debug-main-path-v1-w1",
+          "debug-main-path-v1-w1",
+          "debug-main-path-v1-w1",
+          "debug-main-path-v1-w1",
+          "debug-main-path-v1-w1",
+          "debug-main-path-v1-w1",
+          "debug-main-path-v1-w1",
+          "btc-updown-5m-1775101800",
+          "btc-updown-5m-1775100300",
+          "btc-updown-5m-1775100300",
+          "btc-updown-5m-1775100300",
+          "audit-040-no_recovery_new_only-1775100350974"
+        ],
+        "last_7d_window_count": 1488
+      },
+      "after_reset": {
+        "last_30_window_ids": [
+          "btc-updown-5m-1775211300",
+          "btc-updown-5m-1775211300",
+          "btc-updown-5m-1775211000",
+          "btc-updown-5m-1775210700",
+          "btc-updown-5m-1775210400",
+          "btc-updown-5m-1775208300",
+          "btc-updown-5m-1775208000",
+          "btc-updown-5m-1775207700",
+          "btc-updown-5m-1775207400",
+          "btc-updown-5m-1775206800",
+          "btc-updown-5m-1775138700",
+          "debug-fill-yes-path-v1-w1",
+          "debug-fill-yes-path-v1-w1",
+          "debug-fill-yes-path-v1-w1",
+          "debug-fill-yes-path-v1-w1",
+          "btc-updown-5m-1775134200",
+          "debug-main-path-v1-w1",
+          "debug-main-path-v1-w1",
+          "debug-main-path-v1-w1",
+          "debug-main-path-v1-w1",
+          "debug-main-path-v1-w1",
+          "debug-main-path-v1-w1",
+          "debug-main-path-v1-w1",
+          "btc-updown-5m-1775101800",
+          "btc-updown-5m-1775100300",
+          "btc-updown-5m-1775100300",
+          "btc-updown-5m-1775100300",
+          "audit-040-no_recovery_new_only-1775100350974"
+        ],
+        "last_7d_window_count": 1488
+      }
+    },
+    "real_runtime_new_completed": {
+      "window_id": "btc-updown-5m-1775211600",
+      "completed_at": "2026-04-03T10:21:05.641Z",
+      "baseline_at": "2026-04-03T10:21:04.767Z"
+    },
+    "running_guard": {
+      "running_window_id": "btc-updown-5m-1775211600",
+      "included_in_today_while_running": false
+    },
+    "stop_guard": {
+      "stop_response": {
+        "ok": true,
+        "already_stopped": false,
+        "running": false,
+        "tick_interval_ms": 1000,
+        "last_tick_at": "2026-04-03T10:21:05.207Z"
+      },
+      "snapshot_log": {
+        "ts": "2026-04-03T10:21:05.641Z",
+        "level": "info",
+        "source": "server",
+        "event": "BOT_RUN_SNAPSHOT",
+        "message": "MANUAL_STOP",
+        "mode": "paper-staging",
+        "window_id": "btc-updown-5m-1775211600",
+        "data": {
+          "stop_reason": "MANUAL_STOP",
+          "completed_at": "2026-04-03T10:21:05.641Z",
+          "current_window_id": "btc-updown-5m-1775211600",
+          "phase": "IDLE",
+          "filled_total": 0,
+          "cancelled_total": 0,
+          "realized_gross_pnl_total": 0,
+          "unrealized_gross_pnl_total": 1.02,
+          "active_config": {
+            "open_delay_sec": 10,
+            "ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "ladder_size": 5,
+            "atr_multiple": 1.2,
+            "cancel_all_remaining_sec": 100,
+            "up_ladder": [
+              {
+                "price": 0.27,
+                "size": 5,
+                "tp_price": 0.27
+              },
+              {
+                "price": 0.24,
+                "size": 5,
+                "tp_price": 0.24
+              },
+              {
+                "price": 0.21,
+                "size": 5,
+                "tp_price": 0.21
+              },
+              {
+                "price": 0.18,
+                "size": 5,
+                "tp_price": 0.18
+              }
+            ],
+            "down_ladder": [
+              {
+                "price": 0.27,
+                "size": 5,
+                "tp_price": 0.27
+              },
+              {
+                "price": 0.24,
+                "size": 5,
+                "tp_price": 0.24
+              },
+              {
+                "price": 0.21,
+                "size": 5,
+                "tp_price": 0.21
+              },
+              {
+                "price": 0.18,
+                "size": 5,
+                "tp_price": 0.18
+              }
+            ],
+            "up_cancel": {
+              "before_end_sec": 100,
+              "formula": ""
+            },
+            "down_cancel": {
+              "before_end_sec": 100,
+              "formula": ""
+            }
+          },
+          "trigger_source": "RUNTIME_STOP"
+        }
+      }
+    },
+    "healthcheck": {
+      "root_status": 200,
+      "root_excerpt": "{\"status\":\"ok\",\"port\":53131,\"strategy\":\"crypto_binary\",\"runner_active\":false}",
+      "pairs_status": 404,
+      "pairs_excerpt": "{\"status\":\"not_found\"}"
+    },
+    "completed_row_post_reset": {
+      "id": 2968,
+      "window_id": "btc-updown-5m-1775211600",
+      "completed_at": "2026-04-03T10:21:05.641Z",
+      "filled_total": 0,
+      "cancelled_total": 0,
+      "realized_gross_pnl_total": 0,
+      "unrealized_gross_pnl_total": 1.02
+    },
+    "sample_8700_non_regression": {
+      "id": 2955,
+      "window_id": "btc-updown-5m-1775138700",
+      "completed_at": "2026-04-02T14:09:41.423Z",
+      "filled_total": 1,
+      "cancelled_total": 0,
+      "realized_gross_pnl_total": 42.39860412558299,
+      "unrealized_gross_pnl_total": 503.5013958744164
+    },
+    "generated_at": "2026-04-03T10:21:06.867Z"
+  }
+}
