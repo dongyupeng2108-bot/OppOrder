@@ -1793,6 +1793,8 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
                 /strategy_local_first|fetch_not_needed|fetch_needed_true|snippet_verified|snippet_after_fetch_verified|heavy_mandatory_verified|light_smoke_exit_ok|gate_behavior_preserved|mandatory_rewrite_verified/i.test(k)
                 && checks[k] === true
             ));
+            const governancePassHit = keys.some((k) => /governance_heavy_.*_pass/i.test(k) && checks[k] === true);
+            if (governancePassHit) return true;
             if (keyHit) return true;
             return Boolean(obj?.evidence_index?.governance_substitute || obj?.raw_excerpt?.governance_substitute);
         };
@@ -1853,7 +1855,7 @@ console.log('[Gate Light] Verifying task_id: ' + task_id);
             const checks = flattenChecks(data);
             const scriptName = String(data?.script_name || '');
             const isGovernanceTask = data?.task_type === 'workflow_upgrade'
-                || /workflow|governance|upgrade/i.test(scriptName)
+                || /workflow|governance|upgrade|mandatory_rewrite|heavy_mandatory/i.test(scriptName)
                 || /snippet_git_local_first|gate_mandatory|workflow_upgrade/i.test(scriptName)
                 || hasGovernanceResultStructured(data, checks);
             return {

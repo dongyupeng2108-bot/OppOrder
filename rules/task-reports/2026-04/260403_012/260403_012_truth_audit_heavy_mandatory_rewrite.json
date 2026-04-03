@@ -17,6 +17,28 @@
       "negative_missing_real_runtime_fail": true,
       "light_smoke_260330045_pass": true
     },
+    "fail_to_pass": {
+      "preFail": {
+        "heavy_mandatory_depended_on_workflow_meta_evidence": true
+      },
+      "postPass": {
+        "business_core_mandatory_enforced": true,
+        "governance_substitute_enforced": true,
+        "workflow_meta_demoted_to_warn": true
+      }
+    },
+    "samples": [
+      {
+        "task_id": "260403_002",
+        "is_real_runtime": true,
+        "sample_type": "business_heavy_reference"
+      },
+      {
+        "task_id": "260403_006",
+        "is_real_runtime": true,
+        "sample_type": "governance_heavy_reference"
+      }
+    ],
     "business_heavy_key_lines": [
       "Export Schema Validation PASSED.",
       "[Gate Light] Rank V2 Contract Version Guard PASS",
@@ -53,7 +75,7 @@
       "GATE_LIGHT_EXIT=0"
     ]
   },
-  "generated_at": "2026-04-03T13:02:48.689Z",
+  "generated_at": "2026-04-03T13:15:13.867Z",
   "conclusion_block": {
     "verdict": "A：通过",
     "first_break_layer": "NONE_CHAIN_PASS"
@@ -66,6 +88,28 @@
       "negative_missing_real_runtime_fail": true,
       "light_smoke_260330045_pass": true
     },
+    "fail_to_pass": {
+      "preFail": {
+        "heavy_mandatory_depended_on_workflow_meta_evidence": true
+      },
+      "postPass": {
+        "business_core_mandatory_enforced": true,
+        "governance_substitute_enforced": true,
+        "workflow_meta_demoted_to_warn": true
+      }
+    },
+    "samples": [
+      {
+        "task_id": "260403_002",
+        "is_real_runtime": true,
+        "sample_type": "business_heavy_reference"
+      },
+      {
+        "task_id": "260403_006",
+        "is_real_runtime": true,
+        "sample_type": "governance_heavy_reference"
+      }
+    ],
     "business_heavy_key_lines": [
       "Export Schema Validation PASSED.",
       "[Gate Light] Rank V2 Contract Version Guard PASS",

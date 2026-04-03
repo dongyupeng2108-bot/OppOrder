@@ -1,0 +1,21 @@
+{
+  "task_id": "260403_012",
+  "is_shallow_repo": false,
+  "base": "c058219002ea2731d9ffa3bf05cf058d1a626005",
+  "head": "7be632002cf19c25b5ab784fc817ff8f25dada17",
+  "merge_base": "c058219002ea2731d9ffa3bf05cf058d1a626005",
+  "scope_files": [
+    "rules/LATEST.json",
+    "rules/rules/PROJECT_MASTER_PLAN.md",
+    "rules/rules/PROJECT_RULES.md",
+    "rules/rules/WORKFLOW.md",
+    "rules/task-reports/2026-04/260403_012/260403_012_truth_audit_heavy_mandatory_rewrite.json",
+    "rules/task-reports/2026-04/260403_012/260403_012_truth_audit_heavy_mandatory_rewrite.log",
+    "rules/task-reports/2026-04/260403_012/implementation_260403_012.md",
+    "rules/task-reports/2026-04/260403_012/truth_audit_260403_012.md",
+    "scripts/gate_light_ci.mjs",
+    "scripts/truth_audit_heavy_mandatory_rewrite_260403_012.mjs"
+  ],
+  "scope_count": 10,
+  "generated_at": "2026-04-03T13:12:57.090Z"
+}

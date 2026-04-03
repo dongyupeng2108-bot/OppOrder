@@ -1,0 +1,3 @@
+{"ts":"2026-04-02T14:17:15.190Z","event":"HEARTBEAT","stage":"start_server_begin","port":53245}
+{"ts":"2026-04-02T14:17:15.525Z","event":"HEARTBEAT","stage":"start_server_ready","port":53245}
+{"ts":"2026-04-02T14:17:15.557Z","event":"HEARTBEAT","stage":"audit_done","checks":{"post_pnl_recent_summary_2dec":true,"post_avg_per_window_2dec":true,"api_raw_unchanged_proof_present":true,"pre_post_dom_changed":true}}

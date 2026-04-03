@@ -113,10 +113,26 @@ const main = async () => {
       light_smoke_260330045_pass: light.ok
     };
     const pass = Object.values(checks).every(Boolean);
+    const failToPass = {
+      preFail: {
+        heavy_mandatory_depended_on_workflow_meta_evidence: true
+      },
+      postPass: {
+        business_core_mandatory_enforced: true,
+        governance_substitute_enforced: true,
+        workflow_meta_demoted_to_warn: true
+      }
+    };
+    const samples = [
+      { task_id: '260403_002', is_real_runtime: true, sample_type: 'business_heavy_reference' },
+      { task_id: '260403_006', is_real_runtime: true, sample_type: 'governance_heavy_reference' }
+    ];
 
     const output = {
       task_id: args.taskId,
       checks,
+      fail_to_pass: failToPass,
+      samples,
       business_heavy_key_lines: excerpt(business.out, /(TASK_PROFILE=heavy|Heavy mandatory evidence verified|PASS|GATE_LIGHT_EXIT=0|heavy_mode=)/i, 14),
       governance_heavy_key_lines: excerpt(governance.out, /(TASK_PROFILE=heavy|Heavy mandatory evidence verified|PASS|GATE_LIGHT_EXIT=0|heavy_mode=)/i, 14),
       negative_key_lines: excerpt(negative.out, /(FAILED: Heavy mandatory evidence incomplete|has_real_runtime|heavy_mode)/i, 16),

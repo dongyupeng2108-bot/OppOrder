@@ -1,0 +1,3 @@
+{"ts":"2026-04-02T17:22:12.893Z","event":"HEARTBEAT","stage":"start_server_begin","port":53248}
+{"ts":"2026-04-02T17:22:13.225Z","event":"HEARTBEAT","stage":"start_server_ready","port":53248}
+{"ts":"2026-04-02T17:22:13.256Z","event":"HEARTBEAT","stage":"audit_done","first_break_layer":"NONE_CHAIN_PASS","preFail":true,"postPass":true,"nonRegression":{"last_7d_not_zeroed":true,"running_not_mixed":true}}
