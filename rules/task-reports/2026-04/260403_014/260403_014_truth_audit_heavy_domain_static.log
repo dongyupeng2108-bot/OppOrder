@@ -1,0 +1,6 @@
+script_name=truth_audit_heavy_domain_static_260403_014
+task_id=260403_014
+sample_name=heavy_domain_static_v1
+pass=true
+first_break_layer=NONE_CHAIN_PASS
+message=first_break_layer=NONE_CHAIN_PASS

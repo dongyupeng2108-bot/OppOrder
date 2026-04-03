@@ -67,7 +67,9 @@
   - 重任务（Workflow Upgrade / 治理 heavy）：唯一 first_break_layer + Fail -> Pass + 1组 real runtime + 治理替代证据 + `finalize --profile heavy` + `gate --profile heavy`
 - gate 分流：
   - light：仅基础治理检查（both），跳过 heavy-only 全局契约与 heavy mandatory 证据
-  - heavy：基础治理检查（both）+ heavy-only 全量检查
+  - heavy：基础治理检查（both）+ heavy-only（静态 domain pack）
+  - heavy 默认域：`btcqdd`（`--profile heavy` 等价 `--domain btcqdd`）
+  - 显式域：`opportunities|global|full`；跨域 pack 仅在命中对应域时执行，不做 diff/path 自动触发
   - 流程元证据降级为 warn（不再作为 heavy mandatory 阻断）：`HEAVY_PARALLEL_START`、profile split 痕迹、gate/finalize 内部流程日志字样
   - 260403_004 提效边界：仅 heavy 执行层并行与 mock server 复用，不改变 heavy 检查覆盖度与强制项
   - 260403_005 提效边界：仅 heavy 统一短超时（4000ms）与 fail-fast；不改 light 语义，不改 heavy 覆盖与强制项

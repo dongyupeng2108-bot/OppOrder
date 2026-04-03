@@ -1,0 +1,240 @@
+{
+  "script_name": "truth_audit_heavy_domain_static_260403_014",
+  "task_id": "260403_014",
+  "sample_name": "heavy_domain_static_v1",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "rules/task-reports/2026-04/260403_014/260403_014_truth_audit_heavy_domain_static.json",
+  "summary": {
+    "pass": true
+  },
+  "raw_excerpt": {
+    "checks": {
+      "btcqdd_default_finalize_gate_pass": true,
+      "btcqdd_default_runs_mandatory_snippet_healthcheck": true,
+      "btcqdd_default_skips_cross_domain_pack": true,
+      "explicit_domain_full_runs_cross_domain_pack": true,
+      "explicit_domain_opportunities_runs_cross_domain_pack": true,
+      "light_smoke_unchanged": true,
+      "skip_log_explainability": true
+    },
+    "fail_to_pass": {
+      "preFail": {
+        "heavy_default_was_full_repo": true
+      },
+      "postPass": {
+        "heavy_default_is_static_btcqdd_domain": true,
+        "cross_domain_checks_require_explicit_domain": true
+      }
+    },
+    "samples": [
+      {
+        "task_id": "260403_002",
+        "is_real_runtime": true,
+        "sample_type": "btcqdd_default_heavy"
+      },
+      {
+        "task_id": "260403_006",
+        "is_real_runtime": true,
+        "sample_type": "explicit_cross_domain_heavy"
+      },
+      {
+        "task_id": "260330_045",
+        "is_real_runtime": true,
+        "sample_type": "light_smoke"
+      }
+    ],
+    "governance_substitute": {
+      "passed": true,
+      "source": "domain_static_pack"
+    },
+    "default_btcqdd_files": [
+      "260403_002.json",
+      "260403_002_healthcheck_53122_pairs.txt",
+      "260403_002_healthcheck_53122_root.txt",
+      "260403_002_truth_audit_today_rollup_fix.heartbeat.log",
+      "260403_002_truth_audit_today_rollup_fix.json",
+      "260403_002_truth_audit_today_rollup_fix.log",
+      "deliverables_index_260403_002.json",
+      "dod_evidence_260403_002.txt",
+      "evidence_manifest_260403_002.json",
+      "gate_light_preview_260403_002.log",
+      "gate_light_preview_260403_002.txt",
+      "gate_light_profile_260403_002.json",
+      "git_meta_260403_002.json",
+      "manual_verification_260403_002.json",
+      "notify_260403_002.txt",
+      "result_260403_002.json",
+      "run_260403_002.log",
+      "trae_report_snippet_260403_002.txt",
+      "truth_audit_260403_002.md",
+      "workspace_healer_260403_002.json"
+    ],
+    "key_lines": {
+      "btcqdd_default": [
+        "[Gate Light] DOMAIN_SKIP_CHECKS: news/rank/export/ledger/scanner/universe/trading",
+        "[Gate Light] Healthcheck evidence verified (Path + Content).",
+        "[Gate Light] SnippetCommitMustMatch verified.",
+        "[Gate Light] DOMAIN_SKIP: Rank V2 Contract Version Guard skipped (domain=btcqdd).",
+        "[Gate Light] Heavy mandatory evidence verified.",
+        "GATE_LIGHT_EXIT=0",
+        "[Gate Light] TASK_DOMAIN=btcqdd",
+        "[Gate Light] DOMAIN_SKIP: opportunities contract pack skipped (domain=btcqdd).",
+        "[Gate Light] DOMAIN_SKIP_CHECKS: news/rank/export/ledger/scanner/universe/trading",
+        "[Gate Light] Healthcheck evidence verified (Path + Content).",
+        "[Gate Light] SnippetCommitMustMatch verified.",
+        "[Gate Light] DOMAIN_SKIP: Rank V2 Contract Version Guard skipped (domain=btcqdd).",
+        "[Gate Light] Heavy mandatory evidence verified.",
+        "GATE_LIGHT_EXIT=0"
+      ],
+      "cross_domain_full": [
+        "[Gate Light] TASK_DOMAIN=full",
+        "[Gate Light] HEAVY_PARALLEL_START: news/rank/export/ledger",
+        "[Gate Light] HEAVY_PARALLEL_DONE: {\"news\":0,\"rank\":0,\"export\":0,\"ledger\":0}",
+        "[Gate Light] HEAVY_PARALLEL_START: scanner/universe/trading",
+        "[Gate Light] HEAVY_PARALLEL_DONE: scanner/universe/trading",
+        "GATE_LIGHT_EXIT=0"
+      ],
+      "cross_domain_opportunities": [
+        "[Gate Light] TASK_DOMAIN=opportunities",
+        "[Gate Light] HEAVY_PARALLEL_START: news/rank/export/ledger",
+        "[Gate Light] HEAVY_PARALLEL_DONE: {\"news\":0,\"rank\":0,\"export\":0,\"ledger\":0}",
+        "[Gate Light] HEAVY_PARALLEL_START: scanner/universe/trading",
+        "[Gate Light] HEAVY_PARALLEL_DONE: scanner/universe/trading",
+        "GATE_LIGHT_EXIT=0",
+        "[Gate Light] TASK_DOMAIN=opportunities",
+        "[Gate Light] HEAVY_PARALLEL_START: news/rank/export/ledger",
+        "[Gate Light] HEAVY_PARALLEL_DONE: {\"news\":0,\"rank\":0,\"export\":0,\"ledger\":0}",
+        "[Gate Light] HEAVY_PARALLEL_START: scanner/universe/trading",
+        "[Gate Light] HEAVY_PARALLEL_DONE: scanner/universe/trading",
+        "GATE_LIGHT_EXIT=0"
+      ],
+      "light_smoke": [
+        "[Gate Light] TASK_PROFILE=light",
+        "[Gate Light] LIGHT profile: skipping heavy-only contract checks (news/rank/export/ledger/scanner/universe/trading).",
+        "GATE_LIGHT_EXIT=0",
+        "[Gate Light] TASK_PROFILE=light",
+        "[Gate Light] LIGHT profile: skipping heavy-only contract checks (news/rank/export/ledger/scanner/universe/trading).",
+        "GATE_LIGHT_EXIT=0"
+      ]
+    }
+  },
+  "generated_at": "2026-04-03T17:24:55.806Z",
+  "task_type": "workflow_upgrade",
+  "conclusion_block": {
+    "verdict": "A：通过",
+    "first_break_layer": "NONE_CHAIN_PASS"
+  },
+  "evidence_index": {
+    "checks": {
+      "btcqdd_default_finalize_gate_pass": true,
+      "btcqdd_default_runs_mandatory_snippet_healthcheck": true,
+      "btcqdd_default_skips_cross_domain_pack": true,
+      "explicit_domain_full_runs_cross_domain_pack": true,
+      "explicit_domain_opportunities_runs_cross_domain_pack": true,
+      "light_smoke_unchanged": true,
+      "skip_log_explainability": true
+    },
+    "fail_to_pass": {
+      "preFail": {
+        "heavy_default_was_full_repo": true
+      },
+      "postPass": {
+        "heavy_default_is_static_btcqdd_domain": true,
+        "cross_domain_checks_require_explicit_domain": true
+      }
+    },
+    "samples": [
+      {
+        "task_id": "260403_002",
+        "is_real_runtime": true,
+        "sample_type": "btcqdd_default_heavy"
+      },
+      {
+        "task_id": "260403_006",
+        "is_real_runtime": true,
+        "sample_type": "explicit_cross_domain_heavy"
+      },
+      {
+        "task_id": "260330_045",
+        "is_real_runtime": true,
+        "sample_type": "light_smoke"
+      }
+    ],
+    "governance_substitute": {
+      "passed": true,
+      "source": "domain_static_pack"
+    },
+    "default_btcqdd_files": [
+      "260403_002.json",
+      "260403_002_healthcheck_53122_pairs.txt",
+      "260403_002_healthcheck_53122_root.txt",
+      "260403_002_truth_audit_today_rollup_fix.heartbeat.log",
+      "260403_002_truth_audit_today_rollup_fix.json",
+      "260403_002_truth_audit_today_rollup_fix.log",
+      "deliverables_index_260403_002.json",
+      "dod_evidence_260403_002.txt",
+      "evidence_manifest_260403_002.json",
+      "gate_light_preview_260403_002.log",
+      "gate_light_preview_260403_002.txt",
+      "gate_light_profile_260403_002.json",
+      "git_meta_260403_002.json",
+      "manual_verification_260403_002.json",
+      "notify_260403_002.txt",
+      "result_260403_002.json",
+      "run_260403_002.log",
+      "trae_report_snippet_260403_002.txt",
+      "truth_audit_260403_002.md",
+      "workspace_healer_260403_002.json"
+    ],
+    "key_lines": {
+      "btcqdd_default": [
+        "[Gate Light] DOMAIN_SKIP_CHECKS: news/rank/export/ledger/scanner/universe/trading",
+        "[Gate Light] Healthcheck evidence verified (Path + Content).",
+        "[Gate Light] SnippetCommitMustMatch verified.",
+        "[Gate Light] DOMAIN_SKIP: Rank V2 Contract Version Guard skipped (domain=btcqdd).",
+        "[Gate Light] Heavy mandatory evidence verified.",
+        "GATE_LIGHT_EXIT=0",
+        "[Gate Light] TASK_DOMAIN=btcqdd",
+        "[Gate Light] DOMAIN_SKIP: opportunities contract pack skipped (domain=btcqdd).",
+        "[Gate Light] DOMAIN_SKIP_CHECKS: news/rank/export/ledger/scanner/universe/trading",
+        "[Gate Light] Healthcheck evidence verified (Path + Content).",
+        "[Gate Light] SnippetCommitMustMatch verified.",
+        "[Gate Light] DOMAIN_SKIP: Rank V2 Contract Version Guard skipped (domain=btcqdd).",
+        "[Gate Light] Heavy mandatory evidence verified.",
+        "GATE_LIGHT_EXIT=0"
+      ],
+      "cross_domain_full": [
+        "[Gate Light] TASK_DOMAIN=full",
+        "[Gate Light] HEAVY_PARALLEL_START: news/rank/export/ledger",
+        "[Gate Light] HEAVY_PARALLEL_DONE: {\"news\":0,\"rank\":0,\"export\":0,\"ledger\":0}",
+        "[Gate Light] HEAVY_PARALLEL_START: scanner/universe/trading",
+        "[Gate Light] HEAVY_PARALLEL_DONE: scanner/universe/trading",
+        "GATE_LIGHT_EXIT=0"
+      ],
+      "cross_domain_opportunities": [
+        "[Gate Light] TASK_DOMAIN=opportunities",
+        "[Gate Light] HEAVY_PARALLEL_START: news/rank/export/ledger",
+        "[Gate Light] HEAVY_PARALLEL_DONE: {\"news\":0,\"rank\":0,\"export\":0,\"ledger\":0}",
+        "[Gate Light] HEAVY_PARALLEL_START: scanner/universe/trading",
+        "[Gate Light] HEAVY_PARALLEL_DONE: scanner/universe/trading",
+        "GATE_LIGHT_EXIT=0",
+        "[Gate Light] TASK_DOMAIN=opportunities",
+        "[Gate Light] HEAVY_PARALLEL_START: news/rank/export/ledger",
+        "[Gate Light] HEAVY_PARALLEL_DONE: {\"news\":0,\"rank\":0,\"export\":0,\"ledger\":0}",
+        "[Gate Light] HEAVY_PARALLEL_START: scanner/universe/trading",
+        "[Gate Light] HEAVY_PARALLEL_DONE: scanner/universe/trading",
+        "GATE_LIGHT_EXIT=0"
+      ],
+      "light_smoke": [
+        "[Gate Light] TASK_PROFILE=light",
+        "[Gate Light] LIGHT profile: skipping heavy-only contract checks (news/rank/export/ledger/scanner/universe/trading).",
+        "GATE_LIGHT_EXIT=0",
+        "[Gate Light] TASK_PROFILE=light",
+        "[Gate Light] LIGHT profile: skipping heavy-only contract checks (news/rank/export/ledger/scanner/universe/trading).",
+        "GATE_LIGHT_EXIT=0"
+      ]
+    }
+  }
+}

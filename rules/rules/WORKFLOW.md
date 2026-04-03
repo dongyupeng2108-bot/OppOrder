@@ -187,7 +187,13 @@
 - light-only：
   - 允许跳过与任务无关的全局契约与 mock server 校验（news/rank/export/ledger/scanner/universe/trading）
 - heavy-only：
-  - 全局契约校验（news/rank/export/ledger/scanner/universe/trading）
+  - heavy 静态 domain：
+    - 默认：`--profile heavy` 等价 `--domain btcqdd`
+    - 显式可选：`--domain btcqdd|opportunities|global|full`
+    - 非自动触发：不按 changed files/diff/path 自动扩展检查域
+  - 默认 `btcqdd` 域不执行跨域 pack（news/rank/export/ledger/scanner/universe/trading、Rank V2 Contract Version Guard）
+  - 显式 `opportunities|full` 时执行跨域 contract pack（news/rank/export/ledger/scanner/universe/trading + Rank V2 Contract Version Guard）
+  - `global` 为显式静态域保留位（当前仅运行 btcqdd_core，不自动拉起 opportunities pack）
   - heavy mandatory（业务 heavy）：
     - 唯一 first_break_layer
     - Fail -> Pass

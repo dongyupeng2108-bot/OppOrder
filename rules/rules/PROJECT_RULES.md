@@ -109,7 +109,10 @@
   - Integrate阶段只在提审前最后一次运行 finalize + gate
 - 重任务默认最小提交集：
   - 结论块、唯一 first_break_layer、Fail -> Pass 主证据、1组 real runtime 连续样本、至少 2 条不回退项、notify/result、必要 manifest/index、改 server 时 healthcheck
-  - 执行命令：`finalize_task_evidence --profile heavy` 与 `gate_light_ci --profile heavy`
+  - 执行命令：`finalize_task_evidence --profile heavy [--domain ...]` 与 `gate_light_ci --profile heavy [--domain ...]`
+  - heavy 静态 domain：默认 `btcqdd`；显式 `opportunities|global|full`
+  - 默认 `btcqdd` 不跑跨域 checks（news/rank/export/ledger/scanner/universe/trading、Rank V2 Contract Version Guard）
+  - 仅显式 `opportunities|full` 才执行跨域 checks；不做 diff/path 自动触发
 - finalize 默认产物（`artifact_mode=minimal`）：
   - 默认保留：`result/notify/truth_audit/evidence_manifest(deliverables_index)/workspace_healer/run/dod/git_meta/healthcheck(命中时)`
   - 默认不生成：`ci_parity`、`errors_jsonl/errors_summary`、`preflight_attestation`
@@ -135,7 +138,7 @@
   - Workflow Upgrade / 治理 heavy：治理替代证据（治理结果本身）
   - 业务 heavy 改 server 时附 `GET /` 与 `GET /pairs`
   - 提审前最后一次性跑 `finalize_task_evidence + gate_light_ci`
-  - 保留 heavy-only 检查（全局契约 + heavy mandatory 证据）
+  - 保留 heavy-only 检查（按静态 domain 分流 + heavy mandatory 证据）
   - 流程元证据降级为 warn，不再作为 heavy mandatory 阻断项（如 `HEAVY_PARALLEL_START`、profile split 痕迹、gate/finalize 内部流程日志字样）
   - 执行提效允许项（260403_004）：合约校验并行化；Rank/Export/Ledger mock server 单会话复用；不改变覆盖与强制项
   - 执行提效允许项（260403_005）：scanner/universe/trading 统一硬超时 4000ms；命中首个硬失败后 fail-fast 并输出首个失败节点；不改变覆盖与强制项

@@ -117,6 +117,8 @@ const artifactModeRaw = String(getArg('artifact_mode') || '').trim().toLowerCase
 const artifactMode = artifactModeRaw === 'full' ? 'full' : 'minimal';
 const includeOptionalArtifacts = artifactMode === 'full';
 const gateProfile = String(getArg('profile') || '').trim().toLowerCase();
+const gateDomain = String(getArg('domain') || '').trim().toLowerCase();
+const gateDomainArg = ['btcqdd', 'opportunities', 'global', 'full'].includes(gateDomain) ? ` --domain ${gateDomain}` : '';
 const gateProfileArg = gateProfile === 'light' || gateProfile === 'heavy' ? ` --profile ${gateProfile}` : '';
 const yyyy = `20${taskId.slice(0, 2)}`;
 const mm = taskId.slice(2, 4);
@@ -253,6 +255,7 @@ const runAsync = async () => {
   console.log(`TASK_ID=${taskId}`);
   console.log(`EVIDENCE_DIR=${evidenceDir.replace(/\\/g, '/')}`);
   console.log(`FINALIZE_ARTIFACT_MODE=${artifactMode}`);
+  if (gateDomainArg) console.log(`FINALIZE_GATE_DOMAIN=${gateDomain}`);
 
   await step('准备目录', () => {
     ensureDir(evidenceDir);
@@ -365,7 +368,7 @@ const runAsync = async () => {
   });
 
   await step('生成 gate preview 证据', () => {
-    const preview = safeRun(`node scripts/gate_light_ci.mjs --task_id ${taskId} --result_dir "${evidenceDir}"${gateProfileArg}`, { env: { GENERATE_PREVIEW: '1' } });
+    const preview = safeRun(`node scripts/gate_light_ci.mjs --task_id ${taskId} --result_dir "${evidenceDir}"${gateProfileArg}${gateDomainArg}`, { env: { GENERATE_PREVIEW: '1' } });
     const logBody = `${preview.output}\nGATE_LIGHT_EXIT=${preview.ok ? 0 : 1}\n`;
     fs.writeFileSync(previewLogPath, logBody, 'utf8');
     run(`node scripts/extract_gate_light_preview.mjs --task_id=${taskId} --log="${previewLogPath}"`);
@@ -426,7 +429,7 @@ const runAsync = async () => {
   });
 
   await step('最终本地 Gate Light 验证', () => {
-    run(`node scripts/gate_light_ci.mjs --task_id ${taskId} --result_dir "${evidenceDir}"${gateProfileArg}`);
+    run(`node scripts/gate_light_ci.mjs --task_id ${taskId} --result_dir "${evidenceDir}"${gateProfileArg}${gateDomainArg}`);
   });
 
   console.log('LOCAL_BOUNDARY: 本命令复用仓库现有脚本链；仍可能与 GitHub Runner 的环境差异（系统/权限/网络）存在边界。');
