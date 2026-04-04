@@ -1,0 +1,236 @@
+{
+  "script_name": "truth_audit_price_log_1s_260404_005",
+  "task_id": "260404_005",
+  "sample_name": "price_log_1s_v1",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "rules/task-reports/2026-04/260404_005/260404_005_truth_audit_price_log_1s.json",
+  "summary": {
+    "pass": true
+  },
+  "raw_excerpt": {
+    "runtime_window": {
+      "start_at": "2026-04-04T18:19:28.614Z",
+      "stop_requested_at": "2026-04-04T18:19:34.220Z"
+    },
+    "consecutive_price_logs_min3": [
+      {
+        "ts": "2026-04-04T18:19:28.859Z",
+        "current_window_id": null,
+        "btc_price": null,
+        "bid_yes": 0.94,
+        "bid_no": 0.05,
+        "ask_yes": 0.95,
+        "ask_no": 0.06,
+        "runner_active": true
+      },
+      {
+        "ts": "2026-04-04T18:19:29.862Z",
+        "current_window_id": "btc-updown-5m-1775326500",
+        "btc_price": 67344.495,
+        "bid_yes": 0.94,
+        "bid_no": 0.05,
+        "ask_yes": 0.95,
+        "ask_no": 0.06,
+        "runner_active": true
+      },
+      {
+        "ts": "2026-04-04T18:19:30.865Z",
+        "current_window_id": "btc-updown-5m-1775326500",
+        "btc_price": 67344.495,
+        "bid_yes": 0.95,
+        "bid_no": 0.04,
+        "ask_yes": 0.96,
+        "ask_no": 0.05,
+        "runner_active": true
+      }
+    ],
+    "adjacent_deltas_ms": [
+      1003,
+      1003
+    ],
+    "fields_presence": [
+      {
+        "ts": "2026-04-04T18:19:28.859Z",
+        "missing_fields": []
+      },
+      {
+        "ts": "2026-04-04T18:19:29.862Z",
+        "missing_fields": []
+      },
+      {
+        "ts": "2026-04-04T18:19:30.865Z",
+        "missing_fields": []
+      }
+    ],
+    "stop_semantics": {
+      "bot_stopped_event": {
+        "ts": "2026-04-04T18:19:34.226Z",
+        "event": "BOT_STOPPED"
+      },
+      "price_logs_within_5s_after_stop": 0,
+      "run_snapshot_after_stop": {
+        "ts": "2026-04-04T18:19:34.774Z",
+        "event": "BOT_RUN_SNAPSHOT",
+        "stop_reason": "MANUAL_STOP",
+        "current_window_id": "btc-updown-5m-1775326500"
+      }
+    },
+    "key_flow_density": {
+      "non_price_events_count": 12,
+      "price_1s_events_count": 6
+    },
+    "healthcheck": {
+      "root_status": 200,
+      "pairs_status": 404
+    },
+    "fail_to_pass": {
+      "preFail": {
+        "price_log_event_exists": false
+      },
+      "postPass": {
+        "price_log_event_exists": true
+      }
+    },
+    "samples": [
+      {
+        "sample_type": "runtime_price_log_1s",
+        "is_real_runtime": true
+      },
+      {
+        "sample_type": "stop_semantics",
+        "is_real_runtime": true
+      }
+    ],
+    "non_regression": {
+      "no_trade_formula_change": true,
+      "no_summary_formula_change": true,
+      "stop_semantics_kept": true
+    },
+    "checks": {
+      "price_logs_ge_3": true,
+      "delta_about_1s": true,
+      "required_fields_present": true,
+      "stop_after_no_price_1s": true,
+      "stop_semantics_chain_alive": true,
+      "key_flow_not_flooded": true,
+      "healthcheck_ok": true
+    }
+  },
+  "generated_at": "2026-04-04T18:19:35.445Z",
+  "task_type": "runtime_observability_light",
+  "conclusion_block": {
+    "verdict": "A：通过",
+    "first_break_layer": "NONE_CHAIN_PASS"
+  },
+  "evidence_index": {
+    "runtime_window": {
+      "start_at": "2026-04-04T18:19:28.614Z",
+      "stop_requested_at": "2026-04-04T18:19:34.220Z"
+    },
+    "consecutive_price_logs_min3": [
+      {
+        "ts": "2026-04-04T18:19:28.859Z",
+        "current_window_id": null,
+        "btc_price": null,
+        "bid_yes": 0.94,
+        "bid_no": 0.05,
+        "ask_yes": 0.95,
+        "ask_no": 0.06,
+        "runner_active": true
+      },
+      {
+        "ts": "2026-04-04T18:19:29.862Z",
+        "current_window_id": "btc-updown-5m-1775326500",
+        "btc_price": 67344.495,
+        "bid_yes": 0.94,
+        "bid_no": 0.05,
+        "ask_yes": 0.95,
+        "ask_no": 0.06,
+        "runner_active": true
+      },
+      {
+        "ts": "2026-04-04T18:19:30.865Z",
+        "current_window_id": "btc-updown-5m-1775326500",
+        "btc_price": 67344.495,
+        "bid_yes": 0.95,
+        "bid_no": 0.04,
+        "ask_yes": 0.96,
+        "ask_no": 0.05,
+        "runner_active": true
+      }
+    ],
+    "adjacent_deltas_ms": [
+      1003,
+      1003
+    ],
+    "fields_presence": [
+      {
+        "ts": "2026-04-04T18:19:28.859Z",
+        "missing_fields": []
+      },
+      {
+        "ts": "2026-04-04T18:19:29.862Z",
+        "missing_fields": []
+      },
+      {
+        "ts": "2026-04-04T18:19:30.865Z",
+        "missing_fields": []
+      }
+    ],
+    "stop_semantics": {
+      "bot_stopped_event": {
+        "ts": "2026-04-04T18:19:34.226Z",
+        "event": "BOT_STOPPED"
+      },
+      "price_logs_within_5s_after_stop": 0,
+      "run_snapshot_after_stop": {
+        "ts": "2026-04-04T18:19:34.774Z",
+        "event": "BOT_RUN_SNAPSHOT",
+        "stop_reason": "MANUAL_STOP",
+        "current_window_id": "btc-updown-5m-1775326500"
+      }
+    },
+    "key_flow_density": {
+      "non_price_events_count": 12,
+      "price_1s_events_count": 6
+    },
+    "healthcheck": {
+      "root_status": 200,
+      "pairs_status": 404
+    },
+    "fail_to_pass": {
+      "preFail": {
+        "price_log_event_exists": false
+      },
+      "postPass": {
+        "price_log_event_exists": true
+      }
+    },
+    "samples": [
+      {
+        "sample_type": "runtime_price_log_1s",
+        "is_real_runtime": true
+      },
+      {
+        "sample_type": "stop_semantics",
+        "is_real_runtime": true
+      }
+    ],
+    "non_regression": {
+      "no_trade_formula_change": true,
+      "no_summary_formula_change": true,
+      "stop_semantics_kept": true
+    },
+    "checks": {
+      "price_logs_ge_3": true,
+      "delta_about_1s": true,
+      "required_fields_present": true,
+      "stop_after_no_price_1s": true,
+      "stop_semantics_chain_alive": true,
+      "key_flow_not_flooded": true,
+      "healthcheck_ok": true
+    }
+  }
+}
