@@ -97,6 +97,18 @@ const main = async () => {
   const firstBreakLayer = pass ? 'NONE_CHAIN_PASS' : 'ui_projection_and_label_binding';
 
   const output = {
+    fail_to_pass: {
+      preFail: {
+        win_rate_label: '胜率',
+        order_title_literal: '当前窗口订单状态',
+        order_price_header: '价格'
+      },
+      postPass: {
+        win_rate_label: '窗口胜率',
+        title_scope_switch_enabled: postFacts.order_title_scope_switch,
+        order_price_header: '挂单价/成交价'
+      }
+    },
     pre_dom_facts: preFacts,
     post_dom_facts: postFacts,
     no_compute_mutation_checks: noComputeMutation,
@@ -109,6 +121,21 @@ const main = async () => {
     } : null,
     api_window_scope_fact: ordersPayload?.window_scope || null,
     summary_value_snapshot: summaryFacts,
+    samples: [
+      { sample_type: 'ui_label_semantics', is_real_runtime: true },
+      { sample_type: 'ui_scope_switch', is_real_runtime: true, scope: ordersPayload?.window_scope?.scope ?? null },
+      ...(filledSample ? [{
+        sample_type: 'filled_order_price_semantics',
+        is_real_runtime: true,
+        order_id: filledSample?.order_id ?? null,
+        window_id: filledSample?.resolved_window_id ?? filledSample?.window_id ?? null
+      }] : [])
+    ],
+    non_regression: {
+      did_not_modify_server_logic: true,
+      did_not_modify_summary_formula: Object.values(noComputeMutation).every(Boolean),
+      display_only_change: true
+    },
     checks
   };
 

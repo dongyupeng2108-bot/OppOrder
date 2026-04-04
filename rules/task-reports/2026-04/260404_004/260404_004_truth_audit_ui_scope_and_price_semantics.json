@@ -10,6 +10,18 @@
     "pass": true
   },
   "raw_excerpt": {
+    "fail_to_pass": {
+      "preFail": {
+        "win_rate_label": "胜率",
+        "order_title_literal": "当前窗口订单状态",
+        "order_price_header": "价格"
+      },
+      "postPass": {
+        "win_rate_label": "窗口胜率",
+        "title_scope_switch_enabled": true,
+        "order_price_header": "挂单价/成交价"
+      }
+    },
     "pre_dom_facts": {
       "win_rate_label": "胜率",
       "order_title_literal": "当前窗口订单状态",
@@ -62,6 +74,28 @@
         "realized_gross_pnl_total": 297.6025643805565,
         "avg_realized_gross_pnl_per_window": 9.920085479351883
       }
+    },
+    "samples": [
+      {
+        "sample_type": "ui_label_semantics",
+        "is_real_runtime": true
+      },
+      {
+        "sample_type": "ui_scope_switch",
+        "is_real_runtime": true,
+        "scope": "last_window"
+      },
+      {
+        "sample_type": "filled_order_price_semantics",
+        "is_real_runtime": true,
+        "order_id": "paper_5d286bc6",
+        "window_id": null
+      }
+    ],
+    "non_regression": {
+      "did_not_modify_server_logic": true,
+      "did_not_modify_summary_formula": true,
+      "display_only_change": true
     },
     "checks": {
       "bug1_label_fixed": true,
@@ -71,13 +105,25 @@
       "no_compute_mutation": true
     }
   },
-  "generated_at": "2026-04-04T17:52:03.225Z",
+  "generated_at": "2026-04-04T18:00:35.711Z",
   "task_type": "ui_light_fix_acceptance",
   "conclusion_block": {
     "verdict": "A：通过",
     "first_break_layer": "NONE_CHAIN_PASS"
   },
   "evidence_index": {
+    "fail_to_pass": {
+      "preFail": {
+        "win_rate_label": "胜率",
+        "order_title_literal": "当前窗口订单状态",
+        "order_price_header": "价格"
+      },
+      "postPass": {
+        "win_rate_label": "窗口胜率",
+        "title_scope_switch_enabled": true,
+        "order_price_header": "挂单价/成交价"
+      }
+    },
     "pre_dom_facts": {
       "win_rate_label": "胜率",
       "order_title_literal": "当前窗口订单状态",
@@ -130,6 +176,28 @@
         "realized_gross_pnl_total": 297.6025643805565,
         "avg_realized_gross_pnl_per_window": 9.920085479351883
       }
+    },
+    "samples": [
+      {
+        "sample_type": "ui_label_semantics",
+        "is_real_runtime": true
+      },
+      {
+        "sample_type": "ui_scope_switch",
+        "is_real_runtime": true,
+        "scope": "last_window"
+      },
+      {
+        "sample_type": "filled_order_price_semantics",
+        "is_real_runtime": true,
+        "order_id": "paper_5d286bc6",
+        "window_id": null
+      }
+    ],
+    "non_regression": {
+      "did_not_modify_server_logic": true,
+      "did_not_modify_summary_formula": true,
+      "display_only_change": true
     },
     "checks": {
       "bug1_label_fixed": true,
