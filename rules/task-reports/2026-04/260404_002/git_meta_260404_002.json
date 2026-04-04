@@ -1,1 +1,1 @@
-{"commit":"85042185f89160e80b859fc64b6e2a8364183ecc","message":"260403_017: 补齐governance_substitute并验证CI默认heavy通过","branch":"260404_002"}
+{"commit":"e62efb229899b0319b7315907dd2762834e00268","message":"260404_002: 复现单成交结算PNL非零预期并定位结算投影缺失","branch":"260404_002"}
