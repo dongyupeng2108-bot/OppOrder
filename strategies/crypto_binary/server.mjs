@@ -1595,6 +1595,38 @@ let db = null;
       }
     } catch (_) { /* runner not yet ready */ }
   }, 2000);
+  setInterval(() => {
+    try {
+      const state = botState.getState();
+      const runnerActive = state?.running === true;
+      if (!runnerActive) return;
+      const context = botLastTickResult?.context_snapshot || {};
+      const monitor = _globalOrderbookMonitor;
+      const snap = monitor ? monitor.getLatestSnapshot() : null;
+      const btcPrice = toFiniteOrNull(context?.btc_price);
+      const bidYes = toFiniteOrNull(context?.bid_yes ?? snap?.bid_up);
+      const bidNo = toFiniteOrNull(context?.bid_no ?? snap?.bid_down);
+      const askYes = toFiniteOrNull(context?.ask_yes ?? snap?.ask_up);
+      const askNo = toFiniteOrNull(context?.ask_no ?? snap?.ask_down);
+      botLogger.log({
+        level: 'info',
+        source: 'server',
+        event: 'BOT_PRICE_1S',
+        message: 'price snapshot 1s',
+        mode: state?.mode ?? null,
+        window_id: state?.current_window_id ?? null,
+        data: {
+          current_window_id: state?.current_window_id ?? null,
+          btc_price: btcPrice,
+          bid_yes: bidYes,
+          bid_no: bidNo,
+          ask_yes: askYes,
+          ask_no: askNo,
+          runner_active: runnerActive
+        }
+      });
+    } catch (_) {}
+  }, 1000);
 })().catch(err => {
   logger.error(EVENTS.ERROR_UNHANDLED_PATH, { module: 'server', err: err.message, msg: 'runner failed to start' });
 });
