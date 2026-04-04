@@ -1,0 +1,6 @@
+script_name=truth_audit_settlement_projection_fix_260404_003
+task_id=260404_003
+sample_name=settlement_projection_fix_v1
+pass=true
+first_break_layer=NONE_CHAIN_PASS
+message=first_break_layer=NONE_CHAIN_PASS
