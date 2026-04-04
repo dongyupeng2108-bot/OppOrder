@@ -1,22 +1,22 @@
 {
   "task_id": "260404_004",
-  "generated_at": "2026-04-04T17:56:59.452Z",
+  "generated_at": "2026-04-04T18:05:01.155Z",
   "steps": [
     {
       "step": "doc_path_refs_scan",
-      "duration_ms": 478,
+      "duration_ms": 592,
       "file_count": 1934,
-      "line_count": 304469
+      "line_count": 304496
     },
     {
       "step": "ps_cmd_static_scan",
-      "duration_ms": 83,
+      "duration_ms": 77,
       "file_count": 3,
       "line_count": 1915
     },
     {
       "step": "task_reports_audit_scan",
-      "duration_ms": 12,
+      "duration_ms": 6,
       "file_count": 0,
       "line_count": 0
     }
