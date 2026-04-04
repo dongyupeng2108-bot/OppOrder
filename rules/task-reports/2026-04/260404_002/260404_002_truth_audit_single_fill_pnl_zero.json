@@ -1,0 +1,592 @@
+{
+  "script_name": "truth_audit_single_fill_pnl_zero_260404_002",
+  "task_id": "260404_002",
+  "sample_name": "single_fill_pnl_zero_v1",
+  "pass": true,
+  "message": "first_break_layer=order_truth_to_window_result_settlement_projection_missing",
+  "first_break_layer": "order_truth_to_window_result_settlement_projection_missing",
+  "evidence_file": "rules/task-reports/2026-04/260404_002/260404_002_truth_audit_single_fill_pnl_zero.json",
+  "summary": {
+    "pass": true
+  },
+  "raw_excerpt": {
+    "snapshot": {
+      "captured_at": "2026-04-04T10:57:13.633Z",
+      "base_url": "http://localhost:53123"
+    },
+    "today_snapshot": {
+      "window_count": 3,
+      "filled_total": 2,
+      "realized_gross_pnl_total": 0,
+      "avg_realized_gross_pnl_per_window": 0,
+      "today_reset_baseline_at": "2026-04-04T00:00:00.000Z"
+    },
+    "status_snapshot": {
+      "running": false,
+      "current_window_id": null,
+      "last_window_id": "btc-updown-5m-1775293500",
+      "saved_config_excerpt": {
+        "up_ladder": [
+          {
+            "price": 0.3,
+            "size": 1,
+            "tp_price": 1
+          }
+        ],
+        "down_ladder": [
+          {
+            "price": 0.2,
+            "size": 1,
+            "tp_price": 1
+          }
+        ]
+      }
+    },
+    "filled_total_eq_1_windows": [
+      {
+        "window_id": "btc-updown-5m-1775293500",
+        "completed_at": "2026-04-04T09:06:07.258Z",
+        "filled_total": 1,
+        "cancelled_total": 0,
+        "realized_gross_pnl_total": 0,
+        "in_today_pnl_sum": true
+      },
+      {
+        "window_id": "btc-updown-5m-1775293200",
+        "completed_at": "2026-04-04T09:05:00.314Z",
+        "filled_total": 1,
+        "cancelled_total": 0,
+        "realized_gross_pnl_total": 0,
+        "in_today_pnl_sum": true
+      }
+    ],
+    "postmortem_result_truth_reconcile_for_fill1": [
+      {
+        "window_id": "btc-updown-5m-1775293500",
+        "completed_at": "2026-04-04T09:06:07.258Z",
+        "row": {
+          "window_id": "btc-updown-5m-1775293500",
+          "completed_at": "2026-04-04T09:06:07.258Z",
+          "filled_total": 1,
+          "cancelled_total": 0,
+          "realized_gross_pnl_total": 0,
+          "in_today_pnl_sum": true
+        },
+        "truth": {
+          "filled_total_truth": 1,
+          "realized_gross_pnl_total_truth": 0,
+          "entry_exit_counts": {
+            "yes_entry": 1,
+            "yes_exit": 0,
+            "no_entry": 0,
+            "no_exit": 0
+          }
+        },
+        "reconcile": {
+          "filled_total_match": true,
+          "realized_match": true,
+          "settlement_gap_detected": true
+        }
+      },
+      {
+        "window_id": "btc-updown-5m-1775293200",
+        "completed_at": "2026-04-04T09:05:00.314Z",
+        "row": {
+          "window_id": "btc-updown-5m-1775293200",
+          "completed_at": "2026-04-04T09:05:00.314Z",
+          "filled_total": 1,
+          "cancelled_total": 0,
+          "realized_gross_pnl_total": 0,
+          "in_today_pnl_sum": true
+        },
+        "truth": {
+          "filled_total_truth": 1,
+          "realized_gross_pnl_total_truth": 0,
+          "entry_exit_counts": {
+            "yes_entry": 1,
+            "yes_exit": 0,
+            "no_entry": 0,
+            "no_exit": 0
+          }
+        },
+        "reconcile": {
+          "filled_total_match": true,
+          "realized_match": true,
+          "settlement_gap_detected": true
+        }
+      }
+    ],
+    "settlement_gap_rows": [
+      {
+        "window_id": "btc-updown-5m-1775293500",
+        "completed_at": "2026-04-04T09:06:07.258Z",
+        "row_realized_gross_pnl_total": 0,
+        "counterfactual": {
+          "entry_qty_total": 1,
+          "entry_cost_total": 0.01,
+          "exit_fill_count": 0,
+          "pnl_if_settle_win": 0.99,
+          "pnl_if_settle_lose": -0.01,
+          "must_non_zero_after_settlement": true
+        }
+      },
+      {
+        "window_id": "btc-updown-5m-1775293200",
+        "completed_at": "2026-04-04T09:05:00.314Z",
+        "row_realized_gross_pnl_total": 0,
+        "counterfactual": {
+          "entry_qty_total": 1,
+          "entry_cost_total": 0.3,
+          "exit_fill_count": 0,
+          "pnl_if_settle_win": 0.7,
+          "pnl_if_settle_lose": -0.3,
+          "must_non_zero_after_settlement": true
+        }
+      }
+    ],
+    "order_truth_manual_samples": [
+      {
+        "window_id": "btc-updown-5m-1775293500",
+        "completed_at": "2026-04-04T09:06:07.258Z",
+        "row_filled_total": 1,
+        "row_realized_gross_pnl_total": 0,
+        "truth_filled_total": 1,
+        "truth_realized_gross_pnl_total": 0,
+        "unique_filled_order_id_count": 1,
+        "fill_rows": [
+          {
+            "order_id": "paper_5eb06a61",
+            "side": "YES",
+            "kind": "ENTRY",
+            "fill_price": 0.01,
+            "qty": 1,
+            "status": "FILLED"
+          }
+        ],
+        "manual_calc": {
+          "yes": {
+            "filled_entry_count": 1,
+            "filled_exit_count": 0,
+            "avg_fill_price": 0.01,
+            "realized_gross_pnl": 0
+          },
+          "no": {
+            "filled_entry_count": 0,
+            "filled_exit_count": 0,
+            "avg_fill_price": null,
+            "realized_gross_pnl": 0
+          },
+          "realized_gross_pnl_total_manual": 0
+        },
+        "settlement_counterfactual": {
+          "entry_qty_total": 1,
+          "entry_cost_total": 0.01,
+          "exit_fill_count": 0,
+          "pnl_if_settle_win": 0.99,
+          "pnl_if_settle_lose": -0.01,
+          "must_non_zero_after_settlement": true
+        },
+        "interpretation": "window_closed_single_fill_should_not_be_zero_after_settlement_but_row_realized_is_zero"
+      },
+      {
+        "window_id": "btc-updown-5m-1775293200",
+        "completed_at": "2026-04-04T09:05:00.314Z",
+        "row_filled_total": 1,
+        "row_realized_gross_pnl_total": 0,
+        "truth_filled_total": 1,
+        "truth_realized_gross_pnl_total": 0,
+        "unique_filled_order_id_count": 1,
+        "fill_rows": [
+          {
+            "order_id": "paper_2e9cd5fc",
+            "side": "YES",
+            "kind": "ENTRY",
+            "fill_price": 0.3,
+            "qty": 1,
+            "status": "FILLED"
+          }
+        ],
+        "manual_calc": {
+          "yes": {
+            "filled_entry_count": 1,
+            "filled_exit_count": 0,
+            "avg_fill_price": 0.3,
+            "realized_gross_pnl": 0
+          },
+          "no": {
+            "filled_entry_count": 0,
+            "filled_exit_count": 0,
+            "avg_fill_price": null,
+            "realized_gross_pnl": 0
+          },
+          "realized_gross_pnl_total_manual": 0
+        },
+        "settlement_counterfactual": {
+          "entry_qty_total": 1,
+          "entry_cost_total": 0.3,
+          "exit_fill_count": 0,
+          "pnl_if_settle_win": 0.7,
+          "pnl_if_settle_lose": -0.3,
+          "must_non_zero_after_settlement": true
+        },
+        "interpretation": "window_closed_single_fill_should_not_be_zero_after_settlement_but_row_realized_is_zero"
+      }
+    ],
+    "summary_reconcile": {
+      "api": {
+        "window_count": 3,
+        "filled_total": 2,
+        "realized_gross_pnl_total": 0,
+        "avg_realized_gross_pnl_per_window": 0
+      },
+      "manual": {
+        "window_count": 3,
+        "filled_total": 2,
+        "realized_gross_pnl_total": 0,
+        "avg_realized_gross_pnl_per_window": 0
+      },
+      "match": {
+        "window_count": true,
+        "filled_total": true,
+        "realized_gross_pnl_total": true,
+        "avg_realized_gross_pnl_per_window": true
+      }
+    },
+    "fail_to_pass": {
+      "preFail": {
+        "user_report_single_fill_pnl_zero_suspected_bug": true
+      },
+      "postPass": {
+        "located_unique_layer": true,
+        "first_break_layer": "order_truth_to_window_result_settlement_projection_missing"
+      }
+    },
+    "samples": [
+      {
+        "window_id": "btc-updown-5m-1775293500",
+        "is_real_runtime": true,
+        "sample_type": "filled_total_eq_1_truth_sample"
+      },
+      {
+        "window_id": "btc-updown-5m-1775293200",
+        "is_real_runtime": true,
+        "sample_type": "filled_total_eq_1_truth_sample"
+      }
+    ],
+    "non_regression": {
+      "did_not_use_filled_total_eq_2_for_main_conclusion": true,
+      "no_business_code_mutation": true
+    },
+    "layer_judgement": {
+      "root_cause_layer": "window_settlement_to_realized_projection",
+      "conclusion": "single_fill_after_window_close_should_have_nonzero_settlement_pnl_but_result_chain_keeps_realized_zero",
+      "code_evidence": {
+        "scoped_realized_uses_only_exit_minus_entry": true,
+        "scoped_realized_no_settled_outcome_projection": true
+      }
+    },
+    "checks": {
+      "real_runtime_today_snapshot_loaded": true,
+      "filled_total_eq_1_windows_found": true,
+      "filled_total_eq_1_truth_sample_ge_2": true,
+      "today_summary_reconcile_match": true,
+      "row_vs_truth_match_for_filled_total_eq_1": true,
+      "settlement_nonzero_expectation_detected": true,
+      "settlement_gap_detected": true,
+      "unique_first_break_layer_generated": true
+    }
+  },
+  "generated_at": "2026-04-04T10:57:13.635Z",
+  "task_type": "truth_audit_heavy",
+  "conclusion_block": {
+    "verdict": "A：通过",
+    "first_break_layer": "order_truth_to_window_result_settlement_projection_missing"
+  },
+  "evidence_index": {
+    "snapshot": {
+      "captured_at": "2026-04-04T10:57:13.633Z",
+      "base_url": "http://localhost:53123"
+    },
+    "today_snapshot": {
+      "window_count": 3,
+      "filled_total": 2,
+      "realized_gross_pnl_total": 0,
+      "avg_realized_gross_pnl_per_window": 0,
+      "today_reset_baseline_at": "2026-04-04T00:00:00.000Z"
+    },
+    "status_snapshot": {
+      "running": false,
+      "current_window_id": null,
+      "last_window_id": "btc-updown-5m-1775293500",
+      "saved_config_excerpt": {
+        "up_ladder": [
+          {
+            "price": 0.3,
+            "size": 1,
+            "tp_price": 1
+          }
+        ],
+        "down_ladder": [
+          {
+            "price": 0.2,
+            "size": 1,
+            "tp_price": 1
+          }
+        ]
+      }
+    },
+    "filled_total_eq_1_windows": [
+      {
+        "window_id": "btc-updown-5m-1775293500",
+        "completed_at": "2026-04-04T09:06:07.258Z",
+        "filled_total": 1,
+        "cancelled_total": 0,
+        "realized_gross_pnl_total": 0,
+        "in_today_pnl_sum": true
+      },
+      {
+        "window_id": "btc-updown-5m-1775293200",
+        "completed_at": "2026-04-04T09:05:00.314Z",
+        "filled_total": 1,
+        "cancelled_total": 0,
+        "realized_gross_pnl_total": 0,
+        "in_today_pnl_sum": true
+      }
+    ],
+    "postmortem_result_truth_reconcile_for_fill1": [
+      {
+        "window_id": "btc-updown-5m-1775293500",
+        "completed_at": "2026-04-04T09:06:07.258Z",
+        "row": {
+          "window_id": "btc-updown-5m-1775293500",
+          "completed_at": "2026-04-04T09:06:07.258Z",
+          "filled_total": 1,
+          "cancelled_total": 0,
+          "realized_gross_pnl_total": 0,
+          "in_today_pnl_sum": true
+        },
+        "truth": {
+          "filled_total_truth": 1,
+          "realized_gross_pnl_total_truth": 0,
+          "entry_exit_counts": {
+            "yes_entry": 1,
+            "yes_exit": 0,
+            "no_entry": 0,
+            "no_exit": 0
+          }
+        },
+        "reconcile": {
+          "filled_total_match": true,
+          "realized_match": true,
+          "settlement_gap_detected": true
+        }
+      },
+      {
+        "window_id": "btc-updown-5m-1775293200",
+        "completed_at": "2026-04-04T09:05:00.314Z",
+        "row": {
+          "window_id": "btc-updown-5m-1775293200",
+          "completed_at": "2026-04-04T09:05:00.314Z",
+          "filled_total": 1,
+          "cancelled_total": 0,
+          "realized_gross_pnl_total": 0,
+          "in_today_pnl_sum": true
+        },
+        "truth": {
+          "filled_total_truth": 1,
+          "realized_gross_pnl_total_truth": 0,
+          "entry_exit_counts": {
+            "yes_entry": 1,
+            "yes_exit": 0,
+            "no_entry": 0,
+            "no_exit": 0
+          }
+        },
+        "reconcile": {
+          "filled_total_match": true,
+          "realized_match": true,
+          "settlement_gap_detected": true
+        }
+      }
+    ],
+    "settlement_gap_rows": [
+      {
+        "window_id": "btc-updown-5m-1775293500",
+        "completed_at": "2026-04-04T09:06:07.258Z",
+        "row_realized_gross_pnl_total": 0,
+        "counterfactual": {
+          "entry_qty_total": 1,
+          "entry_cost_total": 0.01,
+          "exit_fill_count": 0,
+          "pnl_if_settle_win": 0.99,
+          "pnl_if_settle_lose": -0.01,
+          "must_non_zero_after_settlement": true
+        }
+      },
+      {
+        "window_id": "btc-updown-5m-1775293200",
+        "completed_at": "2026-04-04T09:05:00.314Z",
+        "row_realized_gross_pnl_total": 0,
+        "counterfactual": {
+          "entry_qty_total": 1,
+          "entry_cost_total": 0.3,
+          "exit_fill_count": 0,
+          "pnl_if_settle_win": 0.7,
+          "pnl_if_settle_lose": -0.3,
+          "must_non_zero_after_settlement": true
+        }
+      }
+    ],
+    "order_truth_manual_samples": [
+      {
+        "window_id": "btc-updown-5m-1775293500",
+        "completed_at": "2026-04-04T09:06:07.258Z",
+        "row_filled_total": 1,
+        "row_realized_gross_pnl_total": 0,
+        "truth_filled_total": 1,
+        "truth_realized_gross_pnl_total": 0,
+        "unique_filled_order_id_count": 1,
+        "fill_rows": [
+          {
+            "order_id": "paper_5eb06a61",
+            "side": "YES",
+            "kind": "ENTRY",
+            "fill_price": 0.01,
+            "qty": 1,
+            "status": "FILLED"
+          }
+        ],
+        "manual_calc": {
+          "yes": {
+            "filled_entry_count": 1,
+            "filled_exit_count": 0,
+            "avg_fill_price": 0.01,
+            "realized_gross_pnl": 0
+          },
+          "no": {
+            "filled_entry_count": 0,
+            "filled_exit_count": 0,
+            "avg_fill_price": null,
+            "realized_gross_pnl": 0
+          },
+          "realized_gross_pnl_total_manual": 0
+        },
+        "settlement_counterfactual": {
+          "entry_qty_total": 1,
+          "entry_cost_total": 0.01,
+          "exit_fill_count": 0,
+          "pnl_if_settle_win": 0.99,
+          "pnl_if_settle_lose": -0.01,
+          "must_non_zero_after_settlement": true
+        },
+        "interpretation": "window_closed_single_fill_should_not_be_zero_after_settlement_but_row_realized_is_zero"
+      },
+      {
+        "window_id": "btc-updown-5m-1775293200",
+        "completed_at": "2026-04-04T09:05:00.314Z",
+        "row_filled_total": 1,
+        "row_realized_gross_pnl_total": 0,
+        "truth_filled_total": 1,
+        "truth_realized_gross_pnl_total": 0,
+        "unique_filled_order_id_count": 1,
+        "fill_rows": [
+          {
+            "order_id": "paper_2e9cd5fc",
+            "side": "YES",
+            "kind": "ENTRY",
+            "fill_price": 0.3,
+            "qty": 1,
+            "status": "FILLED"
+          }
+        ],
+        "manual_calc": {
+          "yes": {
+            "filled_entry_count": 1,
+            "filled_exit_count": 0,
+            "avg_fill_price": 0.3,
+            "realized_gross_pnl": 0
+          },
+          "no": {
+            "filled_entry_count": 0,
+            "filled_exit_count": 0,
+            "avg_fill_price": null,
+            "realized_gross_pnl": 0
+          },
+          "realized_gross_pnl_total_manual": 0
+        },
+        "settlement_counterfactual": {
+          "entry_qty_total": 1,
+          "entry_cost_total": 0.3,
+          "exit_fill_count": 0,
+          "pnl_if_settle_win": 0.7,
+          "pnl_if_settle_lose": -0.3,
+          "must_non_zero_after_settlement": true
+        },
+        "interpretation": "window_closed_single_fill_should_not_be_zero_after_settlement_but_row_realized_is_zero"
+      }
+    ],
+    "summary_reconcile": {
+      "api": {
+        "window_count": 3,
+        "filled_total": 2,
+        "realized_gross_pnl_total": 0,
+        "avg_realized_gross_pnl_per_window": 0
+      },
+      "manual": {
+        "window_count": 3,
+        "filled_total": 2,
+        "realized_gross_pnl_total": 0,
+        "avg_realized_gross_pnl_per_window": 0
+      },
+      "match": {
+        "window_count": true,
+        "filled_total": true,
+        "realized_gross_pnl_total": true,
+        "avg_realized_gross_pnl_per_window": true
+      }
+    },
+    "fail_to_pass": {
+      "preFail": {
+        "user_report_single_fill_pnl_zero_suspected_bug": true
+      },
+      "postPass": {
+        "located_unique_layer": true,
+        "first_break_layer": "order_truth_to_window_result_settlement_projection_missing"
+      }
+    },
+    "samples": [
+      {
+        "window_id": "btc-updown-5m-1775293500",
+        "is_real_runtime": true,
+        "sample_type": "filled_total_eq_1_truth_sample"
+      },
+      {
+        "window_id": "btc-updown-5m-1775293200",
+        "is_real_runtime": true,
+        "sample_type": "filled_total_eq_1_truth_sample"
+      }
+    ],
+    "non_regression": {
+      "did_not_use_filled_total_eq_2_for_main_conclusion": true,
+      "no_business_code_mutation": true
+    },
+    "layer_judgement": {
+      "root_cause_layer": "window_settlement_to_realized_projection",
+      "conclusion": "single_fill_after_window_close_should_have_nonzero_settlement_pnl_but_result_chain_keeps_realized_zero",
+      "code_evidence": {
+        "scoped_realized_uses_only_exit_minus_entry": true,
+        "scoped_realized_no_settled_outcome_projection": true
+      }
+    },
+    "checks": {
+      "real_runtime_today_snapshot_loaded": true,
+      "filled_total_eq_1_windows_found": true,
+      "filled_total_eq_1_truth_sample_ge_2": true,
+      "today_summary_reconcile_match": true,
+      "row_vs_truth_match_for_filled_total_eq_1": true,
+      "settlement_nonzero_expectation_detected": true,
+      "settlement_gap_detected": true,
+      "unique_first_break_layer_generated": true
+    }
+  }
+}
