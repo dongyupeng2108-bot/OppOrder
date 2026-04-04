@@ -76,6 +76,24 @@ const calcWindowTruth = (allOrders, windowId) => {
     manual
   };
 };
+const getSettlementCounterfactual = (truth) => {
+  const fillRows = Array.isArray(truth?.manual?.fill_rows) ? truth.manual.fill_rows : [];
+  const entryRows = fillRows.filter((r) => r?.kind === 'ENTRY');
+  const exitRows = fillRows.filter((r) => r?.kind !== 'ENTRY');
+  const entryCost = entryRows.reduce((sum, r) => sum + toNum(r?.fill_price) * toNum(r?.qty), 0);
+  const entryQty = entryRows.reduce((sum, r) => sum + toNum(r?.qty), 0);
+  const pnlIfWin = round6(entryQty - entryCost);
+  const pnlIfLose = round6(-entryCost);
+  const mustNonZeroAfterSettlement = entryQty > 0 && exitRows.length === 0 && Math.abs(pnlIfWin) > 1e-9 && Math.abs(pnlIfLose) > 1e-9;
+  return {
+    entry_qty_total: round6(entryQty),
+    entry_cost_total: round6(entryCost),
+    exit_fill_count: exitRows.length,
+    pnl_if_settle_win: pnlIfWin,
+    pnl_if_settle_lose: pnlIfLose,
+    must_non_zero_after_settlement: mustNonZeroAfterSettlement
+  };
+};
 
 const main = async () => {
   const args = parseArgs();
@@ -114,12 +132,15 @@ const main = async () => {
 
   const windowsForTruth = todayFillOneRows.map((row) => {
     const truth = calcWindowTruth(allOrders, row.window_id);
+    const settlementCounterfactual = getSettlementCounterfactual(truth);
     return {
       row,
       truth,
+      settlement_counterfactual: settlementCounterfactual,
       reconcile: {
         filled_total_match: approxEq(row.filled_total, truth.filled_total_truth),
-        realized_match: approxEq(row.realized_gross_pnl_total, truth.realized_gross_pnl_total_truth)
+        realized_match: approxEq(row.realized_gross_pnl_total, truth.realized_gross_pnl_total_truth),
+        settlement_gap_detected: settlementCounterfactual.must_non_zero_after_settlement && approxEq(row.realized_gross_pnl_total, 0)
       }
     };
   });
@@ -138,9 +159,10 @@ const main = async () => {
       no: x.truth.manual.no,
       realized_gross_pnl_total_manual: x.truth.manual.realized_gross_pnl_total_manual
     },
-    interpretation: x.truth.manual.yes.filled_exit_count + x.truth.manual.no.filled_exit_count === 0
-      ? 'only_entry_filled_no_exit_realized_pnl_zero_by_business_formula'
-      : 'has_exit_fill_realized_from_exit_minus_avg_entry'
+    settlement_counterfactual: x.settlement_counterfactual,
+    interpretation: x.reconcile.settlement_gap_detected
+      ? 'window_closed_single_fill_should_not_be_zero_after_settlement_but_row_realized_is_zero'
+      : 'no_settlement_gap_detected'
   }));
 
   if (truthSamples.length < 2) throw new Error('ERR_FILLED_TOTAL_EQ_1_SAMPLES_LT_2');
@@ -168,13 +190,18 @@ const main = async () => {
   };
 
   const rowTruthAllMatch = windowsForTruth.every((x) => x.reconcile.filled_total_match && x.reconcile.realized_match);
-  const sampleAllPnlZero = truthSamples.every((s) => approxEq(s.truth_realized_gross_pnl_total, 0) && approxEq(s.row_realized_gross_pnl_total, 0));
-  const sampleAllOnlyEntryNoExit = truthSamples.every((s) => (toNum(s.manual_calc.yes.filled_exit_count) + toNum(s.manual_calc.no.filled_exit_count)) === 0);
+  const settlementGapRows = windowsForTruth.filter((x) => x.reconcile.settlement_gap_detected);
+  const settlementGapDetected = settlementGapRows.length > 0;
   const summaryAllMatch = Object.values(summaryReconcile.match).every(Boolean);
+  const serverCode = fs.readFileSync(path.join(REPO_ROOT, 'strategies', 'crypto_binary', 'server.mjs'), 'utf8');
+  const layerCodeEvidence = {
+    scoped_realized_uses_only_exit_minus_entry: /getScopedRealizedGrossPnlTotalForState[\s\S]*kind !== 'ENTRY'[\s\S]*fillPrice - avgFillPrice/.test(serverCode),
+    scoped_realized_no_settled_outcome_projection: !/getScopedRealizedGrossPnlTotalForState[\s\S]*settled_outcome/.test(serverCode)
+  };
 
   let firstBreakLayer = 'NONE_CHAIN_PASS';
   let rootCauseLayer = 'none';
-  let conclusion = 'single_fill_pnl_zero_is_expected_by_current_business_formula';
+  let conclusion = 'no_bug_found';
 
   if (!summaryAllMatch) {
     firstBreakLayer = 'today_summary_aggregation';
@@ -184,10 +211,10 @@ const main = async () => {
     firstBreakLayer = 'postmortem_result_snapshot_generation';
     rootCauseLayer = 'postmortem_result';
     conclusion = 'row_truth_mismatch_bug';
-  } else if (!sampleAllPnlZero && sampleAllOnlyEntryNoExit) {
-    firstBreakLayer = 'order_truth_to_window_result';
-    rootCauseLayer = 'window_result_formula';
-    conclusion = 'window_result_formula_or_order_binding_bug';
+  } else if (settlementGapDetected && layerCodeEvidence.scoped_realized_uses_only_exit_minus_entry && layerCodeEvidence.scoped_realized_no_settled_outcome_projection) {
+    firstBreakLayer = 'order_truth_to_window_result_settlement_projection_missing';
+    rootCauseLayer = 'window_settlement_to_realized_projection';
+    conclusion = 'single_fill_after_window_close_should_have_nonzero_settlement_pnl_but_result_chain_keeps_realized_zero';
   }
 
   const checks = {
@@ -196,8 +223,9 @@ const main = async () => {
     filled_total_eq_1_truth_sample_ge_2: truthSamples.length >= 2,
     today_summary_reconcile_match: summaryAllMatch,
     row_vs_truth_match_for_filled_total_eq_1: rowTruthAllMatch,
-    sampled_single_fill_windows_pnl_zero_and_explainable: sampleAllPnlZero && sampleAllOnlyEntryNoExit,
-    unique_first_break_layer_generated: firstBreakLayer.length > 0
+    settlement_nonzero_expectation_detected: windowsForTruth.some((x) => x.settlement_counterfactual.must_non_zero_after_settlement),
+    settlement_gap_detected: settlementGapDetected,
+    unique_first_break_layer_generated: firstBreakLayer !== 'NONE_CHAIN_PASS'
   };
   const pass = Object.values(checks).every(Boolean);
 
@@ -230,6 +258,12 @@ const main = async () => {
       },
       reconcile: x.reconcile
     })),
+    settlement_gap_rows: settlementGapRows.map((x) => ({
+      window_id: x.row.window_id,
+      completed_at: x.row.completed_at,
+      row_realized_gross_pnl_total: x.row.realized_gross_pnl_total,
+      counterfactual: x.settlement_counterfactual
+    })),
     order_truth_manual_samples: truthSamples,
     summary_reconcile: summaryReconcile,
     fail_to_pass: {
@@ -248,7 +282,8 @@ const main = async () => {
     },
     layer_judgement: {
       root_cause_layer: rootCauseLayer,
-      conclusion
+      conclusion,
+      code_evidence: layerCodeEvidence
     },
     checks
   };

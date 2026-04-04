@@ -3,15 +3,15 @@
   "task_id": "260404_002",
   "sample_name": "single_fill_pnl_zero_v1",
   "pass": true,
-  "message": "first_break_layer=NONE_CHAIN_PASS",
-  "first_break_layer": "NONE_CHAIN_PASS",
+  "message": "first_break_layer=order_truth_to_window_result_settlement_projection_missing",
+  "first_break_layer": "order_truth_to_window_result_settlement_projection_missing",
   "evidence_file": "rules/task-reports/2026-04/260404_002/260404_002_truth_audit_single_fill_pnl_zero.json",
   "summary": {
     "pass": true
   },
   "raw_excerpt": {
     "snapshot": {
-      "captured_at": "2026-04-04T09:16:38.304Z",
+      "captured_at": "2026-04-04T10:52:03.561Z",
       "base_url": "http://localhost:53123"
     },
     "today_snapshot": {
@@ -68,7 +68,8 @@
         },
         "reconcile": {
           "filled_total_match": true,
-          "realized_match": true
+          "realized_match": true,
+          "settlement_gap_detected": true
         }
       },
       {
@@ -94,7 +95,36 @@
         },
         "reconcile": {
           "filled_total_match": true,
-          "realized_match": true
+          "realized_match": true,
+          "settlement_gap_detected": true
+        }
+      }
+    ],
+    "settlement_gap_rows": [
+      {
+        "window_id": "btc-updown-5m-1775293500",
+        "completed_at": "2026-04-04T09:06:07.258Z",
+        "row_realized_gross_pnl_total": 0,
+        "counterfactual": {
+          "entry_qty_total": 1,
+          "entry_cost_total": 0.01,
+          "exit_fill_count": 0,
+          "pnl_if_settle_win": 0.99,
+          "pnl_if_settle_lose": -0.01,
+          "must_non_zero_after_settlement": true
+        }
+      },
+      {
+        "window_id": "btc-updown-5m-1775293200",
+        "completed_at": "2026-04-04T09:05:00.314Z",
+        "row_realized_gross_pnl_total": 0,
+        "counterfactual": {
+          "entry_qty_total": 1,
+          "entry_cost_total": 0.3,
+          "exit_fill_count": 0,
+          "pnl_if_settle_win": 0.7,
+          "pnl_if_settle_lose": -0.3,
+          "must_non_zero_after_settlement": true
         }
       }
     ],
@@ -132,7 +162,15 @@
           },
           "realized_gross_pnl_total_manual": 0
         },
-        "interpretation": "only_entry_filled_no_exit_realized_pnl_zero_by_business_formula"
+        "settlement_counterfactual": {
+          "entry_qty_total": 1,
+          "entry_cost_total": 0.01,
+          "exit_fill_count": 0,
+          "pnl_if_settle_win": 0.99,
+          "pnl_if_settle_lose": -0.01,
+          "must_non_zero_after_settlement": true
+        },
+        "interpretation": "window_closed_single_fill_should_not_be_zero_after_settlement_but_row_realized_is_zero"
       },
       {
         "window_id": "btc-updown-5m-1775293200",
@@ -167,7 +205,15 @@
           },
           "realized_gross_pnl_total_manual": 0
         },
-        "interpretation": "only_entry_filled_no_exit_realized_pnl_zero_by_business_formula"
+        "settlement_counterfactual": {
+          "entry_qty_total": 1,
+          "entry_cost_total": 0.3,
+          "exit_fill_count": 0,
+          "pnl_if_settle_win": 0.7,
+          "pnl_if_settle_lose": -0.3,
+          "must_non_zero_after_settlement": true
+        },
+        "interpretation": "window_closed_single_fill_should_not_be_zero_after_settlement_but_row_realized_is_zero"
       }
     ],
     "summary_reconcile": {
@@ -196,7 +242,7 @@
       },
       "postPass": {
         "located_unique_layer": true,
-        "first_break_layer": "NONE_CHAIN_PASS"
+        "first_break_layer": "order_truth_to_window_result_settlement_projection_missing"
       }
     },
     "samples": [
@@ -216,8 +262,12 @@
       "no_business_code_mutation": true
     },
     "layer_judgement": {
-      "root_cause_layer": "none",
-      "conclusion": "single_fill_pnl_zero_is_expected_by_current_business_formula"
+      "root_cause_layer": "window_settlement_to_realized_projection",
+      "conclusion": "single_fill_after_window_close_should_have_nonzero_settlement_pnl_but_result_chain_keeps_realized_zero",
+      "code_evidence": {
+        "scoped_realized_uses_only_exit_minus_entry": true,
+        "scoped_realized_no_settled_outcome_projection": true
+      }
     },
     "checks": {
       "real_runtime_today_snapshot_loaded": true,
@@ -225,19 +275,20 @@
       "filled_total_eq_1_truth_sample_ge_2": true,
       "today_summary_reconcile_match": true,
       "row_vs_truth_match_for_filled_total_eq_1": true,
-      "sampled_single_fill_windows_pnl_zero_and_explainable": true,
+      "settlement_nonzero_expectation_detected": true,
+      "settlement_gap_detected": true,
       "unique_first_break_layer_generated": true
     }
   },
-  "generated_at": "2026-04-04T09:16:38.307Z",
+  "generated_at": "2026-04-04T10:52:03.564Z",
   "task_type": "truth_audit_heavy",
   "conclusion_block": {
     "verdict": "A：通过",
-    "first_break_layer": "NONE_CHAIN_PASS"
+    "first_break_layer": "order_truth_to_window_result_settlement_projection_missing"
   },
   "evidence_index": {
     "snapshot": {
-      "captured_at": "2026-04-04T09:16:38.304Z",
+      "captured_at": "2026-04-04T10:52:03.561Z",
       "base_url": "http://localhost:53123"
     },
     "today_snapshot": {
@@ -294,7 +345,8 @@
         },
         "reconcile": {
           "filled_total_match": true,
-          "realized_match": true
+          "realized_match": true,
+          "settlement_gap_detected": true
         }
       },
       {
@@ -320,7 +372,36 @@
         },
         "reconcile": {
           "filled_total_match": true,
-          "realized_match": true
+          "realized_match": true,
+          "settlement_gap_detected": true
+        }
+      }
+    ],
+    "settlement_gap_rows": [
+      {
+        "window_id": "btc-updown-5m-1775293500",
+        "completed_at": "2026-04-04T09:06:07.258Z",
+        "row_realized_gross_pnl_total": 0,
+        "counterfactual": {
+          "entry_qty_total": 1,
+          "entry_cost_total": 0.01,
+          "exit_fill_count": 0,
+          "pnl_if_settle_win": 0.99,
+          "pnl_if_settle_lose": -0.01,
+          "must_non_zero_after_settlement": true
+        }
+      },
+      {
+        "window_id": "btc-updown-5m-1775293200",
+        "completed_at": "2026-04-04T09:05:00.314Z",
+        "row_realized_gross_pnl_total": 0,
+        "counterfactual": {
+          "entry_qty_total": 1,
+          "entry_cost_total": 0.3,
+          "exit_fill_count": 0,
+          "pnl_if_settle_win": 0.7,
+          "pnl_if_settle_lose": -0.3,
+          "must_non_zero_after_settlement": true
         }
       }
     ],
@@ -358,7 +439,15 @@
           },
           "realized_gross_pnl_total_manual": 0
         },
-        "interpretation": "only_entry_filled_no_exit_realized_pnl_zero_by_business_formula"
+        "settlement_counterfactual": {
+          "entry_qty_total": 1,
+          "entry_cost_total": 0.01,
+          "exit_fill_count": 0,
+          "pnl_if_settle_win": 0.99,
+          "pnl_if_settle_lose": -0.01,
+          "must_non_zero_after_settlement": true
+        },
+        "interpretation": "window_closed_single_fill_should_not_be_zero_after_settlement_but_row_realized_is_zero"
       },
       {
         "window_id": "btc-updown-5m-1775293200",
@@ -393,7 +482,15 @@
           },
           "realized_gross_pnl_total_manual": 0
         },
-        "interpretation": "only_entry_filled_no_exit_realized_pnl_zero_by_business_formula"
+        "settlement_counterfactual": {
+          "entry_qty_total": 1,
+          "entry_cost_total": 0.3,
+          "exit_fill_count": 0,
+          "pnl_if_settle_win": 0.7,
+          "pnl_if_settle_lose": -0.3,
+          "must_non_zero_after_settlement": true
+        },
+        "interpretation": "window_closed_single_fill_should_not_be_zero_after_settlement_but_row_realized_is_zero"
       }
     ],
     "summary_reconcile": {
@@ -422,7 +519,7 @@
       },
       "postPass": {
         "located_unique_layer": true,
-        "first_break_layer": "NONE_CHAIN_PASS"
+        "first_break_layer": "order_truth_to_window_result_settlement_projection_missing"
       }
     },
     "samples": [
@@ -442,8 +539,12 @@
       "no_business_code_mutation": true
     },
     "layer_judgement": {
-      "root_cause_layer": "none",
-      "conclusion": "single_fill_pnl_zero_is_expected_by_current_business_formula"
+      "root_cause_layer": "window_settlement_to_realized_projection",
+      "conclusion": "single_fill_after_window_close_should_have_nonzero_settlement_pnl_but_result_chain_keeps_realized_zero",
+      "code_evidence": {
+        "scoped_realized_uses_only_exit_minus_entry": true,
+        "scoped_realized_no_settled_outcome_projection": true
+      }
     },
     "checks": {
       "real_runtime_today_snapshot_loaded": true,
@@ -451,7 +552,8 @@
       "filled_total_eq_1_truth_sample_ge_2": true,
       "today_summary_reconcile_match": true,
       "row_vs_truth_match_for_filled_total_eq_1": true,
-      "sampled_single_fill_windows_pnl_zero_and_explainable": true,
+      "settlement_nonzero_expectation_detected": true,
+      "settlement_gap_detected": true,
       "unique_first_break_layer_generated": true
     }
   }

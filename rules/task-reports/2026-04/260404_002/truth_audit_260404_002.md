@@ -2,8 +2,8 @@
 
 ### 结论块
 - 结论：通过（定位完成）
-- 唯一 first_break_layer：`NONE_CHAIN_PASS`
-- 判定：`filled_total=1` 时 PNL=0 在当前业务口径下为预期，不是计算 BUG
+- 唯一 first_break_layer：`order_truth_to_window_result_settlement_projection_missing`
+- 判定：这是计算 BUG（窗口结算收益未进入结果链 realized）
 
 ### today 当前值
 - `window_count=3`
@@ -19,16 +19,18 @@
 - 样本1：`btc-updown-5m-1775293500`
   - FILLED 唯一订单：`paper_5eb06a61`，YES ENTRY，price=0.01，qty=1
   - exit filled count=0
-  - 手算 realized=0
+  - 结算反事实：`pnl_if_win=+0.99`，`pnl_if_lose=-0.01`（均不为0）
+  - 实际 row realized=0（与结算反事实冲突）
 - 样本2：`btc-updown-5m-1775293200`
   - FILLED 唯一订单：`paper_2e9cd5fc`，YES ENTRY，price=0.3，qty=1
   - exit filled count=0
-  - 手算 realized=0
+  - 结算反事实：`pnl_if_win=+0.7`，`pnl_if_lose=-0.3`（均不为0）
+  - 实际 row realized=0（与结算反事实冲突）
 
 ### 直接原因（必须回答）
-- 当前 realized 口径来自 `EXIT fill` 相对 `ENTRY 均价` 的实现收益。
-- 当窗口只有 1 笔成交且该成交是 ENTRY（无任何 EXIT）时，realized 自然为 0。
-- 因此“总成交单=1，PNL=0”在该场景下是业务口径预期，而非 today summary / postmortem/result / 订单真值链计算错误。
+- 当前 `realized_gross_pnl_total` 仅按 EXIT 相对 ENTRY 均价计算；窗口结算（0/1 payout）未投影到结果链 realized。
+- 所以窗口结束后即便单成交（价格在 0~1 之间），理论结算 PNL 必不为 0，但 row/summary 仍为 0。
+- 断层不在 today summary 聚合（聚合与 rows 一致），而在“订单真值 -> 窗口结果 realized”投影层。
 
 ### 证据索引
 - `rules/task-reports/2026-04/260404_002/260404_002_truth_audit_single_fill_pnl_zero.json`
