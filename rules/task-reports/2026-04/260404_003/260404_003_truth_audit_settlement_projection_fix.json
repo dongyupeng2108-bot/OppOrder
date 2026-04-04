@@ -96,6 +96,22 @@
       "root_status": 200,
       "pairs_status": 404
     },
+    "samples": [
+      {
+        "sample_type": "prefail_pollution_from_260404_002",
+        "is_real_runtime": true
+      },
+      {
+        "sample_type": "postpass_single_fill_completed_window",
+        "is_real_runtime": true,
+        "window_id": "btc-updown-5m-1775312400"
+      },
+      {
+        "sample_type": "postpass_single_fill_completed_window",
+        "is_real_runtime": true,
+        "window_id": "btc-updown-5m-1775312100"
+      }
+    ],
     "checks": {
       "prefail_pollution_rows_ge_2": true,
       "postpass_fill1_rows_ge_2": true,
@@ -109,7 +125,7 @@
       "healthcheck_ok": true
     }
   },
-  "generated_at": "2026-04-04T14:27:49.043Z",
+  "generated_at": "2026-04-04T16:43:46.176Z",
   "task_type": "fix_acceptance_heavy",
   "conclusion_block": {
     "verdict": "A：通过",
@@ -202,6 +218,22 @@
       "root_status": 200,
       "pairs_status": 404
     },
+    "samples": [
+      {
+        "sample_type": "prefail_pollution_from_260404_002",
+        "is_real_runtime": true
+      },
+      {
+        "sample_type": "postpass_single_fill_completed_window",
+        "is_real_runtime": true,
+        "window_id": "btc-updown-5m-1775312400"
+      },
+      {
+        "sample_type": "postpass_single_fill_completed_window",
+        "is_real_runtime": true,
+        "window_id": "btc-updown-5m-1775312100"
+      }
+    ],
     "checks": {
       "prefail_pollution_rows_ge_2": true,
       "postpass_fill1_rows_ge_2": true,

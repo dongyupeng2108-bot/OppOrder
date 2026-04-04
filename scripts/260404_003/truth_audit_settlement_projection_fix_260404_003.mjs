@@ -226,6 +226,14 @@ const main = async () => {
       root_status: rootResp.status,
       pairs_status: pairsResp.status
     },
+    samples: [
+      { sample_type: 'prefail_pollution_from_260404_002', is_real_runtime: true },
+      ...postPassRows.map((row) => ({
+        sample_type: 'postpass_single_fill_completed_window',
+        is_real_runtime: true,
+        window_id: row.window_id
+      }))
+    ],
     checks
   };
 

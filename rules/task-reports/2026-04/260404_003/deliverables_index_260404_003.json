@@ -1,0 +1,61 @@
+{
+  "task_id": "260404_003",
+  "generated_at": "2026-04-04T16:43:17.396Z",
+  "files": [
+    {
+      "name": "result_260404_003.json",
+      "size": 385,
+      "sha256_short": "030b0e05"
+    },
+    {
+      "name": "run_260404_003.log",
+      "size": 726,
+      "sha256_short": "4e32f17e"
+    },
+    {
+      "name": "notify_260404_003.txt",
+      "size": 3349,
+      "sha256_short": "c0decbf5"
+    },
+    {
+      "name": "gate_light_preview_260404_003.log",
+      "size": 726,
+      "sha256_short": "4e32f17e"
+    },
+    {
+      "name": "dod_evidence_260404_003.txt",
+      "size": 292,
+      "sha256_short": "c3b5d545"
+    },
+    {
+      "name": "git_meta_260404_003.json",
+      "size": 134,
+      "sha256_short": "9c8d6c40"
+    },
+    {
+      "name": "trae_report_snippet_260404_003.txt",
+      "size": 1281,
+      "sha256_short": "d9817b3f"
+    },
+    {
+      "name": "manual_verification_260404_003.json",
+      "size": 99,
+      "sha256_short": "330ba16e"
+    },
+    {
+      "name": "workspace_healer_260404_003.json",
+      "size": 802,
+      "sha256_short": "46c6d407"
+    },
+    {
+      "name": "260404_003_healthcheck_53122_root.txt",
+      "size": 16,
+      "sha256_short": "bc694a77"
+    },
+    {
+      "name": "260404_003_healthcheck_53122_pairs.txt",
+      "size": 39,
+      "sha256_short": "8fb0c824"
+    }
+  ]
+}
