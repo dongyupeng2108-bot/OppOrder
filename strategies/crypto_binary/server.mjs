@@ -528,6 +528,8 @@ const ensureBotPostmortemColumns = async () => {
     'ALTER TABLE cb_postmortem ADD COLUMN bot_cancelled_total REAL',
     'ALTER TABLE cb_postmortem ADD COLUMN bot_realized_gross_pnl_total REAL',
     'ALTER TABLE cb_postmortem ADD COLUMN bot_unrealized_gross_pnl_total REAL',
+    'ALTER TABLE cb_postmortem ADD COLUMN bot_settled_outcome_official TEXT',
+    'ALTER TABLE cb_postmortem ADD COLUMN bot_settled_outcome_internal TEXT',
     'ALTER TABLE cb_postmortem ADD COLUMN bot_active_config_json TEXT',
     'ALTER TABLE cb_postmortem ADD COLUMN bot_action_summary TEXT'
   ];
@@ -558,9 +560,11 @@ const writeBotPostmortem = async (snapshot) => {
       bot_cancelled_total,
       bot_realized_gross_pnl_total,
       bot_unrealized_gross_pnl_total,
+      bot_settled_outcome_official,
+      bot_settled_outcome_internal,
       bot_active_config_json,
       bot_action_summary
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `, [
     BOT_POSTMORTEM_STRATEGY_ID,
     eventId,
@@ -577,6 +581,8 @@ const writeBotPostmortem = async (snapshot) => {
     snapshot.cancelled_total ?? 0,
     snapshot.realized_gross_pnl_total ?? 0,
     snapshot.unrealized_gross_pnl_total ?? 0,
+    snapshot.settled_outcome_official ?? null,
+    snapshot.settled_outcome_internal ?? null,
     JSON.stringify(snapshot.active_config || {}),
     JSON.stringify(actionSummary)
   ]);
@@ -613,7 +619,9 @@ const queryBotPerformanceSummary = async (presetRaw, includeRows = false) => {
       bot_filled_total,
       bot_cancelled_total,
       bot_realized_gross_pnl_total,
-      bot_unrealized_gross_pnl_total
+      bot_unrealized_gross_pnl_total,
+      bot_settled_outcome_official,
+      bot_settled_outcome_internal
     FROM cb_postmortem
     WHERE strategy_id = ? AND bot_completed_at IS NOT NULL
     ORDER BY bot_completed_at DESC, id DESC
@@ -662,7 +670,9 @@ const queryBotPerformanceSummary = async (presetRaw, includeRows = false) => {
       filled_total: toFiniteOrNull(row.bot_filled_total) ?? 0,
       cancelled_total: toFiniteOrNull(row.bot_cancelled_total) ?? 0,
       realized_gross_pnl_total: toFiniteOrNull(row.bot_realized_gross_pnl_total) ?? 0,
-      unrealized_gross_pnl_total: toFiniteOrNull(row.bot_unrealized_gross_pnl_total) ?? 0
+      unrealized_gross_pnl_total: toFiniteOrNull(row.bot_unrealized_gross_pnl_total) ?? 0,
+      settled_outcome_official: row.bot_settled_outcome_official ?? null,
+      settled_outcome_internal: row.bot_settled_outcome_internal ?? null
     }))
   };
   if (includeRows) {
@@ -673,7 +683,9 @@ const queryBotPerformanceSummary = async (presetRaw, includeRows = false) => {
       filled_total: toFiniteOrNull(row.bot_filled_total) ?? 0,
       cancelled_total: toFiniteOrNull(row.bot_cancelled_total) ?? 0,
       realized_gross_pnl_total: toFiniteOrNull(row.bot_realized_gross_pnl_total) ?? 0,
-      unrealized_gross_pnl_total: toFiniteOrNull(row.bot_unrealized_gross_pnl_total) ?? 0
+      unrealized_gross_pnl_total: toFiniteOrNull(row.bot_unrealized_gross_pnl_total) ?? 0,
+      settled_outcome_official: row.bot_settled_outcome_official ?? null,
+      settled_outcome_internal: row.bot_settled_outcome_internal ?? null
     }));
   }
   return payload;
@@ -683,12 +695,23 @@ const shouldFinalizeWindowOnRollover = (windowId) => {
   return botLastRunSnapshot?.current_window_id !== windowId;
 };
 
-const finalizeBotRunSnapshot = (stopReason, options = {}) => {
+const finalizeBotRunSnapshot = async (stopReason, options = {}) => {
   const state = botState.getState();
   const completedWindowId = options.completed_window_id ?? state?.current_window_id ?? null;
+  const officialOutcome = await fetchOfficialSettledOutcomeForWindow(completedWindowId);
+  const internalOutcome = inferInternalSettledOutcomeFromContext(
+    botLastTickResult?.context_snapshot || {},
+    options?.context_snapshot || {},
+    options?.state_before || {}
+  );
+  const settlementOutcome = officialOutcome || internalOutcome || null;
   const summary = getBotPaperSummaryScoped();
   const scopedFilledTotal = getScopedFilledTotalForState(state, completedWindowId);
-  const scopedRealizedGrossPnlTotal = getScopedRealizedGrossPnlTotalForState(state, completedWindowId);
+  const scopedRealizedGrossPnlTotal = getScopedRealizedGrossPnlTotalForState(
+    state,
+    completedWindowId,
+    { settlement_outcome: settlementOutcome }
+  );
   const activeConfig = options.active_config || getBotActiveRuntimeConfig() || getBotConfigSnapshot();
   const phase = options.phase ?? state.phase ?? null;
   const triggerSource = options.trigger_source ?? 'RUNTIME_STOP';
@@ -702,6 +725,9 @@ const finalizeBotRunSnapshot = (stopReason, options = {}) => {
     cancelled_total: toFiniteOrNull(summary?.cancelled_total) ?? 0,
     realized_gross_pnl_total: toFiniteOrNull(scopedRealizedGrossPnlTotal) ?? 0,
     unrealized_gross_pnl_total: toFiniteOrNull(summary?.unrealized_gross_pnl_total) ?? 0,
+    settled_outcome_official: officialOutcome,
+    settled_outcome_internal: internalOutcome,
+    settled_outcome_used: settlementOutcome,
     active_config: cloneBotConfig(activeConfig),
     trigger_source: triggerSource
   };
@@ -1016,9 +1042,19 @@ const botRunner = createBotRunner({
     if (!shouldFinalizeWindowOnRollover(from_window_id, state_before)) return;
     finalizeBotRunSnapshot('WINDOW_ROLLOVER_COMPLETED', {
       completed_window_id: from_window_id,
+      state_before: state_before || {},
       phase: state_before?.phase ?? null,
       active_config: getBotActiveRuntimeConfig() || getBotConfigSnapshot(),
       trigger_source: 'WINDOW_CHANGED'
+    }).catch((error) => {
+      botLogger.log({
+        level: 'error',
+        source: 'server',
+        event: 'BOT_FINALIZE_ROLLOVER_FAILED',
+        message: error?.message || String(error),
+        mode: BOT_MODE,
+        window_id: from_window_id
+      });
     });
   },
   onRuntimeUpdate: (runtime) => {
@@ -1028,7 +1064,16 @@ const botRunner = createBotRunner({
       const stateAtStop = botState.getState();
       const completedWindowId = stateAtStop?.current_window_id ?? null;
       const stopReason = botPendingStopReason || 'AUTO_COMPLETED';
-      finalizeBotRunSnapshot(stopReason);
+      finalizeBotRunSnapshot(stopReason).catch((error) => {
+        botLogger.log({
+          level: 'error',
+          source: 'server',
+          event: 'BOT_FINALIZE_STOP_FAILED',
+          message: error?.message || String(error),
+          mode: BOT_MODE,
+          window_id: completedWindowId ?? null
+        });
+      });
       botPendingStopReason = null;
       botActiveRuntimeConfig = cloneBotConfig(getBotConfigSnapshot());
       botLastTickResult = null;
@@ -1338,11 +1383,54 @@ const getScopedFilledTotalForState = (state = {}, preferredWindowId = null) => {
   const strictWindowOrders = allOrders.filter((order) => order.resolved_window_id === displayWindowId);
   return countUniqueFilledOrderIds(strictWindowOrders);
 };
-const getScopedRealizedGrossPnlTotalForState = (state = {}, preferredWindowId = null) => {
+const fetchOfficialSettledOutcomeForWindow = async (windowId) => {
+  if (!windowId) return null;
+  try {
+    const resp = await fetch(`https://gamma-api.polymarket.com/events?slug=${encodeURIComponent(windowId)}`);
+    if (!resp.ok) return null;
+    const payload = await resp.json();
+    const market = Array.isArray(payload) ? payload?.[0]?.markets?.[0] : null;
+    if (!market || market.umaResolutionStatus !== 'resolved') return null;
+    const outcomePrices = typeof market.outcomePrices === 'string'
+      ? JSON.parse(market.outcomePrices)
+      : market.outcomePrices;
+    if (!Array.isArray(outcomePrices) || outcomePrices.length < 2) return null;
+    const up = Number.parseFloat(outcomePrices[0]);
+    const down = Number.parseFloat(outcomePrices[1]);
+    if (!Number.isFinite(up) || !Number.isFinite(down)) return null;
+    if (up >= down) return 'UP';
+    return 'DOWN';
+  } catch (_) {
+    return null;
+  }
+};
+const inferInternalSettledOutcomeFromContext = (context = {}, fallbackContext = {}, stateBefore = {}) => {
+  const anchor = Number(stateBefore?.anchor_btc);
+  const last = Number(context?.btc_price ?? fallbackContext?.btc_price);
+  if (Number.isFinite(anchor) && Number.isFinite(last) && anchor > 0 && last > 0) {
+    return last >= anchor ? 'UP' : 'DOWN';
+  }
+  const read = (key) => {
+    if (Number.isFinite(Number(context?.[key]))) return Number(context[key]);
+    if (Number.isFinite(Number(fallbackContext?.[key]))) return Number(fallbackContext[key]);
+    return null;
+  };
+  const bidYes = read('bid_yes');
+  const askYes = read('ask_yes');
+  const bidNo = read('bid_no');
+  const askNo = read('ask_no');
+  if ((bidYes != null && bidYes >= 0.99) || (askNo != null && askNo <= 0.01)) return 'UP';
+  if ((bidNo != null && bidNo >= 0.99) || (askYes != null && askYes <= 0.01)) return 'DOWN';
+  return null;
+};
+const getScopedRealizedGrossPnlTotalForState = (state = {}, preferredWindowId = null, options = {}) => {
   const { allOrders } = buildBotOrdersWithWindowIds();
   const scope = resolveBotWindowScope(state);
   const displayWindowId = preferredWindowId || scope.displayWindowId;
   if (!displayWindowId) return 0;
+  const settlementOutcome = options?.settlement_outcome === 'UP' || options?.settlement_outcome === 'DOWN'
+    ? options.settlement_outcome
+    : null;
   const strictWindowOrders = allOrders
     .filter((order) => order.resolved_window_id === displayWindowId && order.status === 'FILLED');
   const calcSideRealized = (side) => {
@@ -1357,12 +1445,18 @@ const getScopedRealizedGrossPnlTotalForState = (state = {}, preferredWindowId = 
       return sum + (fillPrice * size);
     }, 0);
     const avgFillPrice = entryNotional / entrySize;
-    return filledExits.reduce((sum, order) => {
+    const exitRealized = filledExits.reduce((sum, order) => {
       const fillPrice = Number.isFinite(order?.fill_price) ? order.fill_price : null;
       const size = Number.isFinite(order?.size) ? order.size : 0;
       if (fillPrice == null || size <= 0) return sum;
       return sum + ((fillPrice - avgFillPrice) * size);
     }, 0);
+    if (filledExits.length === 0 && settlementOutcome != null) {
+      const sideWin = (side === 'YES' && settlementOutcome === 'UP') || (side === 'NO' && settlementOutcome === 'DOWN');
+      const payout = sideWin ? entrySize : 0;
+      return payout - entryNotional;
+    }
+    return exitRealized;
   };
   const total = calcSideRealized('YES') + calcSideRealized('NO');
   return toFiniteOrNull(total) ?? 0;

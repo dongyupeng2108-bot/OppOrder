@@ -1,0 +1,250 @@
+{
+  "script_name": "truth_audit_settlement_projection_fix_260404_003",
+  "task_id": "260404_003",
+  "sample_name": "settlement_projection_fix_v1",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "rules/task-reports/2026-04/260404_003/260404_003_truth_audit_settlement_projection_fix.json",
+  "summary": {
+    "pass": true
+  },
+  "raw_excerpt": {
+    "fail_to_pass": {
+      "preFail": {
+        "source_task_id": "260404_002",
+        "polluted_rows": [
+          {
+            "window_id": "btc-updown-5m-1775293500",
+            "row_realized_gross_pnl_total": 0,
+            "pnl_if_settle_win": 0.99,
+            "pnl_if_settle_lose": -0.01
+          },
+          {
+            "window_id": "btc-updown-5m-1775293200",
+            "row_realized_gross_pnl_total": 0,
+            "pnl_if_settle_win": 0.7,
+            "pnl_if_settle_lose": -0.3
+          }
+        ]
+      },
+      "postPass": {
+        "reset_baseline_ts": 1775311560096,
+        "reset_baseline_at": "2026-04-04T14:06:00.096Z",
+        "rows": [
+          {
+            "window_id": "btc-updown-5m-1775312400",
+            "completed_at": "2026-04-04T14:25:01.305Z",
+            "entry_side": "YES",
+            "entry_price": 0.29,
+            "official_final_outcome": null,
+            "internal_final_outcome": "DOWN",
+            "filled_total": 1,
+            "exit_fill_count": 0,
+            "row_realized_gross_pnl_total": -0.29,
+            "truth_realized_gross_pnl_total": -0.29,
+            "match": true
+          },
+          {
+            "window_id": "btc-updown-5m-1775312100",
+            "completed_at": "2026-04-04T14:20:02.119Z",
+            "entry_side": "YES",
+            "entry_price": 0.01,
+            "official_final_outcome": null,
+            "internal_final_outcome": "UP",
+            "filled_total": 1,
+            "exit_fill_count": 0,
+            "row_realized_gross_pnl_total": 0.99,
+            "truth_realized_gross_pnl_total": 0.99,
+            "match": true
+          }
+        ]
+      }
+    },
+    "today_after_reset": {
+      "window_count": 5,
+      "filled_total": 7,
+      "realized_gross_pnl_total": 2.0199999999999996,
+      "avg_realized_gross_pnl_per_window": 0.4039999999999999,
+      "win_rate_manual_percent": 60,
+      "win_numerator": 3,
+      "win_denominator": 5
+    },
+    "summary_reconcile": {
+      "api": {
+        "realized_gross_pnl_total": 2.0199999999999996,
+        "avg_realized_gross_pnl_per_window": 0.4039999999999999
+      },
+      "manual": {
+        "realized_gross_pnl_total": 2.02,
+        "avg_realized_gross_pnl_per_window": 0.404,
+        "win_rate_percent": 60,
+        "win_numerator": 3,
+        "win_denominator": 5
+      },
+      "match": {
+        "realized": true,
+        "avg": true
+      }
+    },
+    "non_regression": {
+      "running_window_not_counted": true,
+      "stop_semantics_chain_alive": true,
+      "exit_windows_not_broken": true
+    },
+    "healthcheck": {
+      "root_status": 200,
+      "pairs_status": 404
+    },
+    "samples": [
+      {
+        "sample_type": "prefail_pollution_from_260404_002",
+        "is_real_runtime": true
+      },
+      {
+        "sample_type": "postpass_single_fill_completed_window",
+        "is_real_runtime": true,
+        "window_id": "btc-updown-5m-1775312400"
+      },
+      {
+        "sample_type": "postpass_single_fill_completed_window",
+        "is_real_runtime": true,
+        "window_id": "btc-updown-5m-1775312100"
+      }
+    ],
+    "checks": {
+      "prefail_pollution_rows_ge_2": true,
+      "postpass_fill1_rows_ge_2": true,
+      "postpass_row_truth_match": true,
+      "postpass_fill1_nonzero_realized": true,
+      "today_summary_reconcile_match": true,
+      "no_zero_pollution_for_postpass_rows": true,
+      "running_window_not_counted": true,
+      "stop_semantics_chain_alive": true,
+      "exit_windows_not_broken": true,
+      "healthcheck_ok": true
+    }
+  },
+  "generated_at": "2026-04-04T16:43:46.176Z",
+  "task_type": "fix_acceptance_heavy",
+  "conclusion_block": {
+    "verdict": "A：通过",
+    "first_break_layer": "NONE_CHAIN_PASS"
+  },
+  "evidence_index": {
+    "fail_to_pass": {
+      "preFail": {
+        "source_task_id": "260404_002",
+        "polluted_rows": [
+          {
+            "window_id": "btc-updown-5m-1775293500",
+            "row_realized_gross_pnl_total": 0,
+            "pnl_if_settle_win": 0.99,
+            "pnl_if_settle_lose": -0.01
+          },
+          {
+            "window_id": "btc-updown-5m-1775293200",
+            "row_realized_gross_pnl_total": 0,
+            "pnl_if_settle_win": 0.7,
+            "pnl_if_settle_lose": -0.3
+          }
+        ]
+      },
+      "postPass": {
+        "reset_baseline_ts": 1775311560096,
+        "reset_baseline_at": "2026-04-04T14:06:00.096Z",
+        "rows": [
+          {
+            "window_id": "btc-updown-5m-1775312400",
+            "completed_at": "2026-04-04T14:25:01.305Z",
+            "entry_side": "YES",
+            "entry_price": 0.29,
+            "official_final_outcome": null,
+            "internal_final_outcome": "DOWN",
+            "filled_total": 1,
+            "exit_fill_count": 0,
+            "row_realized_gross_pnl_total": -0.29,
+            "truth_realized_gross_pnl_total": -0.29,
+            "match": true
+          },
+          {
+            "window_id": "btc-updown-5m-1775312100",
+            "completed_at": "2026-04-04T14:20:02.119Z",
+            "entry_side": "YES",
+            "entry_price": 0.01,
+            "official_final_outcome": null,
+            "internal_final_outcome": "UP",
+            "filled_total": 1,
+            "exit_fill_count": 0,
+            "row_realized_gross_pnl_total": 0.99,
+            "truth_realized_gross_pnl_total": 0.99,
+            "match": true
+          }
+        ]
+      }
+    },
+    "today_after_reset": {
+      "window_count": 5,
+      "filled_total": 7,
+      "realized_gross_pnl_total": 2.0199999999999996,
+      "avg_realized_gross_pnl_per_window": 0.4039999999999999,
+      "win_rate_manual_percent": 60,
+      "win_numerator": 3,
+      "win_denominator": 5
+    },
+    "summary_reconcile": {
+      "api": {
+        "realized_gross_pnl_total": 2.0199999999999996,
+        "avg_realized_gross_pnl_per_window": 0.4039999999999999
+      },
+      "manual": {
+        "realized_gross_pnl_total": 2.02,
+        "avg_realized_gross_pnl_per_window": 0.404,
+        "win_rate_percent": 60,
+        "win_numerator": 3,
+        "win_denominator": 5
+      },
+      "match": {
+        "realized": true,
+        "avg": true
+      }
+    },
+    "non_regression": {
+      "running_window_not_counted": true,
+      "stop_semantics_chain_alive": true,
+      "exit_windows_not_broken": true
+    },
+    "healthcheck": {
+      "root_status": 200,
+      "pairs_status": 404
+    },
+    "samples": [
+      {
+        "sample_type": "prefail_pollution_from_260404_002",
+        "is_real_runtime": true
+      },
+      {
+        "sample_type": "postpass_single_fill_completed_window",
+        "is_real_runtime": true,
+        "window_id": "btc-updown-5m-1775312400"
+      },
+      {
+        "sample_type": "postpass_single_fill_completed_window",
+        "is_real_runtime": true,
+        "window_id": "btc-updown-5m-1775312100"
+      }
+    ],
+    "checks": {
+      "prefail_pollution_rows_ge_2": true,
+      "postpass_fill1_rows_ge_2": true,
+      "postpass_row_truth_match": true,
+      "postpass_fill1_nonzero_realized": true,
+      "today_summary_reconcile_match": true,
+      "no_zero_pollution_for_postpass_rows": true,
+      "running_window_not_counted": true,
+      "stop_semantics_chain_alive": true,
+      "exit_windows_not_broken": true,
+      "healthcheck_ok": true
+    }
+  }
+}
