@@ -199,7 +199,7 @@ async function initStrategyEditor() {
                 <col style="width:20%">
                 <col style="width:18%">
               </colgroup>
-              <thead><tr><th>订单类型</th><th>UP/DOWN</th><th>价格</th><th>数量</th><th>平仓价</th><th>状态</th></tr></thead>
+              <thead><tr><th>订单类型</th><th>UP/DOWN</th><th>挂单价/成交价</th><th>数量</th><th>平仓价</th><th>状态</th></tr></thead>
               <tbody id="se-order-body">
                 <tr><td colspan="6" style="color:#555;text-align:center">暂无</td></tr>
               </tbody>
@@ -245,7 +245,7 @@ async function initStrategyEditor() {
               <div style="border:1px solid #232a33;background:#11161c;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:0;">
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
                   <div style="color:#7f8a97;">窗口数</div><div id="se-perf-window-count" style="text-align:right;color:#d6dde5;">—</div>
-                  <div style="color:#7f8a97;">胜率</div><div id="se-perf-win-rate" style="text-align:right;color:#d6dde5;">—</div>
+                  <div style="color:#7f8a97;">窗口胜率</div><div id="se-perf-win-rate" style="text-align:right;color:#d6dde5;">—</div>
                   <div style="color:#7f8a97;">总成交单数</div><div id="se-perf-filled-total" style="text-align:right;color:#d6dde5;">—</div>
                   <div style="color:#7f8a97;">总计PNL</div><div id="se-perf-realized-total" style="text-align:right;color:#d6dde5;">—</div>
                   <div style="color:#7f8a97;">平均每窗口盈亏</div><div id="se-perf-avg-realized" style="text-align:right;color:#d6dde5;">—</div>
@@ -1454,8 +1454,8 @@ function se_renderPerformance(perfPayload, status) {
   if (!noteEl) return;
   const empty = (summary?.window_count ?? 0) === 0;
   noteEl.textContent = empty
-    ? `${se_perfPresetLabel(_sePerformancePreset)} 当前无已完成窗口数据（running 窗口不计入）`
-    : `${se_perfPresetLabel(summary?.preset)} | 仅统计已完成窗口 | running_excluded=${se_formatStateValue(summary?.running_window_excluded)} | running_now=${se_formatStateValue(status?.running)}`;
+    ? `${se_perfPresetLabel(_sePerformancePreset)} 当前无已完成窗口数据（running 窗口不计入，窗口胜率按已完成窗口计算）`
+    : `${se_perfPresetLabel(summary?.preset)} | 仅统计已完成窗口 | 窗口胜率按已完成窗口计算（非按成交单数） | running_excluded=${se_formatStateValue(summary?.running_window_excluded)} | running_now=${se_formatStateValue(status?.running)}`;
 }
 
 function se_renderPollError(message) {
@@ -1486,7 +1486,11 @@ function se_renderOrders(orders, status) {
   const titleEl = document.getElementById('se-order-title');
   const scope = orders?.window_scope && typeof orders.window_scope === 'object' ? orders.window_scope : {};
   const isCurrentWindowScope = scope?.scope === 'current_window';
-  if (titleEl) titleEl.textContent = '当前窗口订单状态';
+  if (titleEl) {
+    if (scope?.scope === 'current_window') titleEl.textContent = '当前窗口订单状态';
+    else if (scope?.scope === 'last_window') titleEl.textContent = '上一窗口订单状态';
+    else titleEl.textContent = '无活动窗口订单状态';
+  }
   const list = Array.isArray(orders?.window_orders)
     ? [...orders.window_orders]
     : (Array.isArray(orders?.orders) ? [...orders.orders] : []);
@@ -1508,7 +1512,8 @@ function se_renderOrders(orders, status) {
   const rows = topList.map((o) => {
     const statusColor = o.status === 'OPEN' ? '#00e676' : (o.status === 'FILLED' ? '#ffb74d' : '#888');
     const orderPriceText = typeof o.price === 'number' ? o.price.toFixed(3) : '--';
-    const priceCell = orderPriceText;
+    const fillPriceText = typeof o.fill_price === 'number' ? o.fill_price.toFixed(3) : '--';
+    const priceCell = `${orderPriceText} / ${fillPriceText}`;
     const isCloseOrder = o.kind === 'TAKE_PROFIT' || o.kind === 'EXIT';
     const typeMain = isCloseOrder
       ? (o.side === 'YES' ? 'YES平仓' : (o.side === 'NO' ? 'NO平仓' : '平仓'))

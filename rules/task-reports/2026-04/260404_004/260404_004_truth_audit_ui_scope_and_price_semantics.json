@@ -1,0 +1,210 @@
+{
+  "script_name": "truth_audit_ui_scope_and_price_semantics_260404_004",
+  "task_id": "260404_004",
+  "sample_name": "ui_scope_and_price_semantics_v1",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "rules/task-reports/2026-04/260404_004/260404_004_truth_audit_ui_scope_and_price_semantics.json",
+  "summary": {
+    "pass": true
+  },
+  "raw_excerpt": {
+    "fail_to_pass": {
+      "preFail": {
+        "win_rate_label": "胜率",
+        "order_title_literal": "当前窗口订单状态",
+        "order_price_header": "价格"
+      },
+      "postPass": {
+        "win_rate_label": "窗口胜率",
+        "title_scope_switch_enabled": true,
+        "order_price_header": "挂单价/成交价"
+      }
+    },
+    "pre_dom_facts": {
+      "win_rate_label": "胜率",
+      "order_title_literal": "当前窗口订单状态",
+      "order_price_header": "价格",
+      "order_price_cell_source": "o.price"
+    },
+    "post_dom_facts": {
+      "win_rate_label_window_semantics": true,
+      "order_title_scope_switch": true,
+      "order_price_header_semantics": true,
+      "order_price_cell_combined": true
+    },
+    "no_compute_mutation_checks": {
+      "win_rate_formula_still_by_rows": true,
+      "filled_total_direct_from_summary": true,
+      "pnl_total_direct_from_summary": true,
+      "avg_pnl_direct_from_summary": true
+    },
+    "bug3_order_sample": {
+      "order_id": "paper_5d286bc6",
+      "status": "FILLED",
+      "window_id": null,
+      "order_price": 0.27,
+      "fill_price": 0.26
+    },
+    "api_window_scope_fact": {
+      "scope": "last_window",
+      "running": false,
+      "active_window_id": "btc-updown-5m-1775322900",
+      "display_window_id": "btc-updown-5m-1775322900",
+      "label": "上一窗口订单（停止态）",
+      "ownership_rule": "停止态展示上一窗口订单，不冒充当前活动窗口"
+    },
+    "summary_value_snapshot": {
+      "today": {
+        "window_count": 4,
+        "filled_total": 3,
+        "realized_gross_pnl_total": 0.98,
+        "avg_realized_gross_pnl_per_window": 0.245
+      },
+      "last_7d": {
+        "window_count": 1471,
+        "filled_total": 1860,
+        "realized_gross_pnl_total": 6034.488796720972,
+        "avg_realized_gross_pnl_per_window": 4.102303736723978
+      },
+      "last_30_windows": {
+        "window_count": 30,
+        "filled_total": 29,
+        "realized_gross_pnl_total": 297.6025643805565,
+        "avg_realized_gross_pnl_per_window": 9.920085479351883
+      }
+    },
+    "samples": [
+      {
+        "sample_type": "ui_label_semantics",
+        "is_real_runtime": true
+      },
+      {
+        "sample_type": "ui_scope_switch",
+        "is_real_runtime": true,
+        "scope": "last_window"
+      },
+      {
+        "sample_type": "filled_order_price_semantics",
+        "is_real_runtime": true,
+        "order_id": "paper_5d286bc6",
+        "window_id": null
+      }
+    ],
+    "non_regression": {
+      "did_not_modify_server_logic": true,
+      "did_not_modify_summary_formula": true,
+      "display_only_change": true
+    },
+    "checks": {
+      "bug1_label_fixed": true,
+      "bug2_title_scope_fixed": true,
+      "bug3_fill_price_field_exists": true,
+      "bug3_price_semantics_fixed": true,
+      "no_compute_mutation": true
+    }
+  },
+  "generated_at": "2026-04-04T18:00:35.711Z",
+  "task_type": "ui_light_fix_acceptance",
+  "conclusion_block": {
+    "verdict": "A：通过",
+    "first_break_layer": "NONE_CHAIN_PASS"
+  },
+  "evidence_index": {
+    "fail_to_pass": {
+      "preFail": {
+        "win_rate_label": "胜率",
+        "order_title_literal": "当前窗口订单状态",
+        "order_price_header": "价格"
+      },
+      "postPass": {
+        "win_rate_label": "窗口胜率",
+        "title_scope_switch_enabled": true,
+        "order_price_header": "挂单价/成交价"
+      }
+    },
+    "pre_dom_facts": {
+      "win_rate_label": "胜率",
+      "order_title_literal": "当前窗口订单状态",
+      "order_price_header": "价格",
+      "order_price_cell_source": "o.price"
+    },
+    "post_dom_facts": {
+      "win_rate_label_window_semantics": true,
+      "order_title_scope_switch": true,
+      "order_price_header_semantics": true,
+      "order_price_cell_combined": true
+    },
+    "no_compute_mutation_checks": {
+      "win_rate_formula_still_by_rows": true,
+      "filled_total_direct_from_summary": true,
+      "pnl_total_direct_from_summary": true,
+      "avg_pnl_direct_from_summary": true
+    },
+    "bug3_order_sample": {
+      "order_id": "paper_5d286bc6",
+      "status": "FILLED",
+      "window_id": null,
+      "order_price": 0.27,
+      "fill_price": 0.26
+    },
+    "api_window_scope_fact": {
+      "scope": "last_window",
+      "running": false,
+      "active_window_id": "btc-updown-5m-1775322900",
+      "display_window_id": "btc-updown-5m-1775322900",
+      "label": "上一窗口订单（停止态）",
+      "ownership_rule": "停止态展示上一窗口订单，不冒充当前活动窗口"
+    },
+    "summary_value_snapshot": {
+      "today": {
+        "window_count": 4,
+        "filled_total": 3,
+        "realized_gross_pnl_total": 0.98,
+        "avg_realized_gross_pnl_per_window": 0.245
+      },
+      "last_7d": {
+        "window_count": 1471,
+        "filled_total": 1860,
+        "realized_gross_pnl_total": 6034.488796720972,
+        "avg_realized_gross_pnl_per_window": 4.102303736723978
+      },
+      "last_30_windows": {
+        "window_count": 30,
+        "filled_total": 29,
+        "realized_gross_pnl_total": 297.6025643805565,
+        "avg_realized_gross_pnl_per_window": 9.920085479351883
+      }
+    },
+    "samples": [
+      {
+        "sample_type": "ui_label_semantics",
+        "is_real_runtime": true
+      },
+      {
+        "sample_type": "ui_scope_switch",
+        "is_real_runtime": true,
+        "scope": "last_window"
+      },
+      {
+        "sample_type": "filled_order_price_semantics",
+        "is_real_runtime": true,
+        "order_id": "paper_5d286bc6",
+        "window_id": null
+      }
+    ],
+    "non_regression": {
+      "did_not_modify_server_logic": true,
+      "did_not_modify_summary_formula": true,
+      "display_only_change": true
+    },
+    "checks": {
+      "bug1_label_fixed": true,
+      "bug2_title_scope_fixed": true,
+      "bug3_fill_price_field_exists": true,
+      "bug3_price_semantics_fixed": true,
+      "no_compute_mutation": true
+    }
+  }
+}
