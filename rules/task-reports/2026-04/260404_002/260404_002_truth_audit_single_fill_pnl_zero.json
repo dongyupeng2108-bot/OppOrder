@@ -11,7 +11,7 @@
   },
   "raw_excerpt": {
     "snapshot": {
-      "captured_at": "2026-04-04T10:52:03.561Z",
+      "captured_at": "2026-04-04T10:57:13.633Z",
       "base_url": "http://localhost:53123"
     },
     "today_snapshot": {
@@ -24,7 +24,23 @@
     "status_snapshot": {
       "running": false,
       "current_window_id": null,
-      "last_window_id": "btc-updown-5m-1775293500"
+      "last_window_id": "btc-updown-5m-1775293500",
+      "saved_config_excerpt": {
+        "up_ladder": [
+          {
+            "price": 0.3,
+            "size": 1,
+            "tp_price": 1
+          }
+        ],
+        "down_ladder": [
+          {
+            "price": 0.2,
+            "size": 1,
+            "tp_price": 1
+          }
+        ]
+      }
     },
     "filled_total_eq_1_windows": [
       {
@@ -280,7 +296,7 @@
       "unique_first_break_layer_generated": true
     }
   },
-  "generated_at": "2026-04-04T10:52:03.564Z",
+  "generated_at": "2026-04-04T10:57:13.635Z",
   "task_type": "truth_audit_heavy",
   "conclusion_block": {
     "verdict": "A：通过",
@@ -288,7 +304,7 @@
   },
   "evidence_index": {
     "snapshot": {
-      "captured_at": "2026-04-04T10:52:03.561Z",
+      "captured_at": "2026-04-04T10:57:13.633Z",
       "base_url": "http://localhost:53123"
     },
     "today_snapshot": {
@@ -301,7 +317,23 @@
     "status_snapshot": {
       "running": false,
       "current_window_id": null,
-      "last_window_id": "btc-updown-5m-1775293500"
+      "last_window_id": "btc-updown-5m-1775293500",
+      "saved_config_excerpt": {
+        "up_ladder": [
+          {
+            "price": 0.3,
+            "size": 1,
+            "tp_price": 1
+          }
+        ],
+        "down_ladder": [
+          {
+            "price": 0.2,
+            "size": 1,
+            "tp_price": 1
+          }
+        ]
+      }
     },
     "filled_total_eq_1_windows": [
       {

@@ -244,7 +244,11 @@ const main = async () => {
     status_snapshot: {
       running: statusPayload?.running ?? null,
       current_window_id: statusPayload?.current_window_id ?? null,
-      last_window_id: statusPayload?.last_window_id ?? null
+      last_window_id: statusPayload?.last_window_id ?? null,
+      saved_config_excerpt: {
+        up_ladder: Array.isArray(statusPayload?.saved_config?.up_ladder) ? statusPayload.saved_config.up_ladder : [],
+        down_ladder: Array.isArray(statusPayload?.saved_config?.down_ladder) ? statusPayload.saved_config.down_ladder : []
+      }
     },
     filled_total_eq_1_windows: todayFillOneRows,
     postmortem_result_truth_reconcile_for_fill1: windowsForTruth.map((x) => ({
