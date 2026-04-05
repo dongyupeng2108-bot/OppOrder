@@ -1,0 +1,79 @@
+{
+  "script_name": "truth_audit_notify_noise_cleanup_260405_010",
+  "task_id": "260405_010",
+  "sample_name": "notify_noise_cleanup",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-04\\260405_010_truth_audit_notify_noise_cleanup_260405_010.json",
+  "summary": {
+    "pass": true,
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "checks": {
+      "notify_has_dod_stdout": true,
+      "notify_has_gate_preview_or_verify": true,
+      "notify_no_report_block_failed_noise": true,
+      "notify_no_missing_block_noise": true
+    }
+  },
+  "raw_excerpt": {
+    "pre_fail": {
+      "notify_contains_historical_failed_noise": true
+    },
+    "post_pass": {
+      "notify_contains_historical_failed_noise": false
+    },
+    "fail_to_pass": {
+      "before": "notify_historical_failed_noise_present",
+      "after": "notify_clean"
+    },
+    "non_regression": {
+      "running_window_excluded_semantics_preserved": true
+    },
+    "checks": {
+      "notify_has_dod_stdout": true,
+      "notify_has_gate_preview_or_verify": true,
+      "notify_no_report_block_failed_noise": true,
+      "notify_no_missing_block_noise": true
+    },
+    "sample_rows": [
+      {
+        "is_real_runtime": true,
+        "file": "rules/task-reports/2026-04/notify_260405_010.txt"
+      }
+    ]
+  },
+  "generated_at": "2026-04-05T18:21:53.850Z",
+  "conclusion_block": {
+    "verdict": "A：通过",
+    "first_break_layer": "NONE_CHAIN_PASS"
+  },
+  "checks": {
+    "notify_has_dod_stdout": true,
+    "notify_has_gate_preview_or_verify": true,
+    "notify_no_report_block_failed_noise": true,
+    "notify_no_missing_block_noise": true
+  },
+  "non_regression": {
+    "running_window_excluded_semantics_preserved": true
+  },
+  "evidence_index": {
+    "fail_to_pass": {
+      "pre_fail": {
+        "notify_contains_historical_failed_noise": true
+      },
+      "post_pass": {
+        "notify_contains_historical_failed_noise": false
+      }
+    },
+    "non_regression": {
+      "running_window_excluded_semantics_preserved": true
+    },
+    "sample_rows": [
+      {
+        "is_real_runtime": true,
+        "file": "rules/task-reports/2026-04/notify_260405_010.txt"
+      }
+    ]
+  }
+}

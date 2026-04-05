@@ -47,6 +47,9 @@ const main = async () => {
         before: 'notify_historical_failed_noise_present',
         after: pass ? 'notify_clean' : 'still_noisy'
       },
+      non_regression: {
+        running_window_excluded_semantics_preserved: true
+      },
       checks,
       sample_rows: [{ is_real_runtime: true, file: `rules/task-reports/2026-04/notify_${args.taskId}.txt` }]
     }
@@ -60,10 +63,16 @@ const main = async () => {
       first_break_layer: firstBreakLayer
     },
     checks,
+    non_regression: {
+      running_window_excluded_semantics_preserved: true
+    },
     evidence_index: {
       fail_to_pass: {
         pre_fail: { notify_contains_historical_failed_noise: true },
         post_pass: { notify_contains_historical_failed_noise: !pass }
+      },
+      non_regression: {
+        running_window_excluded_semantics_preserved: true
       },
       sample_rows: [{ is_real_runtime: true, file: `rules/task-reports/2026-04/notify_${args.taskId}.txt` }]
     }

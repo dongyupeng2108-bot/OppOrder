@@ -1,0 +1,243 @@
+Trae Task Report
+Task ID: 260405_010
+Header: Unknown
+Date: 2026-04-05T18:21:21.616Z
+Branch: 260405_010
+Commit: 273a8d9ff8b0251d1aa3978531e63219eb7e6e8e
+
+
+=== RESULT_JSON ===
+(See result_260405_010.json)
+
+=== INDEX ===
+(See deliverables_index_260405_010.json)
+
+=== LOG_HEAD ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260405_010
+PR_TASK_ID_DETECTED=260405_010
+TARGET_TASK_ID=260405_010
+LATEST_TASK_ID=260405_010
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] TASK_PROFILE=heavy
+[Gate Light] TASK_DOMAIN=btcqdd
+[Gate Light] DOMAIN_PACKS=["btcqdd_core"]
+[Gate Light] Verifying task_id: 260405_010
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Report Block Check Passed: notify_260405_010.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260405_010.txt
+[Gate Light] Header Check Passed: TraeTask_260405_010
+[Gate Light] Checking Workspace Healer Evidence...
+[Gate Light] Workspace Healer verified (Clean Environment).
+[Gate Light] Skipping Error Digest Validation (Preview Mode).
+[Gate Light] Checking doc path standards...
+[Gate Light] Doc path standards verified.
+[Gate Light] Checking for legacy doc path references...
+...
+
+=== LOG_TAIL ===
+...
+[Gate Light] Skipping DoD Evidence Excerpt Check (Preview Mode).
+[Gate Light] Checking Deletion Audit (Locks & Runs)...
+[Gate Light] Deletion Audit: No lock/index yet (Assuming Pre-Integrate or First Run in progress).
+[Gate Light] Checking No Auto-Merge (Git Forbidden Commands)...
+[Gate Light] No Auto-Merge verified.
+[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
+[Gate Light] Allowed legacy task_id (transition): 260405_009
+[Gate Light] NoHistoricalEvidenceTouch verified.
+SNIPPET_GIT_STRATEGY=local_first
+[Gate Light] Skipping SnippetCommitMustMatch check (Preview Mode).
+[Gate Light] DOMAIN_SKIP: Rank V2 Contract Version Guard skipped (domain=btcqdd).
+[Gate Light] Checking Heavy Mandatory Evidence...
+
+[Gate Light] FAILED: Heavy mandatory evidence incomplete.
+  heavy_mode=business
+  has_first_break_layer=true
+  has_fail_to_pass=true
+  has_real_runtime=true
+  has_non_regression=false
+  server_touched=false (healthcheck not mandatory for this run).
+
+Trae Task Report
+Task ID: 260405_010
+Header: Unknown
+Date: 2026-04-05T18:21:01.410Z
+Branch: 260405_010
+Commit: 273a8d9ff8b0251d1aa3978531e63219eb7e6e8e
+
+
+=== RESULT_JSON ===
+(See result_260405_010.json)
+
+=== INDEX ===
+(See deliverables_index_260405_010.json)
+
+=== LOG_HEAD ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260405_010
+PR_TASK_ID_DETECTED=260405_010
+TARGET_TASK_ID=260405_010
+LATEST_TASK_ID=260405_010
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] TASK_PROFILE=heavy
+[Gate Light] TASK_DOMAIN=btcqdd
+[Gate Light] DOMAIN_PACKS=["btcqdd_core"]
+[Gate Light] Verifying task_id: 260405_010
+[Gate Light] Running Automation Pack V1 Hard Guards...
+
+[Gate Light] FAILED: Report Block Check for notify_260405_010.txt
+  Missing Blocks: === DOD_EVIDENCE_STDOUT ===
+  Missing Blocks: === GATE_LIGHT_PREVIEW === OR === GATE_LIGHT_VERIFY ===
+  ACTION: Use 'assemble_evidence.mjs' to regenerate reports.
+...
+
+=== LOG_TAIL ===
+...
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260405_010
+PR_TASK_ID_DETECTED=260405_010
+TARGET_TASK_ID=260405_010
+LATEST_TASK_ID=260405_010
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] TASK_PROFILE=heavy
+[Gate Light] TASK_DOMAIN=btcqdd
+[Gate Light] DOMAIN_PACKS=["btcqdd_core"]
+[Gate Light] Verifying task_id: 260405_010
+[Gate Light] Running Automation Pack V1 Hard Guards...
+
+[Gate Light] FAILED: Report Block Check for notify_260405_010.txt
+  Missing Blocks: === DOD_EVIDENCE_STDOUT ===
+  Missing Blocks: === GATE_LIGHT_PREVIEW === OR === GATE_LIGHT_VERIFY ===
+  ACTION: Use 'assemble_evidence.mjs' to regenerate reports.
+
+=== DOD_EVIDENCE_STDOUT ===
+RESULT_JSON
+rules/task-reports/2026-04/result_260405_010.json
+LOG_HEAD
+[LocalFinalize] task 260405_010
+LOG_TAIL
+local finalize flow
+EVIDENCE
+rules/task-reports/2026-04/trae_report_snippet_260405_010.txt
+INDEX
+rules/task-reports/2026-04/result_260405_010.json
+===========================
+
+
+
+
+=== WORKSPACE_HEALER ===
+Result: PASS
+Mode: EnforceClean
+Tracked Changed: 0
+Untracked: 0
+========================
+
+
+
+
+
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260405_010
+PR_TASK_ID_DETECTED=260405_010
+TARGET_TASK_ID=260405_010
+LATEST_TASK_ID=260405_010
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] TASK_PROFILE=heavy
+[Gate Light] TASK_DOMAIN=btcqdd
+[Gate Light] DOMAIN_PACKS=["btcqdd_core"]
+[Gate Light] Verifying task_id: 260405_010
+[Gate Light] Running Automation Pack V1 Hard Guards...
+
+[Gate Light] FAILED: Report Block Check for notify_260405_010.txt
+  Missing Blocks: === DOD_EVIDENCE_STDOUT ===
+  Missing Blocks: === GATE_LIGHT_PREVIEW === OR === GATE_LIGHT_VERIFY ===
+  ACTION: Use 'assemble_evidence.mjs' to regenerate reports.
+
+
+
+
+
+GATE_LIGHT_EXIT=0
+[Generated by scripts/assemble_evidence.mjs]
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260405_010_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_SITE_HEALTH_ROOT_53122: 260405_010_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260405_010_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_SITE_HEALTH_PAIRS_53122: 260405_010_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+
+
+
+=== WORKSPACE_HEALER ===
+Result: PASS
+Mode: LOCAL_FINALIZE_FALLBACK
+Tracked Changed: 0
+Untracked: 0
+========================
+
+
+
+
+
+=== GATE_LIGHT_PREVIEW ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260405_010
+PR_TASK_ID_DETECTED=260405_010
+TARGET_TASK_ID=260405_010
+LATEST_TASK_ID=260405_010
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] TASK_PROFILE=heavy
+[Gate Light] TASK_DOMAIN=btcqdd
+[Gate Light] DOMAIN_PACKS=["btcqdd_core"]
+[Gate Light] Verifying task_id: 260405_010
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Report Block Check Passed: notify_260405_010.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260405_010.txt
+[Gate Light] Header Check Passed: TraeTask_260405_010
+[Gate Light] Checking Workspace Healer Evidence...
+[Gate Light] Workspace Healer verified (Clean Environment).
+[Gate Light] Skipping Error Digest Validation (Preview Mode).
+[Gate Light] Checking doc path standards...
+[Gate Light] Doc path standards verified.
+[Gate Light] Checking for legacy doc path references...
+[CheckDocPathRefs] Scanning for legacy doc path references...
+[CheckDocPathRefs] PASS: No legacy doc path references found.
+[Gate Light] Checking for banned cmd syntax in PowerShell scripts...
+Starting static scan for banned cmd syntax in .ps1 files...
+Scanning targets: scripts/run_task.ps1, scripts/test_fail_budget.ps1, scripts/ps/Invoke-Step.ps1
+Static scan PASSED.
+[Gate Light] Checking for global healthcheck artifacts...
+[Gate Light] Global Artifact Guard verified.
+[Gate Light] DOMAIN_SKIP: opportunities contract pack skipped (domain=btcqdd).
+[Gate Light] DOMAIN_SKIP_CHECKS: news/rank/export/ledger/scanner/universe/trading
+[Gate Light] Checking healthcheck evidence...
+[Gate Light] Using evidence directory: rules\task-reports\2026-04
+[Gate Light] Healthcheck evidence verified (Path + Content).
+[Gate Light] Skipping DoD Evidence Excerpt Check (Preview Mode).
+[Gate Light] Checking Deletion Audit (Locks & Runs)...
+[Gate Light] Deletion Audit: No lock/index yet (Assuming Pre-Integrate or First Run in progress).
+[Gate Light] Checking No Auto-Merge (Git Forbidden Commands)...
+[Gate Light] No Auto-Merge verified.
+[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
+[Gate Light] Allowed legacy task_id (transition): 260405_009
+[Gate Light] NoHistoricalEvidenceTouch verified.
+SNIPPET_GIT_STRATEGY=local_first
+[Gate Light] Skipping SnippetCommitMustMatch check (Preview Mode).
+[Gate Light] DOMAIN_SKIP: Rank V2 Contract Version Guard skipped (domain=btcqdd).
+[Gate Light] Checking Heavy Mandatory Evidence...
+
+[Gate Light] FAILED: Heavy mandatory evidence incomplete.
+  heavy_mode=business
+  has_first_break_layer=true
+  has_fail_to_pass=true
+  has_real_runtime=true
+  has_non_regression=false
+  server_touched=false (healthcheck not mandatory for this run).
+==========================
+
+
+
+
+
+GATE_LIGHT_EXIT=0
+[Generated by scripts/assemble_evidence.mjs]
