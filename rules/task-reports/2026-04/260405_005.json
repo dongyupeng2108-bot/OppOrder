@@ -1,0 +1,32 @@
+{
+  "task_id": "260405_005",
+  "timestamp": "2026-04-05T15:13:12.695Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "smoke_test": "PASS",
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260405_005",
+      "status": "DONE",
+      "mode": "LOCAL",
+      "dod_evidence": {
+        "healthcheck": [
+          "260405_005_healthcheck_53122_root.txt",
+          "260405_005_healthcheck_53122_pairs.txt"
+        ],
+        "gate_light_exit": 0
+      },
+      "summary": "Automation Pack V1 Validation for Task 260405_005",
+      "report_file": "notify_260405_005.txt",
+      "report_sha256_short": "fdaa6042"
+    }
+  }
+}
