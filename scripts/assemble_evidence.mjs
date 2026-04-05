@@ -409,6 +409,9 @@ if (fs.existsSync(inputs.attestation)) {
         console.warn(`[Assembler] Warning: Failed to parse attestation: ${e.message}`);
     }
 }
+if (!taskHeader || taskHeader === 'Unknown') {
+    taskHeader = `TraeTask_${taskId}`;
+}
 
 const header = `Trae Task Report
 Task ID: ${taskId}
