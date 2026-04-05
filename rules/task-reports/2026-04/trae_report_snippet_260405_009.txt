@@ -1,0 +1,97 @@
+=== TRAE_REPORT_SNIPPET ===
+
+Header: TraeTask_260405_009
+BRANCH: 260405_009_clean
+COMMIT: 84354716e
+
+=== GIT_SCOPE_DIFF ===
+A	docs/tasks/260405_009.md
+M	rules/LATEST.json
+A	rules/task-reports/2026-04/260405_008.json
+A	rules/task-reports/2026-04/260405_008/implementation_260405_008.md
+A	rules/task-reports/2026-04/260405_008/notify_260405_008.txt
+A	rules/task-reports/2026-04/260405_008/result_260405_008.json
+A	rules/task-reports/2026-04/260405_008/truth_audit_260405_008.md
+A	rules/task-reports/2026-04/260405_008_healthcheck_53122_pairs.txt
+A	rules/task-reports/2026-04/260405_008_healthcheck_53122_root.txt
+A	rules/task-reports/2026-04/260405_008_truth_audit_m1_a3_sampling_semantics_260405_008.json
+A	rules/task-reports/2026-04/260405_009.json
+A	rules/task-reports/2026-04/260405_009/implementation_260405_009.md
+A	rules/task-reports/2026-04/260405_009/notify_260405_009.txt
+A	rules/task-reports/2026-04/260405_009/result_260405_009.json
+A	rules/task-reports/2026-04/260405_009/truth_audit_260405_009.md
+A	rules/task-reports/2026-04/260405_009_healthcheck_53122_pairs.txt
+A	rules/task-reports/2026-04/260405_009_healthcheck_53122_root.txt
+A	rules/task-reports/2026-04/260405_009_truth_audit_m1_a3_acceptance_fix_260405_009.json
+A	rules/task-reports/2026-04/evidence_manifest_260405_008.json
+A	rules/task-reports/2026-04/evidence_manifest_260405_009.json
+A	rules/task-reports/2026-04/manual_verification_260405_008.json
+A	rules/task-reports/2026-04/manual_verification_260405_009.json
+A	rules/task-reports/2026-04/notify_260405_008.txt
+A	rules/task-reports/2026-04/notify_260405_009.txt
+A	rules/task-reports/2026-04/result_260405_008.json
+A	rules/task-reports/2026-04/result_260405_009.json
+A	rules/task-reports/2026-04/run_260405_008.log
+A	rules/task-reports/2026-04/run_260405_009.log
+A	rules/task-reports/2026-04/trae_report_snippet_260405_008.txt
+A	rules/task-reports/2026-04/trae_report_snippet_260405_009.txt
+A	rules/task-reports/2026-04/workspace_healer_260405_008.json
+A	rules/task-reports/2026-04/workspace_healer_260405_009.json
+A	scripts/truth_audit_m1_a3_acceptance_fix_260405_009.mjs
+A	scripts/truth_audit_m1_a3_sampling_semantics_260405_008.mjs
+
+=== DOD_EVIDENCE_STDOUT ===
+Missing Blocks:
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260405_009_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260405_009_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+
+
+
+=== GATE_LIGHT_PREVIEW ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260405_009
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] TASK_PROFILE=heavy
+[Gate Light] TASK_DOMAIN=btcqdd
+[Gate Light] DOMAIN_PACKS=["btcqdd_core"]
+[Gate Light] Verifying task_id: 260405_009
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] Report Block Check Passed: notify_260405_009.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260405_009.txt
+[Gate Light] Header Check Passed: TraeTask_260405_009
+[Gate Light] Checking Workspace Healer Evidence...
+[Gate Light] Workspace Healer verified (Clean Environment).
+[Gate Light] Skipping Error Digest Validation (Preview Mode).
+[Gate Light] Checking doc path standards...
+[Gate Light] Doc path standards verified.
+[Gate Light] Checking for legacy doc path references...
+[Gate Light] Checking for banned cmd syntax in PowerShell scripts...
+[Gate Light] Checking for global healthcheck artifacts...
+[Gate Light] Global Artifact Guard verified.
+[Gate Light] DOMAIN_SKIP: opportunities contract pack skipped (domain=btcqdd).
+[Gate Light] DOMAIN_SKIP_CHECKS: news/rank/export/ledger/scanner/universe/trading
+[Gate Light] Checking healthcheck evidence...
+[Gate Light] Using evidence directory: rules\task-reports\2026-04
+[Gate Light] Healthcheck evidence verified (Path + Content).
+[Gate Light] Skipping DoD Evidence Excerpt Check (Preview Mode).
+[Gate Light] Checking Deletion Audit (Locks & Runs)...
+[Gate Light] Deletion Audit: No lock/index yet (Assuming Pre-Integrate or First Run in progress).
+[Gate Light] Checking No Auto-Merge (Git Forbidden Commands)...
+[Gate Light] No Auto-Merge verified.
+[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
+[Gate Light] Allowed legacy task_id (transition): 260405_007
+[Gate Light] NoHistoricalEvidenceTouch verified.
+[Gate Light] Skipping SnippetCommitMustMatch check (Preview Mode).
+[Gate Light] DOMAIN_SKIP: Rank V2 Contract Version Guard skipped (domain=btcqdd).
+[Gate Light] Checking Heavy Mandatory Evidence...
+[Gate Light] Heavy mandatory evidence verified.
+[Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...
+[Gate Light] Immutable Integrate & SafeCmd Enforcement verified.
+[Gate Light] Checking Scope Lock...
+[Gate Light] WARN: No scope_lock file found. Skipping scope lock check (backward compatible).
+[Gate Light] BTCQDD Healthcheck: PASS
+[Gate Light] Skipping Postflight Envelope Validation (Preview Mode).
+[Gate Light] PASS
+GATE_LIGHT_EXIT=0
+GATE_LIGHT_EXIT=0
