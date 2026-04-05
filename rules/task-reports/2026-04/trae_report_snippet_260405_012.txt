@@ -2,15 +2,21 @@
 
 Header: TraeTask_260405_012
 BRANCH: 260405_011
-COMMIT: 56dc064fb
+COMMIT: 6938092fc
 
 === GIT_SCOPE_DIFF ===
 A	docs/tasks/260405_012.md
 M	rules/LATEST.json
+A	rules/task-reports/2026-04/260405_012.json
 A	rules/task-reports/2026-04/260405_012/implementation_260405_012.md
 A	rules/task-reports/2026-04/260405_012/notify_260405_012.txt
 A	rules/task-reports/2026-04/260405_012/result_260405_012.json
 A	rules/task-reports/2026-04/260405_012/truth_audit_260405_012.md
+A	rules/task-reports/2026-04/260405_012_truth_audit_m2_shadow_only_entry_260405_012.json
+A	rules/task-reports/2026-04/notify_260405_012.txt
+A	rules/task-reports/2026-04/result_260405_012.json
+A	rules/task-reports/2026-04/trae_report_snippet_260405_012.txt
+A	rules/task-reports/2026-04/workspace_healer_260405_012.json
 A	scripts/truth_audit_m2_shadow_only_entry_260405_012.mjs
 M	strategies/crypto_binary/bot_runner.mjs
 M	strategies/crypto_binary/server.mjs
@@ -32,5 +38,33 @@ DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260405_012_healthcheck_53122_pairs.txt => HTTP/1
 [Gate Light] DOMAIN_PACKS=["btcqdd_core"]
 [Gate Light] Verifying task_id: 260405_012
 [Gate Light] Running Automation Pack V1 Hard Guards...
-[Gate Light] FAILED: Report Block Check for notify_260405_012.txt
+[Gate Light] Report Block Check Passed: notify_260405_012.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260405_012.txt
+[Gate Light] Header Check Passed: TraeTask_260405_012
+[Gate Light] Checking Workspace Healer Evidence...
+[Gate Light] Workspace Healer verified (Clean Environment).
+[Gate Light] Skipping Error Digest Validation (Preview Mode).
+[Gate Light] Checking doc path standards...
+[Gate Light] Doc path standards verified.
+[Gate Light] Checking for legacy doc path references...
+[Gate Light] Checking for banned cmd syntax in PowerShell scripts...
+[Gate Light] Checking for global healthcheck artifacts...
+[Gate Light] Global Artifact Guard verified.
+[Gate Light] DOMAIN_SKIP: opportunities contract pack skipped (domain=btcqdd).
+[Gate Light] DOMAIN_SKIP_CHECKS: news/rank/export/ledger/scanner/universe/trading
+[Gate Light] Checking healthcheck evidence...
+[Gate Light] Using evidence directory: rules\task-reports\2026-04
+[Gate Light] Healthcheck evidence verified (Path + Content).
+[Gate Light] Skipping DoD Evidence Excerpt Check (Preview Mode).
+[Gate Light] Checking Deletion Audit (Locks & Runs)...
+[Gate Light] Deletion Audit: No lock/index yet (Assuming Pre-Integrate or First Run in progress).
+[Gate Light] Checking No Auto-Merge (Git Forbidden Commands)...
+[Gate Light] No Auto-Merge verified.
+[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
+[Gate Light] Allowed legacy task_id (transition): 260405_011
+[Gate Light] NoHistoricalEvidenceTouch verified.
+[Gate Light] Skipping SnippetCommitMustMatch check (Preview Mode).
+[Gate Light] DOMAIN_SKIP: Rank V2 Contract Version Guard skipped (domain=btcqdd).
+[Gate Light] Checking Heavy Mandatory Evidence...
+[Gate Light] FAILED: Heavy mandatory evidence incomplete.
 GATE_LIGHT_EXIT=1

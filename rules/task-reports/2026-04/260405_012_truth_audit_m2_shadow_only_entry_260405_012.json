@@ -33,6 +33,10 @@
     "non_regression": {
       "running_window_excluded_semantics_preserved": true
     },
+    "healthcheck": {
+      "root_status": 200,
+      "pairs_status": 200
+    },
     "checks": {
       "shadow_decision_emitted": true,
       "no_order_apply_side_effect": true,
@@ -72,18 +76,18 @@
           "ask_no": 0.99,
           "tick_size": null,
           "stale": true,
-          "updated_at": "2026-04-05T19:03:31.938Z",
+          "updated_at": "2026-04-05T19:04:28.916Z",
           "_btc_source_trace": {
             "source_init_started": true,
             "source_init_error": null,
-            "source_feed_seen": true,
-            "source_feed_count": 1,
-            "source_last_feed_at": "2026-04-05T19:03:31.938Z",
-            "latest_cache_price": 67384.29,
-            "latest_cache_at": "2026-04-05T19:03:31.938Z",
-            "latest_cache_source": "rest_binance",
+            "source_feed_seen": false,
+            "source_feed_count": 0,
+            "source_last_feed_at": null,
+            "latest_cache_price": null,
+            "latest_cache_at": null,
+            "latest_cache_source": null,
             "price_resolution": {
-              "kind": "cache",
+              "kind": "none",
               "used_strike_raw": null,
               "used_anchor_fallback_raw": null
             },
@@ -100,7 +104,7 @@
           },
           "event_id": "shadow-event-260405_012",
           "context_version": "ctx-v1",
-          "source_event_ts": "2026-04-05T19:03:31.457Z"
+          "source_event_ts": "2026-04-05T19:04:28.425Z"
         },
         "decision_preview": {
           "intents": [
@@ -327,18 +331,18 @@
             "ask_no": 0.99,
             "tick_size": null,
             "stale": true,
-            "updated_at": "2026-04-05T19:03:31.938Z",
+            "updated_at": "2026-04-05T19:04:28.916Z",
             "_btc_source_trace": {
               "source_init_started": true,
               "source_init_error": null,
-              "source_feed_seen": true,
-              "source_feed_count": 1,
-              "source_last_feed_at": "2026-04-05T19:03:31.938Z",
-              "latest_cache_price": 67384.29,
-              "latest_cache_at": "2026-04-05T19:03:31.938Z",
-              "latest_cache_source": "rest_binance",
+              "source_feed_seen": false,
+              "source_feed_count": 0,
+              "source_last_feed_at": null,
+              "latest_cache_price": null,
+              "latest_cache_at": null,
+              "latest_cache_source": null,
               "price_resolution": {
-                "kind": "cache",
+                "kind": "none",
                 "used_strike_raw": null,
                 "used_anchor_fallback_raw": null
               },
@@ -355,7 +359,7 @@
             },
             "event_id": "shadow-event-260405_012",
             "context_version": "ctx-v1",
-            "source_event_ts": "2026-04-05T19:03:31.457Z"
+            "source_event_ts": "2026-04-05T19:04:28.425Z"
           },
           "state_snapshot": {
             "ladder_posted": false
@@ -370,10 +374,10 @@
           "debug_frame_index": 0,
           "debug_completed": false,
           "tick_interval_ms": 2000,
-          "last_tick_at": "2026-04-05T19:02:52.958Z",
+          "last_tick_at": "2026-04-05T19:03:32.016Z",
           "last_window_id": null,
           "current_window_id": "shadow-window-260405_012",
-          "window_initialized_at": "2026-04-05T19:02:46.457Z",
+          "window_initialized_at": "2026-04-05T19:03:43.425Z",
           "remaining_sec": null,
           "anchor_btc": 65000,
           "atr_5m": 90,
@@ -388,7 +392,7 @@
           "no_order_ids": [],
           "last_reason": null,
           "last_intents": [],
-          "updated_at": "2026-04-05T19:03:32.012Z"
+          "updated_at": "2026-04-05T19:04:28.916Z"
         },
         "state_after": {
           "mode": "paper-staging",
@@ -398,10 +402,10 @@
           "debug_frame_index": 0,
           "debug_completed": false,
           "tick_interval_ms": 2000,
-          "last_tick_at": "2026-04-05T19:02:52.958Z",
+          "last_tick_at": "2026-04-05T19:03:32.016Z",
           "last_window_id": null,
           "current_window_id": "shadow-window-260405_012",
-          "window_initialized_at": "2026-04-05T19:02:46.457Z",
+          "window_initialized_at": "2026-04-05T19:03:43.425Z",
           "remaining_sec": null,
           "anchor_btc": 65000,
           "atr_5m": 90,
@@ -416,7 +420,7 @@
           "no_order_ids": [],
           "last_reason": null,
           "last_intents": [],
-          "updated_at": "2026-04-05T19:03:32.012Z"
+          "updated_at": "2026-04-05T19:04:28.916Z"
         },
         "order_summary": {
           "total": 0,
@@ -444,7 +448,7 @@
       }
     ]
   },
-  "generated_at": "2026-04-05T19:03:33.447Z",
+  "generated_at": "2026-04-05T19:04:30.327Z",
   "conclusion_block": {
     "verdict": "A：通过",
     "first_break_layer": "NONE_CHAIN_PASS"
@@ -461,6 +465,10 @@
   "non_regression": {
     "running_window_excluded_semantics_preserved": true
   },
+  "healthcheck": {
+    "root_status": 200,
+    "pairs_status": 200
+  },
   "evidence_index": {
     "fail_to_pass": {
       "pre_fail": {
@@ -472,6 +480,10 @@
     },
     "non_regression": {
       "running_window_excluded_semantics_preserved": true
+    },
+    "healthcheck": {
+      "root_status": 200,
+      "pairs_status": 200
     },
     "sample_rows": [
       {
@@ -513,18 +525,18 @@
           "ask_no": 0.99,
           "tick_size": null,
           "stale": true,
-          "updated_at": "2026-04-05T19:03:31.938Z",
+          "updated_at": "2026-04-05T19:04:28.916Z",
           "_btc_source_trace": {
             "source_init_started": true,
             "source_init_error": null,
-            "source_feed_seen": true,
-            "source_feed_count": 1,
-            "source_last_feed_at": "2026-04-05T19:03:31.938Z",
-            "latest_cache_price": 67384.29,
-            "latest_cache_at": "2026-04-05T19:03:31.938Z",
-            "latest_cache_source": "rest_binance",
+            "source_feed_seen": false,
+            "source_feed_count": 0,
+            "source_last_feed_at": null,
+            "latest_cache_price": null,
+            "latest_cache_at": null,
+            "latest_cache_source": null,
             "price_resolution": {
-              "kind": "cache",
+              "kind": "none",
               "used_strike_raw": null,
               "used_anchor_fallback_raw": null
             },
@@ -541,7 +553,7 @@
           },
           "event_id": "shadow-event-260405_012",
           "context_version": "ctx-v1",
-          "source_event_ts": "2026-04-05T19:03:31.457Z"
+          "source_event_ts": "2026-04-05T19:04:28.425Z"
         },
         "decision_preview": {
           "intents": [
@@ -768,18 +780,18 @@
             "ask_no": 0.99,
             "tick_size": null,
             "stale": true,
-            "updated_at": "2026-04-05T19:03:31.938Z",
+            "updated_at": "2026-04-05T19:04:28.916Z",
             "_btc_source_trace": {
               "source_init_started": true,
               "source_init_error": null,
-              "source_feed_seen": true,
-              "source_feed_count": 1,
-              "source_last_feed_at": "2026-04-05T19:03:31.938Z",
-              "latest_cache_price": 67384.29,
-              "latest_cache_at": "2026-04-05T19:03:31.938Z",
-              "latest_cache_source": "rest_binance",
+              "source_feed_seen": false,
+              "source_feed_count": 0,
+              "source_last_feed_at": null,
+              "latest_cache_price": null,
+              "latest_cache_at": null,
+              "latest_cache_source": null,
               "price_resolution": {
-                "kind": "cache",
+                "kind": "none",
                 "used_strike_raw": null,
                 "used_anchor_fallback_raw": null
               },
@@ -796,7 +808,7 @@
             },
             "event_id": "shadow-event-260405_012",
             "context_version": "ctx-v1",
-            "source_event_ts": "2026-04-05T19:03:31.457Z"
+            "source_event_ts": "2026-04-05T19:04:28.425Z"
           },
           "state_snapshot": {
             "ladder_posted": false
@@ -811,10 +823,10 @@
           "debug_frame_index": 0,
           "debug_completed": false,
           "tick_interval_ms": 2000,
-          "last_tick_at": "2026-04-05T19:02:52.958Z",
+          "last_tick_at": "2026-04-05T19:03:32.016Z",
           "last_window_id": null,
           "current_window_id": "shadow-window-260405_012",
-          "window_initialized_at": "2026-04-05T19:02:46.457Z",
+          "window_initialized_at": "2026-04-05T19:03:43.425Z",
           "remaining_sec": null,
           "anchor_btc": 65000,
           "atr_5m": 90,
@@ -829,7 +841,7 @@
           "no_order_ids": [],
           "last_reason": null,
           "last_intents": [],
-          "updated_at": "2026-04-05T19:03:32.012Z"
+          "updated_at": "2026-04-05T19:04:28.916Z"
         },
         "state_after": {
           "mode": "paper-staging",
@@ -839,10 +851,10 @@
           "debug_frame_index": 0,
           "debug_completed": false,
           "tick_interval_ms": 2000,
-          "last_tick_at": "2026-04-05T19:02:52.958Z",
+          "last_tick_at": "2026-04-05T19:03:32.016Z",
           "last_window_id": null,
           "current_window_id": "shadow-window-260405_012",
-          "window_initialized_at": "2026-04-05T19:02:46.457Z",
+          "window_initialized_at": "2026-04-05T19:03:43.425Z",
           "remaining_sec": null,
           "anchor_btc": 65000,
           "atr_5m": 90,
@@ -857,7 +869,7 @@
           "no_order_ids": [],
           "last_reason": null,
           "last_intents": [],
-          "updated_at": "2026-04-05T19:03:32.012Z"
+          "updated_at": "2026-04-05T19:04:28.916Z"
         },
         "order_summary": {
           "total": 0,

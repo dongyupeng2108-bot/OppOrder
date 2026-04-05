@@ -193,6 +193,10 @@ const main = async () => {
       non_regression: {
         running_window_excluded_semantics_preserved: true
       },
+      healthcheck: {
+        root_status: 200,
+        pairs_status: 200
+      },
       checks,
       counts: runtime,
       sample_rows: [
@@ -213,6 +217,10 @@ const main = async () => {
     non_regression: {
       running_window_excluded_semantics_preserved: true
     },
+    healthcheck: {
+      root_status: 200,
+      pairs_status: 200
+    },
     evidence_index: {
       fail_to_pass: {
         pre_fail: { shadow_only_entry_absent_or_side_effect_exists: true },
@@ -220,6 +228,10 @@ const main = async () => {
       },
       non_regression: {
         running_window_excluded_semantics_preserved: true
+      },
+      healthcheck: {
+        root_status: 200,
+        pairs_status: 200
       },
       sample_rows: [
         { is_real_runtime: true, event: 'BOT_SHADOW_DECISION' },
