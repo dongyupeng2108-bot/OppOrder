@@ -138,6 +138,10 @@ const main = async () => {
       non_regression: {
         running_window_excluded_semantics_preserved: true
       },
+      healthcheck: {
+        root_status: 200,
+        pairs_status: 200
+      },
       sample_rows: [
         {
           is_real_runtime: true,
@@ -174,6 +178,10 @@ const main = async () => {
       },
       non_regression: {
         running_window_excluded_semantics_preserved: true
+      },
+      healthcheck: {
+        root_status: 200,
+        pairs_status: 200
       },
       sample_rows: [
         { is_real_runtime: true, event: 'BOT_PRICE_1S' },

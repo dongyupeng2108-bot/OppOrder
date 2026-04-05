@@ -32,6 +32,10 @@
     "non_regression": {
       "running_window_excluded_semantics_preserved": true
     },
+    "healthcheck": {
+      "root_status": 200,
+      "pairs_status": 200
+    },
     "sample_rows": [
       {
         "is_real_runtime": true,
@@ -48,7 +52,7 @@
       "tick_response_role": "execution_snapshot"
     }
   },
-  "generated_at": "2026-04-05T17:24:38.295Z",
+  "generated_at": "2026-04-05T17:27:58.316Z",
   "conclusion_block": {
     "verdict": "A：通过",
     "first_break_layer": "NONE_CHAIN_PASS"
@@ -75,6 +79,10 @@
     },
     "non_regression": {
       "running_window_excluded_semantics_preserved": true
+    },
+    "healthcheck": {
+      "root_status": 200,
+      "pairs_status": 200
     },
     "sample_rows": [
       {
