@@ -111,6 +111,16 @@ const stripGateLightExitLines = (text) => text
 const gateLightLog = stripGateLightExitLines(readText(inputs.gateLightLog));
 const dodEvidence = readText(inputs.dodEvidence);
 const gitMeta = readJson(inputs.gitMeta);
+const getLiveGitMeta = () => {
+    try {
+        const branch = execSync('git branch --show-current', { cwd: repoRoot, encoding: 'utf8' }).trim();
+        const commit = execSync('git rev-parse HEAD', { cwd: repoRoot, encoding: 'utf8' }).trim();
+        return { branch, commit };
+    } catch (_) {
+        return null;
+    }
+};
+const liveGitMeta = getLiveGitMeta();
 let resultData = readJson(inputs.resultJson);
 const resolvedMode = mode || resultData.mode || 'Integrate';
 
@@ -328,8 +338,10 @@ const dropHistoricalFailedNoise = (line = '') => {
     const text = String(line || '');
     if (/FAILED:\s*Report Block Check for notify_\d+\.txt/i.test(text)) return true;
     if (/Report Block Check failed for notify_\d+\.txt/i.test(text)) return true;
+    if (/Missing Blocks:\s*===\s*GATE_LIGHT_PREVIEW\s*===\s*OR\s*===\s*GATE_LIGHT_VERIFY\s*===/i.test(text)) return true;
     if (/Missing block:\s*===\s*DOD_EVIDENCE_STDOUT\s*===/i.test(text)) return true;
     if (/Missing block:\s*===\s*GATE_LIGHT_PREVIEW\s*===\s*OR\s*===\s*GATE_LIGHT_VERIFY\s*===/i.test(text)) return true;
+    if (/ACTION:\s*Use 'assemble_evidence\.mjs' to regenerate reports\./i.test(text)) return true;
     if (/FAILED:\s*Heavy mandatory evidence incomplete/i.test(text)) return true;
     return false;
 };
@@ -410,8 +422,8 @@ const header = `Trae Task Report
 Task ID: ${taskId}
 Header: ${taskHeader}
 Date: ${new Date().toISOString()}
-Branch: ${gitMeta.branch}
-Commit: ${gitMeta.commit}
+Branch: ${(liveGitMeta?.branch || gitMeta.branch || '').trim()}
+Commit: ${(liveGitMeta?.commit || gitMeta.commit || '').trim()}
 `;
 
 const buildNotifyContent = (block) => `${header}
