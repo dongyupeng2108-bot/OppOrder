@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260405_011/result_260405_011.json
+LOG_HEAD
+[260405_011] notify full cleanup fix completed
+LOG_TAIL
+top-level notify_260405_010 no longer contains historical failed fragments
+EVIDENCE
+rules/task-reports/2026-04/260405_011/truth_audit_260405_011.md
+INDEX
+rules/task-reports/2026-04/260405_011/result_260405_011.json
