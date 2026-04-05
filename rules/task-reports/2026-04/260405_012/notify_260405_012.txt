@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260405_012/result_260405_012.json
+LOG_HEAD
+[260405_012] M2 shadow-only entry landed
+LOG_TAIL
+audit-only decision path emits idempotency key and no side effects
+EVIDENCE
+rules/task-reports/2026-04/260405_012/truth_audit_260405_012.md
+INDEX
+rules/task-reports/2026-04/260405_012/result_260405_012.json

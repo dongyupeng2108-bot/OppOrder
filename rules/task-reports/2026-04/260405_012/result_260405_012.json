@@ -1,0 +1,15 @@
+{
+  "task_id": "260405_012",
+  "status": "PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "summary": "M2 shadow-only 入口落地完成：decision 仅审计输出，未触发真实执行副作用。",
+  "deliverables": [
+    "docs/tasks/260405_012.md",
+    "strategies/crypto_binary/server.mjs",
+    "strategies/crypto_binary/bot_runner.mjs",
+    "scripts/truth_audit_m2_shadow_only_entry_260405_012.mjs",
+    "rules/task-reports/2026-04/260405_012/implementation_260405_012.md",
+    "rules/task-reports/2026-04/260405_012/truth_audit_260405_012.md",
+    "rules/task-reports/2026-04/260405_012_truth_audit_m2_shadow_only_entry_260405_012.json"
+  ]
+}

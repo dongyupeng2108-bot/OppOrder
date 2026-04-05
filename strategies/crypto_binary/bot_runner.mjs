@@ -482,6 +482,70 @@ export function createBotRunner(options = {}) {
     if (abortScheduledTickAfterStop('before_apply_intents', contextForDecision.window_id ?? null, state.mode ?? null)) {
       return null;
     }
+    if (config?.shadow_only === true) {
+      const beforeLogCount = options.getLogCount ? options.getLogCount() : null;
+      const shadowEventId = contextForDecision?.event_id ?? contextForDecision?.source_event_id ?? null;
+      const shadowWindowId = state.current_window_id ?? contextForDecision.window_id ?? null;
+      const shadowContextVersion = contextForDecision?.context_version ?? null;
+      const shadowIdempotencyKey = `${shadowEventId ?? 'null'}|${shadowWindowId ?? 'null'}|${shadowContextVersion ?? 'null'}`;
+      log({
+        level: 'info',
+        source: 'bot_runner',
+        event: 'BOT_SHADOW_DECISION',
+        message: decision.reason || 'shadow_decision',
+        mode: state.mode ?? null,
+        window_id: contextForDecision.window_id ?? null,
+        data: {
+          shadow_only: true,
+          execution_side_effects: false,
+          idempotency_key: shadowIdempotencyKey,
+          event_id: shadowEventId,
+          window_id: shadowWindowId,
+          context_version: shadowContextVersion,
+          source_event_ts: contextForDecision?.source_event_ts ?? contextForDecision?.updated_at ?? null,
+          intents_summary: intentsExecutionSummary
+        }
+      });
+      const summary = getSummary();
+      const stateAfter = cloneValue(state);
+      log({
+        level: 'info',
+        source: 'bot_runner',
+        event: 'RUNNER_TICK',
+        message: `tick ${decision.reason}`,
+        mode: state.mode ?? null,
+        window_id: contextForDecision.window_id ?? null,
+        data: {
+          shadow_only: true,
+          execution_side_effects: false,
+          intents_summary: intentsExecutionSummary,
+          changed: 0,
+          filled: 0,
+          open_total: summary.open_total,
+          cancelled_total: summary.cancelled_total,
+          filled_total: summary.filled_total
+        }
+      });
+      const afterLogCount = options.getLogCount ? options.getLogCount() : null;
+      const logsAdded = beforeLogCount !== null && afterLogCount !== null ? Math.max(0, afterLogCount - beforeLogCount) : 2;
+      const tickResult = {
+        shadow_only: true,
+        execution_side_effects: false,
+        shadow_idempotency_key: shadowIdempotencyKey,
+        context_snapshot: cloneValue(contextForDecision),
+        decision_preview: toDecisionPreview(decision, contextForDecision, state),
+        state_before: cloneValue(state),
+        state_after: cloneValue(stateAfter),
+        order_summary: cloneValue(summary),
+        fills: [],
+        blocked_cross_window_candidates: [],
+        logs_added: logsAdded
+      };
+      if (onTickResult) {
+        onTickResult(cloneValue(tickResult));
+      }
+      return tickResult;
+    }
     const executionWindowId = state.current_window_id ?? contextForDecision.window_id ?? 'null';
     const intentResult = applyIntents(intentsForExecution, {
       source: `runner_tick|window=${executionWindowId}`

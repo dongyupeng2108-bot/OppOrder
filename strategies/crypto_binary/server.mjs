@@ -82,6 +82,7 @@ const BOT_CONFIG_DEFAULTS = {
   ladder_size: BOT_STRATEGY_CONTRACT.defaults.ladder_size,
   atr_multiple: 1.2,
   cancel_all_remaining_sec: 100,
+  shadow_only: false,
   up_ladder: toLadderRows(BOT_STRATEGY_CONTRACT.defaults.ladder_prices, BOT_STRATEGY_CONTRACT.defaults.ladder_size),
   down_ladder: toLadderRows(BOT_STRATEGY_CONTRACT.defaults.ladder_prices, BOT_STRATEGY_CONTRACT.defaults.ladder_size),
   up_cancel: { before_end_sec: 100, formula: '' },
@@ -289,6 +290,7 @@ const cloneBotConfig = (value) => ({
   ladder_size: Number(value.ladder_size),
   atr_multiple: Number(value.atr_multiple),
   cancel_all_remaining_sec: Number(value.cancel_all_remaining_sec),
+  shadow_only: value.shadow_only === true,
   up_ladder: cloneLadderRows(value.up_ladder),
   down_ladder: cloneLadderRows(value.down_ladder),
   up_cancel: cloneCancelConfig(value.up_cancel),
@@ -300,6 +302,7 @@ const toInternalRunnerConfig = (value) => ({
   ladder_size: Number(value.ladder_size),
   atr_multiplier: Number(value.atr_multiple),
   cancel_all_remaining_sec: Number(value.cancel_all_remaining_sec),
+  shadow_only: value.shadow_only === true,
   up_ladder: cloneLadderRows(value.up_ladder),
   down_ladder: cloneLadderRows(value.down_ladder),
   up_cancel: cloneCancelConfig(value.up_cancel),
@@ -314,6 +317,7 @@ const setBotConfigCurrent = (nextConfig, options = {}) => {
   botRunnerConfig.ladder_size = internal.ladder_size;
   botRunnerConfig.atr_multiplier = internal.atr_multiplier;
   botRunnerConfig.cancel_all_remaining_sec = internal.cancel_all_remaining_sec;
+  botRunnerConfig.shadow_only = internal.shadow_only === true;
   botRunnerConfig.up_ladder = cloneLadderRows(internal.up_ladder);
   botRunnerConfig.down_ladder = cloneLadderRows(internal.down_ladder);
   botRunnerConfig.up_cancel = cloneCancelConfig(internal.up_cancel);
@@ -335,6 +339,7 @@ const syncRunnerConfigFromSavedConfig = () => {
   botRunnerConfig.ladder_size = internal.ladder_size;
   botRunnerConfig.atr_multiplier = internal.atr_multiplier;
   botRunnerConfig.cancel_all_remaining_sec = internal.cancel_all_remaining_sec;
+  botRunnerConfig.shadow_only = internal.shadow_only === true;
   botRunnerConfig.up_ladder = cloneLadderRows(internal.up_ladder);
   botRunnerConfig.down_ladder = cloneLadderRows(internal.down_ladder);
   botRunnerConfig.up_cancel = cloneCancelConfig(internal.up_cancel);
@@ -804,6 +809,7 @@ const validateBotConfigPayload = (payload) => {
     'ladder_size',
     'atr_multiple',
     'cancel_all_remaining_sec',
+    'shadow_only',
     'up_ladder',
     'down_ladder',
     'up_cancel',
@@ -814,6 +820,7 @@ const validateBotConfigPayload = (payload) => {
   const ladderSize = Number(payload.ladder_size);
   const atrMultiple = Number(payload.atr_multiple);
   const cancelAllRemainingSec = Number(payload.cancel_all_remaining_sec);
+  const shadowOnly = payload.shadow_only;
   const ladderPrices = normalizeLadderPrices(payload.ladder_prices);
   if (hasInvalidLadderRowPayload(payload.up_ladder) || hasInvalidLadderRowPayload(payload.down_ladder)) {
     return { ok: false, error: 'invalid up_ladder/down_ladder row' };
@@ -826,6 +833,7 @@ const validateBotConfigPayload = (payload) => {
   if (!isPositiveInteger(ladderSize)) return { ok: false, error: 'ladder_size must be positive integer' };
   if (!isPositiveNumber(atrMultiple)) return { ok: false, error: 'atr_multiple must be positive number' };
   if (!isNonNegativeInteger(cancelAllRemainingSec)) return { ok: false, error: 'cancel_all_remaining_sec must be non-negative integer' };
+  if (typeof shadowOnly !== 'boolean') return { ok: false, error: 'shadow_only must be boolean' };
   if (!ladderPrices) return { ok: false, error: 'ladder_prices must be an array of numbers between 0 and 1' };
   const legacyLadder = ladderPrices.map((price) => ({ price, size: ladderSize, tp_price: 1 }));
   const resolvedUpLadder = upLadder || legacyLadder;
@@ -842,6 +850,7 @@ const validateBotConfigPayload = (payload) => {
       ladder_size: ladderSize,
       atr_multiple: atrMultiple,
       cancel_all_remaining_sec: cancelAllRemainingSec,
+      shadow_only: shadowOnly,
       up_ladder: resolvedUpLadder,
       down_ladder: resolvedDownLadder,
       up_cancel: resolvedUpCancel,
@@ -861,6 +870,7 @@ const coerceRecoveredBotConfig = (payload) => {
   const cancelAllRemainingSec = isNonNegativeInteger(cancelAllRemainingSecRaw)
     ? cancelAllRemainingSecRaw
     : BOT_CONFIG_DEFAULTS.cancel_all_remaining_sec;
+  const shadowOnly = payload.shadow_only === true;
   const legacyLadder = ladderPrices.map((price) => ({ price, size: ladderSize, tp_price: 1 }));
   const upLadder = normalizeLadderRowsPayload(payload.up_ladder) || legacyLadder;
   const downLadder = normalizeLadderRowsPayload(payload.down_ladder) || legacyLadder;
@@ -872,6 +882,7 @@ const coerceRecoveredBotConfig = (payload) => {
     ladder_size: ladderSize,
     atr_multiple: atrMultiple,
     cancel_all_remaining_sec: cancelAllRemainingSec,
+    shadow_only: shadowOnly,
     up_ladder: upLadder,
     down_ladder: downLadder,
     up_cancel: upCancel,
