@@ -1,9 +1,9 @@
 Trae Task Report
 Task ID: 260405_012
 Header: TraeTask_260405_012
-Date: 2026-04-05T19:03:49.917Z
+Date: 2026-04-05T19:04:46.304Z
 Branch: 260405_011
-Commit: 6938092fc1f6cd7cdba5d0cffb16e0b333cd1a4a
+Commit: 13d7a05f4eab72555b98dcdefdea6bc8da84d56e
 
 
 === RESULT_JSON ===
@@ -37,7 +37,6 @@ LATEST_TASK_ID=260405_012
 
 === LOG_TAIL ===
 ...
-[Gate Light] Skipping DoD Evidence Excerpt Check (Preview Mode).
 [Gate Light] Checking Deletion Audit (Locks & Runs)...
 [Gate Light] Deletion Audit: No lock/index yet (Assuming Pre-Integrate or First Run in progress).
 [Gate Light] Checking No Auto-Merge (Git Forbidden Commands)...
@@ -49,19 +48,21 @@ SNIPPET_GIT_STRATEGY=local_first
 [Gate Light] Skipping SnippetCommitMustMatch check (Preview Mode).
 [Gate Light] DOMAIN_SKIP: Rank V2 Contract Version Guard skipped (domain=btcqdd).
 [Gate Light] Checking Heavy Mandatory Evidence...
+[Gate Light] Heavy mandatory evidence verified.
+[Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...
+[Gate Light] Immutable Integrate & SafeCmd Enforcement verified.
+[Gate Light] Checking Scope Lock...
+[Gate Light] WARN: No scope_lock file found. Skipping scope lock check (backward compatible).
+[Gate Light] BTCQDD Healthcheck: PASS
+[Gate Light] Skipping Postflight Envelope Validation (Preview Mode).
+[Gate Light] PASS
 
-  heavy_mode=business
-  has_first_break_layer=true
-  has_fail_to_pass=true
-  has_real_runtime=true
-  has_non_regression=true
-  server_touched=true
-  has_healthcheck=false
 
 === DOD_EVIDENCE_STDOUT ===
   Missing Blocks: === GATE_LIGHT_PREVIEW === OR === GATE_LIGHT_VERIFY ===
   ACTION: Use 'assemble_evidence.mjs' to regenerate reports.
 ...
+
 
 DOD_EVIDENCE_HEALTHCHECK_ROOT: 260405_012_healthcheck_53122_root.txt => HTTP/1.1 200 OK
 DOD_EVIDENCE_SITE_HEALTH_ROOT_53122: 260405_012_healthcheck_53122_root.txt => HTTP/1.1 200 OK
@@ -127,15 +128,15 @@ SNIPPET_GIT_STRATEGY=local_first
 [Gate Light] Skipping SnippetCommitMustMatch check (Preview Mode).
 [Gate Light] DOMAIN_SKIP: Rank V2 Contract Version Guard skipped (domain=btcqdd).
 [Gate Light] Checking Heavy Mandatory Evidence...
+[Gate Light] Heavy mandatory evidence verified.
+[Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...
+[Gate Light] Immutable Integrate & SafeCmd Enforcement verified.
+[Gate Light] Checking Scope Lock...
+[Gate Light] WARN: No scope_lock file found. Skipping scope lock check (backward compatible).
+[Gate Light] BTCQDD Healthcheck: PASS
+[Gate Light] Skipping Postflight Envelope Validation (Preview Mode).
+[Gate Light] PASS
 
-[Gate Light] FAILED: Heavy mandatory evidence incomplete.
-  heavy_mode=business
-  has_first_break_layer=true
-  has_fail_to_pass=true
-  has_real_runtime=true
-  has_non_regression=true
-  server_touched=true
-  has_healthcheck=false
 ==========================
 
 
