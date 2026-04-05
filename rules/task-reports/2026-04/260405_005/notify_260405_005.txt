@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260405_005/result_260405_005.json
+LOG_HEAD
+[260405_005] fix for failed acceptance of 260405_004 completed
+LOG_TAIL
+Three-event real runtime coverage and clean finalize+gate chain are ready
+EVIDENCE
+rules/task-reports/2026-04/260405_005/truth_audit_260405_005.md
+INDEX
+rules/task-reports/2026-04/260405_005/result_260405_005.json

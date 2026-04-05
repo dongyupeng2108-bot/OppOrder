@@ -1,0 +1,129 @@
+{
+  "script_name": "truth_audit_m1_a1_execution_contract_260405_004",
+  "task_id": "260405_005",
+  "sample_name": "m1_a1_execution_contract",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-04\\260405_005_truth_audit_m1_a1_execution_contract_260405_004.json",
+  "summary": {
+    "pass": true,
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "checks": {
+      "intents_total_nonzero": true,
+      "runner_tick_total_nonzero": true,
+      "bot_fill_total_nonzero": true,
+      "intents_contract_full": true,
+      "runner_tick_contract_full": true,
+      "bot_fill_contract_full": true,
+      "non_regression_running_window_excluded_semantics_preserved": true
+    }
+  },
+  "raw_excerpt": {
+    "pre_fail": {
+      "three_event_coverage_not_guaranteed": true
+    },
+    "post_pass": {
+      "three_event_coverage_guaranteed": true
+    },
+    "fail_to_pass": {
+      "before": "coverage_missing_or_inconsistent",
+      "after": "all_three_events_nonzero_and_consistent"
+    },
+    "sample_rows": [
+      {
+        "is_real_runtime": true,
+        "window_id": "btc-updown-5m-1775401800"
+      }
+    ],
+    "checks": {
+      "intents_total_nonzero": true,
+      "runner_tick_total_nonzero": true,
+      "bot_fill_total_nonzero": true,
+      "intents_contract_full": true,
+      "runner_tick_contract_full": true,
+      "bot_fill_contract_full": true,
+      "non_regression_running_window_excluded_semantics_preserved": true
+    },
+    "contract_coverage": {
+      "BOT_INTENTS": {
+        "total": 5,
+        "with_contract": 5,
+        "ratio": 1
+      },
+      "RUNNER_TICK": {
+        "total": 1,
+        "with_contract": 1,
+        "ratio": 1
+      },
+      "BOT_FILL": {
+        "total": 1,
+        "with_contract": 1,
+        "ratio": 1
+      }
+    }
+  },
+  "generated_at": "2026-04-05T15:10:47.536Z",
+  "conclusion_block": {
+    "verdict": "A：通过",
+    "first_break_layer": "NONE_CHAIN_PASS"
+  },
+  "checks": {
+    "intents_total_nonzero": true,
+    "runner_tick_total_nonzero": true,
+    "bot_fill_total_nonzero": true,
+    "intents_contract_full": true,
+    "runner_tick_contract_full": true,
+    "bot_fill_contract_full": true,
+    "non_regression_running_window_excluded_semantics_preserved": true
+  },
+  "non_regression": {
+    "running_window_excluded_semantics_preserved": true
+  },
+  "evidence_index": {
+    "fail_to_pass": {
+      "pre_fail": {
+        "three_event_coverage_not_guaranteed": true
+      },
+      "post_pass": {
+        "three_event_coverage_guaranteed": true
+      }
+    },
+    "non_regression": {
+      "running_window_excluded_semantics_preserved": true
+    },
+    "sample_rows": [
+      {
+        "is_real_runtime": true,
+        "window_id": "btc-updown-5m-1775401800"
+      }
+    ],
+    "contract_coverage": {
+      "BOT_INTENTS": {
+        "total": 5,
+        "with_contract": 5,
+        "ratio": 1
+      },
+      "RUNNER_TICK": {
+        "total": 1,
+        "with_contract": 1,
+        "ratio": 1
+      },
+      "BOT_FILL": {
+        "total": 1,
+        "with_contract": 1,
+        "ratio": 1
+      }
+    },
+    "runtime_scope": {
+      "start_ts": "2026-04-05T15:10:38.172Z",
+      "rows_in_scope": 26,
+      "runner_tick_contract": {
+        "event_id": "evt_YnRjLXVwZG93bi01bS0xNzc1NDAxODAw",
+        "context_version": "YnRjLXVwZG93bi01bS0xNzc1NDAxODAw",
+        "source_event_ts": "2026-04-05T15:10:45.498Z",
+        "window_id": "btc-updown-5m-1775401800"
+      }
+    }
+  }
+}

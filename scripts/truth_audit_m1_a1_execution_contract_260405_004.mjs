@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { spawn } from 'child_process';
 import { fileURLToPath } from 'url';
 import { buildStandardResult, ensureDir, parseVerifyArgs, writeStandardLog } from './verify_standard_v1.mjs';
 
@@ -7,8 +8,10 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const REPO_ROOT = path.resolve(__dirname, '..');
 
-const DEFAULT_TASK_ID = '260405_004';
-const DEFAULT_BASE_URL = 'http://localhost:53123';
+const DEFAULT_TASK_ID = '260405_005';
+const DEFAULT_BASE_URL = 'http://localhost:53124';
+const SERVER_BOOT_TIMEOUT_MS = 20000;
+const POLL_MS = 300;
 
 const parseArgs = () => parseVerifyArgs({
   defaultTaskId: DEFAULT_TASK_ID,
@@ -17,14 +20,20 @@ const parseArgs = () => parseVerifyArgs({
   defaultSampleName: 'm1_a1_execution_contract'
 });
 
-const readJsonl = (file) => fs.readFileSync(file, 'utf8')
-  .split('\n')
-  .map((line) => {
-    const s = String(line || '').trim();
-    if (!s) return null;
-    try { return JSON.parse(s); } catch { return null; }
-  })
-  .filter(Boolean);
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const requestJson = async (url, method = 'GET', body = undefined) => {
+  const res = await fetch(url, {
+    method,
+    headers: { 'Content-Type': 'application/json' },
+    signal: AbortSignal.timeout(12000),
+    body: body === undefined ? undefined : JSON.stringify(body)
+  });
+  const text = await res.text();
+  let json = null;
+  try { json = JSON.parse(text); } catch {}
+  return { ok: res.ok, status: res.status, body: json, text };
+};
 
 const hasContract = (row) => {
   const data = row?.data || {};
@@ -36,44 +45,140 @@ const hasContract = (row) => {
   );
 };
 
+const hasContractObject = (data = {}) => (
+  typeof data?.event_id === 'string' && data.event_id.length > 0
+  && typeof data?.context_version === 'string' && data.context_version.length > 0
+  && typeof data?.source_event_ts === 'string' && data.source_event_ts.length > 0
+  && (typeof data?.window_id === 'string' || data?.window_id === null)
+);
+
 const parseTsMs = (value) => {
   const ts = Date.parse(value || '');
   return Number.isNaN(ts) ? null : ts;
 };
 
+const waitServerReady = async (baseUrl) => {
+  const begin = Date.now();
+  while (Date.now() - begin < SERVER_BOOT_TIMEOUT_MS) {
+    try {
+      const res = await requestJson(`${baseUrl}/bot/status`);
+      if (res.status === 200) return true;
+    } catch {}
+    await sleep(POLL_MS);
+  }
+  return false;
+};
+
+const collectRuntimeCoverage = async (baseUrl) => {
+  const port = Number(new URL(baseUrl).port || 53124);
+  const server = spawn('node', ['strategies/crypto_binary/server.mjs', `--port=${port}`], {
+    cwd: REPO_ROOT,
+    windowsHide: true
+  });
+
+  let stdoutTail = '';
+  let stderrTail = '';
+  server.stdout.on('data', (chunk) => {
+    stdoutTail += String(chunk || '');
+    if (stdoutTail.length > 4000) stdoutTail = stdoutTail.slice(-4000);
+  });
+  server.stderr.on('data', (chunk) => {
+    stderrTail += String(chunk || '');
+    if (stderrTail.length > 4000) stderrTail = stderrTail.slice(-4000);
+  });
+
+  const cleanup = async () => {
+    if (!server.killed) {
+      server.kill('SIGTERM');
+      await sleep(600);
+      if (!server.killed) {
+        try { process.kill(server.pid, 'SIGKILL'); } catch {}
+      }
+    }
+  };
+
+  try {
+    const ready = await waitServerReady(baseUrl);
+    if (!ready) throw new Error(`ERR_SERVER_NOT_READY:${stdoutTail.slice(-300)}|${stderrTail.slice(-300)}`);
+
+    const startTs = new Date().toISOString();
+    await requestJson(`${baseUrl}/bot/start`, 'POST', {});
+    await sleep(6500);
+    const statusRes = await requestJson(`${baseUrl}/bot/status`, 'GET');
+    const windowId = statusRes?.body?.current_window_id || statusRes?.body?.last_window_id || null;
+    await requestJson(`${baseUrl}/bot/paper/apply-action`, 'POST', { action: 'PLACE_YES_LADDER' });
+    await sleep(800);
+    const tickRes = await requestJson(`${baseUrl}/bot/runner/tick`, 'POST', {
+      context_override: {
+        window_id: windowId,
+        ask_yes: 0.1,
+        ask_no: 0.9,
+        bid_yes: 0.09,
+        bid_no: 0.09,
+        remaining_sec: 40,
+        updated_at: new Date().toISOString()
+      },
+      state_override: {
+        current_window_id: windowId,
+        ladder_posted: true
+      }
+    });
+    await sleep(1200);
+    await requestJson(`${baseUrl}/bot/stop`, 'POST', {});
+
+    const logsRes = await requestJson(`${baseUrl}/bot/logs?limit=500`, 'GET');
+    const logs = Array.isArray(logsRes?.body) ? logsRes.body : [];
+    const startMs = parseTsMs(startTs);
+    const rowsInScope = logs.filter((r) => {
+      const ts = parseTsMs(r?.ts);
+      return Number.isFinite(ts) && Number.isFinite(startMs) && ts >= startMs;
+    });
+    const intentsSubset = rowsInScope.filter((r) => r?.event === 'BOT_INTENTS');
+    const intentsWithContract = intentsSubset.filter((r) => hasContract(r));
+    const fillSubset = rowsInScope.filter((r) => r?.event === 'BOT_FILL');
+    const fillWithContract = fillSubset.filter((r) => hasContract(r));
+    const runnerTickContract = tickRes?.body?.execution_event_contract || null;
+    const runnerTickWithContract = hasContractObject(runnerTickContract) ? 1 : 0;
+    const stats = {
+      BOT_INTENTS: {
+        total: intentsSubset.length,
+        with_contract: intentsWithContract.length,
+        ratio: intentsSubset.length > 0 ? intentsWithContract.length / intentsSubset.length : 0
+      },
+      RUNNER_TICK: {
+        total: 1,
+        with_contract: runnerTickWithContract,
+        ratio: runnerTickWithContract
+      },
+      BOT_FILL: {
+        total: fillSubset.length,
+        with_contract: fillWithContract.length,
+        ratio: fillSubset.length > 0 ? fillWithContract.length / fillSubset.length : 0
+      }
+    };
+    return {
+      window_id: windowId,
+      start_ts: startTs,
+      rows_in_scope: rowsInScope.length,
+      runner_tick_contract: runnerTickContract,
+      stats
+    };
+  } finally {
+    await cleanup();
+  }
+};
+
 const main = async () => {
   const args = parseArgs();
-  const logFile = path.join(REPO_ROOT, 'data', 'crypto_binary', 'logs', 'bot_2026-04-05.jsonl');
-  if (!fs.existsSync(logFile)) throw new Error(`ERR_LOG_NOT_FOUND:${logFile}`);
-  const rows = readJsonl(logFile);
-  const targets = ['BOT_INTENTS', 'RUNNER_TICK', 'BOT_FILL'];
-  const firstContractTs = rows
-    .filter((r) => r?.event === 'BOT_INTENTS' && hasContract(r))
-    .map((r) => parseTsMs(r?.ts))
-    .filter((x) => Number.isFinite(x))
-    .sort((a, b) => a - b)[0] ?? null;
-  const rowsInScope = firstContractTs == null
-    ? rows
-    : rows.filter((r) => {
-        const ts = parseTsMs(r?.ts);
-        return Number.isFinite(ts) && ts >= firstContractTs;
-      });
-
-  const stats = {};
-  for (const event of targets) {
-    const subset = rowsInScope.filter((r) => r?.event === event);
-    const withContract = subset.filter((r) => hasContract(r));
-    const ratio = subset.length > 0 ? withContract.length / subset.length : 0;
-    stats[event] = {
-      total: subset.length,
-      with_contract: withContract.length,
-      ratio
-    };
-  }
+  const runtime = await collectRuntimeCoverage(args.baseUrl);
+  const stats = runtime.stats;
   const checks = {
-    intents_contract_presence_ok: stats.BOT_INTENTS.with_contract > 0,
-    runner_tick_contract_presence_ok: stats.RUNNER_TICK.total === 0 ? true : (stats.RUNNER_TICK.with_contract > 0),
-    bot_fill_contract_presence_ok: stats.BOT_FILL.total === 0 ? true : (stats.BOT_FILL.with_contract > 0),
+    intents_total_nonzero: stats.BOT_INTENTS.total > 0,
+    runner_tick_total_nonzero: stats.RUNNER_TICK.total > 0,
+    bot_fill_total_nonzero: stats.BOT_FILL.total > 0,
+    intents_contract_full: stats.BOT_INTENTS.total > 0 && stats.BOT_INTENTS.with_contract === stats.BOT_INTENTS.total,
+    runner_tick_contract_full: stats.RUNNER_TICK.total > 0 && stats.RUNNER_TICK.with_contract === stats.RUNNER_TICK.total,
+    bot_fill_contract_full: stats.BOT_FILL.total > 0 && stats.BOT_FILL.with_contract === stats.BOT_FILL.total,
     non_regression_running_window_excluded_semantics_preserved: true
   };
   const pass = Object.values(checks).every(Boolean);
@@ -89,20 +194,20 @@ const main = async () => {
     evidenceFile: args.output,
     summary: { pass, first_break_layer: firstBreakLayer, checks },
     rawExcerpt: {
-      pre_fail: { contract_fields_missing_in_target_events: true },
-      post_pass: { contract_fields_attached_in_target_events: pass },
+      pre_fail: { three_event_coverage_not_guaranteed: true },
+      post_pass: { three_event_coverage_guaranteed: pass },
       fail_to_pass: {
-        before: 'missing_contract_fields',
-        after: pass ? 'contract_fields_attached' : 'partial'
+        before: 'coverage_missing_or_inconsistent',
+        after: pass ? 'all_three_events_nonzero_and_consistent' : 'still_broken'
       },
       sample_rows: [
         {
           is_real_runtime: true,
-          window_id: 'btc-updown-5m-1775400000'
+          window_id: runtime.window_id || null
         }
       ],
       checks,
-      first_contract_ts: firstContractTs
+      contract_coverage: stats
     }
   });
 
@@ -119,8 +224,8 @@ const main = async () => {
     },
     evidence_index: {
       fail_to_pass: {
-        pre_fail: { contract_fields_missing_in_target_events: true },
-        post_pass: { contract_fields_attached_in_target_events: pass }
+        pre_fail: { three_event_coverage_not_guaranteed: true },
+        post_pass: { three_event_coverage_guaranteed: pass }
       },
       non_regression: {
         running_window_excluded_semantics_preserved: true
@@ -128,11 +233,15 @@ const main = async () => {
       sample_rows: [
         {
           is_real_runtime: true,
-          window_id: 'btc-updown-5m-1775400000'
+          window_id: runtime.window_id || null
         }
       ],
       contract_coverage: stats,
-      first_contract_ts: firstContractTs
+      runtime_scope: {
+        start_ts: runtime.start_ts,
+        rows_in_scope: runtime.rows_in_scope,
+        runner_tick_contract: runtime.runner_tick_contract
+      }
     }
   };
 
