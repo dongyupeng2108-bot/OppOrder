@@ -1,11 +1,10 @@
 === TRAE_REPORT_SNIPPET ===
 
 Header: TraeTask_260405_009
-BRANCH: 260405_009
-COMMIT: 50f39d91a
+BRANCH: 260405_009_clean
+COMMIT: 84354716e
 
 === GIT_SCOPE_DIFF ===
-A	docs/tasks/260405_008.md
 A	docs/tasks/260405_009.md
 M	rules/LATEST.json
 A	rules/task-reports/2026-04/260405_008.json
@@ -21,22 +20,25 @@ A	rules/task-reports/2026-04/260405_009/implementation_260405_009.md
 A	rules/task-reports/2026-04/260405_009/notify_260405_009.txt
 A	rules/task-reports/2026-04/260405_009/result_260405_009.json
 A	rules/task-reports/2026-04/260405_009/truth_audit_260405_009.md
+A	rules/task-reports/2026-04/260405_009_healthcheck_53122_pairs.txt
+A	rules/task-reports/2026-04/260405_009_healthcheck_53122_root.txt
 A	rules/task-reports/2026-04/260405_009_truth_audit_m1_a3_acceptance_fix_260405_009.json
 A	rules/task-reports/2026-04/evidence_manifest_260405_008.json
+A	rules/task-reports/2026-04/evidence_manifest_260405_009.json
 A	rules/task-reports/2026-04/manual_verification_260405_008.json
+A	rules/task-reports/2026-04/manual_verification_260405_009.json
 A	rules/task-reports/2026-04/notify_260405_008.txt
 A	rules/task-reports/2026-04/notify_260405_009.txt
 A	rules/task-reports/2026-04/result_260405_008.json
 A	rules/task-reports/2026-04/result_260405_009.json
 A	rules/task-reports/2026-04/run_260405_008.log
+A	rules/task-reports/2026-04/run_260405_009.log
 A	rules/task-reports/2026-04/trae_report_snippet_260405_008.txt
 A	rules/task-reports/2026-04/trae_report_snippet_260405_009.txt
 A	rules/task-reports/2026-04/workspace_healer_260405_008.json
 A	rules/task-reports/2026-04/workspace_healer_260405_009.json
 A	scripts/truth_audit_m1_a3_acceptance_fix_260405_009.mjs
 A	scripts/truth_audit_m1_a3_sampling_semantics_260405_008.mjs
-M	strategies/crypto_binary/bot_runner.mjs
-M	strategies/crypto_binary/server.mjs
 
 === DOD_EVIDENCE_STDOUT ===
 Missing Blocks:
