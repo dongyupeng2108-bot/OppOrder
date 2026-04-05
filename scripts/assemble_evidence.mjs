@@ -95,14 +95,7 @@ const ensurePreviewEncoding = (text, label) => {
 };
 const calcHash = (filePath) => {
     try {
-        let fileBuffer = fs.readFileSync(filePath);
-        const ext = path.extname(filePath).toLowerCase();
-        const textExtensions = ['.txt', '.json', '.md', '.js', '.mjs', '.log', '.html', '.css', '.csv'];
-        if (textExtensions.includes(ext)) {
-            let content = fileBuffer.toString('utf8');
-            content = content.replace(/\r\n/g, '\n');
-            fileBuffer = Buffer.from(content, 'utf8');
-        }
+        const fileBuffer = fs.readFileSync(filePath);
         return crypto.createHash('sha256').update(fileBuffer).digest('hex');
     } catch (e) {
         return null;

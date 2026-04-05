@@ -1,11 +1,11 @@
 {
   "task_id": "260405_011",
-  "timestamp": "2026-04-05T18:39:54.953Z",
+  "timestamp": "2026-04-05T18:42:59.798Z",
   "valid": false,
   "errors": [
     {
       "code": "POSTFLIGHT_REPORT_BINDING_MISMATCH",
-      "message": "Report Hash Mismatch: ResultJSON(793fe297) != ActualFile(3dab3a7f)"
+      "message": "Report Hash Mismatch: ResultJSON(27857263) != ActualFile(f920a6a1)"
     }
   ],
   "checks": {
@@ -31,7 +31,7 @@
       },
       "summary": "Automation Pack V1 Validation for Task 260405_011",
       "report_file": "notify_260405_011.txt",
-      "report_sha256_short": "793fe297"
+      "report_sha256_short": "27857263"
     }
   },
   "header": "TraeTask_260405_011"

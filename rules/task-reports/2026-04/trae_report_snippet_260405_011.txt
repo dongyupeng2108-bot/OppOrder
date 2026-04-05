@@ -2,7 +2,7 @@
 
 Header: TraeTask_260405_011
 BRANCH: 260405_011
-COMMIT: 8a478be4b
+COMMIT: 10411296f
 
 === GIT_SCOPE_DIFF ===
 A	docs/tasks/260405_011.md
@@ -15,17 +15,23 @@ A	rules/task-reports/2026-04/260405_010/truth_audit_260405_010.md
 A	rules/task-reports/2026-04/260405_010_healthcheck_53122_pairs.txt
 A	rules/task-reports/2026-04/260405_010_healthcheck_53122_root.txt
 A	rules/task-reports/2026-04/260405_010_truth_audit_notify_noise_cleanup_260405_010.json
+A	rules/task-reports/2026-04/260405_011.json
 A	rules/task-reports/2026-04/260405_011/implementation_260405_011.md
 A	rules/task-reports/2026-04/260405_011/notify_260405_011.txt
 A	rules/task-reports/2026-04/260405_011/result_260405_011.json
 A	rules/task-reports/2026-04/260405_011/truth_audit_260405_011.md
+A	rules/task-reports/2026-04/260405_011_truth_audit_notify_full_cleanup_260405_011.json
 A	rules/task-reports/2026-04/evidence_manifest_260405_010.json
 A	rules/task-reports/2026-04/manual_verification_260405_010.json
 A	rules/task-reports/2026-04/notify_260405_010.txt
+A	rules/task-reports/2026-04/notify_260405_011.txt
 A	rules/task-reports/2026-04/result_260405_010.json
+A	rules/task-reports/2026-04/result_260405_011.json
 A	rules/task-reports/2026-04/run_260405_010.log
 A	rules/task-reports/2026-04/trae_report_snippet_260405_010.txt
+A	rules/task-reports/2026-04/trae_report_snippet_260405_011.txt
 A	rules/task-reports/2026-04/workspace_healer_260405_010.json
+A	rules/task-reports/2026-04/workspace_healer_260405_011.json
 M	scripts/assemble_evidence.mjs
 A	scripts/truth_audit_notify_full_cleanup_260405_011.mjs
 
