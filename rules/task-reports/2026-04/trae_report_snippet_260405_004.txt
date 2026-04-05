@@ -1,0 +1,36 @@
+=== TRAE_REPORT_SNIPPET ===
+
+Header: TraeTask_260405_004
+BRANCH: 260405_004
+COMMIT: 9582199b7
+
+=== GIT_SCOPE_DIFF ===
+A	docs/tasks/260405_004.md
+M	rules/LATEST.json
+A	rules/task-reports/2026-04/260405_004/implementation_260405_004.md
+A	rules/task-reports/2026-04/260405_004/notify_260405_004.txt
+A	rules/task-reports/2026-04/260405_004/result_260405_004.json
+A	rules/task-reports/2026-04/260405_004/truth_audit_260405_004.md
+A	rules/task-reports/2026-04/260405_004_truth_audit_m1_a1_execution_contract_260405_004.json
+A	scripts/truth_audit_m1_a1_execution_contract_260405_004.mjs
+M	strategies/crypto_binary/bot_runner.mjs
+
+=== DOD_EVIDENCE_STDOUT ===
+Missing Blocks:
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260405_004_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260405_004_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+
+
+
+=== GATE_LIGHT_PREVIEW ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260405_004
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] TASK_PROFILE=heavy
+[Gate Light] TASK_DOMAIN=btcqdd
+[Gate Light] DOMAIN_PACKS=["btcqdd_core"]
+[Gate Light] Verifying task_id: 260405_004
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] FAILED: Report Block Check for notify_260405_004.txt
+GATE_LIGHT_EXIT=1
