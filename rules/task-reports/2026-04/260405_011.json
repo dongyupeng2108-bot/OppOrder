@@ -1,13 +1,8 @@
 {
   "task_id": "260405_011",
-  "timestamp": "2026-04-05T18:44:21.601Z",
-  "valid": false,
-  "errors": [
-    {
-      "code": "POSTFLIGHT_REPORT_BINDING_MISMATCH",
-      "message": "Report Hash Mismatch: ResultJSON(90d7412e) != ActualFile(d78e7955)"
-    }
-  ],
+  "timestamp": "2026-04-05T18:48:00.848Z",
+  "valid": true,
+  "errors": [],
   "checks": {
     "smoke_test": "PASS",
     "result_json": "OK",
@@ -30,9 +25,8 @@
         "gate_light_exit": 0
       },
       "summary": "Automation Pack V1 Validation for Task 260405_011",
-      "report_file": "notify_260405_011.txt",
-      "report_sha256_short": "90d7412e"
+      "report_file": "trae_report_snippet_260405_011.txt",
+      "report_sha256_short": "b1b421e8"
     }
-  },
-  "header": "TraeTask_260405_011"
+  }
 }
