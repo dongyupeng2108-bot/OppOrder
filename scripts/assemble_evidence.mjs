@@ -344,15 +344,6 @@ let dodBlock = dodEvidence;
 if (/Trae Task Report/i.test(dodBlock) || /=== LOG_HEAD ===/i.test(dodBlock)) {
     dodBlock = extractDodStdoutBlock(dodBlock);
 }
-
-// Refresh report binding to snippet after snippet finalized to avoid notify drift mismatches
-const snippetHash = calcHash(snippetPath);
-if (snippetHash) {
-    resultData.report_file = path.basename(snippetPath);
-    resultData.report_sha256_short = snippetHash.substring(0, 8);
-    fs.writeFileSync(resultPath, JSON.stringify(resultData, null, 2));
-    console.log(`[Assembler] Refreshed result report binding to snippet: ${resultData.report_file}`);
-}
 dodBlock = dodBlock
     .split('\n')
     .filter(line => !dropHistoricalFailedNoise(line))
@@ -517,6 +508,15 @@ if (!fs.existsSync(snippetPath)) {
 }
 const snippetText = fs.readFileSync(snippetPath, 'utf8');
 ensurePreviewEncoding(snippetText, `[Assembler] FAIL: Snippet must be LF + UTF-8 (no BOM): ${snippetPath}`);
+
+// Refresh report binding to snippet after snippet finalized to avoid notify drift mismatches
+const snippetHash = calcHash(snippetPath);
+if (snippetHash) {
+    resultData.report_file = path.basename(snippetPath);
+    resultData.report_sha256_short = snippetHash.substring(0, 8);
+    fs.writeFileSync(resultPath, JSON.stringify(resultData, null, 2));
+    console.log(`[Assembler] Refreshed result report binding to snippet: ${resultData.report_file}`);
+}
 
 // --- 8. Generate Deliverables Index (required by postflight) ---
 const filesToIndex = [
