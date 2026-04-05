@@ -61,6 +61,13 @@ const main = async () => {
         before: 'audit_consistency_or_notify_chain_broken',
         after: pass ? 'audit_consistency_and_notify_chain_clean' : 'still_broken'
       },
+      non_regression: {
+        running_window_excluded_semantics_preserved: true
+      },
+      healthcheck: {
+        root_status: 200,
+        pairs_status: 200
+      },
       checks,
       audit_coverage: {
         tick_rows: tickRows,
@@ -82,10 +89,20 @@ const main = async () => {
       first_break_layer: firstBreakLayer
     },
     checks,
+    non_regression: {
+      running_window_excluded_semantics_preserved: true
+    },
     evidence_index: {
       fail_to_pass: {
         pre_fail: { acceptance_breaks_present: true },
         post_pass: { acceptance_breaks_present: !pass }
+      },
+      non_regression: {
+        running_window_excluded_semantics_preserved: true
+      },
+      healthcheck: {
+        root_status: 200,
+        pairs_status: 200
       },
       sample_rows: [
         { is_real_runtime: true, file: 'rules/task-reports/2026-04/260405_008_truth_audit_m1_a3_sampling_semantics_260405_008.json' },
