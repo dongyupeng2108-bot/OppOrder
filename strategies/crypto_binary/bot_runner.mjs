@@ -50,6 +50,20 @@ const hasBoundsDependentIntent = (intents = []) => intents.some((intent) => (
   && intent?.requires_bounds === true
 ));
 
+const buildExecutionEventContract = (context = {}, state = {}) => {
+  const sourceEventTs = context?.updated_at || new Date().toISOString();
+  const windowId = context?.window_id ?? state?.current_window_id ?? null;
+  const contextVersionRaw = `${windowId ?? 'null'}|${sourceEventTs}`;
+  const contextVersion = Buffer.from(contextVersionRaw).toString('base64url').slice(0, 32);
+  const eventId = `evt_${contextVersion}`;
+  return {
+    event_id: eventId,
+    context_version: contextVersion,
+    source_event_ts: sourceEventTs,
+    window_id: windowId
+  };
+};
+
 const toDecisionPreview = (decision, context, state) => ({
   intents: decision.intents,
   intents_summary: summarizeIntents(decision.intents),
@@ -286,6 +300,7 @@ export function createBotRunner(options = {}) {
       upper_bound: state.upper_bound ?? null,
       lower_bound: state.lower_bound ?? null
     };
+    const executionContract = buildExecutionEventContract(contextForDecision, state);
 
     const ordersBeforeDecision = getOrders();
     const activeWindowIdForDecision = state.current_window_id ?? contextForDecision.window_id ?? null;
@@ -555,7 +570,11 @@ export function createBotRunner(options = {}) {
             order_window_id: order.window_id ?? null,
             order_price: order.price,
             fill_price: order.fill_price
-          }))
+          })),
+          event_id: executionContract.event_id,
+          context_version: executionContract.context_version,
+          source_event_ts: executionContract.source_event_ts,
+          window_id: executionContract.window_id
         }
       });
     }
@@ -635,7 +654,11 @@ export function createBotRunner(options = {}) {
       mode: state.mode ?? null,
       window_id: contextForDecision.window_id ?? null,
       data: {
-        reason: decision.reason
+        reason: decision.reason,
+        event_id: executionContract.event_id,
+        context_version: executionContract.context_version,
+        source_event_ts: executionContract.source_event_ts,
+        window_id: executionContract.window_id
       }
     });
     if (shouldGate) {
@@ -667,7 +690,11 @@ export function createBotRunner(options = {}) {
         filled: fillResult.changed,
         open_total: summary.open_total,
         cancelled_total: summary.cancelled_total,
-        filled_total: summary.filled_total
+        filled_total: summary.filled_total,
+        event_id: executionContract.event_id,
+        context_version: executionContract.context_version,
+        source_event_ts: executionContract.source_event_ts,
+        window_id: executionContract.window_id
       }
     });
     const afterLogCount = options.getLogCount ? options.getLogCount() : null;
@@ -675,6 +702,7 @@ export function createBotRunner(options = {}) {
 
     const tickResult = {
       context_snapshot: cloneValue(contextForDecision),
+      execution_event_contract: cloneValue(executionContract),
       decision_preview: toDecisionPreview(decision, contextForDecision, state),
       state_before: cloneValue(state),
       state_after: cloneValue(stateAfter),

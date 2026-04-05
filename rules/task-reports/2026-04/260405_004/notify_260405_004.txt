@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260405_004/result_260405_004.json
+LOG_HEAD
+[260405_004] M1-A1 execution contract fields landed
+LOG_TAIL
+Contract evidence ready for next S3 task
+EVIDENCE
+rules/task-reports/2026-04/260405_004/truth_audit_260405_004.md
+INDEX
+rules/task-reports/2026-04/260405_004/result_260405_004.json

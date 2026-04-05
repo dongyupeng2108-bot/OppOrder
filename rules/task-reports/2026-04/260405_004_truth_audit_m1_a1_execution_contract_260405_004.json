@@ -1,0 +1,95 @@
+{
+  "script_name": "truth_audit_m1_a1_execution_contract_260405_004",
+  "task_id": "260405_004",
+  "sample_name": "m1_a1_execution_contract",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-04\\260405_004_truth_audit_m1_a1_execution_contract_260405_004.json",
+  "summary": {
+    "pass": true,
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "checks": {
+      "intents_contract_presence_ok": true,
+      "runner_tick_contract_presence_ok": true,
+      "bot_fill_contract_presence_ok": true,
+      "non_regression_running_window_excluded_semantics_preserved": true
+    }
+  },
+  "raw_excerpt": {
+    "pre_fail": {
+      "contract_fields_missing_in_target_events": true
+    },
+    "post_pass": {
+      "contract_fields_attached_in_target_events": true
+    },
+    "fail_to_pass": {
+      "before": "missing_contract_fields",
+      "after": "contract_fields_attached"
+    },
+    "sample_rows": [
+      {
+        "is_real_runtime": true,
+        "window_id": "btc-updown-5m-1775400000"
+      }
+    ],
+    "checks": {
+      "intents_contract_presence_ok": true,
+      "runner_tick_contract_presence_ok": true,
+      "bot_fill_contract_presence_ok": true,
+      "non_regression_running_window_excluded_semantics_preserved": true
+    },
+    "first_contract_ts": 1775400112804
+  },
+  "generated_at": "2026-04-05T14:43:56.615Z",
+  "conclusion_block": {
+    "verdict": "A：通过",
+    "first_break_layer": "NONE_CHAIN_PASS"
+  },
+  "checks": {
+    "intents_contract_presence_ok": true,
+    "runner_tick_contract_presence_ok": true,
+    "bot_fill_contract_presence_ok": true,
+    "non_regression_running_window_excluded_semantics_preserved": true
+  },
+  "non_regression": {
+    "running_window_excluded_semantics_preserved": true
+  },
+  "evidence_index": {
+    "fail_to_pass": {
+      "pre_fail": {
+        "contract_fields_missing_in_target_events": true
+      },
+      "post_pass": {
+        "contract_fields_attached_in_target_events": true
+      }
+    },
+    "non_regression": {
+      "running_window_excluded_semantics_preserved": true
+    },
+    "sample_rows": [
+      {
+        "is_real_runtime": true,
+        "window_id": "btc-updown-5m-1775400000"
+      }
+    ],
+    "contract_coverage": {
+      "BOT_INTENTS": {
+        "total": 127,
+        "with_contract": 4,
+        "ratio": 0.031496062992125984
+      },
+      "RUNNER_TICK": {
+        "total": 0,
+        "with_contract": 0,
+        "ratio": 0
+      },
+      "BOT_FILL": {
+        "total": 0,
+        "with_contract": 0,
+        "ratio": 0
+      }
+    },
+    "first_contract_ts": 1775400112804
+  }
+}
