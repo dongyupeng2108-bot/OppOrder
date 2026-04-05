@@ -1616,6 +1616,10 @@ let db = null;
         mode: state?.mode ?? null,
         window_id: state?.current_window_id ?? null,
         data: {
+          sampling_role: 'monitor_sampling',
+          sampling_interval_ms: 1000,
+          sampling_source: 'orderbook_monitor_or_last_tick_context',
+          context_updated_at: context?.updated_at ?? null,
           current_window_id: state?.current_window_id ?? null,
           btc_price: btcPrice,
           bid_yes: bidYes,

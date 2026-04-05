@@ -665,6 +665,9 @@ export function createBotRunner(options = {}) {
       mode: stateAfter.mode ?? null,
       window_id: contextForDecision.window_id ?? null,
       data: {
+        snapshot_role: 'execution_snapshot',
+        snapshot_source: 'runner_tick',
+        context_updated_at: contextForDecision?.updated_at ?? null,
         intents_summary: intentsExecutionSummary,
         changed: intentResult.changed,
         filled: fillResult.changed,
@@ -677,6 +680,8 @@ export function createBotRunner(options = {}) {
     const logsAdded = beforeLogCount !== null && afterLogCount !== null ? Math.max(0, afterLogCount - beforeLogCount) : 1;
 
     const tickResult = {
+      snapshot_role: 'execution_snapshot',
+      snapshot_source: 'runner_tick',
       context_snapshot: cloneValue(contextForDecision),
       decision_preview: toDecisionPreview(decision, contextForDecision, state),
       state_before: cloneValue(state),
