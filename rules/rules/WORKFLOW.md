@@ -83,6 +83,35 @@
 - 不设观察期
 - 已在执行中的任务不做半途切换
 
+### 1.7 Git 事实流转（260405_001）
+
+- 从 `260405_001` 起，任务定义采用固定目录：
+  - `docs/tasks/<task_id>.md`
+- 任务回报与证据目录保持不变：
+  - `rules/task-reports/YYYY-MM/<task_id>/...`
+- 当前任务指针保持不变：
+  - `rules/LATEST.json`
+
+执行顺序：
+
+- Owner 以需求口径冻结任务目标
+- Dev 按模板生成并提交 `docs/tasks/<task_id>.md`
+- Owner 确认任务文件后开始执行
+- Dev 完成后将回报与证据写入 `rules/task-reports/...`
+- Dev 提交 PR 后，通知 Owner 进入外部验收（ChatGPT）
+- Owner 将 `task_id` 或 `PR` 号提交给 ChatGPT 执行验收
+- ChatGPT 验收读取顺序固定为：
+  - `docs/tasks/<task_id>.md`
+  - `rules/LATEST.json`
+  - `rules/task-reports/YYYY-MM/<task_id>/...`
+  - PR 与 gate 状态
+
+强约束：
+
+- 外部验收（ChatGPT）以 Git 事实为准，不以聊天转述为主证据
+- gate 失败一票否决，不得进入合并结论
+- 任务仍执行一次一单规则，不并发推进业务任务
+
 ## 2. 范围锁与变更纪律
 
 - 每个任务必须显式列出：
@@ -258,6 +287,13 @@
 - 最小事实块（直接正文摘录日志/json/jsonl/API 关键行，文件路径仅作索引）
 - DoD
 - 失败时的阻断报告
+
+回报落盘要求（260405_001）：
+
+- 每个任务必须存在 `docs/tasks/<task_id>.md`
+- 回报与证据必须写入 `rules/task-reports/YYYY-MM/<task_id>/...`
+- 聊天中的回报仅做摘要，Git 文件是验收真源
+- Dev 必须推进到 PR 阶段后再通知 Owner 发起 ChatGPT 验收
 
 补充规则：
 
