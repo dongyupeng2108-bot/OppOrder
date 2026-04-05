@@ -107,6 +107,20 @@ export function createBotRunner(options = {}) {
   };
 
   const runSingleTick = async (params = {}) => {
+    const scheduledTick = params?.__scheduled_tick === true;
+    const abortScheduledTickAfterStop = (stage, contextWindowId = null, mode = null) => {
+      if (!scheduledTick || running === true) return false;
+      log({
+        level: 'info',
+        source: 'bot_runner',
+        event: 'BOT_SCHEDULED_TICK_ABORTED_AFTER_STOP',
+        message: `scheduled tick aborted after stop at ${stage}`,
+        mode,
+        window_id: contextWindowId,
+        data: { stage }
+      });
+      return true;
+    };
     const contextBase = await getContext();
     let state = getState();
     if (params.state_override && typeof params.state_override === 'object') {
@@ -115,6 +129,9 @@ export function createBotRunner(options = {}) {
     const context = mergeOverride(contextBase, params.context_override);
 
     const lifecycleWindowId = context.window_id ?? null;
+    if (abortScheduledTickAfterStop('before_window_lifecycle', lifecycleWindowId, state.mode ?? null)) {
+      return null;
+    }
     if (startupWindowGateMode === 'pending') {
       if (lifecycleWindowId === null) {
         startupWindowGateMode = 'open';
@@ -414,10 +431,57 @@ export function createBotRunner(options = {}) {
     const placeSignature = hasPlaceLadder ? intentsSummary : null;
     const alreadyExecutedSamePlace = hasPlaceLadder
       && executedPlaceIntentByWindow.get(windowKey) === placeSignature;
-    const intentsForExecution = alreadyExecutedSamePlace
+    const openDelaySecConfigured = toFiniteNumber(config?.open_delay_sec);
+    const parseWindowStartEpochSec = (windowId) => {
+      if (typeof windowId !== 'string') return null;
+      const matched = windowId.match(/-(\d{10})$/);
+      if (!matched) return null;
+      const parsed = Number(matched[1]);
+      return Number.isFinite(parsed) ? parsed : null;
+    };
+    const nowEpochSec = (() => {
+      const parsed = Date.parse(contextForDecision?.updated_at || '');
+      if (!Number.isNaN(parsed)) return parsed / 1000;
+      return Date.now() / 1000;
+    })();
+    const windowStartEpochSec = parseWindowStartEpochSec(contextForDecision?.window_id ?? null);
+    const openElapsedPreciseSec = (
+      openDelaySecConfigured !== null && windowStartEpochSec !== null
+        ? Math.max(0, nowEpochSec - windowStartEpochSec)
+        : null
+    );
+    const gatePlaceByPreciseOpenDelay = (
+      openDelaySecConfigured !== null
+      && openDelaySecConfigured > 0
+      && openElapsedPreciseSec !== null
+      && openElapsedPreciseSec < openDelaySecConfigured
+    );
+    const intentsForExecutionBase = alreadyExecutedSamePlace
       ? decision.intents.filter((intent) => intent?.kind !== 'PLACE_LADDER')
       : decision.intents;
+    const intentsForExecution = gatePlaceByPreciseOpenDelay
+      ? intentsForExecutionBase.filter((intent) => intent?.kind !== 'PLACE_LADDER')
+      : intentsForExecutionBase;
+    const intentsExecutionSummary = summarizeIntents(intentsForExecution);
+    if (gatePlaceByPreciseOpenDelay && intentsForExecutionBase.length !== intentsForExecution.length) {
+      log({
+        level: 'info',
+        source: 'bot_runner',
+        event: 'BOT_DECISION_GATED',
+        message: 'NOOP',
+        mode: state.mode ?? null,
+        window_id: contextForDecision.window_id ?? null,
+        data: {
+          reason: 'pre_open_or_open_not_open_delay_precise',
+          open_delay_sec: openDelaySecConfigured,
+          open_elapsed_sec_precise: openElapsedPreciseSec
+        }
+      });
+    }
 
+    if (abortScheduledTickAfterStop('before_apply_intents', contextForDecision.window_id ?? null, state.mode ?? null)) {
+      return null;
+    }
     const executionWindowId = state.current_window_id ?? contextForDecision.window_id ?? 'null';
     const intentResult = applyIntents(intentsForExecution, {
       source: `runner_tick|window=${executionWindowId}`
@@ -487,8 +551,31 @@ export function createBotRunner(options = {}) {
           fills: fillResult.filled_orders.map((order) => ({
             order_id: order.order_id,
             side: order.side,
+            kind: order.kind,
+            order_window_id: order.window_id ?? null,
             order_price: order.price,
             fill_price: order.fill_price
+          }))
+        }
+      });
+    }
+    if (Array.isArray(fillResult.blocked_cross_window_candidates) && fillResult.blocked_cross_window_candidates.length > 0) {
+      log({
+        level: 'info',
+        source: 'bot_runner',
+        event: 'BOT_CROSS_WINDOW_FILL_BLOCKED',
+        message: `blocked ${fillResult.blocked_cross_window_candidates.length} cross-window fill candidates`,
+        mode: state.mode ?? null,
+        window_id: contextForDecision.window_id ?? null,
+        data: {
+          candidates: fillResult.blocked_cross_window_candidates.map((item) => ({
+            order_id: item.order_id,
+            side: item.side,
+            kind: item.kind,
+            order_window_id: item.order_window_id ?? null,
+            current_window_id: item.current_window_id ?? null,
+            order_price: item.order_price,
+            candidate_fill_price: item.candidate_fill_price
           }))
         }
       });
@@ -544,7 +631,7 @@ export function createBotRunner(options = {}) {
       level: 'info',
       source: 'bot_runner',
       event: 'BOT_INTENTS',
-      message: intentsSummary,
+      message: intentsExecutionSummary,
       mode: state.mode ?? null,
       window_id: contextForDecision.window_id ?? null,
       data: {
@@ -575,7 +662,7 @@ export function createBotRunner(options = {}) {
       mode: stateAfter.mode ?? null,
       window_id: contextForDecision.window_id ?? null,
       data: {
-        intents_summary: intentsSummary,
+        intents_summary: intentsExecutionSummary,
         changed: intentResult.changed,
         filled: fillResult.changed,
         open_total: summary.open_total,
@@ -593,6 +680,7 @@ export function createBotRunner(options = {}) {
       state_after: cloneValue(stateAfter),
       order_summary: cloneValue(summary),
       fills: cloneValue(fillResult.filled_orders || []),
+      blocked_cross_window_candidates: cloneValue(fillResult.blocked_cross_window_candidates || []),
       logs_added: logsAdded
     };
     if (onTickResult) {
@@ -607,7 +695,8 @@ export function createBotRunner(options = {}) {
     try {
       const scheduledTick = typeof options.getScheduledTickParams === 'function' ? await options.getScheduledTickParams() : null;
       const tickParams = scheduledTick && typeof scheduledTick === 'object' && scheduledTick.params ? scheduledTick.params : (scheduledTick || {});
-      const result = await runSingleTick(tickParams);
+      const result = await runSingleTick({ ...tickParams, __scheduled_tick: true });
+      if (!result) return null;
       lastTickAt = new Date().toISOString();
       publishRuntime();
       log({

@@ -174,11 +174,50 @@ export function createBotOrderLedger(options = {}) {
     const askNo = Number.isFinite(context?.ask_no) ? context.ask_no : null;
     const bidYes = Number.isFinite(context?.bid_yes) ? context.bid_yes : null;
     const bidNo = Number.isFinite(context?.bid_no) ? context.bid_no : null;
+    const currentWindowId = typeof context?.window_id === 'string' && context.window_id.length > 0
+      ? context.window_id
+      : null;
     const filledOrders = [];
     const tpOrdersToCreate = [];
+    const blockedCrossWindowCandidates = [];
     const filledAt = new Date().toISOString();
     orders = orders.map((order) => {
       if (order.status !== 'OPEN' || order.kind === 'EXIT') return order;
+      const candidateFillPrice = (
+        order.kind === 'ENTRY' && order.side === 'YES' && askYes != null && order.price >= askYes
+          ? askYes
+          : (
+            order.kind === 'ENTRY' && order.side === 'NO' && askNo != null && order.price >= askNo
+              ? askNo
+              : (
+                order.kind === 'TAKE_PROFIT' && order.side === 'YES' && bidYes != null && bidYes >= order.price
+                  ? order.price
+                  : (
+                    order.kind === 'TAKE_PROFIT' && order.side === 'NO' && bidNo != null && bidNo >= order.price
+                      ? order.price
+                      : null
+                  )
+              )
+          )
+      );
+      const hasExplicitOrderWindow = typeof order?.window_id === 'string' && order.window_id.length > 0;
+      const blockedCrossWindow = (
+        currentWindowId != null
+        && hasExplicitOrderWindow
+        && order.window_id !== currentWindowId
+      );
+      if (blockedCrossWindow && candidateFillPrice != null) {
+        blockedCrossWindowCandidates.push({
+          order_id: order.order_id,
+          kind: order.kind,
+          side: order.side,
+          order_price: order.price,
+          candidate_fill_price: candidateFillPrice,
+          order_window_id: order.window_id,
+          current_window_id: currentWindowId
+        });
+        return order;
+      }
       if (order.kind === 'ENTRY' && order.side === 'YES' && askYes != null && order.price >= askYes) {
         const nextOrder = { ...order, status: 'FILLED', fill_price: askYes, filled_at: filledAt };
         filledOrders.push(cloneOrder(nextOrder));
@@ -236,6 +275,7 @@ export function createBotOrderLedger(options = {}) {
     return {
       changed: filledOrders.length + tpOrdersToCreate.length,
       filled_orders: filledOrders,
+      blocked_cross_window_candidates: blockedCrossWindowCandidates,
       summary: getSummary(),
       orders: getOrders()
     };
