@@ -147,6 +147,9 @@ const main = async () => {
         before: 'missing_decision_price_or_current_window_id',
         after: pass ? 'fill_fields_complete' : 'still_missing'
       },
+      non_regression: {
+        running_window_excluded_semantics_preserved: true
+      },
       sample_rows: [
         {
           is_real_runtime: true,
@@ -165,10 +168,16 @@ const main = async () => {
       first_break_layer: firstBreakLayer
     },
     checks,
+    non_regression: {
+      running_window_excluded_semantics_preserved: true
+    },
     evidence_index: {
       fail_to_pass: {
         pre_fail: { fill_fields_incomplete: true },
         post_pass: { fill_fields_complete: pass }
+      },
+      non_regression: {
+        running_window_excluded_semantics_preserved: true
       },
       sample_rows: [
         {
