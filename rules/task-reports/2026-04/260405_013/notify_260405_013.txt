@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260405_013/result_260405_013.json
+LOG_HEAD
+[260405_013] notify chain and metadata binding fix completed
+LOG_TAIL
+notify_260405_012 is clean and branch/commit binding is consistent
+EVIDENCE
+rules/task-reports/2026-04/260405_013/truth_audit_260405_013.md
+INDEX
+rules/task-reports/2026-04/260405_013/result_260405_013.json

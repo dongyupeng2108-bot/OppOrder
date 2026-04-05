@@ -1,0 +1,94 @@
+{
+  "script_name": "truth_audit_notify_binding_fix_260405_013",
+  "task_id": "260405_013",
+  "sample_name": "notify_binding_fix",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-04\\260405_013_truth_audit_notify_binding_fix_260405_013.json",
+  "summary": {
+    "pass": true,
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "checks": {
+      "notify_has_dod_stdout": true,
+      "notify_has_gate_preview_or_verify": true,
+      "notify_no_missing_blocks_noise": true,
+      "notify_no_action_regenerate_noise": true,
+      "notify_no_failed_noise": true,
+      "notify_branch_matches_current_git_branch": true,
+      "notify_commit_matches_current_git_commit": true
+    }
+  },
+  "raw_excerpt": {
+    "pre_fail": {
+      "notify_chain_or_binding_dirty": true
+    },
+    "post_pass": {
+      "notify_chain_or_binding_dirty": false
+    },
+    "fail_to_pass": {
+      "before": "notify_chain_or_binding_mismatch",
+      "after": "notify_chain_clean_and_binding_consistent"
+    },
+    "non_regression": {
+      "running_window_excluded_semantics_preserved": true
+    },
+    "checks": {
+      "notify_has_dod_stdout": true,
+      "notify_has_gate_preview_or_verify": true,
+      "notify_no_missing_blocks_noise": true,
+      "notify_no_action_regenerate_noise": true,
+      "notify_no_failed_noise": true,
+      "notify_branch_matches_current_git_branch": true,
+      "notify_commit_matches_current_git_commit": true
+    },
+    "meta": {
+      "current_branch": "260405_013",
+      "current_commit": "8fe38687f647d9c2bce4a561b4d7599bf0821962",
+      "notify_branch": "260405_013",
+      "notify_commit": "8fe38687f647d9c2bce4a561b4d7599bf0821962"
+    },
+    "sample_rows": [
+      {
+        "is_real_runtime": true,
+        "file": "rules/task-reports/2026-04/notify_260405_012.txt"
+      }
+    ]
+  },
+  "generated_at": "2026-04-05T19:18:30.067Z",
+  "conclusion_block": {
+    "verdict": "A：通过",
+    "first_break_layer": "NONE_CHAIN_PASS"
+  },
+  "checks": {
+    "notify_has_dod_stdout": true,
+    "notify_has_gate_preview_or_verify": true,
+    "notify_no_missing_blocks_noise": true,
+    "notify_no_action_regenerate_noise": true,
+    "notify_no_failed_noise": true,
+    "notify_branch_matches_current_git_branch": true,
+    "notify_commit_matches_current_git_commit": true
+  },
+  "non_regression": {
+    "running_window_excluded_semantics_preserved": true
+  },
+  "evidence_index": {
+    "fail_to_pass": {
+      "pre_fail": {
+        "notify_chain_or_binding_dirty": true
+      },
+      "post_pass": {
+        "notify_chain_or_binding_dirty": false
+      }
+    },
+    "non_regression": {
+      "running_window_excluded_semantics_preserved": true
+    },
+    "sample_rows": [
+      {
+        "is_real_runtime": true,
+        "file": "rules/task-reports/2026-04/notify_260405_012.txt"
+      }
+    ]
+  }
+}
