@@ -2,9 +2,10 @@
 
 Header: TraeTask_260405_002
 BRANCH: 260405_002
-COMMIT: 2d7ac4b31
+COMMIT: 2cfc67c29
 
 === GIT_SCOPE_DIFF ===
+M	.gitignore
 A	docs/tasks/260405_002.md
 M	rules/LATEST.json
 A	rules/task-reports/2026-04/260405_002.json
@@ -14,6 +15,7 @@ A	rules/task-reports/2026-04/260405_002/result_260405_002.json
 A	rules/task-reports/2026-04/260405_002/truth_audit_260405_002.md
 A	rules/task-reports/2026-04/260405_002_healthcheck_53122_pairs.txt
 A	rules/task-reports/2026-04/260405_002_healthcheck_53122_root.txt
+A	rules/task-reports/2026-04/260405_002_truth_audit_cross_window_fill_fix_260405_002.json
 A	rules/task-reports/2026-04/evidence_manifest_260405_002.json
 A	rules/task-reports/2026-04/manual_verification_260405_002.json
 A	rules/task-reports/2026-04/notify_260405_002.txt
@@ -29,7 +31,7 @@ M	strategies/crypto_binary/bot_runner.mjs
 Missing Blocks:
 
 DOD_EVIDENCE_HEALTHCHECK_ROOT: 260405_002_healthcheck_53122_root.txt => HTTP/1.1 200 OK
-DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260405_002_healthcheck_53122_pairs.txt => HTTP/1.1 404 Not Found
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260405_002_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
 
 
 
