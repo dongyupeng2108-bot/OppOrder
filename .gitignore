@@ -8,6 +8,7 @@ rules/task-reports/20??-??/**
 !rules/task-reports/20??-??/evidence_manifest_*.json
 # Postflight v3.9: business evidence filename pattern
 !rules/task-reports/20??-??/manual_verification_*.json
+!rules/task-reports/20??-??/*_truth_audit_*.json
 # Git-first task report artifacts (260405_001)
 !rules/task-reports/20??-??/*/
 !rules/task-reports/20??-??/*/implementation_*.md
