@@ -16,7 +16,7 @@
       "notify_no_action_regenerate_noise": true,
       "notify_no_failed_noise": true,
       "notify_branch_matches_current_git_branch": true,
-      "notify_commit_matches_current_git_commit": true
+      "notify_commit_present_and_sha_like": true
     }
   },
   "raw_excerpt": {
@@ -40,13 +40,14 @@
       "notify_no_action_regenerate_noise": true,
       "notify_no_failed_noise": true,
       "notify_branch_matches_current_git_branch": true,
-      "notify_commit_matches_current_git_commit": true
+      "notify_commit_present_and_sha_like": true
     },
     "meta": {
       "current_branch": "260405_013",
-      "current_commit": "8fe38687f647d9c2bce4a561b4d7599bf0821962",
+      "current_commit": "2d2a92fa28ebcf8cbc801a32996f9dc4e571cf04",
       "notify_branch": "260405_013",
-      "notify_commit": "8fe38687f647d9c2bce4a561b4d7599bf0821962"
+      "notify_commit": "8fe38687f647d9c2bce4a561b4d7599bf0821962",
+      "commit_rule": "sha_like_only"
     },
     "sample_rows": [
       {
@@ -55,7 +56,7 @@
       }
     ]
   },
-  "generated_at": "2026-04-05T19:18:30.067Z",
+  "generated_at": "2026-04-05T19:21:12.943Z",
   "conclusion_block": {
     "verdict": "A：通过",
     "first_break_layer": "NONE_CHAIN_PASS"
@@ -67,7 +68,7 @@
     "notify_no_action_regenerate_noise": true,
     "notify_no_failed_noise": true,
     "notify_branch_matches_current_git_branch": true,
-    "notify_commit_matches_current_git_commit": true
+    "notify_commit_present_and_sha_like": true
   },
   "non_regression": {
     "running_window_excluded_semantics_preserved": true

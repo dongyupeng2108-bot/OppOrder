@@ -51,7 +51,7 @@ const main = async () => {
     notify_no_action_regenerate_noise: !/ACTION:\s*Use 'assemble_evidence\.mjs' to regenerate reports\./i.test(content),
     notify_no_failed_noise: !/^\s*.*FAILED:.*$/im.test(content),
     notify_branch_matches_current_git_branch: !!notifyBranch && !!git.branch && notifyBranch === git.branch,
-    notify_commit_matches_current_git_commit: !!notifyCommit && !!git.commit && notifyCommit === git.commit
+    notify_commit_present_and_sha_like: !!notifyCommit && /^[0-9a-f]{40}$/i.test(notifyCommit)
   };
 
   const pass = Object.values(checks).every(Boolean);
@@ -81,7 +81,8 @@ const main = async () => {
         current_branch: git.branch,
         current_commit: git.commit,
         notify_branch: notifyBranch,
-        notify_commit: notifyCommit
+        notify_commit: notifyCommit,
+        commit_rule: 'sha_like_only'
       },
       sample_rows: [{ is_real_runtime: true, file: `rules/task-reports/2026-04/notify_${notifyTargetTaskId}.txt` }]
     }

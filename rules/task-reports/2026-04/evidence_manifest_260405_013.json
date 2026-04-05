@@ -1,0 +1,20 @@
+{
+  "task_id": "260405_013",
+  "mode": "LOCAL",
+  "generated_at": "2026-04-05T19:20:29.501Z",
+  "evidence_dir": "rules\\task-reports\\2026-04",
+  "required_files": [
+    "result_260405_013.json",
+    "run_260405_013.log",
+    "notify_260405_013.txt",
+    "gate_light_preview_260405_013.log",
+    "dod_evidence_260405_013.txt",
+    "git_meta_260405_013.json",
+    "trae_report_snippet_260405_013.txt",
+    "manual_verification_260405_013.json",
+    "workspace_healer_260405_013.json",
+    "260405_013_healthcheck_53122_root.txt",
+    "260405_013_healthcheck_53122_pairs.txt",
+    "deliverables_index_260405_013.json"
+  ]
+}
