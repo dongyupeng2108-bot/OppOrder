@@ -1,0 +1,13 @@
+{
+  "task_id": "260405_003",
+  "status": "PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "summary": "M0 基线测量完成，四类指标均产出，口径固定可复核。",
+  "deliverables": [
+    "docs/tasks/260405_003.md",
+    "scripts/truth_audit_m0_baseline_metrics_260405_003.mjs",
+    "rules/task-reports/2026-04/260405_003/implementation_260405_003.md",
+    "rules/task-reports/2026-04/260405_003/truth_audit_260405_003.md",
+    "rules/task-reports/2026-04/260405_003_truth_audit_m0_baseline_metrics_260405_003.json"
+  ]
+}
