@@ -1,0 +1,71 @@
+{
+  "script_name": "truth_audit_m1_a2_fill_audit_fields_260405_007",
+  "task_id": "260405_007",
+  "sample_name": "m1_a2_fill_audit_fields",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-04\\260405_007_truth_audit_m1_a2_fill_audit_fields_260405_007.json",
+  "summary": {
+    "pass": true,
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "checks": {
+      "has_fill_sample": true,
+      "has_decision_price_on_fill": true,
+      "has_current_window_id_on_fill": true,
+      "non_regression_running_window_excluded_semantics_preserved": true
+    }
+  },
+  "raw_excerpt": {
+    "pre_fail": {
+      "fill_fields_incomplete": true
+    },
+    "post_pass": {
+      "fill_fields_complete": true
+    },
+    "fail_to_pass": {
+      "before": "missing_decision_price_or_current_window_id",
+      "after": "fill_fields_complete"
+    },
+    "sample_rows": [
+      {
+        "is_real_runtime": true,
+        "window_id": "btc-updown-5m-1775408400"
+      }
+    ],
+    "fill_count": 4
+  },
+  "generated_at": "2026-04-05T17:03:31.312Z",
+  "conclusion_block": {
+    "verdict": "A：通过",
+    "first_break_layer": "NONE_CHAIN_PASS"
+  },
+  "checks": {
+    "has_fill_sample": true,
+    "has_decision_price_on_fill": true,
+    "has_current_window_id_on_fill": true,
+    "non_regression_running_window_excluded_semantics_preserved": true
+  },
+  "evidence_index": {
+    "fail_to_pass": {
+      "pre_fail": {
+        "fill_fields_incomplete": true
+      },
+      "post_pass": {
+        "fill_fields_complete": true
+      }
+    },
+    "sample_rows": [
+      {
+        "is_real_runtime": true,
+        "window_id": "btc-updown-5m-1775408400"
+      }
+    ],
+    "fill_coverage": {
+      "fill_events": 1,
+      "fills": 4,
+      "with_decision_price": 4,
+      "with_current_window_id": 4
+    }
+  }
+}
