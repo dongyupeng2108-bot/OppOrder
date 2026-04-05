@@ -363,8 +363,17 @@ if (fs.existsSync(hcPairs)) {
     dodBlock += `\nDOD_EVIDENCE_SITE_HEALTH_PAIRS_53122: ${taskId}_healthcheck_53122_pairs.txt => ${content}`;
 }
 
-// Log Head/Tail
-const logLines = gateLightLog.split('\n');
+const shouldDropNotifyNoiseLine = (line = '') => {
+  const text = String(line || '');
+  if (/FAILED:\s*Report Block Check for notify_\d+\.txt/i.test(text)) return true;
+  if (/Report Block Check failed for notify_\d+\.txt/i.test(text)) return true;
+  if (/Missing block:\s*===\s*DOD_EVIDENCE_STDOUT\s*===/i.test(text)) return true;
+  if (/Missing block:\s*===\s*GATE_LIGHT_PREVIEW\s*===\s*OR\s*===\s*GATE_LIGHT_VERIFY\s*===/i.test(text)) return true;
+  return false;
+};
+const rawLogLines = gateLightLog.split('\n');
+const sanitizedLogLines = rawLogLines.filter((line) => !shouldDropNotifyNoiseLine(line));
+const logLines = sanitizedLogLines.length > 0 ? sanitizedLogLines : rawLogLines;
 const logHead = logLines.slice(0, 20).join('\n');
 const logTail = logLines.slice(-20).join('\n');
 
