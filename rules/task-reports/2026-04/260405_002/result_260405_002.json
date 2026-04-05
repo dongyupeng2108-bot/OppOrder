@@ -1,0 +1,15 @@
+{
+  "task_id": "260405_002",
+  "status": "PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "summary": "跨窗口成交已阻断；同窗口成交保持可用；Fail->Pass真值样本通过。",
+  "deliverables": [
+    "docs/tasks/260405_002.md",
+    "strategies/crypto_binary/bot_order_ledger.mjs",
+    "strategies/crypto_binary/bot_runner.mjs",
+    "scripts/truth_audit_cross_window_fill_fix_260405_002.mjs",
+    "rules/task-reports/2026-04/260405_002/implementation_260405_002.md",
+    "rules/task-reports/2026-04/260405_002/truth_audit_260405_002.md",
+    "rules/task-reports/2026-04/260405_002_truth_audit_cross_window_fill_fix_260405_002.json"
+  ]
+}

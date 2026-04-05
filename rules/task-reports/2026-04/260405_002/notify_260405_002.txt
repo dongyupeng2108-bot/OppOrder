@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260405_002/result_260405_002.json
+LOG_HEAD
+[260405_002] cross-window fill fix completed
+LOG_TAIL
+Fail->Pass evidence confirmed, gate chain pending integrate verification
+EVIDENCE
+rules/task-reports/2026-04/260405_002/truth_audit_260405_002.md
+INDEX
+rules/task-reports/2026-04/260405_002/result_260405_002.json
