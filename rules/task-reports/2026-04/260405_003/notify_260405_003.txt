@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260405_003/result_260405_003.json
+LOG_HEAD
+[260405_003] M0 baseline metrics completed
+LOG_TAIL
+Baseline metrics ready for M1 planning
+EVIDENCE
+rules/task-reports/2026-04/260405_003/truth_audit_260405_003.md
+INDEX
+rules/task-reports/2026-04/260405_003/result_260405_003.json

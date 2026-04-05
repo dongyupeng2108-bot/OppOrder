@@ -1,0 +1,183 @@
+{
+  "script_name": "truth_audit_m0_baseline_metrics_260405_003",
+  "task_id": "260405_003",
+  "sample_name": "m0_baseline_metrics",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-04\\260405_003_truth_audit_m0_baseline_metrics_260405_003.json",
+  "summary": {
+    "pass": true,
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "checks": {
+      "has_quote_to_decision_samples": true,
+      "has_decision_to_action_samples": true,
+      "has_tick_period_samples": true,
+      "has_three_price_chain_samples": true
+    }
+  },
+  "raw_excerpt": {
+    "pre_fail": {
+      "mode": "baseline_before_event_driven",
+      "note": "旧链路基线测量，不涉及主链接管"
+    },
+    "post_pass": {
+      "baseline_metrics_ready": true,
+      "sampled_windows": 68
+    },
+    "sample_rows": [
+      {
+        "is_real_runtime": true,
+        "window_id": "btc-updown-5m-1775378700"
+      }
+    ],
+    "quote_to_decision_p95_ms": 962,
+    "decision_to_action_p95_ms": 102736,
+    "tick_period_p95_ms": 5000,
+    "chain_missing_rate": 0
+  },
+  "generated_at": "2026-04-05T14:19:41.825Z",
+  "conclusion_block": {
+    "verdict": "A：通过",
+    "first_break_layer": "NONE_CHAIN_PASS"
+  },
+  "checks": {
+    "has_quote_to_decision_samples": true,
+    "has_decision_to_action_samples": true,
+    "has_tick_period_samples": true,
+    "has_three_price_chain_samples": true
+  },
+  "non_regression": {
+    "running_window_excluded_semantics_preserved": true
+  },
+  "evidence_index": {
+    "fail_to_pass": {
+      "pre_fail": {
+        "baseline_missing": false
+      },
+      "post_pass": {
+        "baseline_present": true
+      }
+    },
+    "non_regression": {
+      "running_window_excluded_semantics_preserved": true
+    },
+    "sample_rows": [
+      {
+        "is_real_runtime": true,
+        "window_id": "btc-updown-5m-1775378700"
+      }
+    ]
+  },
+  "metrics": {
+    "scope": {
+      "log_file": "E:\\OppRadar\\data\\crypto_binary\\logs\\bot_2026-04-05.jsonl",
+      "mode": "mixed_in_log",
+      "sampled_rows": 43255,
+      "sampled_windows": [
+        "btc-updown-5m-1775378700",
+        "btc-updown-5m-1775379000",
+        "btc-updown-5m-1775379300",
+        "btc-updown-5m-1775379600",
+        "btc-updown-5m-1775379900",
+        "btc-updown-5m-1775380200",
+        "btc-updown-5m-1775380500",
+        "btc-updown-5m-1775380800",
+        "btc-updown-5m-1775381100",
+        "btc-updown-5m-1775381400",
+        "btc-updown-5m-1775381700",
+        "btc-updown-5m-1775382000",
+        "btc-updown-5m-1775382300",
+        "btc-updown-5m-1775382600",
+        "btc-updown-5m-1775382900",
+        "btc-updown-5m-1775383200",
+        "btc-updown-5m-1775383500",
+        "btc-updown-5m-1775383800",
+        "btc-updown-5m-1775384100",
+        "btc-updown-5m-1775384400",
+        "btc-updown-5m-1775384700",
+        "btc-updown-5m-1775385000",
+        "btc-updown-5m-1775385300",
+        "btc-updown-5m-1775385600",
+        "btc-updown-5m-1776000300",
+        "btc-updown-5m-1775385900",
+        "btc-updown-5m-1775386200",
+        "btc-updown-5m-1775386500",
+        "btc-updown-5m-1775386800",
+        "btc-updown-5m-1775387100",
+        "btc-updown-5m-1775387400",
+        "btc-updown-5m-1775387700",
+        "btc-updown-5m-1775388000",
+        "btc-updown-5m-1775388300",
+        "btc-updown-5m-1775388600",
+        "btc-updown-5m-1775388900",
+        "btc-updown-5m-1775389200",
+        "btc-updown-5m-1775389500",
+        "btc-updown-5m-1775389800",
+        "btc-updown-5m-1775390100",
+        "btc-updown-5m-1775390400",
+        "btc-updown-5m-1775390700",
+        "btc-updown-5m-1775391000",
+        "btc-updown-5m-1775391300",
+        "btc-updown-5m-1775391600",
+        "btc-updown-5m-1775391900",
+        "btc-updown-5m-1775392200",
+        "btc-updown-5m-1775392500",
+        "btc-updown-5m-1775392800",
+        "btc-updown-5m-1775393100",
+        "btc-updown-5m-1775393400",
+        "btc-updown-5m-1775393700",
+        "btc-updown-5m-1775394000",
+        "btc-updown-5m-1775394300",
+        "btc-updown-5m-1775394600",
+        "btc-updown-5m-1775394900",
+        "btc-updown-5m-1775395200",
+        "btc-updown-5m-1775395500",
+        "btc-updown-5m-1775395800",
+        "btc-updown-5m-1775396100",
+        "btc-updown-5m-1775396400",
+        "btc-updown-5m-1775396700",
+        "btc-updown-5m-1775397000",
+        "btc-updown-5m-1775397300",
+        "btc-updown-5m-1775397600",
+        "btc-updown-5m-1775397900",
+        "btc-updown-5m-1775398200",
+        "btc-updown-5m-1775398500"
+      ]
+    },
+    "definitions": {
+      "quote_to_decision": "quote 进入系统事件时间 到 decision 开始时间",
+      "decision_to_action": "decision 产出时间 到执行动作真正落地时间",
+      "tick_period": "runner tick 相邻时间差（来自 BOT_TICK_SUMMARY.period_ms）"
+    },
+    "quote_to_decision_latency": {
+      "count": 19501,
+      "p50_ms": 392,
+      "p95_ms": 962,
+      "max_ms": 6449,
+      "min_ms": 2
+    },
+    "decision_to_action_latency": {
+      "count": 44,
+      "p50_ms": 60123,
+      "p95_ms": 102736,
+      "max_ms": 111708,
+      "min_ms": 795
+    },
+    "tick_period_distribution": {
+      "count": 3290,
+      "p50_ms": 5000,
+      "p95_ms": 5000,
+      "max_ms": 5000,
+      "min_ms": 5000
+    },
+    "three_price_chain_missing_rate": {
+      "missing": 0,
+      "total": 59,
+      "rate": 0
+    },
+    "non_regression": {
+      "running_window_excluded_semantics_preserved": true
+    }
+  }
+}
