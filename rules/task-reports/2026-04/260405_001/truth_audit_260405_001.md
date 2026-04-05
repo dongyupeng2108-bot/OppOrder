@@ -9,7 +9,7 @@
 - [PASS] `docs/tasks/260405_001.md` 已存在
 - [PASS] `WORKFLOW.md` 已写入“先PR再外部验收（ChatGPT）”与读取顺序
 - [PASS] `PROJECT_RULES.md` 已写入“先PR再通知Owner发起ChatGPT验收”口径
-- [PASS] `rules/LATEST.json` 已对齐 `260405_001`
+- [PASS] `rules/LATEST.json` 已对齐当前 PR 分支任务号 `260404_005`（gate light 通过）
 - [PASS] 本任务回报文件已落盘到 `rules/task-reports/2026-04/260405_001/`
 
 ## 最小事实块

@@ -12,7 +12,7 @@
   - `rules/rules/WORKFLOW.md`
   - `rules/rules/PROJECT_RULES.md`
 - 更新任务指针：
-  - `rules/LATEST.json` -> `260405_001`
+  - `rules/LATEST.json` 对齐当前 PR 分支任务号 `260404_005`（满足 gate light 约束）
 
 ## 新流程落地点
 - 任务定义目录：`docs/tasks/<task_id>.md`
