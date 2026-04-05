@@ -1,16 +1,25 @@
 {
-  "mode": "LOCAL_FINALIZE_FALLBACK",
-  "result": "PASS",
-  "note": "reset_workspace blocked by generated evidence changes; validated with generated-file allowlist",
+  "head_commit": "1cf3582a844c87be1e91497f54323a05abf57343",
+  "cleaned_paths": [
+    "rules/task-reports",
+    "rules/reports",
+    "data/opps_ledger",
+    "rules/task-reports/locks",
+    "rules/task-reports/runs"
+  ],
+  "repo_root": "E:/OppRadar",
   "before": {
+    "sample_paths": null,
     "tracked_changed_count": 0,
-    "untracked_count": 0,
-    "sample_paths": []
+    "untracked_count": 0
   },
+  "mode": "EnforceClean",
+  "branch": "260405_010",
+  "reason": null,
+  "result": "PASS",
   "after": {
+    "sample_paths": null,
     "tracked_changed_count": 0,
-    "untracked_count": 0,
-    "sample_paths": []
-  },
-  "task_id": "260405_010"
+    "untracked_count": 0
+  }
 }
