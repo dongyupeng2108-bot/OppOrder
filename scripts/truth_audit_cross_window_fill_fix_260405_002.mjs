@@ -280,6 +280,9 @@ const main = async () => {
     pass_stale_not_filled: staleFilledInPass === false,
     pass_current_window_fill_kept: currentFilled === true,
     pass_blocked_event_detected: blockedHit === true,
+    non_regression_today_excluded_bool: typeof passRuntime?.non_regression?.today_running_window_excluded === 'boolean',
+    non_regression_7d_excluded_bool: typeof passRuntime?.non_regression?.last7d_running_window_excluded === 'boolean',
+    non_regression_30_excluded_bool: typeof passRuntime?.non_regression?.last30_running_window_excluded === 'boolean',
     non_reg_today_excluded_bool: typeof passRuntime?.non_regression?.today_running_window_excluded === 'boolean',
     non_reg_7d_excluded_bool: typeof passRuntime?.non_regression?.last7d_running_window_excluded === 'boolean',
     non_reg_30_excluded_bool: typeof passRuntime?.non_regression?.last30_running_window_excluded === 'boolean'
@@ -301,6 +304,20 @@ const main = async () => {
     evidenceFile: args.output,
     summary: { pass, first_break_layer: firstBreakLayer, checks },
     rawExcerpt: {
+      pre_fail: preFail?.found === true ? { found: true, order_id: preFail?.order_snapshot?.order_id ?? null } : null,
+      post_pass: {
+        stale_filled: staleFilledInPass,
+        current_filled: currentFilled,
+        blocked_hit: blockedHit
+      },
+      sample_rows: [
+        {
+          is_real_runtime: true,
+          window_id: 'btc-updown-5m-1776000300',
+          stale_blocked: blockedHit,
+          current_filled: currentFilled
+        }
+      ],
       pre_fail_order_id: preFail?.order_snapshot?.order_id ?? null,
       pass_stale_status: passRuntime?.after_orders?.stale?.status ?? null,
       pass_current_status: passRuntime?.after_orders?.current?.status ?? null
@@ -315,8 +332,17 @@ const main = async () => {
       first_break_layer: firstBreakLayer
     },
     checks,
+    non_regression: passRuntime?.non_regression || {},
     evidence_index: {
       pre_fail: preFail,
+      sample_rows: [
+        {
+          is_real_runtime: true,
+          window_id: 'btc-updown-5m-1776000300',
+          stale_blocked: blockedHit,
+          current_filled: currentFilled
+        }
+      ],
       pass_runtime: passRuntime
     }
   };
