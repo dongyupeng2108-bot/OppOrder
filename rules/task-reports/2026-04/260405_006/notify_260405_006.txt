@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260405_006/result_260405_006.json
+LOG_HEAD
+[260405_006] notify cleanup completed
+LOG_TAIL
+Top-level notify residual failure lines removed and verified
+EVIDENCE
+rules/task-reports/2026-04/260405_006/truth_audit_260405_006.md
+INDEX
+rules/task-reports/2026-04/260405_006/result_260405_006.json

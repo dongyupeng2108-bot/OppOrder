@@ -1,0 +1,14 @@
+{
+  "task_id": "260405_006",
+  "status": "PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "summary": "260405_005 顶层 notify 收尾链已清理，失败残留移除且关键证据块齐全。",
+  "deliverables": [
+    "docs/tasks/260405_006.md",
+    "scripts/truth_audit_notify_cleanup_260405_006.mjs",
+    "rules/task-reports/2026-04/notify_260405_005.txt",
+    "rules/task-reports/2026-04/260405_006/implementation_260405_006.md",
+    "rules/task-reports/2026-04/260405_006/truth_audit_260405_006.md",
+    "rules/task-reports/2026-04/260405_006_truth_audit_notify_cleanup_260405_006.json"
+  ]
+}
