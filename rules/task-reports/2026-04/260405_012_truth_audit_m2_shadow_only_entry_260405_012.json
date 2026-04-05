@@ -1,0 +1,878 @@
+{
+  "script_name": "truth_audit_m2_shadow_only_entry_260405_012",
+  "task_id": "260405_012",
+  "sample_name": "m2_shadow_only_entry",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-04\\260405_012_truth_audit_m2_shadow_only_entry_260405_012.json",
+  "summary": {
+    "pass": true,
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "checks": {
+      "shadow_decision_emitted": true,
+      "no_order_apply_side_effect": true,
+      "no_fill_side_effect": true,
+      "orders_count_unchanged": true,
+      "tick_response_shadow_only": true,
+      "tick_response_no_execution_side_effects": true,
+      "shadow_idempotency_key_defined_and_observed": true
+    }
+  },
+  "raw_excerpt": {
+    "pre_fail": {
+      "shadow_only_entry_absent_or_side_effect_exists": true
+    },
+    "post_pass": {
+      "shadow_only_entry_absent_or_side_effect_exists": false
+    },
+    "fail_to_pass": {
+      "before": "shadow_only_not_enforced",
+      "after": "shadow_only_audit_only_enforced"
+    },
+    "non_regression": {
+      "running_window_excluded_semantics_preserved": true
+    },
+    "checks": {
+      "shadow_decision_emitted": true,
+      "no_order_apply_side_effect": true,
+      "no_fill_side_effect": true,
+      "orders_count_unchanged": true,
+      "tick_response_shadow_only": true,
+      "tick_response_no_execution_side_effects": true,
+      "shadow_idempotency_key_defined_and_observed": true
+    },
+    "counts": {
+      "before_orders_count": 0,
+      "after_orders_count": 0,
+      "shadow_rows": 1,
+      "order_apply_rows": 0,
+      "fill_rows": 0,
+      "expected_idempotency_key": "shadow-event-260405_012|shadow-window-260405_012|ctx-v1",
+      "has_expected_idempotency_key": true,
+      "tick_response": {
+        "ok": true,
+        "shadow_only": true,
+        "execution_side_effects": false,
+        "shadow_idempotency_key": "shadow-event-260405_012|shadow-window-260405_012|ctx-v1",
+        "context_snapshot": {
+          "window_id": "shadow-window-260405_012",
+          "last_window_id": null,
+          "slug": "btc-updown-5m-1775415600",
+          "period": "5m",
+          "remaining_sec": 260,
+          "btc_price": 65385.2,
+          "anchor_btc": 65000,
+          "atr_5m": 90,
+          "upper_bound": 70000,
+          "lower_bound": 60000,
+          "bid_yes": 0.96,
+          "ask_yes": 0.97,
+          "bid_no": 0.01,
+          "ask_no": 0.99,
+          "tick_size": null,
+          "stale": true,
+          "updated_at": "2026-04-05T19:03:31.938Z",
+          "_btc_source_trace": {
+            "source_init_started": true,
+            "source_init_error": null,
+            "source_feed_seen": true,
+            "source_feed_count": 1,
+            "source_last_feed_at": "2026-04-05T19:03:31.938Z",
+            "latest_cache_price": 67384.29,
+            "latest_cache_at": "2026-04-05T19:03:31.938Z",
+            "latest_cache_source": "rest_binance",
+            "price_resolution": {
+              "kind": "cache",
+              "used_strike_raw": null,
+              "used_anchor_fallback_raw": null
+            },
+            "atr_resolution": {
+              "window_atr_5m_raw": null,
+              "window_atr_raw": null,
+              "state_atr_5m_raw": 90,
+              "resolved_atr_5m": 90,
+              "resolution_kind": "window_or_state",
+              "latest_fallback_atr_raw": null,
+              "latest_fallback_at": null,
+              "latest_fallback_period": null
+            }
+          },
+          "event_id": "shadow-event-260405_012",
+          "context_version": "ctx-v1",
+          "source_event_ts": "2026-04-05T19:03:31.457Z"
+        },
+        "decision_preview": {
+          "intents": [
+            {
+              "kind": "PLACE_LADDER",
+              "side": "YES",
+              "ladder": [
+                {
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 1
+                },
+                {
+                  "price": 0.24,
+                  "size": 5,
+                  "tp_price": 1
+                },
+                {
+                  "price": 0.21,
+                  "size": 5,
+                  "tp_price": 1
+                },
+                {
+                  "price": 0.18,
+                  "size": 5,
+                  "tp_price": 1
+                }
+              ],
+              "prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "size": 5
+            },
+            {
+              "kind": "PLACE_LADDER",
+              "side": "NO",
+              "ladder": [
+                {
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 1
+                },
+                {
+                  "price": 0.24,
+                  "size": 5,
+                  "tp_price": 1
+                },
+                {
+                  "price": 0.21,
+                  "size": 5,
+                  "tp_price": 1
+                },
+                {
+                  "price": 0.18,
+                  "size": 5,
+                  "tp_price": 1
+                }
+              ],
+              "prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "size": 5
+            }
+          ],
+          "intents_summary": "PLACE_LADDER(YES|0.27:5:1,0.24:5:1,0.21:5:1,0.18:5:1) + PLACE_LADDER(NO|0.27:5:1,0.24:5:1,0.21:5:1,0.18:5:1)",
+          "reason": "ladder_not_posted",
+          "patches": {
+            "ladder_posted": true
+          },
+          "diagnostics": {
+            "remaining_sec": 260,
+            "open_elapsed_sec": 40,
+            "ladder_posted": false,
+            "btc_price": 65385.2,
+            "upper_bound": 70000,
+            "lower_bound": 60000,
+            "bounds_ready": true,
+            "config_open_delay_sec": 0,
+            "config_cancel_all_remaining_sec": 100,
+            "config_ladder_size": 5,
+            "config_ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "config_up_ladder": [
+              {
+                "price": 0.27,
+                "size": 5,
+                "tp_price": 1
+              },
+              {
+                "price": 0.24,
+                "size": 5,
+                "tp_price": 1
+              },
+              {
+                "price": 0.21,
+                "size": 5,
+                "tp_price": 1
+              },
+              {
+                "price": 0.18,
+                "size": 5,
+                "tp_price": 1
+              }
+            ],
+            "config_down_ladder": [
+              {
+                "price": 0.27,
+                "size": 5,
+                "tp_price": 1
+              },
+              {
+                "price": 0.24,
+                "size": 5,
+                "tp_price": 1
+              },
+              {
+                "price": 0.21,
+                "size": 5,
+                "tp_price": 1
+              },
+              {
+                "price": 0.18,
+                "size": 5,
+                "tp_price": 1
+              }
+            ],
+            "config_up_cancel": {
+              "before_end_sec": 100,
+              "formula": "",
+              "before_end_source": "explicit"
+            },
+            "config_down_cancel": {
+              "before_end_sec": 100,
+              "formula": "",
+              "before_end_source": "explicit"
+            },
+            "formula_allowed_identifiers": [
+              "secs_left",
+              "spread",
+              "volatility_ratio",
+              "has_open_up_orders",
+              "has_open_down_orders",
+              "btc_price",
+              "upper_bound",
+              "lower_bound"
+            ],
+            "formula_vars": {
+              "secs_left": 260,
+              "spread": 0.98,
+              "volatility_ratio": 0.0013764582810788985,
+              "has_open_up_orders": false,
+              "has_open_down_orders": false,
+              "btc_price": 65385.2,
+              "upper_bound": 70000,
+              "lower_bound": 60000
+            },
+            "up_formula_eval": {
+              "hit": false,
+              "ok": false,
+              "code": "FORMULA_EMPTY",
+              "message": "formula is empty",
+              "allowed_identifiers": [
+                "secs_left",
+                "spread",
+                "volatility_ratio",
+                "has_open_up_orders",
+                "has_open_down_orders",
+                "btc_price",
+                "upper_bound",
+                "lower_bound"
+              ]
+            },
+            "down_formula_eval": {
+              "hit": false,
+              "ok": false,
+              "code": "FORMULA_EMPTY",
+              "message": "formula is empty",
+              "allowed_identifiers": [
+                "secs_left",
+                "spread",
+                "volatility_ratio",
+                "has_open_up_orders",
+                "has_open_down_orders",
+                "btc_price",
+                "upper_bound",
+                "lower_bound"
+              ]
+            },
+            "trigger_up_before_end": false,
+            "trigger_down_before_end": false,
+            "trigger_up_formula": false,
+            "trigger_down_formula": false,
+            "can_trigger_up_formula": true,
+            "can_trigger_down_formula": true,
+            "up_global_compat": true,
+            "down_global_compat": true,
+            "trigger_up_global_compat": false,
+            "trigger_down_global_compat": false
+          },
+          "context_snapshot": {
+            "window_id": "shadow-window-260405_012",
+            "last_window_id": null,
+            "slug": "btc-updown-5m-1775415600",
+            "period": "5m",
+            "remaining_sec": 260,
+            "btc_price": 65385.2,
+            "anchor_btc": 65000,
+            "atr_5m": 90,
+            "upper_bound": 70000,
+            "lower_bound": 60000,
+            "bid_yes": 0.96,
+            "ask_yes": 0.97,
+            "bid_no": 0.01,
+            "ask_no": 0.99,
+            "tick_size": null,
+            "stale": true,
+            "updated_at": "2026-04-05T19:03:31.938Z",
+            "_btc_source_trace": {
+              "source_init_started": true,
+              "source_init_error": null,
+              "source_feed_seen": true,
+              "source_feed_count": 1,
+              "source_last_feed_at": "2026-04-05T19:03:31.938Z",
+              "latest_cache_price": 67384.29,
+              "latest_cache_at": "2026-04-05T19:03:31.938Z",
+              "latest_cache_source": "rest_binance",
+              "price_resolution": {
+                "kind": "cache",
+                "used_strike_raw": null,
+                "used_anchor_fallback_raw": null
+              },
+              "atr_resolution": {
+                "window_atr_5m_raw": null,
+                "window_atr_raw": null,
+                "state_atr_5m_raw": 90,
+                "resolved_atr_5m": 90,
+                "resolution_kind": "window_or_state",
+                "latest_fallback_atr_raw": null,
+                "latest_fallback_at": null,
+                "latest_fallback_period": null
+              }
+            },
+            "event_id": "shadow-event-260405_012",
+            "context_version": "ctx-v1",
+            "source_event_ts": "2026-04-05T19:03:31.457Z"
+          },
+          "state_snapshot": {
+            "ladder_posted": false
+          },
+          "fixture": null
+        },
+        "state_before": {
+          "mode": "paper-staging",
+          "phase": "IDLE",
+          "running": false,
+          "debug_scenario": null,
+          "debug_frame_index": 0,
+          "debug_completed": false,
+          "tick_interval_ms": 2000,
+          "last_tick_at": "2026-04-05T19:02:52.958Z",
+          "last_window_id": null,
+          "current_window_id": "shadow-window-260405_012",
+          "window_initialized_at": "2026-04-05T19:02:46.457Z",
+          "remaining_sec": null,
+          "anchor_btc": 65000,
+          "atr_5m": 90,
+          "upper_bound": 70000,
+          "lower_bound": 60000,
+          "ladder_posted": false,
+          "yes_cancelled": false,
+          "no_cancelled": false,
+          "up_formula_cancelled": false,
+          "down_formula_cancelled": false,
+          "yes_order_ids": [],
+          "no_order_ids": [],
+          "last_reason": null,
+          "last_intents": [],
+          "updated_at": "2026-04-05T19:03:32.012Z"
+        },
+        "state_after": {
+          "mode": "paper-staging",
+          "phase": "IDLE",
+          "running": false,
+          "debug_scenario": null,
+          "debug_frame_index": 0,
+          "debug_completed": false,
+          "tick_interval_ms": 2000,
+          "last_tick_at": "2026-04-05T19:02:52.958Z",
+          "last_window_id": null,
+          "current_window_id": "shadow-window-260405_012",
+          "window_initialized_at": "2026-04-05T19:02:46.457Z",
+          "remaining_sec": null,
+          "anchor_btc": 65000,
+          "atr_5m": 90,
+          "upper_bound": 70000,
+          "lower_bound": 60000,
+          "ladder_posted": false,
+          "yes_cancelled": false,
+          "no_cancelled": false,
+          "up_formula_cancelled": false,
+          "down_formula_cancelled": false,
+          "yes_order_ids": [],
+          "no_order_ids": [],
+          "last_reason": null,
+          "last_intents": [],
+          "updated_at": "2026-04-05T19:03:32.012Z"
+        },
+        "order_summary": {
+          "total": 0,
+          "open_total": 0,
+          "cancelled_total": 0,
+          "filled_total": 0,
+          "open_yes": 0,
+          "open_no": 0,
+          "filled_yes": 0,
+          "filled_no": 0
+        },
+        "fills": [],
+        "blocked_cross_window_candidates": [],
+        "logs_added": 1
+      }
+    },
+    "sample_rows": [
+      {
+        "is_real_runtime": true,
+        "event": "BOT_SHADOW_DECISION"
+      },
+      {
+        "is_real_runtime": true,
+        "endpoint": "/bot/runner/tick"
+      }
+    ]
+  },
+  "generated_at": "2026-04-05T19:03:33.447Z",
+  "conclusion_block": {
+    "verdict": "A：通过",
+    "first_break_layer": "NONE_CHAIN_PASS"
+  },
+  "checks": {
+    "shadow_decision_emitted": true,
+    "no_order_apply_side_effect": true,
+    "no_fill_side_effect": true,
+    "orders_count_unchanged": true,
+    "tick_response_shadow_only": true,
+    "tick_response_no_execution_side_effects": true,
+    "shadow_idempotency_key_defined_and_observed": true
+  },
+  "non_regression": {
+    "running_window_excluded_semantics_preserved": true
+  },
+  "evidence_index": {
+    "fail_to_pass": {
+      "pre_fail": {
+        "shadow_only_entry_absent_or_side_effect_exists": true
+      },
+      "post_pass": {
+        "shadow_only_entry_absent_or_side_effect_exists": false
+      }
+    },
+    "non_regression": {
+      "running_window_excluded_semantics_preserved": true
+    },
+    "sample_rows": [
+      {
+        "is_real_runtime": true,
+        "event": "BOT_SHADOW_DECISION"
+      },
+      {
+        "is_real_runtime": true,
+        "endpoint": "/bot/runner/tick"
+      }
+    ],
+    "coverage": {
+      "before_orders_count": 0,
+      "after_orders_count": 0,
+      "shadow_rows": 1,
+      "order_apply_rows": 0,
+      "fill_rows": 0,
+      "expected_idempotency_key": "shadow-event-260405_012|shadow-window-260405_012|ctx-v1",
+      "has_expected_idempotency_key": true,
+      "tick_response": {
+        "ok": true,
+        "shadow_only": true,
+        "execution_side_effects": false,
+        "shadow_idempotency_key": "shadow-event-260405_012|shadow-window-260405_012|ctx-v1",
+        "context_snapshot": {
+          "window_id": "shadow-window-260405_012",
+          "last_window_id": null,
+          "slug": "btc-updown-5m-1775415600",
+          "period": "5m",
+          "remaining_sec": 260,
+          "btc_price": 65385.2,
+          "anchor_btc": 65000,
+          "atr_5m": 90,
+          "upper_bound": 70000,
+          "lower_bound": 60000,
+          "bid_yes": 0.96,
+          "ask_yes": 0.97,
+          "bid_no": 0.01,
+          "ask_no": 0.99,
+          "tick_size": null,
+          "stale": true,
+          "updated_at": "2026-04-05T19:03:31.938Z",
+          "_btc_source_trace": {
+            "source_init_started": true,
+            "source_init_error": null,
+            "source_feed_seen": true,
+            "source_feed_count": 1,
+            "source_last_feed_at": "2026-04-05T19:03:31.938Z",
+            "latest_cache_price": 67384.29,
+            "latest_cache_at": "2026-04-05T19:03:31.938Z",
+            "latest_cache_source": "rest_binance",
+            "price_resolution": {
+              "kind": "cache",
+              "used_strike_raw": null,
+              "used_anchor_fallback_raw": null
+            },
+            "atr_resolution": {
+              "window_atr_5m_raw": null,
+              "window_atr_raw": null,
+              "state_atr_5m_raw": 90,
+              "resolved_atr_5m": 90,
+              "resolution_kind": "window_or_state",
+              "latest_fallback_atr_raw": null,
+              "latest_fallback_at": null,
+              "latest_fallback_period": null
+            }
+          },
+          "event_id": "shadow-event-260405_012",
+          "context_version": "ctx-v1",
+          "source_event_ts": "2026-04-05T19:03:31.457Z"
+        },
+        "decision_preview": {
+          "intents": [
+            {
+              "kind": "PLACE_LADDER",
+              "side": "YES",
+              "ladder": [
+                {
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 1
+                },
+                {
+                  "price": 0.24,
+                  "size": 5,
+                  "tp_price": 1
+                },
+                {
+                  "price": 0.21,
+                  "size": 5,
+                  "tp_price": 1
+                },
+                {
+                  "price": 0.18,
+                  "size": 5,
+                  "tp_price": 1
+                }
+              ],
+              "prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "size": 5
+            },
+            {
+              "kind": "PLACE_LADDER",
+              "side": "NO",
+              "ladder": [
+                {
+                  "price": 0.27,
+                  "size": 5,
+                  "tp_price": 1
+                },
+                {
+                  "price": 0.24,
+                  "size": 5,
+                  "tp_price": 1
+                },
+                {
+                  "price": 0.21,
+                  "size": 5,
+                  "tp_price": 1
+                },
+                {
+                  "price": 0.18,
+                  "size": 5,
+                  "tp_price": 1
+                }
+              ],
+              "prices": [
+                0.27,
+                0.24,
+                0.21,
+                0.18
+              ],
+              "size": 5
+            }
+          ],
+          "intents_summary": "PLACE_LADDER(YES|0.27:5:1,0.24:5:1,0.21:5:1,0.18:5:1) + PLACE_LADDER(NO|0.27:5:1,0.24:5:1,0.21:5:1,0.18:5:1)",
+          "reason": "ladder_not_posted",
+          "patches": {
+            "ladder_posted": true
+          },
+          "diagnostics": {
+            "remaining_sec": 260,
+            "open_elapsed_sec": 40,
+            "ladder_posted": false,
+            "btc_price": 65385.2,
+            "upper_bound": 70000,
+            "lower_bound": 60000,
+            "bounds_ready": true,
+            "config_open_delay_sec": 0,
+            "config_cancel_all_remaining_sec": 100,
+            "config_ladder_size": 5,
+            "config_ladder_prices": [
+              0.27,
+              0.24,
+              0.21,
+              0.18
+            ],
+            "config_up_ladder": [
+              {
+                "price": 0.27,
+                "size": 5,
+                "tp_price": 1
+              },
+              {
+                "price": 0.24,
+                "size": 5,
+                "tp_price": 1
+              },
+              {
+                "price": 0.21,
+                "size": 5,
+                "tp_price": 1
+              },
+              {
+                "price": 0.18,
+                "size": 5,
+                "tp_price": 1
+              }
+            ],
+            "config_down_ladder": [
+              {
+                "price": 0.27,
+                "size": 5,
+                "tp_price": 1
+              },
+              {
+                "price": 0.24,
+                "size": 5,
+                "tp_price": 1
+              },
+              {
+                "price": 0.21,
+                "size": 5,
+                "tp_price": 1
+              },
+              {
+                "price": 0.18,
+                "size": 5,
+                "tp_price": 1
+              }
+            ],
+            "config_up_cancel": {
+              "before_end_sec": 100,
+              "formula": "",
+              "before_end_source": "explicit"
+            },
+            "config_down_cancel": {
+              "before_end_sec": 100,
+              "formula": "",
+              "before_end_source": "explicit"
+            },
+            "formula_allowed_identifiers": [
+              "secs_left",
+              "spread",
+              "volatility_ratio",
+              "has_open_up_orders",
+              "has_open_down_orders",
+              "btc_price",
+              "upper_bound",
+              "lower_bound"
+            ],
+            "formula_vars": {
+              "secs_left": 260,
+              "spread": 0.98,
+              "volatility_ratio": 0.0013764582810788985,
+              "has_open_up_orders": false,
+              "has_open_down_orders": false,
+              "btc_price": 65385.2,
+              "upper_bound": 70000,
+              "lower_bound": 60000
+            },
+            "up_formula_eval": {
+              "hit": false,
+              "ok": false,
+              "code": "FORMULA_EMPTY",
+              "message": "formula is empty",
+              "allowed_identifiers": [
+                "secs_left",
+                "spread",
+                "volatility_ratio",
+                "has_open_up_orders",
+                "has_open_down_orders",
+                "btc_price",
+                "upper_bound",
+                "lower_bound"
+              ]
+            },
+            "down_formula_eval": {
+              "hit": false,
+              "ok": false,
+              "code": "FORMULA_EMPTY",
+              "message": "formula is empty",
+              "allowed_identifiers": [
+                "secs_left",
+                "spread",
+                "volatility_ratio",
+                "has_open_up_orders",
+                "has_open_down_orders",
+                "btc_price",
+                "upper_bound",
+                "lower_bound"
+              ]
+            },
+            "trigger_up_before_end": false,
+            "trigger_down_before_end": false,
+            "trigger_up_formula": false,
+            "trigger_down_formula": false,
+            "can_trigger_up_formula": true,
+            "can_trigger_down_formula": true,
+            "up_global_compat": true,
+            "down_global_compat": true,
+            "trigger_up_global_compat": false,
+            "trigger_down_global_compat": false
+          },
+          "context_snapshot": {
+            "window_id": "shadow-window-260405_012",
+            "last_window_id": null,
+            "slug": "btc-updown-5m-1775415600",
+            "period": "5m",
+            "remaining_sec": 260,
+            "btc_price": 65385.2,
+            "anchor_btc": 65000,
+            "atr_5m": 90,
+            "upper_bound": 70000,
+            "lower_bound": 60000,
+            "bid_yes": 0.96,
+            "ask_yes": 0.97,
+            "bid_no": 0.01,
+            "ask_no": 0.99,
+            "tick_size": null,
+            "stale": true,
+            "updated_at": "2026-04-05T19:03:31.938Z",
+            "_btc_source_trace": {
+              "source_init_started": true,
+              "source_init_error": null,
+              "source_feed_seen": true,
+              "source_feed_count": 1,
+              "source_last_feed_at": "2026-04-05T19:03:31.938Z",
+              "latest_cache_price": 67384.29,
+              "latest_cache_at": "2026-04-05T19:03:31.938Z",
+              "latest_cache_source": "rest_binance",
+              "price_resolution": {
+                "kind": "cache",
+                "used_strike_raw": null,
+                "used_anchor_fallback_raw": null
+              },
+              "atr_resolution": {
+                "window_atr_5m_raw": null,
+                "window_atr_raw": null,
+                "state_atr_5m_raw": 90,
+                "resolved_atr_5m": 90,
+                "resolution_kind": "window_or_state",
+                "latest_fallback_atr_raw": null,
+                "latest_fallback_at": null,
+                "latest_fallback_period": null
+              }
+            },
+            "event_id": "shadow-event-260405_012",
+            "context_version": "ctx-v1",
+            "source_event_ts": "2026-04-05T19:03:31.457Z"
+          },
+          "state_snapshot": {
+            "ladder_posted": false
+          },
+          "fixture": null
+        },
+        "state_before": {
+          "mode": "paper-staging",
+          "phase": "IDLE",
+          "running": false,
+          "debug_scenario": null,
+          "debug_frame_index": 0,
+          "debug_completed": false,
+          "tick_interval_ms": 2000,
+          "last_tick_at": "2026-04-05T19:02:52.958Z",
+          "last_window_id": null,
+          "current_window_id": "shadow-window-260405_012",
+          "window_initialized_at": "2026-04-05T19:02:46.457Z",
+          "remaining_sec": null,
+          "anchor_btc": 65000,
+          "atr_5m": 90,
+          "upper_bound": 70000,
+          "lower_bound": 60000,
+          "ladder_posted": false,
+          "yes_cancelled": false,
+          "no_cancelled": false,
+          "up_formula_cancelled": false,
+          "down_formula_cancelled": false,
+          "yes_order_ids": [],
+          "no_order_ids": [],
+          "last_reason": null,
+          "last_intents": [],
+          "updated_at": "2026-04-05T19:03:32.012Z"
+        },
+        "state_after": {
+          "mode": "paper-staging",
+          "phase": "IDLE",
+          "running": false,
+          "debug_scenario": null,
+          "debug_frame_index": 0,
+          "debug_completed": false,
+          "tick_interval_ms": 2000,
+          "last_tick_at": "2026-04-05T19:02:52.958Z",
+          "last_window_id": null,
+          "current_window_id": "shadow-window-260405_012",
+          "window_initialized_at": "2026-04-05T19:02:46.457Z",
+          "remaining_sec": null,
+          "anchor_btc": 65000,
+          "atr_5m": 90,
+          "upper_bound": 70000,
+          "lower_bound": 60000,
+          "ladder_posted": false,
+          "yes_cancelled": false,
+          "no_cancelled": false,
+          "up_formula_cancelled": false,
+          "down_formula_cancelled": false,
+          "yes_order_ids": [],
+          "no_order_ids": [],
+          "last_reason": null,
+          "last_intents": [],
+          "updated_at": "2026-04-05T19:03:32.012Z"
+        },
+        "order_summary": {
+          "total": 0,
+          "open_total": 0,
+          "cancelled_total": 0,
+          "filled_total": 0,
+          "open_yes": 0,
+          "open_no": 0,
+          "filled_yes": 0,
+          "filled_no": 0
+        },
+        "fills": [],
+        "blocked_cross_window_candidates": [],
+        "logs_added": 1
+      }
+    }
+  }
+}
