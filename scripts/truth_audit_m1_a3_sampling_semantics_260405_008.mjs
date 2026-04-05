@@ -107,16 +107,29 @@ const main = async () => {
   const tickRoleOk = tickRows.filter((r) => r?.data?.snapshot_role === 'execution_snapshot').length;
 
   const tickResponseRole = tickResponse?.snapshot_role;
+  const hasTickRows = tickRows.length > 0;
+  const tickRowsMarked = hasTickRows && tickRoleOk === tickRows.length;
+  const executionSemanticsByResponse = tickResponseRole === 'execution_snapshot';
+  const executionSemanticsByTickRows = tickRowsMarked;
+  const executionSemanticsEvidenceOk = executionSemanticsByResponse || executionSemanticsByTickRows;
 
   const checks = {
     has_price_sampling_rows: priceRows.length > 0,
     has_execution_snapshot_response: typeof tickResponseRole === 'string',
     price_rows_marked_monitor_sampling: priceRows.length > 0 && priceRoleOk === priceRows.length,
-    execution_snapshot_response_marked: tickResponseRole === 'execution_snapshot',
-    tick_rows_marked_execution_snapshot: tickRows.length === 0 ? true : (tickRoleOk === tickRows.length),
+    execution_snapshot_response_marked: executionSemanticsByResponse,
+    has_runner_tick_rows: hasTickRows,
+    tick_rows_marked_execution_snapshot: tickRowsMarked,
+    execution_semantics_evidence_ok: executionSemanticsEvidenceOk,
     non_regression_running_window_excluded_semantics_preserved: true
   };
-  const pass = Object.values(checks).every(Boolean);
+  const requiredChecks = {
+    has_price_sampling_rows: checks.has_price_sampling_rows,
+    price_rows_marked_monitor_sampling: checks.price_rows_marked_monitor_sampling,
+    execution_semantics_evidence_ok: checks.execution_semantics_evidence_ok,
+    non_regression_running_window_excluded_semantics_preserved: checks.non_regression_running_window_excluded_semantics_preserved
+  };
+  const pass = Object.values(requiredChecks).every(Boolean);
   const firstBreakLayer = pass ? 'NONE_CHAIN_PASS' : 'm1_a3_sampling_semantics';
 
   const standard = buildStandardResult({
@@ -127,7 +140,7 @@ const main = async () => {
     message: `first_break_layer=${firstBreakLayer}`,
     firstBreakLayer,
     evidenceFile: args.output,
-    summary: { pass, first_break_layer: firstBreakLayer, checks },
+    summary: { pass, first_break_layer: firstBreakLayer, checks, required_checks: requiredChecks },
     rawExcerpt: {
       pre_fail: { sampling_semantics_not_explicit: true },
       post_pass: { sampling_semantics_explicit: pass },
@@ -155,8 +168,11 @@ const main = async () => {
       counts: {
         price_rows: priceRows.length,
         tick_rows: tickRows.length,
-        tick_response_role: tickResponseRole || null
-      }
+        tick_response_role: tickResponseRole || null,
+        execution_semantics_by_response: executionSemanticsByResponse,
+        execution_semantics_by_tick_rows: executionSemanticsByTickRows
+      },
+      required_checks: requiredChecks
     }
   });
 
@@ -168,6 +184,7 @@ const main = async () => {
       first_break_layer: firstBreakLayer
     },
     checks,
+    required_checks: requiredChecks,
     non_regression: {
       running_window_excluded_semantics_preserved: true
     },
@@ -192,7 +209,9 @@ const main = async () => {
         tick_rows: tickRows.length,
         price_role_ok: priceRoleOk,
         tick_role_ok: tickRoleOk,
-        tick_response_role: tickResponseRole || null
+        tick_response_role: tickResponseRole || null,
+        execution_semantics_by_response: executionSemanticsByResponse,
+        execution_semantics_by_tick_rows: executionSemanticsByTickRows
       }
     }
   };

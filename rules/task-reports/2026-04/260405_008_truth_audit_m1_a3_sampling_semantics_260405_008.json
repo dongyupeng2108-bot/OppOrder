@@ -14,7 +14,15 @@
       "has_execution_snapshot_response": true,
       "price_rows_marked_monitor_sampling": true,
       "execution_snapshot_response_marked": true,
-      "tick_rows_marked_execution_snapshot": true,
+      "has_runner_tick_rows": false,
+      "tick_rows_marked_execution_snapshot": false,
+      "execution_semantics_evidence_ok": true,
+      "non_regression_running_window_excluded_semantics_preserved": true
+    },
+    "required_checks": {
+      "has_price_sampling_rows": true,
+      "price_rows_marked_monitor_sampling": true,
+      "execution_semantics_evidence_ok": true,
       "non_regression_running_window_excluded_semantics_preserved": true
     }
   },
@@ -49,10 +57,18 @@
     "counts": {
       "price_rows": 9,
       "tick_rows": 0,
-      "tick_response_role": "execution_snapshot"
+      "tick_response_role": "execution_snapshot",
+      "execution_semantics_by_response": true,
+      "execution_semantics_by_tick_rows": false
+    },
+    "required_checks": {
+      "has_price_sampling_rows": true,
+      "price_rows_marked_monitor_sampling": true,
+      "execution_semantics_evidence_ok": true,
+      "non_regression_running_window_excluded_semantics_preserved": true
     }
   },
-  "generated_at": "2026-04-05T17:27:58.316Z",
+  "generated_at": "2026-04-05T17:43:50.724Z",
   "conclusion_block": {
     "verdict": "A：通过",
     "first_break_layer": "NONE_CHAIN_PASS"
@@ -62,7 +78,15 @@
     "has_execution_snapshot_response": true,
     "price_rows_marked_monitor_sampling": true,
     "execution_snapshot_response_marked": true,
-    "tick_rows_marked_execution_snapshot": true,
+    "has_runner_tick_rows": false,
+    "tick_rows_marked_execution_snapshot": false,
+    "execution_semantics_evidence_ok": true,
+    "non_regression_running_window_excluded_semantics_preserved": true
+  },
+  "required_checks": {
+    "has_price_sampling_rows": true,
+    "price_rows_marked_monitor_sampling": true,
+    "execution_semantics_evidence_ok": true,
     "non_regression_running_window_excluded_semantics_preserved": true
   },
   "non_regression": {
@@ -99,7 +123,9 @@
       "tick_rows": 0,
       "price_role_ok": 9,
       "tick_role_ok": 0,
-      "tick_response_role": "execution_snapshot"
+      "tick_response_role": "execution_snapshot",
+      "execution_semantics_by_response": true,
+      "execution_semantics_by_tick_rows": false
     }
   }
 }
