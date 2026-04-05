@@ -99,6 +99,7 @@
 ## 7. 证据与门禁规则
 
 - `rules/LATEST.json` 必须与当前 task_id 一致
+- `docs/tasks/<task_id>.md` 必须存在，且作为任务定义主读取源
 - 证据文件必须包含任务结论块与可追溯索引
 - Gate Light / CI 作为合并前硬门禁
 - 禁止通过删减校验项“绕过通过”
@@ -118,6 +119,16 @@
   - 默认不生成：`ci_parity`、`errors_jsonl/errors_summary`、`preflight_attestation`
   - 如需完整产物，显式使用 `--artifact_mode full`
   - 该策略不改变 gate_light_ci 判定语义与 light/heavy 定义
+- Dev 完成实现后必须先推进到 PR 阶段，再通知 Owner 发起外部验收（ChatGPT）
+- 外部验收触发口令固定：
+  - `验收任务 <task_id>`
+  - `审 PR #<num>`
+- ChatGPT 验收读取顺序固定：
+  - `docs/tasks/<task_id>.md`
+  - `rules/LATEST.json`
+  - `rules/task-reports/YYYY-MM/<task_id>/...`
+  - PR 与 gate 状态
+- 外部验收以 Git 文件为准，聊天转述仅作摘要参考
 - 轻任务默认最小提交集：
   - 相关文件语法检查、修前 1 条 / 修后 1 条最小事实块、LATEST/范围锁/postflight-envelope、finalize/gate 通过结果
   - 执行命令：`finalize_task_evidence --profile light` 与 `gate_light_ci --profile light`
