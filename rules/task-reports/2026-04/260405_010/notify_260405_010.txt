@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260405_010/result_260405_010.json
+LOG_HEAD
+[260405_010] notify noise cleanup completed
+LOG_TAIL
+historical failed fragments are filtered from notify head/tail
+EVIDENCE
+rules/task-reports/2026-04/260405_010/truth_audit_260405_010.md
+INDEX
+rules/task-reports/2026-04/260405_010/result_260405_010.json

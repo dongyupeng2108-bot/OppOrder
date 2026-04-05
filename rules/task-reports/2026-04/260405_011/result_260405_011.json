@@ -1,0 +1,15 @@
+{
+  "task_id": "260405_011",
+  "status": "PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "summary": "260405_010 notify 全量历史失败噪音已清理，组装逻辑改为提取+过滤模式。",
+  "deliverables": [
+    "docs/tasks/260405_011.md",
+    "scripts/assemble_evidence.mjs",
+    "scripts/truth_audit_notify_full_cleanup_260405_011.mjs",
+    "rules/task-reports/2026-04/notify_260405_010.txt",
+    "rules/task-reports/2026-04/260405_011/implementation_260405_011.md",
+    "rules/task-reports/2026-04/260405_011/truth_audit_260405_011.md",
+    "rules/task-reports/2026-04/260405_011_truth_audit_notify_full_cleanup_260405_011.json"
+  ]
+}
