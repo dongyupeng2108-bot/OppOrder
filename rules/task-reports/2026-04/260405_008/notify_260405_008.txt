@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260405_008/result_260405_008.json
+LOG_HEAD
+[260405_008] M1-A3 sampling semantics separated
+LOG_TAIL
+monitor_sampling and execution_snapshot semantics are explicit
+EVIDENCE
+rules/task-reports/2026-04/260405_008/truth_audit_260405_008.md
+INDEX
+rules/task-reports/2026-04/260405_008/result_260405_008.json

@@ -1,0 +1,47 @@
+=== TRAE_REPORT_SNIPPET ===
+
+Header: Unknown
+BRANCH: 260405_009
+COMMIT: acb114db2
+
+=== GIT_SCOPE_DIFF ===
+A	docs/tasks/260405_008.md
+M	rules/LATEST.json
+A	rules/task-reports/2026-04/260405_008.json
+A	rules/task-reports/2026-04/260405_008/implementation_260405_008.md
+A	rules/task-reports/2026-04/260405_008/notify_260405_008.txt
+A	rules/task-reports/2026-04/260405_008/result_260405_008.json
+A	rules/task-reports/2026-04/260405_008/truth_audit_260405_008.md
+A	rules/task-reports/2026-04/260405_008_healthcheck_53122_pairs.txt
+A	rules/task-reports/2026-04/260405_008_healthcheck_53122_root.txt
+A	rules/task-reports/2026-04/260405_008_truth_audit_m1_a3_sampling_semantics_260405_008.json
+A	rules/task-reports/2026-04/evidence_manifest_260405_008.json
+A	rules/task-reports/2026-04/manual_verification_260405_008.json
+A	rules/task-reports/2026-04/notify_260405_008.txt
+A	rules/task-reports/2026-04/result_260405_008.json
+A	rules/task-reports/2026-04/run_260405_008.log
+A	rules/task-reports/2026-04/trae_report_snippet_260405_008.txt
+A	rules/task-reports/2026-04/workspace_healer_260405_008.json
+A	scripts/truth_audit_m1_a3_sampling_semantics_260405_008.mjs
+M	strategies/crypto_binary/bot_runner.mjs
+M	strategies/crypto_binary/server.mjs
+
+=== DOD_EVIDENCE_STDOUT ===
+Missing Blocks:
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260405_008_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260405_008_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+
+
+
+=== GATE_LIGHT_PREVIEW ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260405_008
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] TASK_PROFILE=heavy
+[Gate Light] TASK_DOMAIN=btcqdd
+[Gate Light] DOMAIN_PACKS=["btcqdd_core"]
+[Gate Light] Verifying task_id: 260405_008
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] FAILED: Report Block Check for notify_260405_008.txt
+GATE_LIGHT_EXIT=1

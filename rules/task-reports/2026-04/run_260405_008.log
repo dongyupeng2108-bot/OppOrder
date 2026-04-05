@@ -1,0 +1,12 @@
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260405_008
+PR_TASK_ID_DETECTED=260405_008
+[Gate Light] FAILED: LATEST.json Out of Sync.
+FAIL_REASON=LATEST_OUT_OF_SYNC
+  LATEST_OUT_OF_SYNC=1
+  LATEST_TASK_ID: 260405_009
+TARGET_TASK_ID=260405_008
+LATEST_TASK_ID=260405_009
+  PR_TASK_ID: 260405_008
+  ACTION: update rules/LATEST.json to PR task_id
+FIX_CMD: node -e "const fs=require('fs');fs.writeFileSync('rules/LATEST.json',JSON.stringify({task_id:'260405_008',timestamp:new Date().toISOString().slice(0,19).replace('T',' ')},null,4)+'\n')"
