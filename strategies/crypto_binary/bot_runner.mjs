@@ -553,9 +553,12 @@ export function createBotRunner(options = {}) {
             side: order.side,
             kind: order.kind,
             order_window_id: order.window_id ?? null,
+            current_window_id: contextForDecision.window_id ?? null,
             order_price: order.price,
+            decision_price: order.fill_price,
             fill_price: order.fill_price
-          }))
+          })),
+          current_window_id: contextForDecision.window_id ?? null
         }
       });
     }

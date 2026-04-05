@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260405_007/result_260405_007.json
+LOG_HEAD
+[260405_007] M1-A2 fill audit fields landed
+LOG_TAIL
+decision_price/current_window_id evidence ready
+EVIDENCE
+rules/task-reports/2026-04/260405_007/truth_audit_260405_007.md
+INDEX
+rules/task-reports/2026-04/260405_007/result_260405_007.json

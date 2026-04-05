@@ -1,0 +1,14 @@
+{
+  "task_id": "260405_007",
+  "status": "PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "summary": "M1-A2 落地完成：BOT_FILL 的 decision_price/current_window_id 审计字段已补齐。",
+  "deliverables": [
+    "docs/tasks/260405_007.md",
+    "strategies/crypto_binary/bot_runner.mjs",
+    "scripts/truth_audit_m1_a2_fill_audit_fields_260405_007.mjs",
+    "rules/task-reports/2026-04/260405_007/implementation_260405_007.md",
+    "rules/task-reports/2026-04/260405_007/truth_audit_260405_007.md",
+    "rules/task-reports/2026-04/260405_007_truth_audit_m1_a2_fill_audit_fields_260405_007.json"
+  ]
+}
