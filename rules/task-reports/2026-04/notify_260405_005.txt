@@ -1,9 +1,9 @@
 Trae Task Report
 Task ID: 260405_005
 Header: Unknown
-Date: 2026-04-05T15:13:06.296Z
-Branch: 260405_005
-Commit: 6e64a27e421a227a91d93cffc8a94e640191cbf6
+Date: 2026-04-05T15:56:50.998Z
+Branch: 260405_006_fix_notify_cleanup
+Commit: 9048ad110dacc0e4509b7c6f8112db6bef6ec677
 
 
 === RESULT_JSON ===
@@ -24,43 +24,51 @@ LATEST_TASK_ID=260405_005
 [Gate Light] DOMAIN_PACKS=["btcqdd_core"]
 [Gate Light] Verifying task_id: 260405_005
 [Gate Light] Running Automation Pack V1 Hard Guards...
-
-[Gate Light] FAILED: Report Block Check for notify_260405_005.txt
-  Missing Blocks: === DOD_EVIDENCE_STDOUT ===
-  Missing Blocks: === GATE_LIGHT_PREVIEW === OR === GATE_LIGHT_VERIFY ===
-  ACTION: Use 'assemble_evidence.mjs' to regenerate reports.
+[Gate Light] Report Block Check Passed: notify_260405_005.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260405_005.txt
+[Gate Light] Header Check Passed: TraeTask_260405_005
+[Gate Light] Checking Workspace Healer Evidence...
+[Gate Light] Workspace Healer verified (Clean Environment).
+[Gate Light] Checking Error Digest Evidence (warn-only)...
+[Gate Light] WARN: Error Digest files missing (non-blocking). JSONL=false, Summary=false
+[Gate Light] Checking doc path standards...
+[Gate Light] Doc path standards verified.
 ...
 
 === LOG_TAIL ===
 ...
-[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
-[Gate Light] Target locked via argument: 260405_005
-PR_TASK_ID_DETECTED=260405_005
-TARGET_TASK_ID=260405_005
-LATEST_TASK_ID=260405_005
-[Gate Light] LATEST.json consistency verified.
-[Gate Light] TASK_PROFILE=heavy
-[Gate Light] TASK_DOMAIN=btcqdd
-[Gate Light] DOMAIN_PACKS=["btcqdd_core"]
-[Gate Light] Verifying task_id: 260405_005
-[Gate Light] Running Automation Pack V1 Hard Guards...
-
-[Gate Light] FAILED: Report Block Check for notify_260405_005.txt
-  Missing Blocks: === DOD_EVIDENCE_STDOUT ===
-  Missing Blocks: === GATE_LIGHT_PREVIEW === OR === GATE_LIGHT_VERIFY ===
-  ACTION: Use 'assemble_evidence.mjs' to regenerate reports.
+[Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...
+[Gate Light] Immutable Integrate & SafeCmd Enforcement verified.
+[Gate Light] Checking Scope Lock...
+[Gate Light] WARN: No scope_lock file found. Skipping scope lock check (backward compatible).
+[Gate Light] BTCQDD Healthcheck: PASS
+[Gate Light] Executing: node scripts/postflight_validate_envelope.mjs --task_id 260405_005 --result_dir rules\task-reports\2026-04 --report_dir rules\task-reports\2026-04
+[Postflight] Validating 260405_005 in rules\task-reports\2026-04...
+[Postflight] Running Evidence Smoke Test for 260405_005...
+[SmokeTest] Running Evidence Smoke Test for Task 260405_005 in rules\task-reports\2026-04...
+[SmokeTest] PASS: All 12 required files exist and manifest is valid.
+[DEBUG] Healthcheck Root Match: DOD_EVIDENCE_HEALTHCHECK_ROOT: 260405_005_healthcheck_53122_root.txt =>
+[DEBUG] Healthcheck Pairs Match: DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260405_005_healthcheck_53122_pairs.txt =>
+[DEBUG] Checking Evidence File: Label=Root, RefPath='260405_005_healthcheck_53122_root.txt'
+[DEBUG] Resolved EvPath: 'rules\task-reports\2026-04\260405_005_healthcheck_53122_root.txt'
+[DEBUG] Checking Evidence File: Label=Pairs, RefPath='260405_005_healthcheck_53122_pairs.txt'
+[DEBUG] Resolved EvPath: 'rules\task-reports\2026-04\260405_005_healthcheck_53122_pairs.txt'
+[Postflight] Report: rules\task-reports\2026-04\260405_005.json
+[Postflight] Envelope: rules\task-reports\envelopes\260405_005.envelope.json
+[Postflight] PASS
+[Gate Light] PASS
 
 === DOD_EVIDENCE_STDOUT ===
 RESULT_JSON
-rules/task-reports/2026-04/result_260405_005.json
+rules/task-reports/2026-04/260405_005/result_260405_005.json
 LOG_HEAD
-[LocalFinalize] task 260405_005
+[260405_005] fix for failed acceptance of 260405_004 completed
 LOG_TAIL
-local finalize flow
+Three-event real runtime coverage and clean finalize+gate chain are ready
 EVIDENCE
-rules/task-reports/2026-04/trae_report_snippet_260405_005.txt
+rules/task-reports/2026-04/260405_005/truth_audit_260405_005.md
 INDEX
-rules/task-reports/2026-04/result_260405_005.json
+rules/task-reports/2026-04/260405_005/result_260405_005.json
 ===========================
 
 DOD_EVIDENCE_HEALTHCHECK_ROOT: 260405_005_healthcheck_53122_root.txt => HTTP/1.1 200 OK
@@ -72,7 +80,7 @@ DOD_EVIDENCE_SITE_HEALTH_PAIRS_53122: 260405_005_healthcheck_53122_pairs.txt => 
 
 === WORKSPACE_HEALER ===
 Result: PASS
-Mode: EnforceClean
+Mode: LOCAL_FINALIZE_FALLBACK
 Tracked Changed: 0
 Untracked: 0
 ========================
@@ -81,6 +89,7 @@ Untracked: 0
 
 
 
+=== GATE_LIGHT_PREVIEW ===
 [Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
 [Gate Light] Target locked via argument: 260405_005
 PR_TASK_ID_DETECTED=260405_005
@@ -92,11 +101,65 @@ LATEST_TASK_ID=260405_005
 [Gate Light] DOMAIN_PACKS=["btcqdd_core"]
 [Gate Light] Verifying task_id: 260405_005
 [Gate Light] Running Automation Pack V1 Hard Guards...
-
-[Gate Light] FAILED: Report Block Check for notify_260405_005.txt
-  Missing Blocks: === DOD_EVIDENCE_STDOUT ===
-  Missing Blocks: === GATE_LIGHT_PREVIEW === OR === GATE_LIGHT_VERIFY ===
-  ACTION: Use 'assemble_evidence.mjs' to regenerate reports.
+[Gate Light] Report Block Check Passed: notify_260405_005.txt
+[Gate Light] Report Block Check Passed: trae_report_snippet_260405_005.txt
+[Gate Light] Header Check Passed: TraeTask_260405_005
+[Gate Light] Checking Workspace Healer Evidence...
+[Gate Light] Workspace Healer verified (Clean Environment).
+[Gate Light] Checking Error Digest Evidence (warn-only)...
+[Gate Light] WARN: Error Digest files missing (non-blocking). JSONL=false, Summary=false
+[Gate Light] Checking doc path standards...
+[Gate Light] Doc path standards verified.
+[Gate Light] Checking for legacy doc path references...
+[CheckDocPathRefs] Scanning for legacy doc path references...
+[CheckDocPathRefs] PASS: No legacy doc path references found.
+[Gate Light] Checking for banned cmd syntax in PowerShell scripts...
+Starting static scan for banned cmd syntax in .ps1 files...
+Scanning targets: scripts/run_task.ps1, scripts/test_fail_budget.ps1, scripts/ps/Invoke-Step.ps1
+Static scan PASSED.
+[Gate Light] Checking for global healthcheck artifacts...
+[Gate Light] Global Artifact Guard verified.
+[Gate Light] DOMAIN_SKIP: opportunities contract pack skipped (domain=btcqdd).
+[Gate Light] DOMAIN_SKIP_CHECKS: news/rank/export/ledger/scanner/universe/trading
+[Gate Light] Checking healthcheck evidence...
+[Gate Light] Using evidence directory: rules\task-reports\2026-04
+[Gate Light] Healthcheck evidence verified (Path + Content).
+[Gate Light] Checking DoD Evidence Excerpts...
+[Gate Light] DoD Evidence Excerpts verified.
+[Gate Light] Checking Deletion Audit (Locks & Runs)...
+[Gate Light] Deletion Audit: No lock/index yet (Assuming Pre-Integrate or First Run in progress).
+[Gate Light] Checking No Auto-Merge (Git Forbidden Commands)...
+[Gate Light] No Auto-Merge verified.
+[Gate Light] Checking Workflow Hardening (NoHistoricalEvidenceTouch & SnippetCommitMustMatch)...
+[Gate Light] Allowed legacy task_id (transition): 260405_003
+[Gate Light] NoHistoricalEvidenceTouch verified.
+SNIPPET_GIT_STRATEGY=local_first
+SNIPPET_GIT_FETCH_NEEDED=false
+[Gate Light] SnippetCommitMustMatch verified.
+[Gate Light] DOMAIN_SKIP: Rank V2 Contract Version Guard skipped (domain=btcqdd).
+[Gate Light] Checking Heavy Mandatory Evidence...
+[Gate Light] Heavy mandatory evidence verified.
+[Gate Light] Checking Immutable Integrate & SafeCmd Enforcement...
+[Gate Light] Immutable Integrate & SafeCmd Enforcement verified.
+[Gate Light] Checking Scope Lock...
+[Gate Light] WARN: No scope_lock file found. Skipping scope lock check (backward compatible).
+[Gate Light] BTCQDD Healthcheck: PASS
+[Gate Light] Executing: node scripts/postflight_validate_envelope.mjs --task_id 260405_005 --result_dir rules\task-reports\2026-04 --report_dir rules\task-reports\2026-04
+[Postflight] Validating 260405_005 in rules\task-reports\2026-04...
+[Postflight] Running Evidence Smoke Test for 260405_005...
+[SmokeTest] Running Evidence Smoke Test for Task 260405_005 in rules\task-reports\2026-04...
+[SmokeTest] PASS: All 12 required files exist and manifest is valid.
+[DEBUG] Healthcheck Root Match: DOD_EVIDENCE_HEALTHCHECK_ROOT: 260405_005_healthcheck_53122_root.txt =>
+[DEBUG] Healthcheck Pairs Match: DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260405_005_healthcheck_53122_pairs.txt =>
+[DEBUG] Checking Evidence File: Label=Root, RefPath='260405_005_healthcheck_53122_root.txt'
+[DEBUG] Resolved EvPath: 'rules\task-reports\2026-04\260405_005_healthcheck_53122_root.txt'
+[DEBUG] Checking Evidence File: Label=Pairs, RefPath='260405_005_healthcheck_53122_pairs.txt'
+[DEBUG] Resolved EvPath: 'rules\task-reports\2026-04\260405_005_healthcheck_53122_pairs.txt'
+[Postflight] Report: rules\task-reports\2026-04\260405_005.json
+[Postflight] Envelope: rules\task-reports\envelopes\260405_005.envelope.json
+[Postflight] PASS
+[Gate Light] PASS
+==========================
 
 
 
