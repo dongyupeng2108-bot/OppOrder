@@ -1,0 +1,26 @@
+{
+  "task_id": "260406_005",
+  "task_type": "workflow_upgrade",
+  "script_name": "truth_audit_business_recovery_entry_260406_005",
+  "pass": true,
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "checks": {
+    "recovery_playbook_exists": true,
+    "task_doc_exists": true,
+    "latest_points_to_260406_005": true,
+    "governance_substitute_pass": true
+  },
+  "raw_excerpt": {
+    "fail_to_pass": {
+      "before": "no_business_recovery_entry",
+      "after": "business_recovery_entry_ready"
+    },
+    "governance_substitute": {
+      "pass": true
+    }
+  },
+  "summary": {
+    "verdict": "A",
+    "conclusion": "Business recovery entry is ready after governance closure."
+  }
+}
