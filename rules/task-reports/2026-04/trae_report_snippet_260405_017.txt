@@ -1,0 +1,63 @@
+=== TRAE_REPORT_SNIPPET ===
+
+Header: TraeTask_260405_017
+BRANCH: 260405_017
+COMMIT: dd7820a0a
+
+=== GIT_SCOPE_DIFF ===
+A	docs/tasks/260405_017.md
+M	rules/LATEST.json
+A	rules/task-reports/2026-04/260405_012_healthcheck_53122_pairs.txt
+A	rules/task-reports/2026-04/260405_012_healthcheck_53122_root.txt
+A	rules/task-reports/2026-04/260405_017/implementation_260405_017.md
+A	rules/task-reports/2026-04/260405_017/notify_260405_017.txt
+A	rules/task-reports/2026-04/260405_017/result_260405_017.json
+A	rules/task-reports/2026-04/260405_017/truth_audit_260405_017.md
+A	rules/task-reports/2026-04/run_260405_012.log
+A	rules/task-reports/2026-04/workspace_healer_260405_012.json
+M	scripts/assemble_evidence.mjs
+A	scripts/truth_audit_notify_binding_live_head_260405_017.mjs
+
+=== DOD_EVIDENCE_STDOUT ===
+RESULT_JSON
+rules/task-reports/2026-04/result_260405_017.json
+LOG_HEAD
+[LocalFinalize] task 260405_017
+LOG_TAIL
+local finalize flow
+EVIDENCE
+rules/task-reports/2026-04/trae_report_snippet_260405_017.txt
+INDEX
+rules/task-reports/2026-04/result_260405_017.json
+===========================
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260405_017_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_SITE_HEALTH_ROOT_53122: 260405_017_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260405_017_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_SITE_HEALTH_PAIRS_53122: 260405_017_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+
+
+
+=== WORKSPACE_HEALER ===
+Result: PASS
+Mode: EnforceClean
+Tracked Changed: 0
+Untracked: 0
+========================
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260405_017_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260405_017_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+
+
+
+=== GATE_LIGHT_PREVIEW ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260405_017
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] TASK_PROFILE=heavy
+[Gate Light] TASK_DOMAIN=btcqdd
+[Gate Light] DOMAIN_PACKS=["btcqdd_core"]
+[Gate Light] Verifying task_id: 260405_017
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] FAILED: Report Block Check for notify_260405_017.txt
+GATE_LIGHT_EXIT=1
