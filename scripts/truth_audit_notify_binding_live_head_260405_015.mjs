@@ -34,6 +34,12 @@ const extractLine = (text, key) => {
   return m ? m[1].trim() : null;
 };
 
+const getRuntimeHeadCommit = (fallbackCommit) => {
+  const fromCi = String(process.env.PR_HEAD_SHA || process.env.GITHUB_SHA || '').trim();
+  if (fromCi) return fromCi;
+  return fallbackCommit;
+};
+
 const main = async () => {
   const args = parseArgs();
   const targetTaskId = '260405_012';
@@ -43,6 +49,7 @@ const main = async () => {
   const notifyBranch = extractLine(notify, 'Branch');
   const notifyCommit = extractLine(notify, 'Commit');
   const head = getHead();
+  const runtimeHeadCommit = getRuntimeHeadCommit(head.commit);
 
   const checks = {
     notify_has_dod_stdout: notify.includes('=== DOD_EVIDENCE_STDOUT ==='),
@@ -51,7 +58,7 @@ const main = async () => {
     notify_no_action_regenerate_noise: !/ACTION:\s*Use 'assemble_evidence\.mjs' to regenerate reports\./i.test(notify),
     notify_no_failed_noise: !/^\s*.*FAILED:.*$/im.test(notify),
     notify_branch_matches_live_head_branch: !!notifyBranch && notifyBranch === head.branch,
-    notify_commit_matches_live_head_commit: !!notifyCommit && notifyCommit === head.commit
+    notify_commit_matches_live_head_commit: !!notifyCommit && !!runtimeHeadCommit && notifyCommit === runtimeHeadCommit
   };
 
   const pass = Object.values(checks).every(Boolean);
@@ -76,11 +83,10 @@ const main = async () => {
         running_window_excluded_semantics_preserved: true
       },
       checks,
-      meta: {
-        head_branch: head.branch,
-        head_commit: head.commit,
-        notify_branch: notifyBranch,
-        notify_commit: notifyCommit
+      runtime_binding: {
+        commit_source: process.env.PR_HEAD_SHA ? 'PR_HEAD_SHA' : (process.env.GITHUB_SHA ? 'GITHUB_SHA' : 'LOCAL_HEAD'),
+        branch_source: 'LOCAL_HEAD_BRANCH',
+        strict_commit_binding_required: true
       },
       sample_rows: [{ is_real_runtime: true, file: `rules/task-reports/2026-04/notify_${targetTaskId}.txt` }]
     }

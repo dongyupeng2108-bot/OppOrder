@@ -42,11 +42,10 @@
       "notify_branch_matches_live_head_branch": true,
       "notify_commit_matches_live_head_commit": true
     },
-    "meta": {
-      "head_branch": "260405_015",
-      "head_commit": "619d207f9d99b917dee583843c202ee827251c2a",
-      "notify_branch": "260405_015",
-      "notify_commit": "619d207f9d99b917dee583843c202ee827251c2a"
+    "runtime_binding": {
+      "commit_source": "LOCAL_HEAD",
+      "branch_source": "LOCAL_HEAD_BRANCH",
+      "strict_commit_binding_required": true
     },
     "sample_rows": [
       {
@@ -55,7 +54,7 @@
       }
     ]
   },
-  "generated_at": "2026-04-06T10:31:45.329Z",
+  "generated_at": "2026-04-06T10:45:26.710Z",
   "checks": {
     "notify_has_dod_stdout": true,
     "notify_has_gate_preview_or_verify": true,
