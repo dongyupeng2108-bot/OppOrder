@@ -1657,6 +1657,21 @@ function sendJson(res, data, status = 200) {
   res.end(JSON.stringify(data));
 }
 
+function parseJsonBody(body) {
+  const raw = typeof body === 'string' ? body : '';
+  if (!raw) return {};
+  try {
+    return JSON.parse(raw);
+  } catch (err) {
+    if (err instanceof SyntaxError) {
+      const invalidJsonError = new Error('invalid json payload');
+      invalidJsonError.httpStatus = 400;
+      throw invalidJsonError;
+    }
+    throw err;
+  }
+}
+
 function deepMerge(base, patch) {
   const result = { ...base };
   for (const key of Object.keys(patch)) {
@@ -1701,7 +1716,7 @@ const server = createServer(async (req, res) => {
     req.on('data', d => { body += d; });
     req.on('end', async () => {
       try {
-        const parsed = body ? JSON.parse(body) : {};
+        const parsed = parseJsonBody(body);
         if (parsed.name) {
           // 新路径：指定实例 reload
           const result = await reloadInstance(parsed.name);
@@ -1716,7 +1731,8 @@ const server = createServer(async (req, res) => {
         const result = await reloadInstance(STRATEGY_ID);
         sendJson(res, result, result.ok ? 200 : 500);
       } catch (err) {
-        sendJson(res, { ok: false, error: err.message }, 500);
+        const status = Number.isInteger(err?.httpStatus) ? err.httpStatus : 500;
+        sendJson(res, { ok: false, error: err.message }, status);
       }
     });
     return;
@@ -2401,7 +2417,7 @@ const server = createServer(async (req, res) => {
     req.on('data', d => { body += d; });
     req.on('end', () => {
       try {
-        const payload = JSON.parse(body || '{}');
+        const payload = parseJsonBody(body);
         const taskIdRaw = String(payload?.task_id || '').trim();
         const taskId = taskIdRaw || `${new Date().toISOString().slice(2, 10).replace(/-/g, '')}_900`;
         const simulateFail = payload?.simulate_fail === true;
@@ -2413,7 +2429,8 @@ const server = createServer(async (req, res) => {
         }
         sendJson(res, started, started.started ? 200 : 409);
       } catch (err) {
-        sendJson(res, { ok: false, error: err.message }, 500);
+        const status = Number.isInteger(err?.httpStatus) ? err.httpStatus : 500;
+        sendJson(res, { ok: false, error: err.message }, status);
       }
     });
     return;
@@ -2649,7 +2666,7 @@ const server = createServer(async (req, res) => {
     req.on('data', d => { body += d; });
     req.on('end', () => {
       try {
-        const payload = JSON.parse(body || '{}');
+        const payload = parseJsonBody(body);
         const intents = payload?.intents;
         if (Array.isArray(intents)) {
           const result = botExecutorPaper.applyIntents(intents, { source: 'manual' });
@@ -2682,7 +2699,8 @@ const server = createServer(async (req, res) => {
           orders: result.orders
         });
       } catch (err) {
-        sendJson(res, { ok: false, error: err.message }, 500);
+        const status = Number.isInteger(err?.httpStatus) ? err.httpStatus : 500;
+        sendJson(res, { ok: false, error: err.message }, status);
       }
     });
     return;
@@ -2735,7 +2753,7 @@ const server = createServer(async (req, res) => {
     req.on('data', d => { body += d; });
     req.on('end', () => {
       try {
-        const payload = JSON.parse(body || '{}');
+        const payload = parseJsonBody(body);
         const validated = validateBotConfigPayload(payload);
         if (!validated.ok) {
           sendJson(res, { ok: false, error: validated.error }, 400);
@@ -2757,7 +2775,8 @@ const server = createServer(async (req, res) => {
           defaults: cloneBotConfig(BOT_CONFIG_DEFAULTS)
         });
       } catch (err) {
-        sendJson(res, { ok: false, error: err.message }, 500);
+        const status = Number.isInteger(err?.httpStatus) ? err.httpStatus : 500;
+        sendJson(res, { ok: false, error: err.message }, status);
       }
     });
     return;
@@ -2768,7 +2787,7 @@ const server = createServer(async (req, res) => {
     req.on('data', d => { body += d; });
     req.on('end', () => {
       try {
-        const payload = JSON.parse(body || '{}');
+        const payload = parseJsonBody(body);
         const rawInterval = payload?.tick_interval_ms;
         const debugScenario = payload?.debugScenario;
         const tickIntervalMs = rawInterval == null ? BOT_TICK_INTERVAL_DEFAULT_MS : Number(rawInterval);
@@ -2829,7 +2848,8 @@ const server = createServer(async (req, res) => {
           debug_completed: state.debug_completed
         });
       } catch (err) {
-        sendJson(res, { ok: false, error: err.message }, 500);
+        const status = Number.isInteger(err?.httpStatus) ? err.httpStatus : 500;
+        sendJson(res, { ok: false, error: err.message }, status);
       }
     });
     return;
