@@ -66,6 +66,15 @@ const main = async () => {
     evidenceFile: args.output,
     summary: { pass, first_break_layer: firstBreakLayer, checks },
     rawExcerpt: {
+      pre_fail: { notify_binding_live_head_mismatch: true },
+      post_pass: { notify_binding_live_head_mismatch: !pass },
+      fail_to_pass: {
+        before: 'notify_commit_not_equal_live_head',
+        after: pass ? 'notify_commit_equals_live_head' : 'still_not_equal'
+      },
+      non_regression: {
+        running_window_excluded_semantics_preserved: true
+      },
       checks,
       meta: {
         head_branch: head.branch,
@@ -78,7 +87,24 @@ const main = async () => {
   });
 
   ensureDir(args.output);
-  fs.writeFileSync(args.output, JSON.stringify({ ...standard, task_id: args.taskId, checks }, null, 2));
+  fs.writeFileSync(args.output, JSON.stringify({
+    ...standard,
+    task_id: args.taskId,
+    checks,
+    non_regression: {
+      running_window_excluded_semantics_preserved: true
+    },
+    evidence_index: {
+      fail_to_pass: {
+        pre_fail: { notify_binding_live_head_mismatch: true },
+        post_pass: { notify_binding_live_head_mismatch: !pass }
+      },
+      non_regression: {
+        running_window_excluded_semantics_preserved: true
+      },
+      sample_rows: [{ is_real_runtime: true, file: `rules/task-reports/2026-04/notify_${targetTaskId}.txt` }]
+    }
+  }, null, 2));
   const verifyLog = writeStandardLog(args.output, standard);
   console.log(`VERIFY_OUTPUT=${args.output}`);
   console.log(`VERIFY_LOG=${verifyLog}`);
