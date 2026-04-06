@@ -1,0 +1,12 @@
+{
+  "task_id": "260405_012",
+  "timestamp": "2026-04-06T10:08:59.781Z",
+  "valid": false,
+  "errors": [
+    {
+      "code": "POSTFLIGHT_SMOKE_TEST_FAILED",
+      "message": "Evidence Smoke Test Failed. See logs above."
+    }
+  ],
+  "checks": {}
+}
