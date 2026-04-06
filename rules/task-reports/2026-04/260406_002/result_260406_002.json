@@ -1,0 +1,14 @@
+{
+  "task_id": "260406_002",
+  "status": "PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "summary": "轻门禁 + 中度测试（T1~T4）接入完成。",
+  "deliverables": [
+    "docs/tasks/260406_002.md",
+    "scripts/truth_audit_governance_t1_t4_260406_002.mjs",
+    "rules/LATEST.json",
+    "rules/task-reports/2026-04/260406_002/implementation_260406_002.md",
+    "rules/task-reports/2026-04/260406_002/truth_audit_260406_002.md",
+    "rules/task-reports/2026-04/260406_002_truth_audit_governance_t1_t4_260406_002.json"
+  ]
+}
