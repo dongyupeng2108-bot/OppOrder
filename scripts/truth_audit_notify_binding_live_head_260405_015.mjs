@@ -34,10 +34,13 @@ const extractLine = (text, key) => {
   return m ? m[1].trim() : null;
 };
 
-const getRuntimeHeadCommit = (fallbackCommit) => {
-  const fromCi = String(process.env.PR_HEAD_SHA || process.env.GITHUB_SHA || '').trim();
-  if (fromCi) return fromCi;
-  return fallbackCommit;
+const getRuntimeHeadCommit = () => {
+  return String(
+    process.env.PR_HEAD_SHA
+    || process.env.GITHUB_SHA
+    || process.env.EXPECTED_PR_HEAD_SHA
+    || ''
+  ).trim();
 };
 
 const main = async () => {
@@ -49,7 +52,7 @@ const main = async () => {
   const notifyBranch = extractLine(notify, 'Branch');
   const notifyCommit = extractLine(notify, 'Commit');
   const head = getHead();
-  const runtimeHeadCommit = getRuntimeHeadCommit(head.commit);
+  const runtimeHeadCommit = getRuntimeHeadCommit();
 
   const checks = {
     notify_has_dod_stdout: notify.includes('=== DOD_EVIDENCE_STDOUT ==='),
@@ -84,7 +87,11 @@ const main = async () => {
       },
       checks,
       runtime_binding: {
-        commit_source: process.env.PR_HEAD_SHA ? 'PR_HEAD_SHA' : (process.env.GITHUB_SHA ? 'GITHUB_SHA' : 'LOCAL_HEAD'),
+        commit_source: process.env.PR_HEAD_SHA
+          ? 'PR_HEAD_SHA'
+          : (process.env.GITHUB_SHA
+              ? 'GITHUB_SHA'
+              : (process.env.EXPECTED_PR_HEAD_SHA ? 'EXPECTED_PR_HEAD_SHA' : 'UNSET')),
         branch_source: 'LOCAL_HEAD_BRANCH',
         strict_commit_binding_required: true
       },
