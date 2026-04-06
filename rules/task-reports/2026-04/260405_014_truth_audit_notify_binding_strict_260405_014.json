@@ -2,22 +2,22 @@
   "script_name": "truth_audit_notify_binding_strict_260405_014",
   "task_id": "260405_014",
   "sample_name": "notify_binding_strict",
-  "pass": false,
-  "message": "first_break_layer=notify_binding_strict",
-  "first_break_layer": "notify_binding_strict",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
   "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-04\\260405_014_truth_audit_notify_binding_strict_260405_014.json",
   "summary": {
-    "pass": false,
-    "first_break_layer": "notify_binding_strict",
+    "pass": true,
+    "first_break_layer": "NONE_CHAIN_PASS",
     "checks": {
       "notify_has_dod_stdout": true,
       "notify_has_gate_preview_or_verify": true,
       "notify_no_missing_blocks_noise": true,
       "notify_no_action_regenerate_noise": true,
       "notify_no_failed_noise": true,
-      "notify_branch_matches_git_meta_branch": false,
-      "notify_commit_matches_git_meta_commit": false,
-      "git_meta_branch_matches_head_branch": false
+      "notify_branch_matches_git_meta_branch": true,
+      "notify_commit_matches_git_meta_commit": true,
+      "git_meta_branch_matches_head_branch": true
     }
   },
   "raw_excerpt": {
@@ -25,11 +25,11 @@
       "notify_binding_or_chain_dirty": true
     },
     "post_pass": {
-      "notify_binding_or_chain_dirty": true
+      "notify_binding_or_chain_dirty": false
     },
     "fail_to_pass": {
       "before": "notify_chain_dirty_or_binding_mismatch",
-      "after": "still_dirty_or_mismatch"
+      "after": "notify_chain_clean_and_binding_strict"
     },
     "non_regression": {
       "running_window_excluded_semantics_preserved": true
@@ -40,17 +40,17 @@
       "notify_no_missing_blocks_noise": true,
       "notify_no_action_regenerate_noise": true,
       "notify_no_failed_noise": true,
-      "notify_branch_matches_git_meta_branch": false,
-      "notify_commit_matches_git_meta_commit": false,
-      "git_meta_branch_matches_head_branch": false
+      "notify_branch_matches_git_meta_branch": true,
+      "notify_commit_matches_git_meta_commit": true,
+      "git_meta_branch_matches_head_branch": true
     },
     "meta": {
       "notify_branch": "260405_014",
       "notify_commit": "9fe0e6308d08d17e7e0f9d1df479e70f95455d28",
-      "git_meta_branch": "260405_013",
-      "git_meta_commit": "8fe38687f647d9c2bce4a561b4d7599bf0821962",
+      "git_meta_branch": "260405_014",
+      "git_meta_commit": "9fe0e6308d08d17e7e0f9d1df479e70f95455d28",
       "head_branch": "260405_014",
-      "head_commit": "9fe0e6308d08d17e7e0f9d1df479e70f95455d28"
+      "head_commit": "ff42c16ec6aaae5a0d6a1b742b5c152e26a4dda3"
     },
     "sample_rows": [
       {
@@ -63,10 +63,10 @@
       }
     ]
   },
-  "generated_at": "2026-04-06T10:09:00.140Z",
+  "generated_at": "2026-04-06T10:13:27.316Z",
   "conclusion_block": {
-    "verdict": "C：存在断裂",
-    "first_break_layer": "notify_binding_strict"
+    "verdict": "A：通过",
+    "first_break_layer": "NONE_CHAIN_PASS"
   },
   "checks": {
     "notify_has_dod_stdout": true,
@@ -74,9 +74,9 @@
     "notify_no_missing_blocks_noise": true,
     "notify_no_action_regenerate_noise": true,
     "notify_no_failed_noise": true,
-    "notify_branch_matches_git_meta_branch": false,
-    "notify_commit_matches_git_meta_commit": false,
-    "git_meta_branch_matches_head_branch": false
+    "notify_branch_matches_git_meta_branch": true,
+    "notify_commit_matches_git_meta_commit": true,
+    "git_meta_branch_matches_head_branch": true
   },
   "non_regression": {
     "running_window_excluded_semantics_preserved": true
@@ -87,7 +87,7 @@
         "notify_binding_or_chain_dirty": true
       },
       "post_pass": {
-        "notify_binding_or_chain_dirty": true
+        "notify_binding_or_chain_dirty": false
       }
     },
     "non_regression": {
