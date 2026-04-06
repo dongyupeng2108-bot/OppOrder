@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260406_003/result_260406_003.json
+LOG_HEAD
+[260406_003] real-task governance trial completed
+LOG_TAIL
+governance rules validated against real task sample 260405_017
+EVIDENCE
+rules/task-reports/2026-04/260406_003/truth_audit_260406_003.md
+INDEX
+rules/task-reports/2026-04/260406_003/result_260406_003.json
