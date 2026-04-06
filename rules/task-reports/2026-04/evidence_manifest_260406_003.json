@@ -1,8 +1,8 @@
 {
   "task_id": "260406_003",
   "mode": "LOCAL",
-  "generated_at": "2026-04-06T19:28:35.912Z",
-  "evidence_dir": "rules\\task-reports\\2026-04",
+  "generated_at": "2026-04-06T19:43:49.376Z",
+  "evidence_dir": "rules/task-reports/2026-04",
   "required_files": [
     "result_260406_003.json",
     "run_260406_003.log",

@@ -17,6 +17,8 @@
       "real_notify_identity_fields_complete": true,
       "real_notify_regenerated_by_matches_real_task": true,
       "plan_has_task_003_real_trial_clause": true,
+      "conclusion_rules_block_recent_rework_points": true,
+      "conclusion_no_significant_pace_slowdown": true,
       "governance_substitute_pass": true
     }
   },
@@ -28,6 +30,20 @@
     "governance_substitute": {
       "pass": true
     },
+    "conclusion": {
+      "rules_block_recent_rework_points": true,
+      "no_significant_pace_slowdown": true
+    },
+    "facts": {
+      "rework_point_facts": {
+        "triad_consistency": true,
+        "identity_fields_complete": true
+      },
+      "pace_facts": {
+        "gate_single_pass": true,
+        "no_extra_approval_layer": true
+      }
+    },
     "checks": {
       "real_task_doc_exists": true,
       "real_task_audit_script_exists": true,
@@ -36,6 +52,8 @@
       "real_notify_identity_fields_complete": true,
       "real_notify_regenerated_by_matches_real_task": true,
       "plan_has_task_003_real_trial_clause": true,
+      "conclusion_rules_block_recent_rework_points": true,
+      "conclusion_no_significant_pace_slowdown": true,
       "governance_substitute_pass": true
     },
     "sample_rows": [
@@ -49,7 +67,7 @@
       }
     ]
   },
-  "generated_at": "2026-04-06T19:28:14.996Z",
+  "generated_at": "2026-04-06T19:43:49.555Z",
   "task_type": "workflow_upgrade",
   "checks": {
     "real_task_doc_exists": true,
@@ -59,6 +77,8 @@
     "real_notify_identity_fields_complete": true,
     "real_notify_regenerated_by_matches_real_task": true,
     "plan_has_task_003_real_trial_clause": true,
+    "conclusion_rules_block_recent_rework_points": true,
+    "conclusion_no_significant_pace_slowdown": true,
     "governance_substitute_pass": true
   }
 }
