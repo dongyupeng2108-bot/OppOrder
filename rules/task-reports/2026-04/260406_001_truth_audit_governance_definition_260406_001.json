@@ -1,0 +1,47 @@
+{
+  "task_id": "260406_001",
+  "task_type": "workflow_upgrade",
+  "script_name": "truth_audit_governance_definition_260406_001",
+  "pass": true,
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "checks": {
+    "plan_has_hard_blockers": true,
+    "plan_has_reminder_items": true,
+    "plan_has_three_task_split": true,
+    "task_003_binds_real_task_trial": true,
+    "latest_points_to_260406_001": true,
+    "governance_substitute_pass": true
+  },
+  "raw_excerpt": {
+    "pre_fail": {
+      "governance_definition_missing": true
+    },
+    "post_pass": {
+      "governance_definition_missing": false
+    },
+    "fail_to_pass": {
+      "before": "undefined_blocker_reminder_boundary",
+      "after": "defined_blocker_reminder_boundary"
+    },
+    "governance_substitute": {
+      "pass": true
+    }
+  },
+  "evidence_index": {
+    "fail_to_pass": {
+      "pre_fail": {
+        "governance_definition_missing": true
+      },
+      "post_pass": {
+        "governance_definition_missing": false
+      }
+    },
+    "governance_substitute": {
+      "pass": true
+    }
+  },
+  "summary": {
+    "verdict": "A",
+    "conclusion": "Governance definition baseline is aligned for 260406_001."
+  }
+}
