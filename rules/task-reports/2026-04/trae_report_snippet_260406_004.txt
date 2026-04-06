@@ -1,0 +1,58 @@
+=== TRAE_REPORT_SNIPPET ===
+
+Header: TraeTask_260406_004
+BRANCH: 260406_004
+COMMIT: 9fd06aa13
+
+=== GIT_SCOPE_DIFF ===
+A	docs/plans/260406_post_governance_execution_plan.md
+A	docs/tasks/260406_004.md
+M	rules/LATEST.json
+A	rules/task-reports/2026-04/260406_004/implementation_260406_004.md
+A	rules/task-reports/2026-04/260406_004/notify_260406_004.txt
+A	rules/task-reports/2026-04/260406_004/result_260406_004.json
+A	rules/task-reports/2026-04/260406_004/truth_audit_260406_004.md
+
+=== DOD_EVIDENCE_STDOUT ===
+RESULT_JSON
+rules/task-reports/2026-04/result_260406_004.json
+LOG_HEAD
+[LocalFinalize] task 260406_004
+LOG_TAIL
+local finalize flow
+EVIDENCE
+rules/task-reports/2026-04/trae_report_snippet_260406_004.txt
+INDEX
+rules/task-reports/2026-04/result_260406_004.json
+===========================
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260406_004_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_SITE_HEALTH_ROOT_53122: 260406_004_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260406_004_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_SITE_HEALTH_PAIRS_53122: 260406_004_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+
+
+
+=== WORKSPACE_HEALER ===
+Result: PASS
+Mode: EnforceClean
+Tracked Changed: 0
+Untracked: 0
+========================
+
+DOD_EVIDENCE_HEALTHCHECK_ROOT: 260406_004_healthcheck_53122_root.txt => HTTP/1.1 200 OK
+DOD_EVIDENCE_HEALTHCHECK_PAIRS: 260406_004_healthcheck_53122_pairs.txt => HTTP/1.1 200 OK
+
+
+
+=== GATE_LIGHT_PREVIEW ===
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260406_004
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] TASK_PROFILE=heavy
+[Gate Light] TASK_DOMAIN=btcqdd
+[Gate Light] DOMAIN_PACKS=["btcqdd_core"]
+[Gate Light] Verifying task_id: 260406_004
+[Gate Light] Running Automation Pack V1 Hard Guards...
+[Gate Light] FAILED: Report Block Check for notify_260406_004.txt
+GATE_LIGHT_EXIT=1
