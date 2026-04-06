@@ -1,0 +1,14 @@
+{
+  "task_id": "260406_005",
+  "status": "PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "summary": "首条业务任务恢复入口已发布并可执行。",
+  "deliverables": [
+    "docs/plans/260406_business_recovery_playbook.md",
+    "docs/tasks/260406_005.md",
+    "rules/LATEST.json",
+    "rules/task-reports/2026-04/260406_005/implementation_260406_005.md",
+    "rules/task-reports/2026-04/260406_005/truth_audit_260406_005.md",
+    "rules/task-reports/2026-04/260406_005_truth_audit_business_recovery_entry_260406_005.json"
+  ]
+}
