@@ -154,7 +154,7 @@ const main = async () => {
   });
 
   ensureDir(args.output);
-  const outputJson = { ...standard, task_id: args.taskId, task_type: 'workflow_upgrade', checks };
+  const outputJson = { ...standard, task_id: args.taskId, task_type: 'business_implementation', checks };
   fs.writeFileSync(args.output, JSON.stringify(outputJson, null, 2));
   const verifyLog = writeStandardLog(args.output, standard);
   console.log(`VERIFY_OUTPUT=${args.output}`);
