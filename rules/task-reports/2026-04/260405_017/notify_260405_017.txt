@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260405_017/result_260405_017.json
+LOG_HEAD
+[260405_017] lineage semantics unified
+LOG_TAIL
+target notify_260405_012 now follows regenerated artifact lineage contract
+EVIDENCE
+rules/task-reports/2026-04/260405_017/truth_audit_260405_017.md
+INDEX
+rules/task-reports/2026-04/260405_017/result_260405_017.json
