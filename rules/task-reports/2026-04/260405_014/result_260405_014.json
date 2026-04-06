@@ -1,0 +1,15 @@
+{
+  "task_id": "260405_014",
+  "status": "PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "summary": "260405_013 回修补全：notify 噪音持续清洁，commit 绑定恢复严格一致口径。",
+  "deliverables": [
+    "docs/tasks/260405_014.md",
+    "scripts/assemble_evidence.mjs",
+    "scripts/truth_audit_notify_binding_strict_260405_014.mjs",
+    "rules/task-reports/2026-04/notify_260405_012.txt",
+    "rules/task-reports/2026-04/260405_014/implementation_260405_014.md",
+    "rules/task-reports/2026-04/260405_014/truth_audit_260405_014.md",
+    "rules/task-reports/2026-04/260405_014_truth_audit_notify_binding_strict_260405_014.json"
+  ]
+}

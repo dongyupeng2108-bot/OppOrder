@@ -1,0 +1,17 @@
+{
+  "task_id": "260405_012",
+  "mode": "Integrate",
+  "generated_at": "2026-04-06T10:08:59.685Z",
+  "evidence_dir": "rules/task-reports/2026-04",
+  "required_files": [
+    "result_260405_012.json",
+    "run_260405_012.log",
+    "notify_260405_012.txt",
+    "gate_light_preview_260405_012.log",
+    "dod_evidence_260405_012.txt",
+    "git_meta_260405_012.json",
+    "trae_report_snippet_260405_012.txt",
+    "manual_verification_260405_012.json",
+    "deliverables_index_260405_012.json"
+  ]
+}

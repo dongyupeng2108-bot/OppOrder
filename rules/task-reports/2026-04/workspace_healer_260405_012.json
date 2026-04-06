@@ -1,0 +1,8 @@
+{
+  "result": "clean",
+  "mode": "LOCAL",
+  "after": {
+    "tracked_changed_count": 0,
+    "untracked_count": 0
+  }
+}

@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260405_014/result_260405_014.json
+LOG_HEAD
+[260405_014] notify strict binding fix completed
+LOG_TAIL
+notify_260405_012 keeps clean chain and strict commit binding to git_meta
+EVIDENCE
+rules/task-reports/2026-04/260405_014/truth_audit_260405_014.md
+INDEX
+rules/task-reports/2026-04/260405_014/result_260405_014.json
