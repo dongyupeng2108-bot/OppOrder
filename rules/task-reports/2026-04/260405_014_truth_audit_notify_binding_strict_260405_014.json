@@ -50,7 +50,7 @@
       "git_meta_branch": "260405_014",
       "git_meta_commit": "9fe0e6308d08d17e7e0f9d1df479e70f95455d28",
       "head_branch": "260405_014",
-      "head_commit": "ff42c16ec6aaae5a0d6a1b742b5c152e26a4dda3"
+      "head_commit": "f3ddaa0d59082cfbf7a1490819888a02474faa5a"
     },
     "sample_rows": [
       {
@@ -63,7 +63,7 @@
       }
     ]
   },
-  "generated_at": "2026-04-06T10:13:27.316Z",
+  "generated_at": "2026-04-06T10:14:55.004Z",
   "conclusion_block": {
     "verdict": "A：通过",
     "first_break_layer": "NONE_CHAIN_PASS"
