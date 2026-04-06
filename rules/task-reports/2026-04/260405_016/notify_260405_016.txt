@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260405_016/result_260405_016.json
+LOG_HEAD
+[260405_016] regenerated notify identity semantics applied
+LOG_TAIL
+target notify_260405_012 carries artifact identity and live-head lineage
+EVIDENCE
+rules/task-reports/2026-04/260405_016/truth_audit_260405_016.md
+INDEX
+rules/task-reports/2026-04/260405_016/result_260405_016.json
