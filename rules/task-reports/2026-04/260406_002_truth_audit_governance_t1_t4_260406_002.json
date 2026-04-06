@@ -2,37 +2,37 @@
   "script_name": "truth_audit_governance_t1_t4_260406_002",
   "task_id": "260406_002",
   "sample_name": "governance_t1_t4",
-  "pass": false,
-  "message": "first_break_layer=governance_t1_t4",
-  "first_break_layer": "governance_t1_t4",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
   "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-04\\260406_002_truth_audit_governance_t1_t4_260406_002.json",
   "summary": {
-    "pass": false,
-    "first_break_layer": "governance_t1_t4",
+    "pass": true,
+    "first_break_layer": "NONE_CHAIN_PASS",
     "checks": {
       "t1_declared_mode_matches_audit_mode": true,
       "t2_notify_header_fields_complete": true,
-      "t3_target_notify_readable_in_pr_diff": false,
+      "t3_target_notify_readable_in_pr_diff": true,
       "t4_header_relation_matches_declared_mode": true,
       "runtime_head_commit_source_set": true,
-      "governance_substitute_pass": false
+      "governance_substitute_pass": true
     }
   },
   "raw_excerpt": {
     "fail_to_pass": {
       "before": "governance_t1_t4_not_enforced",
-      "after": "governance_t1_t4_still_broken"
+      "after": "governance_t1_t4_enforced"
     },
     "governance_substitute": {
-      "pass": false
+      "pass": true
     },
     "checks": {
       "t1_declared_mode_matches_audit_mode": true,
       "t2_notify_header_fields_complete": true,
-      "t3_target_notify_readable_in_pr_diff": false,
+      "t3_target_notify_readable_in_pr_diff": true,
       "t4_header_relation_matches_declared_mode": true,
       "runtime_head_commit_source_set": true,
-      "governance_substitute_pass": false
+      "governance_substitute_pass": true
     },
     "sample_rows": [
       {
@@ -41,13 +41,13 @@
       }
     ]
   },
-  "generated_at": "2026-04-06T18:36:30.714Z",
+  "generated_at": "2026-04-06T19:01:43.961Z",
   "checks": {
     "t1_declared_mode_matches_audit_mode": true,
     "t2_notify_header_fields_complete": true,
-    "t3_target_notify_readable_in_pr_diff": false,
+    "t3_target_notify_readable_in_pr_diff": true,
     "t4_header_relation_matches_declared_mode": true,
     "runtime_head_commit_source_set": true,
-    "governance_substitute_pass": false
+    "governance_substitute_pass": true
   }
 }

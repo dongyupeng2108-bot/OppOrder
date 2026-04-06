@@ -1,14 +1,32 @@
 {
   "task_id": "260406_002",
-  "header": "TraeTask_260406_002",
-  "timestamp": "2026-04-06T18:16:27.528Z",
+  "timestamp": "2026-04-06T19:01:45.233Z",
   "valid": true,
   "errors": [],
   "checks": {
-    "local_finalize": "PASS"
+    "smoke_test": "PASS",
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
   },
   "context": {
-    "result_file": "rules/task-reports/2026-04/result_260406_002.json",
-    "notify_file": "rules/task-reports/2026-04/notify_260406_002.txt"
+    "resultData": {
+      "task_id": "260406_002",
+      "status": "DONE",
+      "mode": "LOCAL",
+      "dod_evidence": {
+        "healthcheck": [
+          "260406_002_healthcheck_53122_root.txt",
+          "260406_002_healthcheck_53122_pairs.txt"
+        ],
+        "gate_light_exit": 0
+      },
+      "summary": "Automation Pack V1 Validation for Task 260406_002",
+      "report_file": "trae_report_snippet_260406_002.txt",
+      "report_sha256_short": "88dfca6e"
+    }
   }
 }
