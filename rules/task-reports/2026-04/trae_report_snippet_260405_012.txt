@@ -2,15 +2,21 @@
 
 Header: TraeTask_260405_012
 BRANCH: 260405_015
-COMMIT: 8c8dc5c8f
+COMMIT: 1b4d8ea50
 
 === GIT_SCOPE_DIFF ===
 A	docs/tasks/260405_015.md
+A	docs/tasks/260405_016.md
 M	rules/LATEST.json
 A	rules/task-reports/2026-04/260405_015.json
 A	rules/task-reports/2026-04/260405_015_truth_audit_notify_binding_live_head_260405_015.json
+A	rules/task-reports/2026-04/git_meta_260405_012.json
+A	rules/task-reports/2026-04/notify_260405_012.txt
 A	rules/task-reports/2026-04/notify_260405_015.txt
+A	rules/task-reports/2026-04/result_260405_012.json
 A	rules/task-reports/2026-04/result_260405_015.json
+A	rules/task-reports/2026-04/run_260405_012.log
+A	rules/task-reports/2026-04/trae_report_snippet_260405_012.txt
 A	rules/task-reports/2026-04/trae_report_snippet_260405_015.txt
 A	rules/task-reports/2026-04/workspace_healer_260405_015.json
 M	scripts/assemble_evidence.mjs

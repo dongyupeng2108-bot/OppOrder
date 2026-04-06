@@ -1,1 +1,1 @@
-{"branch":"260405_015","commit":"8c8dc5c8fb22bc55b431c04801f943038b59542e","message":"chore: add heavy truth-audit json evidence for 260405_015"}
+{"commit":"1b4d8ea50ba3a3f9a5925c89e3d8149fdfcf59b6","branch":"260405_015","message":"feat(notify-identity): define regenerated artifact identity and ancestor-based live-head audit"}
