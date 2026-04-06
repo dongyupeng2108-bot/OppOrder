@@ -1,0 +1,15 @@
+{
+  "task_id": "260405_017",
+  "status": "PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "summary": "统一为 lineage 语义后，目标 notify 重生产物与审计口径一致。",
+  "deliverables": [
+    "docs/tasks/260405_017.md",
+    "scripts/assemble_evidence.mjs",
+    "scripts/truth_audit_notify_binding_live_head_260405_017.mjs",
+    "rules/task-reports/2026-04/notify_260405_012.txt",
+    "rules/task-reports/2026-04/260405_017/implementation_260405_017.md",
+    "rules/task-reports/2026-04/260405_017/truth_audit_260405_017.md",
+    "rules/task-reports/2026-04/260405_017_truth_audit_notify_binding_live_head_260405_017.json"
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "script_name": "truth_audit_notify_binding_live_head_260405_017",
+  "task_id": "260405_017",
+  "sample_name": "notify_binding_live_head",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-04\\260405_017_truth_audit_notify_binding_live_head_260405_017.json",
+  "summary": {
+    "pass": true,
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "checks": {
+      "notify_has_dod_stdout": true,
+      "notify_has_gate_preview_or_verify": true,
+      "notify_no_missing_blocks_noise": true,
+      "notify_no_action_regenerate_noise": true,
+      "notify_no_failed_noise": true,
+      "notify_branch_matches_live_head_branch": true,
+      "artifact_task_id_matches_target": true,
+      "regenerated_by_task_matches_current_task": true,
+      "generated_from_head_is_ancestor_of_live_head": true,
+      "notify_commit_is_sha_like": true,
+      "runtime_head_commit_source_set": true
+    }
+  },
+  "raw_excerpt": {
+    "pre_fail": {
+      "notify_binding_live_head_mismatch": true
+    },
+    "post_pass": {
+      "notify_binding_live_head_mismatch": false
+    },
+    "fail_to_pass": {
+      "before": "notify_generated_from_head_not_in_live_lineage",
+      "after": "notify_generated_from_head_in_live_lineage"
+    },
+    "non_regression": {
+      "running_window_excluded_semantics_preserved": true
+    },
+    "checks": {
+      "notify_has_dod_stdout": true,
+      "notify_has_gate_preview_or_verify": true,
+      "notify_no_missing_blocks_noise": true,
+      "notify_no_action_regenerate_noise": true,
+      "notify_no_failed_noise": true,
+      "notify_branch_matches_live_head_branch": true,
+      "artifact_task_id_matches_target": true,
+      "regenerated_by_task_matches_current_task": true,
+      "generated_from_head_is_ancestor_of_live_head": true,
+      "notify_commit_is_sha_like": true,
+      "runtime_head_commit_source_set": true
+    },
+    "runtime_binding": {
+      "commit_source": "EXPECTED_PR_HEAD_SHA",
+      "branch_source": "LOCAL_HEAD_BRANCH",
+      "strict_commit_binding_required": true
+    },
+    "sample_rows": [
+      {
+        "is_real_runtime": true,
+        "file": "rules/task-reports/2026-04/notify_260405_012.txt"
+      }
+    ]
+  },
+  "generated_at": "2026-04-06T15:30:13.373Z",
+  "checks": {
+    "notify_has_dod_stdout": true,
+    "notify_has_gate_preview_or_verify": true,
+    "notify_no_missing_blocks_noise": true,
+    "notify_no_action_regenerate_noise": true,
+    "notify_no_failed_noise": true,
+    "notify_branch_matches_live_head_branch": true,
+    "artifact_task_id_matches_target": true,
+    "regenerated_by_task_matches_current_task": true,
+    "generated_from_head_is_ancestor_of_live_head": true,
+    "notify_commit_is_sha_like": true,
+    "runtime_head_commit_source_set": true
+  },
+  "non_regression": {
+    "running_window_excluded_semantics_preserved": true
+  },
+  "evidence_index": {
+    "fail_to_pass": {
+      "pre_fail": {
+        "notify_binding_live_head_mismatch": true
+      },
+      "post_pass": {
+        "notify_binding_live_head_mismatch": false
+      }
+    },
+    "non_regression": {
+      "running_window_excluded_semantics_preserved": true
+    },
+    "sample_rows": [
+      {
+        "is_real_runtime": true,
+        "file": "rules/task-reports/2026-04/notify_260405_012.txt"
+      }
+    ]
+  }
+}
