@@ -10,7 +10,6 @@ const REPO_ROOT = path.resolve(__dirname, '..');
 
 const DEFAULT_TASK_ID = '260406_002';
 const DEFAULT_BASE_URL = 'http://localhost:53123';
-const TARGET_NOTIFY_TASK_ID = '260405_012';
 
 const parseArgs = () => parseVerifyArgs({
   defaultTaskId: DEFAULT_TASK_ID,
@@ -47,8 +46,9 @@ const getPrDiffFiles = () => {
 
 const main = async () => {
   const args = parseArgs();
+  const targetNotifyTaskId = args.taskId;
   const taskDocPath = path.join(REPO_ROOT, 'docs', 'tasks', `${args.taskId}.md`);
-  const notifyRelPath = path.join('rules', 'task-reports', '2026-04', `notify_${TARGET_NOTIFY_TASK_ID}.txt`).replace(/\\/g, '/');
+  const notifyRelPath = path.join('rules', 'task-reports', '2026-04', `notify_${targetNotifyTaskId}.txt`).replace(/\\/g, '/');
   const notifyAbsPath = path.join(REPO_ROOT, notifyRelPath);
   if (!fs.existsSync(taskDocPath)) throw new Error(`ERR_TASK_DOC_NOT_FOUND:${taskDocPath}`);
   if (!fs.existsSync(notifyAbsPath)) throw new Error(`ERR_NOTIFY_NOT_FOUND:${notifyAbsPath}`);
@@ -73,7 +73,7 @@ const main = async () => {
 
   const checks = {
     t1_declared_mode_matches_audit_mode: (mode === 'ancestor' && declaredLineage) || (mode === 'strict' && declaredStrict),
-    t2_notify_header_fields_complete: !!artifactTaskId && !!regeneratedByTask && !!generatedFromHead && !!branch && !!commit,
+    t2_notify_header_fields_complete: !!artifactTaskId && !!regeneratedByTask && !!generatedFromHead && !!branch && !!commit && artifactTaskId === targetNotifyTaskId,
     t3_target_notify_readable_in_pr_diff: prFiles.includes(notifyRelPath),
     t4_header_relation_matches_declared_mode: relationPass,
     runtime_head_commit_source_set: !!head,
