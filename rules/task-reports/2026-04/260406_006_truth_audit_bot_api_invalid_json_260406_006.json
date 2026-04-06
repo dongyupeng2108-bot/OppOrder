@@ -1,0 +1,52 @@
+{
+  "script_name": "truth_audit_bot_api_invalid_json_260406_006",
+  "task_id": "260406_006",
+  "sample_name": "bot_api_invalid_json",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-04\\260406_006_truth_audit_bot_api_invalid_json_260406_006.json",
+  "summary": {
+    "pass": true,
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "checks": {
+      "invalid_json_reload_returns_400": true,
+      "invalid_json_bot_config_returns_400": true,
+      "invalid_json_bot_start_returns_400": true,
+      "invalid_json_error_message_stable": true,
+      "server_runtime_started": true,
+      "governance_substitute_pass": true
+    }
+  },
+  "raw_excerpt": {
+    "fail_to_pass": {
+      "before": "invalid_json_mapped_to_500",
+      "after": "invalid_json_mapped_to_400"
+    },
+    "governance_substitute": {
+      "pass": true
+    },
+    "checks": {
+      "invalid_json_reload_returns_400": true,
+      "invalid_json_bot_config_returns_400": true,
+      "invalid_json_bot_start_returns_400": true,
+      "invalid_json_error_message_stable": true,
+      "server_runtime_started": true,
+      "governance_substitute_pass": true
+    },
+    "runtime_capture": {
+      "stdout_tail": "tart\",\"module\":\"strategy_runner\",\"generation_id\":1,\"strategy_id\":\"btc_15m\"}\n[Runner] Refreshing window...\n{\"ts\":\"2026-04-06T20:41:23.014Z\",\"level\":\"info\",\"event\":{\"module\":\"server\",\"strategy\":\"btc_15m\",\"msg\":\"auto-started from --strategy arg\"}}\n{\"ts\":\"2026-04-06T20:41:23.014Z\",\"level\":\"info\",\"event\":\"server_start\",\"module\":\"server\",\"msg\":\"listening on http://localhost:54123\",\"strategy\":\"btc_15m\"}\n",
+      "stderr_tail": ""
+    }
+  },
+  "generated_at": "2026-04-06T20:41:23.196Z",
+  "task_type": "business_implementation",
+  "checks": {
+    "invalid_json_reload_returns_400": true,
+    "invalid_json_bot_config_returns_400": true,
+    "invalid_json_bot_start_returns_400": true,
+    "invalid_json_error_message_stable": true,
+    "server_runtime_started": true,
+    "governance_substitute_pass": true
+  }
+}

@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260406_006/result_260406_006.json
+LOG_HEAD
+[260406_006] bot api invalid-json semantics fixed
+LOG_TAIL
+invalid JSON now mapped to HTTP 400 on reload/config/start endpoints
+EVIDENCE
+rules/task-reports/2026-04/260406_006/truth_audit_260406_006.md
+INDEX
+rules/task-reports/2026-04/260406_006/result_260406_006.json
