@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260406_002/result_260406_002.json
+LOG_HEAD
+[260406_002] governance T1-T4 checks integrated
+LOG_TAIL
+ready for 260406_003 real-task trial
+EVIDENCE
+rules/task-reports/2026-04/260406_002/truth_audit_260406_002.md
+INDEX
+rules/task-reports/2026-04/260406_002/result_260406_002.json
