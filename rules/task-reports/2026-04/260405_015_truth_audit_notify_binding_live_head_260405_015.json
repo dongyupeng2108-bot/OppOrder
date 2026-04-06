@@ -1,0 +1,90 @@
+{
+  "script_name": "truth_audit_notify_binding_live_head_260405_015",
+  "task_id": "260405_015",
+  "sample_name": "notify_binding_live_head",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-04\\260405_015_truth_audit_notify_binding_live_head_260405_015.json",
+  "summary": {
+    "pass": true,
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "checks": {
+      "notify_has_dod_stdout": true,
+      "notify_has_gate_preview_or_verify": true,
+      "notify_no_missing_blocks_noise": true,
+      "notify_no_action_regenerate_noise": true,
+      "notify_no_failed_noise": true,
+      "notify_branch_matches_live_head_branch": true,
+      "notify_commit_matches_live_head_commit": true
+    }
+  },
+  "raw_excerpt": {
+    "pre_fail": {
+      "notify_binding_live_head_mismatch": true
+    },
+    "post_pass": {
+      "notify_binding_live_head_mismatch": false
+    },
+    "fail_to_pass": {
+      "before": "notify_commit_not_equal_live_head",
+      "after": "notify_commit_equals_live_head"
+    },
+    "non_regression": {
+      "running_window_excluded_semantics_preserved": true
+    },
+    "checks": {
+      "notify_has_dod_stdout": true,
+      "notify_has_gate_preview_or_verify": true,
+      "notify_no_missing_blocks_noise": true,
+      "notify_no_action_regenerate_noise": true,
+      "notify_no_failed_noise": true,
+      "notify_branch_matches_live_head_branch": true,
+      "notify_commit_matches_live_head_commit": true
+    },
+    "meta": {
+      "head_branch": "260405_015",
+      "head_commit": "619d207f9d99b917dee583843c202ee827251c2a",
+      "notify_branch": "260405_015",
+      "notify_commit": "619d207f9d99b917dee583843c202ee827251c2a"
+    },
+    "sample_rows": [
+      {
+        "is_real_runtime": true,
+        "file": "rules/task-reports/2026-04/notify_260405_012.txt"
+      }
+    ]
+  },
+  "generated_at": "2026-04-06T10:31:45.329Z",
+  "checks": {
+    "notify_has_dod_stdout": true,
+    "notify_has_gate_preview_or_verify": true,
+    "notify_no_missing_blocks_noise": true,
+    "notify_no_action_regenerate_noise": true,
+    "notify_no_failed_noise": true,
+    "notify_branch_matches_live_head_branch": true,
+    "notify_commit_matches_live_head_commit": true
+  },
+  "non_regression": {
+    "running_window_excluded_semantics_preserved": true
+  },
+  "evidence_index": {
+    "fail_to_pass": {
+      "pre_fail": {
+        "notify_binding_live_head_mismatch": true
+      },
+      "post_pass": {
+        "notify_binding_live_head_mismatch": false
+      }
+    },
+    "non_regression": {
+      "running_window_excluded_semantics_preserved": true
+    },
+    "sample_rows": [
+      {
+        "is_real_runtime": true,
+        "file": "rules/task-reports/2026-04/notify_260405_012.txt"
+      }
+    ]
+  }
+}
