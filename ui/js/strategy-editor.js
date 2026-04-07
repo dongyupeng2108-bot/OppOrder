@@ -1113,16 +1113,19 @@ async function se_poll() {
     let logs = Array.isArray(baseLogs) ? baseLogs : [];
     if (_seLogViewMode === 'key' && currentWindowId) {
       try {
-        const [windowLogsRes, runnerTickLogsRes] = await Promise.all([
+        const [windowLogsRes, runnerTickLogsRes, botDecisionLogsRes] = await Promise.all([
           fetch(`${BASE_URL}/bot/logs?limit=200&window_id=${encodeURIComponent(currentWindowId)}`),
-          fetch(`${BASE_URL}/bot/logs?limit=200&event=RUNNER_TICK&window_id=${encodeURIComponent(currentWindowId)}`)
+          fetch(`${BASE_URL}/bot/logs?limit=200&event=RUNNER_TICK&window_id=${encodeURIComponent(currentWindowId)}`),
+          fetch(`${BASE_URL}/bot/logs?limit=200&event=BOT_DECISION&window_id=${encodeURIComponent(currentWindowId)}`)
         ]);
         const windowLogsData = await windowLogsRes.json();
         const runnerTickLogsData = await runnerTickLogsRes.json();
+        const botDecisionLogsData = await botDecisionLogsRes.json();
         logs = se_mergeLogEntries(
           logs,
           Array.isArray(windowLogsData) ? windowLogsData : (windowLogsData.logs || []),
-          Array.isArray(runnerTickLogsData) ? runnerTickLogsData : (runnerTickLogsData.logs || [])
+          Array.isArray(runnerTickLogsData) ? runnerTickLogsData : (runnerTickLogsData.logs || []),
+          Array.isArray(botDecisionLogsData) ? botDecisionLogsData : (botDecisionLogsData.logs || [])
         );
       } catch (_) {}
     }
@@ -1704,6 +1707,11 @@ function se_mergeLogEntries(...groups) {
       merged.push(row);
     }
   }
+  merged.sort((a, b) => {
+    const ta = new Date(a?.ts || 0).getTime();
+    const tb = new Date(b?.ts || 0).getTime();
+    return ta - tb;
+  });
   return merged;
 }
 
