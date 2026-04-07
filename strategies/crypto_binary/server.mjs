@@ -1143,7 +1143,8 @@ botState.patchState({
   phase: 'IDLE',
   running: false,
   tick_interval_ms: BOT_TICK_INTERVAL_DEFAULT_MS,
-  last_tick_at: null
+  last_tick_at: null,
+  last_tick_summary: null
 });
 
 function syncBotStateFromLedger() {
@@ -2617,7 +2618,8 @@ const server = createServer(async (req, res) => {
           anchor_btc: state.anchor_btc ?? null,
           upper_bound: state.upper_bound ?? null,
           lower_bound: state.lower_bound ?? null,
-          running: state.running === true
+          running: state.running === true,
+          last_tick_summary: state.last_tick_summary ?? null
         }
       });
     } catch (err) {
@@ -2818,7 +2820,7 @@ const server = createServer(async (req, res) => {
           window_id: tickSummary.window_id,
           data: { ...tickSummary }
         });
-        botState.patchState({ last_tick_at: new Date().toISOString() });
+        botState.patchState({ last_tick_at: new Date().toISOString(), last_tick_summary: tickSummary });
         persistBotRecoverySnapshot();
         sendJson(res, { ok: true, tick_summary: tickSummary, ...result });
       } catch (err) {
@@ -2826,6 +2828,21 @@ const server = createServer(async (req, res) => {
         sendJson(res, { ok: false, error: err.message }, status);
       }
     });
+    return;
+  }
+
+  if (req.method === 'GET' && req.url === '/bot/runner/last-summary') {
+    ensureBotRecoveryHydrated();
+    try {
+      const state = botState.getState();
+      sendJson(res, {
+        ok: true,
+        last_tick_at: state?.last_tick_at ?? null,
+        last_tick_summary: state?.last_tick_summary ?? null
+      });
+    } catch (err) {
+      sendJson(res, { ok: false, error: err.message }, 500);
+    }
     return;
   }
 
