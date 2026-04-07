@@ -1729,6 +1729,18 @@ function validateTickOverrideContracts(contextOverride, stateOverride) {
   return null;
 }
 
+function buildRunnerTickSummary(result) {
+  const decisionPreview = result?.decision_preview || {};
+  const contextSnapshot = result?.context_snapshot || {};
+  const stateAfter = result?.state_after || {};
+  return {
+    reason: decisionPreview?.reason ?? null,
+    intents_summary: decisionPreview?.intents_summary ?? summarizeIntents(decisionPreview?.intents || []),
+    window_id: contextSnapshot?.window_id ?? stateAfter?.current_window_id ?? null,
+    mode: stateAfter?.mode ?? null
+  };
+}
+
 function deepMerge(base, patch) {
   const result = { ...base };
   for (const key of Object.keys(patch)) {
@@ -2796,9 +2808,19 @@ const server = createServer(async (req, res) => {
           context_override: contextOverride,
           state_override: stateOverride
         });
+        const tickSummary = buildRunnerTickSummary(result);
+        botLogger.log({
+          level: 'info',
+          source: 'bot_api',
+          event: 'BOT_RUNNER_TICK_API_SUMMARY',
+          message: `runner tick api summary: ${tickSummary.reason || 'n/a'}`,
+          mode: tickSummary.mode,
+          window_id: tickSummary.window_id,
+          data: { ...tickSummary }
+        });
         botState.patchState({ last_tick_at: new Date().toISOString() });
         persistBotRecoverySnapshot();
-        sendJson(res, { ok: true, ...result });
+        sendJson(res, { ok: true, tick_summary: tickSummary, ...result });
       } catch (err) {
         const status = Number.isInteger(err?.httpStatus) ? err.httpStatus : 500;
         sendJson(res, { ok: false, error: err.message }, status);

@@ -1,0 +1,55 @@
+{
+  "script_name": "truth_audit_runner_tick_observability_260406_014",
+  "task_id": "260406_014",
+  "sample_name": "runner_tick_observability",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-04\\260406_014_truth_audit_runner_tick_observability_260406_014.json",
+  "summary": {
+    "pass": true,
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "checks": {
+      "tick_status_ok": true,
+      "tick_summary_exists": true,
+      "tick_summary_fields_exist": true,
+      "summary_log_event_exists": true,
+      "summary_log_fields_exist": true,
+      "server_runtime_started": true,
+      "governance_substitute_pass": true
+    }
+  },
+  "raw_excerpt": {
+    "fail_to_pass": {
+      "before": "runner_tick_observability_missing",
+      "after": "runner_tick_observability_ready"
+    },
+    "governance_substitute": {
+      "pass": true
+    },
+    "checks": {
+      "tick_status_ok": true,
+      "tick_summary_exists": true,
+      "tick_summary_fields_exist": true,
+      "summary_log_event_exists": true,
+      "summary_log_fields_exist": true,
+      "server_runtime_started": true,
+      "governance_substitute_pass": true
+    },
+    "runtime_capture": {
+      "stdout_tail": "00,\"reason\":\"ws_close\"}\n{\"ts\":\"2026-04-07T13:23:02.597Z\",\"level\":\"info\",\"event\":\"window_switch_start\",\"module\":\"strategy_runner\",\"generation_id\":2,\"strategy_id\":\"btc_15m\"}\n[Runner] Refreshing window...\n[Scanner] Found current window: btc-updown-5m-1775568000 end=2026-04-07T13:25:00.000Z secsLeft=121\n[Scanner] Found current window: btc-updown-5m-1775568000 end=2026-04-07T13:25:00.000Z secsLeft=123\n",
+      "stderr_tail": "\":\"error\",\"event\":\"ws_connect_fail\",\"module\":\"price_feed\",\"market_id\":\"BTCUSDT\",\"session_id\":\"6c590d7d-ad3e-4722-8057-8a4ae9251521\",\"err\":\"WebSocket was closed before the connection was established\"}\n{\"ts\":\"2026-04-07T13:23:02.597Z\",\"level\":\"warn\",\"event\":\"ws_disconnect\",\"module\":\"price_feed\",\"market_id\":\"BTCUSDT\",\"session_id\":\"6c590d7d-ad3e-4722-8057-8a4ae9251521\",\"msg\":\"starting REST fallback\"}\n"
+    }
+  },
+  "generated_at": "2026-04-07T13:23:03.157Z",
+  "task_type": "business_implementation",
+  "checks": {
+    "tick_status_ok": true,
+    "tick_summary_exists": true,
+    "tick_summary_fields_exist": true,
+    "summary_log_event_exists": true,
+    "summary_log_fields_exist": true,
+    "server_runtime_started": true,
+    "governance_substitute_pass": true
+  }
+}
