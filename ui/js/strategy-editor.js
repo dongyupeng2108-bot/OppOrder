@@ -102,6 +102,7 @@ let _seLogViewMode = 'key';
 let _seLogEntriesRaw = [];
 let _seLogEntriesKey = [];
 let _seLogNoiseSuppressed = 0;
+let _seParamSaveState = 'idle';
 const SE_TEST_MODULES = [
   { key: 'module1', label: '模块1 策略与输入', hint: '高价值策略输入与运行语义回归集合' },
   { key: 'module2', label: '模块2 执行引擎', hint: '窗口生命周期、幂等、订单范围与执行引擎语义' },
@@ -299,9 +300,7 @@ async function initStrategyEditor() {
             <button class="se-btn-guide" onclick="se_showGuide()">说明</button>
           </div>
           <div id="se-param-feedback" style="min-height: 18px; font-size: 12px; color: #ff8a80;"></div>
-          <div style="padding: 8px; background: rgba(0, 122, 204, 0.12); border-left: 3px solid #007acc; border-radius: 4px; color: #9fd3ff;font-size:12px;">
-            保存后将在下一轮启动时生效
-          </div>
+          <div id="se-param-effective-hint" style="padding: 8px; background: rgba(0, 122, 204, 0.12); border-left: 3px solid #007acc; border-radius: 4px; color: #9fd3ff;font-size:12px;">保存后将在下一轮启动时生效</div>
         </div>
       </aside>
       <textarea id="se-editor" style="display:none;">function decide(ctx) { return 'HOLD'; }</textarea>
@@ -393,7 +392,9 @@ async function initStrategyEditor() {
 // ── Bot 参数管理逻辑 ────────────────────────────────────────────────────────
 async function se_loadParams() {
   try {
+    _seParamSaveState = 'idle';
     se_setParamFeedback('读取参数中...', '#9fd3ff');
+    se_renderParamEffectiveHint();
     const resp = await fetch(`${BASE_URL}/bot/config`);
     const data = await resp.json();
     if (!resp.ok || !data?.current || !data?.defaults) {
@@ -404,9 +405,11 @@ async function se_loadParams() {
     _seParamActiveTab = 'up';
     se_renderParams(_seConfigCurrent);
     se_setParamFeedback('参数已加载', '#8bc34a');
+    se_renderParamEffectiveHint();
   } catch (e) {
     _seConfigDefaults = {
       open_delay_sec: SE_DEFAULT_OPEN_DELAY_SEC,
+      max_spread_bps: SE_DEFAULT_MAX_SPREAD_BPS,
       ladder_prices: [...SE_DEFAULT_LADDER_PRICES],
       ladder_size: SE_DEFAULT_LADDER_SIZE,
       atr_multiple: SE_DEFAULT_ATR_MULTIPLE,
@@ -427,6 +430,8 @@ async function se_loadParams() {
     _seParamActiveTab = 'up';
     se_renderParams(_seConfigCurrent);
     se_setParamFeedback(`读取参数失败: ${e.message}`, '#ff8a80');
+    _seParamSaveState = 'failed';
+    se_renderParamEffectiveHint();
   }
 }
 
@@ -605,7 +610,9 @@ function se_toggleParamsPanel(forceOpen = null) {
 function se_restoreDefaultParams() {
   if (!_seConfigDefaults) return;
   se_renderParams(_seConfigDefaults);
+  _seParamSaveState = 'idle';
   se_setParamFeedback('已恢复默认值（未保存）', '#ffb74d');
+  se_renderParamEffectiveHint();
 }
 
 async function se_saveParams() {
@@ -613,10 +620,14 @@ async function se_saveParams() {
     const params = se_readParamsFromForm();
     const validationError = se_validateParams(params);
     if (validationError) {
+      _seParamSaveState = 'failed';
       se_setParamFeedback(validationError, '#ff8a80');
+      se_renderParamEffectiveHint();
       return;
     }
+    _seParamSaveState = 'saving';
     se_setParamFeedback('保存参数中...', '#9fd3ff');
+    se_renderParamEffectiveHint();
     const resp = await fetch(`${BASE_URL}/bot/config`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -629,9 +640,13 @@ async function se_saveParams() {
     _seConfigCurrent = se_pickBotConfig(data.current || params);
     _seConfigDefaults = data.defaults ? se_pickBotConfig(data.defaults) : _seConfigDefaults;
     se_renderParams(_seConfigCurrent);
+    _seParamSaveState = 'success';
     se_setParamFeedback('参数保存成功', '#8bc34a');
+    se_renderParamEffectiveHint();
   } catch (e) {
+    _seParamSaveState = 'failed';
     se_setParamFeedback(`保存参数失败: ${e.message}`, '#ff8a80');
+    se_renderParamEffectiveHint();
   }
 }
 
@@ -707,6 +722,36 @@ function se_setParamFeedback(message, color = '#ff8a80') {
   if (!el) return;
   el.style.color = color;
   el.textContent = message || '';
+}
+
+function se_renderParamEffectiveHint() {
+  const el = document.getElementById('se-param-effective-hint');
+  if (!el) return;
+  if (_seParamSaveState === 'failed') {
+    el.style.background = 'rgba(244, 67, 54, 0.12)';
+    el.style.borderLeft = '3px solid #f44336';
+    el.style.color = '#ff8a80';
+    el.textContent = '最近一次保存失败：参数未保存，当前运行继续沿用旧配置';
+    return;
+  }
+  if (_seParamSaveState === 'saving') {
+    el.style.background = 'rgba(0, 122, 204, 0.12)';
+    el.style.borderLeft = '3px solid #007acc';
+    el.style.color = '#9fd3ff';
+    el.textContent = '参数保存中：保存成功后将在下一轮启动时生效';
+    return;
+  }
+  if (_seParamSaveState === 'success') {
+    el.style.background = 'rgba(139, 195, 74, 0.12)';
+    el.style.borderLeft = '3px solid #8bc34a';
+    el.style.color = '#b8f59a';
+    el.textContent = '参数已保存：将在下一轮启动时生效';
+    return;
+  }
+  el.style.background = 'rgba(0, 122, 204, 0.12)';
+  el.style.borderLeft = '3px solid #007acc';
+  el.style.color = '#9fd3ff';
+  el.textContent = '保存后将在下一轮启动时生效';
 }
 
 // ── 以下为原有逻辑 ──────────────────────────────────────────────────────────
@@ -1357,9 +1402,15 @@ function se_renderOverview(status, summary, ordersData) {
     ? `开盘等待 ${se_formatStateValue(savedConfig.open_delay_sec)} 秒 · 点差阈值 ${se_formatStateValue(savedConfig.max_spread_bps)} bps · 波动 ${se_formatStateValue(savedConfig.atr_multiple)} · 全撤 ${se_formatStateValue(savedConfig.cancel_all_remaining_sec)} 秒`
     : '参数尚未加载';
   se_setText('se-param-summary', paramSummary);
-  se_setText('se-snapshot-note', activeRuntime
-    ? `saved 与 active 可能不同：active.window=${se_formatStateValue(activeRuntime.current_window_id)}`
-    : '当前未运行：仅展示 saved 参数，active runtime snapshot 为空');
+  if (_seParamSaveState === 'failed') {
+    se_setText('se-snapshot-note', activeRuntime
+      ? `最近一次保存失败：saved 未更新，active 维持当前窗口配置（active.window=${se_formatStateValue(activeRuntime.current_window_id)}）`
+      : '最近一次保存失败：saved 未更新，且当前未运行（active runtime snapshot 为空）');
+  } else {
+    se_setText('se-snapshot-note', activeRuntime
+      ? `saved 与 active 可能不同：active.window=${se_formatStateValue(activeRuntime.current_window_id)}`
+      : '当前未运行：仅展示 saved 参数，active runtime snapshot 为空');
+  }
   const lastActiveConfigText = lastActiveConfig
     ? `等待 ${se_formatStateValue(lastActiveConfig.open_delay_sec)} · 点差阈值 ${se_formatStateValue(lastActiveConfig.max_spread_bps)} · 波动 ${se_formatStateValue(lastActiveConfig.atr_multiple)} · 全撤 ${se_formatStateValue(lastActiveConfig.cancel_all_remaining_sec)}`
     : 'N/A (null)';

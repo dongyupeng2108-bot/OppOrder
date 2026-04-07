@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260406_025/result_260406_025.json
+LOG_HEAD
+[260406_025] fixed save-feedback semantic conflict with explicit failed-state hint
+LOG_TAIL
+failed/saving/success states are now separated and saved-active note is failure-aware
+EVIDENCE
+rules/task-reports/2026-04/260406_025/truth_audit_260406_025.md
+INDEX
+rules/task-reports/2026-04/260406_025/result_260406_025.json
