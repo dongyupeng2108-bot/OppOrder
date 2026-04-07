@@ -2724,7 +2724,7 @@ const server = createServer(async (req, res) => {
     req.on('data', d => { body += d; });
     req.on('end', async () => {
       try {
-        const payload = JSON.parse(body || '{}');
+        const payload = ensureJsonObjectPayload(parseJsonBody(body));
         const contextOverride = payload?.context_override;
         const stateOverride = payload?.state_override;
         if (contextOverride !== undefined && (!contextOverride || typeof contextOverride !== 'object' || Array.isArray(contextOverride))) {
@@ -2743,7 +2743,8 @@ const server = createServer(async (req, res) => {
         persistBotRecoverySnapshot();
         sendJson(res, { ok: true, ...result });
       } catch (err) {
-        sendJson(res, { ok: false, error: err.message }, 500);
+        const status = Number.isInteger(err?.httpStatus) ? err.httpStatus : 500;
+        sendJson(res, { ok: false, error: err.message }, status);
       }
     });
     return;
