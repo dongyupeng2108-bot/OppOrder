@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260406_018/result_260406_018.json
+LOG_HEAD
+[260406_018] bot logs query filters enabled
+LOG_TAIL
+event and window_id filters are available for targeted log diagnosis
+EVIDENCE
+rules/task-reports/2026-04/260406_018/truth_audit_260406_018.md
+INDEX
+rules/task-reports/2026-04/260406_018/result_260406_018.json
