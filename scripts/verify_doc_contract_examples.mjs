@@ -84,6 +84,21 @@ function main() {
   if (typeof rs.ok !== 'boolean') {
     throw new Error('bot_runner_last_summary: ok must be boolean');
   }
+  const statusTopSummary = st.last_tick_summary;
+  const statusRuntimeSummary = st.active_runtime_snapshot.last_tick_summary;
+  const runnerSummary = rs.last_tick_summary;
+  for (const [label, summary] of [
+    ['bot_status.last_tick_summary', statusTopSummary],
+    ['bot_status.active_runtime_snapshot.last_tick_summary', statusRuntimeSummary],
+    ['bot_runner_last_summary.last_tick_summary', runnerSummary]
+  ]) {
+    if (summary !== null && typeof summary !== 'object') {
+      throw new Error(`${label}: must be object or null`);
+    }
+    if (summary && summary.version !== 'v1') {
+      throw new Error(`${label}: version must be v1`);
+    }
+  }
 
   if (typeof ctx._btc_source_trace !== 'object' || ctx._btc_source_trace === null) {
     throw new Error('bot_context: _btc_source_trace must be object');

@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260406_017/result_260406_017.json
+LOG_HEAD
+[260406_017] runner summary schema versioned to v1
+LOG_TAIL
+tick_summary and last_tick_summary now carry stable version field
+EVIDENCE
+rules/task-reports/2026-04/260406_017/truth_audit_260406_017.md
+INDEX
+rules/task-reports/2026-04/260406_017/result_260406_017.json

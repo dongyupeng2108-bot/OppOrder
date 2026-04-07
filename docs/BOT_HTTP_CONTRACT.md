@@ -69,7 +69,7 @@ curl -sS http://localhost:53123/bot/context
 | `running` | boolean | |
 | `debug_*` | mixed | 调试场景用 |
 | `tick_interval_ms` / `last_tick_at` | number \| string \| null | |
-| `last_tick_summary` | object \| null | 最近一次 tick 摘要（`reason`、`intents_summary`、`window_id`、`mode`） |
+| `last_tick_summary` | object \| null | 最近一次 tick 摘要（`version`、`reason`、`intents_summary`、`window_id`、`mode`） |
 | `last_window_id` / `current_window_id` | string \| null | **语义高风险区**，见 PROJECT_RULES |
 | `window_initialized_at` | string \| null | 窗口已 init 的时间戳 |
 | `remaining_sec` | number \| null | |
@@ -94,7 +94,7 @@ curl -sS http://localhost:53123/bot/context
 
 | 端点 | 用途 |
 |------|------|
-| `POST /bot/runner/tick` | 单次 `runSingleTick`；body 可选 `context_override`、`state_override`（对象）；成功时除 runner 输出外新增 `tick_summary`（`reason`、`intents_summary`、`window_id`、`mode`） |
+| `POST /bot/runner/tick` | 单次 `runSingleTick`；body 可选 `context_override`、`state_override`（对象）；成功时除 runner 输出外新增 `tick_summary`（`version`、`reason`、`intents_summary`、`window_id`、`mode`） |
 | `GET /bot/runner/last-summary` | 获取最近一次 tick 摘要：`{ ok, last_tick_at, last_tick_summary }` |
 | `GET /bot/orders` | 订单列表 + `window_scope` + summary |
 | `GET /bot/postmortem/latest` | `{ ok, postmortem }` |

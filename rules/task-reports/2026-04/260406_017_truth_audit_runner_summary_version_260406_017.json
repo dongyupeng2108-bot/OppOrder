@@ -1,0 +1,52 @@
+{
+  "script_name": "truth_audit_runner_summary_version_260406_017",
+  "task_id": "260406_017",
+  "sample_name": "runner_summary_version",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-04\\260406_017_truth_audit_runner_summary_version_260406_017.json",
+  "summary": {
+    "pass": true,
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "checks": {
+      "tick_summary_has_version_v1": true,
+      "last_summary_has_version_v1": true,
+      "status_top_level_last_tick_summary_version_v1": true,
+      "status_runtime_snapshot_last_tick_summary_version_v1": true,
+      "server_runtime_started": true,
+      "governance_substitute_pass": true
+    }
+  },
+  "raw_excerpt": {
+    "fail_to_pass": {
+      "before": "runner_summary_not_versioned",
+      "after": "runner_summary_versioned_v1"
+    },
+    "governance_substitute": {
+      "pass": true
+    },
+    "checks": {
+      "tick_summary_has_version_v1": true,
+      "last_summary_has_version_v1": true,
+      "status_top_level_last_tick_summary_version_v1": true,
+      "status_runtime_snapshot_last_tick_summary_version_v1": true,
+      "server_runtime_started": true,
+      "governance_substitute_pass": true
+    },
+    "runtime_capture": {
+      "stdout_tail": "215924…\n{\"ts\":\"2026-04-07T15:54:09.473Z\",\"level\":\"info\",\"event\":\"ws_connect_start\",\"module\":\"orderbook_monitor\",\"msg\":\"starting in rest mode\"}\n[server] Global orderbook monitor started\n[Scanner] Found current window: btc-updown-5m-1775577000 end=2026-04-07T15:55:00.000Z secsLeft=51\n[Scanner] No active window found (slug=btc-updown-15m-1775577000, secsLeft=51)\n[Runner] No active window, waiting...\n",
+      "stderr_tail": ""
+    }
+  },
+  "generated_at": "2026-04-07T15:54:09.589Z",
+  "task_type": "business_implementation",
+  "checks": {
+    "tick_summary_has_version_v1": true,
+    "last_summary_has_version_v1": true,
+    "status_top_level_last_tick_summary_version_v1": true,
+    "status_runtime_snapshot_last_tick_summary_version_v1": true,
+    "server_runtime_started": true,
+    "governance_substitute_pass": true
+  }
+}

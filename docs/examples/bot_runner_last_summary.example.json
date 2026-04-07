@@ -2,6 +2,7 @@
   "ok": true,
   "last_tick_at": "2026-03-27T12:00:00.000Z",
   "last_tick_summary": {
+    "version": "v1",
     "reason": "no_action",
     "intents_summary": {
       "PLACE_LADDER": 0,
