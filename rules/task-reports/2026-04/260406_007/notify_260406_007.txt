@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260406_007/result_260406_007.json
+LOG_HEAD
+[260406_007] bot api payload-shape guard enabled
+LOG_TAIL
+non-object JSON payload now rejected with 400 on reload/config/start
+EVIDENCE
+rules/task-reports/2026-04/260406_007/truth_audit_260406_007.md
+INDEX
+rules/task-reports/2026-04/260406_007/result_260406_007.json
