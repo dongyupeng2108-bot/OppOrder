@@ -1,0 +1,16 @@
+{
+  "task_id": "260406_020",
+  "status": "PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "summary": "完成业务能力项：max_spread_bps 点差门限控制挂梯行为。",
+  "deliverables": [
+    "docs/tasks/260406_020.md",
+    "strategies/crypto_binary/server.mjs",
+    "strategies/crypto_binary/bot_strategy.mjs",
+    "scripts/truth_audit_max_spread_guard_260406_020.mjs",
+    "rules/LATEST.json",
+    "rules/task-reports/2026-04/260406_020/implementation_260406_020.md",
+    "rules/task-reports/2026-04/260406_020/truth_audit_260406_020.md",
+    "rules/task-reports/2026-04/260406_020_truth_audit_max_spread_guard_260406_020.json"
+  ]
+}

@@ -338,6 +338,7 @@ export function decideBotAction(inputOrContext = {}, maybeState = {}) {
   const prices = hasPriceBounds(context);
   const openDelaySec = toNonNegativeIntegerOrNull(config?.open_delay_sec) ?? 10;
   const cancelAllRemainingSec = toNonNegativeIntegerOrNull(config?.cancel_all_remaining_sec) ?? 100;
+  const maxSpreadBps = toNonNegativeIntegerOrNull(config?.max_spread_bps) ?? 10000;
   const ladderPrices = Array.isArray(config?.ladder_prices) ? config.ladder_prices : BOT_STRATEGY_CONTRACT.defaults.ladder_prices;
   const ladderSize = Number.isFinite(Number(config?.ladder_size))
     ? Number(config.ladder_size)
@@ -392,6 +393,7 @@ export function decideBotAction(inputOrContext = {}, maybeState = {}) {
     lower_bound: prices.lowerBound,
     bounds_ready: prices.ready,
     config_open_delay_sec: openDelaySec,
+    config_max_spread_bps: maxSpreadBps,
     config_cancel_all_remaining_sec: cancelAllRemainingSec,
     config_ladder_size: ladderSize,
     config_ladder_prices: ladderPrices,
@@ -512,6 +514,20 @@ export function decideBotAction(inputOrContext = {}, maybeState = {}) {
   }
 
   if (!ladderPosted) {
+    const spreadDecimal = toNumberOrNull(formulaVars.spread);
+    const spreadBps = spreadDecimal === null ? null : Math.max(0, spreadDecimal * 10000);
+    if (spreadBps !== null && spreadBps > maxSpreadBps) {
+      return normalizeStrategyOutput({
+        intents: [createNoopIntent()],
+        reason: 'spread_too_wide_for_entry',
+        patches: {},
+        diagnostics: {
+          ...diagnosticsBase,
+          spread_bps: spreadBps,
+          spread_bps_limit: maxSpreadBps
+        }
+      });
+    }
     if (state?.yes_cancelled === true && state?.no_cancelled === true) {
       return normalizeStrategyOutput({
         intents: [createNoopIntent()],
