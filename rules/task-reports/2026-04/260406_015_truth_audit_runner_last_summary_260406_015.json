@@ -1,0 +1,55 @@
+{
+  "script_name": "truth_audit_runner_last_summary_260406_015",
+  "task_id": "260406_015",
+  "sample_name": "runner_last_summary",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-04\\260406_015_truth_audit_runner_last_summary_260406_015.json",
+  "summary": {
+    "pass": true,
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "checks": {
+      "tick_call_success": true,
+      "last_summary_endpoint_success": true,
+      "last_summary_contains_required_fields": true,
+      "last_summary_has_timestamp": true,
+      "status_snapshot_contains_last_summary_field": true,
+      "server_runtime_started": true,
+      "governance_substitute_pass": true
+    }
+  },
+  "raw_excerpt": {
+    "fail_to_pass": {
+      "before": "runner_last_summary_not_available",
+      "after": "runner_last_summary_available"
+    },
+    "governance_substitute": {
+      "pass": true
+    },
+    "checks": {
+      "tick_call_success": true,
+      "last_summary_endpoint_success": true,
+      "last_summary_contains_required_fields": true,
+      "last_summary_has_timestamp": true,
+      "status_snapshot_contains_last_summary_field": true,
+      "server_runtime_started": true,
+      "governance_substitute_pass": true
+    },
+    "runtime_capture": {
+      "stdout_tail": "9631…\n{\"ts\":\"2026-04-07T15:06:14.644Z\",\"level\":\"info\",\"event\":\"ws_connect_start\",\"module\":\"orderbook_monitor\",\"msg\":\"starting in rest mode\"}\n[server] Global orderbook monitor started\n[Scanner] No active window found (slug=btc-updown-15m-1775574300, secsLeft=226)\n[Runner] No active window, waiting...\n[Scanner] Found current window: btc-updown-5m-1775574300 end=2026-04-07T15:10:00.000Z secsLeft=226\n",
+      "stderr_tail": ""
+    }
+  },
+  "generated_at": "2026-04-07T15:06:14.821Z",
+  "task_type": "business_implementation",
+  "checks": {
+    "tick_call_success": true,
+    "last_summary_endpoint_success": true,
+    "last_summary_contains_required_fields": true,
+    "last_summary_has_timestamp": true,
+    "status_snapshot_contains_last_summary_field": true,
+    "server_runtime_started": true,
+    "governance_substitute_pass": true
+  }
+}

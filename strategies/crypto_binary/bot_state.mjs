@@ -7,6 +7,7 @@ const createDefaultState = (mode = 'paper-staging') => ({
   debug_completed: false,
   tick_interval_ms: 2000,
   last_tick_at: null,
+  last_tick_summary: null,
   last_window_id: null,
   current_window_id: null,
   window_initialized_at: null,
@@ -36,6 +37,14 @@ const normalizeState = (input = {}) => ({
   debug_completed: input.debug_completed === true,
   tick_interval_ms: Number.isFinite(Number(input.tick_interval_ms)) ? Number(input.tick_interval_ms) : 2000,
   last_tick_at: typeof input.last_tick_at === 'string' ? input.last_tick_at : null,
+  last_tick_summary: (input.last_tick_summary && typeof input.last_tick_summary === 'object' && !Array.isArray(input.last_tick_summary))
+    ? {
+        reason: input.last_tick_summary.reason ?? null,
+        intents_summary: input.last_tick_summary.intents_summary ?? null,
+        window_id: input.last_tick_summary.window_id ?? null,
+        mode: input.last_tick_summary.mode ?? null
+      }
+    : null,
   last_window_id: input.last_window_id ?? null,
   current_window_id: input.current_window_id ?? null,
   window_initialized_at: typeof input.window_initialized_at === 'string' ? input.window_initialized_at : null,

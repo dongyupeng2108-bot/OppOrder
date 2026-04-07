@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260406_015/result_260406_015.json
+LOG_HEAD
+[260406_015] runner last-summary endpoint enabled
+LOG_TAIL
+latest tick summary can be queried via dedicated endpoint and status snapshot
+EVIDENCE
+rules/task-reports/2026-04/260406_015/truth_audit_260406_015.md
+INDEX
+rules/task-reports/2026-04/260406_015/result_260406_015.json
