@@ -1,0 +1,51 @@
+{
+  "script_name": "truth_audit_t2_fix_feedback_state_260406_025",
+  "task_id": "260406_025",
+  "sample_name": "t2_fix_feedback_state",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-04\\260406_025_truth_audit_t2_fix_feedback_state_260406_025.json",
+  "summary": {
+    "pass": true,
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "checks": {
+      "has_param_save_state_machine": true,
+      "has_dynamic_effective_hint_renderer": true,
+      "failure_hint_has_unsaved_text": true,
+      "success_hint_kept_separate": true,
+      "save_failed_path_updates_state": true,
+      "saved_active_failure_specific_text": true,
+      "latest_points_to_260406_025": true,
+      "governance_substitute_pass": true
+    }
+  },
+  "raw_excerpt": {
+    "fail_to_pass": {
+      "before": "save_feedback_semantic_conflict_present",
+      "after": "save_feedback_semantic_conflict_fixed"
+    },
+    "checks": {
+      "has_param_save_state_machine": true,
+      "has_dynamic_effective_hint_renderer": true,
+      "failure_hint_has_unsaved_text": true,
+      "success_hint_kept_separate": true,
+      "save_failed_path_updates_state": true,
+      "saved_active_failure_specific_text": true,
+      "latest_points_to_260406_025": true,
+      "governance_substitute_pass": true
+    }
+  },
+  "generated_at": "2026-04-07T23:21:53.844Z",
+  "task_type": "business_implementation",
+  "checks": {
+    "has_param_save_state_machine": true,
+    "has_dynamic_effective_hint_renderer": true,
+    "failure_hint_has_unsaved_text": true,
+    "success_hint_kept_separate": true,
+    "save_failed_path_updates_state": true,
+    "saved_active_failure_specific_text": true,
+    "latest_points_to_260406_025": true,
+    "governance_substitute_pass": true
+  }
+}
