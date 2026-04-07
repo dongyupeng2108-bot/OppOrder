@@ -1657,6 +1657,17 @@ function sendJson(res, data, status = 200) {
   res.end(JSON.stringify(data));
 }
 
+const JSON_ERROR_SEMANTICS = Object.freeze({
+  INVALID_JSON_PAYLOAD: 'invalid json payload',
+  INVALID_JSON_PAYLOAD_TYPE: 'invalid json payload type'
+});
+
+function createHttpError(message, httpStatus = 400) {
+  const error = new Error(message);
+  error.httpStatus = httpStatus;
+  return error;
+}
+
 function parseJsonBody(body) {
   const raw = typeof body === 'string' ? body : '';
   if (!raw) return {};
@@ -1664,9 +1675,7 @@ function parseJsonBody(body) {
     return JSON.parse(raw);
   } catch (err) {
     if (err instanceof SyntaxError) {
-      const invalidJsonError = new Error('invalid json payload');
-      invalidJsonError.httpStatus = 400;
-      throw invalidJsonError;
+      throw createHttpError(JSON_ERROR_SEMANTICS.INVALID_JSON_PAYLOAD, 400);
     }
     throw err;
   }
@@ -1674,9 +1683,7 @@ function parseJsonBody(body) {
 
 function ensureJsonObjectPayload(payload) {
   if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
-    const invalidPayloadTypeError = new Error('invalid json payload type');
-    invalidPayloadTypeError.httpStatus = 400;
-    throw invalidPayloadTypeError;
+    throw createHttpError(JSON_ERROR_SEMANTICS.INVALID_JSON_PAYLOAD_TYPE, 400);
   }
   return payload;
 }
