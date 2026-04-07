@@ -1,0 +1,6 @@
+script_name=truth_audit_regression_scope_correction_260406_021
+task_id=260406_021
+sample_name=regression_scope_correction
+pass=true
+first_break_layer=NONE_CHAIN_PASS
+message=first_break_layer=NONE_CHAIN_PASS; effective_coverage=260406_013 baseline + 260406_014~260406_018 extensions
