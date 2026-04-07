@@ -1,0 +1,18 @@
+{
+  "task_id": "260406_016",
+  "status": "PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "summary": "Bot HTTP runner summary 契约文档与示例已完成同步。",
+  "deliverables": [
+    "docs/tasks/260406_016.md",
+    "docs/BOT_HTTP_CONTRACT.md",
+    "docs/examples/bot_status.example.json",
+    "docs/examples/bot_runner_last_summary.example.json",
+    "scripts/verify_doc_contract_examples.mjs",
+    "scripts/truth_audit_doc_contract_runner_summary_260406_016.mjs",
+    "rules/LATEST.json",
+    "rules/task-reports/2026-04/260406_016/implementation_260406_016.md",
+    "rules/task-reports/2026-04/260406_016/truth_audit_260406_016.md",
+    "rules/task-reports/2026-04/260406_016_truth_audit_doc_contract_runner_summary_260406_016.json"
+  ]
+}
