@@ -1735,6 +1735,7 @@ function buildRunnerTickSummary(result) {
   const contextSnapshot = result?.context_snapshot || {};
   const stateAfter = result?.state_after || {};
   return {
+    version: 'v1',
     reason: decisionPreview?.reason ?? null,
     intents_summary: decisionPreview?.intents_summary ?? summarizeIntents(decisionPreview?.intents || []),
     window_id: contextSnapshot?.window_id ?? stateAfter?.current_window_id ?? null,

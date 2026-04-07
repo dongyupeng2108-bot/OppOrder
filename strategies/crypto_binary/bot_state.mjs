@@ -39,6 +39,7 @@ const normalizeState = (input = {}) => ({
   last_tick_at: typeof input.last_tick_at === 'string' ? input.last_tick_at : null,
   last_tick_summary: (input.last_tick_summary && typeof input.last_tick_summary === 'object' && !Array.isArray(input.last_tick_summary))
     ? {
+        version: typeof input.last_tick_summary.version === 'string' ? input.last_tick_summary.version : 'v1',
         reason: input.last_tick_summary.reason ?? null,
         intents_summary: input.last_tick_summary.intents_summary ?? null,
         window_id: input.last_tick_summary.window_id ?? null,
