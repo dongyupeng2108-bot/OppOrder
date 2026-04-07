@@ -145,6 +145,7 @@ const BOT_CONFIG_FIELDS = [
   'ladder_prices',
   'ladder_size',
   'atr_multiple',
+  'max_spread_bps',
   'cancel_all_remaining_sec',
   'up_ladder',
   'down_ladder',
@@ -153,6 +154,7 @@ const BOT_CONFIG_FIELDS = [
 ];
 const SE_DEFAULT_OPEN_DELAY_SEC = 10;
 const SE_DEFAULT_ATR_MULTIPLE = 1.2;
+const SE_DEFAULT_MAX_SPREAD_BPS = 10000;
 const SE_DEFAULT_CANCEL_ALL_REMAINING_SEC = 100;
 const SE_DEFAULT_LADDER_SIZE = 5;
 const SE_DEFAULT_LADDER_PRICES = [0.27, 0.24, 0.21, 0.18];
@@ -263,6 +265,10 @@ async function initStrategyEditor() {
           <div>
             <label style="display:block; margin-bottom:5px; font-weight:bold;">开盘等待秒数</label>
             <input type="number" id="param_open_delay_sec" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
+          </div>
+          <div>
+            <label style="display:block; margin-bottom:5px; font-weight:bold;">最大点差(bps)</label>
+            <input type="number" id="param_max_spread_bps" style="background:#1e1e1e; border:1px solid #555; color:#fff; padding:6px; border-radius:4px; width:100%; box-sizing:border-box;">
           </div>
           <div style="display:flex;gap:6px;">
             <button id="se-param-tab-up" onclick="se_switchParamTab('up')" style="flex:1;background:#1d3a28;color:#c8ffd8;border:1px solid #2f6a47;border-radius:4px;padding:6px;cursor:pointer;">UP挂单</button>
@@ -571,6 +577,7 @@ function se_removeLadderRow(index) {
 function se_renderParams(params) {
   _seParamDraft = {
     open_delay_sec: Number(params.open_delay_sec),
+    max_spread_bps: Number(params.max_spread_bps),
     ladder_prices: Array.isArray(params.ladder_prices) ? params.ladder_prices.map((item) => Number(item)) : [...SE_DEFAULT_LADDER_PRICES],
     ladder_size: Number(params.ladder_size),
     atr_multiple: Number(params.atr_multiple),
@@ -581,6 +588,9 @@ function se_renderParams(params) {
     down_cancel: se_normalizeCancelConfig(params.down_cancel, Number(params.cancel_all_remaining_sec))
   };
   document.getElementById('param_open_delay_sec').value = params.open_delay_sec;
+  document.getElementById('param_max_spread_bps').value = Number.isFinite(Number(params.max_spread_bps))
+    ? Number(params.max_spread_bps)
+    : SE_DEFAULT_MAX_SPREAD_BPS;
   se_renderActiveTabPanel();
 }
 
@@ -634,6 +644,7 @@ function se_pickBotConfig(input = {}) {
   const cancelFallback = Number(picked.cancel_all_remaining_sec ?? SE_DEFAULT_CANCEL_ALL_REMAINING_SEC);
   return {
     open_delay_sec: Number(picked.open_delay_sec ?? SE_DEFAULT_OPEN_DELAY_SEC),
+    max_spread_bps: Number(picked.max_spread_bps ?? SE_DEFAULT_MAX_SPREAD_BPS),
     ladder_prices: ladderPrices,
     ladder_size: ladderSize,
     atr_multiple: Number(picked.atr_multiple ?? SE_DEFAULT_ATR_MULTIPLE),
@@ -648,9 +659,11 @@ function se_pickBotConfig(input = {}) {
 function se_readParamsFromForm() {
   se_syncActiveTabFromForm();
   const openDelaySec = Number(document.getElementById('param_open_delay_sec').value);
+  const maxSpreadBps = Number(document.getElementById('param_max_spread_bps').value);
   const current = _seParamDraft || _seConfigCurrent || se_pickBotConfig({});
   return {
     open_delay_sec: openDelaySec,
+    max_spread_bps: maxSpreadBps,
     ladder_prices: Array.isArray(current.ladder_prices) ? current.ladder_prices.map((item) => Number(item)) : [...SE_DEFAULT_LADDER_PRICES],
     ladder_size: Number(current.ladder_size),
     atr_multiple: Number(current.atr_multiple),
@@ -670,6 +683,7 @@ function se_readParamsFromForm() {
 
 function se_validateParams(params) {
   if (!Number.isInteger(params.open_delay_sec) || params.open_delay_sec < 0) return 'open_delay_sec 必须为非负整数';
+  if (!Number.isInteger(params.max_spread_bps) || params.max_spread_bps < 0) return 'max_spread_bps 必须为非负整数';
   if (!Array.isArray(params.up_ladder) || params.up_ladder.length < 1) return 'up_ladder 至少保留 1 档';
   if (!Array.isArray(params.down_ladder) || params.down_ladder.length < 1) return 'down_ladder 至少保留 1 档';
   const invalidUp = params.up_ladder.some((item) => !Number.isFinite(item.price) || item.price <= 0 || item.price >= 1 || !Number.isFinite(item.size) || item.size <= 0 || !Number.isFinite(item.tp_price) || item.tp_price <= 0 || item.tp_price > 1);
@@ -1340,14 +1354,14 @@ function se_renderOverview(status, summary, ordersData) {
     || null;
   se_setText('se-log-current-window', se_formatWindowDisplayName(currentWindowLabelSource));
   const paramSummary = savedConfig
-    ? `开盘等待 ${se_formatStateValue(savedConfig.open_delay_sec)} 秒 · 波动 ${se_formatStateValue(savedConfig.atr_multiple)} · 全撤 ${se_formatStateValue(savedConfig.cancel_all_remaining_sec)} 秒`
+    ? `开盘等待 ${se_formatStateValue(savedConfig.open_delay_sec)} 秒 · 点差阈值 ${se_formatStateValue(savedConfig.max_spread_bps)} bps · 波动 ${se_formatStateValue(savedConfig.atr_multiple)} · 全撤 ${se_formatStateValue(savedConfig.cancel_all_remaining_sec)} 秒`
     : '参数尚未加载';
   se_setText('se-param-summary', paramSummary);
   se_setText('se-snapshot-note', activeRuntime
     ? `saved 与 active 可能不同：active.window=${se_formatStateValue(activeRuntime.current_window_id)}`
     : '当前未运行：仅展示 saved 参数，active runtime snapshot 为空');
   const lastActiveConfigText = lastActiveConfig
-    ? `等待 ${se_formatStateValue(lastActiveConfig.open_delay_sec)} · 波动 ${se_formatStateValue(lastActiveConfig.atr_multiple)} · 全撤 ${se_formatStateValue(lastActiveConfig.cancel_all_remaining_sec)}`
+    ? `等待 ${se_formatStateValue(lastActiveConfig.open_delay_sec)} · 点差阈值 ${se_formatStateValue(lastActiveConfig.max_spread_bps)} · 波动 ${se_formatStateValue(lastActiveConfig.atr_multiple)} · 全撤 ${se_formatStateValue(lastActiveConfig.cancel_all_remaining_sec)}`
     : 'N/A (null)';
   const completedAt = lastRun?.completed_at;
   se_setText('se-runtime-yes-position', yesPos);
@@ -1355,7 +1369,7 @@ function se_renderOverview(status, summary, ordersData) {
   se_setText('se-runtime-filled-total', filledTotal);
   se_setText('se-runtime-realized-total', se_formatPnlDisplay(realizedTotal));
   const lastActiveConfigDebugText = lastActiveConfig
-    ? `open_delay=${se_formatStateValue(lastActiveConfig.open_delay_sec)} | prices=${se_formatStateValue(lastActiveConfig.ladder_prices)} | size=${se_formatStateValue(lastActiveConfig.ladder_size)} | atr=${se_formatStateValue(lastActiveConfig.atr_multiple)} | cancel=${se_formatStateValue(lastActiveConfig.cancel_all_remaining_sec)}`
+    ? `open_delay=${se_formatStateValue(lastActiveConfig.open_delay_sec)} | max_spread_bps=${se_formatStateValue(lastActiveConfig.max_spread_bps)} | prices=${se_formatStateValue(lastActiveConfig.ladder_prices)} | size=${se_formatStateValue(lastActiveConfig.ladder_size)} | atr=${se_formatStateValue(lastActiveConfig.atr_multiple)} | cancel=${se_formatStateValue(lastActiveConfig.cancel_all_remaining_sec)}`
     : 'N/A (null)';
   se_setText('se-last-active-config', lastActiveConfigDebugText);
   se_setText('se-last-stop-reason', stopReasonText);

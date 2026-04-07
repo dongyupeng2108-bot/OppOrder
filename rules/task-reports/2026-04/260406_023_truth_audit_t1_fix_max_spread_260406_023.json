@@ -1,0 +1,51 @@
+{
+  "script_name": "truth_audit_t1_fix_max_spread_260406_023",
+  "task_id": "260406_023",
+  "sample_name": "t1_fix_max_spread",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-04\\260406_023_truth_audit_t1_fix_max_spread_260406_023.json",
+  "summary": {
+    "pass": true,
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "checks": {
+      "backend_requires_max_spread_bps": true,
+      "ui_has_input_param_max_spread_bps": true,
+      "ui_config_fields_contains_max_spread_bps": true,
+      "ui_read_params_contains_max_spread_bps": true,
+      "ui_validate_contains_max_spread_bps_rule": true,
+      "ui_pick_config_contains_max_spread_bps": true,
+      "latest_points_to_260406_023": true,
+      "governance_substitute_pass": true
+    }
+  },
+  "raw_excerpt": {
+    "fail_to_pass": {
+      "before": "ui_contract_drift_detected",
+      "after": "ui_contract_drift_fixed"
+    },
+    "checks": {
+      "backend_requires_max_spread_bps": true,
+      "ui_has_input_param_max_spread_bps": true,
+      "ui_config_fields_contains_max_spread_bps": true,
+      "ui_read_params_contains_max_spread_bps": true,
+      "ui_validate_contains_max_spread_bps_rule": true,
+      "ui_pick_config_contains_max_spread_bps": true,
+      "latest_points_to_260406_023": true,
+      "governance_substitute_pass": true
+    }
+  },
+  "generated_at": "2026-04-07T22:45:27.324Z",
+  "task_type": "business_implementation",
+  "checks": {
+    "backend_requires_max_spread_bps": true,
+    "ui_has_input_param_max_spread_bps": true,
+    "ui_config_fields_contains_max_spread_bps": true,
+    "ui_read_params_contains_max_spread_bps": true,
+    "ui_validate_contains_max_spread_bps_rule": true,
+    "ui_pick_config_contains_max_spread_bps": true,
+    "latest_points_to_260406_023": true,
+    "governance_substitute_pass": true
+  }
+}

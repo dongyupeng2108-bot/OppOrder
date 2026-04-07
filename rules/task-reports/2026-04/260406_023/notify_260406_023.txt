@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260406_023/result_260406_023.json
+LOG_HEAD
+[260406_023] fixed max_spread_bps ui-backend contract drift in save chain
+LOG_TAIL
+ui now exposes, validates and forwards max_spread_bps to align with backend config validation
+EVIDENCE
+rules/task-reports/2026-04/260406_023/truth_audit_260406_023.md
+INDEX
+rules/task-reports/2026-04/260406_023/result_260406_023.json
