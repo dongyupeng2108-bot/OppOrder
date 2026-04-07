@@ -1688,6 +1688,47 @@ function ensureJsonObjectPayload(payload) {
   return payload;
 }
 
+function validateTickOverrideContracts(contextOverride, stateOverride) {
+  const isFiniteNumber = (value) => typeof value === 'number' && Number.isFinite(value);
+  if (contextOverride !== undefined) {
+    if (Object.prototype.hasOwnProperty.call(contextOverride, 'window_id') && typeof contextOverride.window_id !== 'string') {
+      return 'invalid context_override.window_id';
+    }
+    if (Object.prototype.hasOwnProperty.call(contextOverride, 'period') && typeof contextOverride.period !== 'string') {
+      return 'invalid context_override.period';
+    }
+    for (const field of ['remaining_sec', 'btc_price', 'atr_5m', 'bid_yes', 'ask_yes', 'bid_no', 'ask_no', 'upper_bound', 'lower_bound']) {
+      if (Object.prototype.hasOwnProperty.call(contextOverride, field) && !isFiniteNumber(contextOverride[field])) {
+        return `invalid context_override.${field}`;
+      }
+    }
+  }
+  if (stateOverride !== undefined) {
+    if (Object.prototype.hasOwnProperty.call(stateOverride, 'current_window_id') && typeof stateOverride.current_window_id !== 'string') {
+      return 'invalid state_override.current_window_id';
+    }
+    if (Object.prototype.hasOwnProperty.call(stateOverride, 'window_initialized_at') && typeof stateOverride.window_initialized_at !== 'string') {
+      return 'invalid state_override.window_initialized_at';
+    }
+    for (const field of ['yes_order_ids', 'no_order_ids']) {
+      if (Object.prototype.hasOwnProperty.call(stateOverride, field) && !Array.isArray(stateOverride[field])) {
+        return `invalid state_override.${field}`;
+      }
+    }
+    for (const field of ['ladder_posted', 'yes_cancelled', 'no_cancelled', 'up_formula_cancelled', 'down_formula_cancelled']) {
+      if (Object.prototype.hasOwnProperty.call(stateOverride, field) && typeof stateOverride[field] !== 'boolean') {
+        return `invalid state_override.${field}`;
+      }
+    }
+    for (const field of ['anchor_btc', 'atr_5m', 'upper_bound', 'lower_bound']) {
+      if (Object.prototype.hasOwnProperty.call(stateOverride, field) && !isFiniteNumber(stateOverride[field])) {
+        return `invalid state_override.${field}`;
+      }
+    }
+  }
+  return null;
+}
+
 function deepMerge(base, patch) {
   const result = { ...base };
   for (const key of Object.keys(patch)) {
@@ -2744,6 +2785,11 @@ const server = createServer(async (req, res) => {
         }
         if (stateOverride !== undefined && (!stateOverride || typeof stateOverride !== 'object' || Array.isArray(stateOverride))) {
           sendJson(res, { ok: false, error: 'invalid state_override' }, 400);
+          return;
+        }
+        const contractError = validateTickOverrideContracts(contextOverride, stateOverride);
+        if (contractError) {
+          sendJson(res, { ok: false, error: contractError }, 400);
           return;
         }
         const result = await botRunner.runSingleTick({

@@ -1,0 +1,6 @@
+script_name=truth_audit_runner_tick_contract_260406_011
+task_id=260406_011
+sample_name=runner_tick_contract
+pass=true
+first_break_layer=NONE_CHAIN_PASS
+message=first_break_layer=NONE_CHAIN_PASS
