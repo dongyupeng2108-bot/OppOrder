@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260406_008/result_260406_008.json
+LOG_HEAD
+[260406_008] bot runner tick payload guard completed
+LOG_TAIL
+malformed and non-object payload now return 400 with stable errors
+EVIDENCE
+rules/task-reports/2026-04/260406_008/truth_audit_260406_008.md
+INDEX
+rules/task-reports/2026-04/260406_008/result_260406_008.json
