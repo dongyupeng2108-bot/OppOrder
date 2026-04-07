@@ -1,0 +1,14 @@
+{
+  "task_id": "260406_021",
+  "status": "PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "summary": "019 覆盖口径纠偏完成：effective coverage = 260406_013 baseline + 260406_014~260406_018 extensions。",
+  "deliverables": [
+    "docs/tasks/260406_021.md",
+    "scripts/truth_audit_regression_scope_correction_260406_021.mjs",
+    "rules/LATEST.json",
+    "rules/task-reports/2026-04/260406_021/implementation_260406_021.md",
+    "rules/task-reports/2026-04/260406_021/truth_audit_260406_021.md",
+    "rules/task-reports/2026-04/260406_021_truth_audit_regression_scope_correction_260406_021.json"
+  ]
+}

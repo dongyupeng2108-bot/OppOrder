@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260406_021/result_260406_021.json
+LOG_HEAD
+[260406_021] corrected regression coverage statement for 260406_019 lineage
+LOG_TAIL
+effective coverage is now explicitly stated as 260406_013 baseline + 260406_014~260406_018 extensions
+EVIDENCE
+rules/task-reports/2026-04/260406_021/truth_audit_260406_021.md
+INDEX
+rules/task-reports/2026-04/260406_021/result_260406_021.json
