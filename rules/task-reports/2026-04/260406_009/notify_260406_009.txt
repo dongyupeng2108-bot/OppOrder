@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260406_009/result_260406_009.json
+LOG_HEAD
+[260406_009] remaining endpoint json guard unified
+LOG_TAIL
+malformed/non-object json now consistently mapped to 400 on key remaining endpoints
+EVIDENCE
+rules/task-reports/2026-04/260406_009/truth_audit_260406_009.md
+INDEX
+rules/task-reports/2026-04/260406_009/result_260406_009.json
