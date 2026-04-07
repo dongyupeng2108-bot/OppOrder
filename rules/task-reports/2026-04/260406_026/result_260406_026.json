@@ -1,0 +1,14 @@
+{
+  "task_id": "260406_026",
+  "status": "PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "summary": "已完成T3定位：确认挂单缺口包含展示过滤与策略口径两类风险。",
+  "deliverables": [
+    "docs/tasks/260406_026.md",
+    "scripts/truth_audit_t3_order_log_gap_260406_026.mjs",
+    "rules/LATEST.json",
+    "rules/task-reports/2026-04/260406_026/implementation_260406_026.md",
+    "rules/task-reports/2026-04/260406_026/truth_audit_260406_026.md",
+    "rules/task-reports/2026-04/260406_026_truth_audit_t3_order_log_gap_260406_026.json"
+  ]
+}
