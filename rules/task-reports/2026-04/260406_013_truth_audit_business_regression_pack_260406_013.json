@@ -1,0 +1,86 @@
+{
+  "script_name": "truth_audit_business_regression_pack_260406_013",
+  "task_id": "260406_013",
+  "sample_name": "business_regression_pack",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-04\\260406_013_truth_audit_business_regression_pack_260406_013.json",
+  "summary": {
+    "pass": true,
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "checks": {
+      "regression_truth_audits_all_exist": true,
+      "regression_truth_audits_all_pass": true,
+      "semantics_doc_declares_invalid_json_payload": true,
+      "semantics_doc_declares_invalid_json_payload_type": true,
+      "latest_points_to_260406_013": true,
+      "governance_substitute_pass": true
+    }
+  },
+  "raw_excerpt": {
+    "fail_to_pass": {
+      "before": "regression_pack_not_built",
+      "after": "regression_pack_built"
+    },
+    "governance_substitute": {
+      "pass": true
+    },
+    "checks": {
+      "regression_truth_audits_all_exist": true,
+      "regression_truth_audits_all_pass": true,
+      "semantics_doc_declares_invalid_json_payload": true,
+      "semantics_doc_declares_invalid_json_payload_type": true,
+      "latest_points_to_260406_013": true,
+      "governance_substitute_pass": true
+    },
+    "truth_audit_checks": [
+      {
+        "name": "260406_006_truth_audit_bot_api_invalid_json_260406_006.json",
+        "exists": true,
+        "pass": true,
+        "first_break_layer": "NONE_CHAIN_PASS"
+      },
+      {
+        "name": "260406_007_truth_audit_bot_api_payload_shape_260406_007.json",
+        "exists": true,
+        "pass": true,
+        "first_break_layer": "NONE_CHAIN_PASS"
+      },
+      {
+        "name": "260406_008_truth_audit_bot_runner_tick_payload_guard_260406_008.json",
+        "exists": true,
+        "pass": true,
+        "first_break_layer": "NONE_CHAIN_PASS"
+      },
+      {
+        "name": "260406_009_truth_audit_json_guard_remaining_endpoints_260406_009.json",
+        "exists": true,
+        "pass": true,
+        "first_break_layer": "NONE_CHAIN_PASS"
+      },
+      {
+        "name": "260406_010_truth_audit_json_error_semantics_260406_010.json",
+        "exists": true,
+        "pass": true,
+        "first_break_layer": "NONE_CHAIN_PASS"
+      },
+      {
+        "name": "260406_011_truth_audit_runner_tick_contract_260406_011.json",
+        "exists": true,
+        "pass": true,
+        "first_break_layer": "NONE_CHAIN_PASS"
+      }
+    ]
+  },
+  "generated_at": "2026-04-07T12:48:52.498Z",
+  "task_type": "business_implementation",
+  "checks": {
+    "regression_truth_audits_all_exist": true,
+    "regression_truth_audits_all_pass": true,
+    "semantics_doc_declares_invalid_json_payload": true,
+    "semantics_doc_declares_invalid_json_payload_type": true,
+    "latest_points_to_260406_013": true,
+    "governance_substitute_pass": true
+  }
+}

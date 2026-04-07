@@ -1,0 +1,14 @@
+{
+  "task_id": "260406_013",
+  "status": "PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "summary": "中风险回归包基线建立完成（覆盖260406_006~011关键防线）。",
+  "deliverables": [
+    "docs/tasks/260406_013.md",
+    "scripts/truth_audit_business_regression_pack_260406_013.mjs",
+    "rules/LATEST.json",
+    "rules/task-reports/2026-04/260406_013/implementation_260406_013.md",
+    "rules/task-reports/2026-04/260406_013/truth_audit_260406_013.md",
+    "rules/task-reports/2026-04/260406_013_truth_audit_business_regression_pack_260406_013.json"
+  ]
+}

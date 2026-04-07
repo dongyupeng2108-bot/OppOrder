@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260406_013/result_260406_013.json
+LOG_HEAD
+[260406_013] business regression pack baseline established
+LOG_TAIL
+core guards from 260406_006~011 are now tracked by machine-readable pack audit
+EVIDENCE
+rules/task-reports/2026-04/260406_013/truth_audit_260406_013.md
+INDEX
+rules/task-reports/2026-04/260406_013/result_260406_013.json
