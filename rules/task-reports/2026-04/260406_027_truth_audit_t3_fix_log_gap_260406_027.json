@@ -1,0 +1,54 @@
+{
+  "script_name": "truth_audit_t3_fix_log_gap_260406_027",
+  "task_id": "260406_027",
+  "sample_name": "t3_fix_log_gap",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-04\\260406_027_truth_audit_t3_fix_log_gap_260406_027.json",
+  "summary": {
+    "pass": true,
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "checks": {
+      "has_merge_log_entries_helper": true,
+      "key_mode_fetches_window_logs": true,
+      "key_mode_fetches_runner_tick_logs": true,
+      "base_log_limit_upgraded_to_500": true,
+      "key_log_includes_spread_too_wide_reason": true,
+      "key_log_includes_ladder_not_posted_reason": true,
+      "state_sentence_describes_spread_guard": true,
+      "latest_points_to_260406_027": true,
+      "governance_substitute_pass": true
+    }
+  },
+  "raw_excerpt": {
+    "fail_to_pass": {
+      "before": "t3_order_log_gap_present",
+      "after": "t3_order_log_gap_fixed"
+    },
+    "checks": {
+      "has_merge_log_entries_helper": true,
+      "key_mode_fetches_window_logs": true,
+      "key_mode_fetches_runner_tick_logs": true,
+      "base_log_limit_upgraded_to_500": true,
+      "key_log_includes_spread_too_wide_reason": true,
+      "key_log_includes_ladder_not_posted_reason": true,
+      "state_sentence_describes_spread_guard": true,
+      "latest_points_to_260406_027": true,
+      "governance_substitute_pass": true
+    }
+  },
+  "generated_at": "2026-04-07T23:41:16.303Z",
+  "task_type": "business_implementation",
+  "checks": {
+    "has_merge_log_entries_helper": true,
+    "key_mode_fetches_window_logs": true,
+    "key_mode_fetches_runner_tick_logs": true,
+    "base_log_limit_upgraded_to_500": true,
+    "key_log_includes_spread_too_wide_reason": true,
+    "key_log_includes_ladder_not_posted_reason": true,
+    "state_sentence_describes_spread_guard": true,
+    "latest_points_to_260406_027": true,
+    "governance_substitute_pass": true
+  }
+}
