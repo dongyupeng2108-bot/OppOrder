@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260406_027/result_260406_027.json
+LOG_HEAD
+[260406_027] fixed t3 key-log visibility gap for non-ladder reasons
+LOG_TAIL
+key mode now supplements window-specific runner logs and shows spread-guard/no-ladder reasons
+EVIDENCE
+rules/task-reports/2026-04/260406_027/truth_audit_260406_027.md
+INDEX
+rules/task-reports/2026-04/260406_027/result_260406_027.json

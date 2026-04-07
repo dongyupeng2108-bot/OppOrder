@@ -1098,16 +1098,34 @@ async function se_pollTestRunner() {
 
 async function se_poll() {
   try {
-    const [statusRes, logsRes, ordersRes, summaryRes] = await Promise.all([
+    const [statusRes, ordersRes, summaryRes] = await Promise.all([
       fetch(`${BASE_URL}/bot/status`),
-      fetch(`${BASE_URL}/bot/logs?limit=200`),
       fetch(`${BASE_URL}/bot/orders`),
       fetch(`${BASE_URL}/bot/paper/summary`)
     ]);
     const status = await statusRes.json();
-    const logsData = await logsRes.json();
     const ordersData = await ordersRes.json();
     const summaryData = await summaryRes.json();
+    const currentWindowId = status?.current_window_id || status?.active_runtime_snapshot?.current_window_id || null;
+    const baseLogsRes = await fetch(`${BASE_URL}/bot/logs?limit=500`);
+    const baseLogsData = await baseLogsRes.json();
+    const baseLogs = Array.isArray(baseLogsData) ? baseLogsData : (baseLogsData.logs || []);
+    let logs = Array.isArray(baseLogs) ? baseLogs : [];
+    if (_seLogViewMode === 'key' && currentWindowId) {
+      try {
+        const [windowLogsRes, runnerTickLogsRes] = await Promise.all([
+          fetch(`${BASE_URL}/bot/logs?limit=200&window_id=${encodeURIComponent(currentWindowId)}`),
+          fetch(`${BASE_URL}/bot/logs?limit=200&event=RUNNER_TICK&window_id=${encodeURIComponent(currentWindowId)}`)
+        ]);
+        const windowLogsData = await windowLogsRes.json();
+        const runnerTickLogsData = await runnerTickLogsRes.json();
+        logs = se_mergeLogEntries(
+          logs,
+          Array.isArray(windowLogsData) ? windowLogsData : (windowLogsData.logs || []),
+          Array.isArray(runnerTickLogsData) ? runnerTickLogsData : (runnerTickLogsData.logs || [])
+        );
+      } catch (_) {}
+    }
     let contextData = {};
     let previewData = null;
     let performanceData = null;
@@ -1149,7 +1167,7 @@ async function se_poll() {
     se_renderPerformance(performanceData, status);
     se_renderPmAccountInfo(accountData?.account || null);
     se_renderDecision(status, contextData, previewData, ordersData, previewError);
-    se_renderLogs(Array.isArray(logsData) ? logsData : (logsData.logs || []));
+    se_renderLogs(logs);
     se_renderOrders(ordersData, status);
     await se_pollTestRunner();
 
@@ -1673,6 +1691,22 @@ function se_logReasonToken(message, data) {
   return matched && matched[1] ? matched[1] : '';
 }
 
+function se_mergeLogEntries(...groups) {
+  const merged = [];
+  const seen = new Set();
+  for (const group of groups) {
+    if (!Array.isArray(group)) continue;
+    for (const row of group) {
+      if (!row || typeof row !== 'object') continue;
+      const key = `${String(row.ts || '')}|${String(row.event || row.type || '')}|${String(row.message || row.msg || '')}|${String(row.window_id || '')}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      merged.push(row);
+    }
+  }
+  return merged;
+}
+
 function se_isNoiseLog(event, message, data) {
   const reason = se_logReasonToken(message, data);
   const intents = typeof data?.intents_summary === 'string' ? data.intents_summary.trim() : '';
@@ -1713,6 +1747,10 @@ function se_buildStateSentence(log) {
   if ((event === 'RUNNER_TICK' || event === 'BOT_DECISION_GATED') && reason === 'price_or_bounds_null') return '等待价格与边界数据';
   if ((event === 'RUNNER_TICK' || event === 'BOT_DECISION') && reason === 'scheduled_tick_ok') return '本周期无动作';
   if ((event === 'RUNNER_TICK' || event === 'BOT_DECISION') && reason === 'noop') return '本周期无动作';
+  if ((event === 'RUNNER_TICK' || event === 'BOT_DECISION') && reason === 'spread_too_wide_for_entry') return '点差过大，本窗口暂不挂单';
+  if ((event === 'RUNNER_TICK' || event === 'BOT_DECISION') && reason === 'ladder_not_posted') return '满足条件后已执行挂梯流程';
+  if ((event === 'RUNNER_TICK' || event === 'BOT_DECISION') && reason === 'ladder_not_posted_all_sides_cancelled') return '本窗口挂单方向已取消，未新挂梯';
+  if ((event === 'RUNNER_TICK' || event === 'BOT_DECISION_GATED') && reason === 'pre_open_or_open_not_open_delay') return 'open_delay 未到，本窗口暂不挂单';
   if (event === 'BOT_ORDER_APPLY') {
     const summary = typeof data?.intents_summary === 'string' ? data.intents_summary : '';
     if (summary.includes('PLACE_LADDER(BOTH)')) return '已挂 UP 2 单 / DOWN 2 单';
@@ -1764,6 +1802,7 @@ function se_isKeyLog(log) {
   if (event === 'BOT_INTENTS' && (intents.includes('PLACE_LADDER(') || intents.includes('CANCEL_OPEN('))) return true;
   if (event === 'BOT_DECISION_GATED' && (reason === 'wait_next_window_after_start' || reason === 'pre_open_or_open_not_open_delay' || reason === 'price_or_bounds_null')) return true;
   if (event === 'RUNNER_TICK' && (reason === 'up_cancel_before_end' || reason === 'down_cancel_before_end' || reason === 'up_formula_cancel' || reason === 'down_formula_cancel')) return true;
+  if ((event === 'RUNNER_TICK' || event === 'BOT_DECISION') && (reason === 'spread_too_wide_for_entry' || reason === 'ladder_not_posted' || reason === 'ladder_not_posted_all_sides_cancelled')) return true;
   if (se_isNoiseLog(event, message, data)) return false;
   return false;
 }
