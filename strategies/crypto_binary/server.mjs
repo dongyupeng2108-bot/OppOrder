@@ -81,6 +81,7 @@ const BOT_CONFIG_DEFAULTS = {
   ladder_prices: [...BOT_STRATEGY_CONTRACT.defaults.ladder_prices],
   ladder_size: BOT_STRATEGY_CONTRACT.defaults.ladder_size,
   atr_multiple: 1.2,
+  max_spread_bps: 10000,
   cancel_all_remaining_sec: 100,
   up_ladder: toLadderRows(BOT_STRATEGY_CONTRACT.defaults.ladder_prices, BOT_STRATEGY_CONTRACT.defaults.ladder_size),
   down_ladder: toLadderRows(BOT_STRATEGY_CONTRACT.defaults.ladder_prices, BOT_STRATEGY_CONTRACT.defaults.ladder_size),
@@ -92,6 +93,7 @@ const BOT_CONFIG_INTERNAL_DEFAULTS = {
   ladder_prices: [...BOT_CONFIG_DEFAULTS.ladder_prices],
   ladder_size: BOT_CONFIG_DEFAULTS.ladder_size,
   atr_multiplier: BOT_CONFIG_DEFAULTS.atr_multiple,
+  max_spread_bps: BOT_CONFIG_DEFAULTS.max_spread_bps,
   cancel_all_remaining_sec: BOT_CONFIG_DEFAULTS.cancel_all_remaining_sec,
   up_ladder: BOT_CONFIG_DEFAULTS.up_ladder.map((item) => ({ ...item })),
   down_ladder: BOT_CONFIG_DEFAULTS.down_ladder.map((item) => ({ ...item })),
@@ -288,6 +290,7 @@ const cloneBotConfig = (value) => ({
   ladder_prices: [...value.ladder_prices],
   ladder_size: Number(value.ladder_size),
   atr_multiple: Number(value.atr_multiple),
+  max_spread_bps: Number(value.max_spread_bps),
   cancel_all_remaining_sec: Number(value.cancel_all_remaining_sec),
   up_ladder: cloneLadderRows(value.up_ladder),
   down_ladder: cloneLadderRows(value.down_ladder),
@@ -299,6 +302,7 @@ const toInternalRunnerConfig = (value) => ({
   ladder_prices: [...value.ladder_prices],
   ladder_size: Number(value.ladder_size),
   atr_multiplier: Number(value.atr_multiple),
+  max_spread_bps: Number(value.max_spread_bps),
   cancel_all_remaining_sec: Number(value.cancel_all_remaining_sec),
   up_ladder: cloneLadderRows(value.up_ladder),
   down_ladder: cloneLadderRows(value.down_ladder),
@@ -313,6 +317,7 @@ const setBotConfigCurrent = (nextConfig, options = {}) => {
   botRunnerConfig.ladder_prices = [...internal.ladder_prices];
   botRunnerConfig.ladder_size = internal.ladder_size;
   botRunnerConfig.atr_multiplier = internal.atr_multiplier;
+  botRunnerConfig.max_spread_bps = internal.max_spread_bps;
   botRunnerConfig.cancel_all_remaining_sec = internal.cancel_all_remaining_sec;
   botRunnerConfig.up_ladder = cloneLadderRows(internal.up_ladder);
   botRunnerConfig.down_ladder = cloneLadderRows(internal.down_ladder);
@@ -334,6 +339,7 @@ const syncRunnerConfigFromSavedConfig = () => {
   botRunnerConfig.ladder_prices = [...internal.ladder_prices];
   botRunnerConfig.ladder_size = internal.ladder_size;
   botRunnerConfig.atr_multiplier = internal.atr_multiplier;
+  botRunnerConfig.max_spread_bps = internal.max_spread_bps;
   botRunnerConfig.cancel_all_remaining_sec = internal.cancel_all_remaining_sec;
   botRunnerConfig.up_ladder = cloneLadderRows(internal.up_ladder);
   botRunnerConfig.down_ladder = cloneLadderRows(internal.down_ladder);
@@ -803,6 +809,7 @@ const validateBotConfigPayload = (payload) => {
     'ladder_prices',
     'ladder_size',
     'atr_multiple',
+    'max_spread_bps',
     'cancel_all_remaining_sec',
     'up_ladder',
     'down_ladder',
@@ -813,6 +820,7 @@ const validateBotConfigPayload = (payload) => {
   const openDelaySec = Number(payload.open_delay_sec);
   const ladderSize = Number(payload.ladder_size);
   const atrMultiple = Number(payload.atr_multiple);
+  const maxSpreadBps = Number(payload.max_spread_bps);
   const cancelAllRemainingSec = Number(payload.cancel_all_remaining_sec);
   const ladderPrices = normalizeLadderPrices(payload.ladder_prices);
   if (hasInvalidLadderRowPayload(payload.up_ladder) || hasInvalidLadderRowPayload(payload.down_ladder)) {
@@ -825,6 +833,7 @@ const validateBotConfigPayload = (payload) => {
   if (!isNonNegativeInteger(openDelaySec)) return { ok: false, error: 'open_delay_sec must be non-negative integer' };
   if (!isPositiveInteger(ladderSize)) return { ok: false, error: 'ladder_size must be positive integer' };
   if (!isPositiveNumber(atrMultiple)) return { ok: false, error: 'atr_multiple must be positive number' };
+  if (!isNonNegativeInteger(maxSpreadBps)) return { ok: false, error: 'max_spread_bps must be non-negative integer' };
   if (!isNonNegativeInteger(cancelAllRemainingSec)) return { ok: false, error: 'cancel_all_remaining_sec must be non-negative integer' };
   if (!ladderPrices) return { ok: false, error: 'ladder_prices must be an array of numbers between 0 and 1' };
   const legacyLadder = ladderPrices.map((price) => ({ price, size: ladderSize, tp_price: 1 }));
@@ -841,6 +850,7 @@ const validateBotConfigPayload = (payload) => {
       ladder_prices: ladderPrices,
       ladder_size: ladderSize,
       atr_multiple: atrMultiple,
+      max_spread_bps: maxSpreadBps,
       cancel_all_remaining_sec: cancelAllRemainingSec,
       up_ladder: resolvedUpLadder,
       down_ladder: resolvedDownLadder,
@@ -855,9 +865,11 @@ const coerceRecoveredBotConfig = (payload) => {
   const ladderPrices = normalizeLadderPrices(payload.ladder_prices) || [...BOT_CONFIG_DEFAULTS.ladder_prices];
   const ladderSizeRaw = Number(payload.ladder_size);
   const atrMultipleRaw = Number(payload.atr_multiple);
+  const maxSpreadBpsRaw = Number(payload.max_spread_bps);
   const cancelAllRemainingSecRaw = Number(payload.cancel_all_remaining_sec);
   const ladderSize = isPositiveInteger(ladderSizeRaw) ? ladderSizeRaw : BOT_CONFIG_DEFAULTS.ladder_size;
   const atrMultiple = isPositiveNumber(atrMultipleRaw) ? atrMultipleRaw : BOT_CONFIG_DEFAULTS.atr_multiple;
+  const maxSpreadBps = isNonNegativeInteger(maxSpreadBpsRaw) ? maxSpreadBpsRaw : BOT_CONFIG_DEFAULTS.max_spread_bps;
   const cancelAllRemainingSec = isNonNegativeInteger(cancelAllRemainingSecRaw)
     ? cancelAllRemainingSecRaw
     : BOT_CONFIG_DEFAULTS.cancel_all_remaining_sec;
@@ -871,6 +883,7 @@ const coerceRecoveredBotConfig = (payload) => {
     ladder_prices: ladderPrices,
     ladder_size: ladderSize,
     atr_multiple: atrMultiple,
+    max_spread_bps: maxSpreadBps,
     cancel_all_remaining_sec: cancelAllRemainingSec,
     up_ladder: upLadder,
     down_ladder: downLadder,

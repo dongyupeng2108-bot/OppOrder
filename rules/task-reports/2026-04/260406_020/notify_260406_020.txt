@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260406_020/result_260406_020.json
+LOG_HEAD
+[260406_020] max_spread_bps guard added for entry ladder quality
+LOG_TAIL
+wide spread entry is blocked under strict threshold and restored when relaxed
+EVIDENCE
+rules/task-reports/2026-04/260406_020/truth_audit_260406_020.md
+INDEX
+rules/task-reports/2026-04/260406_020/result_260406_020.json
