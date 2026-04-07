@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260406_010/result_260406_010.json
+LOG_HEAD
+[260406_010] json error semantics dictionary standardized
+LOG_TAIL
+invalid json and non-object json errors are now stable across key endpoints
+EVIDENCE
+rules/task-reports/2026-04/260406_010/truth_audit_260406_010.md
+INDEX
+rules/task-reports/2026-04/260406_010/result_260406_010.json

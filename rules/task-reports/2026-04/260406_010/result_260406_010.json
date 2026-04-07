@@ -1,0 +1,16 @@
+{
+  "task_id": "260406_010",
+  "status": "PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "summary": "JSON 错误语义字典标准化完成并已统一到服务端实现。",
+  "deliverables": [
+    "docs/tasks/260406_010.md",
+    "docs/standards/api_json_error_semantics.md",
+    "strategies/crypto_binary/server.mjs",
+    "scripts/truth_audit_json_error_semantics_260406_010.mjs",
+    "rules/LATEST.json",
+    "rules/task-reports/2026-04/260406_010/implementation_260406_010.md",
+    "rules/task-reports/2026-04/260406_010/truth_audit_260406_010.md",
+    "rules/task-reports/2026-04/260406_010_truth_audit_json_error_semantics_260406_010.json"
+  ]
+}
