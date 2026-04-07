@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260406_026/result_260406_026.json
+LOG_HEAD
+[260406_026] t3 located order-vs-log gap risks across ui filtering and strategy gating semantics
+LOG_TAIL
+not-every-window must-place behavior and key-log filtering gaps were both confirmed
+EVIDENCE
+rules/task-reports/2026-04/260406_026/truth_audit_260406_026.md
+INDEX
+rules/task-reports/2026-04/260406_026/result_260406_026.json

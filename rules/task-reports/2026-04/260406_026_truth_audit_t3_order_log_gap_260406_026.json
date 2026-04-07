@@ -1,0 +1,64 @@
+{
+  "script_name": "truth_audit_t3_order_log_gap_260406_026",
+  "task_id": "260406_026",
+  "sample_name": "t3_order_log_gap",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-04\\260406_026_truth_audit_t3_order_log_gap_260406_026.json",
+  "summary": {
+    "pass": true,
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "checks": {
+      "ui_fetch_logs_uses_limit_only": true,
+      "ui_key_log_rule_excludes_spread_too_wide_reason": true,
+      "ui_key_log_rule_excludes_ladder_not_posted_reason": true,
+      "backend_logs_support_event_filter": true,
+      "backend_logs_support_window_filter": true,
+      "strategy_has_spread_guard_reason": true,
+      "strategy_not_every_window_must_place_ladder": true,
+      "latest_points_to_260406_026": true,
+      "governance_substitute_pass": true
+    }
+  },
+  "raw_excerpt": {
+    "fail_to_pass": {
+      "before": "t3_order_log_gap_not_located",
+      "after": "t3_order_log_gap_located"
+    },
+    "real_runtime": {
+      "pass": true,
+      "mode": "static_source_scan",
+      "note": "t3定位聚焦展示规则与过滤能力差异，采用源码证据定位"
+    },
+    "non_regression": {
+      "pass": true,
+      "scope": "locate_only_no_runtime_change",
+      "note": "仅定位任务，未改运行时代码与交易语义"
+    },
+    "checks": {
+      "ui_fetch_logs_uses_limit_only": true,
+      "ui_key_log_rule_excludes_spread_too_wide_reason": true,
+      "ui_key_log_rule_excludes_ladder_not_posted_reason": true,
+      "backend_logs_support_event_filter": true,
+      "backend_logs_support_window_filter": true,
+      "strategy_has_spread_guard_reason": true,
+      "strategy_not_every_window_must_place_ladder": true,
+      "latest_points_to_260406_026": true,
+      "governance_substitute_pass": true
+    }
+  },
+  "generated_at": "2026-04-07T23:33:23.475Z",
+  "task_type": "business_implementation",
+  "checks": {
+    "ui_fetch_logs_uses_limit_only": true,
+    "ui_key_log_rule_excludes_spread_too_wide_reason": true,
+    "ui_key_log_rule_excludes_ladder_not_posted_reason": true,
+    "backend_logs_support_event_filter": true,
+    "backend_logs_support_window_filter": true,
+    "strategy_has_spread_guard_reason": true,
+    "strategy_not_every_window_must_place_ladder": true,
+    "latest_points_to_260406_026": true,
+    "governance_substitute_pass": true
+  }
+}
