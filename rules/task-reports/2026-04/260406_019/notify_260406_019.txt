@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260406_019/result_260406_019.json
+LOG_HEAD
+[260406_019] business regression pack upgraded to v2
+LOG_TAIL
+regression pack now covers 260406_006~018 guardrails and contract consistency
+EVIDENCE
+rules/task-reports/2026-04/260406_019/truth_audit_260406_019.md
+INDEX
+rules/task-reports/2026-04/260406_019/result_260406_019.json

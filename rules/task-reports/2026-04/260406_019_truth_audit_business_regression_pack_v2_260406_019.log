@@ -1,0 +1,6 @@
+script_name=truth_audit_business_regression_pack_v2_260406_019
+task_id=260406_019
+sample_name=business_regression_pack_v2
+pass=true
+first_break_layer=NONE_CHAIN_PASS
+message=first_break_layer=NONE_CHAIN_PASS
