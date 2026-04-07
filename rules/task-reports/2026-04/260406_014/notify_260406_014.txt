@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260406_014/result_260406_014.json
+LOG_HEAD
+[260406_014] runner tick observability enhanced
+LOG_TAIL
+tick summary and summary log event are both available for diagnosis
+EVIDENCE
+rules/task-reports/2026-04/260406_014/truth_audit_260406_014.md
+INDEX
+rules/task-reports/2026-04/260406_014/result_260406_014.json
