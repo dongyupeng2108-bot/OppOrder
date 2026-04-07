@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260406_022/result_260406_022.json
+LOG_HEAD
+[260406_022] t1 located config contract drift for max_spread_bps
+LOG_TAIL
+backend requires max_spread_bps while ui save chain does not fully expose/forward it
+EVIDENCE
+rules/task-reports/2026-04/260406_022/truth_audit_260406_022.md
+INDEX
+rules/task-reports/2026-04/260406_022/result_260406_022.json

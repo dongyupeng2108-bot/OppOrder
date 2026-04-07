@@ -1,0 +1,6 @@
+script_name=truth_audit_t1_contract_drift_260406_022
+task_id=260406_022
+sample_name=t1_contract_drift
+pass=true
+first_break_layer=NONE_CHAIN_PASS
+message=first_break_layer=NONE_CHAIN_PASS; contract_drift_detected=true
