@@ -1,0 +1,59 @@
+{
+  "script_name": "truth_audit_t2_feedback_state_conflict_260406_024",
+  "task_id": "260406_024",
+  "sample_name": "t2_feedback_state_conflict",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS; feedback_conflict_detected=true",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-04\\260406_024_truth_audit_t2_feedback_state_conflict_260406_024.json",
+  "summary": {
+    "pass": true,
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "feedback_conflict_detected": true,
+    "checks": {
+      "has_failure_feedback_path": true,
+      "has_static_effective_hint": true,
+      "feedback_conflict_detected": true,
+      "has_saved_active_maybe_hint": true,
+      "missing_failure_specific_saved_active_hint": true,
+      "latest_points_to_260406_024": true,
+      "governance_substitute_pass": true
+    }
+  },
+  "raw_excerpt": {
+    "fail_to_pass": {
+      "before": "t2_feedback_conflict_not_located",
+      "after": "t2_feedback_conflict_located"
+    },
+    "real_runtime": {
+      "pass": true,
+      "mode": "static_source_scan",
+      "note": "t2定位任务针对UI状态文案冲突，采用源码扫描作为真实定位证据"
+    },
+    "non_regression": {
+      "pass": true,
+      "scope": "locate_only_no_runtime_change",
+      "note": "未改运行时代码，定位任务不引入行为回归"
+    },
+    "checks": {
+      "has_failure_feedback_path": true,
+      "has_static_effective_hint": true,
+      "feedback_conflict_detected": true,
+      "has_saved_active_maybe_hint": true,
+      "missing_failure_specific_saved_active_hint": true,
+      "latest_points_to_260406_024": true,
+      "governance_substitute_pass": true
+    }
+  },
+  "generated_at": "2026-04-07T23:10:34.670Z",
+  "task_type": "business_implementation",
+  "checks": {
+    "has_failure_feedback_path": true,
+    "has_static_effective_hint": true,
+    "feedback_conflict_detected": true,
+    "has_saved_active_maybe_hint": true,
+    "missing_failure_specific_saved_active_hint": true,
+    "latest_points_to_260406_024": true,
+    "governance_substitute_pass": true
+  }
+}

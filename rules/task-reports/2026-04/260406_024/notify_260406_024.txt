@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260406_024/result_260406_024.json
+LOG_HEAD
+[260406_024] t2 located save-feedback and effective-hint semantic conflict
+LOG_TAIL
+failure feedback path coexists with static effective hint and ambiguous saved/active state note
+EVIDENCE
+rules/task-reports/2026-04/260406_024/truth_audit_260406_024.md
+INDEX
+rules/task-reports/2026-04/260406_024/result_260406_024.json
