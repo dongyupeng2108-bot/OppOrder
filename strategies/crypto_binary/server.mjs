@@ -2587,12 +2587,21 @@ const server = createServer(async (req, res) => {
     try {
       const parsed = new URL(req.url, 'http://localhost');
       const limitText = parsed.searchParams.get('limit');
+      const eventFilter = parsed.searchParams.get('event');
+      const windowIdFilter = parsed.searchParams.get('window_id');
       const limit = limitText == null ? 200 : Number.parseInt(limitText, 10);
       if (!Number.isInteger(limit) || limit <= 0) {
         sendJson(res, { ok: false, error: 'invalid limit' }, 400);
         return;
       }
-      sendJson(res, botLogger.getRecentLogs(Math.min(limit, 500)));
+      let logs = botLogger.getRecentLogs(Math.min(limit, 500));
+      if (eventFilter) {
+        logs = logs.filter((entry) => String(entry?.event || '') === eventFilter);
+      }
+      if (windowIdFilter) {
+        logs = logs.filter((entry) => String(entry?.window_id || '') === windowIdFilter);
+      }
+      sendJson(res, logs);
     } catch (err) {
       sendJson(res, { ok: false, error: err.message }, 500);
     }

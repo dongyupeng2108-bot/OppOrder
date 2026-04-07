@@ -1,0 +1,49 @@
+{
+  "script_name": "truth_audit_bot_logs_filters_260406_018",
+  "task_id": "260406_018",
+  "sample_name": "bot_logs_filters",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-04\\260406_018_truth_audit_bot_logs_filters_260406_018.json",
+  "summary": {
+    "pass": true,
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "checks": {
+      "event_filter_returns_only_target_event": true,
+      "window_id_filter_returns_only_target_window": true,
+      "combined_filters_return_rows": true,
+      "server_runtime_started": true,
+      "governance_substitute_pass": true
+    }
+  },
+  "raw_excerpt": {
+    "fail_to_pass": {
+      "before": "bot_logs_filter_not_supported",
+      "after": "bot_logs_filter_supported"
+    },
+    "governance_substitute": {
+      "pass": true
+    },
+    "checks": {
+      "event_filter_returns_only_target_event": true,
+      "window_id_filter_returns_only_target_window": true,
+      "combined_filters_return_rows": true,
+      "server_runtime_started": true,
+      "governance_substitute_pass": true
+    },
+    "runtime_capture": {
+      "stdout_tail": "1547…\n{\"ts\":\"2026-04-07T16:23:03.945Z\",\"level\":\"info\",\"event\":\"ws_connect_start\",\"module\":\"orderbook_monitor\",\"msg\":\"starting in rest mode\"}\n[server] Global orderbook monitor started\n[Scanner] No active window found (slug=btc-updown-15m-1775578800, secsLeft=117)\n[Runner] No active window, waiting...\n[Scanner] Found current window: btc-updown-5m-1775578800 end=2026-04-07T16:25:00.000Z secsLeft=117\n",
+      "stderr_tail": ""
+    }
+  },
+  "generated_at": "2026-04-07T16:23:04.116Z",
+  "task_type": "business_implementation",
+  "checks": {
+    "event_filter_returns_only_target_event": true,
+    "window_id_filter_returns_only_target_window": true,
+    "combined_filters_return_rows": true,
+    "server_runtime_started": true,
+    "governance_substitute_pass": true
+  }
+}

@@ -1,0 +1,6 @@
+script_name=truth_audit_bot_logs_filters_260406_018
+task_id=260406_018
+sample_name=bot_logs_filters
+pass=true
+first_break_layer=NONE_CHAIN_PASS
+message=first_break_layer=NONE_CHAIN_PASS

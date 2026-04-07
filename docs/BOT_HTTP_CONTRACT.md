@@ -96,6 +96,7 @@ curl -sS http://localhost:53123/bot/context
 |------|------|
 | `POST /bot/runner/tick` | 单次 `runSingleTick`；body 可选 `context_override`、`state_override`（对象）；成功时除 runner 输出外新增 `tick_summary`（`version`、`reason`、`intents_summary`、`window_id`、`mode`） |
 | `GET /bot/runner/last-summary` | 获取最近一次 tick 摘要：`{ ok, last_tick_at, last_tick_summary }` |
+| `GET /bot/logs` | 日志尾部列表；支持 `limit`，并支持可选过滤 `event`、`window_id` |
 | `GET /bot/orders` | 订单列表 + `window_scope` + summary |
 | `GET /bot/postmortem/latest` | `{ ok, postmortem }` |
 | `GET /bot/performance/summary` | `{ ok, summary }`，`detail=1` 含行明细 |
