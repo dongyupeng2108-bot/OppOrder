@@ -1,0 +1,54 @@
+{
+  "script_name": "truth_audit_t1_contract_drift_260406_022",
+  "task_id": "260406_022",
+  "sample_name": "t1_contract_drift",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS; contract_drift_detected=true",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-04\\260406_022_truth_audit_t1_contract_drift_260406_022.json",
+  "summary": {
+    "pass": true,
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "contract_drift_detected": true,
+    "checks": {
+      "backend_requires_max_spread_bps": true,
+      "backend_allowed_keys_contains_max_spread_bps": true,
+      "ui_config_fields_contains_max_spread_bps": false,
+      "ui_save_payload_contains_max_spread_bps": false,
+      "ui_has_input_param_max_spread_bps": false,
+      "contract_drift_detected": true,
+      "latest_points_to_260406_022": true,
+      "governance_substitute_pass": true
+    }
+  },
+  "raw_excerpt": {
+    "fail_to_pass": {
+      "before": "t1_contract_drift_not_located",
+      "after": "t1_contract_drift_located"
+    },
+    "checks": {
+      "backend_requires_max_spread_bps": true,
+      "backend_allowed_keys_contains_max_spread_bps": true,
+      "ui_config_fields_contains_max_spread_bps": false,
+      "ui_save_payload_contains_max_spread_bps": false,
+      "ui_has_input_param_max_spread_bps": false,
+      "contract_drift_detected": true,
+      "latest_points_to_260406_022": true,
+      "governance_substitute_pass": true
+    },
+    "contract_drift_detected": true
+  },
+  "generated_at": "2026-04-07T20:42:47.117Z",
+  "task_type": "business_implementation",
+  "checks": {
+    "backend_requires_max_spread_bps": true,
+    "backend_allowed_keys_contains_max_spread_bps": true,
+    "ui_config_fields_contains_max_spread_bps": false,
+    "ui_save_payload_contains_max_spread_bps": false,
+    "ui_has_input_param_max_spread_bps": false,
+    "contract_drift_detected": true,
+    "latest_points_to_260406_022": true,
+    "governance_substitute_pass": true
+  },
+  "contract_drift_detected": true
+}
