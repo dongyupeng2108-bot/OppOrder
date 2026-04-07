@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260406_016/result_260406_016.json
+LOG_HEAD
+[260406_016] bot http contract synced with runner summary capability
+LOG_TAIL
+contract docs, examples and verifier are now aligned for tick_summary/last-summary
+EVIDENCE
+rules/task-reports/2026-04/260406_016/truth_audit_260406_016.md
+INDEX
+rules/task-reports/2026-04/260406_016/result_260406_016.json

@@ -7,6 +7,16 @@
   "debug_completed": false,
   "tick_interval_ms": 2000,
   "last_tick_at": "2026-03-27T12:00:00.000Z",
+  "last_tick_summary": {
+    "reason": "no_action",
+    "intents_summary": {
+      "PLACE_LADDER": 0,
+      "CANCEL_ALL": 0,
+      "CANCEL_BY_IDS": 0
+    },
+    "window_id": "btc-updown-5m-1773060600",
+    "mode": "paper-staging"
+  },
   "last_window_id": null,
   "current_window_id": "btc-updown-5m-1773060600",
   "window_initialized_at": "2026-03-27T11:45:00.000Z",
@@ -43,6 +53,16 @@
     "current_window_id": "btc-updown-5m-1773060600",
     "anchor_btc": 98200,
     "upper_bound": 98554.24,
-    "lower_bound": 97845.76
+    "lower_bound": 97845.76,
+    "last_tick_summary": {
+      "reason": "no_action",
+      "intents_summary": {
+        "PLACE_LADDER": 0,
+        "CANCEL_ALL": 0,
+        "CANCEL_BY_IDS": 0
+      },
+      "window_id": "btc-updown-5m-1773060600",
+      "mode": "paper-staging"
+    }
   }
 }

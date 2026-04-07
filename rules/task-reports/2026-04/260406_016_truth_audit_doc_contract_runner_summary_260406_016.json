@@ -1,0 +1,51 @@
+{
+  "script_name": "truth_audit_doc_contract_runner_summary_260406_016",
+  "task_id": "260406_016",
+  "sample_name": "doc_contract_runner_summary",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-04\\260406_016_truth_audit_doc_contract_runner_summary_260406_016.json",
+  "summary": {
+    "pass": true,
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "checks": {
+      "contract_declares_tick_summary": true,
+      "contract_declares_runner_last_summary_endpoint": true,
+      "status_example_has_last_tick_summary": true,
+      "runner_summary_example_has_required_keys": true,
+      "verify_script_checks_runner_summary_example": true,
+      "latest_points_to_260406_016": true,
+      "governance_substitute_pass": true
+    }
+  },
+  "raw_excerpt": {
+    "fail_to_pass": {
+      "before": "doc_contract_runner_summary_incomplete",
+      "after": "doc_contract_runner_summary_complete"
+    },
+    "governance_substitute": {
+      "pass": true
+    },
+    "checks": {
+      "contract_declares_tick_summary": true,
+      "contract_declares_runner_last_summary_endpoint": true,
+      "status_example_has_last_tick_summary": true,
+      "runner_summary_example_has_required_keys": true,
+      "verify_script_checks_runner_summary_example": true,
+      "latest_points_to_260406_016": true,
+      "governance_substitute_pass": true
+    }
+  },
+  "generated_at": "2026-04-07T15:43:02.077Z",
+  "task_type": "business_implementation",
+  "checks": {
+    "contract_declares_tick_summary": true,
+    "contract_declares_runner_last_summary_endpoint": true,
+    "status_example_has_last_tick_summary": true,
+    "runner_summary_example_has_required_keys": true,
+    "verify_script_checks_runner_summary_example": true,
+    "latest_points_to_260406_016": true,
+    "governance_substitute_pass": true
+  }
+}

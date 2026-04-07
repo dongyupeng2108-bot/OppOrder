@@ -4,7 +4,7 @@
 
 **来源代码**：[`strategies/crypto_binary/server.mjs`](../strategies/crypto_binary/server.mjs)（`/bot/context`、`/bot/status`）。字段以**实现为准**；本文用于 UI、脚本与排障对齐。
 
-**示例 JSON**（静态、便于 diff）：[`examples/bot_context.example.json`](examples/bot_context.example.json)、[`examples/bot_status.example.json`](examples/bot_status.example.json)。  
+**示例 JSON**（静态、便于 diff）：[`examples/bot_context.example.json`](examples/bot_context.example.json)、[`examples/bot_status.example.json`](examples/bot_status.example.json)、[`examples/bot_runner_last_summary.example.json`](examples/bot_runner_last_summary.example.json)。  
 **最小结构校验**：`npm run verify:doc-contracts`（见 [`scripts/verify_doc_contract_examples.mjs`](../scripts/verify_doc_contract_examples.mjs)）。
 
 ---
@@ -69,6 +69,7 @@ curl -sS http://localhost:53123/bot/context
 | `running` | boolean | |
 | `debug_*` | mixed | 调试场景用 |
 | `tick_interval_ms` / `last_tick_at` | number \| string \| null | |
+| `last_tick_summary` | object \| null | 最近一次 tick 摘要（`reason`、`intents_summary`、`window_id`、`mode`） |
 | `last_window_id` / `current_window_id` | string \| null | **语义高风险区**，见 PROJECT_RULES |
 | `window_initialized_at` | string \| null | 窗口已 init 的时间戳 |
 | `remaining_sec` | number \| null | |
@@ -85,7 +86,7 @@ curl -sS http://localhost:53123/bot/context
 | `current_window_id` | **重写**：仅当 `running === true` 时为真实 `current_window_id`，否则响应中为 **null**（避免停止态误显活动窗口） |
 | `saved_config` | 已保存的 Bot 配置快照 |
 | `last_run_snapshot` | 上次运行摘要（若存在） |
-| `active_runtime_snapshot` | 仅 `running === true` 时非 null：`config`、`phase`、`current_window_id`、`anchor_btc`、`upper_bound`、`lower_bound` |
+| `active_runtime_snapshot` | 仅 `running === true` 时非 null：`config`、`phase`、`current_window_id`、`anchor_btc`、`upper_bound`、`lower_bound`、`last_tick_summary` |
 
 ---
 
@@ -93,7 +94,8 @@ curl -sS http://localhost:53123/bot/context
 
 | 端点 | 用途 |
 |------|------|
-| `POST /bot/runner/tick` | 单次 `runSingleTick`；body 可选 `context_override`、`state_override`（对象）；成功时 `state_after` 等为 runner 输出（**不替代**生产「仅 GET」路径；用于受控核验与 [`truth_audit_anchor_bounds_P0A.md`](truth_audit_anchor_bounds_P0A.md) §3.2 类采集） |
+| `POST /bot/runner/tick` | 单次 `runSingleTick`；body 可选 `context_override`、`state_override`（对象）；成功时除 runner 输出外新增 `tick_summary`（`reason`、`intents_summary`、`window_id`、`mode`） |
+| `GET /bot/runner/last-summary` | 获取最近一次 tick 摘要：`{ ok, last_tick_at, last_tick_summary }` |
 | `GET /bot/orders` | 订单列表 + `window_scope` + summary |
 | `GET /bot/postmortem/latest` | `{ ok, postmortem }` |
 | `GET /bot/performance/summary` | `{ ok, summary }`，`detail=1` 含行明细 |

@@ -32,6 +32,7 @@ const STATUS_KEYS = [
   'mode',
   'phase',
   'running',
+  'last_tick_summary',
   'current_window_id',
   'window_initialized_at',
   'anchor_btc',
@@ -41,6 +42,12 @@ const STATUS_KEYS = [
   'saved_config',
   'last_run_snapshot',
   'active_runtime_snapshot'
+];
+
+const RUNNER_LAST_SUMMARY_KEYS = [
+  'ok',
+  'last_tick_at',
+  'last_tick_summary'
 ];
 
 function assertKeys(obj, keys, label) {
@@ -53,8 +60,9 @@ function assertKeys(obj, keys, label) {
 function main() {
   const ctxPath = path.join(EXAMPLES, 'bot_context.example.json');
   const stPath = path.join(EXAMPLES, 'bot_status.example.json');
+  const rsPath = path.join(EXAMPLES, 'bot_runner_last_summary.example.json');
 
-  for (const p of [ctxPath, stPath]) {
+  for (const p of [ctxPath, stPath, rsPath]) {
     if (!fs.existsSync(p)) {
       throw new Error(`missing file: ${p}`);
     }
@@ -62,9 +70,20 @@ function main() {
 
   const ctx = JSON.parse(fs.readFileSync(ctxPath, 'utf8'));
   const st = JSON.parse(fs.readFileSync(stPath, 'utf8'));
+  const rs = JSON.parse(fs.readFileSync(rsPath, 'utf8'));
 
   assertKeys(ctx, CONTEXT_KEYS, 'bot_context.example.json');
   assertKeys(st, STATUS_KEYS, 'bot_status.example.json');
+  assertKeys(rs, RUNNER_LAST_SUMMARY_KEYS, 'bot_runner_last_summary.example.json');
+  if (!st.active_runtime_snapshot || typeof st.active_runtime_snapshot !== 'object') {
+    throw new Error('bot_status: active_runtime_snapshot must be object');
+  }
+  if (!('last_tick_summary' in st.active_runtime_snapshot)) {
+    throw new Error('bot_status: active_runtime_snapshot missing key: last_tick_summary');
+  }
+  if (typeof rs.ok !== 'boolean') {
+    throw new Error('bot_runner_last_summary: ok must be boolean');
+  }
 
   if (typeof ctx._btc_source_trace !== 'object' || ctx._btc_source_trace === null) {
     throw new Error('bot_context: _btc_source_trace must be object');
@@ -91,6 +110,7 @@ function main() {
   console.log('verify_doc_contract_examples: PASS');
   console.log(`  ${path.relative(ROOT, ctxPath)}`);
   console.log(`  ${path.relative(ROOT, stPath)}`);
+  console.log(`  ${path.relative(ROOT, rsPath)}`);
 }
 
 try {

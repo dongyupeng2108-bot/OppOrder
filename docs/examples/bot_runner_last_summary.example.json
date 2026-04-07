@@ -1,0 +1,14 @@
+{
+  "ok": true,
+  "last_tick_at": "2026-03-27T12:00:00.000Z",
+  "last_tick_summary": {
+    "reason": "no_action",
+    "intents_summary": {
+      "PLACE_LADDER": 0,
+      "CANCEL_ALL": 0,
+      "CANCEL_BY_IDS": 0
+    },
+    "window_id": "btc-updown-5m-1773060600",
+    "mode": "paper-staging"
+  }
+}
