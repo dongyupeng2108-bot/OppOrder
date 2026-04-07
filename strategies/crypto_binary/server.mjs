@@ -1842,12 +1842,12 @@ const server = createServer(async (req, res) => {
     req.on('data', chunk => { body += chunk; });
     req.on('end', async () => {
       try {
-        const params = JSON.parse(body || '{}');
+        const params = ensureJsonObjectPayload(parseJsonBody(body));
         if (!db) throw new Error('db not ready');
         const result = await submitManualOrder(params, { db });
         sendJson(res, result);
       } catch (e) {
-        const status = e.message.startsWith('missing required') ? 400 : 500;
+        const status = Number.isInteger(e?.httpStatus) ? e.httpStatus : (e.message.startsWith('missing required') ? 400 : 500);
         res.writeHead(status, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: e.message }));
       }
@@ -2079,7 +2079,7 @@ const server = createServer(async (req, res) => {
     req.on('data', chunk => { body += chunk; });
     req.on('end', () => {
       try {
-        const { name, base_config, overrides = {} } = JSON.parse(body || '{}');
+        const { name, base_config, overrides = {} } = ensureJsonObjectPayload(parseJsonBody(body));
 
         // 参数校验
         if (!name || !/^[a-zA-Z0-9_-]{1,64}$/.test(name)) {
@@ -2128,7 +2128,8 @@ const server = createServer(async (req, res) => {
 
         sendJson(res, { ok: true, name, file: `instances/${name}.json` });
       } catch (e) {
-        sendJson(res, { ok: false, error: e.message }, 500);
+        const status = Number.isInteger(e?.httpStatus) ? e.httpStatus : 500;
+        sendJson(res, { ok: false, error: e.message }, status);
       }
     });
     return;
@@ -2140,12 +2141,13 @@ const server = createServer(async (req, res) => {
     req.on('data', d => { body += d; });
     req.on('end', async () => {
       try {
-        const { name } = JSON.parse(body || '{}');
+        const { name } = ensureJsonObjectPayload(parseJsonBody(body));
         if (!name) { sendJson(res, { ok: false, error: 'name required' }, 400); return; }
         const result = await startInstance(name);
         sendJson(res, result, result.ok ? 200 : 500);
       } catch (err) {
-        sendJson(res, { ok: false, error: err.message }, 500);
+        const status = Number.isInteger(err?.httpStatus) ? err.httpStatus : 500;
+        sendJson(res, { ok: false, error: err.message }, status);
       }
     });
     return;
@@ -2157,12 +2159,13 @@ const server = createServer(async (req, res) => {
     req.on('data', d => { body += d; });
     req.on('end', async () => {
       try {
-        const { name } = JSON.parse(body || '{}');
+        const { name } = ensureJsonObjectPayload(parseJsonBody(body));
         if (!name) { sendJson(res, { ok: false, error: 'name required' }, 400); return; }
         const result = await stopInstance(name);
         sendJson(res, result, result.ok ? 200 : 500);
       } catch (err) {
-        sendJson(res, { ok: false, error: err.message }, 500);
+        const status = Number.isInteger(err?.httpStatus) ? err.httpStatus : 500;
+        sendJson(res, { ok: false, error: err.message }, status);
       }
     });
     return;
@@ -2174,12 +2177,13 @@ const server = createServer(async (req, res) => {
     req.on('data', d => { body += d; });
     req.on('end', async () => {
       try {
-        const { name } = JSON.parse(body || '{}');
+        const { name } = ensureJsonObjectPayload(parseJsonBody(body));
         if (!name) { sendJson(res, { ok: false, error: 'name required' }, 400); return; }
         const result = await reloadInstance(name);
         sendJson(res, result, result.ok ? 200 : 500);
       } catch (err) {
-        sendJson(res, { ok: false, error: err.message }, 500);
+        const status = Number.isInteger(err?.httpStatus) ? err.httpStatus : 500;
+        sendJson(res, { ok: false, error: err.message }, status);
       }
     });
     return;
@@ -2340,7 +2344,7 @@ const server = createServer(async (req, res) => {
     req.on('data', d => { body += d; });
     req.on('end', async () => {
       try {
-        const { code, period } = JSON.parse(body || '{}');
+        const { code, period } = ensureJsonObjectPayload(parseJsonBody(body));
         if (!code) { sendJson(res, { ok: false, error: 'code required' }, 400); return; }
         const result = await strategyRunnerSe.deploy(code, period);
         sendJson(res, result);
