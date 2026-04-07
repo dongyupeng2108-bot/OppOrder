@@ -1,0 +1,49 @@
+{
+  "script_name": "truth_audit_runner_tick_contract_260406_011",
+  "task_id": "260406_011",
+  "sample_name": "runner_tick_contract",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-04\\260406_011_truth_audit_runner_tick_contract_260406_011.json",
+  "summary": {
+    "pass": true,
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "checks": {
+      "malformed_json_returns_400": true,
+      "invalid_context_field_type_returns_400": true,
+      "invalid_state_field_type_returns_400": true,
+      "server_runtime_started": true,
+      "governance_substitute_pass": true
+    }
+  },
+  "raw_excerpt": {
+    "fail_to_pass": {
+      "before": "runner_tick_contract_not_enforced",
+      "after": "runner_tick_contract_enforced"
+    },
+    "governance_substitute": {
+      "pass": true
+    },
+    "checks": {
+      "malformed_json_returns_400": true,
+      "invalid_context_field_type_returns_400": true,
+      "invalid_state_field_type_returns_400": true,
+      "server_runtime_started": true,
+      "governance_substitute_pass": true
+    },
+    "runtime_capture": {
+      "stdout_tail": "tart\",\"module\":\"strategy_runner\",\"generation_id\":1,\"strategy_id\":\"btc_15m\"}\n[Runner] Refreshing window...\n{\"ts\":\"2026-04-07T12:20:50.336Z\",\"level\":\"info\",\"event\":{\"module\":\"server\",\"strategy\":\"btc_15m\",\"msg\":\"auto-started from --strategy arg\"}}\n{\"ts\":\"2026-04-07T12:20:50.337Z\",\"level\":\"info\",\"event\":\"server_start\",\"module\":\"server\",\"msg\":\"listening on http://localhost:54123\",\"strategy\":\"btc_15m\"}\n",
+      "stderr_tail": ""
+    }
+  },
+  "generated_at": "2026-04-07T12:20:50.494Z",
+  "task_type": "business_implementation",
+  "checks": {
+    "malformed_json_returns_400": true,
+    "invalid_context_field_type_returns_400": true,
+    "invalid_state_field_type_returns_400": true,
+    "server_runtime_started": true,
+    "governance_substitute_pass": true
+  }
+}
