@@ -1672,6 +1672,15 @@ function parseJsonBody(body) {
   }
 }
 
+function ensureJsonObjectPayload(payload) {
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+    const invalidPayloadTypeError = new Error('invalid json payload type');
+    invalidPayloadTypeError.httpStatus = 400;
+    throw invalidPayloadTypeError;
+  }
+  return payload;
+}
+
 function deepMerge(base, patch) {
   const result = { ...base };
   for (const key of Object.keys(patch)) {
@@ -1716,7 +1725,7 @@ const server = createServer(async (req, res) => {
     req.on('data', d => { body += d; });
     req.on('end', async () => {
       try {
-        const parsed = parseJsonBody(body);
+        const parsed = ensureJsonObjectPayload(parseJsonBody(body));
         if (parsed.name) {
           // 新路径：指定实例 reload
           const result = await reloadInstance(parsed.name);
@@ -2417,7 +2426,7 @@ const server = createServer(async (req, res) => {
     req.on('data', d => { body += d; });
     req.on('end', () => {
       try {
-        const payload = parseJsonBody(body);
+        const payload = ensureJsonObjectPayload(parseJsonBody(body));
         const taskIdRaw = String(payload?.task_id || '').trim();
         const taskId = taskIdRaw || `${new Date().toISOString().slice(2, 10).replace(/-/g, '')}_900`;
         const simulateFail = payload?.simulate_fail === true;
@@ -2666,7 +2675,7 @@ const server = createServer(async (req, res) => {
     req.on('data', d => { body += d; });
     req.on('end', () => {
       try {
-        const payload = parseJsonBody(body);
+        const payload = ensureJsonObjectPayload(parseJsonBody(body));
         const intents = payload?.intents;
         if (Array.isArray(intents)) {
           const result = botExecutorPaper.applyIntents(intents, { source: 'manual' });
@@ -2753,7 +2762,7 @@ const server = createServer(async (req, res) => {
     req.on('data', d => { body += d; });
     req.on('end', () => {
       try {
-        const payload = parseJsonBody(body);
+        const payload = ensureJsonObjectPayload(parseJsonBody(body));
         const validated = validateBotConfigPayload(payload);
         if (!validated.ok) {
           sendJson(res, { ok: false, error: validated.error }, 400);
@@ -2787,7 +2796,7 @@ const server = createServer(async (req, res) => {
     req.on('data', d => { body += d; });
     req.on('end', () => {
       try {
-        const payload = parseJsonBody(body);
+        const payload = ensureJsonObjectPayload(parseJsonBody(body));
         const rawInterval = payload?.tick_interval_ms;
         const debugScenario = payload?.debugScenario;
         const tickIntervalMs = rawInterval == null ? BOT_TICK_INTERVAL_DEFAULT_MS : Number(rawInterval);
