@@ -248,7 +248,7 @@ async function initStrategyEditor() {
               <div style="border:1px solid #232a33;background:#11161c;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:0;">
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;font-size:12px;">
                   <div style="color:#7f8a97;">窗口数</div><div id="se-perf-window-count" style="text-align:right;color:#d6dde5;">—</div>
-                  <div style="color:#7f8a97;">窗口胜率</div><div id="se-perf-win-rate" style="text-align:right;color:#d6dde5;">—</div>
+                  <div style="color:#7f8a97;">订单胜率</div><div id="se-perf-win-rate" style="text-align:right;color:#d6dde5;">—</div>
                   <div style="color:#7f8a97;">总成交单数</div><div id="se-perf-filled-total" style="text-align:right;color:#d6dde5;">—</div>
                   <div style="color:#7f8a97;">总计PNL</div><div id="se-perf-realized-total" style="text-align:right;color:#d6dde5;">—</div>
                   <div style="color:#7f8a97;">平均每窗口盈亏</div><div id="se-perf-avg-realized" style="text-align:right;color:#d6dde5;">—</div>
@@ -1527,9 +1527,15 @@ function se_renderPerformance(perfPayload, status) {
     const num = Number(value);
     return Number.isFinite(num) ? num : null;
   };
-  const winNumerator = rows.filter((row) => toFinite(row?.realized_gross_pnl_total) !== null && toFinite(row?.realized_gross_pnl_total) > 0).length;
-  const winDenominator = rows.length;
-  const winRateText = winDenominator > 0 ? `${((winNumerator / winDenominator) * 100).toFixed(1)}%` : '—';
+  const fallbackFilledTotal = rows.reduce((acc, row) => acc + (toFinite(row?.filled_total) ?? 0), 0);
+  const fallbackWinningOrderTotal = rows.reduce((acc, row) => {
+    const realized = toFinite(row?.realized_gross_pnl_total);
+    const filled = toFinite(row?.filled_total) ?? 0;
+    return realized !== null && realized > 0 ? acc + filled : acc;
+  }, 0);
+  const orderWinNumerator = toFinite(summary?.winning_order_total) ?? fallbackWinningOrderTotal;
+  const orderWinDenominator = toFinite(summary?.filled_total) ?? fallbackFilledTotal;
+  const winRateText = orderWinDenominator > 0 ? `${((orderWinNumerator / orderWinDenominator) * 100).toFixed(1)}%` : '—';
   se_setText('se-perf-range', se_perfPresetLabel(summary?.preset || _sePerformancePreset));
   document.getElementById('se-perf-window-count').textContent = se_formatStateValue(summary?.window_count);
   document.getElementById('se-perf-win-rate').textContent = winRateText;
@@ -1538,10 +1544,10 @@ function se_renderPerformance(perfPayload, status) {
   document.getElementById('se-perf-avg-realized').textContent = se_formatPnlDisplay(summary?.avg_realized_gross_pnl_per_window, '—');
   const noteEl = document.getElementById('se-perf-note');
   if (!noteEl) return;
-  const empty = (summary?.window_count ?? 0) === 0;
+  const empty = orderWinDenominator <= 0;
   noteEl.textContent = empty
-    ? `${se_perfPresetLabel(_sePerformancePreset)} 当前无已完成窗口数据（running 窗口不计入，窗口胜率按已完成窗口计算）`
-    : `${se_perfPresetLabel(summary?.preset)} | 仅统计已完成窗口 | 窗口胜率按已完成窗口计算（非按成交单数） | running_excluded=${se_formatStateValue(summary?.running_window_excluded)} | running_now=${se_formatStateValue(status?.running)}`;
+    ? `${se_perfPresetLabel(_sePerformancePreset)} 当前无已成交订单数据（running 窗口不计入）`
+    : `${se_perfPresetLabel(summary?.preset)} | 仅统计已完成窗口 | 订单胜率=盈利订单/总成交订单 | running_excluded=${se_formatStateValue(summary?.running_window_excluded)} | running_now=${se_formatStateValue(status?.running)}`;
 }
 
 function se_renderPollError(message) {
