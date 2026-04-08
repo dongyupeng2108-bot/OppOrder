@@ -10,11 +10,10 @@
     "pass": true,
     "first_break_layer": "NONE_CHAIN_PASS",
     "checks": {
-      "has_backfill_condition_bounds_ready_and_init_null": true,
-      "has_backfill_patch_window_initialized_at": true,
-      "has_window_initialized_derived_flag": true,
-      "gate_uses_derived_window_initialized": true,
-      "diagnostics_report_derived_window_initialized": true,
+      "runtime_fail_sample_hits_window_init_gate": true,
+      "runtime_pass_sample_not_blocked_by_window_init_gate": true,
+      "runtime_pass_sample_backfills_window_initialized_at": true,
+      "runtime_fail_to_pass_chain_verified": true,
       "latest_points_to_260406_032": true,
       "governance_substitute_pass": true
     }
@@ -24,24 +23,34 @@
       "before": "gate_context_not_ready_window_init_false_positive",
       "after": "window_init_gate_false_positive_fixed"
     },
+    "real_runtime": {
+      "pass": true,
+      "sample_fail": {
+        "reason": "gate_context_not_ready_window_init",
+        "gate_log_seen": true
+      },
+      "sample_pass": {
+        "reason": "ladder_not_posted",
+        "gate_window_init_log_seen": false,
+        "window_initialized_at": "2026-04-08T15:42:29.998Z"
+      }
+    },
     "checks": {
-      "has_backfill_condition_bounds_ready_and_init_null": true,
-      "has_backfill_patch_window_initialized_at": true,
-      "has_window_initialized_derived_flag": true,
-      "gate_uses_derived_window_initialized": true,
-      "diagnostics_report_derived_window_initialized": true,
+      "runtime_fail_sample_hits_window_init_gate": true,
+      "runtime_pass_sample_not_blocked_by_window_init_gate": true,
+      "runtime_pass_sample_backfills_window_initialized_at": true,
+      "runtime_fail_to_pass_chain_verified": true,
       "latest_points_to_260406_032": true,
       "governance_substitute_pass": true
     }
   },
-  "generated_at": "2026-04-08T15:11:37.127Z",
+  "generated_at": "2026-04-08T15:42:29.998Z",
   "task_type": "business_implementation",
   "checks": {
-    "has_backfill_condition_bounds_ready_and_init_null": true,
-    "has_backfill_patch_window_initialized_at": true,
-    "has_window_initialized_derived_flag": true,
-    "gate_uses_derived_window_initialized": true,
-    "diagnostics_report_derived_window_initialized": true,
+    "runtime_fail_sample_hits_window_init_gate": true,
+    "runtime_pass_sample_not_blocked_by_window_init_gate": true,
+    "runtime_pass_sample_backfills_window_initialized_at": true,
+    "runtime_fail_to_pass_chain_verified": true,
     "latest_points_to_260406_032": true,
     "governance_substitute_pass": true
   }
