@@ -1,0 +1,6 @@
+script_name=truth_audit_t4_semantics_clarification_gap_260406_029
+task_id=260406_029
+sample_name=t4_semantics_clarification_gap
+pass=true
+first_break_layer=NONE_CHAIN_PASS
+message=first_break_layer=NONE_CHAIN_PASS; clarification_gap_detected=true
