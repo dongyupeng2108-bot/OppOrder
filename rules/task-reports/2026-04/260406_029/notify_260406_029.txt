@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260406_029/result_260406_029.json
+LOG_HEAD
+[260406_029] t4 located semantics clarification gap between conditional strategy logic and user-facing wording
+LOG_TAIL
+strategy is conditional-ladder by design, while explicit non-every-window clarification is still incomplete
+EVIDENCE
+rules/task-reports/2026-04/260406_029/truth_audit_260406_029.md
+INDEX
+rules/task-reports/2026-04/260406_029/result_260406_029.json
