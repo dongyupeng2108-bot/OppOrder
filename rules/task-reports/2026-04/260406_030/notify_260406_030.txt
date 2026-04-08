@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260406_030/result_260406_030.json
+LOG_HEAD
+[260406_030] fixed t4 semantics clarification gap for conditional ladder behavior
+LOG_TAIL
+ui and contract now explicitly explain conditional ladder gating and window-level diagnosis path
+EVIDENCE
+rules/task-reports/2026-04/260406_030/truth_audit_260406_030.md
+INDEX
+rules/task-reports/2026-04/260406_030/result_260406_030.json

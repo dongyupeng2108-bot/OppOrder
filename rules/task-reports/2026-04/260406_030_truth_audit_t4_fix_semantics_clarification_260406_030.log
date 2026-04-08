@@ -1,0 +1,6 @@
+script_name=truth_audit_t4_fix_semantics_clarification_260406_030
+task_id=260406_030
+sample_name=t4_fix_semantics_clarification
+pass=true
+first_break_layer=NONE_CHAIN_PASS
+message=first_break_layer=NONE_CHAIN_PASS
