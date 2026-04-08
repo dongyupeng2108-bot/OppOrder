@@ -224,7 +224,7 @@ async function initStrategyEditor() {
                   <span id="se-countdown" style="font-size:11px;color:#aaa;font-family:monospace;">--:--</span>
                 </div>
               </div>
-              <div id="se-log-view-hint" style="font-size:11px;color:#8ea1b5;min-height:16px;">默认展示关键信息流</div>
+              <div id="se-log-view-hint" style="font-size:11px;color:#8ea1b5;min-height:16px;">默认展示关键信息流（策略为条件挂梯，不是每窗口无条件挂梯）</div>
               <div id="se-log-area" class="se-log-area" style="flex:1;min-height:0;"></div>
               <div id="se-ui-error" style="font-size:11px;color:#ff8a80;min-height:16px;"></div>
             </section>
@@ -1831,8 +1831,8 @@ function se_refreshLogViewModeUI() {
   }
   if (hint) {
     hint.textContent = _seLogViewMode === 'key'
-      ? `默认展示关键信息流（已折叠噪声 ${_seLogNoiseSuppressed} 条）`
-      : '当前展示原始日志（包含心跳/空转事件）';
+      ? `默认展示关键信息流（策略为条件挂梯，已折叠噪声 ${_seLogNoiseSuppressed} 条）`
+      : '当前展示原始日志（包含心跳/空转事件；策略并非每窗口无条件挂梯）';
   }
 }
 

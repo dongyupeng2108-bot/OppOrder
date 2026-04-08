@@ -103,3 +103,14 @@ curl -sS http://localhost:53123/bot/context
 | `GET /bot/decision-preview` | 决策预览（查询参数见实现） |
 
 完整路由实现见 `server.mjs` 中 `if (req.method === 'GET' && req.url === '/bot/...')` 各分支。
+
+---
+
+## 挂梯语义澄清
+
+- 当前实现为**条件挂梯**，不是“每窗口无条件挂梯”。
+- 常见阻断原因包括：
+  - `pre_open_or_open_not_open_delay`（open_delay 未到）
+  - `spread_too_wide_for_entry`（点差超阈值）
+  - `ladder_not_posted_all_sides_cancelled`（窗口方向已取消）
+- 排障建议：结合 `GET /bot/logs?event=RUNNER_TICK&window_id=<id>` 与 `GET /bot/runner/last-summary` 对账“未挂单原因”。
