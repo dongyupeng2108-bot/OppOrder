@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260406_028/result_260406_028.json
+LOG_HEAD
+[260406_028] hardened t3 diagnostics with BOT_DECISION window pull and stable ts sorting
+LOG_TAIL
+key-mode diagnostics now include decision events per window and ordered merged timeline
+EVIDENCE
+rules/task-reports/2026-04/260406_028/truth_audit_260406_028.md
+INDEX
+rules/task-reports/2026-04/260406_028/result_260406_028.json
