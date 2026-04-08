@@ -1,0 +1,32 @@
+{
+  "task_id": "260406_031",
+  "timestamp": "2026-04-08T10:16:19.495Z",
+  "valid": true,
+  "errors": [],
+  "checks": {
+    "smoke_test": "PASS",
+    "result_json": "OK",
+    "notify_structure": "OK",
+    "index_consistency": "OK",
+    "domain": {
+      "healthcheckFound": true
+    }
+  },
+  "context": {
+    "resultData": {
+      "task_id": "260406_031",
+      "status": "DONE",
+      "mode": "LOCAL",
+      "dod_evidence": {
+        "healthcheck": [
+          "260406_031_healthcheck_53122_root.txt",
+          "260406_031_healthcheck_53122_pairs.txt"
+        ],
+        "gate_light_exit": 0
+      },
+      "summary": "Automation Pack V1 Validation for Task 260406_031",
+      "report_file": "trae_report_snippet_260406_031.txt",
+      "report_sha256_short": "152169ff"
+    }
+  }
+}
