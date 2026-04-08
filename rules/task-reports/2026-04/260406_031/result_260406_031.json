@@ -1,0 +1,16 @@
+{
+  "task_id": "260406_031",
+  "status": "PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "summary": "完成胜率口径切换：由窗口胜率改为订单胜率（盈利订单/总成交订单）。",
+  "deliverables": [
+    "docs/tasks/260406_031.md",
+    "strategies/crypto_binary/server.mjs",
+    "ui/js/strategy-editor.js",
+    "scripts/truth_audit_t5_order_win_rate_260406_031.mjs",
+    "rules/LATEST.json",
+    "rules/task-reports/2026-04/260406_031/implementation_260406_031.md",
+    "rules/task-reports/2026-04/260406_031/truth_audit_260406_031.md",
+    "rules/task-reports/2026-04/260406_031_truth_audit_t5_order_win_rate_260406_031.json"
+  ]
+}

@@ -1,0 +1,6 @@
+script_name=truth_audit_t5_order_win_rate_260406_031
+task_id=260406_031
+sample_name=t5_order_win_rate
+pass=true
+first_break_layer=NONE_CHAIN_PASS
+message=first_break_layer=NONE_CHAIN_PASS

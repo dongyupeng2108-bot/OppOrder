@@ -652,6 +652,12 @@ const queryBotPerformanceSummary = async (presetRaw, includeRows = false) => {
   }
   const windowCount = filtered.length;
   const filledTotal = filtered.reduce((acc, row) => acc + (toFiniteOrNull(row.bot_filled_total) ?? 0), 0);
+  const winningOrderTotal = filtered.reduce((acc, row) => {
+    const filled = toFiniteOrNull(row.bot_filled_total) ?? 0;
+    const realized = toFiniteOrNull(row.bot_realized_gross_pnl_total) ?? 0;
+    return realized > 0 ? acc + filled : acc;
+  }, 0);
+  const orderWinRate = filledTotal > 0 ? (winningOrderTotal / filledTotal) : 0;
   const cancelledTotal = filtered.reduce((acc, row) => acc + (toFiniteOrNull(row.bot_cancelled_total) ?? 0), 0);
   const realizedTotal = filtered.reduce((acc, row) => acc + (toFiniteOrNull(row.bot_realized_gross_pnl_total) ?? 0), 0);
   const unrealizedTotal = filtered.reduce((acc, row) => acc + (toFiniteOrNull(row.bot_unrealized_gross_pnl_total) ?? 0), 0);
@@ -661,6 +667,8 @@ const queryBotPerformanceSummary = async (presetRaw, includeRows = false) => {
     preset,
     window_count: windowCount,
     filled_total: filledTotal,
+    winning_order_total: winningOrderTotal,
+    order_win_rate: orderWinRate,
     cancelled_total: cancelledTotal,
     realized_gross_pnl_total: realizedTotal,
     unrealized_gross_pnl_total: unrealizedTotal,

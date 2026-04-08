@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260406_031/result_260406_031.json
+LOG_HEAD
+[260406_031] switched win-rate metric from window-based to order-based
+LOG_TAIL
+order win rate now uses profitable filled orders over total filled orders
+EVIDENCE
+rules/task-reports/2026-04/260406_031/truth_audit_260406_031.md
+INDEX
+rules/task-reports/2026-04/260406_031/result_260406_031.json
