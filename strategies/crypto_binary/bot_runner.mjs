@@ -357,11 +357,19 @@ export function createBotRunner(options = {}) {
     const currentWindowPresent = state.current_window_id != null;
     const btcReady = isCriticalBtcReady(contextForDecision.btc_price);
     const boundsReady = isBoundsReady(state, contextForDecision);
+    const shouldBackfillWindowInitializedAt = currentWindowPresent && !state.window_initialized_at && boundsReady;
+    if (shouldBackfillWindowInitializedAt) {
+      state = patchState({
+        current_window_id: state.current_window_id ?? contextForDecision.window_id ?? null,
+        window_initialized_at: contextForDecision.updated_at || new Date().toISOString()
+      });
+    }
+    const windowInitialized = Boolean(state.window_initialized_at) || boundsReady;
     const rawIntents = Array.isArray(decisionRaw?.intents) ? decisionRaw.intents : [];
     const hasActionIntent = rawIntents.some((intent) => intent?.kind && intent.kind !== 'NOOP');
     const boundsDependentIntent = hasBoundsDependentIntent(rawIntents);
     const gateByBtcNotReady = currentWindowPresent && hasActionIntent && !btcReady;
-    const gateByWindowNotInitialized = currentWindowPresent && hasActionIntent && !state.window_initialized_at;
+    const gateByWindowNotInitialized = currentWindowPresent && hasActionIntent && !windowInitialized;
     const gateByBoundsNotReady = currentWindowPresent && boundsDependentIntent && !boundsReady;
     const gateByStartupWait = startupWindowGateMode === 'wait_next_window';
     const cancelOpenNoOnlyIntents = rawIntents.filter((intent) => intent?.kind === 'CANCEL_OPEN' && (intent?.side === 'NO' || intent?.side === 'ALL'));
@@ -389,7 +397,7 @@ export function createBotRunner(options = {}) {
             gate_current_window_present: currentWindowPresent,
             gate_btc_ready: btcReady,
             gate_bounds_ready: boundsReady,
-            gate_window_initialized: Boolean(state.window_initialized_at),
+            gate_window_initialized: windowInitialized,
             gate_startup_wait_active: gateByStartupWaitEffective,
             gate_startup_window_id: startupWindowGateId
           }

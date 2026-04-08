@@ -1,0 +1,15 @@
+{
+  "task_id": "260406_032",
+  "status": "PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "summary": "完成修复：窗口初始化时间戳缺失不再导致窗口开始后挂单被门控阻断。",
+  "deliverables": [
+    "docs/tasks/260406_032.md",
+    "strategies/crypto_binary/bot_runner.mjs",
+    "scripts/truth_audit_window_init_gate_fix_260406_032.mjs",
+    "rules/LATEST.json",
+    "rules/task-reports/2026-04/260406_032/implementation_260406_032.md",
+    "rules/task-reports/2026-04/260406_032/truth_audit_260406_032.md",
+    "rules/task-reports/2026-04/260406_032_truth_audit_window_init_gate_fix_260406_032.json"
+  ]
+}

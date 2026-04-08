@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260406_032/result_260406_032.json
+LOG_HEAD
+[260406_032] fixed false gate on window init missing while bounds are ready
+LOG_TAIL
+runner now backfills window_initialized_at and avoids blocking valid place intents
+EVIDENCE
+rules/task-reports/2026-04/260406_032/truth_audit_260406_032.md
+INDEX
+rules/task-reports/2026-04/260406_032/result_260406_032.json

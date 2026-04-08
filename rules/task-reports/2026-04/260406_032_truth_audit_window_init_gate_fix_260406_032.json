@@ -1,0 +1,83 @@
+{
+  "script_name": "truth_audit_window_init_gate_fix_260406_032",
+  "task_id": "260406_032",
+  "sample_name": "window_init_gate_fix",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-04\\260406_032_truth_audit_window_init_gate_fix_260406_032.json",
+  "summary": {
+    "pass": true,
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "checks": {
+      "runtime_fail_sample_hits_window_init_gate": true,
+      "runtime_fail_sample_has_bounds_ready": true,
+      "runtime_fail_sample_window_init_missing": true,
+      "runtime_pass_sample_not_blocked_by_window_init_gate": true,
+      "runtime_pass_tick_status_ok": true,
+      "runtime_pass_sample_backfills_window_initialized_at": true,
+      "runtime_pass_sample_has_effective_or_unblocked_intent": true,
+      "runtime_fail_to_pass_chain_verified": true,
+      "runtime_server_started": true,
+      "latest_points_to_260406_032": true,
+      "governance_substitute_pass": true
+    }
+  },
+  "raw_excerpt": {
+    "fail_to_pass": {
+      "before": "gate_context_not_ready_window_init_false_positive",
+      "after": "window_init_gate_false_positive_fixed"
+    },
+    "real_runtime": {
+      "pass": true,
+      "sample_fail": {
+        "source": "E:\\OppRadar\\data\\crypto_binary\\bot_runtime_recovery_53167.json",
+        "reason": "gate_context_not_ready_window_init",
+        "window_initialized_at": null,
+        "bounds_ready": true,
+        "intents_summary": "NOOP"
+      },
+      "sample_pass": {
+        "reason": "ladder_not_posted",
+        "intents_summary": "PLACE_LADDER(YES|0.4:2:0.85) + PLACE_LADDER(NO|0.4:1:0.9)",
+        "gate_window_init_log_seen": false,
+        "window_initialized_at": "2026-04-08T16:37:59.889Z"
+      },
+      "runtime_capture": {
+        "stdout_tail": "66100 end=2026-04-08T16:40:00.000Z secsLeft=121\n[server] initGlobalOrderbook: window btc-updown-5m-1775666100, up=40202943…\n{\"ts\":\"2026-04-08T16:37:59.757Z\",\"level\":\"info\",\"event\":\"ws_connect_start\",\"module\":\"orderbook_monitor\",\"msg\":\"starting in rest mode\"}\n[server] Global orderbook monitor started\n[Scanner] Found current window: btc-updown-5m-1775666100 end=2026-04-08T16:40:00.000Z secsLeft=121\n",
+        "stderr_tail": "",
+        "pass_tick_http_status": 200,
+        "pass_tick_body_snippet": "{\"ok\":true,\"tick_summary\":{\"version\":\"v1\",\"reason\":\"ladder_not_posted\",\"intents_summary\":\"PLACE_LADDER(YES|0.4:2:0.85) + PLACE_LADDER(NO|0.4:1:0.9)\",\"window_id\":\"w-rt-032-pass\",\"mode\":\"paper-staging\"},\"context_snapshot\":{\"window_id\":\"w-rt-032-pass\",\"last_window_id\":null,\"slug\":\"btc-updown-5m-1775666100\",\"period\":\"5m\",\"remaining_sec\":240,\"btc_price\":65385.2,\"anchor_btc\":null,\"atr_5m\":90,\"upper_bound\":70000,\"lower_bound\":60000,\"bid_yes\":0.4,\"ask_yes\":0.41,\"bid_no\":0.58,\"ask_no\":0.59,\"tick_size\":null,\"stale\":true,\"updated_at\":\"2026-04-08T16:37:59.889Z\",\"_btc_source_trace\":{\"source_init_started\":t"
+      },
+      "note": "fail样本来自历史真实恢复快照；pass样本来自本次真实HTTP链路执行"
+    },
+    "checks": {
+      "runtime_fail_sample_hits_window_init_gate": true,
+      "runtime_fail_sample_has_bounds_ready": true,
+      "runtime_fail_sample_window_init_missing": true,
+      "runtime_pass_sample_not_blocked_by_window_init_gate": true,
+      "runtime_pass_tick_status_ok": true,
+      "runtime_pass_sample_backfills_window_initialized_at": true,
+      "runtime_pass_sample_has_effective_or_unblocked_intent": true,
+      "runtime_fail_to_pass_chain_verified": true,
+      "runtime_server_started": true,
+      "latest_points_to_260406_032": true,
+      "governance_substitute_pass": true
+    }
+  },
+  "generated_at": "2026-04-08T16:37:59.922Z",
+  "task_type": "business_implementation",
+  "checks": {
+    "runtime_fail_sample_hits_window_init_gate": true,
+    "runtime_fail_sample_has_bounds_ready": true,
+    "runtime_fail_sample_window_init_missing": true,
+    "runtime_pass_sample_not_blocked_by_window_init_gate": true,
+    "runtime_pass_tick_status_ok": true,
+    "runtime_pass_sample_backfills_window_initialized_at": true,
+    "runtime_pass_sample_has_effective_or_unblocked_intent": true,
+    "runtime_fail_to_pass_chain_verified": true,
+    "runtime_server_started": true,
+    "latest_points_to_260406_032": true,
+    "governance_substitute_pass": true
+  }
+}
