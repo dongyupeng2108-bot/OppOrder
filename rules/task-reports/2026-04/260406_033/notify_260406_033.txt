@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260406_033/result_260406_033.json
+LOG_HEAD
+[260406_033] split maker/taker fill semantics and set ladder default to resting maker
+LOG_TAIL
+resting maker now fills at posted price; immediate taker keeps market-price fills
+EVIDENCE
+rules/task-reports/2026-04/260406_033/truth_audit_260406_033.md
+INDEX
+rules/task-reports/2026-04/260406_033/result_260406_033.json
