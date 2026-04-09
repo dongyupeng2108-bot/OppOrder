@@ -531,6 +531,7 @@ const ensureBotPostmortemColumns = async () => {
     'ALTER TABLE cb_postmortem ADD COLUMN bot_completed_at TEXT',
     'ALTER TABLE cb_postmortem ADD COLUMN bot_window_id TEXT',
     'ALTER TABLE cb_postmortem ADD COLUMN bot_filled_total REAL',
+    'ALTER TABLE cb_postmortem ADD COLUMN bot_entry_filled_total REAL',
     'ALTER TABLE cb_postmortem ADD COLUMN bot_cancelled_total REAL',
     'ALTER TABLE cb_postmortem ADD COLUMN bot_realized_gross_pnl_total REAL',
     'ALTER TABLE cb_postmortem ADD COLUMN bot_unrealized_gross_pnl_total REAL',
@@ -563,6 +564,7 @@ const writeBotPostmortem = async (snapshot) => {
       bot_completed_at,
       bot_window_id,
       bot_filled_total,
+      bot_entry_filled_total,
       bot_cancelled_total,
       bot_realized_gross_pnl_total,
       bot_unrealized_gross_pnl_total,
@@ -570,7 +572,7 @@ const writeBotPostmortem = async (snapshot) => {
       bot_settled_outcome_internal,
       bot_active_config_json,
       bot_action_summary
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `, [
     BOT_POSTMORTEM_STRATEGY_ID,
     eventId,
@@ -584,6 +586,7 @@ const writeBotPostmortem = async (snapshot) => {
     completedAt,
     windowId,
     snapshot.filled_total ?? 0,
+    snapshot.entry_filled_total ?? 0,
     snapshot.cancelled_total ?? 0,
     snapshot.realized_gross_pnl_total ?? 0,
     snapshot.unrealized_gross_pnl_total ?? 0,
@@ -623,6 +626,7 @@ const queryBotPerformanceSummary = async (presetRaw, includeRows = false) => {
       bot_completed_at,
       bot_window_id,
       bot_filled_total,
+      bot_entry_filled_total,
       bot_cancelled_total,
       bot_realized_gross_pnl_total,
       bot_unrealized_gross_pnl_total,
@@ -652,12 +656,13 @@ const queryBotPerformanceSummary = async (presetRaw, includeRows = false) => {
   }
   const windowCount = filtered.length;
   const filledTotal = filtered.reduce((acc, row) => acc + (toFiniteOrNull(row.bot_filled_total) ?? 0), 0);
-  const winningOrderTotal = filtered.reduce((acc, row) => {
-    const filled = toFiniteOrNull(row.bot_filled_total) ?? 0;
+  const entryFilledTotal = filtered.reduce((acc, row) => acc + (toFiniteOrNull(row.bot_entry_filled_total) ?? 0), 0);
+  const winningEntryOrderTotal = filtered.reduce((acc, row) => {
+    const filled = toFiniteOrNull(row.bot_entry_filled_total) ?? 0;
     const realized = toFiniteOrNull(row.bot_realized_gross_pnl_total) ?? 0;
     return realized > 0 ? acc + filled : acc;
   }, 0);
-  const orderWinRate = filledTotal > 0 ? (winningOrderTotal / filledTotal) : 0;
+  const orderWinRate = entryFilledTotal > 0 ? (winningEntryOrderTotal / entryFilledTotal) : 0;
   const cancelledTotal = filtered.reduce((acc, row) => acc + (toFiniteOrNull(row.bot_cancelled_total) ?? 0), 0);
   const realizedTotal = filtered.reduce((acc, row) => acc + (toFiniteOrNull(row.bot_realized_gross_pnl_total) ?? 0), 0);
   const unrealizedTotal = filtered.reduce((acc, row) => acc + (toFiniteOrNull(row.bot_unrealized_gross_pnl_total) ?? 0), 0);
@@ -667,7 +672,9 @@ const queryBotPerformanceSummary = async (presetRaw, includeRows = false) => {
     preset,
     window_count: windowCount,
     filled_total: filledTotal,
-    winning_order_total: winningOrderTotal,
+    entry_filled_total: entryFilledTotal,
+    winning_entry_order_total: winningEntryOrderTotal,
+    winning_order_total: winningEntryOrderTotal,
     order_win_rate: orderWinRate,
     cancelled_total: cancelledTotal,
     realized_gross_pnl_total: realizedTotal,
@@ -682,6 +689,7 @@ const queryBotPerformanceSummary = async (presetRaw, includeRows = false) => {
       window_id: row.bot_window_id ?? null,
       completed_at: row.bot_completed_at ?? null,
       filled_total: toFiniteOrNull(row.bot_filled_total) ?? 0,
+      entry_filled_total: toFiniteOrNull(row.bot_entry_filled_total) ?? 0,
       cancelled_total: toFiniteOrNull(row.bot_cancelled_total) ?? 0,
       realized_gross_pnl_total: toFiniteOrNull(row.bot_realized_gross_pnl_total) ?? 0,
       unrealized_gross_pnl_total: toFiniteOrNull(row.bot_unrealized_gross_pnl_total) ?? 0,
@@ -695,6 +703,7 @@ const queryBotPerformanceSummary = async (presetRaw, includeRows = false) => {
       window_id: row.bot_window_id ?? null,
       completed_at: row.bot_completed_at ?? null,
       filled_total: toFiniteOrNull(row.bot_filled_total) ?? 0,
+      entry_filled_total: toFiniteOrNull(row.bot_entry_filled_total) ?? 0,
       cancelled_total: toFiniteOrNull(row.bot_cancelled_total) ?? 0,
       realized_gross_pnl_total: toFiniteOrNull(row.bot_realized_gross_pnl_total) ?? 0,
       unrealized_gross_pnl_total: toFiniteOrNull(row.bot_unrealized_gross_pnl_total) ?? 0,
@@ -1388,10 +1397,15 @@ const selectWindowOrdersForDisplay = (allOrders = [], options = {}) => {
   const scope = running ? 'current_window' : (displayWindowId ? 'last_window' : 'none');
   return { windowOrders, hiddenOtherWindowCount, scope };
 };
-const countUniqueFilledOrderIds = (orders = []) => {
+const countUniqueFilledOrderIds = (orders = [], options = {}) => {
+  const kind = typeof options.kind === 'string' ? options.kind.toUpperCase() : null;
   const ids = new Set(
     orders
-      .filter((order) => order?.status === 'FILLED')
+      .filter((order) => {
+        if (order?.status !== 'FILLED') return false;
+        if (!kind) return true;
+        return String(order?.kind || '').toUpperCase() === kind;
+      })
       .map((order) => order?.order_id)
       .filter((orderId) => typeof orderId === 'string' && orderId.length > 0)
   );
@@ -1404,6 +1418,14 @@ const getScopedFilledTotalForState = (state = {}, preferredWindowId = null) => {
   if (!displayWindowId) return 0;
   const strictWindowOrders = allOrders.filter((order) => order.resolved_window_id === displayWindowId);
   return countUniqueFilledOrderIds(strictWindowOrders);
+};
+const getScopedEntryFilledTotalForState = (state = {}, preferredWindowId = null) => {
+  const { allOrders } = buildBotOrdersWithWindowIds();
+  const scope = resolveBotWindowScope(state);
+  const displayWindowId = preferredWindowId || scope.displayWindowId;
+  if (!displayWindowId) return 0;
+  const strictWindowOrders = allOrders.filter((order) => order.resolved_window_id === displayWindowId);
+  return countUniqueFilledOrderIds(strictWindowOrders, { kind: 'ENTRY' });
 };
 const fetchOfficialSettledOutcomeForWindow = async (windowId) => {
   if (!windowId) return null;
@@ -1489,9 +1511,11 @@ const getBotPaperSummaryScoped = (context = null) => {
     : botExecutorPaper.getPaperSummary(context);
   const state = botState.getState();
   const filledTotal = getScopedFilledTotalForState(state);
+  const entryFilledTotal = getScopedEntryFilledTotalForState(state);
   return {
     ...baseSummary,
-    filled_total: filledTotal
+    filled_total: filledTotal,
+    entry_filled_total: entryFilledTotal
   };
 };
 

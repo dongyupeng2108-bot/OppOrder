@@ -1,0 +1,10 @@
+RESULT_JSON
+rules/task-reports/2026-04/260406_035/result_260406_035.json
+LOG_HEAD
+[260406_035] order win-rate now excludes TAKE_PROFIT/EXIT fills
+LOG_TAIL
+win-rate numerator and denominator are both entry-only filled orders
+EVIDENCE
+rules/task-reports/2026-04/260406_035/truth_audit_260406_035.md
+INDEX
+rules/task-reports/2026-04/260406_035/result_260406_035.json
