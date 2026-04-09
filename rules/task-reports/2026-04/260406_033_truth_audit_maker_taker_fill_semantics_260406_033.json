@@ -1,0 +1,87 @@
+{
+  "script_name": "truth_audit_maker_taker_fill_semantics_260406_033",
+  "task_id": "260406_033",
+  "sample_name": "maker_taker_fill_semantics",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-04\\260406_033_truth_audit_maker_taker_fill_semantics_260406_033.json",
+  "summary": {
+    "pass": true,
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "checks": {
+      "has_post_mode_field_in_order": true,
+      "has_posted_price_field_in_order": true,
+      "default_post_mode_is_resting_maker": true,
+      "runtime_maker_fill_price_equals_posted_price": true,
+      "runtime_taker_fill_price_equals_market_price": true,
+      "latest_points_to_260406_033": true,
+      "governance_substitute_pass": true
+    }
+  },
+  "raw_excerpt": {
+    "fail_to_pass": {
+      "before": "entry_fill_price_uses_market_price_even_for_resting_maker",
+      "after": "maker_taker_fill_semantics_split_applied"
+    },
+    "real_runtime": {
+      "pass": true,
+      "maker_sample": {
+        "order_id": "paper_d65283c9",
+        "kind": "ENTRY",
+        "side": "NO",
+        "price": 0.4,
+        "posted_price": 0.4,
+        "size": 2,
+        "tp_price": 1,
+        "ladder_key": "NO:0",
+        "parent_order_id": null,
+        "window_id": null,
+        "post_mode": "resting_maker",
+        "status": "FILLED",
+        "fill_price": 0.4,
+        "filled_at": "2026-04-09T10:29:38.224Z",
+        "created_at": "2026-04-09T10:29:38.224Z",
+        "source": "audit_maker"
+      },
+      "taker_sample": {
+        "order_id": "paper_02b8790a",
+        "kind": "ENTRY",
+        "side": "NO",
+        "price": 0.4,
+        "posted_price": 0.4,
+        "size": 2,
+        "tp_price": 1,
+        "ladder_key": "NO:0",
+        "parent_order_id": null,
+        "window_id": null,
+        "post_mode": "immediate_taker",
+        "status": "FILLED",
+        "fill_price": 0.22,
+        "filled_at": "2026-04-09T10:29:38.224Z",
+        "created_at": "2026-04-09T10:29:38.224Z",
+        "source": "audit_taker"
+      }
+    },
+    "checks": {
+      "has_post_mode_field_in_order": true,
+      "has_posted_price_field_in_order": true,
+      "default_post_mode_is_resting_maker": true,
+      "runtime_maker_fill_price_equals_posted_price": true,
+      "runtime_taker_fill_price_equals_market_price": true,
+      "latest_points_to_260406_033": true,
+      "governance_substitute_pass": true
+    }
+  },
+  "generated_at": "2026-04-09T10:29:38.225Z",
+  "task_type": "business_implementation",
+  "checks": {
+    "has_post_mode_field_in_order": true,
+    "has_posted_price_field_in_order": true,
+    "default_post_mode_is_resting_maker": true,
+    "runtime_maker_fill_price_equals_posted_price": true,
+    "runtime_taker_fill_price_equals_market_price": true,
+    "latest_points_to_260406_033": true,
+    "governance_substitute_pass": true
+  }
+}

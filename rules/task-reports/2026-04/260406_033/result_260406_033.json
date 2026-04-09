@@ -1,0 +1,15 @@
+{
+  "task_id": "260406_033",
+  "status": "PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "summary": "完成修复：挂梯单按maker口径成交，taker语义单独分支。",
+  "deliverables": [
+    "docs/tasks/260406_033.md",
+    "strategies/crypto_binary/bot_order_ledger.mjs",
+    "scripts/truth_audit_maker_taker_fill_semantics_260406_033.mjs",
+    "rules/LATEST.json",
+    "rules/task-reports/2026-04/260406_033/implementation_260406_033.md",
+    "rules/task-reports/2026-04/260406_033/truth_audit_260406_033.md",
+    "rules/task-reports/2026-04/260406_033_truth_audit_maker_taker_fill_semantics_260406_033.json"
+  ]
+}
