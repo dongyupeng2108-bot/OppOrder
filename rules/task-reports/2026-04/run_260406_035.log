@@ -1,0 +1,17 @@
+[Gate Light] DEBUG: Checking LATEST.json at E:\OppRadar\rules\LATEST.json
+[Gate Light] Target locked via argument: 260406_035
+PR_TASK_ID_DETECTED=260406_035
+TARGET_TASK_ID=260406_035
+LATEST_TASK_ID=260406_035
+[Gate Light] LATEST.json consistency verified.
+[Gate Light] TASK_PROFILE=heavy
+[Gate Light] TASK_DOMAIN=btcqdd
+[Gate Light] DOMAIN_PACKS=["btcqdd_core"]
+[Gate Light] Verifying task_id: 260406_035
+[Gate Light] Running Automation Pack V1 Hard Guards...
+
+[Gate Light] FAILED: Report Block Check for notify_260406_035.txt
+  Missing Blocks: === DOD_EVIDENCE_STDOUT ===
+  Missing Blocks: === GATE_LIGHT_PREVIEW === OR === GATE_LIGHT_VERIFY ===
+  ACTION: Use 'assemble_evidence.mjs' to regenerate reports.
+GATE_LIGHT_EXIT=1
