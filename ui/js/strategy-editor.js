@@ -1527,14 +1527,14 @@ function se_renderPerformance(perfPayload, status) {
     const num = Number(value);
     return Number.isFinite(num) ? num : null;
   };
-  const fallbackFilledTotal = rows.reduce((acc, row) => acc + (toFinite(row?.filled_total) ?? 0), 0);
+  const fallbackFilledTotal = rows.reduce((acc, row) => acc + (toFinite(row?.entry_filled_total) ?? 0), 0);
   const fallbackWinningOrderTotal = rows.reduce((acc, row) => {
     const realized = toFinite(row?.realized_gross_pnl_total);
-    const filled = toFinite(row?.filled_total) ?? 0;
+    const filled = toFinite(row?.entry_filled_total) ?? 0;
     return realized !== null && realized > 0 ? acc + filled : acc;
   }, 0);
-  const orderWinNumerator = toFinite(summary?.winning_order_total) ?? fallbackWinningOrderTotal;
-  const orderWinDenominator = toFinite(summary?.filled_total) ?? fallbackFilledTotal;
+  const orderWinNumerator = toFinite(summary?.winning_entry_order_total) ?? toFinite(summary?.winning_order_total) ?? fallbackWinningOrderTotal;
+  const orderWinDenominator = toFinite(summary?.entry_filled_total) ?? fallbackFilledTotal;
   const winRateText = orderWinDenominator > 0 ? `${((orderWinNumerator / orderWinDenominator) * 100).toFixed(1)}%` : '—';
   se_setText('se-perf-range', se_perfPresetLabel(summary?.preset || _sePerformancePreset));
   document.getElementById('se-perf-window-count').textContent = se_formatStateValue(summary?.window_count);
@@ -1546,8 +1546,8 @@ function se_renderPerformance(perfPayload, status) {
   if (!noteEl) return;
   const empty = orderWinDenominator <= 0;
   noteEl.textContent = empty
-    ? `${se_perfPresetLabel(_sePerformancePreset)} 当前无已成交订单数据（running 窗口不计入）`
-    : `${se_perfPresetLabel(summary?.preset)} | 仅统计已完成窗口 | 订单胜率=盈利订单/总成交订单 | running_excluded=${se_formatStateValue(summary?.running_window_excluded)} | running_now=${se_formatStateValue(status?.running)}`;
+    ? `${se_perfPresetLabel(_sePerformancePreset)} 当前无已成交开仓订单数据（running 窗口不计入）`
+    : `${se_perfPresetLabel(summary?.preset)} | 仅统计已完成窗口 | 订单胜率=盈利开仓订单/总开仓成交订单（平仓单不计入） | running_excluded=${se_formatStateValue(summary?.running_window_excluded)} | running_now=${se_formatStateValue(status?.running)}`;
 }
 
 function se_renderPollError(message) {

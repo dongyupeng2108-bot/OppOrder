@@ -1,0 +1,59 @@
+{
+  "script_name": "truth_audit_order_win_rate_entry_only_260406_035",
+  "task_id": "260406_035",
+  "sample_name": "order_win_rate_entry_only",
+  "pass": true,
+  "message": "first_break_layer=NONE_CHAIN_PASS",
+  "first_break_layer": "NONE_CHAIN_PASS",
+  "evidence_file": "E:\\OppRadar\\rules\\task-reports\\2026-04\\260406_035_truth_audit_order_win_rate_entry_only_260406_035.json",
+  "summary": {
+    "pass": true,
+    "first_break_layer": "NONE_CHAIN_PASS",
+    "checks": {
+      "postmortem_has_entry_filled_total_column": true,
+      "summary_uses_entry_filled_total_for_denominator": true,
+      "summary_exposes_entry_win_rate_fields": true,
+      "ui_uses_entry_filled_total_for_win_rate": true,
+      "ui_note_declares_entry_only_semantics": true,
+      "runtime_sample_has_exit_fills_but_entry_count_distinct": true,
+      "latest_points_to_260406_035": true,
+      "governance_substitute_pass": true
+    }
+  },
+  "raw_excerpt": {
+    "fail_to_pass": {
+      "before": "win_rate_counts_exit_orders",
+      "after": "win_rate_entry_only"
+    },
+    "real_runtime": {
+      "pass": true,
+      "runtime": {
+        "filled_total": 2,
+        "entry_filled_total": 1,
+        "exit_filled_total": 1
+      }
+    },
+    "checks": {
+      "postmortem_has_entry_filled_total_column": true,
+      "summary_uses_entry_filled_total_for_denominator": true,
+      "summary_exposes_entry_win_rate_fields": true,
+      "ui_uses_entry_filled_total_for_win_rate": true,
+      "ui_note_declares_entry_only_semantics": true,
+      "runtime_sample_has_exit_fills_but_entry_count_distinct": true,
+      "latest_points_to_260406_035": true,
+      "governance_substitute_pass": true
+    }
+  },
+  "generated_at": "2026-04-09T16:59:28.527Z",
+  "task_type": "business_implementation",
+  "checks": {
+    "postmortem_has_entry_filled_total_column": true,
+    "summary_uses_entry_filled_total_for_denominator": true,
+    "summary_exposes_entry_win_rate_fields": true,
+    "ui_uses_entry_filled_total_for_win_rate": true,
+    "ui_note_declares_entry_only_semantics": true,
+    "runtime_sample_has_exit_fills_but_entry_count_distinct": true,
+    "latest_points_to_260406_035": true,
+    "governance_substitute_pass": true
+  }
+}
