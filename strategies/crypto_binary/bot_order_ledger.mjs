@@ -119,7 +119,7 @@ export function createBotOrderLedger(options = {}) {
   const cancelOpenBySide = (side) => {
     let changed = 0;
     orders = orders.map((order) => {
-      if (order.status === 'OPEN' && (side === 'ALL' || order.side === side)) {
+      if (order.status === 'OPEN' && order.kind === 'ENTRY' && (side === 'ALL' || order.side === side)) {
         changed += 1;
         return { ...order, status: 'CANCELLED' };
       }
