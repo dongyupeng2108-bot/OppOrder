@@ -1,0 +1,6 @@
+script_name=truth_audit_maker_taker_fill_semantics_260406_033
+task_id=260406_033
+sample_name=maker_taker_fill_semantics
+pass=true
+first_break_layer=NONE_CHAIN_PASS
+message=first_break_layer=NONE_CHAIN_PASS
